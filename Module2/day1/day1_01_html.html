@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+<script src="day1_01_html_files/libs/tone/tone.js"></script>
 <script src="day1_01_html_files/libs/clipboard/clipboard.min.js"></script>
 <script src="day1_01_html_files/libs/quarto-html/tabby.min.js"></script>
 <script src="day1_01_html_files/libs/quarto-html/popper.min.js"></script>
@@ -11,7 +12,7 @@
 
   <meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
   <meta name="dcterms.date" content="2023-02-18">
-  <title>quarto-input122c6647</title>
+  <title>quarto-inputfc31fb65</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -31,10 +32,11 @@
     }
   </style>
   <link rel="stylesheet" href="day1_01_html_files/libs/revealjs/dist/theme/quarto.css" id="theme">
-  <link rel="stylesheet" href="style.css">
   <link href="day1_01_html_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="day1_01_html_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="day1_01_html_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="day1_01_html_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="day1_01_html_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="day1_01_html_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -244,6 +246,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -326,30 +329,33 @@
     <div class="slides">
 
 <section id="title-slide" class="center">
-  <h3 class="title"><p>&nbsp;Modern Data Science Methods<br>
-&nbsp;for Educational Research</p></h3>
-  <h4 class="subtitle"><p>Creating Effective Data Visualization using R<br>
+  <h2 class="title"><p>&nbsp;Modern Data Science Methods<br>
+&nbsp;for Educational Research</p></h2>
+  <h3 class="subtitle"><p>Creating Effective Data Visualization using R<br>
 <br>
-มโนทัศน์พื้นฐานของทัศนภาพข้อมูล</p></h4>
+มโนทัศน์พื้นฐานของทัศนภาพข้อมูล</p></h3>
   <p class="author">ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</p>
   <p class="institute"></p><p>ภาควิชาวิจัยและจิตวิทยาการศึกษา</p>
 <p>คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</p><p></p>
   <p class="date">February 18, 2023</p>
 </section>
 
-
-© 2023 KruRoo @ EDUCU.<section id="TOC">
+<section id="TOC">
 <nav role="doc-toc"> 
-<h2 id="toc-title">Table of contents</h2>
 <ul>
 <li><a href="#/แนะนำวทยากร" id="/toc-แนะนำวทยากร">แนะนำวิทยากร</a></li>
-<li><a href="#/มโนทศนพนฐาน" id="/toc-มโนทศนพนฐาน">มโนทัศน์พื้นฐาน</a>
+<li><a href="#/data-visualization" id="/toc-data-visualization">Data Visualization ?</a>
 <ul>
-<li><a href="#/data-visualization" id="/toc-data-visualization">Data Visualization ?</a></li>
+<li><a href="#/definition" id="/toc-definition">Definition</a></li>
 <li><a href="#/visual-representation-1" id="/toc-visual-representation-1">Visual Representation (1)</a></li>
 <li><a href="#/visual-representation-2" id="/toc-visual-representation-2">Visual Representation (2)</a></li>
 <li><a href="#/visual-representation-3" id="/toc-visual-representation-3">Visual Representation (3)</a></li>
-<li><a href="#/section" id="/toc-section"></a></li>
+<li><a href="#/visual-representation-4" id="/toc-visual-representation-4">Visual Representation (4)</a></li>
+</ul></li>
+<li><a href="#/whys-data-visualization" id="/toc-whys-data-visualization">Why’s Data Visualization?</a>
+<ul>
+<li><a href="#/whys-data-visualization-1" id="/toc-whys-data-visualization-1">Why’s Data Visualization (1)</a></li>
+<li><a href="#/whys-data-visualization-2" id="/toc-whys-data-visualization-2">Why’s Data Visualization (2)</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -363,12 +369,12 @@
 
 <img data-src="images/image-1739986314.png" style="width:100.0%" class="r-stretch quarto-figure-center"></section>
 <section>
-<section id="มโนทศนพนฐาน" class="title-slide slide level1 center">
-<h1>มโนทัศน์พื้นฐาน</h1>
+<section id="data-visualization" class="title-slide slide level1 center">
+<h1>Data Visualization ?</h1>
 
 </section>
-<section id="data-visualization" class="slide level2">
-<h2>Data Visualization ?</h2>
+<section id="definition" class="slide level2">
+<h2>Definition</h2>
 
 <img data-src="images/image-1795353854.png" class="r-stretch quarto-figure-center"><p class="caption">ที่มา : Kirk (2019)</p></section>
 <section id="visual-representation-1" class="slide level2">
@@ -383,10 +389,30 @@
 <h2>Visual Representation (3)</h2>
 
 <img data-src="images/image-944698022.png" class="r-stretch quarto-figure-center"><p class="caption">ที่มา : https://infovis-wiki.net/wiki/File:Mackinlay_PerceptualTask.jpg</p></section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section id="visual-representation-4" class="slide level2">
+<h2>Visual Representation (4)</h2>
 
-<img data-src="images/image-1052574543.png" class="r-stretch"><div class="footer footer-default">
+<img data-src="images/image-1052574543.png" class="r-stretch"></section></section>
+<section>
+<section id="whys-data-visualization" class="title-slide slide level1 center" data-background-image="images/eye.jpg">
+<h1>Why’s Data Visualization?</h1>
+
+</section>
+<section id="whys-data-visualization-1" class="slide level2">
+<h2>Why’s Data Visualization (1)</h2>
+<p><img data-src="images/image-1714207168.png" class="absolute" style="top: 10px; left: 0px; width: 350px; height: 300px; "></p>
+<p><img data-src="images/image-1220167455.png" class="absolute" style="top: 350px; left: 0px; width: 450px; height: 250px; "></p>
+<p><img data-src="images/image-1182184913.png" class="absolute" style="top: 10px; left: 500px; width: 50%; "></p>
+</section>
+<section id="whys-data-visualization-2" class="slide level2">
+<h2>Why’s Data Visualization (2)</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/image-438136617.png" style="width:80.0%"></p>
+</figure>
+</div>
+<p><img src="logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
 
 </div>
 </section></section>
@@ -400,6 +426,8 @@
   <script src="day1_01_html_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="day1_01_html_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="day1_01_html_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="day1_01_html_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="day1_01_html_files/libs/revealjs/plugin/quarto-tone/tone.js"></script>
   <script src="day1_01_html_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -421,7 +449,8 @@
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true,"src":"drawings.json"},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -442,10 +471,10 @@
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
-        showSlideNumber: 'all',
+        showSlideNumber: 'print',
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
@@ -592,7 +621,7 @@
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoTone, QuartoSupport,
 
           RevealMath,
           RevealNotes,
