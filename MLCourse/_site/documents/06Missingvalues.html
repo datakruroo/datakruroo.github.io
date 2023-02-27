@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
 
-<title>2758688 ML PRIN APPLN – course-lecturer</title>
+<title>2758688 ML PRIN APPLN - Handling Missing Values</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./index.html" rel="next">
-<link href="./syllabus-th-PDF-2758688.PDF" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -61,6 +60,9 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<meta property="og:title" content="2758688 ML PRIN APPLN - Handling Missing Values">
+<meta property="og:description" content="ค่าสูญหาย (missing values) เป็นสิ่งที่พบได้ทั่วไปในการทำงานจริง โดยเป็นสถานการณ์ที่ค่าสังเกตของตัวแปรบางตัวในชุดข้อมูลขาดหายไปอย่างน้อยหนึ่งค่า การเกิดค่าสูญหายอาจจำแนกได้เป็น 2 ลักษณะ ลักษณะแรกคือ…">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
 </head>
 
 <body class="nav-sidebar docked">
@@ -69,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"></h1>
+      <h1 class="quarto-secondary-nav-title">Handling Missing Values</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -81,8 +83,8 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-center sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
       <div class="sidebar-tools-main">
     <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
@@ -98,30 +100,30 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Course information</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
+  <a href="../course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./syllabus-th-PDF-2758688.PDF" class="sidebar-item-text sidebar-link">Syllabus</a>
+  <a href="../syllabus-th-PDF-2758688.PDF" class="sidebar-item-text sidebar-link">Syllabus</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./course-lecturer.html" class="sidebar-item-text sidebar-link active">Instructor</a>
+  <a href="../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
   </div>
 </li>
       </ul>
@@ -132,56 +134,51 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">สารบัญ</h2>
    
   <ul>
-  <li><a href="#instructor" id="toc-instructor" class="nav-link active" data-scroll-target="#instructor">Instructor</a>
-  <ul class="collapse">
-  <li><a href="#ความเชยวชาญเฉพาะ" id="toc-ความเชยวชาญเฉพาะ" class="nav-link" data-scroll-target="#ความเชยวชาญเฉพาะ">ความเชี่ยวชาญเฉพาะ</a></li>
-  <li><a href="#ผลงานทางวชาการ" id="toc-ผลงานทางวชาการ" class="nav-link" data-scroll-target="#ผลงานทางวชาการ">ผลงานทางวิชาการ</a></li>
-  <li><a href="#หนงสอ" id="toc-หนงสอ" class="nav-link" data-scroll-target="#หนงสอ">หนังสือ</a></li>
-  </ul></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#ประเภทของคาสญหาย" id="toc-ประเภทของคาสญหาย" class="nav-link" data-scroll-target="#ประเภทของคาสญหาย">ประเภทของค่าสูญหาย</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Handling Missing Values</h1>
+</div>
 
 
-<section id="instructor" class="level1">
-<h1>Instructor</h1>
-<p><img src="images/image-507201822.png" class="img-fluid" style="float:right;padding: 0 0 0 10px;;width:40.0%"></p>
-<p><strong>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</strong></p>
-<ul>
-<li><p>อาจารย์ประจำภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</p></li>
-<li><p>KruRoo Co-Founder</p></li>
-<li><p>DataKruRoo Founder</p></li>
-</ul>
-<section id="ความเชยวชาญเฉพาะ" class="level3">
-<h3 class="anchored" data-anchor-id="ความเชยวชาญเฉพาะ">ความเชี่ยวชาญเฉพาะ</h3>
-<ul>
-<li><p>สถิติและวิทยาการข้อมูลทางการศึกษา</p></li>
-<li><p>การพัฒนาทัศนภาพข้อมูลทางการศึกษา</p></li>
-<li><p>การเรียนรู้ของเครื่องและการประยุกต์สำหรับการวิจัยทางการศึกษา</p></li>
-<li><p>การจำลองแบบมอนติคาร์โล</p></li>
-<li><p>สถิติวิเคราะห์แบบเบย์</p></li>
-<li><p>R programming</p></li>
-</ul>
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>ค่าสูญหาย (missing values) เป็นสิ่งที่พบได้ทั่วไปในการทำงานจริง โดยเป็นสถานการณ์ที่ค่าสังเกตของตัวแปรบางตัวในชุดข้อมูลขาดหายไปอย่างน้อยหนึ่งค่า การเกิดค่าสูญหายอาจจำแนกได้เป็น 2 ลักษณะ ลักษณะแรกคือ การเกิดค่าสูญหายในขั้นตอนของการเก็บรวบรวมข้อมูล ซึ่งอาจเกิดจากการไม่ให้ข้อมูลของแหล่งข้อมูล การเกิดอุบัติเหตุบางประการหรือเกิดความผิดพลาดในเครื่องมือวัดจนทำให้ไม่สามารถเก็บข้อมูลบางค่าได้</p>
+<p>ลักษณะที่สองคือ การเกิดค่าสูญหายในขั้นตอนการจัดการข้อมูล เช่น ในโปรเจคจำเป็นต้องรวมข้อมูลหลายชุดเข้าด้วยการ การ merge หลายชุดที่มีหน่วยข้อมูลไม่เท่าเทียมกัน หรือมี id ที่ไม่สามารถใช้จับคู่หน่วยข้อมูลจากหลายชุดข้อมูลได้อย่างสมบูรณ์ จะทำให้ชุดข้อมูลรวมมีหน่วยข้อมูลบางหน่วยที่ขาดหายไป หรือการจัดกระทำข้อมูลที่ไม่ถูกต้องอาจทำให้เกิดค่าสูญหายขึ้นได้เช่นเดียวกัน</p>
+<p>ค่าสูญหายที่เกิดขึ้นในชุดข้อมูลทำให้ผู้วิเคราะห์ไม่สามารถใช้หน่วยข้อมูลที่เกิดค่าสูญหายในกระบวนการพัฒนาโมเดลการเรียนรู้ของเครื่องได้ ดังนั้นหากค่าสูญหายที่เกิดขึ้นในชุดข้อมูลมีจำนวนที่มากเกินไป ย่อมส่งผลให้ประสิทธิภาพการทำนายของโมเดลที่พัฒนาขึ้นลดลง</p>
+<p>ค่าสูญหายสามารถเกิดได้ทั้งในตัวแปรตาม และตัวแปรอิสระ ในกรณีที่ค่าสูญหายเกิดขึ้นในตัวแปรตาม นอกจากการทดแทนค่าสูญหายแบบปกติแล้ว ผู้วิเคราะห์ยังสามารถใช้โมเดลการเรียนรู้แบบที่มีการชี้นำบางส่วน (semi-supervised learning) เพื่อทดแทนค่าสูญหายในตัวแปรตามได้ (จะกล่าวถึงภายหลังในคอสนี้) เนื้อหาในบทเรียนนี้จะกล่าวถึงในกรณีที่ึค่าสูญหายเกิดขึ้นในตัวแปรอิสระเป็นหลักก่อน</p>
 </section>
-<section id="ผลงานทางวชาการ" class="level3">
-<h3 class="anchored" data-anchor-id="ผลงานทางวชาการ">ผลงานทางวิชาการ</h3>
-<p>Panidvadtana, P., Sujiva, S., &amp; Srisuttiyakorn, S. (2021). A Comparison of the Accuracy of Multidimensional IRT equating methods for Mixed-Format Tests, Kasetsart Journal of Social Sciences, 42, 215-220. (Scopus)</p>
-<p>สิวะโชติ ศรีสุทธิยากร. (2562). ความเหลื่อมล้ำทางการศึกษาและปัจจัยที่ส่งผล : การวิเคราะห์พหุระดับร่วมกับดัชนีเอ็นโทรปีนัยทั่วไปที่อิงมัธยฐาน. วารสารวิธีวิทยาการวิจัย. 32(3), 342-379. (TCI1)</p>
-<p>วรรณี แกมเกตุ, ดวงกมล ไตรวิจิตรคุณ, สิวะโชติ ศรีสุทธิยากร, เมษา นวลศรี, กษิดิศ ครุฑางคะ&nbsp; และภานุวัฒน์ เข็มกลัด. (2562). รายงานการติดตามและประเมินผลการดำเนินงานตามแผนการศึกษาแห่งชาติ พ.ศ. 2560-2579 : ช่วงปี พ.ศ. 2560-2562. สำนักงานเลขาธิการสภาการศึกษา กระทรวงศึกษาธิการ.</p>
-<p>กนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)</p>
-</section>
-<section id="หนงสอ" class="level3">
-<h3 class="anchored" data-anchor-id="หนงสอ">หนังสือ</h3>
-<p>สิวะโชติ ศรีสุทธิยากร. (2564). สถิติและวิทยาการข้อมูลทางการศึกษา : R สำหรับจัดระเบียบและจัดกระทำข้อมูล. กรุงเทพมหานคร : คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย. สืบค้นจาก <a href="https://m.chulabook.com/th/product-details/120204" class="uri">https://m.chulabook.com/th/product-details/120204</a>&nbsp;</p>
+<section id="ประเภทของคาสญหาย" class="level1">
+<h1>ประเภทของค่าสูญหาย</h1>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -318,18 +315,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./syllabus-th-PDF-2758688.PDF" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Syllabus</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./index.html" class="pagination-link">
-        <span class="nav-page-text">Schedule</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
