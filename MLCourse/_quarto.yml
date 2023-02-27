@@ -42,7 +42,18 @@ website:
           - href: index.qmd
             text: Schedule
 
-         
+      - section: "เนื้อหารายสัปดาห์"
+        contents:
+          - href: documents/01basicConcepts.html
+            text: Wk01 Intro to ML
+          - href: documents/02MLProcess.html
+            text: Wk02 ML Process
+          - href: documents/03TreeModels.html
+            text: Wk03 Decision Trees  
+          - href: documents/04Regularization.html
+            text: Wk04 Regularization
+          - href: documents/05RandomForest.html
+            text: Wk05 Random Forest            
 format:
   html:
     theme: 
