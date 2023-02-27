@@ -1,0 +1,82 @@
+# การบ้าน 2
+
+## การพัฒนา regression model ด้วย tidymodel framework
+
+1.  นำเข้าข้อมูลจากไฟล์ [`TeacherSalaryData.csv`](https://github.com/ssiwacho/2758688_ML/blob/main/week%201/TeacherSalaryData.csv)
+2.  สำรวจข้อมูลจากชุดข้อมูลดังกล่าว แล้วตอบคำถาม
+    -   ชุดข้อมูลนี้มีตัวแปรทั้งหมดกี่ตัว
+
+    -   มีหน่วยข้อมูลทั้งหมดกี่หน่วย
+
+    -   หาค่าสถิติพื้นฐานของตัวแปรเชิงปริมาณในชุดข้อมูล
+
+    -   อาจารย์มหาวิทยาลัยส่วนใหญ่มีตำแหน่งวิชาการอะไร
+3.  แบ่งส่วนข้อมูลที่นำเข้าออกเป็นสองส่วน ได้แก่ training และ test dataset โดยกำหนดให้สัดส่วนระหว่างชุดข้อมูลทั้งหมดเป็น 80 : 20
+4.  กำหนดให้ตัวแปรตามคือ `salary` (เงินเดือนของอาจารย์มหาวิทยาลัย) ลองพัฒนา supervised learning model 2 โมเดล โดยตัวแรกให้ใช้ linear regression model ที่ใช้ lm เป็น engine และตัวที่สองให้ใช้ decision tree ที่ใช้ rpart เป็น engine ทั้งนี้ให้ใช้ตัวแปรอิสระทุกตัวในชุดข้อมูลเป็นตัวแปรทำนาย
+5.  เปรียบเทียบประสิทธิภาพในการทำนายของโมเดลทั้งสอง ผลที่ได้เป็นอย่างไร
+
+```{r fig.height=9, echo=F, eval=F}
+dat<-read.csv("https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv")
+dat<-dat[,-1]
+str(dat)
+hist(dat$salary)
+library(tidymodels)
+## data partition
+par<-initial_split(data= dat, prop=0.8, strata = salary, breaks=10)
+train<-par%>%training()
+test<-par%>%testing()
+
+## model specification
+### regression model
+reg <- linear_reg()%>%
+                set_engine("lm")%>%
+                  set_mode("regression")
+
+tree<-decision_tree()%>%
+        set_engine("rpart")%>%
+                  set_mode("regression")
+
+rf<-rand_forest()%>%
+        set_engine("ranger")%>%
+                  set_mode("regression")
+
+## processing
+fit_reg <- reg %>% fit(log(salary) ~. ,data = train)
+fit_tree<-tree %>% fit(log(salary) ~. ,data = train)
+fit_rf<-tree %>% fit(log(salary) ~. ,data = train)
+
+## prediction
+pred_reg<-predict(fit_reg, new_data = test)
+pred_tree<-predict(fit_tree, new_data=test)
+pred_rf<-predict(fit_rf, new_data=test)
+test<-test%>%bind_cols(pred_reg, pred_tree, pred_rf)
+names(test)[7:9]<-c("pred_reg","pred_tree","pred_rf")
+head(test)
+
+## evaluation
+
+test %>% rmse(truth=salary, estimate=exp(pred_reg))
+test %>% rmse(truth=salary,  estimate=exp(pred_tree))
+test %>% rmse(truth=salary,  estimate=exp(pred_rf))
+
+test %>% rsq(truth=salary, estimate=exp(pred_reg))
+test %>% rsq(truth=salary, estimate=exp(pred_tree))
+test %>% rsq(truth=salary,  estimate=exp(pred_rf))
+
+p1<-test %>% ggplot()+
+  geom_point(aes(x=salary, y=exp(pred_reg)))+
+  geom_abline(intercept=0, slope=1)
+
+p2<-test %>% ggplot()+
+  geom_point(aes(x=salary, y=exp(pred_tree)))+
+    geom_abline(intercept=0, slope=1)
+
+p3<-test %>% ggplot()+
+  geom_point(aes(x=salary, y=exp(pred_rf)))+
+    geom_abline(intercept=0, slope=1)
+
+grid.arrange(p1,p2,p3, nrow=3)
+
+```
+
+## 

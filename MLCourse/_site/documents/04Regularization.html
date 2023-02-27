@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+
+<title>2758688 ML PRIN APPLN - Regularization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta property="og:title" content="2758688 ML PRIN APPLN - Regularization">
+<meta property="og:description" content="Linear regression เป็นโมเดลทำนายที่มีจุดเด่นคือเป็นโมเดลอย่างง่ายที่นอกจากจะใช้ทำนายแนวโน้มของตัวแปรอิสระได้แล้ว…">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Regularization</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://cmgr.oit.duke.edu/containers" title="RStudio Containers" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
+    <a href="" title="Sakai" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/13b6446a-a6c6-4222-8cfb-c36d1f70802b">
+          Discussion forum
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/page/aec742dc-2972-4f02-a35b-1dd3315af889">
+          Gradescope
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/69078433-67a6-4054-a2e7-9e6c202ecdc3/">
+          Gradebook
+          </a>
+        </li>
+    </ul>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-overview.qmd" class="sidebar-item-text sidebar-link">Overview</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-syllabus.qmd" class="sidebar-item-text sidebar-link">Syllabus</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-team.qmd" class="sidebar-item-text sidebar-link">Teaching team</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-links.qmd" class="sidebar-item-text sidebar-link">Useful links</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-faq.qmd" class="sidebar-item-text sidebar-link">FAQ</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Weekly materials</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-1.qmd" class="sidebar-item-text sidebar-link">Week 1</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-2.qmd" class="sidebar-item-text sidebar-link">Week 2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-3.qmd" class="sidebar-item-text sidebar-link">Week 3</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-4.qmd" class="sidebar-item-text sidebar-link">Week 4</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-5.qmd" class="sidebar-item-text sidebar-link">Week 5</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">สารบัญ</h2>
+   
+  <ul>
+  <li><a href="#บทท-6-regularized-regression" id="toc-บทท-6-regularized-regression" class="nav-link active" data-scroll-target="#บทท-6-regularized-regression">บทที่ 6 : Regularized Regression</a>
+  <ul class="collapse">
+  <li><a href="#มโนทศนสำคญของ-regularized-regression" id="toc-มโนทศนสำคญของ-regularized-regression" class="nav-link" data-scroll-target="#มโนทศนสำคญของ-regularized-regression">6.1 มโนทัศน์สำคัญของ regularized regression</a></li>
+  <li><a href="#ประเภทของ-regularization" id="toc-ประเภทของ-regularization" class="nav-link" data-scroll-target="#ประเภทของ-regularization">6.2 ประเภทของ Regularization</a>
+  <ul class="collapse">
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression">Ridge Regression</a></li>
+  <li><a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression">Lasso Regression</a></li>
+  <li><a href="#elastic-net-regression" id="toc-elastic-net-regression" class="nav-link" data-scroll-target="#elastic-net-regression">Elastic-Net Regression</a></li>
+  </ul></li>
+  <li><a href="#implement-regularized-regression-using-tidymodels" id="toc-implement-regularized-regression-using-tidymodels" class="nav-link" data-scroll-target="#implement-regularized-regression-using-tidymodels">6.3 Implement regularized regression using tidymodels</a>
+  <ul class="collapse">
+  <li><a href="#โมเดลทำนายเงนเดอนคร" id="toc-โมเดลทำนายเงนเดอนคร" class="nav-link" data-scroll-target="#โมเดลทำนายเงนเดอนคร">โมเดลทำนายเงินเดือนครู</a></li>
+  <li><a href="#ตวอยางการสราง-workflow-เพอทำ-hyperparameter-tuning-ridge-regression" id="toc-ตวอยางการสราง-workflow-เพอทำ-hyperparameter-tuning-ridge-regression" class="nav-link" data-scroll-target="#ตวอยางการสราง-workflow-เพอทำ-hyperparameter-tuning-ridge-regression">ตัวอย่างการสร้าง workflow เพื่อทำ hyperparameter tuning : Ridge Regression</a></li>
+  </ul></li>
+  <li><a href="#tuning-and-comparing-models" id="toc-tuning-and-comparing-models" class="nav-link" data-scroll-target="#tuning-and-comparing-models">6.4 Tuning and Comparing Models</a>
+  <ul class="collapse">
+  <li><a href="#model-specification" id="toc-model-specification" class="nav-link" data-scroll-target="#model-specification">Model Specification</a></li>
+  <li><a href="#สราง-workflowset-และวเคราะห-hyperparemeters" id="toc-สราง-workflowset-และวเคราะห-hyperparemeters" class="nav-link" data-scroll-target="#สราง-workflowset-และวเคราะห-hyperparemeters">สร้าง workflowset และวิเคราะห์ hyperparemeters</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Regularization</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<section id="บทท-6-regularized-regression" class="level1">
+<h1>บทที่ 6 : Regularized Regression</h1>
+<p>Linear regression เป็นโมเดลทำนายที่มีจุดเด่นคือเป็นโมเดลอย่างง่ายที่นอกจากจะใช้ทำนายแนวโน้มของตัวแปรอิสระได้แล้ว ยังสามารถใช้ในการอธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระได้ง่ายและชัดเจนกว่าการใช้โมเดลการเรียนรู้อื่น ๆ อย่างไรก็ตามการใช้งาน linear regression นั้นอยู่ภายใต้ข้อจำกัดหรือข้อตกลงเบื้องต้นที่เคร่งครัดหลายตัว ซึ่งหากข้อตกลงเบื้องต้นดังกล่าวไม่เป็นจริงแล้วการทำนายหรือการอธิบายความสัมพันธ์ด้วย linear regression ก็อาจจะมีปัญหาและขาดความน่าเชื่อถือ</p>
+<p>บทเรียนนี้จะ focus ไปที่ปัญหาหนึ่งที่สำคัญและเกิดขึ้นบ่อยในการพัฒนาโมเดลทำนายทั้งใน linear regression และอัลกอริทึมอื่น ๆ คือการที่โมเดลทำนายมีจำนวนตัวแปรอิสระหรือเทอมของตัวแปรอิสระมากเกินไป สถานการณ์ดังกล่าวอาจก่อให้เกิดปัญหาในเชิงเทคนิคหลายประการ ดังนี้</p>
+<ol type="1">
+<li>overfitting model กล่าวคือการมีตัวแปรอิสระหรือเทอมของตัวแปรอิสระ เช่น เทอมพหุนาม (polynomial) หรือเทอมปฏิสัมพันธ์ (interaction) จำนวนมากเกินไปภายในโมเดล ย่อมทำให้โมเดลเรียนรู้ความสัมพันธ์ในชุดข้อมูลฝึกหัดดีเกินไป และก่อให้เกิดปัญหา overfitting ได้</li>
+<li>infinite solution ปัญหานี้เป็นปัญหาเชิงเทคนิค กล่าวคือผู้วิเคราะห์มีจำนวนตัวแปรอิสระหรือเทอมของตัวแปรอิสระ (จำนวนคอลัมน์) ที่ต้องการนำเข้าสู่โมเดลมากกว่าจำนวนหน่วยข้อมูล (จำนวนแถว) สถานการณ์ดังกล่าวทำให้ไม่สามารถหาคำตอบเดียวของค่าประมาณพารามิเตอร์ภายในโมเดลทำนายได้</li>
+<li>multicollinearity ปัญหานี้เป็นปัญหาในเชิงเทคนิคที่เกิดขึ้นเมื่อผู้วิเคราะห์มีตัวแปรอิสระจำนวนมากในโมเดล โดยที่ตัวแปรอิสระดังกล่าวมีความซ้ำซ้อนกัน (redundant) กล่าวคือมีความสัมพันธ์ซึ่งกันและกันเองสูงเกินไป สถานการณ์เช่นนี้จะทำให้การประมาณค่าพารามิเตอร์ในโมเดลมีแนวโน้มที่จะไม่เสถียร (unstable solution) ส่งผลให้โมเดลทำนายที่ได้มีความไม่เสถียรตามไปด้วย โมเดลทำนายที่ได้จากสถานการณ์ดังกล่าวจึงจะขาดความน่าเชื่อถือ</li>
+</ol>
+<p>ในบทที่ 6 เราได้กล่าวถึงการคัดเลือกตัวแปรอิสระเข้าสู่โมเดลด้วยวิธีในกลุ่ม wrapper method ซึ่งผู้อ่านจะเห็นว่าวิธีการดังกล่าวนั้นมีข้อจำกัดสำคัญคือ เป็นวิธีที่ใช้ข้อมูลจากชุดข้อมูลฝึกหัดในการคัดเลือกตัวแปรอิสระแต่เพียงอย่างเดียว ซึ่งอาจทำให้มีความเสี่ยงสูงที่การพัฒนาโมเดลทำนายภายใต้ผลการคัดเลือกตัวแปรอิสระดังกล่าวจะมีปัญหา overfitting ตามมา บทเรียนนี้จะกล่าวถึงเทคนิค regularization ที่สามารถทำมาใช้เพื่อแก้ปัญหาดังกล่าว ปัจจุบันมีการนำเทคนิคนี้ไปใช้ในหลายโมเดลทั้ง linear regression, decision tree ไปจนถึง neural network โดยในบทเรียนนี้จะกล่าวถึงมโนทัศน์สำคัญของการทำ regularization และการนำเทคนิค regularization ไปใช้ในอัลกอริทึม linear regression รายละเอียดมีดังนี้</p>
+<section id="มโนทศนสำคญของ-regularized-regression" class="level2">
+<h2 class="anchored" data-anchor-id="มโนทศนสำคญของ-regularized-regression">6.1 มโนทัศน์สำคัญของ regularized regression</h2>
+<p>concept ของ regularization เป็นเรื่องเกี่ยวกับการปรับสมดุลของโมเดลทำนายเพื่อลดทอนหรือแก้ปัญหา overfitting และ/หรือ ปัญหาตัวอย่างอิสระ สำหรับโมเดล linear regression การปรับสมดุลดังกล่าวจะเป็นการปรับค่าสัมประสิทธิความชันของสมการถดถอยให้น้อยลงเพื่อ<strong>ลดหรือลบ</strong>ผลกระทบของตัวแปรอิสระบางตัวออกจากโมเดลอย่างเหมาะสม</p>
+<p>เพื่อให้ผู้อ่านเห็นภาพและเข้าใจมโนทัศน์ของ regularization ได้อย่างชัดเจน อยากให้ผู้อ่านลองพิจารณาตัวอย่างง่าย ๆ ต่อไปนี้</p>
+<p>สมมุติว่าผู้วิเคราะห์ต้องการสร้างโมเดลทำนายคะแนนผลสัมฤทธิ์ทางการเรียนของนักเรียน (ACH) โดยใช้จำนวนชั่วโมงการทบทวนบทเรียนต่อสัปดาห์ของนักเรียน (HOUR) เป็นตัวแปรทำนาย แผนภาพการกระจายด้านล่าง (พิจารณาเฉพาะจุด) จะเห็นว่าความสัมพันธ์ระหว่างตัวแปรทั้งสองมีลักษณะเป็นความสัมพันธ์เชิงเส้น (linear relationship) ที่ค่อนข้างชัดเจน ในกรณีนี้ผู้วิเคราะห์จึงเลือกใช้อัลกอริทึม linear regression เป็นอัลกอริทึมการเรียนรู้ เพื่อสร้างโมเดลทำนายที่ต้องการ</p>
+<p>การสร้างโมเดลทำนายด้วย linear regression อัลกอริทึมจะพยายามหาสมการเส้นตรงที่ดีที่สุด โดยการคัดเลือกชุดของสัมประสิทธิ์การถดถอย (จุดตัดแกน y และความชัน) ที่ทำให้ฟังก์ชันวัตถุประสงค์ (objective function) มีค่าสูงหรือต่ำที่สุด โดยทั่วไปฟังก์ชันวัตถุประสงค์มักใช้เป็น sum squared error (SSE) การหาค่าประมาณของสัมประสิทธิ์ถดถอยดังกล่าวจึงเป็นการหาค่าที่ทำให้ SSE มีค่าต่ำที่สุด</p>
+<p>การหาค่าประมาณพารามิเตอร์ดังกล่าวสามารถทำได้หลายวิธีการ วิธีการแรกที่มักใช้กันในฝั่ง data analysis คือการใช้การ optimization ด้วย first และ second order derivative (ใช้ขั้นตอนวิธีของ calculas) ในโมเดล linear regression ทั่วไปวิธีการนี้สามารถให้สูตรปิดของการหาค่าประมาณสัมประสิทธิ์การถดถอยดังกล่าวได้ อีกวิธีการหนึ่งคือการใช้อัลกอริทึมเชิงตัวเลข (numerical algorithm) เรียกว่า gradient descent หรือ stochastic gradient descent ซึ่งเป็นกระบวนการทวนซ้ำเพื่อหาชุดของสัมประสิทธิ์การถดถอยที่เหมาะสมที่สุดโดยอิงจากค่าของฟังก์ชันวัตถุประสงค์ที่กำหนด</p>
+<p>เมื่อกำหนดให้ข้อตกลงเบื้องต้นอื่น ๆ ของ linear regression เป็นจริง และตัวแปรอิสระที่เลือกเข้าสู่โมเดลเป็นตัวแปรอิสระที่มีคุณภาพ กล่าวคือ (1) ให้สารสนเทศในการทำนายตัวแปรตาม และ (2) ไม่ซ้ำซ้อนกันเองกับตัวแปรอิสระอื่น ๆ โมเดลทำนายที่ได้จากอัลกอริทีมจะมีคุณสมบัติที่ดีในทางสถิติกล่าวคือมีความไม่ลำเอียงและมีความแปรปรวนต่ำที่สุด หนังสือสถิติจะเขียนว่าตัวประมาณที่ได้จาก OLS regression เป็นตัวประมาณ BLUE ซึ่งย่อมาจาก Best Linear Unbised Estimator (สามารถพิสูจน์ได้โดยใช้ Gauss-Markov Theorem)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-676691868.png" class="img-fluid figure-img" style="width:70.0%" alt="Least Squared Regression"></p>
+<p></p><figcaption class="figure-caption">Least Squared Regression</figcaption><p></p>
+</figure>
+</div>
+<p>โดยปกติ linear regression เป็นโมเดลที่ง่ายที่สุดสำหรับทำนาย กล่าวคือเป็นโมเดลที่มีแนวโน้มจะมีประสิทธิภาพในการทำนายที่ไม่สูงมากนัก แต่จุดเด่นคือมีความยืดหยุ่นในการนำไปใช้ทำนายชุดข้อมูลอื่นนอกเหนือจากชุดข้อมูลฝึกหัดสูง linear regression อย่างไรก็ตามหากหากชุดข้อมูลฝึกหัดไม่ได้เป็นตัวแทนที่ดีของประชากร หรือในขั้นตอนของการพัฒนาโมเดลผู้วิเคราะห์มีการใส่ตัวแปรอิสระหรือเทอมของตัวแปรทำนาย เช่น polynomial หรือ interaction terms ที่ไม่ให้สารสนเทศจำนวนมากเข้าไปในโมเดล สถานการณ์เช่นนี้มักเพิ่มโอกาสที่โมเดลจะเกิดปัญหา overfitting ซึ่งทำให้โมเดลทำนายที่พัฒนาได้นั้นไม่สามารถทำนายชุดข้อมูลทดสอบหรือข้อมูลอื่น ๆ ที่อยู่นอกเหนือชุดข้อมูลฝึกหัดได้อย่างมีประสิทธิภาพ</p>
+<p>รูปด้านล่างแสดงสภาพของปัญหา overfitting ที่เกิดขึ้นในโมเดลทำนาย ACH ด้วย HOUR ดังกล่าว จากรูปเมื่อพิจารณาจุดและเส้นโมเดลทำนาย (สีเขียว) จะพบว่าโมเดลเรียนรู้ความสัมพันธ์ระหว่างตัวแปรทั้งสองในชุดข้อมูลฝึกหัดได้ดี แต่เมื่อนำโมเดลดังกล่าวไปใช้ทำนาย ACH ในชุดข้อมูลทดสอบจะพบว่า สมการทำนายเส้นสีเขียวกลายเป็นสมการที่ไม่เหมาะสมในกรณีทั่วไป โดยจะให้ค่าความคลาดเคลื่อนในการทำนาย (SSE) ของชุดข้อมูลทดสอบที่สูงมากกว่า SSE ในชุดข้อมูลฝึกหัดค่อนข้างมาก เส้นสมการทำนายที่เหมาะสมควรเป็นสมการเส้นสีเทาในรูปมากกว่า</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-849757700.png" class="img-fluid figure-img" alt="ปัญหา overfitting"></p>
+<p></p><figcaption class="figure-caption">ปัญหา overfitting</figcaption><p></p>
+</figure>
+</div>
+<p>การแก้ปัญหาดังกล่าวผู้วิเคราะห์จะต้องปรับแต่งโมเดลการทำนายใหม่ให้มีความสมดุลในการทำนายชุดข้อมูลที่ไม่รู้จักได้มากขึ้น เทคนิค regularization ถูกพัฒนาขึ้นเพื่อใช้สำหรับการปรับแต่งโมเดลทำนายดังกล่าว คำถามคือการปรับแต่งโมเดลทำนายนั้นควรดำเนินการอย่างไร?</p>
+<p>รูปด้านล่างแสดงแนวคิดหลักของ regularization จากรูปจะเห็นว่าโมเดลทำนายเส้นสีเขียวนั้นเกิดปัญหา overfitting ขึ้นกล่าวคือ โมเดลทำนายดังกล่าวเรียนรู้ความสัมพันธ์ในชุดข้อมูลฝึกหัด (จุดสีเขียว) ได้ดีมากเกินไป กล่าวคือโมเดลทำนายนี้มีความแปรปรวนสูงมากเกินไปนั่นเอง จากมโนทัศน์เกี่ยวกับ bias &amp; variance trace-off เราทราบว่าความลำเอียงกับความแปรปรวนของโมเดลทำนายนั้นมีความสัมพันธ์ที่ผกผันกัน โดยโมเดลที่มีความลำเอียงต่ำมีแนวโน้มที่จะมีความแปรปรวนสูง ในทางกลับกันโมเดลที่มีความลำเอียงสูงก็มีแนวโน้มที่จะมีความแปรปรวนต่ำ ดังนั้นจากความสัมพันธ์นี้หากผู้วิเคราะห์มีโมเดลทำนายที่มีความแปรปรวนสูง ผู้วิเคราะห์อาจปรับแต่งโมเดลทำนายดังกล่าวให้มีความแปรปรวนต่ำลงได้ด้วยการเพิ่มความลำเอียงให้กับโมเดลทำนายดังกล่าวอย่างเหมาะสม ดังตัวอย่างในรูป (b) ด้านล่าง</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-343319787.png" class="img-fluid figure-img" alt="main idea ของ regularization"></p>
+<p></p><figcaption class="figure-caption">main idea ของ regularization</figcaption><p></p>
+</figure>
+</div>
+<p>สำหรับ linear regression สามารถใส่ความลำเอียงให้กับโมเดลทำนายได้ในขั้นตอนของการหาค่าประมาณพารามิเตอร์ของโมเดล โดยปรับสูตรของฟังก์ชันวัตถุประสงค์ใหม่จากเดิม <span class="math inline">\(SSE = \sum_{i=1}^n(y_i-\hat{y}_i)^2\)</span> เป็น</p>
+<p><span class="math display">\[
+SSE_{reg}=\sum_{i=1}^n(y_i-\hat{y}_i)^2 + P = SSE + P
+\]</span></p>
+<p>เรียกเทอม <span class="math inline">\(P\)</span> ในสมการข้างต้นว่า penality term หนังสือบางเล่มเลยอาจใช้ชื่อ penalized regression แทน regularized regression ผู้อ่านลองสังเกตการบวกเทอม <span class="math inline">\(P\)</span> ดังกล่าวในฟังก์ชันวัตถุประสงค์ โดยจะเห็นว่าเมื่อ <span class="math inline">\(P&gt;0\)</span> จะทำให้ค่า <span class="math inline">\(SSE_{reg} &gt; SSE\)</span> ซึ่งเป็นการทำให้ค่าประมาณพารามิเตอร์ได้แก่ สัมประสิทธิจุดตัดแกน และความชันในโมเดลทำนายนั้น มีแนวโน้มที่มีความลำเอียงมากกว่าโมเดลทำนายที่ไม่ได้ใส่ penalty term ดังกล่าว ซึ่งหากใส่อย่างเหมาะสมจะช่วยลดความแปรปรวนของโมเดลทำนายได้อย่างที่ได้กล่าวไปแล้ว</p>
+<p>ค่า<span class="math inline">\(P\)</span> ดังกล่าวไม่ใช่พารามิเตอร์ที่สามารถประมาณได้โดยตรงจากข้อมูล กล่าวคือเป็น hyperparameter ที่ต้องกำหนดโดยผู้วิเคราะห์ก่อนที่จะดำเนินการประมาณค่าพารามิเตอร์ของโมเดล <strong>คำถามใหญ่ของการทำ regularization จึงเกิดขึ้นว่า</strong> <strong>การกำหนดค่า</strong> <span class="math inline">\(P\)</span> <strong>ดังกล่าวให้เหมาะสมควรดำเนินการอย่างไร?</strong></p>
+<p>แนวคิด regularization ดังกล่าวสามารถนำไปประยุกต์ใช้กับอัลกอริทึมการเรียนรู้ได้อีกหลายตัว เช่น ใน regularized logistic regression ฟังก์ชันวัตถุประสงค์จะสามารถเขียนได้เป็น <span class="math inline">\(lnL + P\)</span> เมื่อ <span class="math inline">\(lnL\)</span> คือ log-likelihood function ของโมเดล หรือใน decision tree (มักเรียกว่า pruning tree) ฟังก์ชันวัตถุประสงค์จะเขียนได้เป็น <span class="math inline">\(R_{reg}(T) = R(T) + \alpha|T|\)</span> โดยที่ <span class="math inline">\(R(T)\)</span> คือ training error ของ decision tree ที่มีจำนวน terminal nodes เท่ากับ <span class="math inline">\(T\)</span> และจะเรียก <span class="math inline">\(\alpha\)</span> ว่า cost complexity hyperparameter</p>
+</section>
+<section id="ประเภทของ-regularization" class="level2">
+<h2 class="anchored" data-anchor-id="ประเภทของ-regularization">6.2 ประเภทของ Regularization</h2>
+<p>การกำหนดค่า <span class="math inline">\(P\)</span> ให้กับฟังก์ชันวัตถุประสงค์ในข้างต้นอาจดำเนินการโดยจำแนกได้เป็น 3 วิธี ดังนี้</p>
+<ol type="1">
+<li>Ridge regression</li>
+<li>Lasso regression</li>
+<li>Elastic-Net regression</li>
+</ol>
+<section id="ridge-regression" class="level3">
+<h3 class="anchored" data-anchor-id="ridge-regression">Ridge Regression</h3>
+<p>ฟังก์ชันวัตถุประสงค์ของ regularized regression ประเภท ridge regression สามารถเขียนได้ดังนี้</p>
+<p><span class="math display">\[
+SSE_{ridge} = SSE+\lambda\sum_{j=1}^kb_j^2
+\]</span></p>
+<p>จากสมการข้างต้นจะเห็นว่า <span class="math inline">\(P = \lambda\sum_{j=1}^kb_j^2\)</span> คือ penalty term ในกรณีนี้จะเรียกว่า ridge regression penalty หรือหนังสือบางเล่มอาจจะเรียกว่า L2 norm การกำหนด penalty term ดังกล่าวทำให้เกิดผลอย่างไรต่อการพัฒนาโมเดลทำนาย สามารถทำความเข้าใจง่าย ๆ ได้จากการพิสูจน์ด้านล่าง ผู้อ่านจะเห็นว่าตัวประมาณของสัมประสิทธิ์การถดถอยใน ridge regression จะมีเทอม <span class="math inline">\(\lambda\)</span> เพิ่มเข้ามาในเทอมตัวหาร เมื่อเปรียบเทียบกับ linear regression แบบ OLS ธรรมดา ผู้อ่านจะเห็นได้อย่างชัดเจนว่าเมื่อ <span class="math inline">\(\lambda = 0\)</span> ค่าประมาณของสัมประสิทธิ์ความชันจากทั้งสองวิธีการจะเท่ากัน แต่เมื่อกำหนดให้ <span class="math inline">\(\lambda&gt;0\)</span> ค่าประมาณของสัมประสิทธิ์ความชันที่ได้จาก ridge regression จะมีแนวโน้มที่ลดลงต่ำกว่า ols regression อย่างไรก็ตามหากลองพิจารณา <span class="math inline">\(lim_{\lambda \rightarrow \infty}\frac{\sum x_iy_i}{\sum x_i^2+\lambda}\)</span> จะพบว่าค่าสัมประสิทธิ์ความชันของ ridge regression จะมีค่าลู่เข้าใกล้ 0 แต่จะไม่เท่ากับ 0</p>
+<p><img src="images/image-75951276.png" class="img-fluid"></p>
+<p>จากผลในข้างต้นจะเห็นว่า ridge regression เป็นเทคนิคที่ช่วยปรับขนาดของสัมประสิทธิ์ความชันของตัวแปรอิสระในโมเดลให้มีค่าลดลง แต่จะไม่ได้ทำให้เป็น 0 ดังนั้นตัวแปรอิสระทั้งหมดที่ผู้วิเคราะห์นำเข้าในอัลกอริทึมตอนแรกนั้นจะอยู่ในโมเดลทำนายครบทุกตัว แต่จะถูกปรับลดขนาดของค่าสัมประสิทธิ์ความชันลง ดังนั้น ridge regression จึงไม่ใช่เทคนิคสำหรับคัดเลือกตัวแปรอิสระ แต่เป็นเทคนิคที่เหมาะสำหรับแก้ปัญหา multicollinearity มากกว่า ดังนั้น ridge regression จึงเหมาะที่จะใช้ในสถานการณ์ที่ผู้วิเคราะห์มีตัวแปรอิสระจำนวนมากและตัวแปรดังกล่าวมีความสัมพันธ์กันเองสูงหรือมีความซ้ำซ้อนกัน แต่ผู้วิเคราะห์ไม่ต้องการที่จะตัดตัวแปรอิสระตัวใดออกจากโมเดลทำนาย อัลกอริทึม ridge regression จะช่วยให้ผู้วิเคราะห์สามารถสร้างโมเดลทำนายที่มีตัวแปรอิสระทั้งหมดอยู่ภายในโมเดลโดยหลีกเลี่ยงหรือลดทอนผลกระทบที่เกิดจากปัญหา multicollinearity ได้</p>
+<p>ข้อสังเกตหนึ่งคือถึงแม้ว่าในชุดข้อมูลของผู้วิเคราะห์จะมีตัวแปรอิสระที่ไม่ให้สารสนเทศในการทำนายอยู่ด้วย แต่ ridge regression ก็จะไม่ได้ตัดตัวแปรอิสระดังกล่าวออกจากโมเดล ภายใต้สถานการณ์ดังกล่าวการใช้อัลกอริทึม ridge regression ก็จะไม่เหมาะสมควรเปลี่ยนไปใช้ lasso หรือ elastic-net regression มากกว่า</p>
+</section>
+<section id="lasso-regression" class="level3">
+<h3 class="anchored" data-anchor-id="lasso-regression">Lasso Regression</h3>
+<p>Lasso regression เป็นอัลกอริทึมที่ถูกพัฒนาขึ้นโดยมีวัตถุประสงค์หลักคือการคัดเลือกตัวแปรอิสระ (feature selection) เข้าสู่โมเดลทำนาย อัลกอริทึมนี้เป็น feature selection ที่จัดอยู่ในกลุ่ม embedded method กล่าวคือเป็นอัลกอริทึมการเรียนรู้ที่มีอัลกอริทึมของการคัดเลือกตัวแปรอิสระรวมอยู่ในขั้นตอนการประมาณค่าพารามิเตอร์ของโมเดล หลักการของ lasso regression เหมือนกับ ridge regression แต่มีการใช้ penalty term ในฟังก์ชันวัตถุประสงค์ที่แตกต่างออกไปดังนี้</p>
+<p><span class="math display">\[
+SSE_{lasso} = SSE+\lambda\sum_{j=1}^k |b_j|
+\]</span></p>
+<p>จะเห็นว่ามีการเปลี่ยนแปลงจากการใช้ฟังก์ชันกำลังสองเป็นค่าสมบูรณ์ใน penalty term ผลกระทบที่เกิดขึ้นกับโมเดลทำนายเมื่อใช้ penalty term ดังกล่าวสามารถอธิบายได้โดยใช้การพิสูจน์ง่าย ๆ ด้านล่าง ผู้อ่านจะเห็นว่าตัวประมาณของสัมประสิทธิ์ความชันในโมเดลทำนายมีรูปแบบที่เปลี่ยนแปลงไปจาก ridge regression โดยเทอม <span class="math inline">\(\lambda\)</span> ไม่ได้อยู่ในส่วนของตัวเศษแล้ว แต่ขึ้นมาอยู่ที่ตัวเศษแทน ดังนั้นการกำหนด <span class="math inline">\(\lambda\)</span> ที่เหมาะสมจึงสามารถทำให้ค่าสัมประสิทธิ์ความชันดังกล่าวมีค่าเท่ากับ 0 ได้ ซึ่งหมายถึงการตัดตัวแปรอิสระดังกล่าวออกจากโมเดลทำนาย ด้วยหลักการดังกล่าวอัลกอริทึม lasso regression จึงสามารถคัดเลือกตัวแปรอิสระเข้าสู่โมเดลได้ด้วยการกำหนดค่า <span class="math inline">\(\lambda\)</span> ดังกล่าว</p>
+<p><img src="images/image-1836348765.png" class="img-fluid" style="width:50.0%"></p>
+</section>
+<section id="elastic-net-regression" class="level3">
+<h3 class="anchored" data-anchor-id="elastic-net-regression">Elastic-Net Regression</h3>
+<p>อัลกอริทึมนี้เป็นการผสมกันระหว่าง ridge และ lasso regression จึงเป็นอัลกอริทึมที่สามารถใช้ทั้งแก้ปัญหา multicollineatiry และคัดเลือกตัวแปรอิสระไปพร้อม ๆ กัน ฟังก์ชันวัตถุประสงค์ของ elastic-net regression เป็นดังนี้</p>
+<p><span class="math display">\[
+SSE_{elasticnet}=SSE+(1-\alpha)\lambda_1\sum_{j=1}^kb_j^2+\alpha\lambda_2\sum_{j=1}^k|b_j|
+\]</span></p>
+<p>โดยที่ <span class="math inline">\(\alpha\)</span> เรียกว่า mixing parameter ซึ่งมีค่าที่เป็นไปได้อยู่บนช่วง 0 ถึง 1 ทำหน้าที่สำหรับกำหนดน้ำหนักให้กับ penalty term ทั้งสอง</p>
+<p><span class="math inline">\(\lambda\)</span> และ <span class="math inline">\(\alpha\)</span> ที่อยู่ในฟังก์ชันวัตถุประสงค์ของอัลกอริทึมทั้ง 3 ตัวเป็น hyperparameters ของอัลกอริทึม กล่าวคือผู้วิเคราะห์จะต้องกำหนดค่าของพารามิเตอร์ทั้งสองเอง ในทางปฏิบัติผู้วิเคราะห์สามารถปรับแต่งค่า hyperparameters ดังกล่าวได้โดยใช้ตัวอย่างที่ได้จากการสุ่มซ้ำ เช่น cross-validation หรือ bootstraping ในทำนองเดียวกับการปรับแต่ง hyperparameter ของ decision tree ที่กล่าวถึงในบทที่ 5</p>
+</section>
+</section>
+<section id="implement-regularized-regression-using-tidymodels" class="level2">
+<h2 class="anchored" data-anchor-id="implement-regularized-regression-using-tidymodels">6.3 Implement regularized regression using tidymodels</h2>
+<p>การพัฒนาโมเดลทำนายโดยใช้การทำ regularization ใน R สามารถทำได้หลายวิธี เช่น การใช้ฟังก์ชัน <code>cv.glmnet()</code> ของ package glmnet หรือการใช้ <code>tuneGrid()</code> ใน package caret ในหัวข้อนี้จะกล่าวถึงการพัฒนาอัลกอริทึมดังกล่าวภายใต้ tidymodels framework ชุดข้อมูลที่ใช้เป็นตัวอย่างจะมี 2 ชุด ชุดแรกคือ <a href="https://github.com/ssiwacho/2758688_ML/blob/main/week%201/TeacherSalaryData.csv"><code>TeacherSalaryData.csv</code></a> และชุดที่สองคือ <a href="https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week4/gpax.csv"><code>gpax.csv</code></a></p>
+<section id="โมเดลทำนายเงนเดอนคร" class="level3">
+<h3 class="anchored" data-anchor-id="โมเดลทำนายเงนเดอนคร">โมเดลทำนายเงินเดือนครู</h3>
+<p>ตัวอย่างนี้จะพัฒนาโมเดลทำนายเงินเดือนครูโดยจะใช้อัลกอริทึม regularization ก่อนที่จะเริ่มพัฒนาโมเดล ผู้วิเคราะห์ควรเริ่มจากการสำรวจข้อมูลเบื้องต้นก่อน จากวัตถุประสงค์ของงานนี้อาจจำแนกการสำรวจข้อมูลออกเป็นสองส่วน ส่วนแรกคือการสำรวจรูปแบบตารางข้อมูล ขอบเขตข้อมูล และลักษณะการจัดเก็บ/บันทึกข้อมูล และส่วนที่สองคือการสำรวจลักษณะความสัมพันธ์ระหว่างตัวแปรตามคือเงินเดือนครู (salary) และตัวแปรอิสระต่างในโมเดล</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#importing data</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 397
+Columns: 7
+$ X             &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1…
+$ rank          &lt;chr&gt; "Prof", "Prof", "AsstProf", "Prof", "Prof", "AssocProf",…
+$ discipline    &lt;chr&gt; "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "…
+$ yrs.since.phd &lt;int&gt; 19, 20, 4, 45, 40, 6, 30, 45, 21, 18, 12, 7, 1, 2, 20, 1…
+$ yrs.service   &lt;int&gt; 18, 16, 3, 39, 41, 6, 23, 45, 20, 18, 8, 2, 1, 0, 18, 3,…
+$ sex           &lt;chr&gt; "Male", "Male", "Male", "Male", "Male", "Male", "Male", …
+$ salary        &lt;int&gt; 139750, 173200, 79750, 115000, 141500, 97000, 175000, 14…</code></pre>
+</div>
+</div>
+<p>จากผลการสำรวจข้อมูลข้างต้นจะเห็นว่าชุดข้อมูลดังกล่าวเป็นชุดข้อมูลขนาดเล็ก มีรูปแบบตารางเป็นแบบ tidydata แล้ว โดยมีหน่วยข้อมูลทั้งหมดจำนวน 397 หน่วย มีตัวแปรที่สามารถนำมาใช้เป็นตัวแปรอิสระในโมเดลได้ 5 ตัวแปร ได้แก่ <code>rank</code>, <code>discipline</code>, <code>yrs.since.phd</code>, <code>yrs.service</code> และ <code>sex</code> ผู้อ่านจะเห็นว่าตัวแปรอิสระดังกล่าวมีทั้งตัวแปรที่เป็นเชิงปริมาณ และตัวแปรจัดประเภท โดยในกลุ่มของตัวแปรจัดประเภทพบว่าทุกตัวแปรถูกจัดเก็บอยู่ในรูปแบบของตัวอักษร ซึ่งไม่เหมาะสมที่จะนำเข้าสู่โมเดลทำนาย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exploring data using statistics</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       X           rank            discipline        yrs.since.phd  
+ Min.   :  1   Length:397         Length:397         Min.   : 1.00  
+ 1st Qu.:100   Class :character   Class :character   1st Qu.:12.00  
+ Median :199   Mode  :character   Mode  :character   Median :21.00  
+ Mean   :199                                         Mean   :22.31  
+ 3rd Qu.:298                                         3rd Qu.:32.00  
+ Max.   :397                                         Max.   :56.00  
+  yrs.service        sex                salary      
+ Min.   : 0.00   Length:397         Min.   : 57800  
+ 1st Qu.: 7.00   Class :character   1st Qu.: 91000  
+ Median :16.00   Mode  :character   Median :107300  
+ Mean   :17.61                      Mean   :113706  
+ 3rd Qu.:27.00                      3rd Qu.:134185  
+ Max.   :60.00                      Max.   :231545  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(salary, yrs.since.phd, yrs.since.phd) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 salary yrs.since.phd
+salary        1.0000000     0.4192311
+yrs.since.phd 0.4192311     1.0000000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exploring data using visualization</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>X) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="st">"yrs.since.phd"</span>,<span class="st">"yrs.service"</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to=</span><span class="st">"predictor"</span>,<span class="at">values_to=</span><span class="st">"value"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>salary))<span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(.<span class="sc">~</span> <span class="fu">factor</span>(predictor),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">scales =</span> <span class="st">"free_x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>X) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="st">"discipline"</span>,<span class="st">"rank"</span>,<span class="st">"sex"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to=</span><span class="st">"predictor"</span>,<span class="at">values_to=</span><span class="st">"value"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>salary, <span class="at">fill=</span>value))<span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(.<span class="sc">~</span> <span class="fu">factor</span>(predictor),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">scales =</span> <span class="st">"free_x"</span>)<span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>นอกจากนี้ผู้วิเคราะห์ยังลองตรวจสอบว่ามีอิทธิพลปฏิสัมพันธ์ระหว่างตัวแปรอิสระที่มีต่อตัวแปรตามหรือไม่ โดยใช้ visualization เป็นเครื่องมือตรวจสอบเช่นเดียวกัน</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>ผลการสำรวจความสัมพันธ์ระหว่างตัวแปรข้างต้นเป็นอย่างไร ?</p>
+<p>ใน tidymodels framework การเรียกใช้อัลกอริทึม ridge regression, lasso regression หรือ elastic-net regression สามารถทำได้โดยเลือก model type เป็น <code>linear_reg()</code> และกำหนด engine เป็น <code>glmnet</code> เมื่อพิจารณาการกำหนดอาร์กิวเมนท์ของ glmnet ในคู่มือ <a href="https://www.tidymodels.org/find/parsnip/" class="uri">https://www.tidymodels.org/find/parsnip/</a> พบว่า engine ดังกล่าวสามารถใช้ได้กับ model type ทั้ง linear regression, logistic regression และ multinomial regression ซึ่งสอดคล้องกับที่ได้กล่าวในส่วนภาคทฤษฎีว่าหลักของการ regularization สามารถนำไปใช้ได้กับอัลกอริทึมการเรียนรู้ได้มากมาย</p>
+<p>จากตารางจะเห็นว่า glmnet มีอาร์กิวเมนท์ 2 ตัวได้แก่ <code>penalty</code> และ <code>mixture</code> ที่เป็น hyperparameters ของอัลกอริทึม โดยที่</p>
+<ul>
+<li><p><code>penalty</code> คือ regularization hyperparameter</p></li>
+<li><p><code>mixture</code> คือสัดส่วนของ lasso penalty (เท่ากับค่า <span class="math inline">\(\alpha\)</span> ใน part ทฤษฎี) หาก <span class="math inline">\(\alpha =1\)</span> หมายถึงกำหนดให้ใช้อัลกอริทึมแบบ lasso แต่หาก <span class="math inline">\(\alpha = 0\)</span> หมายถึงกำหนดให้ใช้อัลกอริทึม ridge regression และหากกำหนดให้ <span class="math inline">\(\alpha \in (0,1)\)</span> หมายถึงกำหนดให้ใช้ elastic-net regression</p></li>
+</ul>
+<section id="data-preprocessing-note" class="level4">
+<h4 class="anchored" data-anchor-id="data-preprocessing-note">Data Preprocessing Note:</h4>
+<p>ผู้วิเคราะห์จะต้องแปลงค่าของตัวแปรจัดประเภทให้เป็นตัวแปร dummy หรือตัวแปรแบบ indicator (หรือที่เรียกว่า one-hot encoding) ในกรณีที่ผู้วิเคราะห์เก็บข้อมูลของตัวแปรจัดประเภทเป็นแบบ factor ฟังก์ชัน <code>fit()</code> จะแปลงข้อมูลของตัวแปรแบบ factor ให้เป็น indicator โดยอัตโนมัติ สำหรับตัวแปรเชิงปริมาณจำเป็นที่ต้องทำการแปลงให้เป็นสเกลมาตรฐานก่อน</p>
+<p>ตัวอย่างต่อไปนี้จะแสดงการ fit regularized regression ด้วย parsnip โดยยังไม่มีการปรับแต่ง hyperparameter ก่อน ส่วนตัวอย่างที่แสดงการพัฒนาอัลกอริทึมเต็มรูปแบบจะแสดงในส่วนถัดไป คำสั่งในส่วนแรกแสดงการแบ่งชุดข้อมูลเป็น training และ test dataset นอกจากนี้ยังแสดงการทำ feature engineering เพื่อทำให้ข้อมูลของตัวแปรอิสระเป็นไปตามข้อตกลงเบื้องต้นของการวิเคราะห์ regularized regression ผลลัพธ์ที่ได้จากขั้นตอนนี้คือชุดข้อมูล training และ test ที่ผ่านการทำ preprocessing แล้ว</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data splitting</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(<span class="at">data =</span> dat, <span class="at">prop=</span><span class="fl">0.8</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#data preprocessing </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>rec_dat <span class="ot">&lt;-</span> <span class="fu">recipe</span>(salary <span class="sc">~</span>., <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#remove X</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_select</span>(<span class="sc">-</span>X) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#create dummy variable</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(rank, discipline, sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#standarized numeric</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#create interaction term</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_interact</span>(<span class="at">terms =</span> <span class="sc">~</span> yrs.since.phd<span class="sc">:</span><span class="fu">starts_with</span>(<span class="st">"discipline"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training_data =</span> train)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>rec_dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          6
+
+Training data contained 317 data points and no missing data.
+
+Operations:
+
+Variables selected rank, discipline, yrs.since.phd, yrs.servi... [trained]
+Dummy variables from rank, discipline, sex [trained]
+Centering and scaling for yrs.since.phd, yrs.service, rank_AsstProf, rank... [trained]
+Interactions with yrs.since.phd:discipline_B [trained]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create preprocessed train and test dataset</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>train_preproc <span class="ot">&lt;-</span> rec_dat <span class="sc">%&gt;%</span> <span class="fu">bake</span>(<span class="cn">NULL</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>test_preproc <span class="ot">&lt;-</span> rec_dat <span class="sc">%&gt;%</span> <span class="fu">bake</span>(<span class="at">new_data =</span> test)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(train_preproc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 317
+Columns: 8
+$ yrs.since.phd                &lt;dbl&gt; -0.76815323, -0.76815323, 1.26300460, -1.…
+$ yrs.service                  &lt;dbl&gt; -0.53531528, -0.45828626, 0.15794595, -1.…
+$ salary                       &lt;int&gt; 103994, 103760, 148750, 84716, 181257, 13…
+$ rank_AsstProf                &lt;dbl&gt; -0.4624744, -0.4624744, -0.4624744, 2.155…
+$ rank_Prof                    &lt;dbl&gt; -1.388913, -1.388913, 0.717716, -1.388913…
+$ discipline_B                 &lt;dbl&gt; 0.922555, 0.922555, -1.080527, 0.922555, …
+$ sex_Male                     &lt;dbl&gt; -2.928978, 0.340339, 0.340339, 0.340339, …
+$ yrs.since.phd_x_discipline_B &lt;dbl&gt; -0.70866363, -0.70866363, -1.36471030, -1…</code></pre>
+</div>
+</div>
+<p>ตัวอย่างต่อไปนี้แสดงการระบุโมเดลด้วย engine glmnet โดยตัวอย่างแรกนี้จะกำหนดให้อาร์กิวเมนท์ <code>penalty = 0</code> ผลการวิเคราะห์ที่ได้จากการระบุโมเดลนี้จะเท่ากับ ols regression แบบปกติ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#model specification: ols regression</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>regularized_reg <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>(<span class="at">mixture =</span> <span class="dv">0</span>, <span class="at">penalty =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="at">engine =</span> <span class="st">"glmnet"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>reg_fit <span class="ot">&lt;-</span> regularized_reg <span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(salary <span class="sc">~</span>., <span class="at">data =</span> train_preproc)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#ols regression estimate</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(reg_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'Matrix'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:tidyr':
+
+    expand, pack, unpack</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded glmnet 4.1-6</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  term                         estimate penalty
+  &lt;chr&gt;                           &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)                   113359.       0
+2 yrs.since.phd                   5724.       0
+3 yrs.service                    -2982.       0
+4 rank_AsstProf                  -4794.       0
+5 rank_Prof                      13137.       0
+6 discipline_B                    6141.       0
+7 sex_Male                        1497.       0
+8 yrs.since.phd_x_discipline_B    1379.       0</code></pre>
+</div>
+</div>
+<p>การใช้ tidymodels framework ช่วยให้ผู้วิเคราะห์สามารถเรียกดูค่าประมาณของสัมประสิทธิ์ความชันของโมเดลในกรณีที่มีการกำหนด penalty hyperparameter ต่าง ๆ ได้ เช่น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(reg_fit, <span class="at">penalty=</span><span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  term                         estimate penalty
+  &lt;chr&gt;                           &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)                  113328.    10000
+2 yrs.since.phd                  3774.    10000
+3 yrs.service                      49.1   10000
+4 rank_AsstProf                 -4968.    10000
+5 rank_Prof                      9975.    10000
+6 discipline_B                   4709.    10000
+7 sex_Male                       1448.    10000
+8 yrs.since.phd_x_discipline_B   1222.    10000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># magnitude of b</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>reg_fit<span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>จากตัวอย่างการวิเคราะห์ข้างต้นจะเห็นว่าเมื่อกำหนดให้ penalty term มีค่ามากขึ้นเรื่อย ๆ ค่าของสัมประสิทธิ์ความชันของโมเดลจะมีแนวโน้มลู่เข้าหา 0 ดังที่ได้กล่าวไว้ในในส่วนทฤษฎี</p>
+<p>ผลการวิเคราะห์ต่อไปนี้แสดงการเปรียบเทียบประสิทธิภาพของการทำนายที่ได้จากโมเดล ridge regression ที่มีการกำหนด penalty term เท่ากับ 0, 5000 และ 10000 ตามลำดับ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pred1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(reg_fit, <span class="at">new_data =</span> test_preproc)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>pred2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(reg_fit, <span class="at">new_data =</span> test_preproc, <span class="at">penalty =</span> <span class="dv">5000</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>pred3 <span class="ot">&lt;-</span> <span class="fu">predict</span>(reg_fit, <span class="at">new_data =</span> test_preproc, <span class="at">penalty =</span> <span class="dv">10000</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>test_preproc <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(salary) <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(pred1, pred2, pred3) <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>( <span class="at">pred_ols =</span> .pred...<span class="dv">2</span> ,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">pred_ridge5k =</span> .pred...<span class="dv">3</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">pred_ridge_10k =</span> .pred...<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"pred"</span>),</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"model"</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"pred_value"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(model) <span class="sc">%&gt;%</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((salary<span class="sc">-</span>pred_value)<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">rsq =</span> <span class="fu">cor</span>(salary, pred_value)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+• `.pred` -&gt; `.pred...2`
+• `.pred` -&gt; `.pred...3`
+• `.pred` -&gt; `.pred...4`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  model            rmse   rsq
+  &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;
+1 pred_ols       23632. 0.406
+2 pred_ridge5k   23963. 0.392
+3 pred_ridge_10k 24420. 0.372</code></pre>
+</div>
+</div>
+<p>ผลลัพธ์ที่ได้ข้างต้นแสดงให้เห็นว่าการกำหนด penalty term ที่แตกต่างกันมีผลต่อประสิทธิภาพในการทำนายของโมเดล อย่างไรก็ตามวิธีการข้างต้นไม่ใช่วิธีที่มีประสิทธิภาพที่จะให้หาค่าที่ดีที่สุดของ hyperparameters ทั้งสองค่าดังกล่าว ตัวอย่างต่อไปจะแสดงการใช้ k-folds cross-validation เข้ามาช่วยเฟ้นหาค่า hyperparameters ที่เหมาะสม คำสั่งด้านล่างแสดงการใช้ workflow ของ tidymodels เข้ามาช่วยปรับแต่งค่า hyperparameters ดังกล่าว รูปด้านล่างแสดงลักษณะของ workflow ซึ่งจะเห็นว่าเป็นการรวม object สองชนิดเข้าด้วยกันคือ recipe และ parsnip</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1608202707.png" class="img-fluid figure-img" alt="tidymodels workflow (ดัดแปลงจาก Mark Khun)"></p>
+<p></p><figcaption class="figure-caption">tidymodels workflow (ดัดแปลงจาก Mark Khun)</figcaption><p></p>
+</figure>
+</div>
+<p>คำสั่งต่อไปนี้แสดงการปรับแต่ง hyperparameter ด้วย workflow ของ tidymodels ดังกล่าว</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create repeated 10-folds CV datasets</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>folds_data <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(<span class="at">data =</span> train, </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">v =</span> <span class="dv">10</span>, </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">repeats =</span> <span class="dv">3</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>folds_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  10-fold cross-validation repeated 3 times 
+# A tibble: 30 × 3
+   splits           id      id2   
+   &lt;list&gt;           &lt;chr&gt;   &lt;chr&gt; 
+ 1 &lt;split [285/32]&gt; Repeat1 Fold01
+ 2 &lt;split [285/32]&gt; Repeat1 Fold02
+ 3 &lt;split [285/32]&gt; Repeat1 Fold03
+ 4 &lt;split [285/32]&gt; Repeat1 Fold04
+ 5 &lt;split [285/32]&gt; Repeat1 Fold05
+ 6 &lt;split [285/32]&gt; Repeat1 Fold06
+ 7 &lt;split [285/32]&gt; Repeat1 Fold07
+ 8 &lt;split [286/31]&gt; Repeat1 Fold08
+ 9 &lt;split [286/31]&gt; Repeat1 Fold09
+10 &lt;split [286/31]&gt; Repeat1 Fold10
+# … with 20 more rows</code></pre>
+</div>
+</div>
+<p>จะเห็นว่า repeated 10-folds CV เป็นการทำ 10-folds CV ซ้ำจำนวน 3 ครั้ง ผลลัพธ์ข้างต้นจึงจะเห็นว่าเป็น tibble ขนาด 30 x 3</p>
+</section>
+</section>
+<section id="ตวอยางการสราง-workflow-เพอทำ-hyperparameter-tuning-ridge-regression" class="level3">
+<h3 class="anchored" data-anchor-id="ตวอยางการสราง-workflow-เพอทำ-hyperparameter-tuning-ridge-regression">ตัวอย่างการสร้าง workflow เพื่อทำ hyperparameter tuning : Ridge Regression</h3>
+<p>ขั้นตอนต่อไปเป็นการสร้าง workflow สำหรับพัฒนา regularized regression จากรูปจากข้างจะเห็นว่า workflow หนึ่ง ๆ ประกอบด้วยส่วนของการเตรียมข้อมูล และ modelling ที่จัดเก็บอยู่ใน recipe และ parsnip objects รายละเอียดของชุดคำสั่งมีดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data preprocessing specification</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>dat_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(salary <span class="sc">~</span>., <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_select</span>(<span class="sc">-</span>X) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(rank, discipline, sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_interact</span>(<span class="at">terms =</span> <span class="sc">~</span> yrs.since.phd<span class="sc">:</span><span class="fu">starts_with</span>(<span class="st">"discipline"</span>))</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#model specification</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>regularized_reg <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(),</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>                              <span class="at">mixture =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co">#ridge regression</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">#create a workflow object</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>regularized_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(dat_rec) <span class="sc">%&gt;%</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(regularized_reg)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>regularized_workflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+4 Recipe Steps
+
+• step_select()
+• step_dummy()
+• step_normalize()
+• step_interact()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Main Arguments:
+  penalty = tune()
+  mixture = 0
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<p>ผลลัพธ์ข้างต้นจะเห็นว่า workflow ช่วยรวบรวมส่วนของการ preprocessing และ modeling ให้อยู่ภายใต้ object เดียวกัน เมื่อสร้าง workflow เรียบร้อยแล้ว ขั้นตอนถัดไปคือการสร้าง grid ของ hyperparameters เพื่อใช้สำหรับการเฟ้นหาชุดของ hyperparameter ที่มีความเหมาะสมกล่าวคือทำให้ประสิทธิภาพการทำนายของโมเดลมีสูงที่สุด ดังที่ได้กล่าวในบทที่ 5 ว่าการกำหนด grid อาจทำได้สองวิธี วิธีการแรกคือการใช้ regular grid search ที่จะสร้าง grid จาก combination ของค่าที่เป็นไปได้ทั้งหมดของ hyperparameters ที่สนใจ การสร้าง grid ดังกล่าวสามารถทำได้หลายวิธีการ โดยใน tidymodels สามารถทำได้ด้วยฟังก์ชัน <code>grid_regular()</code> ของ package dial ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">parameters</span>(<span class="fu">penalty</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>)))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>regular_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(p, <span class="at">levels=</span><span class="dv">50</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>regular_grid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 50 × 1
+     penalty
+       &lt;dbl&gt;
+ 1 1   e-100
+ 2 1.21e- 96
+ 3 1.46e- 92
+ 4 1.76e- 88
+ 5 2.12e- 84
+ 6 2.56e- 80
+ 7 3.09e- 76
+ 8 3.73e- 72
+ 9 4.50e- 68
+10 5.43e- 64
+# … with 40 more rows</code></pre>
+</div>
+</div>
+<p>การปรับแต่งค่าพารามิเตอร์ด้วยการดำเนินการข้างต้นมีข้อจำกัดคือเป็นวิธีการที่ใช้ทรัพยากรค่อนข้างมาก อีกวิธีการหนึ่งที่ช่วยลดการใช้ทรัพยากรของเครื่องลงได้คือการใช้ random grid search ซึ่งเป็นการสุ่มชุดของ hyperparameter มาวิเคราะห์ การดำเนินการตามวิธีการนี้สามารถทำได้ด้วยฟังก์ชัน <code>grid_random()</code> ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>random_grid <span class="ot">&lt;-</span> <span class="fu">grid_random</span>(p, <span class="at">size =</span> <span class="dv">10</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>random_grid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 1
+    penalty
+      &lt;dbl&gt;
+ 1 5.06e-94
+ 2 1.29e-73
+ 3 3.44e-78
+ 4 2.06e-50
+ 5 1.58e-34
+ 6 1.88e-16
+ 7 9.36e-67
+ 8 7.38e+76
+ 9 3.39e+43
+10 9.02e+97</code></pre>
+</div>
+</div>
+<p>ตัวอย่างต่อไปนี้จะเปรียบเทียบผลที่ได้จากการปรับแต่งค่า hyperparameters ด้วยการทำ repeated 10-fold CV บน grid ของ hyperparameter ที่สร้างขึ้นจากสองวิธีการข้างต้น จากตัวอย่างด้านล่างจะเห็นว่าการ fit model ในแต่ละ fold จะใช้ฟังก์ชัน <code>tune_grid()</code> เป็นตัวดำเนินการแทนฟังก์ชัน <code>fit()</code> ทั้งนี้ <code>tune_grid()</code> มีอาร์กิวเมนท์ที่สำคัญได้แก่</p>
+<ul>
+<li><p><code>resamples</code> ใช้ระบุชุดข้อมูลที่สร้างขึ้นจากกระบวนการสุ่มซ้ำ เช่น k-folds CV หรือ boostraping dataset</p></li>
+<li><p><code>grid</code> ใช้สำหรับระบุ grid ของ hyperparameter ของอัลกอริทึมการเรียนรู้ที่เลือกใช้</p></li>
+<li><p><code>control</code> ใช้กำหนด option สำหรับควบคุมกระบวนการสุ่มซ้ำ (resample) และปรับแต่งค่า hyperparameter การกำหนดอาร์กิวเมนท์นี้จะต้องกำหนดผ่านฟังก์ชัน <code>control_resamples()</code> หรือ <code>control_grid()</code> อีกทีหนึ่ง รายละเอียดของฟังก์ชันทั้งสองสามารถศึกษาได้จากคู่มือการใช้งาน (พิมพ์ <code>?control_resamples</code> หรือ <code>?control_grid</code>)</p></li>
+<li><p><code>metrics</code> ใช้กำหนด evalution metrics ที่ผู้วิเคราะห์จะใช้เพื่อประเมินประสิทธิภาพของโมเดลระหว่างการปรับแต่งค่าพารามิเตอร์ การกำหนดอาร์กิวเมนท์นี้ให้ทำผ่านฟังก์ชัน <code>metric_set()</code> ในกรณีที่ไม่ได้กำหนดโปรแกรมจะกำหนดให้ใช้ค่าเริ่มต้น ซึ่งจะเลือกให้เหมาะสมกับ mode ของโมเดล</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>control_options <span class="ot">&lt;-</span> <span class="fu">control_grid</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>eval_metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(rsq, rmse, mae)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#regular grid search </span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>tune_regular <span class="ot">&lt;-</span> regularized_workflow <span class="sc">%&gt;%</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(<span class="at">resamples =</span> folds_data,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">grid =</span> regular_grid,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> control_options,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">metrics =</span> eval_metric)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"time usage (regular grid search) = "</span>, <span class="fu">round</span>(end <span class="sc">-</span> start,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "time usage (regular grid search) =  23.2"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#random grid search </span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>tune_random <span class="ot">&lt;-</span> regularized_workflow <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(<span class="at">resamples =</span> folds_data,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">grid =</span> random_grid,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> control_options,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">metrics =</span> eval_metric)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"time usage (random grid search) = "</span>, <span class="fu">round</span>(end <span class="sc">-</span> start,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "time usage (random grid search) =  21.4"</code></pre>
+</div>
+</div>
+<p><strong>การประมวลผลข้างต้นการปรับแต่งค่า hyperparameters แต่ละวิธีการใช้เวลาเท่าไหร่ และผลที่ได้จากการปรับแต่งค่า hyperparameters มีความเหมือนหรือแตกต่างกันอย่างไร?</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tune_regular <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>tune_random <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>จากการทำ workflow ข้างต้นผู้วิเคราะห์สามารถเรียกดูผลการประเมินประสิทธิภาพของโมเดลทำนายที่คำนวณจากการทำ cross-validation โดยใช้ฟังก์ชัน <code>collect_metric()</code> ฟังก์ชันนี้มีอาร์กิวเมนท์ที่ควรรู้จักคือ <code>summarize</code> ค่าเริ่มต้นจะกำหนดให้เป็น <code>TRUE</code> ผลลัพธ์ที่ได้จะเป็นค่าสรุปประสิทธิภาพการทำนายของโมเดลในแต่ละ grid แต่ถ้ากำหนดให้เป็น <code>FALSE</code> ผลลัพธ์ที่ได้จะลงรายละเอียดของประสิทธิภาพเป็นราย validation dataset</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>tune_regular <span class="sc">%&gt;%</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>(<span class="at">summarize =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 150 × 7
+     penalty .metric .estimator      mean     n  std_err .config              
+       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                
+ 1 1   e-100 mae     standard   16787.       30 530.     Preprocessor1_Model01
+ 2 1   e-100 rmse    standard   22448.       30 676.     Preprocessor1_Model01
+ 3 1   e-100 rsq     standard       0.452    30   0.0231 Preprocessor1_Model01
+ 4 1.21e- 96 mae     standard   16787.       30 530.     Preprocessor1_Model02
+ 5 1.21e- 96 rmse    standard   22448.       30 676.     Preprocessor1_Model02
+ 6 1.21e- 96 rsq     standard       0.452    30   0.0231 Preprocessor1_Model02
+ 7 1.46e- 92 mae     standard   16787.       30 530.     Preprocessor1_Model03
+ 8 1.46e- 92 rmse    standard   22448.       30 676.     Preprocessor1_Model03
+ 9 1.46e- 92 rsq     standard       0.452    30   0.0231 Preprocessor1_Model03
+10 1.76e- 88 mae     standard   16787.       30 530.     Preprocessor1_Model04
+# … with 140 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>tune_regular <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>(<span class="at">summarize =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>penalty, <span class="at">y=</span>mean, <span class="at">col=</span>.metric))<span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">shape =</span> .metric))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 23 rows containing missing values (`geom_line()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 23 rows containing missing values (`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>tune_random <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>(<span class="at">summarize =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 900 × 7
+   id      id2     penalty .metric .estimator .estimate .config              
+   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;                
+ 1 Repeat1 Fold01 5.06e-94 rsq     standard       0.415 Preprocessor1_Model01
+ 2 Repeat1 Fold01 5.06e-94 rmse    standard   28146.    Preprocessor1_Model01
+ 3 Repeat1 Fold01 5.06e-94 mae     standard   19368.    Preprocessor1_Model01
+ 4 Repeat1 Fold02 5.06e-94 rsq     standard       0.427 Preprocessor1_Model01
+ 5 Repeat1 Fold02 5.06e-94 rmse    standard   26588.    Preprocessor1_Model01
+ 6 Repeat1 Fold02 5.06e-94 mae     standard   20808.    Preprocessor1_Model01
+ 7 Repeat1 Fold03 5.06e-94 rsq     standard       0.664 Preprocessor1_Model01
+ 8 Repeat1 Fold03 5.06e-94 rmse    standard   16585.    Preprocessor1_Model01
+ 9 Repeat1 Fold03 5.06e-94 mae     standard   11946.    Preprocessor1_Model01
+10 Repeat1 Fold04 5.06e-94 rsq     standard       0.261 Preprocessor1_Model01
+# … with 890 more rows</code></pre>
+</div>
+</div>
+<p>นอกจากนี้ยังมีฟังก์ชัน <code>collect_predictions()</code> ที่สามารถใช้เรียกค่าทำนายของตัวแปรตามที่ได้จากแต่ละ resample และชุดของ hyperparameter ภายใน grid การใช้ฟังก์ชันนี้ทำในทำนองเดียวกับ <code>collect_metrics()</code> ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>tune_regular <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 47,550 × 7
+   id      id2      .pred  .row penalty salary .config              
+   &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt; &lt;chr&gt;                
+ 1 Repeat1 Fold01 121850.     3  1e-100 148750 Preprocessor1_Model01
+ 2 Repeat1 Fold01 126897.    15  1e-100 142467 Preprocessor1_Model01
+ 3 Repeat1 Fold01  76196.    26  1e-100  74000 Preprocessor1_Model01
+ 4 Repeat1 Fold01 117779.    29  1e-100 168500 Preprocessor1_Model01
+ 5 Repeat1 Fold01  85897.    35  1e-100  91300 Preprocessor1_Model01
+ 6 Repeat1 Fold01 124811.    63  1e-100 183800 Preprocessor1_Model01
+ 7 Repeat1 Fold01 129939.    70  1e-100 106639 Preprocessor1_Model01
+ 8 Repeat1 Fold01 134797.    72  1e-100 146856 Preprocessor1_Model01
+ 9 Repeat1 Fold01 118182.    78  1e-100 103700 Preprocessor1_Model01
+10 Repeat1 Fold01 117129.    98  1e-100 108262 Preprocessor1_Model01
+# … with 47,540 more rows</code></pre>
+</div>
+</div>
+<p>นอกจากการวิเคราะห์ข้างต้นแล้วยังสามารถใช้ฟังก์ชัน <code>show_best()</code> เพื่อคัดเลือกโมเดลทำนายที่ดีที่สุดจาก grid ที่ผู้วิเคราะห์วิเคราะห์ไว้ในข้างต้น ฟังก์ชันนี้ยังมีอาร์กิวเมนท์ <code>n</code> สำหรับกำหนดว่าต้องการให้เลือกโมเดลที่ดีที่สุดกี่อันดับแรกขึ้นมาให้ผู้วิเคราะห์ และอาร์กิวเมนท์ <code>metric</code> ใชัสำหรับระบุ evaluation metric ที่จะใช้คัดเลือกโมเดลทำนายดังกล่าว ตัวอย่างต่อไปนี้แสดงผลคัดเลือกโมเดลทำนายจากวิธีการสร้าง grid ทั้งสองวิธี จะเห็นว่าผลลัพธ์ที่ได้สอดคล้องกัน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tune_regular, <span class="at">n=</span><span class="dv">5</span>, <span class="at">metric=</span><span class="st">"rmse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+    penalty .metric .estimator   mean     n std_err .config              
+      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
+1 1   e-100 rmse    standard   22448.    30    676. Preprocessor1_Model01
+2 1.21e- 96 rmse    standard   22448.    30    676. Preprocessor1_Model02
+3 1.46e- 92 rmse    standard   22448.    30    676. Preprocessor1_Model03
+4 1.76e- 88 rmse    standard   22448.    30    676. Preprocessor1_Model04
+5 2.12e- 84 rmse    standard   22448.    30    676. Preprocessor1_Model05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tune_random, <span class="at">n=</span><span class="dv">5</span>, <span class="at">metric=</span><span class="st">"rmse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+   penalty .metric .estimator   mean     n std_err .config              
+     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
+1 5.06e-94 rmse    standard   22448.    30    676. Preprocessor1_Model01
+2 3.44e-78 rmse    standard   22448.    30    676. Preprocessor1_Model02
+3 1.29e-73 rmse    standard   22448.    30    676. Preprocessor1_Model03
+4 9.36e-67 rmse    standard   22448.    30    676. Preprocessor1_Model04
+5 2.06e-50 rmse    standard   22448.    30    676. Preprocessor1_Model05</code></pre>
+</div>
+</div>
+<section id="กจกรรม-1" class="level4">
+<h4 class="anchored" data-anchor-id="กจกรรม-1">กิจกรรม 1 :</h4>
+<p>ขอให้นิสิตทดลอง plot R square plot ของโมเดลที่ดีที่สุดข้างต้น ผลลัพธ์ที่ได้เป็นอย่างไร นิสิตที่ข้อเสนอแนะในการพัฒนาโมเดลทำนายดังกล่าวอย่างไร?</p>
+<div class="cell">
+
+</div>
+</section>
+<section id="กจกรรม-2" class="level4">
+<h4 class="anchored" data-anchor-id="กจกรรม-2">กิจกรรม 2 :</h4>
+<p>ขอให้นิสิตลองใช้อัลกอริทึม regularized regression ตัวอื่นเพื่อพัฒนาโมเดลทำนายเงินเดือนอาจารย์มหาวิทยาลัย โดยใช้ชุดข้อมูล <code>TeacherSalaryData.csv</code> ผลลัพธ์ที่ได้เป็นอย่างไร</p>
+</section>
+</section>
+</section>
+<section id="tuning-and-comparing-models" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-and-comparing-models">6.4 Tuning and Comparing Models</h2>
+<p>โดยทั่วไปในการพัฒนาโมเดลทำนาย ผู้วิเคราะห์จำเป็นต้องทดลองพัฒนาโมเดลทำนายจากอัลกริทึมการเรียนรู้หลายตัว การดำเนินงานดังกล่าวจึงต้องมีทั้งส่วนของการปรับแต่งค่า hyperparameters ของแต่ละอัลกอริทึม และต้องมีส่วนของการเปรียบเทียบประสิทธิภาพการทำนายของโมเดลในชุดข้อมูลทดสอบ จะเห็นว่าการดำเนินการดังกล่าวค่อนข้างมีความซับซ้อน และต้องมีการเขียนชุดคำสั่งเป็นจำนวนมาก</p>
+<p>ใน tidymodels มีตัวแปรอีกประเภทที่เรียกว่า workflow set ที่ใช้เก็บ workflow หลาย ๆ ตัวเข้ามารวมไว้ในตัวแปรเดียว ซึ่งทำให้การทำ data preprocessing การปรับแต่งค่า hyperparameters และการเปรียบเทียบประสิทธิภาพระหว่างโมเดลทำนายที่พัฒนาจากอัลกอริทึมที่แตกต่างกันหลาย ๆ ตัวสามารถทำได้ง่ายมากขึ้น</p>
+<p>ตัวอย่างต่อไปนี้จะแสดงการพัฒนาโมเดลทำนายโดยใช้อัลกอริทึมได้แก่ regularized logistic regression และ decision tree โดยจะใช้ชุดข้อมูลตัวอย่างจาก package modeldata</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">#importing data</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(parabolic)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(parabolic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 500
+Columns: 3
+$ X1    &lt;dbl&gt; 3.291779227, 1.465839693, 1.660986913, 1.602301296, 2.165003287,…
+$ X2    &lt;dbl&gt; 1.66108928, 0.41398566, 0.79147013, 0.27639110, 3.16557011, 3.82…
+$ class &lt;fct&gt; Class1, Class2, Class2, Class2, Class1, Class1, Class2, Class1, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># splitting data</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(<span class="at">data =</span> parabolic)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ชุดข้อมูล parabolic ประกอบด้วยตัวแปร 3 ตัว โดยตัวแปรตามเป็นตัวแปรจัดประเภทที่มี 2 categories และตัวแปรอิสระประกอบด้วย X1 และ X2</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>train <span class="sc">%&gt;%</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> X1, <span class="at">y =</span> X2, <span class="at">col=</span>class))<span class="sc">+</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.7</span>)<span class="sc">+</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="04Regularization_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+<section id="model-specification" class="level3">
+<h3 class="anchored" data-anchor-id="model-specification">Model Specification</h3>
+<p>สร้าง model specification ทั้งหมดที่ต้องการ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>logistic_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>(<span class="at">penalty=</span> <span class="fu">tune</span>(),</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">mixture =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>tree_mod <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">cost_complexity =</span> <span class="fu">tune</span>(),</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">min_n =</span> <span class="fu">tune</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="สราง-workflowset-และวเคราะห-hyperparemeters" class="level3">
+<h3 class="anchored" data-anchor-id="สราง-workflowset-และวเคราะห-hyperparemeters">สร้าง workflowset และวิเคราะห์ hyperparemeters</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create workflowset</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>mod_specs <span class="ot">&lt;-</span> <span class="fu">workflow_set</span>(</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">preproc =</span> <span class="fu">list</span>(<span class="st">"formula"</span> <span class="ot">=</span> class <span class="sc">~</span> .),</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="fu">list</span>(<span class="at">glmnet =</span> logistic_mod,</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">cart =</span> tree_mod)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co">#create resamples</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>resamples <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(<span class="at">data =</span> train)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tunegrid using workflowmap</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>tune_results<span class="ot">&lt;-</span> mod_specs <span class="sc">%&gt;%</span> </span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_map</span>(<span class="st">"tune_grid"</span>,</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>                           <span class="at">resamples =</span> resamples,</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>                           <span class="at">grid =</span> <span class="dv">10</span>,</span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>                           <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, sens, spec),</span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">option_add</span>(<span class="at">control =</span> <span class="fu">control_grid</span>(<span class="at">save_pred=</span>T, <span class="at">parallel_over =</span><span class="st">"resamples"</span>))</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a><span class="co"># rankmodels</span></span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a><span class="fu">rank_results</span>(tune_results, <span class="at">rank_metric =</span><span class="st">"roc_auc"</span>)</span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tune_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2023, DataKruRoo</div>   
+    <div class="nav-footer-right">This page is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

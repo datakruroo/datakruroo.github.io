@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+
+<title>2758688 ML PRIN APPLN - Decision Trees</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta property="og:title" content="2758688 ML PRIN APPLN - Decision Trees">
+<meta property="og:description" content="บทเรียนนี้จะกล่าวถึงอัลกอริทึม decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree…">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Decision Trees</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://cmgr.oit.duke.edu/containers" title="RStudio Containers" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
+    <a href="" title="Sakai" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/13b6446a-a6c6-4222-8cfb-c36d1f70802b">
+          Discussion forum
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/page/aec742dc-2972-4f02-a35b-1dd3315af889">
+          Gradescope
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/69078433-67a6-4054-a2e7-9e6c202ecdc3/">
+          Gradebook
+          </a>
+        </li>
+    </ul>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-overview.qmd" class="sidebar-item-text sidebar-link">Overview</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-syllabus.qmd" class="sidebar-item-text sidebar-link">Syllabus</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-team.qmd" class="sidebar-item-text sidebar-link">Teaching team</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-links.qmd" class="sidebar-item-text sidebar-link">Useful links</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-faq.qmd" class="sidebar-item-text sidebar-link">FAQ</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Weekly materials</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-1.qmd" class="sidebar-item-text sidebar-link">Week 1</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-2.qmd" class="sidebar-item-text sidebar-link">Week 2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-3.qmd" class="sidebar-item-text sidebar-link">Week 3</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-4.qmd" class="sidebar-item-text sidebar-link">Week 4</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-5.qmd" class="sidebar-item-text sidebar-link">Week 5</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">สารบัญ</h2>
+   
+  <ul>
+  <li><a href="#บทท-5-decision-tree" id="toc-บทท-5-decision-tree" class="nav-link active" data-scroll-target="#บทท-5-decision-tree">บทที่ 5 Decision Tree</a>
+  <ul class="collapse">
+  <li><a href="#มโนทศนสำคญของ-decision-tree" id="toc-มโนทศนสำคญของ-decision-tree" class="nav-link" data-scroll-target="#มโนทศนสำคญของ-decision-tree">5.1 มโนทัศน์สำคัญของ decision tree</a>
+  <ul class="collapse">
+  <li><a href="#สวนประกอบของ-decision-tree" id="toc-สวนประกอบของ-decision-tree" class="nav-link" data-scroll-target="#สวนประกอบของ-decision-tree">ส่วนประกอบของ decision tree</a></li>
+  <li><a href="#partitioning-regression-tree" id="toc-partitioning-regression-tree" class="nav-link" data-scroll-target="#partitioning-regression-tree">Partitioning: Regression Tree</a></li>
+  <li><a href="#partitioning-classification-tree" id="toc-partitioning-classification-tree" class="nav-link" data-scroll-target="#partitioning-classification-tree">Partitioning: Classification Tree</a></li>
+  </ul></li>
+  <li><a href="#data-preprocessing-สำหรบ-decision-tree" id="toc-data-preprocessing-สำหรบ-decision-tree" class="nav-link" data-scroll-target="#data-preprocessing-สำหรบ-decision-tree">5.2 Data Preprocessing สำหรับ decision tree</a></li>
+  <li><a href="#hyperparameters-สำหรบ-decision-tree" id="toc-hyperparameters-สำหรบ-decision-tree" class="nav-link" data-scroll-target="#hyperparameters-สำหรบ-decision-tree">5.3 Hyperparameters สำหรับ decision tree</a></li>
+  <li><a href="#hyperparameter-tuning-using-tidymodels-workflow" id="toc-hyperparameter-tuning-using-tidymodels-workflow" class="nav-link" data-scroll-target="#hyperparameter-tuning-using-tidymodels-workflow">5.4 Hyperparameter tuning using tidymodels Workflow</a>
+  <ul class="collapse">
+  <li><a href="#hyperparameter-tuning" id="toc-hyperparameter-tuning" class="nav-link" data-scroll-target="#hyperparameter-tuning">Hyperparameter Tuning</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Decision Trees</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<section id="บทท-5-decision-tree" class="level1">
+<h1>บทที่ 5 Decision Tree</h1>
+<p>บทเรียนนี้จะกล่าวถึงอัลกอริทึม decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree จัดเป็นอัลกอริทึมที่อยู่ในกลุ่ม nonparametric ซึ่งแตกต่างจาก linear regression กล่าวคือการเรียนรู้ของ decision tree มีลักษณะเป็นการสร้างกฎเกณฑ์ในการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกันภายใต้ feature space จากคุณลักษณะดังกล่าวทำให้ decision tree เป็นอัลกอริทึมที่มีความยืดหยุ่นมากกว่า linear regression และสามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ดีกว่า regression</p>
+<p>นอกจากนี้ decision tree ยังเป็นอัลกอริทึมที่มี hyperparameters หลายตัว อย่างที่ได้กล่าวไปในบทเรียนก่อนหน้าว่า hyperparameter คือพารามิเตอร์ในโมเดลที่ไม่สามารถประมาณค่าที่เหมาะสมได้จากข้อมูล แต่ละต้องใช้การกำหนดค่าโดยผู้วิเคราะห์ ปัญหาที่ตามมาคือการกำหนดค่า hyperparameter ที่เหมาะสมควรดำเนินการอย่างไร กระบวนการที่ผู้วิเคราะห์ใช้เพื่อกำหนดค่า hyperparameter ดังกล่าวเรียกว่า การปรับแต่ง hyperparameter (hyperparameter tuning) ซึ่งจะเป็นเนื้อหาอีกส่วนหนึ่งที่จะกล่าวถึงในบทเรียนนี้</p>
+<section id="มโนทศนสำคญของ-decision-tree" class="level2">
+<h2 class="anchored" data-anchor-id="มโนทศนสำคญของ-decision-tree">5.1 มโนทัศน์สำคัญของ decision tree</h2>
+<p>decision tree เป็นอัลกอริทึมการเรียนรู้ตัวพื้นฐานในกลุ่มของ supervised learning ปัจจุบันมีอัลกอริทึม decision tree ถูกพัฒนาขึ้นหลายตัว บทเรียนนี้จะกล่าวถึง decision tree ที่เรียนรู้ด้วยอัลกอริทึม recursive binary splitting ซึ่งสามารถใช้ได้กับทั้ง classification และ regression models</p>
+<section id="สวนประกอบของ-decision-tree" class="level3">
+<h3 class="anchored" data-anchor-id="สวนประกอบของ-decision-tree">ส่วนประกอบของ decision tree</h3>
+<p>รูปด้านล่างแสดงตัวอย่างของ decision tree โดยจะเป็นว่าโมเดลมีส่วนประกอบ 3 ส่วนหลักได้แก่ root node, internal nodes และ leaf nodes (หรือ terminal nodes)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-549379503.png" class="img-fluid figure-img" style="width:60.0%" alt="ตัวอย่าง decision tree"></p>
+<p></p><figcaption class="figure-caption">ตัวอย่าง decision tree</figcaption><p></p>
+</figure>
+</div>
+<p>การเรียนรู้ของ decision tree แบบ CART เป็นการสร้างพื้นที่ปิดล้อมรูปสี่เหลี่ยมที่ไม่ทับซ้อนกันเพื่อแบ่งส่วนของข้อมูลภายใน feature space ออกเป็นส่วนย่อย ๆ โดยการแบ่งแต่ละครั้งจะทำให้เกิดส่วนย่อยใหม่ขึ้น 2 ส่วน และดำเนินการแบ่งพื้นที่ดังกล่าวทวนซ้ำไปเรื่อย ๆ จนกว่าจะถึงจุดที่หยุดกระบวนการ เรียกกระบวนการแบ่งส่วนของพื้นที่ดังกล่าวว่า <strong>binary recursive partitioning</strong></p>
+</section>
+<section id="partitioning-regression-tree" class="level3">
+<h3 class="anchored" data-anchor-id="partitioning-regression-tree">Partitioning: Regression Tree</h3>
+<p>สมมุติให้ R1 และ R2 เป็นพื้นที่ย่อยที่เกิดขึ้นจากการแบ่งส่วนครั้งหนึ่งภายใต้ feature space การพิจารณาว่าแบ่งส่วนย่อยดังกล่าวควรแบ่งโดยใช้ตัวแปรอิสระใด และแบ่งที่ค่าใดของตัวแปรอิสระนั้น จะพิจารณาจากความคลาดเคลื่อนระหว่างค่าจริงกับค่าทำนายภายในแต่ละพื้นที่ R โดย<strong>สำหรับปัญหาแบบ regression</strong> อาจพิจารณาความคลาดเคลื่อนดังกล่าวให้<strong>ค่าผลรวมกำลังสองโดยรวม (total SSE)</strong> ของ terminal node ที่เป็นผลรวมระหว่าง SSE ของแต่ละพื้นที่มีค่าต่ำที่สุด เขียนเป็นสูตรได้ดังนี้</p>
+<p><span class="math display">\[
+Total \ SSE = \sum_{i \in R_1}(y_i-c_1)^2+\sum_{i \in R_2}(y_i-c_2)^2
+\]</span></p>
+<p>เพื่อให้ผู้อ่านเห็นภาพการแบ่งพื้นที่ใน feature space สำหรับปัญหา regression ด้วยเกณฑ์ข้างต้น ขอให้พิจารณาตัวอย่างต่อไปนี้ สมมุติว่าผู้วิเคราะห์มีข้อมูลของตัวแปรตาม y กับตัวแปรอิสระ x อย่างละตัว โดยตัวแปรดังกล่าวมีความสัมพันธ์กันแบบเชิงเส้นโค้งดังรูป ในเบื้องต้นผู้วิเคราะห์สามารถคำนวณ Total SSE ของชุดข้อมูลดิบได้ดังนี้ <span class="math inline">\(Total \ SSE = \sum_{i=1}^{1000}(y_i-\bar{y})^2=692.299\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">1000</span>,<span class="dv">0</span>,<span class="dv">8</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="fu">sin</span>(x), <span class="fl">0.5</span>) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(x,y)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y),<span class="at">col=</span><span class="st">"steelblue"</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Total SSE = 692.299"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>ขั้นตอนแรกของอัลกอริทึม decision tree แบบ binary recursive partitioning คือการหา root node ซึ่งทำได้ด้วยการพิจารณาเลือกคะแนนจุดตัดของตัวแปรอิสระที่เหมาะสม จากรูปด้านล่างผู้อ่านจะเห็นว่าการแบ่งส่วนย่อยของ feature space ด้วยจุดตัดที่แตกต่างกันจะทำให้ Total SSE ที่คำนวณจาก <span class="math inline">\(Total \ SSE = \sum_{i \in R_1}(y_i-c_1)^2+\sum_{i \in R_2}(y_i-c_2)^2\)</span> มีค่าแตกต่างกันไป เป้าหมายของอัลกอริทึม decision tree ในขั้นตอนนี้คือการจุดตัดที่ทำให้ค่า Total SSE ดังกล่าวมีค่าต่ำที่สุด ซึ่งจะหมายความว่าการแบ่งส่วนย่อยนั้นสามารถสร้าง decision tree ที่ทำนายค่าของตัวแปรตามได้ใกล้เคียงค่าจริงมากที่สุดเท่าที่จะเป็นไปได้</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>ในความเป็นจริงอัลกอริทึม binary recursive partitioning จะพิจารณาค่า Total SSE ที่คำนวณจากจุดตัดทุกค่าที่เป็นไปได้บน feature space จากนั้นจะเลือกจุดตัดที่ทำให้ค่า Total SSE ต่ำที่สุดมาเป็นจุดแบ่งพื้นที่บน x หรือ feature space พื้นที่ที่เกิดขึ้นนี้จะเป็น terminal node สำหรับขั้นตอนนี้ ซึ่งจะมีจำนวน 2 terminal node ได้แก่ terminal node เมื่อ <span class="math inline">\(x &lt; 2.7\)</span> และ <span class="math inline">\(x \geq 2.7\)</span> โดยค่าเฉลี่ยของตัวแปรตาม y ใน terminal node <span class="math inline">\(x &lt; 2.7\)</span> มีค่าเท่ากับ 0.705 หน่วย และใน terminal node <span class="math inline">\(x≥2.7\)</span> พบว่าตัวแปรตาม y มีค่าเฉลี่ยเท่ากับ -0.137 หน่วย ซึ่งทำให้ค่า SSE ของแต่ละ terminal node มีค่าเท่ากับ 106.282 และ 427.451 ตามลำดับ และ Total SSE มีค่าเท่ากับ 533.733</p>
+<p>ผู้อ่านจะสังเกตเห็นว่า Total SSE เมื่อมีการสร้าง root node แล้วมีค่าลดต่ำลงเมื่อเปรียบเทียบกับก่อนที่จะสร้าง root node โดย<strong>ความแตกต่างระหว่าง Total SSE ก่อนและภายหลังจากสร้าง root node มีค่าเท่ากับ 692.299 - 533.733 = 158.566 ผลต่างดังกล่าวเรียกว่า information gain</strong> หรือสารสนเทศที่ decision tree สามารถเรียนรู้ได้เพิ่มในแต่ละขั้นตอนของการเรียนรู้</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: rpart</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'rpart'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dials':
+
+    prune</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>เนื่องจากโมเดลข้างต้นยังมีความลำเอียงอยู่ในระดับที่สูงมาก ในมุมมองของอัลกอริทึมจะเห็นว่า information gain ในขั้นตอนก่อนหน้ายังมีค่าสูงอยู่ นั่นหมายความว่ายังมีโอกาสที่อัลกอริทึมจะสามารถเรียนรู้สารสนเทศจากข้อมูลเพิ่มเติมได้อีก อัลกอริทึม decision tree จะทวนซ้ำการดำเนินการข้างต้นอีกครั้งหนึ่ง โดยจะพิจารณาหาจุดตัดที่เหมาะสมภายในแต่ละ terminal nodes ซึ่งใช้เกณฑ์เดียวกันกับการหาจุดตัดในขั้นตอนการสร้าง root node ในข้างต้น รูปด้านล่างแสดงผลลัพธ์ที่ได้จากการทวนซ้ำอัลกอริทึมดังกล่าว ซึ่งจะเห็นว่ามีการแบ่ง terminal node <span class="math inline">\(x \geq 2.7\)</span> เดิมให้กลายเป็น terminal node ใหม่ โดยใช้จุดตัดที่ x = 6.1 ในขั้นตอนนี้ผู้อ่านจะเห็นว่า terminal node <span class="math inline">\(x \geq 2.7\)</span> เดิมจะเปลี่ยนสถานะเป็น internal node ของ decision tree แทน และ terminal node ของโมเดลทำนายจะมีเพิ่มขึ้นจากเดิม 2 nodes กลายเป็น 3 nodes</p>
+<p>จากรูปด้านล่างจะเห็นว่าโมเดลทำนายในขั้นตอนนี้มีประสิทธิภาพในการทำนายมากขึ้น เมื่อเปรียบเทียบกับโมเดลที่มีแต่ root node ในขั้นตอนแรก โดยพบว่า terminal nodes ทั้ง 3 nodes ในโมเดลนี้มีค่า SSE เท่ากับ 106.282, 170.316 และ 73.372 ตามลำดับ ซึ่งจะมี Total SSE เท่ากับ 351.97 และเมื่อเปรียบเทียบกับโมเดล root node ก่อนหน้าจะได้ว่า information gain ของโมเดลทำนายนี้มีค่าเท่ากับ 533.733 - 351.97 = 181.763</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>การดำเนินการตามอัลกอริทึมข้างต้นจะดำเนินการทวนซ้ำไปเรื่อย ๆ จนกระทั่งค่า information gain ที่ได้จะมีค่าน้อยลู่เข้าสู่ 0 ซึ่งหมายความว่าโมเดลไม่สามารถเรียนรู้สารสนเทศใด ๆ จากข้อมูลได้เพิ่มเติมแล้ว รูปด้านล่างแสดงโมเดลทำนายภายหลังจากอัลกอริทึมดังกล่าวหยุดการดำเนินการทวนซ้ำแล้ว จะเห็นว่าการแบ่งส่วนย่อยตามอัลกอริทึม recursive binary partitioning ดังกล่าวทำให้ได้โมเดลทำนายที่สามารถเรียนรู้ความสัมพันธ์เชิงเส้นโค้งที่พบในข้อมูลได้อย่างมีประสิทธิภาพ</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="partitioning-classification-tree" class="level3">
+<h3 class="anchored" data-anchor-id="partitioning-classification-tree">Partitioning: Classification Tree</h3>
+<p>สำหรับปัญหา classification การแบ่งส่วนย่อยดังกล่าวจะในทำนองเดียวกับ regression tree อย่างไรก็ตามการพิจารณาความคลาดเคลื่อนภายใน terminal node จะพิจารณาจากตัวบ่งชี้ที่รูปของดัชนีที่เรียกว่า <strong>impurity</strong> โดย decision tree จะเลือกแบ่งพื้นที่ภายใน feature space ที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำสุด ดัชนี impurity ที่สามารถใช้เป็นเกณฑ์มีหลายตัว เช่น</p>
+<ul>
+<li>Gini index = <span class="math inline">\(\sum p(1-p) = 1-\sum p^2\)</span></li>
+<li>Entropy = <span class="math inline">\(-\sum plog(p)\)</span></li>
+<li>Misclassification rate</li>
+</ul>
+<p>ดัชนี impurity ข้างต้นมีลักษณะเป็นการวัดความแปรปรวนหรือความแตกต่างกันภายใน node ซึ่งสอดคล้องกับความหมายของ SSE ใน regression tree ข้างต้น</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-2146096965.png" class="img-fluid figure-img" style="width:50.0%" alt="การแบ่งส่วนของ feature space"></p>
+<p></p><figcaption class="figure-caption">การแบ่งส่วนของ feature space</figcaption><p></p>
+</figure>
+</div>
+<p>จากรูปตัวอย่างด้านบนจะเห็นว่าเป็นปัญหา classification โดยเป็นการสร้างโมเดลจำแนกนักเรียนระหว่างกลุ่มที่สอบผ่านและสอบตก (สีส้ม และสีน้ำเงิน) โดยใช้ตัวแปรอิสระได้แก่ GPA และ SES เป็นตัวแปรทำนาย ดังนั้นในกรณีนี้ feature space หรือปริภูมิของตัวแปรอิสระจะประกอบด้วย GPA และ SES ที่สามารถ plot เป็นระนาบ 2 มิติได้ดังรูป</p>
+<p>สมมุติว่าผู้วิเคราะห์ต้องการทำนาย deposit โดยใช้ตัวแปรอิสระจำนวน 3 ตัวได้แก่ default, housing และ loan ขั้นแรกของการพัฒนา decision tree คือการกำหนด root node ที่เหมาะสม คำถามคือ ควรใช้ตัวแปรอิสระตัวใดเป็น root node ดีเพราะเหตุใด?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1262716711.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>การพิจารณาว่า root node ตัวใดเหมาะสมที่สุด สามารถพิจารณาได้จากความเป็นเอกพันธ์กันของค่าตัวแปรตามภายในกลุ่มย่อยที่แบ่งโดยตัวแปรอิสระ หรืออาจพิจารณาในทางกลับกันคือดูจากความไม่เป็นเอกพันธ์กันของค่าตัวแปรตามภายในกลุ่มย่อยดังกล่าว ความไม่เป็นเอกพันธ์นี้สามารถวัดได้โดยใช้สถิติในกลุ่มที่เรียกว่า impurity ดังที่ได้กล่าวไว้ข้างต้น</p>
+<p>decision tree จะเลือกตัวแปรและจุดแบ่งที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำที่สุด เพราะนั่นจะหมายถึงตัวแปรและจุดแบ่งดังกล่าวจะทำให้ decision tree สามารถทำนายค่าของตัวแปรตามได้ดีที่สุด จากรูปด้านล่างแสดงการเปรียบเทียบค่า total impurity จากการแบ่ง 3 แบบคือ การแบ่งด้วย Default, Housing และ Loan ซึ่งจะเห็นว่าการแบ่งด้วย Housing ให้ค่า impurity ต่ำที่สุด ดังนั้นการแบ่ง Housing ดังในรูปจึงถูกเลือกเป็น partition ตัวแรกของอัลกอริทึม และจะเรียก Housing ว่า Root node</p>
+<p><img src="images/image-1755337911.png" class="img-fluid" style="width:60.0%"></p>
+<p>Laura Elena Raileanu and Kilian Stoffel, “<a href="https://www.unine.ch/files/live/sites/imi/files/shared/documents/papers/Gini_index_fulltext.pdf">Theoretical comparison between the Gini Index and Information Gain criteria</a>” Annals of Mathematics and Artificial Intelligence 41: 77–93, 2004.</p>
+<p>จากการคำนวณ impurity ด้วย Gini index ข้างต้นจะเห็นว่า Housing เป็นตัวแปรอิสระที่ทำให้ impurity โดยรวมของการแบ่งส่วนย่อยทั้งสองส่วนมีค่าต่ำที่สุด จากเงื่อนไขในตัวอย่างที่กำหนดข้างต้น Housing จึงจะเป็นตัวแปรอิสระที่ถูกเลือกเป็น root node ก่อน ขั้นตอนถัดมาของอัลกอริทึมคือการพิจารณาหา internal nodes ที่จะแบ่งส่วนข้อมูลภายใต้เงื่อนไขของ root node แบ่งไว้ข้างต้น กล่าวง่าย ๆ คือ หาตัวแปรอิสระตัวอื่นมาแบ่งข้อมูลในแต่ละกิ่งของ root node ต่อ</p>
+<p>รูปด้านล่างแสดงการเปรียบเทียบ impurity ของตัวแปรตาม (deposit) ที่เกิดขึ้นจากการแบ่งส่วนข้อมูลภายใต้เงื่อนไขที่ Housing = Yes จากรูปจะเห็นว่าเมื่อใช้ Default เป็นตัวแบ่งจะได้ค่า impurity เท่ากับ 0.9731 แต่ถ้าใช้ Loan เป็นตัวแบ่งจะได้ค่า impurity เป็น 0.1420 ระหว่างตัวแปรอิสระสองตัวนี้ผู้อ่านคิดว่าควรเลือกตัวแปรอิสระใดมาเป็น internal node ในตำแหน่งดังกล่าว</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1494665973.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>การแบ่งส่วนข้อมูลในแต่ละครั้งจะทำให้ความไม่เป็นเอกพันธ์กันของข้อมูลลดลง เพราะข้อมูลจะถูกจัดระเบียบให้ข้อมูลที่มีคุณลักษณะที่คล้ายคลึงกันจะมาอยู่ภายใต้ node เดียวกัน ส่วนข้อมูลที่แตกต่างกันจะอยู่คนละ node ความไม่เป็นระเบียบหรือความไม่เป็นเอกพันธ์ที่ลดลงนี้แปรผกผันกับสารสนเทศที่โมเดลเรียนรู้ได้เพิ่มขึ้น เราเรียกปริมาณสารสนเทศที่โมเดลเรียนรู้ได้เพิ่มขึ้นว่า <strong>information gain</strong> ซึ่งสามารถคำนวณง่าย ๆ โดยใช้ผลต่างของค่า impurity ก่อน และหลังการแบ่ง ดังนี้</p>
+<p><span class="math display">\[information \ gain = Gini(before) = Gini(after)\]</span></p>
+<p><strong>จากรูปข้างต้นจะได้ว่า information gain ของตัวแปร Loan มีค่าเท่ากับ 0.1421 - 0.1420 = 0.0001</strong></p>
+<p>การแบ่งในอัลกอริทึมข้างต้นจะดำเนินไปจนกระทั่ง information gain มีค่าต่ำที่สุดหรือเข้าใกล้ 0 ซึ่งหมายความว่าไม่มีสารสนเทศอะไรที่โมเดลสามารถเรียนรู้ได้แล้ว จุดเด่นของ decision tree คือสามารถเรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นตรงได้ นอกจากนี้ยังมีความแกร่งมากกว่าการวิเคราะห์การถดถอยเชิงเส้น และการวิเคราะห์การถดถอยแบบ logistic นอกจากนี้ decision tree ยังเป็นอัลกอริทึมการเรียนรู้ที่มีความสามารถในการคัดเลือกตัวแปรอิสระในตัวมันเอง <strong>(เพราะอะไร?)</strong></p>
+</section>
+</section>
+<section id="data-preprocessing-สำหรบ-decision-tree" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing-สำหรบ-decision-tree">5.2 Data Preprocessing สำหรับ decision tree</h2>
+<p>Decision tree แบบ recursive binary partitioning เป็นอัลกอริทึมที่มีความยืดหยุ่นต่อข้อมูลนำเข้ามาก กล่าวคือเป็นอัลกอริทึมที่ไม่มีข้อกำหนดเกี่ยวกับข้อมูลนำเข้า ผู้วิเคราะห์สามารถนำข้อมูลของตัวแปรอิสระเข้าสู่อัลกอริทึมได้โดยไม่จำเป็นต้องแปลงตัวแปรเชิงปริมาณให้อยู่ในสเกลมาตรฐาน และไม่จำเป็นต้องแปลงตัวแปรจัดประเภทให้เป็นตัวแปรดัมมี นอกจากนี้ decision tree ยังเป็นอัลกอริทึมที่มีความแกร่งต่อปัญหา multicollinerity และปัญหาตัวแปรอิสระไม่ให้สารสนเทศด้วย เนื่องจาก logic ของอัลกอริทึมที่จะคัดเลือกตัวแปรอิสระที่ให้จุดแบ่งพื้นที่ที่ทำให้ค่าความคลาดเคลื่อนรวมต่ำที่สุด decision tree ดังกล่าวจึงมีความสามารถในการคัดเลือกตัวแปรอิสระในตัวมันเอง ถือว่าเป็น feature selection ประเภท embedded method ตัวหนึ่ง</p>
+</section>
+<section id="hyperparameters-สำหรบ-decision-tree" class="level2">
+<h2 class="anchored" data-anchor-id="hyperparameters-สำหรบ-decision-tree">5.3 Hyperparameters สำหรับ decision tree</h2>
+<p>decision tree ที่ใช้อัลกรอิทึมการเรียนรู้แบบ recursive binary partitioning สามารถประมวลผลบน tidymodels frameworks โดยใช้ engine rpart ทั้งนี้อัลกอริทึมดังกล่าวจะมี hyperparameters ที่สามารถปรับแต่งได้จำนวน 3 ตัวได้แก่</p>
+<ul>
+<li><p><code>cost_complexity</code> คือค่าคงที่ <span class="math inline">\(\alpha &gt; 0\)</span> เรียกว่า penalty term เมื่อมีการกำหนดค่านี้ฟังก์ชันวัตถุประสงค์ของ decision tree จะมีการเพิ่ม penalty term ดังกล่าวเข้ามาเป็นดังนี้ <span class="math inline">\(E_{reg}(T) = E(T)+\alpha|T|\)</span> โดยที่ <span class="math inline">\(E(T)\)</span> คือ total error หรือ total impurity ของ terminal nodes จากลักษณะของฟังก์ชันวัตถุประสงค์ดังกล่าวจะเห็นว่า <span class="math inline">\(\alpha\)</span> เป็น hyperparameter ที่จะทำให้ total error ดังกล่าวมีค่าสูงขึ้น ซึ่งทำให้การแบ่ง terminal nodes ทำได้ยากขึ้น ยิ่งกำหนดให้ <span class="math inline">\(\alpha\)</span> มีค่ามากขึ้น ความยากในการแบ่ง terminal nodes ก็จะยากขึ้นเรื่อย ๆ การกำหนด hyperparameter ดังกล่าวจึงเป็นการควบคุมไม่ให้ decision tree แบ่งส่วนพื้นที่ย่อยมากเกินไปจนทำให้เกิดปัญหา overfitting</p></li>
+<li><p><code>tree_depth</code> ใช้กำหนดความลึกของต้นไม้ที่สูงที่สุดนับจาก root node ค่าเริ่มต้นคือ 30 การกำหนด hyperparameter ค่านี้จึงช่วยควบคุมความลึกหรือความซับซ้อนของโมเดลทำนายที่สร้างจาก decision tree โดยตรง</p></li>
+<li><p><code>min_n</code> จำนวนหน่วยข้อมูลขั้นต่ำที่ต้องมีในแต่ละ terminal node ค่าเริ่มต้นคือ 20 การกำหนด hyperparameter นี้ทำให้อัลกอริทึมจะไม่สามารถแบ่ง terminal nodes จนมีขนาดเล็กเกินไปได้ เป็นการควบคุมความลึกหรือความซับซ้อนของโมเดลทำนายที่ได้จาก decision tree เช่นเดียวกัน</p></li>
+</ul>
+<p>ลองพิจาณา decision tree ที่มีการกำหนด hyperparameter ที่แตกต่างกันด้านล่าง จะเห็นว่าโมเดลทำนายที่ได้จะมีขนาดและความซับซ้อนที่แตกต่างกันไปขึ้นอยู่กับการกำหนด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span>dat[,<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">min_n=</span><span class="dv">10</span>, <span class="at">cost_complexity =</span> <span class="dv">10</span><span class="sc">^-</span><span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit</span>(salary <span class="sc">~</span>., <span class="at">data=</span>dat)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">min_n=</span><span class="dv">10</span>, <span class="at">cost_complexity =</span> <span class="dv">10</span><span class="sc">^-</span><span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit</span>(salary <span class="sc">~</span>., <span class="at">data=</span>dat)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">min_n=</span><span class="dv">10</span>, <span class="at">cost_complexity =</span> <span class="dv">10</span><span class="sc">^-</span><span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_mode</span>(<span class="st">"regression"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit</span>(salary <span class="sc">~</span>., <span class="at">data=</span>dat)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>fit1<span class="sc">$</span>fit <span class="sc">%&gt;%</span> <span class="fu">rpart.plot</span>(<span class="at">main =</span> <span class="st">"min_n=10, cost_complexity = 10^-5"</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>fit2<span class="sc">$</span>fit <span class="sc">%&gt;%</span> <span class="fu">rpart.plot</span>(<span class="at">main =</span> <span class="st">"min_n=10, cost_complexity = 10^-3"</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>fit3<span class="sc">$</span>fit <span class="sc">%&gt;%</span> <span class="fu">rpart.plot</span>(<span class="at">main =</span> <span class="st">"min_n=10, cost_complexity = 10^-2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="03TreeModels_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>ปัญหาเกี่ยวกับการกำหนด hyperparameters ข้างต้นคือ ผู้วิเคราะห์ไม่สามารถประมาณค่าพารามิเตอร์ดังกล่าวจากข้อมูลได้โดยตรง การกำหนดค่าที่เหมาะสมให้กับ hyperparameters ดังกล่าวจะใช้ validation dataset ที่สร้างขึ้นจากกระบวนการสุ่มซ้ำ (resampling) มาช่วยในการประมาณค่าความคลาดเคลื่อนของโมเดลทำนาย (เรียกว่า validation error) เมื่อมีการกำหนด hyperparameters เป็นค่าต่าง ๆ จากนั้นทำการวิเคราะห์ผลโดยเลือกชุดของค่า hyperparameters ที่ทำให้ validation error มีค่าต่ำที่สุดไปใช้ในโมเดล เรียกกระบวนการนี้ว่า hyperparameter tuning</p>
+</section>
+<section id="hyperparameter-tuning-using-tidymodels-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="hyperparameter-tuning-using-tidymodels-workflow">5.4 Hyperparameter tuning using tidymodels Workflow</h2>
+<p>บทเรียนนี้จะกล่าวถึงหลักและวิธีการปรับแต่ง hyperparameter ของอัลกอริทึมการเรียนรู้ โดยจะใช้อัลกอริทึม decision tree เป็นตัวอย่าง โดยจะสร้างโมเดลทำนายเงินเดือนครู ข้อมูลที่ใช้ได้จาก <code>classification.csv</code> รายละเอียดมีดังนี้</p>
+<section id="hyperparameter-tuning" class="level3">
+<h3 class="anchored" data-anchor-id="hyperparameter-tuning">Hyperparameter Tuning</h3>
+<p>ดังที่ได้กล่าวไปก่อนหน้านี้แล้วว่า hyperparameter เป็นพารามิเตอร์ในอัลกอริทึมการเรียนรู้ที่ไม่สามารถประมาณค่าได้โดยตรง ดังนั้นกระบวนการกำหนดค่า hyperparameter ให้เหมาะสมจึงจะใช้เทคนิคการสุ่มซ้ำ (reampling) เข้ามาช่วย ซึ่งมีขั้นตอนการดำเนินการดังนี้</p>
+<ol type="1">
+<li>นำชุดข้อมูลฝึกหัดที่จะใช้พัฒนาโมเดลมาแบ่งออกเป็นสองส่วนด้วยวิธีการสุ่มซ้ำ (หรือ random sampling with replacement) ส่วนแรกจะเรียกว่า training data และส่วนที่สองจะเรียกว่า validation data</li>
+<li>การสุ่มซ้ำในข้อ 1. สามารถทำได้หลายวิธีการ เช่น การทำ k-folds CV หรือการทำ bootstrapping โดยปกติ bootstrapping เป็นวิธีการที่มีแนวโน้มจะให้ผลการประมาณประสิทธิภาพการทำนายของโมเดลที่แม่นยำกว่า k-folds CV แต่เหมาะสำหรับสถานการณ์ที่ผู้วิเคราะห์มีชุดข้อมูลฝึกหัดที่มีขนาดใหญ่ ในกรณีที่ชุดข้อมูลฝึกหัดมีขนาดเล็กควรเลือกใช้ k-folds CV</li>
+<li>กำหนดโมเดลการเรียนรู้ที่ใช้ และกำหนดค่า hyperparameters ที่ต้องการปรับแต่ง</li>
+<li>สร้าง grid ของ hyperparameters เพื่อใช้ทดลองกำหนดให้กับโมเดล การสร้าง grid ดังกล่าวอาจทำได้สองวิธีการ วิธีการแรกเรียกว่า regular grid เป็นการสร้าง grid จาก combination ทั้งหมดของค่า hyperparameter ที่เป็นไปได้ ส่วนวิธีการที่สองเรียกว่า random grid ที่การสุ่มตัวอย่างของ grid combination มาทำการศึกษา</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1368790715.png" class="img-fluid figure-img" style="width:60.0%" alt="https://community.alteryx.com/t5/Data-Science/Hyperparameter-Tuning-Black-Magic/ba-p/449289"></p>
+<p></p><figcaption class="figure-caption">https://community.alteryx.com/t5/Data-Science/Hyperparameter-Tuning-Black-Magic/ba-p/449289</figcaption><p></p>
+</figure>
+</div>
+<ol start="5" type="1">
+<li>นำ hyperparameter แต่ละชุดภายใน grid ที่กำหนดไว้ในข้อ 4. (ในที่นี้สมมุติจะเรียกว่าชุด A) กำหนดให้กับอัลกอริทึมจากนั้นดำเนินการประมวลผลกับชุดข้อมูลฝึกหัดเพื่อสร้างโมเดลทำนาย</li>
+<li>เมื่อได้โมเดลทำนายในข้อ 5. จะนำโมเดลไปใช้ทำนายหรือจำแนกข้อมูลใน validation data แล้วคำนวณเป็นค่าประสิทธิภาพการทำนาย</li>
+<li>สลับชุดข้อมูล training และ validation จากนั้นทวนซ้ำข้อ 5 และ 6 จนครบ ค่าเฉลี่ยของประสิทธิภาพที่ได้จะเป็นประสิทธิภาพจากการกำหนด hyperparameter ชุด A</li>
+<li>เปลี่ยน hyperparamter เป็นชุดต่อไปแล้วทวนซ้ำข้อ 5 - 7</li>
+<li>นำค่าประมาณประสิทธิภาพของ hyperparameter แต่ละชุดมาเปรียบเทียบกัน แล้วเลือกชุดของ hyperparameter ที่มีประสิทธิภาพสูงที่สุดเป็นค่า hyperparameter ของโมเดล</li>
+</ol>
+<p>การดำเนินการข้างต้นสามารถทำได้ใน tidymodels ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/classification.csv"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>Class)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span>dat[,<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(dat, <span class="at">prop =</span> <span class="fl">0.8</span>,<span class="at">strata =</span> Class)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(train)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="do">## recipe</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>class_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Class <span class="sc">~</span> . , <span class="at">data=</span>train)<span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_string2factor</span>(Class, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"drop"</span>,<span class="st">"stay"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>()</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>train_preproc <span class="ot">&lt;-</span> class_rec <span class="sc">%&gt;%</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="cn">NULL</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>test_preproc <span class="ot">&lt;-</span> class_rec <span class="sc">%&gt;%</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> test)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>train_preproc_resamples <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train_preproc,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">v=</span><span class="dv">5</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">repeats=</span><span class="dv">1</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="do">## model specification</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>tree_mod <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">cost_complexity =</span> <span class="fu">tune</span>(),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                          <span class="at">min_n =</span> <span class="fu">tune</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="do">## create workflow</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>tree_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(class_rec) <span class="sc">%&gt;%</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(tree_mod)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="do">## create grid</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">parameters</span>(<span class="fu">cost_complexity</span>(),</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>                <span class="fu">min_n</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">40</span>)))</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>regular_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(p, <span class="at">levels=</span><span class="dv">5</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>eval_metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(roc_auc,sens, spec)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>clt <span class="ot">&lt;-</span> <span class="fu">control_grid</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>                    <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>                    <span class="at">parallel_over =</span> <span class="st">"everything"</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>tune_mod <span class="ot">&lt;-</span> tree_workflow <span class="sc">%&gt;%</span> </span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(<span class="at">resamples =</span> train_preproc_resamples,</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">grid =</span> regular_grid,</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>            <span class="at">metrics =</span> eval_metric,</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>            <span class="at">control =</span> clt</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>tune_mod <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>()</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>best<span class="ot">&lt;-</span><span class="fu">show_best</span>(tune_mod, <span class="at">n=</span><span class="dv">30</span>, <span class="at">metric=</span><span class="st">"sens"</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>best</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>final_tree <span class="ot">&lt;-</span> tree_workflow <span class="sc">%&gt;%</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(best[<span class="dv">1</span>,]) <span class="sc">%&gt;%</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(split,</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>           <span class="at">metrics =</span> eval_metric)</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="do">### visualizing tree model</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>final_tree<span class="sc">$</span>.workflow[[<span class="dv">1</span>]]<span class="sc">$</span>fit<span class="sc">$</span>fit<span class="sc">$</span>fit <span class="sc">%&gt;%</span> </span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>final_tree <span class="sc">%&gt;%</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rpart.plot</span>(<span class="at">roundint=</span>F)</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="do">### Evaluate performance on test datset</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>final_tree <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2023, DataKruRoo</div>   
+    <div class="nav-footer-right">This page is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

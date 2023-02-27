@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+
+<title>2758688 ML PRIN APPLN - ความรู้พื้นฐานเกี่ยวกับ ML</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta property="og:title" content="2758688 ML PRIN APPLN - ความรู้พื้นฐานเกี่ยวกับ ML">
+<meta property="og:description" content="ปัจจุบันคอมพิวเตอร์ได้เข้ามามีบทบาทอย่างมากกับมนุษย์ โดยเข้ามามีส่วนช่วยเหลือ สนับสนุน หรือแม้กระทั่งทำงานแทนมนุษย์ให้หลาย ๆ งาน…">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">ความรู้พื้นฐานเกี่ยวกับ ML</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://cmgr.oit.duke.edu/containers" title="RStudio Containers" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
+    <a href="" title="Sakai" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/13b6446a-a6c6-4222-8cfb-c36d1f70802b">
+          Discussion forum
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/page/aec742dc-2972-4f02-a35b-1dd3315af889">
+          Gradescope
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/69078433-67a6-4054-a2e7-9e6c202ecdc3/">
+          Gradebook
+          </a>
+        </li>
+    </ul>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-overview.qmd" class="sidebar-item-text sidebar-link">Overview</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-syllabus.qmd" class="sidebar-item-text sidebar-link">Syllabus</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-team.qmd" class="sidebar-item-text sidebar-link">Teaching team</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-links.qmd" class="sidebar-item-text sidebar-link">Useful links</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-faq.qmd" class="sidebar-item-text sidebar-link">FAQ</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Weekly materials</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-1.qmd" class="sidebar-item-text sidebar-link">Week 1</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-2.qmd" class="sidebar-item-text sidebar-link">Week 2</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-3.qmd" class="sidebar-item-text sidebar-link">Week 3</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-4.qmd" class="sidebar-item-text sidebar-link">Week 4</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../weeks/week-5.qmd" class="sidebar-item-text sidebar-link">Week 5</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">สารบัญ</h2>
+   
+  <ul>
+  <li><a href="#บทท-1-ความรพนฐานเกยวกบการเรยนรของเครอง" id="toc-บทท-1-ความรพนฐานเกยวกบการเรยนรของเครอง" class="nav-link active" data-scroll-target="#บทท-1-ความรพนฐานเกยวกบการเรยนรของเครอง">บทที่ 1 ความรู้พื้นฐานเกี่ยวกับการเรียนรู้ของเครื่อง</a>
+  <ul class="collapse">
+  <li><a href="#whats-algorithms" id="toc-whats-algorithms" class="nav-link" data-scroll-target="#whats-algorithms">1.1 What’s algorithms?</a></li>
+  <li><a href="#กจกรรม-rule-based-algorithm" id="toc-กจกรรม-rule-based-algorithm" class="nav-link" data-scroll-target="#กจกรรม-rule-based-algorithm">1.2 กิจกรรม Rule-based algorithm</a></li>
+  <li><a href="#ai-vs-ml-vs-dl" id="toc-ai-vs-ml-vs-dl" class="nav-link" data-scroll-target="#ai-vs-ml-vs-dl">1.3 AI vs ML vs DL</a></li>
+  <li><a href="#data-analysis-vs-data-analytics" id="toc-data-analysis-vs-data-analytics" class="nav-link" data-scroll-target="#data-analysis-vs-data-analytics">1.4 Data Analysis vs Data Analytics</a></li>
+  <li><a href="#types-of-machine-learning" id="toc-types-of-machine-learning" class="nav-link" data-scroll-target="#types-of-machine-learning">1.5 Types of Machine Learning?</a>
+  <ul class="collapse">
+  <li><a href="#supervised-learning" id="toc-supervised-learning" class="nav-link" data-scroll-target="#supervised-learning">Supervised Learning</a></li>
+  <li><a href="#unsupervised-learning" id="toc-unsupervised-learning" class="nav-link" data-scroll-target="#unsupervised-learning">Unsupervised Learning</a></li>
+  <li><a href="#reinforcement-learning" id="toc-reinforcement-learning" class="nav-link" data-scroll-target="#reinforcement-learning">Reinforcement Learning</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#บทท-2-ความรพนฐานในการพฒนา-supervised-learning" id="toc-บทท-2-ความรพนฐานในการพฒนา-supervised-learning" class="nav-link" data-scroll-target="#บทท-2-ความรพนฐานในการพฒนา-supervised-learning">บทที่ 2 ความรู้พื้นฐานในการพัฒนา Supervised Learning</a>
+  <ul class="collapse">
+  <li><a href="#ตดตง-r-และ-rstudio" id="toc-ตดตง-r-และ-rstudio" class="nav-link" data-scroll-target="#ตดตง-r-และ-rstudio">2.1 ติดตั้ง R และ RStudio</a></li>
+  <li><a href="#ตดตง-anaconda" id="toc-ตดตง-anaconda" class="nav-link" data-scroll-target="#ตดตง-anaconda">2.2 ติดตั้ง Anaconda</a></li>
+  <li><a href="#กจกรรม-my-first-regression" id="toc-กจกรรม-my-first-regression" class="nav-link" data-scroll-target="#กจกรรม-my-first-regression">2.3 กิจกรรม My First Regression</a>
+  <ul class="collapse">
+  <li><a href="#fitting-linear-regression-using-lm" id="toc-fitting-linear-regression-using-lm" class="nav-link" data-scroll-target="#fitting-linear-regression-using-lm">Fitting Linear Regression using <code>lm()</code></a></li>
+  <li><a href="#evaluation-metrics" id="toc-evaluation-metrics" class="nav-link" data-scroll-target="#evaluation-metrics">Evaluation Metrics</a></li>
+  </ul></li>
+  <li><a href="#กจกรรม-my-first-classification" id="toc-กจกรรม-my-first-classification" class="nav-link" data-scroll-target="#กจกรรม-my-first-classification">2.4 กิจกรรม My First Classification</a>
+  <ul class="collapse">
+  <li><a href="#fitting-logistic-regression-model-using-glm" id="toc-fitting-logistic-regression-model-using-glm" class="nav-link" data-scroll-target="#fitting-logistic-regression-model-using-glm">Fitting Logistic Regression Model using <code>glm()</code></a></li>
+  <li><a href="#evaluation-metrics-1" id="toc-evaluation-metrics-1" class="nav-link" data-scroll-target="#evaluation-metrics-1">Evaluation Metrics</a></li>
+  <li><a href="#คำถามทายบท" id="toc-คำถามทายบท" class="nav-link" data-scroll-target="#คำถามทายบท">คำถามท้ายบท</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">ความรู้พื้นฐานเกี่ยวกับ ML</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="บทท-1-ความรพนฐานเกยวกบการเรยนรของเครอง" class="level1">
+<h1>บทที่ 1 ความรู้พื้นฐานเกี่ยวกับการเรียนรู้ของเครื่อง</h1>
+<p>ปัจจุบันคอมพิวเตอร์ได้เข้ามามีบทบาทอย่างมากกับมนุษย์ โดยเข้ามามีส่วนช่วยเหลือ สนับสนุน หรือแม้กระทั่งทำงานแทนมนุษย์ให้หลาย ๆ งาน ส่วนประกอบสำคัญส่วนหนึ่งของคอมพิวเตอร์ที่จะขาดไปไม่ได้ในการดำเนินงาน/กิจกรรมต่าง ๆ คือโปรแกรมคอมพิวเตอร์</p>
+<p>ที่ผ่านมากโปรแกรมคอมพิวเตอร์ถูกพัฒนาขึ้นเป็นจำนวนมาก รวมถึงศาสตร์ในด้านการพัฒนาโปรแกรมคอมพิวเตอร์ก็ถูกพัฒนาไปอย่างมากเช่นกัน เราอาจจำแนกส่วนประกอบของโปรแกรมคอมพิวเตอร์ได้เป็น 2 ส่วนได้แก่ ส่วนต่อประสานกับผู้ใช้ (user interface: UI) และส่วนประมวลผลหรือควบคุมการทำงานของโปรแกรมซึ่งในเชิงเทคนิคเรียกว่า <strong>อัลกอริทึม (algorithm)</strong> ของโปรแกรม ทั้งนี้ในโปรแกรมหนึ่ง ๆ อาจมีอัลกอริทึมมากกว่าหนึ่งตัวก็ได้</p>
+<p>บทเรียนนี้จะกล่าวถึงภาพรวมของมโนทัศน์และคำศัพท์ที่เกี่ยวข้องกับศาสตร์การเรียนรู้ของเครื่องเพื่อเป็นพื้นฐานสำหรับการศึกษาในบทเรียนอื่น ๆ ต่อไป รายละเอียดมีดังนี้</p>
+<section id="whats-algorithms" class="level2">
+<h2 class="anchored" data-anchor-id="whats-algorithms">1.1 What’s algorithms?</h2>
+<p>อัลกอริทึมคือกระบวนการในการดำเนินงานที่มีขั้นตอนอย่างชัดเจน โดยมีวัตถุประสงค์เพื่อทำงาน/แก้ปัญหาที่กำหนดให้สำเร็จ การใช้อัลกอริทึมในการทำงานนั้นไม่ได้จำกัดเฉพาะงานทางด้านคอมพิวเตอร์ หรือสถิติและวิทยาการข้อมุลเท่านั้น แต่ในชีวิตประจำวันเราก็มีการใช้อัลกอริทึมเพื่อดำเนินงานต่าง ๆ อยู่เป็นประจำ เช่น</p>
+<ul>
+<li><p>การเดินทางจากบ้านไปยังร้านขายของสะดวกซื้อ งานดังกล่าวสามารถเขียนแยกแยะออกมาเป็นขั้นตอนการเดินทางโดยอาจเริ่มตั้งแต่การออกประตูบ้าน เลี้ยวขวา เดินตรงไป เมื่อพบสามแยกให้เลี้ยวขวาอีกครั้งจะพบร้านสะดวกซื้อ</p></li>
+<li><p>การทอดไข่เจียวที่อาจเริ่มจากการตั้งไฟ ใส่น้ำมัน ตอกไข่ ตีไข่ ใส่เครื่องปรุง ทอดไข่ และนำไข่เจียวที่ได้เสริฟ</p></li>
+</ul>
+<p>ปัจจุบันโลกได้ก้าวเข้าสู่ยุคที่ให้เครื่องจักรทำงานบางอย่างแทนมนุษย์ได้ ซึ่งเบื้องหลังการดำเนินการของเครื่องจักรต่าง ๆ จำเป็นต้องมีอัลกอริทึมที่ใช้สำหรับควบคุมการทำงาน การพัฒนาอัลกอริทึมดังกล่าวอาจทำได้สองวิธีการ <strong>วิธีการแรกเรียกว่า rule-based algorithm</strong> ที่ผู้พัฒนาเป็นผู้กำหนดขั้นตอนวิธีการทำงานและประมวลผลทั้งหมด เพื่อให้เป็นภาพของ rule-based algorithm ผู้อ่านลองพิจารณาตัวอย่างในรูปด้านล่าง</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-744969239.png" class="img-fluid figure-img" style="width:80.0%" alt="7-segment display problem (ที่มา: wikipedia)"></p>
+<p></p><figcaption class="figure-caption">7-segment display problem (ที่มา: wikipedia)</figcaption><p></p>
+</figure>
+</div>
+<p>รูปข้างต้นเป็นปัญหาชื่อว่า 7-segment display วัตถุประสงค์คือต้องการพัฒนาโปรแกรมที่จะใช้จำแนกตัวเลขบนป้ายไฟแบบ Digital โดยบนป้ายไฟมีไฟ LED จำนวน 7 หลอด ได้แก่ A, B, C, D, E, F และ G การเปิด/ปิดไฟอย่างเหมาะสมตามตารางในรูป จะทำให้ได้ตัวเลข 0-9 บนป้ายไฟ</p>
+<p>จากปัญหาข้างต้นการพัฒนาโปรแกรมสำหรับจำแนกตัวเลขบนป้าย (classifier) ด้วยวิธีการแบบ rule-based ผู้วิเคราะห์จะต้องมี sensor เพื่อตรวจจับการเปิด/ปิดไฟแต่ละตำแหน่งบนป้าย จากนั้นจึงพัฒนาโปรแกรมเพื่ออ่านค่าของตัวเลข โดยอัลกอริทึมแบบ rule-based อาจมีลักษณะเป็นการเขียนคำสั่งด้วยการใช้ IF…ELSE ดังนี้</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1919829854.png" class="img-fluid figure-img" style="width:65.0%" alt="Rule-based Classifier"></p>
+<p></p><figcaption class="figure-caption">Rule-based Classifier</figcaption><p></p>
+</figure>
+</div>
+<p>การพัฒนา rule-based algorithms ไม่ได้จำเป็นต้องใช้แค่ if…else แต่เพียงอย่างเดียว แต่สามารถใช้กระบวนการทางคณิตศาสตร์เข้ามาช่วยในการสร้างได้ ลองพิจารณาตัวอย่างในกิจกรรมต่อไปนี้</p>
+</section>
+<section id="กจกรรม-rule-based-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-rule-based-algorithm">1.2 กิจกรรม Rule-based algorithm</h2>
+<p>ข้อมูลในตาราง 1 ประกอบด้วยคะแนนสอบ (score) กับคะแนนพฤติกรรมการเรียนของนักเรียน (behav) ลองดำเนินการดังนี้</p>
+<ol type="1">
+<li>ลองวิเคราะห์ความสัมพันธ์เบื้องต้นระหว่าง <code>score</code> กับ <code>behav</code> ความสัมพันธ์ระหว่างตัวแปรทั้งสองมีลักษณะเป็นอย่างไร</li>
+<li>หากใช้วิธีการทางคณิตศาสตร์เพื่อสร้างสมการที่จะใช้เป็นตัวแทนความสัมพันธ์ที่พบในข้อ 1. จะได้สมการเป็นอย่างไร</li>
+<li>สมการที่สร้างได้จากข้อ 2. มีประสิทธิภาพในการทำนาย <code>score</code> ดีหรือไม่ อย่างไร</li>
+</ol>
+<div class="cell" data-layout-align="left">
+<div class="cell-output-display">
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> behav </th>
+   <th style="text-align:right;"> score </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>ตัวอย่างในข้างต้นแสดงให้เห็นว่า ในกรณีที่ข้อมูลนำเข้าไม่มีความคลาดเคลื่อนหรือมีความคลาดเคลื่อนอยู่ในระดับต่ำมาก ๆ การพัฒนาโปรแกรมด้วยวิธีการแบบ rule-based ก็สามารถทำได้อย่างมีประสิทธิภาพ อย่างไรก็ตามในปัญหาทั่วไปในโลกจริงเป็นการยากที่จะมีข้อมูลนำเข้าที่มีคุณสมบัติดังกล่าว ผู้อ่านลองพิจารณาปัญหา Handwriting Digit Recognition (Geron, 2019) ซึ่งเป็นปัญหาการจำแนกตัวเลขเช่นเดียวกับปัญหา 7-segment display ข้างต้น แต่มีความแตกต่างกันคือ input feature สำหรับปัญหานี้จะเป็นลายมือของคนจริง ๆ ไม่ใช่ข้อมูลแบบ binary ของไฟ LED</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1795009334.png" class="img-fluid figure-img" style="width:40.0%" alt="Handwritting Digit Recognition"></p>
+<p></p><figcaption class="figure-caption">Handwritting Digit Recognition</figcaption><p></p>
+</figure>
+</div>
+<p>จากรูปข้างต้นจะเห็นว่าการเขียนกฎเกณฑ์แบบ rule-based เพื่อจำแนกตัวเลขในรูปข้างต้นทำได้ยากมากและเป็นไปแทบไม่ได้เลยที่จะพัฒนาอัลกอริทึมแบบ rule-based สำหรับจำแนกตัวเลขจากลายมือดังกล่าวได้อย่างมีประสิทธิภาพ ดังนั้นการที่จะพัฒนาโปรแกรมให้ทำงานแทนมนุษย์ได้จริง ๆ นั้น วิธีการแบบบ rule-based เป็นวิธีการที่ยังมีข้อจำกัดอยู่มาก ทั้งนี้เพราะเป็นวิธีการขาดความยืดหยุ่นและไม่สามารถใช้ได้ดีหากข้อมูลนำเข้ามีความแตกต่างไปจากกฎเกณฑ์ที่วางเอาไว้แม้จะเพียงเล็กน้อย จึงมีแนวโน้มที่จะเกิดความคลาดเคลื่อนสูงมากเมื่อนำโปรแกรมแบบ rule-based ไปใช้ในสถานการณ์ทั่วไป</p>
+<p><strong>วิธีการที่สองเรียกว่า machine learning-based</strong> ที่เป็นวิธีการสมัยใหม่และปัจจุบันถูกใช้เป็นวิธีการหลักวิธีหนึ่งในการพัฒนาโปรแกรม การเรียนรู้ของเครื่อง เป็นศาสตร์ย่อยแขนงหนึ่งภายใต้ศาสตร์ทางด้านสถิติและวิทยาการข้อมูล ซึ่งเกี่ยวข้องกับการพัฒนาและใช้อัลกอริทึม ที่มีความสามารถในการเรียนรู้สารสนเทศจากข้อมูลได้ แล้วนำสารสนเทศดังกล่าวมาใช้งาน อัลกอริทึมในกลุ่มนี้ถูกใช้มากสำหรับการสร้างโมเดลเพื่อทำนาย จำแนก หรือตัดสินใจ โดยโมเดลที่สร้างขึ้นจะมีความแตกต่างไปจากโมเดลที่ได้จากอัลกอริทึมแบบ rule-based ตรงที่มีการใช้วิธีการทางสถิติและความน่าจะเป็นเข้ามาช่วยจัดการกับความคลาดเคลื่อนที่อาจเกิดขึ้นในข้อมูลนำเข้า โมเดลที่พัฒนาขึ้นจึงมีความยืดหยุ่นและมีประสิทธิภาพมากกว่าโมเดลที่พัฒนาด้วยอัลกอรทึมแบบ rule-based ประสิทธิภาพดังกล่าวไม่ได้หมายถึงประสิทธิภาพในการทำนายแต่เพียงอย่างเดียว แต่ยังหมายถึงประสิทธิภาพในการพัฒนาโมเดลด้วย</p>
+<p>รูปต่อไปนี้แสดงความแตกต่างระหว่าง rule-based กับ ML-based algorithm</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://www.epam.com/insights/blogs/making-ai-more-human-black-box-models-lead-to-better-decision-making"><img src="images/image-1843582165.png" class="img-fluid figure-img" style="width:65.0%" alt="rule-based vs ML-based (https://www.epam.com/insights/blogs/making-ai-more-human-black-box-models-lead-to-better-decision-making)"></a></p>
+<p></p><figcaption class="figure-caption">rule-based vs ML-based</figcaption><p></p>
+</figure>
+</div>
+<p>ตัวอย่างต่อไปนี้แสดงการใช้ ML-based เพื่อจำแนกตัวเลขจากลายมือในปัญหา Handwriting Digit Recognition ข้างต้น</p>
+<ul>
+<li><p><a href="https://www.kaggle.com/code/pranjalrathore/digit-recognizer-minst" class="uri">https://www.kaggle.com/code/pranjalrathore/digit-recognizer-minst</a></p></li>
+<li><p><a href="https://www.kaggle.com/code/alphaghostusmc/mnist-cnnv2" class="uri">https://www.kaggle.com/code/alphaghostusmc/mnist-cnnv2</a></p></li>
+<li><p><a href="https://www.kaggle.com/code/kobakhit/digital-recognizer-in-r" class="uri">https://www.kaggle.com/code/kobakhit/digital-recognizer-in-r</a></p></li>
+<li><p><a href="https://www.kaggle.com/code/ivoruaro/mnist-xgboost-r" class="uri">https://www.kaggle.com/code/ivoruaro/mnist-xgboost-r</a></p></li>
+</ul>
+</section>
+<section id="ai-vs-ml-vs-dl" class="level2">
+<h2 class="anchored" data-anchor-id="ai-vs-ml-vs-dl">1.3 AI vs ML vs DL</h2>
+<p>ปัจจุบันมีการใช้คำว่า AI, ML และ DL แทนกันไปมาจนบางครั้งเหมือนว่าจะเป็นคำเดียวกัน ในความเป็นจริงทั้งสามคำดังกล่าวม่ได้เป็นสิ่งเดียวกันเลยทีเดียว แต่มีทั้งส่วนที่เหมือนและแตกต่างกัน รายละเอียดมีดังนี้</p>
+<ul>
+<li><p><strong>AI ย่อมาจาก Artificial Intelligent</strong> เป็นเทคนิคหรือวิธีการที่นักวิทยาการข้อมูลใช้เพื่อพัฒนาโปรแกรมคอมพิวเตอร์ รวมถึงหุ่นยนต์หรือจักรกลที่สามารถเลียนแบบการทำงานต่าง ๆ ของมนุษย์ได้ AI จะมีความสามารถในการทำงานใกล้เคียงหรือดีกว่ามนุษย์ ทั้งความสามารถในการจดจำ จำแนก และตัดสินใจดำเนินงานเองโดยอาศัยข้อมูลที่เป็นไปได้ทั้งข้อมูลตัวเลข ข้อความ รูปภาพ และเสียง ตัวอย่างของ AI เช่น รถยนต์หรือยานพาหนะไร้คนขับ, AlphaGo - DeepMind, Chatgpt เป็นต้น</p></li>
+<li><p><strong>Machine Learning (ML)</strong> เป็นกลุ่มของเทคนิคหรือศาสตร์ย่อยแขนงนึงภายใต้ AI ที่เกี่ยวข้องกับการใช้ประยุกต์ใช้ทฤษฎีทางสถิติและคณิตศาสตร์เพื่อเรียนรู้หรือสกัดสารสนเทศจากข้อมูล สารสนเทศดังกล่าวสามารถนำมาใช้ได้หลายลักษณะ ทั้งการบรรยาย อธิบาย ทำนาย และตัดสินใจ ML ถือเป็นส่วนประกอบที่สำคัญที่สนับสนุนการทำงานของ AI</p></li>
+<li><p><strong>Deep Learning (DL)</strong> เป็นแขนงย่อย (subdivision) ของ ML ที่เกี่ยวข้องกับการใช้เทคนิคที่เรียกว่าเครือข่ายประสาทเทียม (artificial neural network: ANN) ที่มีความลึกของเครือข่ายหลายชั้นเพื่อเรียนรู้หรือสกัดสารสนเทศจากข้อมูลและใช้ในวัตถุประสงค์หลักคือเพื่อทำนาย/จำแนกค่าสังเกตของตัวแปรตาม นอกจากนี้ลักษณะเฉพาะตัวที่โดดเด่นของ DL คือเครือข่ายประสาทเทียมที่ใช้ในการเรียนรู้นั้นถูกพัฒนาขึ้นเลียนแบบการทำงานของเซลล์เครือข่ายสมองของมนุษย์ การเรียนรู้ของเครื่องที่ใช้ DL จึงสามารถเรียนรู้ข้อมูลที่มีความซับซ้อนเช่น ข้อความ ภาพ และเสียงได้มีประสิทธิภาพมากกว่าการใช้เทคนิค ML แบบปกติ</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://k21academy.com/datascience/deep-learning/dl-vs-ml/"><img src="images/image-744630750.png" class="img-fluid figure-img" style="width:70.0%" alt="https://k21academy.com/datascience/deep-learning/dl-vs-ml/"></a></p>
+<p></p><figcaption class="figure-caption">AI, ML และ DL</figcaption><p></p>
+</figure>
+</div>
+<p>จากความหมายในข้างต้นจะเห็นว่า DL ถือเป็น machine learning ตัวหนึ่งที่ใช้ในวัตถุประสงค์เพื่อทำนายหรือจำแนกค่าสังเกตของตัวแปรตาม เมื่อเปรียบเทียบความแตกต่างระหว่าง machine learning algorithm ในกลุ่มที่ใช้สำหรับทำนาย กับ DL มีความแตกต่างหนึ่งที่เห็นได้อย่างชัดเจนคือในส่วนของกระบวนการเรียนรู้ของโมเดล ดังรูปด้านล่าง</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1871870544.png" class="img-fluid figure-img" style="width:50.0%" alt="ML (https://www.advancinganalytics.co.uk/blog/2021/12/15/understanding-the-difference-between-ai-ml-and-dl-using-an-incredibly-simple-example)"></p>
+<p></p><figcaption class="figure-caption">Machine Learning Process</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1842751579.png" class="img-fluid figure-img" style="width:50.0%" alt="DL (https://www.advancinganalytics.co.uk/blog/2021/12/15/understanding-the-difference-between-ai-ml-and-dl-using-an-incredibly-simple-example)"></p>
+<p></p><figcaption class="figure-caption">Deep Learning Process</figcaption><p></p>
+</figure>
+</div>
+<p>จากรูปข้างต้นจะเห็นว่า ทั้ง ML และ DL เป็นเครื่องมือที่มีวัตถุประสงค์เดียวกันคือเพื่อทำนาย หรือจำแนกประเภทของหน่วยข้อมูล โดยใช้ข้อมูลจากตัวแปรอิสระที่มี การพัฒนาโมเดลทำนายมีกระบวนการที่จะต้อง train และตรวจสอบประสิทธิภาพของโมเดลเหมือนกัน แต่ส่วนที่มีความแตกต่างกันอย่างชัดเจนระหว่าง ML กับ DL คือ การพัฒนาโมเดลประเภท ML ผู้วิเคราะห์จะต้องเป็นผู้ดำเนินการสำรวจ คัดเลือก รวมทั้งเตรียมข้อมูลของตัวแปรอิสระที่จะใช้ในโมเดลทำนายด้วยตนเอง เรียกขั้นตอนนี้ว่า feature extraction ในขณะที่ DL เป็นโมเดลแบบเครือข่ายประสาทเทียมที่มีชั้นของการเรียนรู้หรือประมวลผลข้อมูลหลายชั้น ทำให้สามารถผนวกส่วนของการทำ feature extraction และส่วนของการทำนายเอาไว้ภายในโมเดล DL เดียวกันได้ และมีแนวโน้มที่จะช่วยให้ผู้วิเคราะห์สามารถใช้ประโยชน์ได้จากข้อมูลที่มีปริมาณมาก ๆ ได้อย่างสูงสุด</p>
+<p>Deep Learning มักนำไปประยุกต์ใช้</p>
+</section>
+<section id="data-analysis-vs-data-analytics" class="level2">
+<h2 class="anchored" data-anchor-id="data-analysis-vs-data-analytics">1.4 Data Analysis vs Data Analytics</h2>
+<p>คำศัพท์ที่ควรทราบเมื่อศึกษาหัวข้อเกี่ยวกับวิทยาการข้อมูลหรือการเรียนรู้ของเครื่องคือคำว่า data analysis และ data analytics เราอาจเห็นหลายที่ใช้คำศัพท์สองคำทดแทนกันไปมาเช่นเดียวกับ AI, ML หรือ DL ข้างต้น แต่ในความเป็นจริงทั้งสองคำนี้มีมโนทัศน์ที่แตกต่างกัน แต่มีความสัมพันธ์ซึ่งกันและกัน</p>
+<p><strong>Data Analysis</strong> เป็นกระบวนการทางสถิติและวิทยาการข้อมูลที่เกี่ยวข้องกับการเก็บรวบรวมข้อมูล การจัดระเบียบและจัดกระทำข้อมูล และการวิเคราะห์ข้อมูล โดยการวิเคราะห์ข้อมูลนี้มีวัตถุประสงค์หลักเพื่อข้อสรุปสำหรับการบรรยายหรืออธิบายตัวแปรหรือความสัมพันธ์ระหว่างตัวแปรภายในประชากรที่ศึกษา มักใช้ตอบคำถามในลักษณะ</p>
+<ul>
+<li><p>ที่ผ่านมาเกิดอะไรขึ้น?</p></li>
+<li><p>สิ่งที่เกิดขึ้นนั้นเป็นอย่างไร?</p></li>
+<li><p>เพราะอะไรถึงเป็นแบบนั้น?</p></li>
+</ul>
+<p>จะเห็นว่าลักษณะของ data analysis เน้นการอธิบายปรากฏการณ์หรือความเป็นไปในอดีตเป็นหลัก ตัวอย่างการใช้ Data Analysis เช่นการวิเคราะห์สถิติบรรยาย การเปรียบเทียบค่าเฉลี่ย การวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรด้วย correlation หรือ regression หรือการวิเคราะห์ความสัมพันธ์เชิงสาเหตุด้วย structural equation model เป็นต้น</p>
+<p><strong>Data Analytics</strong> เป็นกระบวนการที่ผู้วิเคราะห์นำข้อมูลที่มีมาใช้วิเคราะห์ปรากฏการณ์หรือการำเนินงานที่เกี่ยวข้อง เพื่อสร้างเป็นแบบจำลองหรือโมเดล แล้วนำโมเดลที่สร้างขึ้นนี้ไปใช้งานในเชิงการทำนาย การตัดสินใจ หรือให้ข้อเสนอแนะจากข้อมูลสำหรับเหตุการณ์ที่จะเกิดขึ้นในอนาคต กระบวนการทำงานของ data analytic ส่วนใหญ่คล้ายกับ data analysis กล่าวคือมีส่วนของกระบวนการที่จะต้องจัดการเก็บรวบรวมข้อมูล และจัดเตรียมข้อมูลเหมือนกัน แต่ความแตกต่างคือส่วนของการวิเคราะห์ที่ไม่ได้เน้นการอธิบายความเป็นไปในอดีต แต่เน้นการนำโมเดลที่สร้างขึ้นไปทำนาย ช่วยคิดหรือตัดสินใจแทนมนุษย์ การวิเคราะห์ข้อมูลทางด้าน data analytics ส่วนใหญ่จะมีการใช้อัลกอริทึมการเรียนรู้ของเครื่องเข้ามาใช้</p>
+</section>
+<section id="types-of-machine-learning" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-machine-learning">1.5 Types of Machine Learning?</h2>
+<p>การเรียนรู้ของเครื่อง (ML) เป็นศาสตร์ย่อยแขนงหนึ่งภายใต้ศาสตร์ทางด้านสถิติและวิทยาการข้อมูล ซึ่งเกี่ยวข้องกับการใช้<strong>อัลกอริทึม (algorithms)</strong> ในการเรียนรู้/ค้นหาความรู้จากข้อมูล แล้วนำความรู้ที่ได้มาใช้งานตั้งแต่<strong>การบรรยายสภาพของข้อมูล (descriptive) การวินิจฉัย (diagnostic) เพื่อหาสาเหตุหรือปัจจัยที่ก่อให้เกิดผลลัพธ์ที่สนใจ การทำนาย (predictive) เพื่อสร้างโมเดลที่เรียนรู้ความสัมพันธ์ในข้อมูลเพื่อทำนายผลลัพธ์ของตัวแปรที่สนใจ ผลลัพธ์ที่ได้จากการทำนายนี้สามารถนำมาโมเดลเพื่อช่วยวางแผน/ตัดสินใจ (prescriptive)</strong> ดำเนินการเพื่อนำไปสู่ผลลัพธ์ที่คาดหวัง</p>
+<p>เทคนิคการเรียนรู้ของเครื่องอาจจำแนกได้เป็น 3 ประเภท ตามวัตถุประสงค์หรือความสามารถของอัลกอริทึมการเรียนรู้ ได้แก่</p>
+<ul>
+<li><p>การเรียนรู้ที่มีการชี้นำ (supervised learning)</p></li>
+<li><p>การเรียนรู้แบบไม่มีการชี้นำ (unsupervised learning)</p></li>
+<li><p>การเรียนรู้แบบที่มีการเสริมแรง (reinforcement learning)</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ML.png" class="img-fluid figure-img" style="width:70.0%" alt="ประเภทของ ML"></p>
+<p></p><figcaption class="figure-caption">ประเภทของ ML</figcaption><p></p>
+</figure>
+</div>
+<section id="supervised-learning" class="level3">
+<h3 class="anchored" data-anchor-id="supervised-learning">Supervised Learning</h3>
+<p>ผู้วิเคราะห์จะใช้ supervised learning เมื่อมีวัตถุประสงค์ที่ต้องการสร้างโมเดลทำนาย/จำแนกค่าสังเกตของตัวแปรตามด้วยข้อมูลค่าสังเกตของตัวแปรอิสระ โดย supervised learning เป็นกลุ่มของอัลกอริทึมที่จะเรียนรู้รูปแบบความสัมพันธ์ระหว่างตัวแปรอิสระกับตัวแปรตาม และใช้รูปแบบความสัมพันธ์ที่เรียนรู้จากข้อมูลในอดีตนี้ในการทำนายข้อมูลที่ไม่ทราบค่าที่จะเกิดขึ้นในอนาคต เช่น</p>
+<ul>
+<li><p>การทำนายสถานะการเป็นหนี้ของลูกค้า (ลูกหนี้ชั้นดี ลูกหนี้ปกติ ลูกหนี้เสีย) โดยอิงกับข้อมูลส่วนตัว ข้อมูลที่เกี่ยวข้องกับเครดิตทางการเงิน และข้อมูลพฤติกรรมการดำเนินชีวิต</p></li>
+<li><p>ผู้พัฒนาคอสเรียนออนไลน์ใช้ supervised learning เพื่อทำนายผลการเรียนของนักเรียน หรือแนวโน้มการ drop out ของนักเรียนในคอสเรียน โดยอิงจากพฤติกรรมการเรียนที่แสดงในระบบการเรียนรู้ออนไลน์</p></li>
+<li><p>การพัฒนาระบบวินิจฉัยความยึดมั่นผูกพันของนักเรียนด้วยการรู้จำใบหน้าโดยใช้การเรียนรู้เชิงลึก</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://3.bp.blogspot.com/-occLtedKtRw/W8RVv5QyIlI/AAAAAAAAEBg/fdvwBPGxdfQ1izWa_l95-SW4kgYSMgAsgCLcBGAs/s1600"><img src="images/image-325848635.png" class="img-fluid figure-img" style="width:80.0%" alt="ลักษณะของ ML ประเภท supervised learning (https://3.bp.blogspot.com/-occLtedKtRw/W8RVv5QyIlI/AAAAAAAAEBg/fdvwBPGxdfQ1izWa_l95-SW4kgYSMgAsgCLcBGAs/s1600)"></a></p>
+<p></p><figcaption class="figure-caption">Supervised learning</figcaption><p></p>
+</figure>
+</div>
+<p>การที่จะใช้ supervised learning ได้นั้นผู้วิเคราะห์ยังจำเป็นต้องมีชุดข้อมูลต้นแบบที่ภายในชุดข้อมูลประกอบด้วยข้อมูลของตัวแปรตามหรือผลลัพธ์ที่ต้องการทำนาย และตัวแปรอิสระหรือข้อมูลที่จะใช้เป็นตัวทำนายผลลัพธ์ที่ต้องการดังกล่าว ในเชิงเทคนิคจะเรียกชุดข้อมูลต้นแบบดังกล่าวว่า <strong>ชุดข้อมูลฝึกหัด (training dataset)</strong> นอกจากนี้ supervised learning ยังจำแนกเป็นประเภทย่อยได้อีก 2 ประเภทตามลักษณะของตัวแปรตาม ได้แก่ regression และ classification</p>
+<ul>
+<li><p><strong>Regression</strong> เป็นโมเดลสำหรับทำนายตัวแปรตามเชิงปริมาณ</p></li>
+<li><p><strong>Classification</strong> เป็นโมเดลสำหรับทำนายตัวแปรตามแบบจัดประเภท</p></li>
+</ul>
+</section>
+<section id="unsupervised-learning" class="level3">
+<h3 class="anchored" data-anchor-id="unsupervised-learning">Unsupervised Learning</h3>
+<p>ภาษาไทยอาจใช้คำว่าการเรียนรู้แบบไม่มีการชี้นำ การเรียนรู้ประเภทนี้มีความแตกต่างจาก supervised learning กล่าวคือชุดข้อมูลฝึกหัดไม่จำเป็นต้องมีค่าสังเกตของตัวแปรตาม และวัตถุประสงค์ของการใช้ unsupervised learning คือการสร้างหรือสกัดสารสนเทศออกมาจากข้อมูล ซึ่งอาจจำแนกได้เป็น การจัดกลุ่ม (clustering) และการหาความสัมพันธ์ (association)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1170930730.png" class="img-fluid figure-img" alt="ลักษณะของการ clustering"></p>
+<p></p><figcaption class="figure-caption">ลักษณะของการ clustering</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="reinforcement-learning" class="level3">
+<h3 class="anchored" data-anchor-id="reinforcement-learning">Reinforcement Learning</h3>
+<p>เป็นอัลกอริทึมการเรียนรู้ (เรียกว่า agent) ที่เรียนรู้ด้วยการใช้ feedback ที่มีการให้รางวัล (reward) เมื่ออัลกอริทึมสามารถทำงานได้สำเร็จ และมีการทำโทษ (punishments) เมื่อล้มเหลว ผู้พัฒนาอัลกอริทึมประเภทนี้จะให้ agent ทำการเรียนรู้งานที่การให้ feedback ดังกล่าวแบบทวนซ้ำจนกระทั้งอัลกอริทึมสามารถทำงานที่กำหนดได้อย่างมีประสิทธิภาพตามที่ต้องการ</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=ldXxDNjS5jw" class="uri">https://www.youtube.com/watch?v=ldXxDNjS5jw</a></li>
+<li><a href="https://www.youtube.com/watch?v=n2gE7n11h1Y" class="uri">https://www.youtube.com/watch?v=n2gE7n11h1Y</a></li>
+<li><a href="https://www.youtube.com/watch?v=2tamH76Tjvw" class="uri">https://www.youtube.com/watch?v=2tamH76Tjvw</a></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="บทท-2-ความรพนฐานในการพฒนา-supervised-learning" class="level1">
+<h1>บทที่ 2 ความรู้พื้นฐานในการพัฒนา Supervised Learning</h1>
+<p>Supervised learning เป็นการเรียนรู้ของเครื่องที่มีการนำมาประยุกต์ใช้งานอย่างแพร่หลาย บทเรียนนี้จะกล่าวถึงมโนทัศน์ที่สำคัญของกระบวนการพัฒนา supervised learning model ทั้งในกลุ่มของ regression และ classification models</p>
+<section id="ตดตง-r-และ-rstudio" class="level2">
+<h2 class="anchored" data-anchor-id="ตดตง-r-และ-rstudio">2.1 ติดตั้ง R และ RStudio</h2>
+<p><img src="images/image-759196559.png" class="img-fluid" style="width:25.0%"></p>
+<p>เครื่องมือที่สามารถใช้จัดการข้อมูลและพัฒนาโมเดลการเรียนรู้ของเครื่องในปัจจุบันมีหลายตัว R เป็นโปรแกรมภาษาหนึ่งที่มีความสามารถสูงในการพัฒนาโมเดลการเรียนรู้ของเครื่องดังกล่าว ก่อนจะไปสู่บทเรียนในหัวข้อถัดไป ขอให้ผู้อ่านดาวน์โหลดและติดตั้ง R และ RStudio IDE ก่อน โดย<a href="https://cran.r-project.org/mirrors.html">ดาวน์โหลด R ที่นี่</a> และ<a href="https://posit.co/download/rstudio-desktop/">ดาวน์โหลด Rstudio ที่นี่</a></p>
+<p>ปัจจุบัน RStudio เป็น IDE ที่ค่อนข้างครบเครื่องสำหรับผู้ใช้ R และสามารถใช้เขียนภาษาอื่น ๆ ได้หลายตัวทั้ง Python, HTML, Markdown, Stan เป็นต้น ดังนั้นในกรณีที่ต้องการใช้ Python อาจใช้บน RStudio เลยก็ได้ อย่างไรก็ตามการใช้งาน Python บน RStudio เป็นการใช้งานผ่านตัวแปลงคือ package reticulate จึงอาจทำให้การประมวลผลช้ากว่าการทำงานบน Editor ของ Python โดยเฉพาะ</p>
+</section>
+<section id="ตดตง-anaconda" class="level2">
+<h2 class="anchored" data-anchor-id="ตดตง-anaconda">2.2 ติดตั้ง Anaconda</h2>
+<p><img src="images/image-1208095281.png" class="img-fluid" style="width:30.0%"></p>
+<p>Anaconda เป็นชุดโปรแกรมที่รวบรวม package การทำงานสำหรับนักสถิติและวิทยาการข้อมูล โดยมีทั้งเครื่องมือสำหรับภาษา R และ Python โดย Anaconda จะรวบรวม package ที่เกี่ยวข้องสำหรับการทำงานทางด้านวิทยาการข้อมุลเอาไว้มากกว่า 1,000 ตัว และสามารถติดตั้งได้ทั้งบน Windows, Linux และ Mac OS ซึ่งช่วยอำนวยความสะดวกให้กับผู้ใช้ โดยไม่ต้องดาวน์โหลดและติดตั้ง package พื้นฐานทีละตัวด้วยตนเอ เช่น pandas, numpy, matplotlib และ seaborn ข้อควรระวังคือ Anaconda นั้นรวบรวม package เอาไว้เป็นจำนวนมากการติดตั้งจึงค่อนข้างเปลืองพื้นที่ HDD ของเครื่องคอมพิวเตอร์ สำหรับผู้ที่มีพื้นที่จำกัดอาจเลี่ยงไปติดตั้ง Miniconda หรือใช้ Python บน Google Colab ขั้นตอนการติดตั้ง Anaconda ให้ดำเนินการดังนี้</p>
+<ol type="1">
+<li>ดาวน์โหลดและติดตั้ง Anaconda ได้ที่ <a href="https://www.anaconda.com/" class="uri">https://www.anaconda.com/</a></li>
+<li>ดำเนินการติดตั้งตามตัวช่วยเหลือการติดตั้ง</li>
+<li>ถ้ามีการถามว่าต้องการติดตั้ง VS Code หรือไม่ สามารถเลือกติดตั้งหรือไม่ก็ได้ แต่แนะนำว่าติดตั้งไว้ดีกว่าเพราะมีประโยชน์ในการเขียน Python</li>
+<li>เมื่อติดตั้งเสร็จให้กดเปิด Anaconda Navigator ขึ้นมา หน้าต่างนี้จะเหมือนเป็น Hub ที่รวบรวมโปรแกรมต่าง ๆ สำหรับการทำงาน เช่น Jupyter Notebook, JupyterLab ซึ่งเป็น gen ใหม่ของ Jupyter Notebook, VS Code ซึ่งเราสามารถใช้ Editor พวกนี้ในการเขียน Python ได้</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-582954745.png" class="img-fluid figure-img" style="width:80.0%" alt="Anaconda Navigator"></p>
+<p></p><figcaption class="figure-caption">Anaconda Navigator</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="กจกรรม-my-first-regression" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-my-first-regression">2.3 กิจกรรม My First Regression</h2>
+<p>จากตัวอย่างข้อมูลของกิจกรรมในหัวข้อ 1.2 (<a href="#กจกรรม-rule-based-algorithm">1.2 กิจกรรม Rule-based algorithm</a>) ในหัวข้อนี้เราจะสร้างโมเดลทำนายตัวใหม่โดยจะใช้อัลกอริทึมการเรียนรู้ของเครื่องเป็นเครื่องมือในการพัฒนา จากกิจกรรม 1.2 เราทราบแล้วว่าความสัมพันธ์ระหว่างตัวแปรในชุดข้อมูลเป็นความสัมพันธ์เชิงเส้นตรง ดังนั้นกิจกรรมนี้เราจะใช้อัลกอริทึม linear regression ในการพัฒนาโมเดลทำนาย</p>
+<p>อัลกอริทึม linear regression เป็นอัลกอริทึมทางสถิติที่ใช้สำหรับทำนายแนวโน้มค่าสังเกตของตัวแปรตามที่ไม่ทราบค่าโดยอิงกับค่าสังเกตของตัวแปรอิสระที่ทราบค่า การเรียนรู้ของ linear regression จะพยายามสร้างสมการเส้นตรงที่ดีที่สุด (best linear equation) ที่สามารถใช้เป็นตัวแทนความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระที่พบในชุดข้อมูล ในเชิงเทคนิคการหาสมการเส้นตรงด้วยอัลกอริทึมนี้เป็นการเฟ้นค่าหาของพารามิเตอร์ภายในสมการเส้นตรง ได้แก่ พารามิเตอร์จุดตัดแกน y และพารามิเตอร์ความชัน ที่ทำให้สมการเส้นตรงมีความคลาดเคลื่อนในการทำนายต่ำที่สุด โดยที่ความคลาดเคลื่อนในการทำนายดังกล่าวคำนวณจากค่าผลรวมของความคลาดเคลื่อนกำลังสอง (sum squared error: SSE) สามารถคำนวณได้ดังนี้</p>
+<p><span class="math display">\[
+SSE = \sum_{i=1}^n(y_i-\hat{y}_i)^2
+\]</span></p>
+<p>เมื่อ <span class="math inline">\(\hat{y}_i\)</span> เป็นผลรวมเชิงเส้น (linear combination) ของตัวแปรอิสระที่ใช้ทำนายตัวแปรตาม</p>
+<section id="fitting-linear-regression-using-lm" class="level3">
+<h3 class="anchored" data-anchor-id="fitting-linear-regression-using-lm">Fitting Linear Regression using <code>lm()</code></h3>
+<p>จากข้อมูลในกิจกรรม 1 สามารถใช้อัลกอริทึม linear regression เพื่อหาโมเดลทำนายที่เหมาะสมด้วยโปรแกรม R ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">4</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="at">behav =</span> x, <span class="at">score =</span> y)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate linear regression model</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fit_linear<span class="ot">&lt;-</span><span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>dat)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_linear)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x, data = dat)
+
+Residuals:
+       1        2        3        4        5        6 
+-0.09524  0.27619 -0.35238  0.01905  0.39048 -0.23810 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)  1.09524    0.23425   4.675  0.00948 **
+x            0.62857    0.07737   8.124  0.00125 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.3237 on 4 degrees of freedom
+Multiple R-squared:  0.9429,    Adjusted R-squared:  0.9286 
+F-statistic:    66 on 1 and 4 DF,  p-value: 0.001249</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluation-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-metrics">Evaluation Metrics</h3>
+<p>วัตถุประสงค์หลักของการพัฒนาโมเดลทำนายข้างต้นคือเพื่อทำนายคะแนนสอบด้วยพฤติกรรมการเรียนของนักเรียน การจะนำโมเดลดังกล่าวไปใช้จึงจำเป็นจะต้องตรวจสอบประสิทธิภาพการทำนายของโมเดลดังกล่าวก่อน</p>
+<p>เนื่องจากโมเดลนี้เป็น supervised learning model ประเภท regression การตรวจสอบประสิทธิภาพการทำนายจึงควรเป็นการเปรียบเทียบความสอดคล้องกันระหว่างค่าทำนายกับค่าจริงของ <code>score</code> ในเชิงเทคนิคมีเกณฑ์พิจารณาที่เรียกว่า evaluation metric สำหรับ regression model อยู่หลายตัว โดยในบทเรียนนี้จะกล่าวถึง 2 ตัวได้แก่ RMSE และ R squared รายละเอียดมีดังนี้</p>
+<section id="root-mean-squared-error-rmse" class="level4">
+<h4 class="anchored" data-anchor-id="root-mean-squared-error-rmse">Root Mean Squared Error (RMSE)</h4>
+<p>ในทางทฤษฎีค่า RMSE มีความหมายเป็นค่าคลาดเคลื่อนในการทำนายโดยเฉลี่ยของโมเดล สามารถคำนวณได้จากสูตร</p>
+<p><span class="math display">\[
+RMSE = \sqrt\frac{\sum_{i=1}^n(y_i-\hat{y}_i)^2}{n}
+\]</span></p>
+</section>
+<section id="coeffcient-of-determination-r-squared" class="level4">
+<h4 class="anchored" data-anchor-id="coeffcient-of-determination-r-squared">Coeffcient of Determination (R squared)</h4>
+<p>ส่วน R squared มีความหมายเป็นสัดส่วนของความผันแปรที่ร่วมกันระหว่างค่าจริงของตัวแปรตามกับค่าทำนายของตัวแปรตามที่ได้จากโมเดลทำนาย การคำนวณค่า R squared สามารถทำได้ง่าย ๆ ด้วยการหาค่ากำลังสองของสัมประสิทธิ์สหสัมพันธ์ระหว่างค่าจริงกับค่าทำนายของตัวแปรตามดังกล่าว</p>
+<p><span class="math display">\[
+R^2=Corr(y,\hat{y})^2
+\]</span></p>
+<p>จะเห็นว่า evaluation metric ทั้งสองล้วนเป็นการเปรียบเทียบความแตกต่างหรือความสอดคล้องระหว่างค่าจริงของตัวแปรตามกับค่าทำนายที่ได้จากโมเดลทำนาย การคำนวณค่าของ metric ดังกล่าวสามารถเขียนคำสั่งใน R ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate prediction values</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">&lt;-</span><span class="fu">predict</span>(fit_linear, <span class="at">newdata =</span> dat)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>pred <span class="co"># predicted value</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1        2        3        4        5        6 
+1.095238 1.723810 2.352381 2.980952 3.609524 4.238095 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate rmse value</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((y<span class="sc">-</span>pred)<span class="sc">^</span><span class="dv">2</span>)) <span class="co">#rmse</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.264275</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate r squared value</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pred, y)<span class="sc">^</span><span class="dv">2</span> <span class="co">#rsq</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9428571</code></pre>
+</div>
+</div>
+</section>
+<section id="r-squared-plot" class="level4">
+<h4 class="anchored" data-anchor-id="r-squared-plot">R squared plot</h4>
+<p>R squared plot เป็นแผนภาพการกระจายที่ plot ระหว่างค่าทำนาย (แกน Y) กับค่าจริง (แกน X) และเปรียบเทียบแนวโน้มของคู่อันดับกับกล่าวกับเส้นตรงอ้างอิง <span class="math inline">\(y=x\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create R squared plot</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(y, pred,  <span class="at">pch=</span><span class="dv">16</span>, <span class="at">xlab =</span> <span class="st">"actual score"</span>, <span class="at">ylab=</span><span class="st">"predicted score"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a=</span><span class="dv">0</span>, <span class="at">b=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">3</span>, <span class="at">col=</span><span class="st">"steelblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="01basicConcepts_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="336"></p>
+<p></p><figcaption class="figure-caption">R Square plot</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>ผลการพัฒนา linear regression ข้างต้นได้ข้อสรุปว่าโมเดลทำนายที่พัฒนาขึ้นมีประสิทธิภาพสูงมากในการทำนายคะแนนของนักเรียน (ผู้อ่านเห็นด้วยกับข้อความนี้หรือไม่? เพราะเหตุใด?)</strong></p>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+</section>
+<section id="กจกรรม-my-first-classification" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-my-first-classification">2.4 กิจกรรม My First Classification</h2>
+<p>กิจกรรมนี้จะแสดงตัวอย่างการสร้างโมเดลจำแนก (classfication model) ชุดข้อมูลที่ใช้่เป็นตัวอย่างในกิจกรรมนี้จะใช้ชุดข้อมูล <code>mmreg.sav</code> <a href="https://github.com/ssiwacho/2758688_ML/blob/main/week%201/mmreg.sav">โดยสามารถดาวน์โหลดได้ที่นี่</a></p>
+<p>กิจกรรมนี้จะสร้างโมเดลจำแนกผลการเรียนวิชาคณิตศาสตร์ (สอบผ่าน vs สอบตก) โดยใช้ตัวแปรอิสระได้แก่ เพศ (<code>female</code>) และแรงจูงใจในการเรียน​ (<code>motivation</code>) ทั้งนี้ก่อนการดำเนินการขอให้ผู้อ่านแปลงค่าของตัวแปร <code>math</code> ให้เป็นแบบ binary response ก่อน โดยใช้คำสั่งดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># importing mmreg.sav into dat</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_spss</span>(<span class="st">"mmreg.sav"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># manipulating response variable "math"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat<span class="sc">%&gt;%</span><span class="fu">mutate</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">math_binary =</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(math<span class="sc">&gt;</span><span class="dv">50</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"fail"</span>,<span class="st">"pass"</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>math_binary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+fail pass 
+ 266  334 </code></pre>
+</div>
+</div>
+<section id="fitting-logistic-regression-model-using-glm" class="level3">
+<h3 class="anchored" data-anchor-id="fitting-logistic-regression-model-using-glm">Fitting Logistic Regression Model using <code>glm()</code></h3>
+<p>สำหรับอัลกอริทึมการเรียนรู้ที่จะใช้ในกิจกรรมนี้จะเลือกใช้ logistic regression ซึ่งเป็นอัลกริทึมพื้นฐานที่เรียนในรายวิชาสถิติพื้นฐานแล้ว การ fit logistic regression บน R สามารถทำได้หลายวิธีการ โดยมีขั้นตอนการดำเนินงานที่คล้ายกับการ fit linear regression โดยจะใช้ฟังก์ชัน <code>glm()</code> แทน <code>lm()</code> คำสั่งต่อไปนี้แสดงการ fit binary logistic regression ด้วยโปรแกรม R จากชุดข้อมูลดังกล่าว</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_logistic <span class="ot">&lt;-</span> <span class="fu">glm</span>(math_binary <span class="sc">~</span> female <span class="sc">+</span> motivation,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> dat,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_logistic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = math_binary ~ female + motivation, family = "binomial", 
+    data = dat)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-1.4960  -1.2290   0.8893   1.0177   1.4228  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -0.2931     0.1951  -1.502    0.133    
+female       -0.2674     0.1691  -1.582    0.114    
+motivation    1.0166     0.2468   4.119  3.8e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 824.05  on 599  degrees of freedom
+Residual deviance: 805.30  on 597  degrees of freedom
+AIC: 811.3
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>สมการถดถอยแบบ logistic ในข้างต้นสามารถเขียนได้ดังนี้</p>
+<p><span class="math display">\[
+P(math=1|female,\ motivation)=\frac{exp(-0.2931+-0.2674female+1.0166mov)}{1+exp(-0.2931+-0.2674female+1.0166mov)}
+\]</span></p>
+<p>แสดงว่าค่าทำนายของสมการข้างต้นเป็นค่าความน่าจะเป็นที่จะสอบผ่านเมื่อกำหนดค่าของตัวแปรอิสระ การจะใช้โมเดลดังกล่าวเพื่อจำแนกว่านักเรียนแต่ละคนมีแนวโน้มจะสอบผ่านหรือตกจะต้องแปลงค่าความน่าจะเป็นดังกล่าวให้เป็นประเภทหรือค่าสังเกตของตัวแปรตามแบบจัดประเภท การแปลงค่าความน่าจะเป็นนี้สามารถทำได้โดยกำหนดคะแนนจุดตัดของค่าความน่าจะเป็นสำหรับแบ่งประเภทของหน่วยข้อมูลระหว่างสอบผ่านและสอบตก (เชิงเทคนิคเรียกว่าค่า threshold)</p>
+<p>สมมุติว่ากำหนดค่า threshold = 0.5 สามารถคำนวณค่าทำนายผลการสอบรายวิชาคณิตศาสตร์ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate predicted probabilities</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>pred_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_logistic,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">type=</span><span class="st">"response"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">newdata =</span> dat)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pred_prob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.3634  0.5106  0.5958  0.5567  0.6121  0.6734 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate predicted response values</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>pred_val <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(pred_prob<span class="sc">&gt;</span><span class="fl">0.5</span>,<span class="st">"pass"</span>,<span class="st">"fail"</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># assign predicted response values into dat dataframe</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pred_prob <span class="ot">&lt;-</span> pred_prob</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pred_val <span class="ot">&lt;-</span> pred_val</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>pred_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+fail pass 
+ 120  480 </code></pre>
+</div>
+</div>
+</section>
+<section id="evaluation-metrics-1" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-metrics-1">Evaluation Metrics</h3>
+<p>Evaluation metric สำหรับ classification model มีหลายตัว ในหัวข้อนี้จะกล่าวถึงบางตัวก่อน</p>
+<section id="confusion-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="confusion-matrix">Confusion Matrix</h4>
+<p>confusion matrix ที่เป็นเมทริกซ์เปรียบเทียบระหว่างค่าทำนายกับค่าจริงดังตัวอย่างในรูปด้านล่าง</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-753775251.png" class="img-fluid figure-img" style="width:35.0%" alt="confusion matrix"></p>
+<p></p><figcaption class="figure-caption">confusion matrix</figcaption><p></p>
+</figure>
+</div>
+<p>การคำนวณ confusion matrix ใน R สามารถดำเนินการได้หลายวิธีการ วิธีการหนึ่งคือการใช้ฟังก์ชัน <code>table()</code> เพื่อแจกแจงความถี่ระหว่างค่าทำนายกับค่าจริง ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dat<span class="sc">$</span>pred_val, dat<span class="sc">$</span>math_binary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      
+       fail pass
+  fail   65   55
+  pass  201  279</code></pre>
+</div>
+</div>
+<p>confusion matrix เป็นเครื่องมือสำหรับที่ใช้ประเมินประสิทธิภาพการทำนายของโมเดลประเภท classification models รูปด้านล่างแสดงการเปรียบเทียบ confusion matrix ระหว่าง logistic regression model กับ random forest model ผู้อ่านคิดว่าโมเดลใดมีแนวโน้มจะมีประสิทธิภาพในการทำนายสูงกว่ากัน</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-235695373.png" class="img-fluid figure-img" style="width:60.0%" alt="เปรียบเทียบ confusion matrix ระหว่าง logistic regression กับ random forest"></p>
+<p></p><figcaption class="figure-caption">เปรียบเทียบ confusion matrix ระหว่าง logistic regression กับ random forest</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="accuracy-hit-rate" class="level4">
+<h4 class="anchored" data-anchor-id="accuracy-hit-rate">Accuracy (Hit Rate)</h4>
+<p>บาง package อาจเรียว่า balance accuracy ดัชนีตัวนี้เป็นค่าบ่งชี้ความแม่นยำในการทำนายโดยตรงของโมเดลโดยมีค่าเท่ากับสัดส่วนของเคสที่ทำนายถูกทั้งหมดเทียบกับเคสทั้งหมดที่ทำนาย ดังนี้</p>
+<p><span class="math display">\[
+Accuracy=\frac{TP+TN}{Total}
+\]</span></p>
+</section>
+<section id="sensitivity-and-specificity" class="level4">
+<h4 class="anchored" data-anchor-id="sensitivity-and-specificity">Sensitivity and Specificity</h4>
+<p>sensitivity เป็นประสิทธิภาพของโมเดลในด้านความไวหรืออำนาจในการตรวจจับเคสที่ <span class="math inline">\(y=1\)</span> ส่วน specificity เป็นประสิทธิภาพของโมเดลในการทำนายเคสที่ <span class="math inline">\(y=0\)</span> ดัชนี้ทั้งสองตัวสามารถคำนวณได้ดังนี้</p>
+<p><span class="math display">\[
+Sensitivity = \frac{TP}{TP+FN}
+\]</span></p>
+<p><span class="math display">\[
+Specificity = \frac{TN}{FP+TN}
+\]</span></p>
+</section>
+<section id="prevalence" class="level4">
+<h4 class="anchored" data-anchor-id="prevalence">Prevalence</h4>
+<p>เป็นค่าความชุกของเคสที่ <span class="math inline">\(y=1\)</span> ในกรณีที่ค่า prevalence มีค่าต่ำ บ่งชี้ว่าโมเดลทำนายอาจเกิดปัญหา Imbalance class กล่าวคือโมเดลมีชุดข้อมูลฝึกหัดสำหรับเคส <span class="math inline">\(y=1\)</span> ที่อาจน้อยเกินไป</p>
+<p><span class="math display">\[
+Prevalence = \frac{TP+TN}{Total}
+\]</span></p>
+</section>
+<section id="precision" class="level4">
+<h4 class="anchored" data-anchor-id="precision">Precision</h4>
+<p>เป็นความน่าเชื่อถือของผลการทำนายเคส y=1 สามารถคำนวณได้จาก</p>
+<p><span class="math display">\[
+Precision = \frac{TP}{TP+FP}
+\]</span></p>
+<p>การคำนวณดัชนีข้างต้นด้วยมือค่อนข้างวุ่นวายใน R มี package หลายตัวที่ช่วยคำนวณดัชนีข้างต้นได้ ในที่นี้จะให้ฟังก์ชัน <code>confusionMatrix()</code> ของ package caret ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.package("caret")</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(<span class="at">data =</span> dat<span class="sc">$</span>pred_val,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">reference =</span> dat<span class="sc">$</span>math_binary,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">positive =</span> <span class="st">"pass"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction fail pass
+      fail   65   55
+      pass  201  279
+                                          
+               Accuracy : 0.5733          
+                 95% CI : (0.5326, 0.6133)
+    No Information Rate : 0.5567          
+    P-Value [Acc &gt; NIR] : 0.2177          
+                                          
+                  Kappa : 0.0844          
+                                          
+ Mcnemar's Test P-Value : &lt;2e-16          
+                                          
+            Sensitivity : 0.8353          
+            Specificity : 0.2444          
+         Pos Pred Value : 0.5812          
+         Neg Pred Value : 0.5417          
+             Prevalence : 0.5567          
+         Detection Rate : 0.4650          
+   Detection Prevalence : 0.8000          
+      Balanced Accuracy : 0.5398          
+                                          
+       'Positive' Class : pass            
+                                          </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="คำถามทายบท" class="level3">
+<h3 class="anchored" data-anchor-id="คำถามทายบท">คำถามท้ายบท</h3>
+<ul>
+<li><p><strong>ผลการพัฒนา binary logistic regression ในข้างต้นผู้อ่านคิดว่าโมเดลที่พัฒนาขึ้นมีประสิทธิภาพในการทำนายเป็นอย่างไร?</strong></p></li>
+<li><p><strong>จากกระบวนการที่ใช้พัฒนาทั้ง linear regression model และ logistic regression model ผู้อ่านคิดว่าเป็นกระบวนการที่เหมาะสมสำหรับการพัฒนาโมเดลทำนายแล้วหรือไม่ หรือมีข้อสังเกตอะไร</strong></p></li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2023, DataKruRoo</div>   
+    <div class="nav-footer-right">This page is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
