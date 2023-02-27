@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+<meta name="dcterms.date" content="2023-01-04">
+
+<title>DataKruRoo-Blog - สร้าง pdf document ภาษาไทยบน rmarkdown ด้วย thaipdf package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">DataKruRoo-Blog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.html"><i class="bi bi-bi bi-house-door-fill" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"><i class="bi bi-bi bi-file-person-fill" role="img">
+</i> 
+ <span class="menu-text">ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.facebook.com/Siwachoat"><i class="bi bi-facebook" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../xxx"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">สร้าง pdf document ภาษาไทยบน rmarkdown ด้วย thaipdf package</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R markdown</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 4, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#thaipdf" id="toc-thaipdf" class="nav-link active" data-scroll-target="#thaipdf">thaipdf</a>
+  <ul class="collapse">
+  <li><a href="#ตดตง-package-thaipdf" id="toc-ตดตง-package-thaipdf" class="nav-link" data-scroll-target="#ตดตง-package-thaipdf">1. ติดตั้ง package thaipdf</a></li>
+  <li><a href="#ดาวนโหลดและตดตง-xelatex-และ-latex-package" id="toc-ดาวนโหลดและตดตง-xelatex-และ-latex-package" class="nav-link" data-scroll-target="#ดาวนโหลดและตดตง-xelatex-และ-latex-package">2. ดาวน์โหลดและติดตั้ง XeLatex และ Latex package</a></li>
+  <li><a href="#การสรางเอกสาร" id="toc-การสรางเอกสาร" class="nav-link" data-scroll-target="#การสรางเอกสาร">3. การสร้างเอกสาร</a></li>
+  <li><a href="#การปรบแตงเอกสาร" id="toc-การปรบแตงเอกสาร" class="nav-link" data-scroll-target="#การปรบแตงเอกสาร">4. การปรับแต่งเอกสาร</a></li>
+  <li><a href="#quarto-document" id="toc-quarto-document" class="nav-link" data-scroll-target="#quarto-document">5. Quarto document</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="https://lightbridge-ks.github.io/thaipdf/logo.png" class="img-fluid figure-img" style="width:20.0%"></p>
+</figure>
+</div>
+<section id="thaipdf" class="level1">
+<h1>thaipdf</h1>
+<p>ที่ผ่านมาการสร้างเอกสาร pdf ด้วย rmarkdown ผู้ใช้จำเป็นต้องตั้งค่าเอกสารหลายอย่างเพื่อให้สามารถแสดงผลภาษาไทยได้อย่างถูกต้อง ซึ่งเป็นอุปสรรคในการทำงานไม่น้อย โดยเฉพาะเวลาที่เร่งรีบ ปัจจุบันมีผู้พัฒนา package-thaipdf ซึ่งช่วยสร้างเอกสารแบบ pdf ภาษาไทยได้อย่างสะดวกมาก</p>
+<ul>
+<li><a href="https://lightbridge-ks.github.io/thaipdf/" class="uri">https://lightbridge-ks.github.io/thaipdf/</a></li>
+</ul>
+<p>การทำงานของ thaipdf คือจะสร้าง template เอกสารแบบ pdf ภาษาไทยมาให้ผู้ใช้ โดยอยู่ในรูปแบบของภาษา <a href="https://rmarkdown.rstudio.com/">R Markdown</a> การใช้งาน package ดังกล่าวสามารถดำเนินการตามขั้นตอนต่อไปนี้</p>
+<section id="ตดตง-package-thaipdf" class="level2">
+<h2 class="anchored" data-anchor-id="ตดตง-package-thaipdf">1. ติดตั้ง package thaipdf</h2>
+<p>ดำเนินการดาวน์โหลดและติตตั้ง thaipdf โดยสามารถติดตั้งได้จากสองแหล่ง ได้แก่ CRAN และ GitHub (development version) โดยพิมพ์คำสั่งต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ในกรณีต้องการติดตั้งจาก CRAN</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"thaipdf"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## ในกรณีต้องการติดตั้ง development version จาก GitHub</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"Lightbridge-KS/thaipdf"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ดาวนโหลดและตดตง-xelatex-และ-latex-package" class="level2">
+<h2 class="anchored" data-anchor-id="ดาวนโหลดและตดตง-xelatex-และ-latex-package">2. ดาวน์โหลดและติดตั้ง XeLatex และ Latex package</h2>
+<p>package ทั้งสองจำเป็นสำหรับการสร้างเอกสาร pdf ภาษาไทยใน R Markdown โดยสามารถติดตั้งผ่าน package <a href="https://yihui.org/tinytex/">tinytext</a> ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CRAN version</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'tinytex'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># install LaTeX PKG required by `thaipdf`</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tinytex<span class="sc">::</span><span class="fu">tlmgr_install</span>(<span class="fu">c</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fontspec"</span>, <span class="st">"ucharclasses"</span>, <span class="st">"polyglossia"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>thaipdf ใช้ font ภาษาไทย <a href="https://www.f0nt.com/release/th-sarabun-new/">TH Sarabun New</a> เป็นค่าเริ่มต้น ดังนั้นให้ผู้ใช้ติดตั้ง font ดังกล่าวบนเครื่องด้วยหากยังไม่มี</p>
+</section>
+<section id="การสรางเอกสาร" class="level2">
+<h2 class="anchored" data-anchor-id="การสรางเอกสาร">3. การสร้างเอกสาร</h2>
+<p>การสร้างเอกสาร pdf ภาษาไทยด้วย thaipdf ทำได้สองวิธีการ วิธีการแรกคือการสร้างเอกสาร R Markdown และเลือกใช้ template “Thai PDF R Markdown” จาก visual menu โดยคลิกเลือกจาก New File –&gt; R Markdown –&gt; From Template ดังตัวอย่างในรูปด้านล่าง</p>
+<p><img src="images/image-1252675226.png" class="img-fluid" style="width:50.0%"></p>
+<p>ถ้าดูดี ๆ จะเห็นว่ามี template สำหรับ bookdown ด้วย ดังนั้นผู้ใช้สามารถเขียนหนังสือหรือ thesis ในรูปแบบ pdf ภาษาไทยได้ โดยใช้ feature ต่าง ๆ ของ R Bookdown ได้ด้วย</p>
+<p>เมื่อเลือกและกดปุ่ม OK จะได้เอกสาร R Markdown ที่ได้รับการกำหนด template ให้พร้อมสำหรับการใช้ภาษาไทยดังรูปด้านล่าง template ดังกล่าวยังมีเนื้อหาตัวอย่างที่สอนการใช้ภาษา R Markdown เพื่อสร้างเอกสาร เช่น การกำหนดหัวข้อ การสร้าง hyperlink การสร้างและใช้งาน code chunk การเขียนสมการทางคณิตศาสตร์ เป็นต้น สำหรับผู้ที่คุ้นเคยกับการใช้ R markdown อาจไม่ต้องสนใจเนื้อหาส่วนนี้ก็ได้ ให้ลบและเขียนเอกสารของตนเองได้ตามต้องการ</p>
+<p><img src="images/image-1674222349.png" class="img-fluid" style="width:50.0%"></p>
+<p>วิธีการที่สองคือการสร้าง template ด้วยการเขียน syntax วิธีการนี้มีจุดเด่นคือผู้ใช้สามารถกำหนดอาร์กิวเมนท์เพื่อตั้งค่า template ของเอกสาร เช่น การกำหนดรูปแบบอักษร (font) หรือ ระยะห่างระหว่างบรรทัด (line spacing) ได้ตั้งแต่ก่อนเริ่มสร้างเอกสาร thaipdf version ที่รีวิวอยู่นี้เป็น version 0.1.2.9000 จะมีฟังก์ชันที่สามารถใช้สร้างเอกสารได้ 2 ตัวได้แก่</p>
+<ul>
+<li><p><code>thaipdf_document()</code> สำหรับสร้างเอกสาร pdf ฟังก์ชันนี้เป็น wrapper ของฟังก์ชัน <code>pdf_document()</code> ของ R Markdown</p></li>
+<li><p><code>thaipdf_book()</code> สำหรับสร้างเอกสารแบบ bookdown ซึ่งเป็น wrapper ของฟังก์ชัน <code>pdf_book()</code> ของ package bookdown</p></li>
+</ul>
+<p>wrapper ฟังก์ชันทั้งสองจะช่วยอำนวยความสะดวกในการตั้งค่าเอกสาร pdf ภาษาไทย และจะส่งค่าของอาร์กิวเมนท์ต่าง ๆ ไปยังฟังก์ชันต้นฉบับคือ <code>pdf_document()</code> หรือ <code>pdf_book()</code> ดังกล่าว ดังนั้นผู้ใช้สามารถกำหนดอาร์กิวเมนท์ของฟังก์ชันต้นฉบับใน <code>thaipdf_document()</code> และ <code>thaipdf_book()</code> ได้เลย (ยกเว้น <code>latex_engine</code> และ <code>includes</code>)</p>
+<p>ตัวอย่างต่อไปนี้แสดงการเขียนคำสั่งเพื่อสร้าง template R Markdown document สำหรับสร้างเอกสาร pdf ภาษาไทย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate thaipdf template</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>thaipdf<span class="sc">::</span><span class="fu">thaipdf_document</span>(<span class="at">thai_font =</span> <span class="st">"TH Sarabun New"</span>, <span class="at">line_spacing =</span> <span class="fl">1.5</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">toc =</span> <span class="cn">TRUE</span>, <span class="at">toc_depth =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ฟังก์ชัน <code>thaipdf_document()</code> จะสร้าง template เอกสาร R Markdown เหมือนกับการคลิกเลือก template จากเมนูในข้างต้น จากคำสั่งในตัวอย่างข้างต้นอาร์กิวเมนท์ <code>thai_font</code> ใช้สำหรับกำหนดรูปแบบตัวอักษร ส่วน <code>toc</code> และ <code>toc_depth</code> เป็นอาร์กิวเมนท์ที่กำหนดให้เอกสารมีสารบัญที่มีความลึกของหัวข้อในสารบัญถึง Header3</p>
+<p>เมื่อพิมพ์เนื้อหาตามต้องการแล้วผู้ใช้สามารถ generate เอกสารดังกล่าวให้เป็น pdf file ได้โดยกดที่ปุ่ม <code>Knit</code> หรือใช้คีย์ลัด cmd/ctr + shift + K ซึ่งจะได้เอกสาร pdf ที่มีการจัด template เป็นดังนี้</p>
+<p><img src="images/image-317892982.png" class="img-fluid"></p>
+</section>
+<section id="การปรบแตงเอกสาร" class="level2">
+<h2 class="anchored" data-anchor-id="การปรบแตงเอกสาร">4. การปรับแต่งเอกสาร</h2>
+<p>เมื่อสร้างเอกสารแล้วเอกสาร R Markdown หรือ Bookdown จะมีส่วนหัวที่เรียกว่า YAML header ใช้กำหนด template ของเอกสารตามอาร์กิวเมนท์ที่ระบุไว้ตอนสร้าง template นอกจากนี้ผู้ใช้ยังสามารถเขียนกำหนดเพิ่มเติมได้ตามความต้องการผ่าน <a href="https://pandoc.org/MANUAL.html#variables-for-latex">pandoc variable</a> ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>title<span class="sc">:</span> <span class="st">"R Markdown ภาษาไทย"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>author<span class="sc">:</span> <span class="st">"`thaipdf` package"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>output<span class="sc">:</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  thaipdf<span class="sc">::</span>thaipdf_book<span class="sc">:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    thai_font<span class="sc">:</span> <span class="st">"TH Sarabun New"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    line_spacing<span class="sc">:</span> <span class="fl">1.5</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    toc<span class="sc">:</span> true <span class="co"># table of content</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    toc_depth<span class="sc">:</span> <span class="dv">3</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    keep_tex<span class="sc">:</span> false <span class="co"># "true" to keep intermediate LaTeX</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>fontsize<span class="sc">:</span> 14pt</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>mainfont<span class="sc">:</span> <span class="st">"TH Sarabun New"</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>monofont<span class="sc">:</span> <span class="st">"Menlo"</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Color provided by LaTeX "xcolor" package</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>linkcolor<span class="sc">:</span> BrickRed </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>urlcolor<span class="sc">:</span> NavyBlue</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="quarto-document" class="level2">
+<h2 class="anchored" data-anchor-id="quarto-document">5. Quarto document</h2>
+<p><img src="images/image-1117935718.png" class="img-fluid"></p>
+<p><a href="https://quarto.org/">Quarto</a> เป็น R Markdown ใน generation ใหม่ โดยหลัก ๆ Quarto ถูกวางไว้ให้เป็นระบบ open source สำหรับเผยแพร่เอกสารงานวิจัยทางวิชาการด้วยภาษา Markdown (scientific markdown publishing system) ความสามารถของ Quarto มีดังนี้</p>
+<ul>
+<li><p>สร้าง dynamic content ด้วยภาษา Python, R, Julia และ Observable JS</p></li>
+<li><p>รองรับการเขียนโค้ดทั้งในรูปแบบ Markdown (.md), R Markdown (.rmd), Jupyter notebook (.ipynb) นอกจากนี้ quarto ยังมีไฟล์ markdown ของตัวเองเรียกว่า quarto Markdown (.qmd)</p></li>
+<li><p>สามารถสร้างเอกสารได้หลากหลายประเภทในทำนองเดียวกับ R Markdown ทั้งเอกสารวิชาการ รายงาน เอกสารนำเสนอผลงาน เว็ปไซต์ บล็อก หนังสือ โดยสามารถเผยแพร่ได้หลายลักษณะทั้ง HTML, PDF, MS Word, ePub เป็นต้น</p></li>
+<li><p>จุดเด่นอีกหนึ่งอย่างคือเป็นเอกสารที่สามารถดำเนินงานทางด้านสถิติวิทยาการข้อมูล และทางคณิตศาสตร์ ไปพร้อมกับการเขียนเอกสาร ซึ่งเป็น concept ของ reproducible report</p></li>
+</ul>
+<p>โดยปกติ Quarto สามารถ generate เอกสารภาษาไทยทั้งในรูปแบบ HTML และ MS Word ได้โดยไม่ต้องกำหนดค่าอะไรเพิ่มเติม แต่จะมีปัญหากับเอกสาร pdf ภาษาไทย หัวข้อนี้จึงจะกล่าวถึงการใช้ Quarto เพื่อสร้างเอกสาร pdf ภาษาไทย</p>
+<p>--- coming soon</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

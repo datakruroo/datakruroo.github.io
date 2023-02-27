@@ -1,0 +1,122 @@
+---
+title: "สร้าง pdf document ภาษาไทยบน rmarkdown ด้วย thaipdf package"
+author: "สิวะโชติ ศรีสุทธิยากร"
+date: "2023-01-04"
+categories: [R markdown, R]
+toc: true
+---
+
+![](https://lightbridge-ks.github.io/thaipdf/logo.png){fig-align="left" width="20%"}
+
+# thaipdf
+
+ที่ผ่านมาการสร้างเอกสาร pdf ด้วย rmarkdown ผู้ใช้จำเป็นต้องตั้งค่าเอกสารหลายอย่างเพื่อให้สามารถแสดงผลภาษาไทยได้อย่างถูกต้อง ซึ่งเป็นอุปสรรคในการทำงานไม่น้อย โดยเฉพาะเวลาที่เร่งรีบ ปัจจุบันมีผู้พัฒนา package-thaipdf ซึ่งช่วยสร้างเอกสารแบบ pdf ภาษาไทยได้อย่างสะดวกมาก
+
+-   <https://lightbridge-ks.github.io/thaipdf/>
+
+การทำงานของ thaipdf คือจะสร้าง template เอกสารแบบ pdf ภาษาไทยมาให้ผู้ใช้ โดยอยู่ในรูปแบบของภาษา [R Markdown](https://rmarkdown.rstudio.com/) การใช้งาน package ดังกล่าวสามารถดำเนินการตามขั้นตอนต่อไปนี้
+
+## 1. ติดตั้ง package thaipdf
+
+ดำเนินการดาวน์โหลดและติตตั้ง thaipdf โดยสามารถติดตั้งได้จากสองแหล่ง ได้แก่ CRAN และ GitHub (development version) โดยพิมพ์คำสั่งต่อไปนี้
+
+```{r eval=F}
+## ในกรณีต้องการติดตั้งจาก CRAN
+install.packages("thaipdf")
+
+## ในกรณีต้องการติดตั้ง development version จาก GitHub
+devtools::install_github("Lightbridge-KS/thaipdf")
+
+```
+
+## 2. ดาวน์โหลดและติดตั้ง XeLatex และ Latex package
+
+package ทั้งสองจำเป็นสำหรับการสร้างเอกสาร pdf ภาษาไทยใน R Markdown โดยสามารถติดตั้งผ่าน package [tinytext](https://yihui.org/tinytex/) ได้ดังนี้
+
+```{r eval=F}
+# CRAN version
+install.packages('tinytex')
+
+# install LaTeX PKG required by `thaipdf`
+tinytex::tlmgr_install(c(
+  "fontspec", "ucharclasses", "polyglossia"
+))
+```
+
+thaipdf ใช้ font ภาษาไทย [TH Sarabun New](https://www.f0nt.com/release/th-sarabun-new/) เป็นค่าเริ่มต้น ดังนั้นให้ผู้ใช้ติดตั้ง font ดังกล่าวบนเครื่องด้วยหากยังไม่มี
+
+## 3. การสร้างเอกสาร
+
+การสร้างเอกสาร pdf ภาษาไทยด้วย thaipdf ทำได้สองวิธีการ วิธีการแรกคือการสร้างเอกสาร R Markdown และเลือกใช้ template "Thai PDF R Markdown" จาก visual menu โดยคลิกเลือกจาก New File --\> R Markdown --\> From Template ดังตัวอย่างในรูปด้านล่าง
+
+![](images/image-1252675226.png){width="50%"}
+
+ถ้าดูดี ๆ จะเห็นว่ามี template สำหรับ bookdown ด้วย ดังนั้นผู้ใช้สามารถเขียนหนังสือหรือ thesis ในรูปแบบ pdf ภาษาไทยได้ โดยใช้ feature ต่าง ๆ ของ R Bookdown ได้ด้วย
+
+เมื่อเลือกและกดปุ่ม OK จะได้เอกสาร R Markdown ที่ได้รับการกำหนด template ให้พร้อมสำหรับการใช้ภาษาไทยดังรูปด้านล่าง template ดังกล่าวยังมีเนื้อหาตัวอย่างที่สอนการใช้ภาษา R Markdown เพื่อสร้างเอกสาร เช่น การกำหนดหัวข้อ การสร้าง hyperlink การสร้างและใช้งาน code chunk การเขียนสมการทางคณิตศาสตร์ เป็นต้น สำหรับผู้ที่คุ้นเคยกับการใช้ R markdown อาจไม่ต้องสนใจเนื้อหาส่วนนี้ก็ได้ ให้ลบและเขียนเอกสารของตนเองได้ตามต้องการ
+
+![](images/image-1674222349.png){width="50%"}
+
+วิธีการที่สองคือการสร้าง template ด้วยการเขียน syntax วิธีการนี้มีจุดเด่นคือผู้ใช้สามารถกำหนดอาร์กิวเมนท์เพื่อตั้งค่า template ของเอกสาร เช่น การกำหนดรูปแบบอักษร (font) หรือ ระยะห่างระหว่างบรรทัด (line spacing) ได้ตั้งแต่ก่อนเริ่มสร้างเอกสาร thaipdf version ที่รีวิวอยู่นี้เป็น version 0.1.2.9000 จะมีฟังก์ชันที่สามารถใช้สร้างเอกสารได้ 2 ตัวได้แก่
+
+-   `thaipdf_document()` สำหรับสร้างเอกสาร pdf ฟังก์ชันนี้เป็น wrapper ของฟังก์ชัน `pdf_document()` ของ R Markdown
+
+-   `thaipdf_book()` สำหรับสร้างเอกสารแบบ bookdown ซึ่งเป็น wrapper ของฟังก์ชัน `pdf_book()` ของ package bookdown
+
+wrapper ฟังก์ชันทั้งสองจะช่วยอำนวยความสะดวกในการตั้งค่าเอกสาร pdf ภาษาไทย และจะส่งค่าของอาร์กิวเมนท์ต่าง ๆ ไปยังฟังก์ชันต้นฉบับคือ `pdf_document()` หรือ `pdf_book()` ดังกล่าว ดังนั้นผู้ใช้สามารถกำหนดอาร์กิวเมนท์ของฟังก์ชันต้นฉบับใน `thaipdf_document()` และ `thaipdf_book()` ได้เลย (ยกเว้น `latex_engine` และ `includes`)
+
+ตัวอย่างต่อไปนี้แสดงการเขียนคำสั่งเพื่อสร้าง template R Markdown document สำหรับสร้างเอกสาร pdf ภาษาไทย
+
+```{r eval=F}
+# generate thaipdf template
+thaipdf::thaipdf_document(thai_font = "TH Sarabun New", line_spacing = 1.5,
+                          toc = TRUE, toc_depth = 3)
+```
+
+ฟังก์ชัน `thaipdf_document()` จะสร้าง template เอกสาร R Markdown เหมือนกับการคลิกเลือก template จากเมนูในข้างต้น จากคำสั่งในตัวอย่างข้างต้นอาร์กิวเมนท์ `thai_font` ใช้สำหรับกำหนดรูปแบบตัวอักษร ส่วน `toc` และ `toc_depth` เป็นอาร์กิวเมนท์ที่กำหนดให้เอกสารมีสารบัญที่มีความลึกของหัวข้อในสารบัญถึง Header3
+
+เมื่อพิมพ์เนื้อหาตามต้องการแล้วผู้ใช้สามารถ generate เอกสารดังกล่าวให้เป็น pdf file ได้โดยกดที่ปุ่ม `Knit` หรือใช้คีย์ลัด cmd/ctr + shift + K ซึ่งจะได้เอกสาร pdf ที่มีการจัด template เป็นดังนี้
+
+![](images/image-317892982.png)
+
+## 4. การปรับแต่งเอกสาร
+
+เมื่อสร้างเอกสารแล้วเอกสาร R Markdown หรือ Bookdown จะมีส่วนหัวที่เรียกว่า YAML header ใช้กำหนด template ของเอกสารตามอาร์กิวเมนท์ที่ระบุไว้ตอนสร้าง template นอกจากนี้ผู้ใช้ยังสามารถเขียนกำหนดเพิ่มเติมได้ตามความต้องการผ่าน [pandoc variable](https://pandoc.org/MANUAL.html#variables-for-latex) ดังตัวอย่างต่อไปนี้
+
+```{r eval=F}
+---
+title: "R Markdown ภาษาไทย"
+author: "`thaipdf` package"
+output: 
+  thaipdf::thaipdf_book:
+    thai_font: "TH Sarabun New"
+    line_spacing: 1.5
+    toc: true # table of content
+    toc_depth: 3 
+    keep_tex: false # "true" to keep intermediate LaTeX
+fontsize: 14pt
+mainfont: "TH Sarabun New"
+monofont: "Menlo"
+# Color provided by LaTeX "xcolor" package
+linkcolor: BrickRed 
+urlcolor: NavyBlue
+---
+```
+
+## 5. Quarto document
+
+![](images/image-1117935718.png)
+
+[Quarto](https://quarto.org/) เป็น R Markdown ใน generation ใหม่ โดยหลัก ๆ Quarto ถูกวางไว้ให้เป็นระบบ open source สำหรับเผยแพร่เอกสารงานวิจัยทางวิชาการด้วยภาษา Markdown (scientific markdown publishing system) ความสามารถของ Quarto มีดังนี้
+
+-   สร้าง dynamic content ด้วยภาษา Python, R, Julia และ Observable JS
+
+-   รองรับการเขียนโค้ดทั้งในรูปแบบ Markdown (.md), R Markdown (.rmd), Jupyter notebook (.ipynb) นอกจากนี้ quarto ยังมีไฟล์ markdown ของตัวเองเรียกว่า quarto Markdown (.qmd)
+
+-   สามารถสร้างเอกสารได้หลากหลายประเภทในทำนองเดียวกับ R Markdown ทั้งเอกสารวิชาการ รายงาน เอกสารนำเสนอผลงาน เว็ปไซต์ บล็อก หนังสือ โดยสามารถเผยแพร่ได้หลายลักษณะทั้ง HTML, PDF, MS Word, ePub เป็นต้น
+
+-   จุดเด่นอีกหนึ่งอย่างคือเป็นเอกสารที่สามารถดำเนินงานทางด้านสถิติวิทยาการข้อมูล และทางคณิตศาสตร์ ไปพร้อมกับการเขียนเอกสาร ซึ่งเป็น concept ของ reproducible report
+
+โดยปกติ Quarto สามารถ generate เอกสารภาษาไทยทั้งในรูปแบบ HTML และ MS Word ได้โดยไม่ต้องกำหนดค่าอะไรเพิ่มเติม แต่จะมีปัญหากับเอกสาร pdf ภาษาไทย หัวข้อนี้จึงจะกล่าวถึงการใช้ Quarto เพื่อสร้างเอกสาร pdf ภาษาไทย
+
+\-\-- coming soon

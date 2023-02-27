@@ -1,0 +1,27 @@
+project:
+  type: website
+
+website:
+  title: "DataKruRoo-Blog"
+  favicon: logo.png
+  navbar:
+    logo: logo.png
+    right:
+      - icon: bi bi-house-door-fill  # https://icons.getbootstrap.com/
+        href: index.html
+      - icon: bi bi-file-person-fill
+        href: about.qmd
+      - icon: facebook
+        href: https://www.facebook.com/Siwachoat
+      - icon: github
+        href: xxx
+  description: "Educational Datascience Blog"
+format:
+  html:
+    theme: united
+    hightlight: textmate
+    css: styles.css
+    body-footer: footer.html
+
+editor: visual
+
