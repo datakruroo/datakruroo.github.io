@@ -93,6 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../documents/03TreeModels.html" rel="next">
+<link href="../documents/01basicConcepts.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -188,6 +190,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">เนื้อหารายสัปดาห์</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/02MLProcess.html" class="sidebar-item-text sidebar-link active">Wk02 ML Process</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
   </div>
 </li>
       </ul>
@@ -559,7 +596,7 @@ $ class        &lt;chr&gt; "compact", "compact", "compact", "compact", "compact"
 ✖ dplyr::lag()         masks stats::lag()
 ✖ yardstick::spec()    masks readr::spec()
 ✖ recipes::step()      masks stats::step()
-• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
 </div>
 </div>
 <section id="fitting-linear-regression-using-parsnip" class="level3">
@@ -628,7 +665,7 @@ stats::lm(formula = hwy ~ cty, data = data)
 
 Coefficients:
 (Intercept)          cty  
-      1.065        1.328  </code></pre>
+      1.056        1.324  </code></pre>
 </div>
 </div>
 </section>
@@ -641,8 +678,8 @@ Coefficients:
 <pre><code># A tibble: 2 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)     1.07    0.537       1.98 4.88e- 2
-2 cty             1.33    0.0308     43.1  4.87e-94</code></pre>
+1 (Intercept)     1.06    0.537       1.97 5.10e- 2
+2 cty             1.32    0.0307     43.1  3.64e-94</code></pre>
 </div>
 </div>
 <p>ภายใต้ framework ของ tidymodels จะใช้ฟังก์ชันใน package parsnip เพื่อ fitting model ทำนายดังกล่าว package ดังกล่าว จุดเด่นของ parsnip คือถูกออกแบบมาเพื่อเป็น interface สำหรับ fit supervised learning model ที่มีรูปแบบการใช้คำสั่งเป็นไวยกรณ์แบบเดียว</p>
@@ -658,16 +695,16 @@ Coefficients:
 <pre><code># A tibble: 60 × 1
    .pred
    &lt;dbl&gt;
- 1  22.3
- 2  25.0
- 3  21.0
- 4  21.0
- 5  23.6
- 6  22.3
- 7  21.0
- 8  19.7
- 9  26.3
-10  30.3
+ 1  28.9
+ 2  27.5
+ 3  20.9
+ 4  23.6
+ 5  19.6
+ 6  19.6
+ 7  24.9
+ 8  23.6
+ 9  20.9
+10  20.9
 # … with 50 more rows</code></pre>
 </div>
 </div>
@@ -682,16 +719,16 @@ Coefficients:
 <pre><code># A tibble: 60 × 3
      hwy   cty .pred
    &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
- 1    26    16  22.3
- 2    27    18  25.0
- 3    25    15  21.0
- 4    24    15  21.0
- 5    25    17  23.6
- 6    26    16  22.3
- 7    25    15  21.0
- 8    17    14  19.7
- 9    27    19  26.3
-10    30    22  30.3
+ 1    29    21  28.9
+ 2    28    20  27.5
+ 3    24    15  20.9
+ 4    25    17  23.6
+ 5    20    14  19.6
+ 6    17    14  19.6
+ 7    29    18  24.9
+ 8    24    17  23.6
+ 9    22    15  20.9
+10    21    15  20.9
 # … with 50 more rows</code></pre>
 </div>
 </div>
@@ -706,7 +743,7 @@ Coefficients:
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 rmse    standard        1.75</code></pre>
+1 rmse    standard        1.63</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -717,7 +754,7 @@ Coefficients:
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 rsq     standard       0.910</code></pre>
+1 rsq     standard       0.911</code></pre>
 </div>
 </div>
 <p>ผลลัพธ์ข้างต้นเมื่อพิจารณาค่า RMSE พบว่าโมเดลทำนายที่พัฒนาขึ้นมีความคลาดเคลื่อนในการทำนายค่าของตัวแปร <code>hwy</code> โดยเฉลี่ย 1.64 หน่วย และเมื่อพิจารณาจากค่า R square พบว่ามีค่าเท่ากับ .913 แสดงว่าค่าจริงของ <code>hwy</code> กับค่าทำนายมีความผันแปรร่วมกันคิดเป็นร้อยละ 91.3 ซึ่งอยู่ในระดับที่สูงมาก ผลการวิเคราะห์นี้จึงบ่งชี้ว่าโมเดลทำนายที่พัฒนาขึ้นสามารถใช้ทำนายคะแนน <code>hwy</code> ได้ดี</p>
@@ -1235,13 +1272,13 @@ dplyr 1.1.0.
 <table class="table">
 <caption>Checklist การจัดกระทำข้อมูลของอัลกอริทึมการเรียนรู้ต่าง ๆ</caption>
 <colgroup>
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
+<col style="width: 27%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 15%">
+<col style="width: 13%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -2036,6 +2073,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../documents/01basicConcepts.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Wk01 Intro to ML</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../documents/03TreeModels.html" class="pagination-link">
+        <span class="nav-page-text">Wk03 Decision Trees</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

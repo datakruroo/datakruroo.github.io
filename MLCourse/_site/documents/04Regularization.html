@@ -93,6 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../documents/05RandomForest.html" rel="next">
+<link href="../documents/03TreeModels.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -150,27 +152,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <a href="../index.html" class="sidebar-logo-link">
       <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
-      <div class="sidebar-tools-main tools-wide">
+      <div class="sidebar-tools-main">
     <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="https://cmgr.oit.duke.edu/containers" title="RStudio Containers" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
-    <a href="" title="Sakai" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill"></i></a>
-    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/13b6446a-a6c6-4222-8cfb-c36d1f70802b">
-          Discussion forum
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/page/aec742dc-2972-4f02-a35b-1dd3315af889">
-          Gradescope
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item sidebar-tools-main-item" href="https://sakai.duke.edu/portal/site/779c3ebe-3b88-4bcc-bd01-1813e8396a23/tool/69078433-67a6-4054-a2e7-9e6c202ecdc3/">
-          Gradebook
-          </a>
-        </li>
-    </ul>
+    <a href="https://posit.co/download/rstudio-desktop/" title="RStudio" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
 </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -190,17 +174,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../course-overview.qmd" class="sidebar-item-text sidebar-link">Overview</a>
+  <a href="../course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../course-syllabus.qmd" class="sidebar-item-text sidebar-link">Syllabus</a>
+  <a href="../syllabus-th-PDF-2758688.PDF" class="sidebar-item-text sidebar-link">Syllabus</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../course-team.qmd" class="sidebar-item-text sidebar-link">Teaching team</a>
+  <a href="../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -208,49 +192,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../course-links.qmd" class="sidebar-item-text sidebar-link">Useful links</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../course-faq.qmd" class="sidebar-item-text sidebar-link">FAQ</a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Weekly materials</a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">เนื้อหารายสัปดาห์</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../weeks/week-1.qmd" class="sidebar-item-text sidebar-link">Week 1</a>
+  <a href="../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../weeks/week-2.qmd" class="sidebar-item-text sidebar-link">Week 2</a>
+  <a href="../documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../weeks/week-3.qmd" class="sidebar-item-text sidebar-link">Week 3</a>
+  <a href="../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../weeks/week-4.qmd" class="sidebar-item-text sidebar-link">Week 4</a>
+  <a href="../documents/04Regularization.html" class="sidebar-item-text sidebar-link active">Wk04 Regularization</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../weeks/week-5.qmd" class="sidebar-item-text sidebar-link">Week 5</a>
+  <a href="../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
   </div>
 </li>
       </ul>
@@ -543,14 +517,14 @@ Interactions with yrs.since.phd:discipline_B [trained]</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 317
 Columns: 8
-$ yrs.since.phd                &lt;dbl&gt; -0.76815323, -0.76815323, 1.26300460, -1.…
-$ yrs.service                  &lt;dbl&gt; -0.53531528, -0.45828626, 0.15794595, -1.…
-$ salary                       &lt;int&gt; 103994, 103760, 148750, 84716, 181257, 13…
-$ rank_AsstProf                &lt;dbl&gt; -0.4624744, -0.4624744, -0.4624744, 2.155…
-$ rank_Prof                    &lt;dbl&gt; -1.388913, -1.388913, 0.717716, -1.388913…
-$ discipline_B                 &lt;dbl&gt; 0.922555, 0.922555, -1.080527, 0.922555, …
-$ sex_Male                     &lt;dbl&gt; -2.928978, 0.340339, 0.340339, 0.340339, …
-$ yrs.since.phd_x_discipline_B &lt;dbl&gt; -0.70866363, -0.70866363, -1.36471030, -1…</code></pre>
+$ yrs.since.phd                &lt;dbl&gt; -1.373480851, 0.538823391, -0.838035663, …
+$ yrs.service                  &lt;dbl&gt; -1.1495342, -0.7672405, -0.6143231, 1.602…
+$ salary                       &lt;int&gt; 73000, 204000, 83001, 151445, 124714, 675…
+$ rank_AsstProf                &lt;dbl&gt; 2.0453563, -0.4873701, -0.4873701, -0.487…
+$ rank_Prof                    &lt;dbl&gt; -1.3323229, 0.7482011, -1.3323229, 0.7482…
+$ discipline_B                 &lt;dbl&gt; -1.1444317, -1.1444317, -1.1444317, 0.871…
+$ sex_Male                     &lt;dbl&gt; 0.316823, 0.316823, 0.316823, 0.316823, 0…
+$ yrs.since.phd_x_discipline_B &lt;dbl&gt; 1.571855026, -0.616646570, 0.959074579, 0…</code></pre>
 </div>
 </div>
 <p>ตัวอย่างต่อไปนี้แสดงการระบุโมเดลด้วย engine glmnet โดยตัวอย่างแรกนี้จะกำหนดให้อาร์กิวเมนท์ <code>penalty = 0</code> ผลการวิเคราะห์ที่ได้จากการระบุโมเดลนี้จะเท่ากับ ols regression แบบปกติ</p>
@@ -582,14 +556,14 @@ Attaching package: 'Matrix'</code></pre>
 <pre><code># A tibble: 8 × 3
   term                         estimate penalty
   &lt;chr&gt;                           &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)                   113359.       0
-2 yrs.since.phd                   5724.       0
-3 yrs.service                    -2982.       0
-4 rank_AsstProf                  -4794.       0
-5 rank_Prof                      13137.       0
-6 discipline_B                    6141.       0
-7 sex_Male                        1497.       0
-8 yrs.since.phd_x_discipline_B    1379.       0</code></pre>
+1 (Intercept)                   113152.       0
+2 yrs.since.phd                   3010.       0
+3 yrs.service                    -1075.       0
+4 rank_AsstProf                  -5311.       0
+5 rank_Prof                      14202.       0
+6 discipline_B                    6598.       0
+7 sex_Male                         976.       0
+8 yrs.since.phd_x_discipline_B     731.       0</code></pre>
 </div>
 </div>
 <p>การใช้ tidymodels framework ช่วยให้ผู้วิเคราะห์สามารถเรียกดูค่าประมาณของสัมประสิทธิ์ความชันของโมเดลในกรณีที่มีการกำหนด penalty hyperparameter ต่าง ๆ ได้ เช่น</p>
@@ -599,14 +573,14 @@ Attaching package: 'Matrix'</code></pre>
 <pre><code># A tibble: 8 × 3
   term                         estimate penalty
   &lt;chr&gt;                           &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)                  113328.    10000
-2 yrs.since.phd                  3774.    10000
-3 yrs.service                      49.1   10000
-4 rank_AsstProf                 -4968.    10000
-5 rank_Prof                      9975.    10000
-6 discipline_B                   4709.    10000
-7 sex_Male                       1448.    10000
-8 yrs.since.phd_x_discipline_B   1222.    10000</code></pre>
+1 (Intercept)                   113181.   10000
+2 yrs.since.phd                   2885.   10000
+3 yrs.service                      714.   10000
+4 rank_AsstProf                  -5247.   10000
+5 rank_Prof                      10587.   10000
+6 discipline_B                    5203.   10000
+7 sex_Male                        1055.   10000
+8 yrs.since.phd_x_discipline_B     900.   10000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># magnitude of b</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>reg_fit<span class="sc">%&gt;%</span></span>
@@ -644,9 +618,9 @@ Attaching package: 'Matrix'</code></pre>
 <pre><code># A tibble: 3 × 3
   model            rmse   rsq
   &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;
-1 pred_ols       23632. 0.406
-2 pred_ridge5k   23963. 0.392
-3 pred_ridge_10k 24420. 0.372</code></pre>
+1 pred_ols       24395. 0.300
+2 pred_ridge5k   24608. 0.288
+3 pred_ridge_10k 24909. 0.272</code></pre>
 </div>
 </div>
 <p>ผลลัพธ์ที่ได้ข้างต้นแสดงให้เห็นว่าการกำหนด penalty term ที่แตกต่างกันมีผลต่อประสิทธิภาพในการทำนายของโมเดล อย่างไรก็ตามวิธีการข้างต้นไม่ใช่วิธีที่มีประสิทธิภาพที่จะให้หาค่าที่ดีที่สุดของ hyperparameters ทั้งสองค่าดังกล่าว ตัวอย่างต่อไปจะแสดงการใช้ k-folds cross-validation เข้ามาช่วยเฟ้นหาค่า hyperparameters ที่เหมาะสม คำสั่งด้านล่างแสดงการใช้ workflow ของ tidymodels เข้ามาช่วยปรับแต่งค่า hyperparameters ดังกล่าว รูปด้านล่างแสดงลักษณะของ workflow ซึ่งจะเห็นว่าเป็นการรวม object สองชนิดเข้าด้วยกันคือ recipe และ parsnip</p>
@@ -757,16 +731,16 @@ Computational engine: glmnet </code></pre>
 <pre><code># A tibble: 10 × 1
     penalty
       &lt;dbl&gt;
- 1 5.06e-94
- 2 1.29e-73
- 3 3.44e-78
- 4 2.06e-50
- 5 1.58e-34
- 6 1.88e-16
- 7 9.36e-67
- 8 7.38e+76
- 9 3.39e+43
-10 9.02e+97</code></pre>
+ 1 1.83e-83
+ 2 1.23e+ 1
+ 3 2.22e+96
+ 4 3.14e+63
+ 5 1.68e-62
+ 6 1.05e-73
+ 7 1.60e- 6
+ 8 2.19e-50
+ 9 5.97e-71
+10 1.94e-42</code></pre>
 </div>
 </div>
 <p>ตัวอย่างต่อไปนี้จะเปรียบเทียบผลที่ได้จากการปรับแต่งค่า hyperparameters ด้วยการทำ repeated 10-fold CV บน grid ของ hyperparameter ที่สร้างขึ้นจากสองวิธีการข้างต้น จากตัวอย่างด้านล่างจะเห็นว่าการ fit model ในแต่ละ fold จะใช้ฟังก์ชัน <code>tune_grid()</code> เป็นตัวดำเนินการแทนฟังก์ชัน <code>fit()</code> ทั้งนี้ <code>tune_grid()</code> มีอาร์กิวเมนท์ที่สำคัญได้แก่</p>
@@ -789,7 +763,7 @@ Computational engine: glmnet </code></pre>
 <span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"time usage (regular grid search) = "</span>, <span class="fu">round</span>(end <span class="sc">-</span> start,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "time usage (regular grid search) =  23.2"</code></pre>
+<pre><code>[1] "time usage (regular grid search) =  23.1"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#random grid search </span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
@@ -801,7 +775,7 @@ Computational engine: glmnet </code></pre>
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"time usage (random grid search) = "</span>, <span class="fu">round</span>(end <span class="sc">-</span> start,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "time usage (random grid search) =  21.4"</code></pre>
+<pre><code>[1] "time usage (random grid search) =  21.7"</code></pre>
 </div>
 </div>
 <p><strong>การประมวลผลข้างต้นการปรับแต่งค่า hyperparameters แต่ละวิธีการใช้เวลาเท่าไหร่ และผลที่ได้จากการปรับแต่งค่า hyperparameters มีความเหมือนหรือแตกต่างกันอย่างไร?</strong></p>
@@ -823,16 +797,16 @@ Computational engine: glmnet </code></pre>
 <pre><code># A tibble: 150 × 7
      penalty .metric .estimator      mean     n  std_err .config              
        &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;                
- 1 1   e-100 mae     standard   16787.       30 530.     Preprocessor1_Model01
- 2 1   e-100 rmse    standard   22448.       30 676.     Preprocessor1_Model01
- 3 1   e-100 rsq     standard       0.452    30   0.0231 Preprocessor1_Model01
- 4 1.21e- 96 mae     standard   16787.       30 530.     Preprocessor1_Model02
- 5 1.21e- 96 rmse    standard   22448.       30 676.     Preprocessor1_Model02
- 6 1.21e- 96 rsq     standard       0.452    30   0.0231 Preprocessor1_Model02
- 7 1.46e- 92 mae     standard   16787.       30 530.     Preprocessor1_Model03
- 8 1.46e- 92 rmse    standard   22448.       30 676.     Preprocessor1_Model03
- 9 1.46e- 92 rsq     standard       0.452    30   0.0231 Preprocessor1_Model03
-10 1.76e- 88 mae     standard   16787.       30 530.     Preprocessor1_Model04
+ 1 1   e-100 mae     standard   16495.       30 432.     Preprocessor1_Model01
+ 2 1   e-100 rmse    standard   22130.       30 691.     Preprocessor1_Model01
+ 3 1   e-100 rsq     standard       0.482    30   0.0156 Preprocessor1_Model01
+ 4 1.21e- 96 mae     standard   16495.       30 432.     Preprocessor1_Model02
+ 5 1.21e- 96 rmse    standard   22130.       30 691.     Preprocessor1_Model02
+ 6 1.21e- 96 rsq     standard       0.482    30   0.0156 Preprocessor1_Model02
+ 7 1.46e- 92 mae     standard   16495.       30 432.     Preprocessor1_Model03
+ 8 1.46e- 92 rmse    standard   22130.       30 691.     Preprocessor1_Model03
+ 9 1.46e- 92 rsq     standard       0.482    30   0.0156 Preprocessor1_Model03
+10 1.76e- 88 mae     standard   16495.       30 432.     Preprocessor1_Model04
 # … with 140 more rows</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>tune_regular <span class="sc">%&gt;%</span> </span>
@@ -855,16 +829,16 @@ Computational engine: glmnet </code></pre>
 <pre><code># A tibble: 900 × 7
    id      id2     penalty .metric .estimator .estimate .config              
    &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;                
- 1 Repeat1 Fold01 5.06e-94 rsq     standard       0.415 Preprocessor1_Model01
- 2 Repeat1 Fold01 5.06e-94 rmse    standard   28146.    Preprocessor1_Model01
- 3 Repeat1 Fold01 5.06e-94 mae     standard   19368.    Preprocessor1_Model01
- 4 Repeat1 Fold02 5.06e-94 rsq     standard       0.427 Preprocessor1_Model01
- 5 Repeat1 Fold02 5.06e-94 rmse    standard   26588.    Preprocessor1_Model01
- 6 Repeat1 Fold02 5.06e-94 mae     standard   20808.    Preprocessor1_Model01
- 7 Repeat1 Fold03 5.06e-94 rsq     standard       0.664 Preprocessor1_Model01
- 8 Repeat1 Fold03 5.06e-94 rmse    standard   16585.    Preprocessor1_Model01
- 9 Repeat1 Fold03 5.06e-94 mae     standard   11946.    Preprocessor1_Model01
-10 Repeat1 Fold04 5.06e-94 rsq     standard       0.261 Preprocessor1_Model01
+ 1 Repeat1 Fold01 1.83e-83 rsq     standard       0.433 Preprocessor1_Model01
+ 2 Repeat1 Fold01 1.83e-83 rmse    standard   28590.    Preprocessor1_Model01
+ 3 Repeat1 Fold01 1.83e-83 mae     standard   21296.    Preprocessor1_Model01
+ 4 Repeat1 Fold02 1.83e-83 rsq     standard       0.558 Preprocessor1_Model01
+ 5 Repeat1 Fold02 1.83e-83 rmse    standard   30395.    Preprocessor1_Model01
+ 6 Repeat1 Fold02 1.83e-83 mae     standard   20117.    Preprocessor1_Model01
+ 7 Repeat1 Fold03 1.83e-83 rsq     standard       0.497 Preprocessor1_Model01
+ 8 Repeat1 Fold03 1.83e-83 rmse    standard   21288.    Preprocessor1_Model01
+ 9 Repeat1 Fold03 1.83e-83 mae     standard   17092.    Preprocessor1_Model01
+10 Repeat1 Fold04 1.83e-83 rsq     standard       0.482 Preprocessor1_Model01
 # … with 890 more rows</code></pre>
 </div>
 </div>
@@ -876,16 +850,16 @@ Computational engine: glmnet </code></pre>
 <pre><code># A tibble: 47,550 × 7
    id      id2      .pred  .row penalty salary .config              
    &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt; &lt;chr&gt;                
- 1 Repeat1 Fold01 121850.     3  1e-100 148750 Preprocessor1_Model01
- 2 Repeat1 Fold01 126897.    15  1e-100 142467 Preprocessor1_Model01
- 3 Repeat1 Fold01  76196.    26  1e-100  74000 Preprocessor1_Model01
- 4 Repeat1 Fold01 117779.    29  1e-100 168500 Preprocessor1_Model01
- 5 Repeat1 Fold01  85897.    35  1e-100  91300 Preprocessor1_Model01
- 6 Repeat1 Fold01 124811.    63  1e-100 183800 Preprocessor1_Model01
- 7 Repeat1 Fold01 129939.    70  1e-100 106639 Preprocessor1_Model01
- 8 Repeat1 Fold01 134797.    72  1e-100 146856 Preprocessor1_Model01
- 9 Repeat1 Fold01 118182.    78  1e-100 103700 Preprocessor1_Model01
-10 Repeat1 Fold01 117129.    98  1e-100 108262 Preprocessor1_Model01
+ 1 Repeat1 Fold01 117612.     2  1e-100 204000 Preprocessor1_Model01
+ 2 Repeat1 Fold01 130035.     8  1e-100 106639 Preprocessor1_Model01
+ 3 Repeat1 Fold01 117428.    11  1e-100 110515 Preprocessor1_Model01
+ 4 Repeat1 Fold01  74480.    81  1e-100  74000 Preprocessor1_Model01
+ 5 Repeat1 Fold01 133449.    92  1e-100 162221 Preprocessor1_Model01
+ 6 Repeat1 Fold01  85921.    97  1e-100  78000 Preprocessor1_Model01
+ 7 Repeat1 Fold01 133197.   102  1e-100  91412 Preprocessor1_Model01
+ 8 Repeat1 Fold01 117961.   109  1e-100  94350 Preprocessor1_Model01
+ 9 Repeat1 Fold01 118684.   116  1e-100 134690 Preprocessor1_Model01
+10 Repeat1 Fold01  70538.   120  1e-100  72500 Preprocessor1_Model01
 # … with 47,540 more rows</code></pre>
 </div>
 </div>
@@ -896,22 +870,22 @@ Computational engine: glmnet </code></pre>
 <pre><code># A tibble: 5 × 7
     penalty .metric .estimator   mean     n std_err .config              
       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-1 1   e-100 rmse    standard   22448.    30    676. Preprocessor1_Model01
-2 1.21e- 96 rmse    standard   22448.    30    676. Preprocessor1_Model02
-3 1.46e- 92 rmse    standard   22448.    30    676. Preprocessor1_Model03
-4 1.76e- 88 rmse    standard   22448.    30    676. Preprocessor1_Model04
-5 2.12e- 84 rmse    standard   22448.    30    676. Preprocessor1_Model05</code></pre>
+1 1   e-100 rmse    standard   22130.    30    691. Preprocessor1_Model01
+2 1.21e- 96 rmse    standard   22130.    30    691. Preprocessor1_Model02
+3 1.46e- 92 rmse    standard   22130.    30    691. Preprocessor1_Model03
+4 1.76e- 88 rmse    standard   22130.    30    691. Preprocessor1_Model04
+5 2.12e- 84 rmse    standard   22130.    30    691. Preprocessor1_Model05</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(tune_random, <span class="at">n=</span><span class="dv">5</span>, <span class="at">metric=</span><span class="st">"rmse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 7
    penalty .metric .estimator   mean     n std_err .config              
      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-1 5.06e-94 rmse    standard   22448.    30    676. Preprocessor1_Model01
-2 3.44e-78 rmse    standard   22448.    30    676. Preprocessor1_Model02
-3 1.29e-73 rmse    standard   22448.    30    676. Preprocessor1_Model03
-4 9.36e-67 rmse    standard   22448.    30    676. Preprocessor1_Model04
-5 2.06e-50 rmse    standard   22448.    30    676. Preprocessor1_Model05</code></pre>
+1 1.83e-83 rmse    standard   22130.    30    691. Preprocessor1_Model01
+2 1.05e-73 rmse    standard   22130.    30    691. Preprocessor1_Model02
+3 5.97e-71 rmse    standard   22130.    30    691. Preprocessor1_Model03
+4 1.68e-62 rmse    standard   22130.    30    691. Preprocessor1_Model04
+5 2.19e-50 rmse    standard   22130.    30    691. Preprocessor1_Model05</code></pre>
 </div>
 </div>
 <section id="กจกรรม-1" class="level4">
@@ -1138,6 +1112,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../documents/03TreeModels.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Wk03 Decision Trees</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../documents/05RandomForest.html" class="pagination-link">
+        <span class="nav-page-text">Wk05 Random Forest</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

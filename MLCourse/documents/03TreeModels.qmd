@@ -13,7 +13,7 @@ library(gridExtra)
 library(tidymodels)
 ```
 
-# บทที่ 5 Decision Tree 
+# บทที่ 5 Decision Tree
 
 บทเรียนนี้จะกล่าวถึงอัลกอริทึม decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree จัดเป็นอัลกอริทึมที่อยู่ในกลุ่ม nonparametric ซึ่งแตกต่างจาก linear regression กล่าวคือการเรียนรู้ของ decision tree มีลักษณะเป็นการสร้างกฎเกณฑ์ในการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกันภายใต้ feature space จากคุณลักษณะดังกล่าวทำให้ decision tree เป็นอัลกอริทึมที่มีความยืดหยุ่นมากกว่า linear regression และสามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ดีกว่า regression
 
