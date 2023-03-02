@@ -1,0 +1,205 @@
+[
+  {
+    "objectID": "materials/07HLMs.html#hsb-dataset",
+    "href": "materials/07HLMs.html#hsb-dataset",
+    "title": "Hierarchical Linear Modelling",
+    "section": "HSB Dataset",
+    "text": "HSB Dataset\n\nHSB = HighSchool & Beyond Survey (Raudenbush & Bryk, 2002)\n\nmathach = ผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของนักเรียน\nses = เศรษฐานะของนักเรียน\nsector = ประเภทของโรงเรียน (1 = Catholic, 0 = Public)\nschid = รหัสโรงเรียนของนักเรียน\n\n\nlibrary(dplyr)\nlibrary(haven)\nlibrary(descriptr)\ndat <- read_spss(\"datasets/HSB.SAV\")\nglimpse(dat)\n\nRows: 7,185\nColumns: 4\n$ schid   <chr> \"1224\", \"1224\", \"1224\", \"1224\", \"1224\", \"1224\", \"1224\", \"1224\"…\n$ sector  <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ ses     <dbl> -1.528, -0.588, -0.528, -0.668, -0.158, 0.022, -0.618, -0.998,…\n$ mathach <dbl> 5.876, 19.708, 20.349, 8.781, 17.898, 4.583, -2.832, 0.523, 1.…"
+  },
+  {
+    "objectID": "materials/07HLMs.html#hierarchical-general-linear-models",
+    "href": "materials/07HLMs.html#hierarchical-general-linear-models",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Hierarchical General Linear models",
+    "text": "Hierarchical General Linear models\n\nOne-way ANOVA with random effect model\nMeans as outcomes regression model (random intercept model)\nOne-way ANCOVA with random effect model\nNon-randomly varying slopes\nRandom-coefficient regression model\nIntercept-and-slope as outcome model"
+  },
+  {
+    "objectID": "materials/07HLMs.html#กจกรรม-5-นาท",
+    "href": "materials/07HLMs.html#กจกรรม-5-นาท",
+    "title": "Hierarchical Linear Modelling",
+    "section": "กิจกรรม (5 นาที)",
+    "text": "กิจกรรม (5 นาที)\n\nคำนวณค่าเฉลี่ยของ mathach ระดับโรงเรียน จะมีค่าเฉลี่ยกี่ค่า?\nค่าเฉลี่ย mathach ของโรงเรียนมีความแตกต่างกันอย่างไร?"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling",
+    "href": "materials/07HLMs.html#modelling",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling",
+    "text": "Modelling\n\n\nstudent-level model\n\\(math_{ij} = \\beta_{0j} + \\epsilon_{ij}\\)\nschool-level model\n\\(\\beta_{0j} = \\gamma_{00} + u_{0j}\\)\ncombined model\n\\(math_{ij} = \\gamma_{00} + u_{0j} + \\epsilon_{ij}\\)\n\n\n\n\nมีข้อตกลงเบื้องต้นคือ\n\n\\(\\epsilon_{ij} \\sim N(0, \\sigma^2)\\)\n\\(u_{0j} \\sim N(0, \\tau_{00})\\)\n\nเรียก \\(\\sigma^2\\) = level-1 variance และ \\(\\tau_{00}\\) = level-2 variance\nโมเดลข้างต้นมีพารามิเตอร์กี่ตัว อะไรบ้าง และพารามิเตอร์แต่ละตัวมีความหมาย/ให้สารสนเทศอะไร"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-parameter-estimation",
+    "href": "materials/07HLMs.html#modelling-parameter-estimation",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling: parameter estimation",
+    "text": "Modelling: parameter estimation\n\nlibrary(lme4)\nlibrary(lmerTest)\nfit_nullmodel <- lmer(mathach ~ 1 + (1|schid), data = dat)\nsummary(fit_nullmodel)\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: mathach ~ 1 + (1 | schid)\n   Data: dat\n\nREML criterion at convergence: 47116.8\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-3.0631 -0.7539  0.0267  0.7606  2.7426 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n schid    (Intercept)  8.614   2.935   \n Residual             39.148   6.257   \nNumber of obs: 7185, groups:  schid, 160\n\nFixed effects:\n            Estimate Std. Error       df t value Pr(>|t|)    \n(Intercept)  12.6370     0.2444 156.6473   51.71   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1"
+  },
+  {
+    "objectID": "materials/07HLMs.html#interpret-the-results",
+    "href": "materials/07HLMs.html#interpret-the-results",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Interpret the results",
+    "text": "Interpret the results\nOne-way ANOVA with random effect มักใช้เป็นโมเดลเพื่อตรวจสอบโครงสร้างระดับลดหลั่นของข้อมูล สารสนเทศสำคัญ ได้แก่ point estimate และ interval estimate ของ\n\n\\(\\gamma_{00}\\)\n\\(\\sigma^2\\)\n\\(\\tau_{00}\\)\nIntraclass correlation = \\(\\rho = \\frac{\\tau_{00}}{\\tau_{00} + \\sigma^2}\\)\n\nมีฟังก์ชันที่สำคัญสองตัวได้แก่\n\nconfint(fit_nullmodel) ซึ่งจะให้ช่วงความเชื่อมั่นของค่าประมาณพารามิเตอร์ของโมเดล\nranova(fit_nullmodel) จะให้ผลการทดสอบอัตราส่วนภาวะความน่าจะเป็น (likelihood ratio test) ของ random effect term ในโมเดล"
+  },
+  {
+    "objectID": "materials/07HLMs.html#icc",
+    "href": "materials/07HLMs.html#icc",
+    "title": "Hierarchical Linear Modelling",
+    "section": "ICC",
+    "text": "ICC\n\nThe ICC can be interpreted as “the proportion of the variance explained by the grouping structure in the population”\nICC indexes how strongly measurements in the same group resemble each other\nthe ICC - sometimes conceptualized as the measurement repeatability - “can also be interpreted as the expected correlation between two randomly drawn units that are in the same group” (Hox 2010: 15)\n\nNote: This definition might not apply to mixed models with more complex random effects structures"
+  },
+  {
+    "objectID": "materials/07HLMs.html#icc-1",
+    "href": "materials/07HLMs.html#icc-1",
+    "title": "Hierarchical Linear Modelling",
+    "section": "ICC",
+    "text": "ICC\n\n#install.packages(\"performance\")\nlibrary(performance)\n#insight::get_variance(fit_nullmodel)\nicc(fit_nullmodel)\n\n# Intraclass Correlation Coefficient\n\n    Adjusted ICC: 0.180\n  Unadjusted ICC: 0.180"
+  },
+  {
+    "objectID": "materials/07HLMs.html#r2",
+    "href": "materials/07HLMs.html#r2",
+    "title": "Hierarchical Linear Modelling",
+    "section": "R2",
+    "text": "R2\n\nThe coefficient of determination R2 quantifies the proportion of variance explained by a statistical model. More precisely, R2 is the proportion of the explained variance (of the full model)\n\n\n\n# R2 for Mixed Models\n\n  Conditional R2: 0.180\n     Marginal R2: 0.000"
+  },
+  {
+    "objectID": "materials/07HLMs.html#group-means",
+    "href": "materials/07HLMs.html#group-means",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Group Means",
+    "text": "Group Means\nNull model จะให้ค่าประมาณของค่าเฉลี่ยระดับกลุ่ม (ในที่นี้คือค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์) ซึ่งสามารถคำนวณได้ดังนี้\n\nbeta0j <- coef(fit_nullmodel)\nbeta0j$schid %>% summary()\n\n  (Intercept)    \n Min.   : 5.234  \n 1st Qu.:10.731  \n Median :12.871  \n Mean   :12.637  \n 3rd Qu.:14.463  \n Max.   :19.115"
+  },
+  {
+    "objectID": "materials/07HLMs.html#writting-report",
+    "href": "materials/07HLMs.html#writting-report",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Writting Report",
+    "text": "Writting Report\n\nที่มา : Randenbush & Bryk (2002)"
+  },
+  {
+    "objectID": "materials/07HLMs.html#กจกรรม-2-นาท",
+    "href": "materials/07HLMs.html#กจกรรม-2-นาท",
+    "title": "Hierarchical Linear Modelling",
+    "section": "กิจกรรม (2 นาที)",
+    "text": "กิจกรรม (2 นาที)\nค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ระดับโรงเรียนมีความแตกต่างกันระหว่างสังกัดของโรงเรียนอย่างไร?"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-1",
+    "href": "materials/07HLMs.html#modelling-1",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling",
+    "text": "Modelling\n\nstudent-level model\n\\(math_{ij} = \\beta_{0j} + \\epsilon_{ij}\\)\nschool-level model\n\\(\\beta_{0j} = \\gamma_{00} +\\gamma_{01}W_j+u_{0j}\\)\ncombined model\n\\(math_{ij} = \\gamma_{00} + \\gamma_{01}W_j +u_{0j} + \\epsilon_{ij}\\)\n\n\n\n\n\n\n\n\nมีข้อตกลงเบื้องต้นคือ\n\n\\(\\epsilon_{ij} \\sim N(0, \\sigma^2)\\)\n\\(u_{0j} \\sim N(0, \\tau_{00})\\)\n\n\nโมเดลนี้มีพารามิเตอร์อะไรบ้าง และมีความหมายอย่างไร\nพารามิเตอร์เดิมที่อยู่ภายในโมเดลมีความหมายเหมือนหรือแตกต่างไปจาก null model อย่างไร"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-parameter-estimation-1",
+    "href": "materials/07HLMs.html#modelling-parameter-estimation-1",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling: parameter estimation",
+    "text": "Modelling: parameter estimation\n\nfit_randIntercept <- lmer(mathach ~ 1 + sector + (1|schid), data = dat)\nsummary(fit_randIntercept)\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: mathach ~ 1 + sector + (1 | schid)\n   Data: dat\n\nREML criterion at convergence: 47080.1\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-3.0130 -0.7523  0.0253  0.7602  2.7472 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n schid    (Intercept)  6.677   2.584   \n Residual             39.151   6.257   \nNumber of obs: 7185, groups:  schid, 160\n\nFixed effects:\n            Estimate Std. Error       df t value Pr(>|t|)    \n(Intercept)  11.3930     0.2928 158.5371  38.907  < 2e-16 ***\nsector        2.8049     0.4391 153.5006   6.388  1.9e-09 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n       (Intr)\nsector -0.667"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-parameter-estimation-2",
+    "href": "materials/07HLMs.html#modelling-parameter-estimation-2",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling: parameter estimation",
+    "text": "Modelling: parameter estimation\n\nconfint(fit_randIntercept)\n\n                2.5 %    97.5 %\n.sig01       2.265614  2.918854\n.sigma       6.155051  6.362058\n(Intercept) 10.819305 11.966760\nsector       1.944660  3.665259"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-random-effect-test",
+    "href": "materials/07HLMs.html#modelling-random-effect-test",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling: random effect test",
+    "text": "Modelling: random effect test\n\nranova(fit_randIntercept)\n\nANOVA-like table for random-effects: Single term deletions\n\nModel:\nmathach ~ sector + (1 | schid)\n            npar logLik   AIC    LRT Df Pr(>Chisq)    \n<none>         4 -23540 47088                         \n(1 | schid)    3 -23900 47805 719.29  1  < 2.2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-variance-explained",
+    "href": "materials/07HLMs.html#modelling-variance-explained",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling: Variance Explained",
+    "text": "Modelling: Variance Explained\nสัดส่วนความแปรปรวนในค่าเฉลี่ย mathach ของโรงเรียนที่อธิบายได้ด้วย Sector\n\\[\nvariance\\ explained = \\frac{\\tau_{00}(null \\ model)-\\tau_{00}(Sector)}{\\tau_{00}(null \\ model)}\n\\]"
+  },
+  {
+    "objectID": "materials/07HLMs.html#modelling-conditional-intraclass-correlation",
+    "href": "materials/07HLMs.html#modelling-conditional-intraclass-correlation",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Modelling: Conditional Intraclass correlation",
+    "text": "Modelling: Conditional Intraclass correlation\n\nทดลองคำนวณ intraclass correlation และ R2 ของโมเดล random intercept ใหม่\nค่าของ intraclass correlation ที่ได้เป็นอย่างไรเมื่อเทียบกับของ null model และค่าที่เปลี่ยนแปลงไปนี้หมายความว่าอย่างไร"
+  },
+  {
+    "objectID": "materials/07HLMs.html#กจกรรม-5-6-นาท",
+    "href": "materials/07HLMs.html#กจกรรม-5-6-นาท",
+    "title": "Hierarchical Linear Modelling",
+    "section": "กิจกรรม (5-6 นาที)",
+    "text": "กิจกรรม (5-6 นาที)\nวิเคราะห์และแปลผลโมเดลต่อไปนี้\n\nstudent-level model\n\\(math_{ij} = \\beta_{0j} + \\epsilon_{ij}\\)\nschool-level model\n\\(\\beta_{0j} = \\gamma_{00} +\\gamma_{01}Sector_j+ \\gamma_{02}MeanSES + u_{0j}\\)\ncombined model\n\\(math_{ij} = \\gamma_{00} +\\gamma_{01}Sector_j+ \\gamma_{02}MeanSES +u_{0j} + \\epsilon_{ij}\\)"
+  },
+  {
+    "objectID": "materials/07HLMs.html#multiparameter-tests",
+    "href": "materials/07HLMs.html#multiparameter-tests",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Multiparameter tests",
+    "text": "Multiparameter tests\nนอกจากการทดสอบสมมุติฐานเพื่อตรวจสอบนัยสำคัญของพารามิเตอร์ภายในโมเดลเป็นรายตัวแล้ว เราสามารถทำการตรวจสอบนัยสำคัญของพารามิเตอร์หลายตัวพร้อมกันได้ด้วย ซึ่งมีประโยชน์ในเชิงของการเปรียบเทียบโมเดลคู่แข่งขัน (nested model) วิธีการหนึ่งที่สามารถนำมาใช้ได้เรียกว่า likelihood ratio test\nสมมุติต้องการเปรียบเทียบระหว่าง null model กับ โมเดลในกิจกรรมที่ผ่านมา (M2 model) สามารถดำเนินการได้ดังนี้\n\\[\nH_0: M_{null} = M_2\n\\\\\nH_1: M_{null} \\neq M_2\n\\]\n\nคำนวณ \\(D_0 = -2log(L_{null})\\) เรียกค่านี้ว่า deviance ของ null model\nคำนวณ \\(D_2 = -2log(L_{M2})\\) เรียกค่านี้ว่า deviance ของ M2 model\nภายใต้ \\(H_0\\) เป็นจริง \\(\\chi^2 = D_0 - D_2 \\sim \\chi^2_{df}\\) เมื่อ \\(df\\) คือผลต่างของจำนวนพารามิเตอร์ระหว่างโมเดลคู่แข่งขันทั้งสอง"
+  },
+  {
+    "objectID": "materials/07HLMs.html#multiparameter-tests-1",
+    "href": "materials/07HLMs.html#multiparameter-tests-1",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Multiparameter tests",
+    "text": "Multiparameter tests\n\nanova(fit_nullmodel, fit_randIntercept)\n\nData: dat\nModels:\nfit_nullmodel: mathach ~ 1 + (1 | schid)\nfit_randIntercept: mathach ~ 1 + sector + (1 | schid)\n                  npar   AIC   BIC logLik deviance  Chisq Df Pr(>Chisq)    \nfit_nullmodel        3 47122 47142 -23558    47116                         \nfit_randIntercept    4 47087 47115 -23540    47079 36.705  1  1.374e-09 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1"
+  },
+  {
+    "objectID": "materials/07HLMs.html#writting-report-1",
+    "href": "materials/07HLMs.html#writting-report-1",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Writting Report",
+    "text": "Writting Report\n\nที่มา : Raudenbush & Bryk (2002)"
+  },
+  {
+    "objectID": "materials/07HLMs.html#random-intercept-model",
+    "href": "materials/07HLMs.html#random-intercept-model",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Random Intercept model",
+    "text": "Random Intercept model"
+  },
+  {
+    "objectID": "instructors.html",
+    "href": "instructors.html",
+    "title": "Instructor",
+    "section": "",
+    "text": "ท่านหัวหน้าภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\n\n\n\n\nวิธีวิทยาการวิจัยทางการศึกษา\nวิจัยในชั้นเรียน\nการวิจัยสมการโครงสร้างพหุระดับ\nการเลือกและซื้อกระเป๋า Brand name\n\n\n\n\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)"
+  },
+  {
+    "objectID": "instructors.html#ผศ.ดร.สวะโชต-ศรสทธยากร",
+    "href": "instructors.html#ผศ.ดร.สวะโชต-ศรสทธยากร",
+    "title": "Instructor",
+    "section": "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร",
+    "text": "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร\n\n\nอาจารย์ประจำภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\nDataKruRoo Founder\n\n\nความเชี่ยวชาญเฉพาะ\n\nสถิติและวิทยาการข้อมูลทางการศึกษา\nการพัฒนาทัศนภาพข้อมูลทางการศึกษา\nการเรียนรู้ของเครื่องและการประยุกต์สำหรับการวิจัยทางการศึกษา\nการจำลองแบบมอนติคาร์โล\nสถิติวิเคราะห์แบบเบย์\nR programming\n\n\n\nผลงานทางวิชาการ\nPanidvadtana, P., Sujiva, S., & Srisuttiyakorn, S. (2021). A Comparison of the Accuracy of Multidimensional IRT equating methods for Mixed-Format Tests, Kasetsart Journal of Social Sciences, 42, 215-220. (Scopus)\nสิวะโชติ ศรีสุทธิยากร. (2562). ความเหลื่อมล้ำทางการศึกษาและปัจจัยที่ส่งผล : การวิเคราะห์พหุระดับร่วมกับดัชนีเอ็นโทรปีนัยทั่วไปที่อิงมัธยฐาน. วารสารวิธีวิทยาการวิจัย. 32(3), 342-379. (TCI1)\nวรรณี แกมเกตุ, ดวงกมล ไตรวิจิตรคุณ, สิวะโชติ ศรีสุทธิยากร, เมษา นวลศรี, กษิดิศ ครุฑางคะ  และภานุวัฒน์ เข็มกลัด. (2562). รายงานการติดตามและประเมินผลการดำเนินงานตามแผนการศึกษาแห่งชาติ พ.ศ. 2560-2579 : ช่วงปี พ.ศ. 2560-2562. สำนักงานเลขาธิการสภาการศึกษา กระทรวงศึกษาธิการ.\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)\n\n\nหนังสือ\nสิวะโชติ ศรีสุทธิยากร. (2564). สถิติและวิทยาการข้อมูลทางการศึกษา : R สำหรับจัดระเบียบและจัดกระทำข้อมูล. กรุงเทพมหานคร : คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย. สืบค้นจาก https://m.chulabook.com/th/product-details/120204"
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "2756713 MSEM RES",
+    "section": "Overview",
+    "text": "Overview\nรหัสวิชา 2756713 การวิจัยโมเดลสมการโครงสร้างพหุระดับ 2(2-0-6) หน่วยกิต\nมโนทัศน์ สาระสำคัญของการวิจัยโมเดลสมการโครงสร้างพหุระดับ ลักษณะของข้อมูลพหุระดับแบบต่าง ๆ (โมเดลซ้อน โมเดลจำแนกข้ามกลุ่ม โมเดลพหุระดับพหุสมาชิก) ความเชื่อมโยงระหว่างข้อมูลพหุระดับ ตัวแปรปรับ อิทธิพลปฏิสัมพันธ์ การกำหนดปัญหาวิจัย สมมุติฐาน กรอบแนวคิด การกำหนดตัวอย่างวิจัย เครื่องมือวิจัย และการวิเคราะห์ข้อมูลพหุระดับ ได้แก่ การวิเคราะห์องค์ประกอบเชิงสำรวจและเชิงยืนยันพหุระดับ โมเดลสมการโครงสร้างเชิงเส้นตรงระดับลดหลั่น การวิเคราะห์เส้นทางแบบพหุระดับ โมเดลสมการโครงสร้างพหุระดับที่มีตัวแปรแฝง การวิเคราะห์พหุระดับและพหุกลุ่ม การวิเคราะห์พหุระดับที่มีตัวแปรส่งผ่าน ตัวแปรปรับ และการวิเคราะห์ปฏิสัมพันธ์ข้ามระดับ"
+  },
+  {
+    "objectID": "index.html#materials",
+    "href": "index.html#materials",
+    "title": "2756713 MSEM RES",
+    "section": "Materials",
+    "text": "Materials\nMaterial สำหรับรายวิชา การวิจัยโมเดลสมการโครงสร้างพหุระดับ\n\n\n\n\n\n\n\n\n\n\n\nสัปดาห์ที่\nวันที่\nหัวข้อ\nเอกสาร\nชุดข้อมูลตัวอย่าง\nกิจกรรม/การบ้าน\n\n\n\n\n7\n3 มี.ค. 66\nHierarchical Linear Modelling\n🖥️ HLM1\nHSB.csv, HSB.sav, Archive.zip\n😓 HW07"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "homeworks/hw_wk07.html",
+    "href": "homeworks/hw_wk07.html",
+    "title": "2756714 MSEM RES",
+    "section": "",
+    "text": "sleepstudy dataset\n\n\n\n\n\nชุดข้อมูล sleepstudy เป็นชุดข้อมูลตัวอย่างของ pacakge lme4 ในการวิจัยที่ศึกษาการอดนอนของคน ตัวแปรตามคือ Reaction เป็นค่าเฉลี่ยของความเร็วในการตอบสนองของผู้เข้าร่วมวิจัย (ms) ส่วนตัวแปรที่เหลือได้แก่ day คือจำนวนวันที่อดนอน และ subject คือรหัสของผู้เข้าร่วมวิจัย\n\n#install.packages(lme4)\nlibrary(lme4)\n\nLoading required package: Matrix\n\nhead(sleepstudy)\n\n  Reaction Days Subject\n1 249.5600    0     308\n2 258.7047    1     308\n3 250.8006    2     308\n4 321.4398    3     308\n5 356.8519    4     308\n6 414.6901    5     308\n\n\nหากลองสำรวจข้อมูลข้างต้นจะเห็นว่ามีโครงสร้างเป็นข้อมูลระดับลดหลั่นแบบ 2 ระดับ โดยระดับที่ 1 คือวันที่อดนอน และระดับที่ 2 คือผู้เข้าร่วมวิจัย\n\nขอให้นิสิตดำเนินการวิเคราะห์ข้อมูลและตอบคำถามต่อไปนี้\n\nทดลองวิเคราะห์ ols regression โดยตัวแปรตามเป็น Reaction และตัวแปรอิสระเป็น Day ผลที่ได้เป็นอย่างไร?\nพิจารณาผลการสำรวจข้อมูลในรูปด้านล่าง นิสิตสามารถสรุปอะไรได้บ้าง?\n\n\n\n\n\n\n\nเมื่อพิจารณารูปแล้วนิสิตคิดว่า ols regression ในข้อ 1. เป็นโมเดลที่เหมาะสำหรับวิเคราะห์ข้อมูลชุดนี้อยู่หรือไม่ เพราะเหตุใด\nจงดำเนินการวิเคราะห์ข้อมูลเพื่อตอบคำถามวิจัย “ค่าเฉลี่ยของความเร็วในการตอบสนองของคนที่อดนอนมีความแตกต่างกันอย่างไร”\nจงดำเนินการวิเคราะห์ข้อมูลเพื่อตอบคำถามวิจัย “ระยะเวลาการอดนอน (วัน) มีผลต่อค่าเฉลี่ยของความเร็วในการตอบสนองของคนที่อดนอนอย่างไร”\nจงดำเนินการวิเคราะห์ข้อมูลเพื่อตอบคำถามวิจัย “อิทธิพลของการอดนอนที่มีต่อความเร็วในการตอบสนองต่อส่ิงเร้า มีความแตกต่างกันระหว่างผู้เข้าร่วมวิจัยหรือไม่”"
+  }
+]

@@ -1,0 +1,8 @@
+"0","dat %>% 
+  mutate(sector = factor(sector, labels=c(""Catholic"",""Public""))) %>%
+  group_by(sector, schid) %>%
+  summarise(mean_mathach = mean(mathach)) %>%
+ggplot(aes(x = mean_mathach, fill = sector))+
+  geom_density()
+"
+"2","`summarise()` has grouped output by 'sector'. You can override using the `.groups` argument."

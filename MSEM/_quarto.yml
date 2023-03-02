@@ -1,0 +1,55 @@
+project:
+  type: website
+
+website:
+  page-navigation: true
+  title: "2756714 MSEM RES"
+  description: "Homepage for 2756714 MSEM RES @ EDUCU."
+  open-graph: true
+
+  page-footer:
+    right: "This page is built with ❤️ and [Quarto](https://quarto.org/)."
+    left: "&copy; Copyright 2023, DataKruRoo"
+    background: "#F2CD5C"
+
+  sidebar:
+    background: "#F2CD5C"
+    foreground: "secondary"
+    logo: "images/logo.png"
+    pinned: true
+    align: center
+    tools:
+      - icon: facebook
+        href: https://www.facebook.com/KruRooEduCU
+        text: "KruRoo @ EDUCU"
+        
+      - icon: code-square
+        href: https://posit.co/download/rstudio-desktop/
+        text: "RStudio"
+
+
+    style: "docked"
+    search: true
+    collapse-level: 1
+    contents:
+      - section: "Course information"
+        contents:
+          - href: index.qmd
+            text: MSEM RES 2023
+          - href: instructors.qmd
+            text: Instructor
+
+format:
+  html:
+    theme: 
+      light: [pandoc, theme.scss]
+    mainfont: "K2D"
+    code-copy: true
+    code-overflow: wrap
+    toc: true
+
+freeze: auto
+editor: visual
+urlcolor: "steelblue"
+linkcolor: "steelblue"
+

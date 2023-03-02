@@ -1,0 +1,372 @@
+---
+title: "Hierarchical Linear Modelling"
+subtitle: "2756713 MSES RES 2023"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </br> ผศ.ดร.กนิษฐ์ ศรีเคลือบ
+logo: "images/logo.png"
+format: 
+  revealjs: 
+    theme: slides.scss
+    multiplex: true
+    transition: fade
+    slide-number: true
+    navigation-mode: vertical
+
+editor: visual
+execute:
+  freeze: auto
+---
+
+```{r}
+#| include: false
+library(ggplot2)
+```
+
+## HSB Dataset {.smaller}
+
+![](images/image-1532658019.png){fig-align="left" width="383"}
+
+HSB = HighSchool & Beyond Survey (Raudenbush & Bryk, 2002)
+
+-   `mathach` = ผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของนักเรียน
+
+-   `ses` = เศรษฐานะของนักเรียน
+
+-   `sector` = ประเภทของโรงเรียน (1 = Catholic, 0 = Public)
+
+-   `schid` = รหัสโรงเรียนของนักเรียน
+
+```{r echo=T}
+library(dplyr)
+library(haven)
+library(descriptr)
+dat <- read_spss("datasets/HSB.SAV")
+glimpse(dat)
+```
+
+# Six Submodels
+
+## Hierarchical General Linear models {.small}
+
+-   One-way ANOVA with random effect model
+
+-   Means as outcomes regression model (random intercept model)
+
+-   One-way ANCOVA with random effect model
+
+-   Non-randomly varying slopes
+
+-   Random-coefficient regression model
+
+-   Intercept-and-slope as outcome model
+
+# One-way ANOVA </br> with random effect model {.small}
+
+ผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของแต่ละโรงเรียนแตกต่างกันหรือไม่
+
+```{r}
+library(lme4)
+library(lmerTest)
+fit_nullmodel <- lmer(mathach ~ 1 + (1|schid), data = dat)
+beta0j <- coef(fit_nullmodel)
+left_join(dat, data.frame(schid = rownames(beta0j$schid),
+                          group_mean = beta0j$schid),
+          by = "schid") %>%
+  rename(group_mean = X.Intercept.)%>%
+ # filter(schid %in% subset) %>%
+  ggplot()+
+  geom_density(aes(x=mathach, y = after_stat(scaled)),alpha=0.3,
+               show.legend = F, fill = "grey", adjust =1.5)+
+  geom_density(aes(x = mathach, y = after_stat(density)*5,fill = schid),
+               show.legend = F, alpha = 0.3, adjust = 1.2)+
+  scale_x_continuous(limits = c(-5,30))+
+  theme_light()+
+  theme(panel.grid = element_blank())+
+  ylab("density")
+  
+```
+
+## กิจกรรม (5 นาที) {.small}
+
+1.  คำนวณค่าเฉลี่ยของ `mathach` ระดับโรงเรียน จะมีค่าเฉลี่ยกี่ค่า?
+
+2.  ค่าเฉลี่ย `mathach` ของโรงเรียนมีความแตกต่างกันอย่างไร?
+
+## Modelling {.small}
+
+::: columns
+::: {.column width="30%"}
+**student-level model**
+
+$math_{ij} = \beta_{0j} + \epsilon_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} + u_{0j}$
+
+**combined model**
+
+$math_{ij} = \gamma_{00} + u_{0j} + \epsilon_{ij}$
+:::
+
+::: {.column .small width="50%"}
+![](images/image-2097443701.png){width="433"}
+:::
+:::
+
+**มีข้อตกลงเบื้องต้นคือ**
+
+1.  $\epsilon_{ij} \sim N(0, \sigma^2)$
+2.  $u_{0j} \sim N(0, \tau_{00})$
+
+เรียก $\sigma^2$ = level-1 variance และ $\tau_{00}$ = level-2 variance
+
+โมเดลข้างต้นมีพารามิเตอร์กี่ตัว อะไรบ้าง และพารามิเตอร์แต่ละตัวมีความหมาย/ให้สารสนเทศอะไร
+
+## Modelling: parameter estimation {.small}
+
+```{r echo=T}
+library(lme4)
+library(lmerTest)
+fit_nullmodel <- lmer(mathach ~ 1 + (1|schid), data = dat)
+summary(fit_nullmodel)
+```
+
+## Interpret the results {.small}
+
+One-way ANOVA with random effect มักใช้เป็นโมเดลเพื่อตรวจสอบโครงสร้างระดับลดหลั่นของข้อมูล สารสนเทศสำคัญ ได้แก่ point estimate และ interval estimate ของ
+
+-   $\gamma_{00}$
+
+-   $\sigma^2$
+
+-   $\tau_{00}$
+
+-   Intraclass correlation = $\rho = \frac{\tau_{00}}{\tau_{00} + \sigma^2}$
+
+มีฟังก์ชันที่สำคัญสองตัวได้แก่
+
+-   `confint(fit_nullmodel)` ซึ่งจะให้ช่วงความเชื่อมั่นของค่าประมาณพารามิเตอร์ของโมเดล
+
+-   `ranova(fit_nullmodel)` จะให้ผลการทดสอบอัตราส่วนภาวะความน่าจะเป็น (likelihood ratio test) ของ random effect term ในโมเดล
+
+## ICC  {.small}
+
+-   The ICC can be interpreted as "the proportion of the variance explained by the grouping structure in the population"
+
+-   ICC indexes how strongly measurements in the same group resemble each other
+
+-   the ICC - sometimes conceptualized as the measurement repeatability - "can also be interpreted as the expected correlation between two randomly drawn units that are in the same group" *(Hox 2010: 15)*
+
+Note: This definition might not apply to mixed models with more complex random effects structures
+
+## ICC  {.small}
+
+```{r echo=T}
+#install.packages("performance")
+library(performance)
+#insight::get_variance(fit_nullmodel)
+icc(fit_nullmodel)
+```
+
+## R2
+
+-   The coefficient of determination R2 quantifies the proportion of variance explained by a statistical model. More precisely, R2 is the proportion of the explained variance (of the full model)
+
+```{r}
+r2(fit_nullmodel)
+```
+
+## Group Means  {.small}
+
+Null model จะให้ค่าประมาณของค่าเฉลี่ยระดับกลุ่ม (ในที่นี้คือค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์) ซึ่งสามารถคำนวณได้ดังนี้
+
+```{r echo=T}
+beta0j <- coef(fit_nullmodel)
+beta0j$schid %>% summary()
+```
+
+## Writting Report
+
+![ที่มา : Randenbush & Bryk (2002)](images/image-606181746.png)
+
+# Means as outcomes </br> regression model {.small}
+
+โรงเรียน Catholic กับ Public มีผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์แตกต่างกันอย่างไร
+
+```{r}
+dat %>% 
+  mutate(sector = factor(sector, labels=c("Catholic","Public"))) %>%
+  group_by(sector, schid) %>%
+  summarise(mean_mathach = mean(mathach)) %>%
+ggplot(aes(x = mean_mathach, y="", fill = sector))+
+  geom_boxplot()+
+  theme_light()+
+  xlab("mean_mathach (school means)")+
+  ylab("")
+```
+
+## กิจกรรม (2 นาที) {.small}
+
+ค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ระดับโรงเรียนมีความแตกต่างกันระหว่างสังกัดของโรงเรียนอย่างไร?
+
+## Modelling {.small}
+
+::: {.column width="30%"}
+**student-level model**
+
+$math_{ij} = \beta_{0j} + \epsilon_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} +\gamma_{01}W_j+u_{0j}$
+
+**combined model**
+
+$math_{ij} = \gamma_{00} + \gamma_{01}W_j +u_{0j} + \epsilon_{ij}$
+:::
+
+::: {.column width="50%"}
+![](images/image-1611863435.png){fig-align="center" width="387"}
+:::
+
+**มีข้อตกลงเบื้องต้นคือ**
+
+1.  $\epsilon_{ij} \sim N(0, \sigma^2)$
+2.  $u_{0j} \sim N(0, \tau_{00})$
+
+-   โมเดลนี้มีพารามิเตอร์อะไรบ้าง และมีความหมายอย่างไร
+
+-   พารามิเตอร์เดิมที่อยู่ภายในโมเดลมีความหมายเหมือนหรือแตกต่างไปจาก null model อย่างไร
+
+## Modelling: parameter estimation {.small}
+
+```{r echo=T}
+fit_randIntercept <- lmer(mathach ~ 1 + sector + (1|schid), data = dat)
+summary(fit_randIntercept)
+```
+
+## Modelling: parameter estimation {.small}
+
+```{r echo=T}
+confint(fit_randIntercept)
+```
+
+## Modelling: random effect test {.small}
+
+```{r echo=T}
+ranova(fit_randIntercept)
+```
+
+## Modelling: Variance Explained {.small}
+
+สัดส่วนความแปรปรวนในค่าเฉลี่ย mathach ของโรงเรียนที่อธิบายได้ด้วย Sector
+
+$$
+variance\ explained = \frac{\tau_{00}(null \ model)-\tau_{00}(Sector)}{\tau_{00}(null \ model)}
+$$
+
+## Modelling: Conditional Intraclass correlation {.small}
+
+1.  ทดลองคำนวณ intraclass correlation และ R2 ของโมเดล random intercept ใหม่
+2.  ค่าของ intraclass correlation ที่ได้เป็นอย่างไรเมื่อเทียบกับของ null model และค่าที่เปลี่ยนแปลงไปนี้หมายความว่าอย่างไร
+
+## กิจกรรม (5-6 นาที) {.small}
+
+วิเคราะห์และแปลผลโมเดลต่อไปนี้
+
+::: {width="30%"}
+**student-level model**
+
+$math_{ij} = \beta_{0j} + \epsilon_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES + u_{0j}$
+
+**combined model**
+
+$math_{ij} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES +u_{0j} + \epsilon_{ij}$
+:::
+
+## Multiparameter tests  {.small}
+
+นอกจากการทดสอบสมมุติฐานเพื่อตรวจสอบนัยสำคัญของพารามิเตอร์ภายในโมเดลเป็นรายตัวแล้ว เราสามารถทำการตรวจสอบนัยสำคัญของพารามิเตอร์หลายตัวพร้อมกันได้ด้วย ซึ่งมีประโยชน์ในเชิงของการเปรียบเทียบโมเดลคู่แข่งขัน (nested model) วิธีการหนึ่งที่สามารถนำมาใช้ได้เรียกว่า likelihood ratio test
+
+สมมุติต้องการเปรียบเทียบระหว่าง null model กับ โมเดลในกิจกรรมที่ผ่านมา (M2 model) สามารถดำเนินการได้ดังนี้
+
+$$
+H_0: M_{null} = M_2
+\\
+H_1: M_{null} \neq M_2
+$$
+
+1.  คำนวณ $D_0 = -2log(L_{null})$ เรียกค่านี้ว่า deviance ของ null model
+2.  คำนวณ $D_2 = -2log(L_{M2})$ เรียกค่านี้ว่า deviance ของ M2 model
+3.  ภายใต้ $H_0$ เป็นจริง $\chi^2 = D_0 - D_2 \sim \chi^2_{df}$ เมื่อ $df$ คือผลต่างของจำนวนพารามิเตอร์ระหว่างโมเดลคู่แข่งขันทั้งสอง
+
+## Multiparameter tests  {.small}
+
+```{r echo=T}
+anova(fit_nullmodel, fit_randIntercept)
+```
+
+## Writting Report
+
+![ที่มา : Raudenbush & Bryk (2002)](images/image-1297874962.png)
+
+## Random Intercept model  {.small}
+
+```{r}
+library(gridExtra)
+temp<-dat%>%
+  group_by(schid) %>%
+  summarise(meanses = mean(ses)) %>%
+  left_join(dat,., by="schid")
+fit<- lmer(mathach ~ 1 + meanses + (1|schid), data = temp)
+coef<-coef(fit)
+coef <- data.frame(coef$schid, schid = rownames(coef$schid)) %>%
+  rename(group_intercept = X.Intercept.,
+         meanses_slope = meanses)
+set.seed(123)
+subset <- sample(temp$schid,10)
+p1<-coef %>% filter(schid %in% subset) %>%
+  ggplot()+
+  geom_point(data = temp %>%
+               filter(schid %in% subset), 
+             aes(x=ses, y=mathach, col = schid),
+             alpha=0.5,
+             show.legend = F)+
+  geom_abline(aes(intercept = group_intercept,
+                  slope = meanses_slope, col = schid),
+              show.legend = F)+
+  scale_x_continuous(limits = c(-2,3))+
+  theme_light()+
+  ggtitle("random intercept model (10 schools)")
+
+p2<-coef %>%
+  ggplot()+
+  geom_point(data = temp,
+             aes(x=ses, y=mathach),
+             alpha=0.3,
+             show.legend = F)+
+  geom_abline(aes(intercept = group_intercept,
+                  slope = meanses_slope), alpha = 0.3,
+              show.legend = F)+
+  theme_light()+
+  scale_x_continuous(limits = c(-2,3))+
+  ggtitle("random intercept model (all schools)")
+grid.arrange(p1,p2, ncol=2)
+```
+
+# Random Coefficients model  {.small}
+
+อิทธิพลของ SES ที่มีต่อผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของนักเรียน มีความแตกต่างกันระหว่างโรงเรียนหรือไม่
+
+```{r}
+dat %>%
+  ggplot(aes(x=ses, y=mathach))+
+  geom_point(show.legend = F, alpha=0.1, col = "black")+
+  geom_smooth(method = "lm", se = F, show.legend = F, aes(col = schid))+
+  scale_color_manual(values = rep(scales::alpha("steelblue", 0.5),160))+
+  theme_light()
+```
