@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
+<script src="../site_libs/tone/tone.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-html/tabby.min.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -97,6 +98,8 @@
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -306,6 +309,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -513,8 +517,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="interpret-the-results" class="slide level2 small">
-<h2>Interpret the results</h2>
+<section id="modelling-พารามเตอรสำคญ" class="slide level2 small">
+<h2>Modelling: พารามิเตอร์สำคัญ</h2>
 <p>One-way ANOVA with random effect มักใช้เป็นโมเดลเพื่อตรวจสอบโครงสร้างระดับลดหลั่นของข้อมูล สารสนเทศสำคัญ ได้แก่ point estimate และ interval estimate ของ</p>
 <ul>
 <li><p><span class="math inline">\(\gamma_{00}\)</span></p></li>
@@ -528,8 +532,46 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li><p><code>ranova(fit_nullmodel)</code> จะให้ผลการทดสอบอัตราส่วนภาวะความน่าจะเป็น (likelihood ratio test) ของ random effect term ในโมเดล</p></li>
 </ul>
 </section>
+<section id="modelling-ชวงความเชอมน" class="slide level2 small">
+<h2>Modelling: ช่วงความเชื่อมั่น</h2>
+<p>ผลการวิเคราะห์นี้ให้สารสนเทศอะไร ใช้ประโยชน์อะไรได้บ้าง?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">confint</span>(fit_nullmodel, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                2.5 %    97.5 %
+.sig01       2.594729  3.315880
+.sigma       6.154803  6.361786
+(Intercept) 12.156289 13.117121</code></pre>
+</div>
+</div>
+</section>
+<section id="modelling-test-for-random-effects" class="slide level2 small">
+<h2>Modelling: Test for Random-Effects</h2>
+<p><span class="math inline">\(H_0: \tau_{00} =0\)</span> vs <span class="math inline">\(H_1: \tau_{00}&gt;0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">ranova</span>(fit_nullmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ANOVA-like table for random-effects: Single term deletions
+
+Model:
+mathach ~ (1 | schid)
+            npar logLik   AIC    LRT Df Pr(&gt;Chisq)    
+&lt;none&gt;         3 -23558 47123                         
+(1 | schid)    2 -24052 48107 986.12  1  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ul>
+<li><p>In certain cases tests of non-nested models may be generated. An example is when <code>(0 + poly(x, 2) | gr)</code> is reduced (the default) to <code>(1 | gr)</code>. To our best knowledge non-nested model comparisons are only generated in cases which are statistical nonsense anyway (such as in this example where the random intercept is suppressed).</p></li>
+<li><p>Note that <code>anova</code> can be used to compare two models and will often be able to produce the same tests as <code>ranova</code>. This is, however, not always the case as illustrated in the examples.</p></li>
+</ul>
+</section>
 <section id="icc" class="slide level2 small">
 <h2>ICC</h2>
+<p><span class="math display">\[
+\rho = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
+\]</span></p>
 <ul>
 <li><p>The ICC can be interpreted as “the proportion of the variance explained by the grouping structure in the population”</p></li>
 <li><p>ICC indexes how strongly measurements in the same group resemble each other</p></li>
@@ -540,10 +582,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="icc-1" class="slide level2 small">
 <h2>ICC</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#install.packages("performance")</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">library</span>(performance)</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#insight::get_variance(fit_nullmodel)</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="fu">icc</span>(fit_nullmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">#install.packages("performance")</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">library</span>(performance)</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#insight::get_variance(fit_nullmodel)</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">icc</span>(fit_nullmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Intraclass Correlation Coefficient
 
@@ -551,6 +593,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
   Unadjusted ICC: 0.180</code></pre>
 </div>
 </div>
+<ul>
+<li><p><code>icc()</code> calculates an adjusted and an unadjusted ICC, which both take all sources of uncertainty (i.e.&nbsp;of <em>all random effects</em>) into account. While the <em>adjusted ICC</em> only relates to the random effects, the <em>unadjusted ICC</em> also takes the fixed effects variances into account</p></li>
+<li><p>The fixed effects variance is added to the denominator of the formula to calculate the ICC</p></li>
+</ul>
 </section>
 <section id="r2" class="slide level2">
 <h2>R2</h2>
@@ -565,13 +611,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
      Marginal R2: 0.000</code></pre>
 </div>
 </div>
+<ul>
+<li>R2 กับ ICC แตกต่างกันหรือไม่ อย่างไร?</li>
+</ul>
 </section>
-<section id="group-means" class="slide level2 small">
-<h2>Group Means</h2>
+<section id="estimated-value-of-beta_0j" class="slide level2 small">
+<h2>Estimated value of <span class="math inline">\(\beta_{0j}\)</span></h2>
 <p>Null model จะให้ค่าประมาณของค่าเฉลี่ยระดับกลุ่ม (ในที่นี้คือค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์) ซึ่งสามารถคำนวณได้ดังนี้</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>beta0j <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit_nullmodel)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>beta0j<span class="sc">$</span>schid <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>beta0j <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit_nullmodel)</span>
+<span id="cb12-2"><a href="#cb12-2"></a>beta0j<span class="sc">$</span>schid <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  (Intercept)    
  Min.   : 5.234  
@@ -592,7 +641,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h1>Means as outcomes <br> regression model</h1>
 <p>โรงเรียน Catholic กับ Public มีผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์แตกต่างกันอย่างไร</p>
 
-<img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
 <section id="กจกรรม-2-นาท" class="slide level2 small">
 <h2>กิจกรรม (2 นาที)</h2>
 <p>ค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ระดับโรงเรียนมีความแตกต่างกันระหว่างสังกัดของโรงเรียนอย่างไร?</p>
@@ -627,8 +676,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="modelling-parameter-estimation-1" class="slide level2 small">
 <h2>Modelling: parameter estimation</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>fit_randIntercept <span class="ot">&lt;-</span> <span class="fu">lmer</span>(mathach <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> sector <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>schid), <span class="at">data =</span> dat)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">summary</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>fit_randIntercept <span class="ot">&lt;-</span> <span class="fu">lmer</span>(mathach <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> sector <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>schid), <span class="at">data =</span> dat)</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">summary</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -660,10 +709,10 @@ sector -0.667</code></pre>
 </div>
 </div>
 </section>
-<section id="modelling-parameter-estimation-2" class="slide level2 small">
-<h2>Modelling: parameter estimation</h2>
+<section id="modelling-confidence-interval" class="slide level2 small">
+<h2>Modelling: Confidence Interval</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">confint</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">confint</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                2.5 %    97.5 %
 .sig01       2.265614  2.918854
@@ -673,10 +722,11 @@ sector       1.944660  3.665259</code></pre>
 </div>
 </div>
 </section>
-<section id="modelling-random-effect-test" class="slide level2 small">
-<h2>Modelling: random effect test</h2>
+<section id="modelling-test-for-random-effects-1" class="slide level2 small">
+<h2>Modelling: Test for random effects</h2>
+<p>ผลการวิเคราะห์ด้านล่างเป็นการทดสอบอะไร?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">ranova</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">ranova</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>ANOVA-like table for random-effects: Single term deletions
 
@@ -690,34 +740,54 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="modelling-variance-explained" class="slide level2 small">
-<h2>Modelling: Variance Explained</h2>
-<p>สัดส่วนความแปรปรวนในค่าเฉลี่ย mathach ของโรงเรียนที่อธิบายได้ด้วย Sector</p>
-<p><span class="math display">\[
-variance\ explained = \frac{\tau_{00}(null \ model)-\tau_{00}(Sector)}{\tau_{00}(null \ model)}
-\]</span></p>
-</section>
-<section id="modelling-conditional-intraclass-correlation" class="slide level2 small">
-<h2>Modelling: Conditional Intraclass correlation</h2>
-<ol type="1">
-<li>ทดลองคำนวณ intraclass correlation และ R2 ของโมเดล random intercept ใหม่</li>
-<li>ค่าของ intraclass correlation ที่ได้เป็นอย่างไรเมื่อเทียบกับของ null model และค่าที่เปลี่ยนแปลงไปนี้หมายความว่าอย่างไร</li>
-</ol>
-</section>
-<section id="กจกรรม-5-6-นาท" class="slide level2 small">
-<h2>กิจกรรม (5-6 นาที)</h2>
-<p>วิเคราะห์และแปลผลโมเดลต่อไปนี้</p>
-<div width="30%">
-<p><strong>student-level model</strong></p>
-<p><span class="math inline">\(math_{ij} = \beta_{0j} + \epsilon_{ij}\)</span></p>
-<p><strong>school-level model</strong></p>
-<p><span class="math inline">\(\beta_{0j} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES + u_{0j}\)</span></p>
-<p><strong>combined model</strong></p>
-<p><span class="math inline">\(math_{ij} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES +u_{0j} + \epsilon_{ij}\)</span></p>
+<section id="modelling-icc" class="slide level2 small">
+<h2>Modelling: ICC</h2>
+<p>adjusted กับ unadjusted ICC มีความหมายแตกต่างกันอย่างไร</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">icc</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.146
+  Unadjusted ICC: 0.140</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>insight<span class="sc">::</span><span class="fu">get_variance</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$var.fixed
+[1] 1.966748
+
+$var.random
+[1] 6.676957
+
+$var.residual
+[1] 39.1514
+
+$var.distribution
+[1] 39.1514
+
+$var.dispersion
+[1] 0
+
+$var.intercept
+   schid 
+6.676957 </code></pre>
+</div>
 </div>
 </section>
-<section id="multiparameter-tests" class="slide level2 small">
-<h2>Multiparameter tests</h2>
+<section id="modelling-variance-explained" class="slide level2 small">
+<h2>Modelling: Variance Explained</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">r2</span>(fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># R2 for Mixed Models
+
+  Conditional R2: 0.181
+     Marginal R2: 0.041</code></pre>
+</div>
+</div>
+</section>
+<section id="multiparameter-tests-deviance-test" class="slide level2 small">
+<h2>Multiparameter tests (Deviance Test)</h2>
 <p>นอกจากการทดสอบสมมุติฐานเพื่อตรวจสอบนัยสำคัญของพารามิเตอร์ภายในโมเดลเป็นรายตัวแล้ว เราสามารถทำการตรวจสอบนัยสำคัญของพารามิเตอร์หลายตัวพร้อมกันได้ด้วย ซึ่งมีประโยชน์ในเชิงของการเปรียบเทียบโมเดลคู่แข่งขัน (nested model) วิธีการหนึ่งที่สามารถนำมาใช้ได้เรียกว่า likelihood ratio test</p>
 <p>สมมุติต้องการเปรียบเทียบระหว่าง null model กับ โมเดลในกิจกรรมที่ผ่านมา (M2 model) สามารถดำเนินการได้ดังนี้</p>
 <p><span class="math display">\[
@@ -731,10 +801,10 @@ H_1: M_{null} \neq M_2
 <li>ภายใต้ <span class="math inline">\(H_0\)</span> เป็นจริง <span class="math inline">\(\chi^2 = D_0 - D_2 \sim \chi^2_{df}\)</span> เมื่อ <span class="math inline">\(df\)</span> คือผลต่างของจำนวนพารามิเตอร์ระหว่างโมเดลคู่แข่งขันทั้งสอง</li>
 </ol>
 </section>
-<section id="multiparameter-tests-1" class="slide level2 small">
+<section id="multiparameter-tests" class="slide level2 small">
 <h2>Multiparameter tests</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">anova</span>(fit_nullmodel, fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">anova</span>(fit_nullmodel, fit_randIntercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data: dat
 Models:
@@ -748,6 +818,18 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
+<section id="กจกรรม-5-6-นาท" class="slide level2 small">
+<h2>กิจกรรม (5-6 นาที)</h2>
+<p>วิเคราะห์และแปลผลโมเดลต่อไปนี้</p>
+<div width="30%">
+<p><strong>student-level model</strong></p>
+<p><span class="math inline">\(math_{ij} = \beta_{0j} + \epsilon_{ij}\)</span></p>
+<p><strong>school-level model</strong></p>
+<p><span class="math inline">\(\beta_{0j} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES + u_{0j}\)</span></p>
+<p><strong>combined model</strong></p>
+<p><span class="math inline">\(math_{ij} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES +u_{0j} + \epsilon_{ij}\)</span></p>
+</div>
+</section>
 <section id="writting-report-1" class="slide level2">
 <h2>Writting Report</h2>
 
@@ -755,13 +837,114 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="random-intercept-model" class="slide level2 small">
 <h2>Random Intercept model</h2>
 
-<img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"></section></section>
+<section>
 <section id="random-coefficients-model" class="title-slide slide level1 small center">
 <h1>Random Coefficients model</h1>
 <p>อิทธิพลของ SES ที่มีต่อผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของนักเรียน มีความแตกต่างกันระหว่างโรงเรียนหรือไม่</p>
+
+<img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section>
+<section id="กจกรรม-5-นาท-1" class="slide level2">
+<h2>กิจกรรม (5 นาที)</h2>
+<p>ความสัมพันธ์ระหว่าง mathach กับ ses ของนักเรียนมีความเหมือนหรือแตกต่างกันระหว่างโรงเรียนอย่างไร</p>
+</section>
+<section id="modelling-2" class="slide level2 small">
+<h2>Modelling</h2>
+<div class="column" style="width:30%;">
+<p><strong>student-level model</strong></p>
+<p><span class="math inline">\(math_{ij} = \beta_{0j} + \beta_{1j} SES_{ij} + \epsilon_{ij}\)</span></p>
+<p><strong>school-level model</strong></p>
+<p><span class="math inline">\(\beta_{0j} = \gamma_{00} +u_{0j}\)</span></p>
+<p><span class="math inline">\(\beta_{1j} = \gamma_{10}+u_{1j}\)</span></p>
+<p><strong>combined model (เขียนเอง กิจกรรม 1 นาที)</strong></p>
+</div>
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/image-232996304.png" width="387"></p>
+</figure>
+</div>
+</div>
+<p><strong>มีข้อตกลงเบื้องต้นคือ</strong></p>
+<ol type="1">
+<li><span class="math inline">\(\epsilon_{ij} \sim N(0, \sigma^2)\)</span></li>
+<li><span class="math inline">\(\bf{u} \sim N(0, T)\)</span> โดยที่ <span class="math inline">\(\bf{u} = (u_{0j}, u_{1j})^T\)</span> และ <span class="math inline">\(T = \begin{pmatrix} \tau_{00} &amp; \tau_{01} \\ \tau_{10} &amp; \tau_{11}\end{pmatrix}\)</span></li>
+</ol>
+<ul>
+<li>โมเดลนี้มีพารามิเตอร์อะไรบ้าง และมีความหมายอย่างไร</li>
+</ul>
+</section>
+<section id="modelling-parameter-estimation-2" class="slide level2 small">
+<h2>Modelling: Parameter Estimation</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: mathach ~ 1 + ses + (1 + ses | schid)
+   Data: dat
+
+REML criterion at convergence: 46640.4
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-3.12272 -0.73046  0.02144  0.75610  2.94356 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr 
+ schid    (Intercept)  4.8287  2.1974        
+          ses          0.4129  0.6426   -0.11
+ Residual             36.8301  6.0688        
+Number of obs: 7185, groups:  schid, 160
+
+Fixed effects:
+            Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)  12.6650     0.1898 145.5479   66.71   &lt;2e-16 ***
+ses           2.3938     0.1181 157.5299   20.27   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+    (Intr)
+ses -0.045</code></pre>
+</div>
+</div>
+</section>
+<section id="modelling-confidence-interval-1" class="slide level2 small">
+<h2>Modelling: Confidence Interval</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5 %     97.5 %
+.sig01       1.91159331  2.5112989
+.sig02      -1.00000000  0.3078580
+.sig03       0.08487641  0.9666694
+.sigma       5.96867353  6.1719565
+(Intercept) 12.28852890 13.0406703
+ses          2.15925014  2.6317003</code></pre>
+</div>
+</div>
+</section>
+<section id="modelling-level-1-intercepts-and-slopes" class="slide level2 small">
+<h2>Modelling: Level-1 Intercepts and Slopes</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>coef<span class="ot">&lt;-</span><span class="fu">coef</span>(fit_randCoeff)</span>
+<span id="cb30-2"><a href="#cb30-2"></a>coef <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(coef<span class="sc">$</span>schid, <span class="at">schid =</span> <span class="fu">rownames</span>(coef<span class="sc">$</span>schid))</span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="fu">head</span>(coef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     X.Intercept.      ses schid
+1224    11.060022 2.504083  1224
+1288    13.073615 2.477930  1288
+1296     9.197291 2.352981  1296
+1308    14.384652 2.309294  1308
+1317    12.449142 2.237431  1317
+1358    11.520351 2.753447  1358</code></pre>
+</div>
+</div>
+</section>
+<section id="modelling-level-1-intercepts-and-slopes-1" class="slide level2 small">
+<h2>Modelling: Level-1 Intercepts and Slopes</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+<p><img data-src="07HLMs_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
 </div>
 </div>
 
@@ -769,7 +952,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="footer footer-default">
 
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -780,6 +963,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
   <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-tone/tone.js"></script>
   <script src="../site_libs/revealjs/plugin/multiplex/socket.io.js"></script>
   <script src="../site_libs/revealjs/plugin/multiplex/multiplex.js"></script>
   <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
@@ -803,7 +988,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true,"numbers":true},
+'chalkboard': {"buttons":true},
 'multiplex': {"secret":null,"id":"a8393cc1a0fd7c23","url":"https://reveal-multiplex.glitch.me/"},
 'smaller': false,
  
@@ -930,7 +1116,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
         previewLinks: false,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'fade',
+        transition: 'slide',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
@@ -975,7 +1161,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoTone, QuartoSupport,
 
           RevealMath,
           

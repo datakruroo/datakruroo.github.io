@@ -10,7 +10,7 @@
 $font-family-sans-serif: "Sarabun", sans-serif;
 $presentation-heading-color: #5B888C;
 $presentation-title-slide-text-align: "left";
-
+$presentation-h2-font-size: 1.4em;
 /*-- scss:rules --*/
 
 details>summary {
@@ -33,7 +33,7 @@ details>summary {
 .reveal .slide .question {
   border-left: 3px solid #5B888C;
   padding-left: 0.5em;
-  padding-top: 0.25em;
+  padding-top: 0.3em;
   padding-bottom: 0.25em;
   background: #D9E3E4;
 }
@@ -41,7 +41,7 @@ details>summary {
 .reveal .slide .poll {
   border-left: 3px solid #FFD166;
   padding-left: 0.5em;
-  padding-top: 0.25em;
+  padding-top: 0.3em;
   padding-bottom: 0.25em;
   background: #FFEDC2;
 }

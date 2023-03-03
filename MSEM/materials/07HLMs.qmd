@@ -7,10 +7,14 @@ format:
   revealjs: 
     theme: slides.scss
     multiplex: true
-    transition: fade
+    transition: slide
     slide-number: true
     navigation-mode: vertical
-
+    scrollable: true
+    chalkboard: true
+    menu: 
+      numbers: true
+    slide-tone: true
 editor: visual
 execute:
   freeze: auto
@@ -131,7 +135,7 @@ fit_nullmodel <- lmer(mathach ~ 1 + (1|schid), data = dat)
 summary(fit_nullmodel)
 ```
 
-## Interpret the results {.small}
+## Modelling: พารามิเตอร์สำคัญ {.small}
 
 One-way ANOVA with random effect มักใช้เป็นโมเดลเพื่อตรวจสอบโครงสร้างระดับลดหลั่นของข้อมูล สารสนเทศสำคัญ ได้แก่ point estimate และ interval estimate ของ
 
@@ -149,7 +153,31 @@ One-way ANOVA with random effect มักใช้เป็นโมเดล�
 
 -   `ranova(fit_nullmodel)` จะให้ผลการทดสอบอัตราส่วนภาวะความน่าจะเป็น (likelihood ratio test) ของ random effect term ในโมเดล
 
+## Modelling: ช่วงความเชื่อมั่น {.small}
+
+ผลการวิเคราะห์นี้ให้สารสนเทศอะไร ใช้ประโยชน์อะไรได้บ้าง?
+
+```{r echo=TRUE}
+confint(fit_nullmodel, level = 0.95)
+```
+
+## Modelling: Test for Random-Effects {.small}
+
+$H_0: \tau_{00} =0$ vs $H_1: \tau_{00}>0$
+
+```{r echo=T}
+ranova(fit_nullmodel)
+```
+
+-   In certain cases tests of non-nested models may be generated. An example is when `(0 + poly(x, 2) | gr)` is reduced (the default) to `(1 | gr)`. To our best knowledge non-nested model comparisons are only generated in cases which are statistical nonsense anyway (such as in this example where the random intercept is suppressed).
+
+-   Note that `anova` can be used to compare two models and will often be able to produce the same tests as `ranova`. This is, however, not always the case as illustrated in the examples.
+
 ## ICC  {.small}
+
+$$
+\rho = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
+$$
 
 -   The ICC can be interpreted as "the proportion of the variance explained by the grouping structure in the population"
 
@@ -168,6 +196,10 @@ library(performance)
 icc(fit_nullmodel)
 ```
 
+-   `icc()` calculates an adjusted and an unadjusted ICC, which both take all sources of uncertainty (i.e. of *all random effects*) into account. While the *adjusted ICC* only relates to the random effects, the *unadjusted ICC* also takes the fixed effects variances into account
+
+-   The fixed effects variance is added to the denominator of the formula to calculate the ICC
+
 ## R2
 
 -   The coefficient of determination R2 quantifies the proportion of variance explained by a statistical model. More precisely, R2 is the proportion of the explained variance (of the full model)
@@ -176,7 +208,9 @@ icc(fit_nullmodel)
 r2(fit_nullmodel)
 ```
 
-## Group Means  {.small}
+-   R2 กับ ICC แตกต่างกันหรือไม่ อย่างไร?
+
+## Estimated value of $\beta_{0j}$  {.small}
 
 Null model จะให้ค่าประมาณของค่าเฉลี่ยระดับกลุ่ม (ในที่นี้คือค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์) ซึ่งสามารถคำนวณได้ดังนี้
 
@@ -245,50 +279,36 @@ fit_randIntercept <- lmer(mathach ~ 1 + sector + (1|schid), data = dat)
 summary(fit_randIntercept)
 ```
 
-## Modelling: parameter estimation {.small}
+## Modelling: Confidence Interval {.small}
 
 ```{r echo=T}
 confint(fit_randIntercept)
 ```
 
-## Modelling: random effect test {.small}
+## Modelling: Test for random effects {.small}
+
+ผลการวิเคราะห์ด้านล่างเป็นการทดสอบอะไร?
 
 ```{r echo=T}
 ranova(fit_randIntercept)
 ```
 
+## Modelling: ICC {.small}
+
+adjusted กับ unadjusted ICC มีความหมายแตกต่างกันอย่างไร
+
+```{r echo=T}
+icc(fit_randIntercept)
+insight::get_variance(fit_randIntercept)
+```
+
 ## Modelling: Variance Explained {.small}
 
-สัดส่วนความแปรปรวนในค่าเฉลี่ย mathach ของโรงเรียนที่อธิบายได้ด้วย Sector
+```{r echo=T}
+r2(fit_randIntercept)
+```
 
-$$
-variance\ explained = \frac{\tau_{00}(null \ model)-\tau_{00}(Sector)}{\tau_{00}(null \ model)}
-$$
-
-## Modelling: Conditional Intraclass correlation {.small}
-
-1.  ทดลองคำนวณ intraclass correlation และ R2 ของโมเดล random intercept ใหม่
-2.  ค่าของ intraclass correlation ที่ได้เป็นอย่างไรเมื่อเทียบกับของ null model และค่าที่เปลี่ยนแปลงไปนี้หมายความว่าอย่างไร
-
-## กิจกรรม (5-6 นาที) {.small}
-
-วิเคราะห์และแปลผลโมเดลต่อไปนี้
-
-::: {width="30%"}
-**student-level model**
-
-$math_{ij} = \beta_{0j} + \epsilon_{ij}$
-
-**school-level model**
-
-$\beta_{0j} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES + u_{0j}$
-
-**combined model**
-
-$math_{ij} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES +u_{0j} + \epsilon_{ij}$
-:::
-
-## Multiparameter tests  {.small}
+## Multiparameter tests (Deviance Test) {.small}
 
 นอกจากการทดสอบสมมุติฐานเพื่อตรวจสอบนัยสำคัญของพารามิเตอร์ภายในโมเดลเป็นรายตัวแล้ว เราสามารถทำการตรวจสอบนัยสำคัญของพารามิเตอร์หลายตัวพร้อมกันได้ด้วย ซึ่งมีประโยชน์ในเชิงของการเปรียบเทียบโมเดลคู่แข่งขัน (nested model) วิธีการหนึ่งที่สามารถนำมาใช้ได้เรียกว่า likelihood ratio test
 
@@ -309,6 +329,24 @@ $$
 ```{r echo=T}
 anova(fit_nullmodel, fit_randIntercept)
 ```
+
+## กิจกรรม (5-6 นาที) {.small}
+
+วิเคราะห์และแปลผลโมเดลต่อไปนี้
+
+::: {width="30%"}
+**student-level model**
+
+$math_{ij} = \beta_{0j} + \epsilon_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES + u_{0j}$
+
+**combined model**
+
+$math_{ij} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES +u_{0j} + \epsilon_{ij}$
+:::
 
 ## Writting Report
 
@@ -369,4 +407,83 @@ dat %>%
   geom_smooth(method = "lm", se = F, show.legend = F, aes(col = schid))+
   scale_color_manual(values = rep(scales::alpha("steelblue", 0.5),160))+
   theme_light()
+```
+
+## กิจกรรม (5 นาที)
+
+ความสัมพันธ์ระหว่าง mathach กับ ses ของนักเรียนมีความเหมือนหรือแตกต่างกันระหว่างโรงเรียนอย่างไร
+
+## Modelling {.small}
+
+::: {.column width="30%"}
+**student-level model**
+
+$math_{ij} = \beta_{0j} + \beta_{1j} SES_{ij} + \epsilon_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} +u_{0j}$
+
+$\beta_{1j} = \gamma_{10}+u_{1j}$
+
+**combined model (เขียนเอง กิจกรรม 1 นาที)**
+:::
+
+::: {.column width="50%"}
+![](images/image-232996304.png){fig-align="center" width="387"}
+:::
+
+**มีข้อตกลงเบื้องต้นคือ**
+
+1.  $\epsilon_{ij} \sim N(0, \sigma^2)$
+2.  $\bf{u} \sim N(0, T)$ โดยที่ $\bf{u} = (u_{0j}, u_{1j})^T$ และ $T = \begin{pmatrix} \tau_{00} & \tau_{01} \\ \tau_{10} & \tau_{11}\end{pmatrix}$
+
+-   โมเดลนี้มีพารามิเตอร์อะไรบ้าง และมีความหมายอย่างไร
+
+## Modelling: Parameter Estimation {.small}
+
+```{r}
+fit_randCoeff <- lmer(mathach ~ 1 + ses + (1 + ses|schid), data = dat)
+summary(fit_randCoeff)
+```
+
+## Modelling: Confidence Interval {.small}
+
+```{r}
+confint(fit_randCoeff)
+```
+
+## Modelling: Level-1 Intercepts and Slopes {.small}
+
+```{r echo=T}
+coef<-coef(fit_randCoeff)
+coef <- data.frame(coef$schid, schid = rownames(coef$schid))
+head(coef)
+```
+
+## Modelling: Level-1 Intercepts and Slopes {.small}
+
+```{r}
+p1<-dat %>% group_by(schid) %>%
+  summarise(sector = mean(sector),
+            meanSES = mean(ses))%>%
+  left_join(., coef, by = "schid") %>%
+  rename(Intercept = X.Intercept.,
+         Slope_ses = ses) %>%
+  ggplot(aes(x = Slope_ses,
+             y = Intercept))+
+  geom_point(aes(col = factor(sector, labels = c("Catholic","Public"))))+
+  labs(col = "Sector")
+
+p2<-dat %>% group_by(schid) %>%
+  summarise(sector = mean(sector),
+            meanSES = mean(ses))%>%
+  left_join(., coef, by = "schid") %>%
+  rename(Intercept = X.Intercept.,
+         Slope_ses = ses) %>%
+  ggplot(aes(x = Slope_ses,
+             y = Intercept))+
+  geom_point(aes(col = meanSES))
+
+grid.arrange(p1,p2, ncol=2)
 ```
