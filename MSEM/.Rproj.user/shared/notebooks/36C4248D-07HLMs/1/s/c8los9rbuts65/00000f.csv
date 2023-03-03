@@ -1,5 +1,0 @@
-"0","fit_randCoeff <- lmer(mathach ~ 1 + (ses - mean(ses)) + (1 + ses|schid), data = dat)
-"
-"2","Error in model.frame.default(data = dat, drop.unused.levels = TRUE, formula = mathach ~  : 
-  variable lengths differ (found for 'mean(ses)')
-"
