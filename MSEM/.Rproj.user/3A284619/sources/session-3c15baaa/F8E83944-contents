@@ -174,7 +174,7 @@ ranova(fit_nullmodel)
 
 -   Note that `anova` can be used to compare two models and will often be able to produce the same tests as `ranova`. This is, however, not always the case as illustrated in the examples.
 
-## ICC  {.small}
+## ICC {.small}
 
 $$
 \rho = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
@@ -188,7 +188,7 @@ $$
 
 Note: This definition might not apply to mixed models with more complex random effects structures
 
-## ICC  {.small}
+## ICC {.small}
 
 ```{r echo=T}
 #install.packages("performance")
@@ -211,7 +211,7 @@ r2(fit_nullmodel)
 
 -   R2 กับ ICC แตกต่างกันหรือไม่ อย่างไร?
 
-## Estimated value of $\beta_{0j}$  {.small}
+## Estimated value of $\beta_{0j}$ {.small}
 
 Null model จะให้ค่าประมาณของค่าเฉลี่ยระดับกลุ่ม (ในที่นี้คือค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์) ซึ่งสามารถคำนวณได้ดังนี้
 
@@ -325,7 +325,7 @@ $$
 2.  คำนวณ $D_2 = -2log(L_{M2})$ เรียกค่านี้ว่า deviance ของ M2 model
 3.  ภายใต้ $H_0$ เป็นจริง $\chi^2 = D_0 - D_2 \sim \chi^2_{df}$ เมื่อ $df$ คือผลต่างของจำนวนพารามิเตอร์ระหว่างโมเดลคู่แข่งขันทั้งสอง
 
-## Multiparameter tests  {.small}
+## Multiparameter tests {.small}
 
 ```{r echo=T}
 anova(fit_nullmodel, fit_randIntercept)
@@ -353,7 +353,7 @@ $math_{ij} = \gamma_{00} +\gamma_{01}Sector_j+ \gamma_{02}MeanSES +u_{0j} + \eps
 
 ![ที่มา : Raudenbush & Bryk (2002)](images/image-1297874962.png)
 
-## Random Intercept model  {.small}
+## Random Intercept model {.small}
 
 ```{r}
 library(gridExtra)
@@ -397,7 +397,7 @@ p2<-coef %>%
 grid.arrange(p1,p2, ncol=2)
 ```
 
-# Random Coefficients model  {.small}
+# Random Coefficients model {.small}
 
 อิทธิพลของ SES ที่มีต่อผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของนักเรียน มีความแตกต่างกันระหว่างโรงเรียนหรือไม่
 
@@ -461,6 +461,10 @@ coef<-coef(fit_randCoeff)
 coef <- data.frame(coef$schid, schid = rownames(coef$schid))
 head(coef)
 ```
+
+## Writting Report  {.small}
+
+![](images/image-1902336918.png)
 
 ## Modelling: Level-1 Intercepts and Slopes {.small}
 

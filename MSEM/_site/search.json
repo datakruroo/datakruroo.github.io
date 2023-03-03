@@ -210,6 +210,13 @@
     "text": "Modelling: Level-1 Intercepts and Slopes\n\ncoef<-coef(fit_randCoeff)\ncoef <- data.frame(coef$schid, schid = rownames(coef$schid))\nhead(coef)\n\n     X.Intercept.      ses schid\n1224    11.060022 2.504083  1224\n1288    13.073615 2.477930  1288\n1296     9.197291 2.352981  1296\n1308    14.384652 2.309294  1308\n1317    12.449142 2.237431  1317\n1358    11.520351 2.753447  1358"
   },
   {
+    "objectID": "materials/07HLMs.html#writting-report-2",
+    "href": "materials/07HLMs.html#writting-report-2",
+    "title": "Hierarchical Linear Modelling",
+    "section": "Writting Report",
+    "text": "Writting Report"
+  },
+  {
     "objectID": "materials/07HLMs.html#modelling-level-1-intercepts-and-slopes-1",
     "href": "materials/07HLMs.html#modelling-level-1-intercepts-and-slopes-1",
     "title": "Hierarchical Linear Modelling",
