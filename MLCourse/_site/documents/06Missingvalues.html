@@ -113,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../syllabus-th-PDF-2758688.PDF" class="sidebar-item-text sidebar-link">Syllabus</a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -121,9 +121,39 @@ ul.task-list li input[type="checkbox"] {
   <a href="../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
   </div>
 </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">เนื้อหารายสัปดาห์</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  <a href="../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
   </div>
 </li>
       </ul>
@@ -138,7 +168,10 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#ประเภทของคาสญหาย" id="toc-ประเภทของคาสญหาย" class="nav-link" data-scroll-target="#ประเภทของคาสญหาย">ประเภทของค่าสูญหาย</a></li>
+  <li><a href="#ประเภทของคาสญหาย" id="toc-ประเภทของคาสญหาย" class="nav-link" data-scroll-target="#ประเภทของคาสญหาย">ประเภทของค่าสูญหาย</a>
+  <ul class="collapse">
+  <li><a href="#การวเคราะหคาสญหาย" id="toc-การวเคราะหคาสญหาย" class="nav-link" data-scroll-target="#การวเคราะหคาสญหาย">การวิเคราะห์ค่าสูญหาย</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -177,8 +210,23 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="ประเภทของคาสญหาย" class="level1">
 <h1>ประเภทของค่าสูญหาย</h1>
+<p>เมื่อเกิดค่าสูญหายขึ้น วิธีการแก้ปัญหาคือการทดแทนค่าสูญหายดังกล่าวซึ่งมีอยู่ด้วยกันหลายวิธีการ การเลือกวิธีทดแทนค่าสูญหายที่เหมาะสมส่วนหนึ่งขึ้นอยู่กับลักษณะหรือประเภทของค่าสูญหายที่เกิดขึ้นในชุดข้อมูล ประเภทของค่าสูญหายอาจจำแนกได้เป็น 3 ประเภท ได้แก่</p>
+<ol type="1">
+<li>ค่าสูญหายที่เกิดจากการจัดการข้อมูลที่ไม่เหมาะสม</li>
+<li>ค่าสูญหายที่เกิดจากปัจจัยสุ่ม</li>
+<li>ค่าสูญหายแบบไม่สุ่ม</li>
+</ol>
+<p>ค่าสูญหายที่เกิดจากปัจจัยสุ่ม อาจจำแนกได้เป็น 2 ประเภท ได้แก่ การสูญหายแบบสุ่มสมบูรณ์​ (missing completely at random: MCAR) และการสูญหายแบบสุ่ม (missing at random: MAR) ความแตกต่างระหว่างการสูญหายทั้งสองแบบมีดังนี้</p>
+<ul>
+<li><p>การสูญหายแบบสุ่มสมบูรณ์​ (MCAR) เป็นการสูญหายที่มีโอกาสเกิดขึ้นเท่า ๆ กันในแต่ละหน่วยข้อมูล การสูญหายแบบนี้จะเป็นอิสระกับบริบทของข้อมูล เป็นการสูญหายในอุดมคติที่สามารถแก้ไขปัญหาได้ง่ายมากที่สุด แต่ในทางปฏิบัติแทบจะไม่พบการสูญหายแบบ MAR เลย โดยเฉพาะในการวิจัยทางการศึกษา และสังคมศาสตร์</p></li>
+<li><p>การสูญหายแบบสุ่ม (MAR) เป็นการสูญหายที่ โอกาสของการสูญหายสามารถเขียนเป็นฟังก์ชันที่ขึ้นกับข้อมูลของตัวแปรที่อยู่ในชุดข้อมูล</p></li>
+</ul>
+<section id="การวเคราะหคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="การวเคราะหคาสญหาย">การวิเคราะห์ค่าสูญหาย</h2>
+<p>การวิเคราะห์ค่าสูญหาย</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

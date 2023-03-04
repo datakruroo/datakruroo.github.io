@@ -35,12 +35,11 @@ website:
         contents:
           - href: course-overview.qmd
             text: Overview
-          - href: syllabus-th-PDF-2758688.PDF
-            text: Syllabus
-          - href: course-lecturer.qmd
-            text: Instructor
           - href: index.qmd
             text: Schedule
+          - href: course-lecturer.qmd
+            text: Instructor
+
 
       - section: "เนื้อหารายสัปดาห์"
         contents:
@@ -65,4 +64,6 @@ format:
 
 freeze: auto
 editor: visual
+urlcolor: "steelblue"
+linkcolor: "steelblue"
 
