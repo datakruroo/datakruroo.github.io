@@ -44,8 +44,10 @@ library(factoextra)
 library(dplyr)
 library(tidyr)
 dat <- read.csv("basket.csv")
+head(dat)
 dat<-dat[,-c(1,2)]
 head(dat)
+glimpse(dat, width=60)
 ```
 
 ## Standardization
@@ -54,15 +56,17 @@ head(dat)
 
 ```{r}
 pca_dat <- scale(dat, center =T, scale =T)
+summary(pca_dat)
 ```
 
 ## สำรวจข้อมูล
 
-```{r}
+```{r fig.height=4}
 library(corrr)
 library(ggcorrplot)
 corr_matrix <- cor(pca_dat)
-ggcorrplot(corr_matrix)
+ggcorrplot(corr_matrix)+
+  theme(text=element_text(family="ChulaCharasNew", size=6))
 ```
 
 การวิเคราะห์ PCA ใน R สามารถทำได้หลายวิธีมาก ๆ ในบทเรียนนี้จะใช้ฟังก์ชัน `PCA()` จาก package FactoMineR
@@ -146,3 +150,14 @@ PLS regression มี concept ที่เกือบจะเหมือน P
 ## กิจกรรม
 
 สร้างโมเดลทำนาย PLS regression โดยใช้ชุดข้อมูล PCR_PLS.csv เหมือนเดิม
+
+```{r}
+preproc <- recipe(y ~. , data= train) %>%
+  step_normalize(all_numeric_predictors())
+
+pls_mod <- parsnip::pls(predictor_prop = tune(),
+               num_comp = tune()) %>%
+  set_engine("mixOmics") %>%
+  set_mode("regression")
+
+```

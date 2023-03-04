@@ -324,8 +324,46 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"basket.csv"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span>dat[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  X X7up lasagna pepsi yop red.wine cheese bbq bulmers mayonnaise horlics
+1 1    0       0     0   0        0      0   0       0          0       0
+2 2    0       0     0   0        0      0   0       0          0       0
+3 3    0       0     0   0        0      0   0       0          0       0
+4 4    0       0     0   2        1      0   0       0          0       0
+5 5    0       0     0   0        0      0   0       2          0       0
+6 6    0       0     0   0        0      0   0       0          0       0
+  chicken.tikka milk mars coke lottery bread pizza sunny.delight ham lettuce
+1             0    0    2    0       0     1     0             0   1       0
+2             0    1    0    0       0     0     0             0   0       0
+3             0    3    0    0       0     0     0             0   0       0
+4             0    0    1    0       0     0     0             0   0       0
+5             0    0    0    0       0     0     0             0   0       0
+6             0    0    0    1       0     0     0             0   0       0
+  kronenbourg leeks fanta tea whiskey peas newspaper muesli white.wine carrots
+1           0     0     0   0       0    0         2      0          0       0
+2           0     1     0   2       0    0         0      0          0       0
+3           0     0     0   0       0    0         0      0          0       0
+4           0     0     0   0       0    0         0      0          0       0
+5           1     0     0   0       0    0         0      0          0       0
+6           0     0     2   0       0    0         0      0          0       0
+  spinach pate instant.coffee twix potatoes fosters soup toad.in.hole coco.pops
+1       0    0              0    0        0       0    0            0         0
+2       0    0              0    0        0       0    0            0         0
+3       0    0              1    0        0       0    0            0         1
+4       0    0              0    2        0       1    0            0         0
+5       0    0              0    0        0       0    0            0         0
+6       0    0              0    0        0       0    0            0         0
+  kitkat broccoli cigarettes
+1      1        0          0
+2      0        2          0
+3      0        0          0
+4      1        0          1
+5      0        0          0
+6      0        0          0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">&lt;-</span>dat[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  lasagna pepsi yop red.wine cheese bbq bulmers mayonnaise horlics
 1       0     0   0        0      0   0       0          0       0
@@ -363,32 +401,159 @@ Attaching package: 'dplyr'</code></pre>
 5      0        0          0
 6      0        0          0</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat, <span class="at">width=</span><span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,000
+Columns: 41
+$ lasagna        &lt;int&gt; 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 2, 0,…
+$ pepsi          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ yop            &lt;int&gt; 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ red.wine       &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ cheese         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ bbq            &lt;int&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,…
+$ bulmers        &lt;int&gt; 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 1,…
+$ mayonnaise     &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ horlics        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1,…
+$ chicken.tikka  &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ milk           &lt;int&gt; 0, 1, 3, 0, 0, 0, 0, 1, 0, 2, 0, 0,…
+$ mars           &lt;int&gt; 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ coke           &lt;int&gt; 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 1, 0,…
+$ lottery        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ bread          &lt;int&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ pizza          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,…
+$ sunny.delight  &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ ham            &lt;int&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ lettuce        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ kronenbourg    &lt;int&gt; 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…
+$ leeks          &lt;int&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ fanta          &lt;int&gt; 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0,…
+$ tea            &lt;int&gt; 0, 2, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,…
+$ whiskey        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,…
+$ peas           &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0,…
+$ newspaper      &lt;int&gt; 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0,…
+$ muesli         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,…
+$ white.wine     &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ carrots        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0,…
+$ spinach        &lt;int&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,…
+$ pate           &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ instant.coffee &lt;int&gt; 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ twix           &lt;int&gt; 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ potatoes       &lt;int&gt; 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 1, 1,…
+$ fosters        &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ soup           &lt;int&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,…
+$ toad.in.hole   &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ coco.pops      &lt;int&gt; 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0,…
+$ kitkat         &lt;int&gt; 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ broccoli       &lt;int&gt; 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,…
+$ cigarettes     &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…</code></pre>
+</div>
 </div>
 </section>
 <section id="standardization" class="level2">
 <h2 class="anchored" data-anchor-id="standardization">Standardization</h2>
 <p>ข้อตกลงเบื้องต้นของ PCA คือข้อมูลที่จะนำมาสกัดองค์ประกอบควรจะต้องเป็นข้อมูลที่อยู่ในหน่วยเดียวกัน</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pca_dat <span class="ot">&lt;-</span> <span class="fu">scale</span>(dat, <span class="at">center =</span>T, <span class="at">scale =</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pca_dat <span class="ot">&lt;-</span> <span class="fu">scale</span>(dat, <span class="at">center =</span>T, <span class="at">scale =</span>T)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pca_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    lasagna            pepsi              yop             red.wine      
+ Min.   :-0.4667   Min.   :-0.4155   Min.   :-0.2424   Min.   :-0.3439  
+ 1st Qu.:-0.4667   1st Qu.:-0.4155   1st Qu.:-0.2424   1st Qu.:-0.3439  
+ Median :-0.4667   Median :-0.4155   Median :-0.2424   Median :-0.3439  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.4667   3rd Qu.:-0.4155   3rd Qu.:-0.2424   3rd Qu.:-0.3439  
+ Max.   : 5.8187   Max.   : 6.8580   Max.   :10.3743   Max.   : 8.2794  
+     cheese             bbq             bulmers         mayonnaise     
+ Min.   :-0.3911   Min.   :-0.2618   Min.   :-0.362   Min.   :-0.3407  
+ 1st Qu.:-0.3911   1st Qu.:-0.2618   1st Qu.:-0.362   1st Qu.:-0.3407  
+ Median :-0.3911   Median :-0.2618   Median :-0.362   Median :-0.3407  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.000   Mean   : 0.0000  
+ 3rd Qu.:-0.3911   3rd Qu.:-0.2618   3rd Qu.:-0.362   3rd Qu.:-0.3407  
+ Max.   : 6.2230   Max.   :10.0728   Max.   :10.827   Max.   : 8.5959  
+    horlics        chicken.tikka         milk              mars        
+ Min.   :-0.2182   Min.   :-0.396   Min.   :-0.4217   Min.   :-0.5052  
+ 1st Qu.:-0.2182   1st Qu.:-0.396   1st Qu.:-0.4217   1st Qu.:-0.5052  
+ Median :-0.2182   Median :-0.396   Median :-0.4217   Median :-0.5052  
+ Mean   : 0.0000   Mean   : 0.000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.2182   3rd Qu.:-0.396   3rd Qu.:-0.4217   3rd Qu.:-0.5052  
+ Max.   : 7.5729   Max.   : 7.238   Max.   : 6.3115   Max.   : 7.3030  
+      coke            lottery            bread             pizza        
+ Min.   :-0.4916   Min.   :-0.2459   Min.   :-0.3819   Min.   :-0.4958  
+ 1st Qu.:-0.4916   1st Qu.:-0.2459   1st Qu.:-0.3819   1st Qu.:-0.4958  
+ Median :-0.4916   Median :-0.2459   Median :-0.3819   Median :-0.4958  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.4916   3rd Qu.:-0.2459   3rd Qu.:-0.3819   3rd Qu.:-0.4958  
+ Max.   : 8.5043   Max.   : 7.1506   Max.   : 8.3974   Max.   : 9.2119  
+ sunny.delight          ham             lettuce         kronenbourg     
+ Min.   :-0.2516   Min.   :-0.2499   Min.   :-0.2515   Min.   :-0.2988  
+ 1st Qu.:-0.2516   1st Qu.:-0.2499   1st Qu.:-0.2515   1st Qu.:-0.2988  
+ Median :-0.2516   Median :-0.2499   Median :-0.2515   Median :-0.2988  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.2516   3rd Qu.:-0.2499   3rd Qu.:-0.2515   3rd Qu.:-0.2988  
+ Max.   : 7.2030   Max.   :10.3853   Max.   : 6.8837   Max.   : 7.7040  
+     leeks             fanta              tea             whiskey       
+ Min.   :-0.2357   Min.   :-0.3486   Min.   :-0.3848   Min.   :-0.2206  
+ 1st Qu.:-0.2357   1st Qu.:-0.3486   1st Qu.:-0.3848   1st Qu.:-0.2206  
+ Median :-0.2357   Median :-0.3486   Median :-0.3848   Median :-0.2206  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.2357   3rd Qu.:-0.3486   3rd Qu.:-0.3848   3rd Qu.:-0.2206  
+ Max.   : 7.5568   Max.   : 6.8629   Max.   : 8.7343   Max.   :10.9945  
+      peas           newspaper           muesli          white.wine     
+ Min.   :-0.3216   Min.   :-0.4026   Min.   :-0.3591   Min.   :-0.2157  
+ 1st Qu.:-0.3216   1st Qu.:-0.4026   1st Qu.:-0.3591   1st Qu.:-0.2157  
+ Median :-0.3216   Median :-0.4026   Median :-0.3591   Median :-0.2157  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.3216   3rd Qu.:-0.4026   3rd Qu.:-0.3591   3rd Qu.:-0.2157  
+ Max.   : 8.2532   Max.   : 7.3592   Max.   : 6.5460   Max.   :11.5506  
+    carrots           spinach             pate         instant.coffee   
+ Min.   :-0.2918   Min.   :-0.2387   Min.   :-0.1836   Min.   :-0.3455  
+ 1st Qu.:-0.2918   1st Qu.:-0.2387   1st Qu.:-0.1836   1st Qu.:-0.3455  
+ Median :-0.2918   Median :-0.2387   Median :-0.1836   Median :-0.3455  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.2918   3rd Qu.:-0.2387   3rd Qu.:-0.1836   3rd Qu.:-0.3455  
+ Max.   : 7.5934   Max.   :10.3690   Max.   :10.4572   Max.   : 8.4011  
+      twix            potatoes          fosters             soup        
+ Min.   :-0.4693   Min.   :-0.3971   Min.   :-0.2916   Min.   :-0.2623  
+ 1st Qu.:-0.4693   1st Qu.:-0.3971   1st Qu.:-0.2916   1st Qu.:-0.2623  
+ Median :-0.4693   Median :-0.3971   Median :-0.2916   Median :-0.2623  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.4693   3rd Qu.:-0.3971   3rd Qu.:-0.2916   3rd Qu.:-0.2623  
+ Max.   : 6.2833   Max.   : 7.1087   Max.   : 7.8849   Max.   : 6.8281  
+  toad.in.hole       coco.pops           kitkat           broccoli      
+ Min.   :-0.2449   Min.   :-0.2828   Min.   :-0.4571   Min.   :-0.3015  
+ 1st Qu.:-0.2449   1st Qu.:-0.2828   1st Qu.:-0.4571   1st Qu.:-0.3015  
+ Median :-0.2449   Median :-0.2828   Median :-0.4571   Median :-0.3015  
+ Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.2449   3rd Qu.:-0.2828   3rd Qu.:-0.4571   3rd Qu.:-0.3015  
+ Max.   :10.6386   Max.   : 8.4635   Max.   : 6.0261   Max.   : 8.2723  
+   cigarettes     
+ Min.   :-0.3475  
+ 1st Qu.:-0.3475  
+ Median :-0.3475  
+ Mean   : 0.0000  
+ 3rd Qu.:-0.3475  
+ Max.   : 6.8431  </code></pre>
+</div>
 </div>
 </section>
 <section id="สำรวจขอมล" class="level2">
 <h2 class="anchored" data-anchor-id="สำรวจขอมล">สำรวจข้อมูล</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrr)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>corr_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(pca_dat)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(corr_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrr)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>corr_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(pca_dat)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(corr_matrix)<span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text=</span><span class="fu">element_text</span>(<span class="at">family=</span><span class="st">"ChulaCharasNew"</span>, <span class="at">size=</span><span class="dv">6</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="07MoreRegs_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>การวิเคราะห์ PCA ใน R สามารถทำได้หลายวิธีมาก ๆ ในบทเรียนนี้จะใช้ฟังก์ชัน <code>PCA()</code> จาก package FactoMineR</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>output.pca <span class="ot">&lt;-</span> <span class="fu">princomp</span>(pca_dat)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(output.pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>output.pca <span class="ot">&lt;-</span> <span class="fu">princomp</span>(pca_dat)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(output.pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Importance of components:
                            Comp.1     Comp.2     Comp.3    Comp.4     Comp.5
@@ -428,11 +593,11 @@ Standard deviation     0.7509999
 Proportion of Variance 0.0137630
 Cumulative Proportion  1.0000000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>output.pca <span class="sc">%&gt;%</span><span class="fu">objects</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>output.pca <span class="sc">%&gt;%</span><span class="fu">objects</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "call"     "center"   "loadings" "n.obs"    "scale"    "scores"   "sdev"    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>output.pca<span class="sc">$</span>loadings  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>output.pca<span class="sc">$</span>loadings  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Loadings:
@@ -668,11 +833,11 @@ SS loadings      1.000   1.000   1.000   1.000   1.000   1.000   1.000   1.000
 Proportion Var   0.024   0.024   0.024   0.024   0.024   0.024   0.024   0.024
 Cumulative Var   0.829   0.854   0.878   0.902   0.927   0.951   0.976   1.000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(output.pca, <span class="at">addlabels =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(output.pca, <span class="at">addlabels =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="07MoreRegs_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="576"></p>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_var</span>(output.pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_var</span>(output.pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="07MoreRegs_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="576"></p>
 </div>
@@ -700,9 +865,9 @@ Cumulative Var   0.829   0.854   0.878   0.902   0.927   0.951   0.976   1.000</
 </div>
 <p>วิธีการนี้จะมี hyperparameter 1 ตัวได้แก่ จำนวนองค์ประกอบหลัก ชุดข้อมูลที่ใช้เป็นตัวอย่างจะใช้ชุดข้อมูล <a href="PCR_PLS.csv"><code>PCR_PLS.csv</code></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"PCR_PLS.csv"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[,<span class="sc">-</span><span class="dv">1</span>]</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"PCR_PLS.csv"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[,<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           y         X1          X2         X3         X4        X5        X6
 1   9.984933  1.0158064 -0.04971771  0.3662059  0.2681972 0.1738431 0.4510301
@@ -1279,7 +1444,7 @@ Cumulative Var   0.829   0.854   0.878   0.902   0.927   0.951   0.976   1.000</
 5 -1.0219628  0.38729272
 6 -1.0477824  2.14758741</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 800 504</code></pre>
 </div>
@@ -1287,7 +1452,7 @@ Cumulative Var   0.829   0.854   0.878   0.902   0.927   0.951   0.976   1.000</
 <section id="spliting-data" class="level2">
 <h2 class="anchored" data-anchor-id="spliting-data">Spliting data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.0.0 ──</code></pre>
 </div>
@@ -1306,24 +1471,24 @@ Cumulative Var   0.829   0.854   0.878   0.902   0.927   0.951   0.976   1.000</
 ✖ dplyr::filter()  masks stats::filter()
 ✖ dplyr::lag()     masks stats::lag()
 ✖ recipes::step()  masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>split<span class="ot">&lt;-</span><span class="fu">initial_split</span>(dat, <span class="at">prop =</span> <span class="fl">0.7</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>split</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>split<span class="ot">&lt;-</span><span class="fu">initial_split</span>(dat, <span class="at">prop =</span> <span class="fl">0.7</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>split</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;Training/Testing/Total&gt;
 &lt;560/240/800&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="preprocessing" class="level2">
 <h2 class="anchored" data-anchor-id="preprocessing">Preprocessing</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>preproc <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span>. , <span class="at">data=</span>train) <span class="sc">%&gt;%</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_numeric_predictors</span>(), <span class="at">num_comp =</span> <span class="fu">tune</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>preproc <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span>. , <span class="at">data=</span>train) <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_numeric_predictors</span>(), <span class="at">num_comp =</span> <span class="fu">tune</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="model-specification-tune-grid" class="level2">
@@ -1342,6 +1507,15 @@ Cumulative Var   0.829   0.854   0.878   0.902   0.927   0.951   0.976   1.000</
 <section id="กจกรรม" class="level2">
 <h2 class="anchored" data-anchor-id="กจกรรม">กิจกรรม</h2>
 <p>สร้างโมเดลทำนาย PLS regression โดยใช้ชุดข้อมูล PCR_PLS.csv เหมือนเดิม</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>preproc <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span>. , <span class="at">data=</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>pls_mod <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">pls</span>(<span class="at">predictor_prop =</span> <span class="fu">tune</span>(),</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">num_comp =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"mixOmics"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
