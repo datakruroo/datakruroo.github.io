@@ -1,0 +1,69 @@
+project:
+  type: website
+
+website:
+  page-navigation: true
+  title: "2758688 ML PRIN APPLN"
+  description: "Homepage for 2758688 - Machine Learning Principles and Appication @ EDUCU."
+  open-graph: true
+
+  page-footer:
+    right: "This page is built with ❤️ and [Quarto](https://quarto.org/)."
+    left: "&copy; Copyright 2023, DataKruRoo"
+    background: "#BDCDD6"
+
+  sidebar:
+    background: "#BDCDD6"
+    logo: "images/logo.png"
+    pinned: true
+    align: center
+    tools:
+      - icon: github
+        href: https://github.com/ssiwacho/2758688_ML
+        text: "GitHub ของรายวิชา"
+        
+      - icon: code-square
+        href: https://posit.co/download/rstudio-desktop/
+        text: "RStudio"
+
+
+    style: "docked"
+    search: true
+    collapse-level: 1
+    contents:
+      - section: "Course information"
+        contents:
+          - href: course-overview.qmd
+            text: Overview
+          - href: index.qmd
+            text: Schedule
+          - href: course-lecturer.qmd
+            text: Instructor
+
+
+      - section: "เนื้อหารายสัปดาห์"
+        contents:
+          - href: documents/01basicConcepts.html
+            text: Wk01 Intro to ML
+          - href: documents/02MLProcess.html
+            text: Wk02 ML Process
+          - href: documents/03TreeModels.html
+            text: Wk03 Decision Trees  
+          - href: documents/04Regularization.html
+            text: Wk04 Regularization
+          - href: documents/05RandomForest.html
+            text: Wk05 Random Forest            
+format:
+  html:
+    theme: 
+      light: [pandoc, theme.scss]
+    mainfont: "Krub"
+    code-copy: true
+    code-overflow: wrap
+    toc: true
+
+freeze: auto
+editor: visual
+urlcolor: "steelblue"
+linkcolor: "steelblue"
+

@@ -1,0 +1,467 @@
+---
+title: "Random Forest"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+toc: true
+toc-depth: 3
+toc-title: สารบัญ
+theme: default
+---
+
+```{r echo = F, message = F}
+library(tidyverse)
+library(tidymodels)
+```
+
+# บทที่ 7 : Random Forest Algorithm
+
+ถึงแม้ว่า Decision tree จะเป็นโมเดลที่สร้างง่าย ใช้งาน และแปลผลง่าย แต่โดยทั่วไปแล้ว ประสิทธิภาพการทำนายของ decision tree มักไม่ค่อยดี และสุ่มเสี่ยงที่จะเกิดปัญหา overfitting ได้ง่ายอีกด้วย
+
+![](images/image-1695152319.png)
+
+## 7.1 Basic Concepts
+
+จากข้อจำกัดของ decision tree (รวมทั้ง ML แบบ single learner ตัวอื่น ๆ ) จึงมีการพัฒนาวิธีการสร้างโมเดลทำนายโดยใช้การรวมผลทำนายจากชุดข้อมูล bootstrap เรียกว่า bootstrap aggregation (bagging) รูปด้านล่างแสดงแนวคิดพื้นฐานของ bagging method
+
+![](images/image-1237506128.png)
+
+random forest ในยุคแรกใช้แนวคิดของ bagging ข้างต้นโดยตรง โดยมีขั้นตอนการดำเนินงานดังนี้
+
+กำหนดให้ training dataset ของผู้วิเคราะห์มีขนาด n หน่วย
+
+1.  สร้าง bootstrap dataset โดยใช้การสุ่มตัวอย่างแบบใส่คืน ขนาด n หน่วย (sampling with replacement) จากชุดข้อมูล trainng data
+
+2.  นำชุดข้อมูลแต่ละชุดมาสร้าง decision tree
+
+3.  ทวนซ้ำขั้นตอนที่ 1 และ 2 จนครบ bootstrap dataset ทั้งหมด
+
+4.  นำผลทำนายจาก bootstrap dataset แต่ละชุดมาหา majority vote
+
+    ![ตัวอย่าง bootstrap dataset](images/image-275986106.png){alt="ตัวอย่าง bootstrap dataset"}
+
+อย่างไรก็ตาม bagging tree ข้างต้นมีข้อจำกัดกล่าวคือในแต่ละรอบของการทวนซ้ำ อัลกอริทึมมักสร้าง decision tree ที่ซ้ำซ้อนกัน ซึ่งให้ประสิทธิภาพการทำนายไม่ได้ดีขึ้นเท่าที่ควร จากข้อจำกัดนี้จึงมีการพัฒนา random forest algorithm ขึ้น ซึ่งมีรายละเอียดดังนี้
+
+    1. สร้าง training dataset
+    2. กำหนด hyperparameter ของโมเดล
+    3. สร้าง bootstrap dataset จาก traning dataset
+    4. สร้าง decision tree จาก bootstrap dataset ดังกล่าวภายใต้เงื่อนไขของ hyperparameter ที่กำหนด 
+    5. นำ decision tree ใน 4. ไปคำนวณ error ใน OOB แล้วเก็บค่าไว้
+    6. ทวนซ้ำ 3 - 5 ใหม่ จนได้จำนวน tree model ครบตามกำหนด นำ OOB error ของ model ทั้งหมดมาเฉลี่ยรวมกันจะได้ error ของ random forest 
+    7. ทวนซ้ำ 2. ถึง 6. ใหม่ด้วย cross-validation จนครบทั้ง hyperparameter grid นำ error ทั้งหมดมาวิเคราะห์เพื่อเลือก hyperparameter ชุดที่ดีที่สุด
+
+![สิวะโชติ ศรีสุทธิยากร (2564)](images/image-2033240077.png){alt="สิวะโชติ ศรีสุทธิยากร (2564)"}
+
+## 7.2 Out-of-Bag (OOB)
+
+จากตัวอย่าง algorithm ของ random forest ข้างต้นจะเห็นว่ามี hyperparameter ที่จะต้อง fine-tune เนื่องจาก random forest สร้างขึ้นจาก bootstrap dataset การตรวจสอบประสิทธิภาพของโมเดลเพื่อ fine-tune hyperparameters จึงจะใช้การประเมินจาก out-of-bag error โดยที่ out-of-bag error จะคำนวณจากหน่วยข้อมูลที่ไม่ถูกเลือกให้อยู่ภายใต้ bootstrap dataset ในแต่ลละรอบ ซึ่งในทางทฤษฎีจะมีหน่วยข้อมูลแบบ OOB นี้คิดเป็นร้อยละประมาณ 37 ของ original dataset
+
+## 7.3 Hyperparameters ของ Random Forest
+
+hyperparameter ของ random forest เช่น
+
+1.  **n_trees** --- จำนวนต้นไม้ของแต่ละ random forest จำนวนต้นไม้มีผลโดยตรงต่อประสิทธิภาพในการทำนาย กล่าวคือหากกำหนดให้มีต้นไม้จำนวนมาก การประมาณประสิทธิภาพในการทำนายจะทำได้อย่างคงเส้นคงวา ส่งผลให้การ fine-tune hyperparameter ทำได้อย่างมีประสิทธิภาพตามไปด้วย อย่างไรก็ตามจำนวนต้นไม้ที่มากเกินไปก็จะใช้ทรัพยากรการประมวลผลที่มากตามไปด้วย
+2.  **mtry** --- จำนวนของ feature ที่จะสุ่มมาสร้าง tree model แต่ละ model ภายใต้ random forest
+3.  **cp** --- หรือ cost of complexity hyperparameter อธิบายโดยละเอียดไปแล้วใน decision tree
+4.  **minspit** --- จำนวนหน่วยข้อมูลขั้นต่ำที่ต้องมีภายในแต่ละ node (node size)
+5.  **minbucket** --- จำนวนหน่วยข้อมูลขั้นต่ำของ Terminal node
+6.  **maxdepth.** --- ความลึกสูงที่สุดของต้นไม้แต่ละต้น
+7.  **splitrule**
+
+## 7.4 ตัวอย่างการวิเคราะห์ random forest
+
+ใน R มี package หลายตัวที่สามารถใช้วิเคราะห์ random forest ได้ package หนึ่งที่มีประสิทธิภาพคือ ranger ชุดคำสั่งต่อไปนี้เป็นการใช้ฟังก์ชัน `ranger` โดยตรงเพื่อวิเคราะห​ random forest
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(rsample)
+library(ranger)
+library(vip)
+library(yardstick)
+# importing and preprocessing
+dat <- read.csv("https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv")
+
+dat <- dat[,-1]
+summary(dat)
+dat1_preproc<- dat %>%
+  mutate(salary_class = ifelse(salary>=100000,1,0),
+         salary_class = factor(salary_class,
+                               levels = c(0,1),
+                               labels = c("low","high"))) %>%
+  select(-salary)
+summary(dat1_preproc)
+```
+
+ขั้นตอนถัดมาคือแบ่งชุดข้อมูลเป็น training และ test dataset
+
+```{r}
+set.seed(123)
+split <- initial_split(dat1_preproc, prop = 0.8, strata = salary_class)
+train<-training(split)
+test<-testing(split)
+
+table(train$salary_class)
+table(test$salary_class)
+```
+
+วิเคราะห์ random forest model ด้วยฟังก์ชัน `ranger()` ในตัวอย่างนี้จะกำหนดให้เป็นค่าเริ่มต้นทั้งหมดก่อน
+
+```{r}
+fit_rf1 <- ranger(salary_class ~ . ,
+                  data = train,
+                  importance = "impurity")
+fit_rf1
+vip(fit_rf1)
+```
+
+คำนวณค่าทำนายและตรวจสอบความคลาดเคลื่อนของค่าทำนายบนชุดข้อมูล test data
+
+```{r eval = F}
+pred_class <- predict(fit_rf1, test, type="response")$predictions
+table(pred, test$salary_class)
+```
+
+## 7.5 fine-tune hyperparameters
+
+หัวข้อนี้จะแสดงการ fine-tune hyperparameter ของ random forest ตาม algorithm ที่ในข้างต้น โดยใช้ tidymodel framwork รายละเอียดมีดังนี้
+
+### ขั้นแรก นำเข้าข้อมูล และจัดการ label ของข้อมูล
+
+ตัวอย่างนี้จะแปลงข้อมูลตัวแปรตาม `salary` ให้เป็นตัวแปรแบบจัดประเภทที่มี 2 กลุ่ม คือกลุ่มที่เป็นอาจารย์รายได้สูง (\>= 100,000 บาท) และกลุ่มอาจารย์รายได้ต่ำ (\< 100,000 บาท)
+
+```{r}
+library(parsnip)
+library(recipes)
+# importing dataset
+dat <- read.csv("https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv")
+glimpse(dat, width = 80)
+dat <- dat %>% 
+  mutate(salary_class = ifelse(salary>=100000,1,0),
+         salary_class = factor(salary_class, labels=c("low","high")))
+glimpse(dat, width = 80)
+```
+
+### ขั้นที่สอง แบ่งชุดข้อมูล
+
+กำหนด seed number เท่ากับ 123 จากนั้นแบ่งชุดข้อมูลโดยใช้ rsample package ดังนี้
+
+```{r}
+set.seed(123)
+split <- initial_split(dat, prop = 0.8)
+train<-training(split)
+test<-testing(split)
+```
+
+### ขั้นที่สาม สร้าง recipe object สำหรับจัดการข้อมูล
+
+```{r}
+preproc <- recipe(salary_class ~ ., data = train) %>%
+  step_select(-X, -salary)
+```
+
+### ขั้นที่ 4 กำหนดโมเดล (model specification)
+
+ตัวอย่างนี้จะใช้ random forest ใน parsnip สามารถ fit random forest model ได้ด้วย engine หลายตัว ในตัวอย่างนี้จะใช้ `ranger` ที่มี hyperparameter ให้กำหนดได้ 3 ตัวได้แก่ mtry, trees และ min_n
+
+```{r}
+forest_mod <- rand_forest(mtry = tune(),
+                          trees = 500,
+                          min_n = tune()) %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+```
+
+### ขั้นที่ 5 สร้าง workflow
+
+ผู้วิเคราะห์ไม่จำเป็นต้องสร้าง workflow ก็สามารถใช้ `tune_grid()` เพื่อ fine-tune hyperparameter ได้ โดยใช้ parsnip object ที่สร้างขึ้นในขั้น 4 เป็น object ใน `tune_grid()` ได้เลย อย่างไรก็ตามในสถานการณ์ทั่วไปผู้วิเคราะห์จะเป็นต้อง preprocess ข้อมูลก่อนอยู่แล้ว การใช้ workflow จึงน่าจะสะดวกกว่าในกรณีทั่วไป
+
+```{r}
+rf_workflow <- workflow() %>%
+  add_recipe(preproc) %>%
+  add_model(forest_mod)
+rf_workflow
+```
+
+### ขั้นที่ 6 เตรียมทำ cross-validation และกำหนด hyperparameter grid
+
+```{r}
+# create folds
+folds <- vfold_cv(train, repeats =5, strata = "salary_class")
+# create random grid
+my_hyparams <- parameters(mtry(range=c(1,5)),
+                          min_n(range=c(10,40)))
+my_grid <- grid_random(my_hyparams, size = 20)
+my_grid %>% ggplot()+
+  geom_point(aes(mtry, min_n))
+# crete evaluation metrics
+eval_metric <- metric_set(roc_auc, sens, spec)
+```
+
+### ขั้นที่ 7 ทำ CV เพื่อนำข้อมูลมา tune hyperparameters
+
+ฟังก์ชันที่ใช้คือ `tune_grid()` มีอาร์กิวเมนท์ที่สำคัญได้แก่
+
+-   `resamples` ใช้ระบุชุดข้อมูลที่สร้างขึ้นจากกระบวนการสุ่มซ้ำ เช่น k-folds CV หรือ boostraping dataset
+
+-   `grid` ใช้สำหรับระบุ grid ของ hyperparameter ของอัลกอริทึมการเรียนรู้ที่เลือกใช้
+
+-   `control` ใช้กำหนด option สำหรับควบคุมกระบวนการสุ่มซ้ำ (resample) และปรับแต่งค่า hyperparameter การกำหนดอาร์กิวเมนท์นี้จะต้องกำหนดผ่านฟังก์ชัน `control_resamples()` หรือ `control_grid()` อีกทีหนึ่ง รายละเอียดของฟังก์ชันทั้งสองสามารถศึกษาได้จากคู่มือการใช้งาน (พิมพ์ `?control_resamples` หรือ `?control_grid`)
+
+-   `metrics` ใช้กำหนด evalution metrics ที่ผู้วิเคราะห์จะใช้เพื่อประเมินประสิทธิภาพของโมเดลระหว่างการปรับแต่งค่าพารามิเตอร์ การกำหนดอาร์กิวเมนท์นี้ให้ทำผ่านฟังก์ชัน `metric_set()` ในกรณีที่ไม่ได้กำหนดโปรแกรมจะกำหนดให้ใช้ค่าเริ่มต้น ซึ่งจะเลือกให้เหมาะสมกับ mode ของโมเดล
+
+```{r}
+tuning_results <- rf_workflow %>%
+                  tune_grid(resamples = folds,
+                            grid = my_grid,
+                            control = control_grid(verbose = FALSE,
+                                                   save_pred = TRUE),
+                            metrics = eval_metric)
+```
+
+### วิเคราะห์ tuning results
+
+```{r}
+tuning_results %>% autoplot()
+tuning_results %>% collect_metrics(summarize = TRUE)
+tuning_results %>% 
+  collect_metrics(summarize = TRUE) %>%
+  filter(.metric == "sens") %>%
+  arrange(desc(mean))
+tuning_results %>% 
+  collect_metrics(summarize = TRUE) %>%
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+tuning_results %>% 
+  collect_metrics(summarize = TRUE) %>%
+  filter(.metric == "sens") %>%
+  ggplot(aes(x = std_err, y= mean))+
+  geom_point()
+best <- show_best(tuning_results, n=6, metric = "sens")
+best[1,]
+```
+
+### ขั้นที่ 8 Finalized
+
+```{r}
+RF_final <- rf_workflow %>%
+  finalize_workflow(best[1,]) %>%
+  last_fit(split,
+           metrics =eval_metric)
+RF_final %>%
+  extract_fit_engine()
+RF_final %>%
+  collect_metrics()
+```
+
+## 7.6 Grid Search methods
+
+ปัจจัยสำคัญตัวหนึ่งที่มีผลโดยตรงต่อประสิทธิภาพการปรับแต่ง hyperparameter คือการกำหนด grid ของ hyperparameter ใน tidymodel สามารถจำแนกได้เป็น 2 ประเภท ได้แก่
+
+-   regular grid
+
+-   nonregular grid
+
+รายละเอียดมีดังนี้
+
+## Regular grid
+
+regular grid เป็น grid ของ hyperparameter ที่สร้างขึ้นจากส่วนผสม (combination) ของค่าที่เป็นไปได้ทั้งหมดของ hyperparameter ที่ต้องการวิเคราะห์ การสร้าง regular grid มี 2 ขั้นตอน ขั้นตอนแรกคือการกำหนดค่าที่เป็นไปได้ของ hyperparameter แต่ละตัว และขั้นที่สองคือการสร้าง grid ของค่าที่เป็นไปได้ดังกล่าว ผลลัพธ์ที่ได้คือ hyperparameter space ที่สมบูรณ์
+
+การสร้าง regular grid ใน R สามารถทำได้หลายวิธีการ วิธีการแรกคือการใช้ฟังก์ชัน `expand.grid()` วิธีการที่สองคือการใช้ฟังก์ชัน `crossing()` ของ package tidyr และวิธีการที่สามคือการใช้ฟังก์ชัน `grid_regular()` ของ package dials
+
+```{r}
+my_grid <- expand.grid(
+  mtry = 1:5,
+  min_n = seq(10,50,5)
+)
+head(my_grid)
+tail(my_grid)
+```
+
+```{r}
+crossing(
+  mtry = 1:5,
+  min_n = seq(10,50,5)
+)
+```
+
+```{r}
+my_params <- extract_parameter_set_dials(rf_workflow) %>%
+  update(mtry = mtry(range=c(1,5)),
+         min_n = min_n(range=c(20,60)))
+my_reggrid <- grid_regular(my_params, levels = 5)
+my_reggrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))
+```
+
+ข้อจำกัดของ regular grid คือใช้ทรัพยากรในการประมวลผลมาก โดยเฉพาะกับโมเดลที่มี hyperparameter จำนวนมาก และมีการทวนซ้ำหลายรอบ
+
+## Irregular grid
+
+มีหลายวิธีที่จะช่วยลดการประมวลผลของ regular grid ลงได้ วิธีการแรกคือ random grid ที่ใช้วิธีการสุ่มตัวอย่าง เพื่อสุ่ม grid มาจากประชากรของ grid ที่เป็นไปได้
+
+```{r}
+my_randomgrid <- grid_random(my_params, size = 10)
+my_randomgrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))
+my_randomgrid <- grid_random(my_params, size = 25)
+my_randomgrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))
+```
+
+```{r}
+my_randomgrid <- grid_random(my_params, size = 50)
+my_randomgrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))
+```
+
+ข้อจำกัดของ random grid คือ หาก generate grid ขนาดเล็ก มีโอกาสที่จะได้ grid ที่มีความใกล้เคียงหรือซ้อนทับกันมากเกินไป กล่าวคือ hyperparameter space ที่สร้างขึ้นอาจขาดคุณสมบัติความเป็นตัวแทน ผลการวิเคราะห์ที่ได้จึงอาจทำให้การปรับแต่ง hyperparameter มีความคลาดเคลื่อน
+
+จากข้อจำกัดดังกล่าวการสร้าง grid ของ hyperparameter ที่มีประสิทธิภาพมากกว่า random grid คือการใช้วิธีในกลุ่ม space-filling design ที่มีอัลกอริทึมภายใต้วิธีการในกลุ่มนี้หลายตัว เช่น latin hypercubes, maximum entropy designs, maximum projection designs เป็นต้น
+
+```{r}
+my_latingrid <- grid_latin_hypercube(my_params, size = 25)
+my_latingrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))
+
+my_maxentrp <- grid_max_entropy(my_params, size = 25)
+my_maxentrp  %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))
+```
+
+```{r echo = F, fig.width = 9}
+my_randomgrid <- grid_random(my_params, size = 30)
+p1<-my_randomgrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))+
+  ggtitle("random grid")
+
+my_latingrid <- grid_latin_hypercube(my_params, size = 30)
+p2<-my_latingrid %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))+
+  ggtitle("latin hypercube grid")
+
+my_maxentrp <- grid_max_entropy(my_params, size = 30)
+p3<-my_maxentrp  %>%
+  ggplot()+
+  geom_point(aes(x = mtry, y = min_n))+
+  ggtitle("maximum entropy grid")
+
+grid.arrange(p1,p2,p3, ncol=3)
+```
+
+# บทที่ 8: workflow set
+
+ในทางปฏิบัติเรามักจะมีโมเดลคู่แข่งขันหลายตัวที่จะนำมาพัฒนาควบคู่กัน ภายใต้ tidymodel framework ผู้วิเคราะห์สามารถสร้าง workflow set เพื่อ fine tune hyperparameter และเปรียบเทียบโมเดลหลาย ๆ ตัวไปพร้อม ๆ กันในการประมวลผลรอบเดียวได้
+
+ผู้วิเคราะห์ต้องการพัฒนาโมเดลจำแนก class โดยมีโมเดลคู่แข่งขันที่เลือกมาใช้งานได้แก่
+
+-   logistic regression with regulization
+
+-   decision tree
+
+-   random forest (เป็นการบ้าน)
+
+ชุดข้อมูลที่ใช้เป็นตัวอย่างคือชุดข้อมูล `parabolic` ซึ่งเป็นชุดข้อมูลตัวอย่างของ tidymodels ผลการสำรวจข้่อมูลด้านล่างจะเห็นว่า ชุดข้อมูลประกอบด้วยข้อมูลของหน่วยข้อมูลจำนวน 500 หน่วย มีตัวแปรตามแบบจัดประเภท `class` และตัวแปรอิสระเชิงปริมาณ 2 ตัวได้แก่ `x1` และ `x2` ตามลำดับ
+
+```{r}
+#importing data
+data(parabolic)
+glimpse(parabolic)
+
+# splitting data
+split <- initial_split(data = parabolic)
+train <- training(split)
+test <- testing(split)
+```
+
+ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระเบื้องต้น ได้ผลดังแผนภาพด้านล่าง
+
+```{r}
+#exploring
+train %>%
+  ggplot(aes(x = X1, y = X2, col=class))+
+  geom_point(alpha=0.7)+
+  theme_light()+
+  theme(legend.position="top")
+```
+
+การวิเคราะห์นี้มีการพัฒนา ML จำนวน 2 ตัวได้แก่ regularized logistic regression และ decision tree ที่มีการทำ preprocessing แตกต่างกัน การทำ workflow set ยอมให้ผู้วิเคราะห์กำหนด preprocessing ที่แตกต่างกันกับ model specification ที่กำหนดได้ ดังตัวอย่างต่อไปนี้
+
+```{r}
+#preprocessing
+base_recipe <- recipe(class ~ . ,data= train)
+
+norm_recipe <- base_recipe %>%
+  step_normalize(all_numeric_predictors())
+
+
+# model specification
+## - 1 regularized logistic regression
+regular_logit <- logistic_reg(penalty= tune(),
+                              mixture = tune()) %>%
+  set_engine("glmnet")%>%
+  set_mode("classification")
+
+## - 2 decision tree 
+tree_mod <- decision_tree(cost_complexity = tune(),
+                          min_n = tune())%>%
+  set_engine("rpart")%>%
+  set_mode("classification")
+
+# creat workflowset
+my_workflowset <- workflow_set(
+  preproc = list(norm = norm_recipe,
+                 base = base_recipe),
+  models = list(reg_logit = regular_logit,
+                cart = tree_mod),
+  cross = FALSE
+)
+my_workflowset
+```
+
+นำ workflow set ที่สร้างมาผ่านกระบวนการ tune hyperapameter โดยฟังก์ชันที่จะใช้คือ `workflow_map()` แทน `tune_grid()`
+
+ตัวอย่างด้านล่างมีการระบุ `grid = 20` แปลว่าให้ฟังก์ชันสร้าง hyperparameter grid ให้โดยใช้ค่าเริ่มต้นจำนวน 25 จุด ทั้งนี้ค่าเริ่มต้นของ tidymodel จะใช้อัลกอริทึม maximum entropy ในการกำหนด grid
+
+```{r}
+# Tuning Hypeparameter
+eval_metrics <- metric_set(accuracy,roc_auc, sens, spec)
+folds <- vfold_cv(data = train, v = 10)
+all_tune <- my_workflowset %>%
+  workflow_map(resamples = folds,
+               grid = 20,
+               verbose = TRUE,
+               metrics = eval_metrics)
+
+rank_results(all_tune)
+all_tune %>% autoplot(metric = "roc_auc")
+```
+
+จากผลการวิเคราะห์ข้างต้นแสดงให้เห็นว่า decision tree มีประสิทธิภาพสูงกว่า regularized logistic regression เราสามารถดึงข้อมูลของ regularized logistic regression ขึ้นมาได้โดยใช้คำสั่งต่อไปนี้
+
+```{r}
+all_tune %>% autoplot(metric = "sens", id = "base_cart")
+```
+
+ฟังก์ชัน `extract_workflow_set_result()` ใช้ดึงผลการ fine-tune hyperparameter ของแต่ละโมเดลภายใต้ workflow set ขึ้นมาวิเคราะห์ในเชิงลึกต่อได้อีก
+
+```{r}
+simple_cart_results<- all_tune %>% 
+  extract_workflow_set_result(id = "base_cart")
+simple_cart_results
+simple_cart_results %>% collect_metrics(summarise = T)
+simple_cart_results %>% autoplot()
+```
+
+```{r}
+show_best(simple_cart_results, n=5, metric = "sens")
+```
+
+ขั้นตอนสุดท้ายคือการ finalized model ...
