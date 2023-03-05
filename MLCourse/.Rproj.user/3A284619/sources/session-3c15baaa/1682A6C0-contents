@@ -327,43 +327,41 @@ p6<-plot_digit(test,6)+
 grid.arrange(p1,p2,p3,p4,p5,p6,ncol=3)
 ```
 
-## 8. Predict new dataset (from raw)
+### 8. Predict new dataset (from raw)
+
+สมมุติว่ามีข้อมูลใหม่ได้แก่ [อันนี้](images/Screenshot 2566-03-04 at 10.58.21.png)กับ [อันนี้](images/Screenshot 2566-03-04 at 18.45.19.png) เราจะลองใช้โมเดลที่พัฒนาขึ้นเพื่อจำแนกตัวเลขในรูปทั้งสอง
 
 ```{r}
 library(EBImage)
-myimg <- readImage("/Users/siwachoat/Desktop/Screenshot 2566-03-04 at 18.45.19.png")
-myimg
+# define import function
+import_img<-function(path)
+{
+myimg <- readImage(path)
+#myimg
 colorMode(myimg) <- Grayscale
 img_resize <- resize(myimg, w=28, h=28)
-display(img_resize)
+#display(img_resize)
 img_neg <- max(img_resize) - img_resize
-display(img_neg)
-img_neg
+#display(img_neg)
+#img_neg
 myimg <- imageData(img_neg)[,,1]
-myimg %>% dim()
+#myimg %>% dim()
 vector <- myimg %>% as.numeric()
 temp <- data.frame(t(vector))
-temp
 names(temp) <- paste0("pixel",0:783)
 temp <-temp*255
 temp<-round(temp,0)
-
-plot_digit(temp,1)
+return(temp)
+}
+# import image
+temp<-import_img("images/Screenshot 2566-03-04 at 10.58.21.png")
+temp<-rbind(temp,import_img("images/Screenshot 2566-03-04 at 18.45.19.png") )
+# predict
 predict_val <- rf_fit_final %>%
   extract_workflow() %>%
   predict(temp)
+# results!!
+predict_val
+plot_digit(temp,1)
+plot_digit(temp,2)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
