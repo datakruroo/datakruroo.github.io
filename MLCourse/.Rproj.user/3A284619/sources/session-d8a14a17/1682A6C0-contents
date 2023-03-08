@@ -36,7 +36,7 @@ plot_digit <- function(data, index)
 title_lab <- data[index,"label"]
 data %>%
   slice(index) %>%
-  select(starts_with("pixel")) %>%
+  dplyr::select(starts_with("pixel")) %>%
   pivot_longer(starts_with("pixel")) %>%
   mutate(x = rep(1:28,28),
          y = rep(1:28, each = 28)) %>%
@@ -186,7 +186,6 @@ confusion_rf %>% summary()
 
 ### 3. สร้าง Workflow set
 
-
 ```{r}
 ## create recipe object for workflow
 preproc <- recipe(label ~. , data= sample_train)
@@ -240,7 +239,6 @@ time_usage <- Sys.time() - start
 time_usage
 ```
 
-
 ### 5. วิเคราะห์ hyperparameters
 
 ```{r}
@@ -252,7 +250,6 @@ show_best(all_tuning_results,3, metric = "roc_auc")
 show_best(all_tuning_results,3, metric = "sens")
 show_best(all_tuning_results,3, metric = "spec")
 ```
-
 
 ### 6. Finalized workflow
 
@@ -308,7 +305,6 @@ rf_fit_final %>%
   autoplot(type = "heatmap")
 ```
 
-
 ### 7. Predict a new dataset
 
 ```{r}
@@ -329,4 +325,43 @@ p5<-plot_digit(test,5)+
 p6<-plot_digit(test,6)+
   ggtitle(predict_val[6])
 grid.arrange(p1,p2,p3,p4,p5,p6,ncol=3)
+```
+
+### 8. Predict new dataset (from raw)
+
+สมมุติว่ามีข้อมูลใหม่ได้แก่ [อันนี้](images/Screenshot%202566-03-04%20at%2010.58.21.png)กับ [อันนี้](images/Screenshot%202566-03-04%20at%2018.45.19.png) เราจะลองใช้โมเดลที่พัฒนาขึ้นเพื่อจำแนกตัวเลขในรูปทั้งสอง
+
+```{r}
+library(EBImage)
+# define import function
+import_img<-function(path)
+{
+myimg <- readImage(path)
+#myimg
+colorMode(myimg) <- Grayscale
+img_resize <- resize(myimg, w=28, h=28)
+#display(img_resize)
+img_neg <- max(img_resize) - img_resize
+#display(img_neg)
+#img_neg
+myimg <- imageData(img_neg)[,,1]
+#myimg %>% dim()
+vector <- myimg %>% as.numeric()
+temp <- data.frame(t(vector))
+names(temp) <- paste0("pixel",0:783)
+temp <-temp*255
+temp<-round(temp,0)
+return(temp)
+}
+# import image
+temp<-import_img("images/Screenshot 2566-03-04 at 10.58.21.png")
+temp<-rbind(temp,import_img("images/Screenshot 2566-03-04 at 18.45.19.png") )
+# predict
+predict_val <- rf_fit_final %>%
+  extract_workflow() %>%
+  predict(temp)
+# results!!
+predict_val
+plot_digit(temp,1)
+plot_digit(temp,2)
 ```
