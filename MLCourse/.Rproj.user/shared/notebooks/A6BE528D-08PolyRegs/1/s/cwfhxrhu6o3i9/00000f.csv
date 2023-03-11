@@ -1,0 +1,8 @@
+"0","workflow()%>%
+  add_recipe(ns_rec) %>%
+  add_model(fit_spline1) %>%
+  finalize_workflow(bestshow(tune_results,1))%>%
+  last_fit(split)
+"
+"2","Error in bestshow(tune_results, 1) : could not find function ""bestshow""
+"

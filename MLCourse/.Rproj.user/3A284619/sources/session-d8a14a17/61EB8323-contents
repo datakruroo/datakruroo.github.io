@@ -1,0 +1,290 @@
+---
+title: "Polynomial Regression and MARs"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+toc: true
+toc-depth: 3
+toc-title: สารบัญ
+theme: default
+---
+
+Multiple regression และ regression โมเดลที่เกี่ยวข้องในบทเรียนก่อนหน้านี้เป็นโมเดลที่อยู่ภายใต้กลุ่มของโมเดลเชิงเส้น (linear model) ที่มีวัตถุประสงค์หลักคือเพื่อเรียนรู้ความสัมพันธ์ภายในข้อมูลที่มีรูปแบบเชิงเส้นตรงเป็นหลัก อย่างไรก็ตามก็อาจมีบางโมเดลที่สามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ คือ regression model with interaction อย่างไรก็ตามโมเดล regression ดังกล่าวก็ยังมีความยืดหยุ่นที่ไม่มากเมื่อเปรียบเทียบกับอัลกอริทึมอื่น ๆ ที่มีในปัจจุบัน โดยบทเรียนนี้จะกล่าวถึงอัลกอริทึม multivariate adaptive regression splines (MARs) ที่กล่าวได้ว่าเป็น linear model ประเภทหนึ่งแต่มีความสามารถสูงในการเรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้น นอกจากนี้ยังสามารถใช้ได้ทั้งในปัญหาแบบ regression และ classification
+
+# Polynomial Regression
+
+MARs เป็นโมเดลที่พัฒนาขึ้นโดยมีพื้นฐานมาจาก polynomial regression หัวข้อนี้จึงจะกล่าวถึงมโนทัศน์ของ polynomial regression ก่อนเพื่อเป็นพื้นฐานในการทำความเข้าใจ MARs ในหัวข้อถัดไป
+
+## Basic concept
+
+โมเดลการถดถอยพหุนาม (polynomial regression models) เป็นโมเดลการถดถอยแบบเชิงเส้นที่ใช้วิเคราะห์หรือเรียนรู้ความสัมพันธ์ในข้อมูลแบบที่ไม่ใช่เชิงเส้นตรง โดยใช้ฟังก์ชันพหุนาม (polynomial function) เป็นส่วน systematic part ของโมเดลแทนการใช้ฟังก์ชันเชิงเส้นตรงธรรมดา ลองพิจารณาความสัมพันธ์
+
+```{r message = F}
+library(ggplot2)
+library(dplyr)
+set.seed(123)
+x<-runif(1000,0,8)
+y<-rnorm(1000, sin(x), 0.5) 
+data <- data.frame(x,y)
+data %>% ggplot()+
+  geom_point(aes(x=x, y=y),col="steelblue", alpha=0.6)+
+  theme_light()
+```
+
+จะเห็นว่าความสัมพันธ์ข้างต้นมีลักษณะเป็นเส้นโค้ง การ fit ความสัมพันธ์ดังกล่าวด้วย regression model สามารถทำได้หลายวิธีการ วิธีการแรกคือการใช้ linear model เหมือนเดิมแต่มีการเพิ่ม term พหุนามที่มีดีกรีต่าง ๆ สมการถดถอยพหุนามมีสมการทั่วไปดังนี้
+
+$$
+y_i = \beta_0+\beta_1 x_i + \beta_2 x^2_i + \beta_3 x^3_i + ...+ \beta_p x^p_i + \epsilon_i
+$$
+
+คำสั่งต่อไปนี้แสดงการ fit สมการถดถอยพหุนาม degree 2,3 และ 4 กับข้อมูลข้างต้น (<https://en.wikipedia.org/wiki/Degree_of_a_polynomial>)
+
+```{r}
+library(tidyr)
+linear.fit <- lm(y~x, data = data)
+poly2.fit <- lm(y~x + I(x^2), data = data)
+poly3.fit <- lm(y~x+I(x^2)+I(x^3), data=data)
+poly4.fit <- lm(y~x+I(x^2)+I(x^3)+I(x^4), data=data)
+summary(poly2.fit)
+summary(poly3.fit)
+summary(poly4.fit)
+
+data %>% bind_cols(linear = predict(linear.fit),
+                   quadratic = predict(poly2.fit),
+                   cubic = predict(poly3.fit),
+                   quartic = predict(poly4.fit)) %>%
+  gather(linear:quartic, key = "model", value = "pred") %>%
+  mutate(model = factor(model, levels=c("linear",
+                                        "quadratic",
+                                        "cubic",
+                                        "quartic"))) %>%
+  ggplot(aes(x=x, y=y))+
+  geom_point(col = "steelblue", alpha=0.7)+
+  geom_line(aes(y=pred))+
+  facet_wrap(vars(model))
+```
+
+ปัญหาของ polynomial regression คือ multicollinearity
+
+```{r message=F}
+library(car)
+vif(poly2.fit)
+vif(poly3.fit)
+```
+
+การแก้ปัญหา multicollinearity สามารถทำได้หลายวิธีการ วิธีการแรกคือการ centering ตัวแปรอิสระ ดังนี้
+
+```{r message=F}
+data %>%bind_cols(
+  pred2 = data %>%
+  mutate(x_c = x-mean(x)) %>%
+  lm(y~x_c+I(x_c^2),data=.) %>%
+   predict(.)
+  )%>%
+    ggplot(aes(x=x,y=y))+
+    geom_point(col="steelblue",alpha=0.6)+
+    geom_line(aes(y=pred2))
+
+data %>%
+  mutate(x_c = x-mean(x)) %>%
+  lm(y~x_c+I(x_c^2),data=.) %>% 
+  vif()
+
+data %>%
+  mutate(x_c = x-mean(x)) %>%
+  lm(y~x_c+I(x_c^2)+I(x_c^3),data=.) %>% 
+  vif()
+```
+
+อีกวิธีการหนึ่งคือการแปลงตัวแปรอิสระที่มี degree ของโมเดลให้เป็นด้วยพหุนามเชิงตั้งฉาก (orthogonal polynomial) <http://home.iitk.ac.in/~shalab/regression/Chapter12-Regression-PolynomialRegression.pdf>
+
+การสร้างเทอมพหุนามเชิงตั้งฉากใน R สามารถทำได้โดยใช้ฟังก์ชัน `poly()` ดังนี้
+
+```{r}
+poly2.fit <- lm(y~poly(x,2), data=data)
+summary(poly2.fit)
+data %>% bind_cols(pred = predict(poly2.fit)) %>%
+  ggplot(aes(x=x, y=y))+
+  geom_point()+
+  geom_line(aes(y=pred), col="orange", linewidth = 1.5)
+```
+
+## Polynomial Regression in tidymodels
+
+```{r}
+library(tidymodels)
+dat <- read.csv("https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv")
+head(dat)
+set.seed(1234)
+split <- initial_split(dat, prop = 0.8)
+train <- training(split)
+test <- testing(split)
+train<-train %>%
+  mutate(salary = log(salary))
+```
+
+### pre-processing
+
+```{r}
+preproc <- recipe(salary ~ ., data= train) %>%
+  step_select(-X)%>%
+  step_poly(yrs.service, yrs.since.phd, degree = tune()) %>%
+  step_dummy(rank, discipline, sex) %>%
+  step_interact(terms = ~starts_with("yrs.service"):contains("discipline"))
+```
+
+### model specification
+
+```{r}
+poly_mod <- linear_reg(penalty = tune(), mixture = tune()) %>%
+  set_engine("glmnet") %>%
+  set_mode("regression")
+```
+
+### set workflow and tuning
+
+```{r message=F}
+poly_workflow <- workflow() %>%
+  add_recipe(preproc) %>%
+  add_model(poly_mod)
+
+folds <- vfold_cv(train, v=5, repeats=2)
+params = parameters(degree(range=c(1,4)),
+                    penalty(),
+                    mixture())
+my_grid <- grid_max_entropy(params, size=30)
+library(doMC)
+registerDoMC(cores = parallel::detectCores())
+tune_results <- poly_workflow %>% 
+  tune_grid(resamples = folds,
+            grid = my_grid,
+            control = control_grid(verbose = T,
+                                   save_pred = T)
+            )
+tune_results %>% autoplot()
+mybest<-show_best(tune_results, n=1, metric = "rsq")
+```
+
+```{r}
+lastfit <- poly_workflow %>%
+  finalize_workflow(mybest) %>%
+  last_fit(split)
+
+
+lastfit %>% collect_metrics()
+lastfit %>% collect_predictions() %>%
+  ggplot(aes(x=salary, y=.pred))+
+  geom_point()
+```
+
+## Piecewise Polynomial Regression
+
+การวิเคราะห์สมการถดถอยพหุนามในข้างต้นเป็นการกำหนดฟังก์ชันให้กับข้อมูลทั้งชุดเหมือนกันทั้งหมด อย่างไรก็ตามมีวิธีการที่สามารถกำหนดฟังก์ชันพหุนามหลาย ๆ ตัวให้กับส่วนย่อยข้อมูลเป็นส่วน ๆ ไป ซึ่งช่วยให้ประสิทธิภาพการทำนายสูงขึ้นได้ ยกตัวอย่างในรูปด้านล่าง
+
+```{r}
+data %>% ggplot()+
+  geom_point(aes(x=x, y=y),col="steelblue", alpha=0.6)+
+  geom_vline(xintercept = 4, linetype=2, col="maroon", linewidth = 1.2)+
+  theme_light()
+```
+
+```{r}
+data %>% filter(x < 4) %>%
+  lm(y~poly(x,2), data=.) %>%
+  predict() -> pred1
+
+data %>% filter(x >= 4) %>%
+  lm(y~x, data=.) %>%
+  predict() -> pred2
+
+temp <- data
+temp$pred<-NA
+temp[temp$x>=4,"pred"]<-pred2
+temp[temp$x<4,"pred"]<-pred1
+head(temp)
+temp %>% ggplot(aes(x=x))+
+  geom_point(aes(y=y),col="steelblue", alpha=0.3)+
+  geom_vline(xintercept = 4, linetype=2, col="maroon", linewidth = 1.2)+
+  geom_line(aes(y=pred,col= x>4) , linewidth=1.2)+
+  theme_light()
+```
+
+เรียกจุดที่ใช้แบ่งเพื่อเปลี่ยนโมเดลทำนายว่า knot อย่างไรก็ตามการ fit piecewise regression ด้วยวิธีการข้างต้นจะเปิดปัญหาความไม่ต่อเนื่องระหว่างรอยต่อ (discontinuity problem) การแก้ปัญหาดังกล่าวสามารถทำได้โดยใช้เงื่อนไขเพิ่มเติมในขั้นตอนการประมาณค่าพารามิเตอร์ โดยแทนที่จะประมาณค่าพารามิเตอร์แยกโมเดลก็ให้ประมาณค่ารวมทั้งโมเดลดังนี้
+
+$$
+y = \beta_0 + \sum_{d=1}^D \beta_d x^d + \sum_{k=1}^K \beta_k (x-\tau)^K
+$$
+
+โดยที่ $(x-\tau)^K = (x-\tau)^K \ \;x \geq \tau$ และ $(x-\tau)^K =0 \ \ ;x<\tau$
+
+```{r}
+data %>%
+  mutate(d = ifelse(x>=4,1,0),
+         x2 = x-4) %>%
+  lm(y ~ poly(x,2) + poly(x2*d,2), data=.)%>%
+  predict()->pred
+
+temp$pred2<-pred
+temp%>%ggplot(aes(x=x))+
+  geom_point(aes(y=y),col="steelblue", alpha=0.3)+
+  geom_vline(xintercept = 4, linetype=2, col="maroon", linewidth = 1.2)+
+  geom_line(aes(y=pred2,col= x>4) , linewidth=1.2)+
+  theme_light()
+```
+
+### Piecewise polynomial using tidymodels
+
+```{r}
+split <- initial_split(data, prop = 0.8)
+train <- training(split)
+test <- testing(split)
+head(train)
+
+base_rec <- recipe(y~., data=train)
+
+# basis spline
+bs_rec <- base_rec %>%
+  step_bs(x, degree = 1, knots=1)
+
+# natural spline
+ns_rec <- base_rec %>%
+  step_ns(x, deg_free = tune())
+
+fit_spline1<-linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+
+fit<-fit_spline1 %>%
+  fit(y~.,data=bs_rec%>%prep()%>%juice())
+```
+
+```{r}
+base_rec <- recipe(y~., data=train)
+
+# basis spline
+bs_rec <- base_rec %>%
+  step_bs(x, degree = tune())
+
+# natural spline
+ns_rec <- base_rec %>%
+  step_ns(x, deg_free = tune())
+
+fit_spline1<-linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+
+folds<-vfold_cv(train, v=5, repeats=3)
+tune_results<-workflow()%>%
+  add_recipe(ns_rec) %>%
+  add_model(fit_spline1) %>%
+  tune_grid(resamples=folds,
+            grid=20,
+            control = control_grid(verbose = T,
+                                   save_pred = T))
+tune_results %>% autoplot()
+
+workflow()%>%
+  add_recipe(ns_rec) %>%
+  add_model(fit_spline1) %>%
+  finalize_workflow(show_best(tune_results,1, metric = "rsq"))%>%
+  last_fit(split) %>%
+  collect_predictions() 
+```

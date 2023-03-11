@@ -1,0 +1,10 @@
+"0","preproc <- recipe(salary ~ ., data= train) %>%
+  select(-X)%>%
+  step_poly(yrs.service, yrs.since.phd, degree = 2) %>%
+  step_dummy(rank, discipline, sex) %>%
+  prep() %>%
+  juice()
+"
+"2","Error in UseMethod(""select"") : 
+  no applicable method for 'select' applied to an object of class ""recipe""
+"

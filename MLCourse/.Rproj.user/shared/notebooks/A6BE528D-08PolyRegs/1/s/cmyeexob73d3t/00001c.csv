@@ -1,0 +1,11 @@
+"0","fit<-fit_spline1 %>%
+  fit(y~.,data=bs_rec%>%prep()%>%juice())
+"
+"1","[1m[33mError[39m in `step_bs()`:[22m
+[1mCaused by error in `prep()`:[22m
+[33m![39m Can't rename variables in this context.
+Backtrace:
+[90m  1. [39mfit_spline1 %>% ...
+[90m 11. [39m[1mrecipes[22m:::prep.recipe(.)
+[90m 16. [39m[1m[94mrecipes:::prep.step_bs([39m[22mx$steps[[i]], training = training, info = x$term_info[1m[94m)[39m[22m
+"
