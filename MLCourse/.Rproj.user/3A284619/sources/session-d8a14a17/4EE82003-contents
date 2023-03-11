@@ -1,0 +1,9 @@
+---
+title: "Untitled"
+---
+
+```{r}
+library(dplyr)
+dat<-read.csv("/Users/siwachoat/Library/Mobile Documents/com~apple~CloudDocs/เอกสารประกอบการสอน/Machine Learning/เอกสาร/ep3_classification/classification.csv")
+glimpse(dat, width=50)
+```
