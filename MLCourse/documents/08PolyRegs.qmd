@@ -123,25 +123,24 @@ train<-train %>%
 
 ### pre-processing
 
-```{r}
+```{r eval=F}
 preproc <- recipe(salary ~ ., data= train) %>%
   step_select(-X)%>%
   step_poly(yrs.service, yrs.since.phd, degree = tune()) %>%
-  step_dummy(rank, discipline, sex) %>%
-  step_interact(terms = ~starts_with("yrs.service"):contains("discipline"))
+  step_dummy(rank, discipline, sex)
 ```
 
 ### model specification
 
 ```{r}
-poly_mod <- linear_reg(penalty = tune(), mixture = tune()) %>%
-  set_engine("glmnet") %>%
+poly_mod <- linear_reg() %>%
+  set_engine("lm") %>%
   set_mode("regression")
 ```
 
 ### set workflow and tuning
 
-```{r message=F}
+```{r message=F, echo=F, eval=F}
 poly_workflow <- workflow() %>%
   add_recipe(preproc) %>%
   add_model(poly_mod)
@@ -163,7 +162,7 @@ tune_results %>% autoplot()
 mybest<-show_best(tune_results, n=1, metric = "rsq")
 ```
 
-```{r}
+```{r echo=F, eval=F}
 lastfit <- poly_workflow %>%
   finalize_workflow(mybest) %>%
   last_fit(split)
@@ -175,116 +174,20 @@ lastfit %>% collect_predictions() %>%
   geom_point()
 ```
 
-## Piecewise Polynomial Regression
+## Multivariate Adaptive Regression Spline (MARs)
 
-การวิเคราะห์สมการถดถอยพหุนามในข้างต้นเป็นการกำหนดฟังก์ชันให้กับข้อมูลทั้งชุดเหมือนกันทั้งหมด อย่างไรก็ตามมีวิธีการที่สามารถกำหนดฟังก์ชันพหุนามหลาย ๆ ตัวให้กับส่วนย่อยข้อมูลเป็นส่วน ๆ ไป ซึ่งช่วยให้ประสิทธิภาพการทำนายสูงขึ้นได้ ยกตัวอย่างในรูปด้านล่าง
+Multivariate adaptive regression splines (MARS) provide a convenient approach to capture the nonlinear relationships in the data by assessing cutpoints (*knots*) similar to step functions. The procedure assesses each data point for each predictor as a knot and creates a linear regression model with the candidate feature(s). (XXX, 2020)
 
-```{r}
-data %>% ggplot()+
-  geom_point(aes(x=x, y=y),col="steelblue", alpha=0.6)+
-  geom_vline(xintercept = 4, linetype=2, col="maroon", linewidth = 1.2)+
-  theme_light()
-```
+ฟังก์ชันทำนายของ MARs มีความแตกต่างจาก regression model ทั่วไป กล่าวคือจะมีการแบ่งส่วน domain ของ feature เป็นช่วง ๆ จุดที่ใช้แบ่งส่วนเรียกว่า knot จากนั้นทำการ fit regression model ให้กับแต่ละส่วนด้วยโมเดลที่แตกต่างกัน
 
-```{r}
-data %>% filter(x < 4) %>%
-  lm(y~poly(x,2), data=.) %>%
-  predict() -> pred1
+ลองพิจารณารูป A อัลกอริทึมจะเริ่มจากการหา knot ที่เหมาะสมที่สุดจาก domain ของ feature จากนั้นประมาณค่าพารามิเตอร์ในโมเดลดังนี้
 
-data %>% filter(x >= 4) %>%
-  lm(y~x, data=.) %>%
-  predict() -> pred2
+![](images/image-1750132179.png){width="60%"}
 
-temp <- data
-temp$pred<-NA
-temp[temp$x>=4,"pred"]<-pred2
-temp[temp$x<4,"pred"]<-pred1
-head(temp)
-temp %>% ggplot(aes(x=x))+
-  geom_point(aes(y=y),col="steelblue", alpha=0.3)+
-  geom_vline(xintercept = 4, linetype=2, col="maroon", linewidth = 1.2)+
-  geom_line(aes(y=pred,col= x>4) , linewidth=1.2)+
-  theme_light()
-```
+เมื่อได้ knot แรกแล้วอัลกอริทึมจะหา knot ต่อไปดังรูป B
 
-เรียกจุดที่ใช้แบ่งเพื่อเปลี่ยนโมเดลทำนายว่า knot อย่างไรก็ตามการ fit piecewise regression ด้วยวิธีการข้างต้นจะเปิดปัญหาความไม่ต่อเนื่องระหว่างรอยต่อ (discontinuity problem) การแก้ปัญหาดังกล่าวสามารถทำได้โดยใช้เงื่อนไขเพิ่มเติมในขั้นตอนการประมาณค่าพารามิเตอร์ โดยแทนที่จะประมาณค่าพารามิเตอร์แยกโมเดลก็ให้ประมาณค่ารวมทั้งโมเดลดังนี้
+![](images/image-31836073.png){width="70%"}
 
-$$
-y = \beta_0 + \sum_{d=1}^D \beta_d x^d + \sum_{k=1}^K \beta_k (x-\tau)^K
-$$
+![](images/image-1029173891.png)
 
-โดยที่ $(x-\tau)^K = (x-\tau)^K \ \;x \geq \tau$ และ $(x-\tau)^K =0 \ \ ;x<\tau$
-
-```{r}
-data %>%
-  mutate(d = ifelse(x>=4,1,0),
-         x2 = x-4) %>%
-  lm(y ~ poly(x,2) + poly(x2*d,2), data=.)%>%
-  predict()->pred
-
-temp$pred2<-pred
-temp%>%ggplot(aes(x=x))+
-  geom_point(aes(y=y),col="steelblue", alpha=0.3)+
-  geom_vline(xintercept = 4, linetype=2, col="maroon", linewidth = 1.2)+
-  geom_line(aes(y=pred2,col= x>4) , linewidth=1.2)+
-  theme_light()
-```
-
-### Piecewise polynomial using tidymodels
-
-```{r eval=F}
-split <- initial_split(data, prop = 0.8)
-train <- training(split)
-test <- testing(split)
-head(train)
-
-base_rec <- recipe(y~., data=train)
-
-# basis spline
-bs_rec <- base_rec %>%
-  step_bs(x, degree = 1, knots=1)
-
-# natural spline
-ns_rec <- base_rec %>%
-  step_ns(x, deg_free = tune())
-
-fit_spline1<-linear_reg() %>%
-  set_engine("lm") %>%
-  set_mode("regression")
-
-fit<-fit_spline1 %>%
-  fit(y~.,data=bs_rec%>%prep()%>%juice())
-```
-
-```{r eval=F}
-base_rec <- recipe(y~., data=train)
-
-# basis spline
-bs_rec <- base_rec %>%
-  step_bs(x, degree = tune())
-
-# natural spline
-ns_rec <- base_rec %>%
-  step_ns(x, deg_free = tune())
-
-fit_spline1<-linear_reg() %>%
-  set_engine("lm") %>%
-  set_mode("regression")
-
-folds<-vfold_cv(train, v=5, repeats=3)
-tune_results<-workflow()%>%
-  add_recipe(ns_rec) %>%
-  add_model(fit_spline1) %>%
-  tune_grid(resamples=folds,
-            grid=20,
-            control = control_grid(verbose = T,
-                                   save_pred = T))
-tune_results %>% autoplot()
-
-workflow()%>%
-  add_recipe(ns_rec) %>%
-  add_model(fit_spline1) %>%
-  finalize_workflow(show_best(tune_results,1, metric = "rsq"))%>%
-  last_fit(split) %>%
-  collect_predictions() 
-```
+### MARs using tidymodels

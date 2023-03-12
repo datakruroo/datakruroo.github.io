@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
 
-<title>2758688 ML PRIN APPLN</title>
+<title>2758688 ML PRIN APPLN - XGBoost</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +24,21 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./course-lecturer.html" rel="next">
-<link href="./course-overview.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -61,8 +60,8 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<meta property="og:title" content="2758688 ML PRIN APPLN">
-<meta property="og:description" content="Material สำหรับรายวิชา 2758688 หลักการเรียนรู้ของเครื่องและการประยุกต์">
+<meta property="og:title" content="2758688 ML PRIN APPLN - XGBoost">
+<meta property="og:description" content="XGBoost เป็นอัลกอริทึมที่มีประสิทธิภาพสูงมาก แนวคิดของ XGBoost อธิบายได้ดังนี้">
 <meta property="og:site-name" content="2758688 ML PRIN APPLN">
 </head>
 
@@ -72,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">2758688 ML PRIN APPLN</h1>
+      <h1 class="quarto-secondary-nav-title">XGBoost</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -84,8 +83,8 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-center sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
       <div class="sidebar-tools-main">
     <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
@@ -101,25 +100,25 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Course information</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
+  <a href="../course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">Schedule</a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
+  <a href="../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
   </div>
 </li>
       </ul>
@@ -134,27 +133,27 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
+  <a href="../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
+  <a href="../documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
+  <a href="../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
+  <a href="../documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
+  <a href="../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
   </div>
 </li>
       </ul>
@@ -164,26 +163,26 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#datasets" id="toc-datasets" class="nav-link active" data-scroll-target="#datasets">Datasets</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">2758688 ML PRIN APPLN</h1>
+<h1 class="title d-none d-lg-block">XGBoost</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
     
   
     
@@ -192,131 +191,12 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Material สำหรับรายวิชา 2758688 หลักการเรียนรู้ของเครื่องและการประยุกต์</p>
-<div class="column-screen-inset-right">
-<table class="table">
-<colgroup>
-<col style="width: 5%">
-<col style="width: 7%">
-<col style="width: 12%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 10%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>สัปดาห์ที่</th>
-<th>วันที่</th>
-<th>หัวข้อ</th>
-<th>เอกสาร</th>
-<th>การบ้าน</th>
-<th>อื่น ๆ</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>14 ม.ค. 66</td>
-<td>Basic Concept of ML</td>
-<td><a href="documents/01basicConcepts.html">📖</a></td>
-<td><a href="homeworks/hw01.html">🖋️</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>21 ม.ค. 66</td>
-<td>กระบวนการพัฒนา ML models</td>
-<td><a href="documents/02MLProcess.html">📖</a></td>
-<td><a href="homeworks/hw02.html">🖋️</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>28 ม.ค. 66</td>
-<td>Decision Tree และ Hyperparameter tuning</td>
-<td><a href="documents/03TreeModels.html">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>4 ก.พ. 66</td>
-<td>Regularized Regression</td>
-<td><a href="documents/04Regularization.html">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>25 ก.พ. 66</td>
-<td>Random Forest <a href="https://chula.zoom.us/rec/share/ccFHE4he8c5FnCqu4MEO85cHfyL6fK278x6rVc0qvq7vRmAjZH896ViMSK6l16CJ.L2Cd4XqY0JmrfXu0">📼</a> (Passcode: .RWxV6zX)</td>
-<td><a href="documents/05RandomForest.html">📖</a></td>
-<td><a href="homeworks/hw03.html">MNIST</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>4 มี.ค. 66</td>
-<td>PCA, PCR, &amp; PLS regression <a href="https://chula.zoom.us/rec/share/UoJAPGR5l-Yanb9jbCPDpa0MiMh_JbeNTp6Rs_6ACgaBWzXqDrf40QM_YkT9eT7a.gNrHHh84XnSJyN9H">📼</a> (Passcode: +.0QbzSG)</td>
-<td><a href="documents/07MoreRegs.html">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>11 มี.ค. 66</td>
-<td>K-NN algorithm</td>
-<td><a href="documents/slides/knn.pdf">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>12 มี.ค. 66</td>
-<td>Polynomial Regression and MARs</td>
-<td><a href="documents/slides/knn.pdf">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>8</td>
-<td>12 มี.ค.66</td>
-<td>Boosting algorithms (adaboost and gradient boost)</td>
-<td><a href="documents/slides/boosting1.pdf">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>XGBoost</td>
-<td><a href="documents/slides/XGBoost.pdf">📖</a></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="callout-important callout callout-style-simple">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>รายวิชานี้จัดการเรียนการสอนแบบ online นิสิตสามารถกดที่ลิงก์เพื่อเข้าสู่ห้องเรียน –&gt; <a href="https://chula.zoom.us/j/4256499854?pwd=ajNudWEweDRJS1VLbmQvblg4QXE2UT09">กดเลย</a></p>
-</div>
-</div>
-</div>
-<section id="datasets" class="level2">
-<h2 class="anchored" data-anchor-id="datasets">Datasets</h2>
-<ul>
-<li><p><a href="TeacherSalaryData.csv">TeacherSalaryData</a></p></li>
-<li><p><a href="criminal.csv">Criminal</a></p></li>
-<li><p><a href="classification.csv">binaryClassification</a></p></li>
-</ul>
+<p><img src="images/image-1060995295.png" class="img-fluid" style="width:70.0%"></p>
+<p>XGBoost เป็นอัลกอริทึมที่มีประสิทธิภาพสูงมาก แนวคิดของ XGBoost อธิบายได้ดังนี้</p>
+<p><a href="slides/boosting1.pdf">เอกสารประกอบการสอน Introduction to Boosting technique</a></p>
+<p><a href="slides/XGBoosting.pdf">เอกสารประกอบการสอน XGBoosting</a></p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -452,18 +332,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./course-overview.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Overview</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./course-lecturer.html" class="pagination-link">
-        <span class="nav-page-text">Instructor</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
