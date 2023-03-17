@@ -1,0 +1,1 @@
+{"frames":[{"func":"left_join(dat, data.frame(schid = rownames(beta0j$schid), group_mean = beta0j$schid), \n    by = \"schid\") %>% rename(group_mean = X.Intercept.) %>% ggplot()","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in ggplot(.) : could not find function \"ggplot\"\n"}

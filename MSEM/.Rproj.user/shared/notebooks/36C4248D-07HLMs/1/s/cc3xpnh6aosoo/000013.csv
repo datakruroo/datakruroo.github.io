@@ -1,0 +1,17 @@
+"0","left_join(dat, data.frame(schid = rownames(beta0j$schid),
+                          group_mean = beta0j$schid),
+          by = ""schid"") %>%
+  rename(group_mean = X.Intercept.)%>%
+ # filter(schid %in% subset) %>%
+  ggplot()+
+  geom_density(aes(x=mathach, y = after_stat(scaled)),alpha=0.3,
+               show.legend = F, fill = ""grey"", adjust =1.5)+
+  geom_density(aes(x = mathach, y = after_stat(density)*5,fill = schid),
+               show.legend = F, alpha = 0.3, adjust = 1.2)+
+  scale_x_continuous(limits = c(-5,30))+
+  theme_light()+
+  theme(panel.grid = element_blank())+
+  ylab(""density"")
+"
+"2","Error in ggplot(.) : could not find function ""ggplot""
+"
