@@ -1,0 +1,11 @@
+library(haven)
+dat<-read_spss("datasets/HSB.SAV")
+glimpse(dat)
+summary(dat)
+dat2<-read_spss("datasets/hsb2.sav")
+glimpse(dat2)
+dat2$schoolid
+head(dat)
+dat%>%group_by(schid) %>%
+  summarise(meanach = mean(mathach),
+            meanses = mean(ses))
