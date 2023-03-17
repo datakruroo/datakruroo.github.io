@@ -1,0 +1,6 @@
+"0","preproc <- recipe(salary ~ ., data= train) %>%"
+"0","  step_select(-X)%>%"
+"0","  step_poly(yrs.service, yrs.since.phd, degree = tune()) %>%"
+"0","  step_dummy(rank, discipline, sex)"
+"2","Error in eval(predvars, data, env) : object 'salary' not found
+"

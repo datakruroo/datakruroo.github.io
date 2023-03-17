@@ -239,6 +239,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing">pre-processing</a></li>
   <li><a href="#model-specification" id="toc-model-specification" class="nav-link" data-scroll-target="#model-specification">model specification</a></li>
   <li><a href="#set-workflow-and-tuning" id="toc-set-workflow-and-tuning" class="nav-link" data-scroll-target="#set-workflow-and-tuning">set workflow and tuning</a></li>
+  <li><a href="#syntax-ในคาบเรยน" id="toc-syntax-ในคาบเรยน" class="nav-link" data-scroll-target="#syntax-ในคาบเรยน">Syntax ในคาบเรียน</a></li>
   </ul></li>
   <li><a href="#multivariate-adaptive-regression-spline-mars" id="toc-multivariate-adaptive-regression-spline-mars" class="nav-link" data-scroll-target="#multivariate-adaptive-regression-spline-mars">Multivariate Adaptive Regression Spline (MARs)</a>
   <ul class="collapse">
@@ -496,7 +497,7 @@ F-statistic: 235.7 on 2 and 997 DF,  p-value: &lt; 2.2e-16</code></pre>
 ✖ car::recode()    masks dplyr::recode()
 ✖ purrr::some()    masks car::some()
 ✖ recipes::step()  masks stats::step()
-• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv"</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -540,6 +541,220 @@ F-statistic: 235.7 on 2 and 997 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <div class="cell">
 
+</div>
+</section>
+<section id="syntax-ในคาบเรยน" class="level3">
+<h3 class="anchored" data-anchor-id="syntax-ในคาบเรยน">Syntax ในคาบเรียน</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>x<span class="ot">&lt;-</span><span class="fu">runif</span>(<span class="dv">1000</span>,<span class="dv">0</span>,<span class="dv">8</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="fu">sin</span>(x), <span class="fl">0.5</span>) </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(x,y)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y),<span class="at">col=</span><span class="st">"steelblue"</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08PolyRegs_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">## method 1</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x2 =</span> x<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">x3 =</span> x<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         x          y         x2           x3
+1 2.300620  0.4443454  5.2928531  12.17684461
+2 6.306441 -0.4735956 39.7711991 250.81472420
+3 3.271815  0.3835375 10.7047758  35.02405019
+4 7.064139  1.0794879 49.9020631 352.51512163
+5 7.523738  0.1913802 56.6066376 425.89352605
+6 0.364452  0.3088636  0.1328253   0.04840843</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>x2<span class="sc">+</span>x3, <span class="at">data=</span>data)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x + x2 + x3, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.60503 -0.37429  0.01347  0.38804  1.65828 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.414729   0.072795   5.697  1.6e-08 ***
+x            0.665338   0.078705   8.454  &lt; 2e-16 ***
+x2          -0.369551   0.022892 -16.143  &lt; 2e-16 ***
+x3           0.038733   0.001884  20.555  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.5757 on 996 degrees of freedom
+Multiple R-squared:  0.5233,    Adjusted R-squared:  0.5218 
+F-statistic: 364.4 on 3 and 996 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pred.poly<span class="ot">&lt;-</span><span class="fu">predict</span>(fit)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred.poly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           1            2            3            4            5            6 
+ 0.461085600 -0.372004245 -0.007779714  0.327426781  0.997710085  0.610001846 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pred3<span class="ot">&lt;-</span>pred.poly</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         x          y         x2           x3        pred3
+1 2.300620  0.4443454  5.2928531  12.17684461  0.461085600
+2 6.306441 -0.4735956 39.7711991 250.81472420 -0.372004245
+3 3.271815  0.3835375 10.7047758  35.02405019 -0.007779714
+4 7.064139  1.0794879 49.9020631 352.51512163  0.327426781
+5 7.523738  0.1913802 56.6066376 425.89352605  0.997710085
+6 0.364452  0.3088636  0.1328253   0.04840843  0.610001846</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>x))<span class="sc">+</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>y),<span class="at">col=</span><span class="st">"steelblue"</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>pred3),<span class="at">col=</span><span class="st">"orange"</span>,<span class="at">linewidth=</span><span class="fl">1.5</span>)<span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08PolyRegs_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="do">## method 2</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>), <span class="at">data=</span>data)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x + I(x^2) + I(x^3), data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.60503 -0.37429  0.01347  0.38804  1.65828 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.414729   0.072795   5.697  1.6e-08 ***
+x            0.665338   0.078705   8.454  &lt; 2e-16 ***
+I(x^2)      -0.369551   0.022892 -16.143  &lt; 2e-16 ***
+I(x^3)       0.038733   0.001884  20.555  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.5757 on 996 degrees of freedom
+Multiple R-squared:  0.5233,    Adjusted R-squared:  0.5218 
+F-statistic: 364.4 on 3 and 996 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pred.poly<span class="ot">&lt;-</span><span class="fu">predict</span>(fit)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred.poly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           1            2            3            4            5            6 
+ 0.461085600 -0.372004245 -0.007779714  0.327426781  0.997710085  0.610001846 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pred3<span class="ot">&lt;-</span>pred.poly</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         x          y         x2           x3        pred3
+1 2.300620  0.4443454  5.2928531  12.17684461  0.461085600
+2 6.306441 -0.4735956 39.7711991 250.81472420 -0.372004245
+3 3.271815  0.3835375 10.7047758  35.02405019 -0.007779714
+4 7.064139  1.0794879 49.9020631 352.51512163  0.327426781
+5 7.523738  0.1913802 56.6066376 425.89352605  0.997710085
+6 0.364452  0.3088636  0.1328253   0.04840843  0.610001846</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>x))<span class="sc">+</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>y),<span class="at">col=</span><span class="st">"steelblue"</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>pred3),<span class="at">col=</span><span class="st">"orange"</span>,<span class="at">linewidth=</span><span class="fl">1.5</span>)<span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08PolyRegs_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y=</span> x2))<span class="sc">+</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="08PolyRegs_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x   I(x^2)   I(x^3) 
+ 98.7773 568.2299 221.9771 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="do">## method 3</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x_c =</span> x<span class="sc">-</span><span class="fu">mean</span>(x),<span class="co">#centering</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">x_c2 =</span> x_c<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">x_c3 =</span> x_c<span class="sc">^</span><span class="dv">3</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>         ) </span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">lm</span>(y<span class="sc">~</span>x_c<span class="sc">+</span>x_c2<span class="sc">+</span>x_c3, <span class="at">data=</span>data)</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x_c + x_c2 + x_c3, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.60503 -0.37429  0.01347  0.38804  1.65828 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.348367   0.027221  -12.80   &lt;2e-16 ***
+x_c         -0.435973   0.019676  -22.16   &lt;2e-16 ***
+x_c2         0.092716   0.003831   24.20   &lt;2e-16 ***
+x_c3         0.038733   0.001884   20.55   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.5757 on 996 degrees of freedom
+Multiple R-squared:  0.5233,    Adjusted R-squared:  0.5218 
+F-statistic: 364.4 on 3 and 996 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     x_c     x_c2     x_c3 
+6.173692 1.000595 6.175168 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="do">## method 4: orthoginal polynomial</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">lm</span>(y<span class="sc">~</span><span class="fu">poly</span>(x,<span class="dv">3</span>), <span class="at">data=</span>data)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>pred.poly<span class="ot">&lt;-</span><span class="fu">predict</span>(fit)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pred.poly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           1            2            3            4            5            6 
+ 0.461085600 -0.372004245 -0.007779714  0.327426781  0.997710085  0.610001846 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pred_orthogonal<span class="ot">&lt;-</span>pred.poly</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         x          y         x2           x3        pred3       x_c       x_c2
+1 2.300620  0.4443454  5.2928531  12.17684461  0.461085600 -1.677602  2.8143493
+2 6.306441 -0.4735956 39.7711991 250.81472420 -0.372004245  2.328219  5.4206022
+3 3.271815  0.3835375 10.7047758  35.02405019 -0.007779714 -0.706407  0.4990109
+4 7.064139  1.0794879 49.9020631 352.51512163  0.327426781  3.085917  9.5228826
+5 7.523738  0.1913802 56.6066376 425.89352605  0.997710085  3.545516 12.5706827
+6 0.364452  0.3088636  0.1328253   0.04840843  0.610001846 -3.613770 13.0593367
+         x_c3 pred_orthogonal
+1  -4.7213588     0.461085600
+2  12.6203471    -0.372004245
+3  -0.3525048    -0.007779714
+4  29.3868235     0.327426781
+5  44.5695549     0.997710085
+6 -47.1934445     0.610001846</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>x))<span class="sc">+</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>y),<span class="at">col=</span><span class="st">"steelblue"</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>pred3),<span class="at">col=</span><span class="st">"orange"</span>,<span class="at">linewidth=</span><span class="fl">1.5</span>)<span class="sc">+</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>pred_orthogonal),<span class="at">col=</span><span class="st">"maroon"</span>,<span class="at">linewidth=</span><span class="fl">1.5</span>)<span class="sc">+</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="08PolyRegs_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid" width="672"></p>
+</div>
 </div>
 </section>
 </section>
