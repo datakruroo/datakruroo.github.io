@@ -1,0 +1,14 @@
+"0","# tuning hyperparameters
+eval_metrics <- metric_set(roc_auc, sens, spec)
+start <- Sys.time()
+result <- wfset %>%
+  workflow_map(resamples = fold,
+               grid = 50,
+               control = control_grid(save_pred = TRUE),
+               metrics = eval_metrics)
+paste(""time usage"", round(Sys.time() - start,2), ""mins"")
+"
+"1","[1]"
+"1"," ""time usage 4.22 mins"""
+"1","
+"

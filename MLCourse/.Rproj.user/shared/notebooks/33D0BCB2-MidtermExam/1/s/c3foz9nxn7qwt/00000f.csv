@@ -1,0 +1,6 @@
+"0","library(tidymodels)"
+"0","dat_preproc <- recipe(Ach~., data=dat) %>%"
+"0","  step_string2factor(all_string_predictors()) %>%"
+"0","  prep(NULL) %>%"
+"0","  juice()"
+"0","dat_preproc %>% head()"

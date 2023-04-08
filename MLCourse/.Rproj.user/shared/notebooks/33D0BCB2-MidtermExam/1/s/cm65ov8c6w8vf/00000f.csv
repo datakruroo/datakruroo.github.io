@@ -1,0 +1,38 @@
+"0","# defined preprocess"
+"0","rec1 <- recipe(PreTest_NA ~., data=dat_na) %>%"
+"0","  step_rm(traveltime_NA,fam_relation_NA) %>%"
+"0","  step_normalize(all_numeric_predictors())"
+"0","rec2 <- recipe(traveltime_NA ~., data=dat_na) %>%"
+"0","  step_rm(PreTest_NA, fam_relation_NA) %>%"
+"0","  step_normalize(all_numeric_predictors())"
+"0","rec3<- recipe(fam_relation_NA ~., data=dat_na) %>%"
+"0","  step_rm(PreTest_NA, traveltime_NA) %>%"
+"0","  step_normalize(all_numeric_predictors())"
+"0","# defined model"
+"0","logistic_mod <- logistic_reg(penalty = tune(),"
+"0","                             mixture = tune()) %>%"
+"0","  set_engine(""glmnet"") %>%"
+"0","  set_mode(""classification"")"
+"0","# defined workflowset"
+"0","na_workflowset <- workflow_set("
+"0","  preproc = list(pretest = rec1,"
+"0","                 travel = rec2,"
+"0","                 family = rec3),"
+"0","  models = list(logistic = logistic_mod),"
+"0","  cross = TRUE"
+"0",")"
+"0","folds<-vfold_cv(data = dat_na, v=10)"
+"0","library(doMC)"
+"0","registerDoMC(cores=15)"
+"0","result_na <- na_workflowset %>%"
+"0","  workflow_map(resample = folds,"
+"0","               grid=50)"
+"1","[1m[33mError[39m in `halt()`:[22m
+[33m![39m The following options cannot be used as arguments for `fit_resamples()` or the `tune_*()` functions: 'resample'
+Backtrace:
+[90m 1. [39mna_workflowset %>% workflow_map(resample = folds, grid = 50)
+[90m 2. [39m[1mworkflowsets[22m::workflow_map(., resample = folds, grid = 50)
+[90m 4. [39mworkflowsets::option_add(...)
+[90m 5. [39mworkflowsets:::check_tune_args(names(dots))
+[90m 6. [39m[1m[94mworkflowsets:::halt([39m[22mmsg[1m[94m)[39m[22m
+"

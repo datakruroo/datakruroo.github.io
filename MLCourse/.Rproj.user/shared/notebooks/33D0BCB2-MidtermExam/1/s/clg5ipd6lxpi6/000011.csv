@@ -1,0 +1,3 @@
+"0",""
+"0","# Plot the average silhouette width for each k"
+"0","plot(k_range, sil_scores, type = ""b"", xlab = ""Number of clusters (k)"", ylab = ""Average silhouette width"", main = ""Silhouette Method"")"

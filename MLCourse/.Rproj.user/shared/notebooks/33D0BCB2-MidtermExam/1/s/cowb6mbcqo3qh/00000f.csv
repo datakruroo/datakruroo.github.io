@@ -1,0 +1,37 @@
+"0","## finalized best model"
+"0","na1 <-  workflow() %>%"
+"0","  add_recipe(rec1) %>%"
+"0","  add_model(logistic_mod) %>%"
+"0","  finalize_workflow(best1) %>%"
+"0","  fit(dat_na)"
+"0",""
+"0","na2 <-  workflow() %>%"
+"0","  add_recipe(rec1) %>%"
+"0","  add_model(logistic_mod) %>%"
+"0","  finalize_workflow(best1) %>%"
+"0","  fit(dat_na)"
+"0",""
+"0","na3 <-  workflow() %>%"
+"0","  add_recipe(rec1) %>%"
+"0","  add_model(logistic_mod) %>%"
+"0","  finalize_workflow(best1) %>%"
+"0","  fit(dat_na)"
+"0",""
+"0","# create Variable Importance Plots"
+"0","library(vip)"
+"2","
+Attaching package: ‘vip’
+
+"
+"2","The following object is masked from ‘package:utils’:
+
+    vi
+
+"
+"0","p1<-vip(na1%>%extract_fit_engine(),geom=""point"")+"
+"0","  theme(text = element_text(size=5))"
+"0","p2<-vip(na2%>%extract_fit_engine(),geom=""point"")+"
+"0","  theme(text = element_text(size=5))"
+"0","p3<-vip(na3%>%extract_fit_engine(),geom=""point"")+"
+"0","  theme(text = element_text(size=5))"
+"0","grid.arrange(p1,p2,p3, ncol=3)"

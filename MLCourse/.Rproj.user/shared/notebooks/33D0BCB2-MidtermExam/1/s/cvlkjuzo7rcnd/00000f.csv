@@ -1,0 +1,45 @@
+"0","dat1$subject <- ""Math"""
+"0","dat2$subject <- ""Eng"""
+"0","### merge dat1 and dat2 together using `bind_rows()`"
+"0","dat <- bind_rows(dat1, dat2)"
+"0","glimpse(dat, width=50)"
+"1","Rows: 1,044"
+"1",""
+"1","
+"
+"1","Columns: 29"
+"1",""
+"1","
+"
+"1","$ school       [3m[38;5;246m<chr>[39m[23m ""obec.sec"", ""obec.sec"", ""ob…
+$ gender       [3m[38;5;246m<chr>[39m[23m ""F"", ""F"", ""F"", ""F"", ""F"", ""M…
+$ age          [3m[38;5;246m<int>[39m[23m 14, 13, 11, 11, 12, 12, 12,…
+$ location     [3m[38;5;246m<chr>[39m[23m ""U"", ""U"", ""U"", ""U"", ""U"", ""U…
+$ famsize      [3m[38;5;246m<chr>[39m[23m ""GT3"", ""GT3"", ""LE3"", ""GT3"",…
+$ ParentStat   [3m[38;5;246m<chr>[39m[23m ""A"", ""T"", ""T"", ""T"", ""T"", ""T…
+$ MomEdu       [3m[38;5;246m<int>[39m[23m 4, 1, 1, 4, 3, 4, 2, 4, 3, …
+$ DadEdi       [3m[38;5;246m<int>[39m[23m 4, 1, 1, 2, 3, 3, 2, 4, 2, …
+$ MomJob       [3m[38;5;246m<chr>[39m[23m ""at_home"", ""at_home"", ""at_h…
+$ DadJob       [3m[38;5;246m<chr>[39m[23m ""teacher"", ""other"", ""other""…
+$ StuParent    [3m[38;5;246m<chr>[39m[23m ""mother"", ""father"", ""mother…
+$ traveltime   [3m[38;5;246m<int>[39m[23m 2, 1, NA, NA, 1, 1, 1, 2, N…
+$ readingtime  [3m[38;5;246m<int>[39m[23m 2, 2, 2, 3, 2, 2, 2, 2, 2, …
+$ fail         [3m[38;5;246m<int>[39m[23m 0, 0, 3, 0, 0, 0, 0, 0, 0, …
+$ scholarship  [3m[38;5;246m<chr>[39m[23m ""yes"", ""no"", ""yes"", ""no"", ""…
+$ club_act     [3m[38;5;246m<chr>[39m[23m ""no"", ""no"", ""no"", ""yes"", ""n…
+$ nursery      [3m[38;5;246m<chr>[39m[23m ""yes"", ""no"", ""yes"", ""yes"", …
+$ higher       [3m[38;5;246m<chr>[39m[23m ""yes"", ""yes"", ""yes"", ""yes"",…
+$ internet     [3m[38;5;246m<chr>[39m[23m ""no"", ""yes"", ""yes"", ""yes"", …
+$ InLove       [3m[38;5;246m<chr>[39m[23m ""no"", ""no"", ""no"", ""yes"", ""n…
+$ fam_relation [3m[38;5;246m<int>[39m[23m NA, 5, 4, 3, 4, NA, NA, 4, …
+$ freetime     [3m[38;5;246m<int>[39m[23m 3, 3, 3, 2, 3, 4, 4, 1, 2, …
+$ goout        [3m[38;5;246m<int>[39m[23m 4, 3, 2, 2, 2, 2, 4, 4, 2, …
+$ Drink_alc    [3m[38;5;246m<int>[39m[23m 1, 1, 2, 1, 1, 1, 1, 1, 1, …
+$ health       [3m[38;5;246m<int>[39m[23m 3, 3, 3, 5, 5, 5, 3, 1, 1, …
+$ absences     [3m[38;5;246m<int>[39m[23m 6, 4, 10, 2, 4, 10, 0, 6, 0…
+$ PreTest      [3m[38;5;246m<int>[39m[23m 5, 5, 7, 15, 6, 15, 12, 6, …
+$ Ach          [3m[38;5;246m<int>[39m[23m 6, 6, 10, 15, 10, 15, 11, 6…
+$ subject      [3m[38;5;246m<chr>[39m[23m ""Math"", ""Math"", ""Math"", ""Ma…"
+"1",""
+"1","
+"
