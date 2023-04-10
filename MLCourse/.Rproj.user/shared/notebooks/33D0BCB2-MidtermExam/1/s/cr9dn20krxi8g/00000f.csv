@@ -1,0 +1,73 @@
+"0","dat_preproc %>%
+  bind_shadow() %>%
+  glimpse()
+"
+"1","Rows: 1,044"
+"1",""
+"1","
+"
+"1","Columns: 58"
+"1",""
+"1","
+"
+"1","$ school          [3m[38;5;246m<fct>[39m[23m obec.sec, obec.sec, obec.sec, obec.sec, obec.sec, obec.sec, obec.sec, obec.sec…
+$ gender          [3m[38;5;246m<fct>[39m[23m F, F, F, F, F, M, M, F, M, M, F, F, M, M, M, F, F, F, M, M, M, M, M, M, F, F, …
+$ age             [3m[38;5;246m<int>[39m[23m 14, 13, 11, 11, 12, 12, 12, 13, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 13, 12…
+$ location        [3m[38;5;246m<fct>[39m[23m U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, U, R, U, …
+$ famsize         [3m[38;5;246m<fct>[39m[23m GT3, GT3, LE3, GT3, GT3, LE3, LE3, GT3, LE3, GT3, GT3, GT3, LE3, GT3, GT3, GT3…
+$ ParentStat      [3m[38;5;246m<fct>[39m[23m A, T, T, T, T, T, T, A, A, T, T, T, T, T, A, T, T, T, T, T, T, T, T, T, T, T, …
+$ MomEdu          [3m[38;5;246m<int>[39m[23m 4, 1, 1, 4, 3, 4, 2, 4, 3, 3, 4, 2, 4, 4, 2, 4, 4, 3, 3, 4, 4, 4, 4, 2, 2, 2, …
+$ DadEdi          [3m[38;5;246m<int>[39m[23m 4, 1, 1, 2, 3, 3, 2, 4, 2, 4, 4, 1, 4, 3, 2, 4, 4, 3, 2, 3, 3, 4, 2, 2, 4, 2, …
+$ MomJob          [3m[38;5;246m<fct>[39m[23m at_home, at_home, at_home, health, other, services, other, other, services, ot…
+$ DadJob          [3m[38;5;246m<fct>[39m[23m teacher, other, other, services, other, other, other, teacher, other, other, h…
+$ StuParent       [3m[38;5;246m<fct>[39m[23m mother, father, mother, mother, father, mother, mother, mother, mother, mother…
+$ traveltime      [3m[38;5;246m<int>[39m[23m 2, 1, NA, NA, 1, 1, 1, 2, NA, 1, 1, 3, NA, NA, 1, 1, 1, NA, NA, 1, 1, 1, 1, 2,…
+$ readingtime     [3m[38;5;246m<int>[39m[23m 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 1, 2, 3, 1, 3, 2, 1, 1, 2, 1, 2, 2, 3, 1, …
+$ fail            [3m[38;5;246m<int>[39m[23m 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 2, …
+$ scholarship     [3m[38;5;246m<fct>[39m[23m yes, no, yes, no, no, no, no, yes, no, no, no, no, no, no, no, no, no, yes, no…
+$ club_act        [3m[38;5;246m<fct>[39m[23m no, no, no, yes, no, yes, no, no, no, yes, no, yes, yes, no, no, no, yes, yes,…
+$ nursery         [3m[38;5;246m<fct>[39m[23m yes, no, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes,…
+$ higher          [3m[38;5;246m<fct>[39m[23m yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes, yes…
+$ internet        [3m[38;5;246m<fct>[39m[23m no, yes, yes, yes, no, yes, yes, no, yes, yes, yes, yes, yes, yes, yes, yes, y…
+$ InLove          [3m[38;5;246m<fct>[39m[23m no, no, no, yes, no, no, no, no, no, no, no, no, no, no, yes, no, no, no, no, …
+$ fam_relation    [3m[38;5;246m<int>[39m[23m NA, 5, 4, 3, 4, NA, NA, 4, 4, NA, NA, NA, 4, 5, 4, 4, 3, 5, 5, 3, NA, 5, 4, 5,…
+$ freetime        [3m[38;5;246m<int>[39m[23m 3, 3, 3, 2, 3, 4, 4, 1, 2, 5, 3, 2, 3, 4, 5, 4, 2, 3, 5, 1, 4, 4, 5, 4, 3, 2, …
+$ goout           [3m[38;5;246m<int>[39m[23m 4, 3, 2, 2, 2, 2, 4, 4, 2, 1, 3, 2, 3, 3, 2, 4, 3, 2, 5, 3, 1, 2, 1, 4, 2, 2, …
+$ Drink_alc       [3m[38;5;246m<int>[39m[23m 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, …
+$ health          [3m[38;5;246m<int>[39m[23m 3, 3, 3, 5, 5, 5, 3, 1, 1, 5, 2, 4, 5, 3, 3, 2, 2, 4, 5, 5, 1, 5, 5, 5, 5, 5, …
+$ absences        [3m[38;5;246m<int>[39m[23m 6, 4, 10, 2, 4, 10, 0, 6, 0, 0, 0, 4, 2, 2, 0, 4, 6, 4, 16, 4, 0, 0, 2, 0, 2, …
+$ PreTest         [3m[38;5;246m<int>[39m[23m 5, 5, 7, 15, 6, 15, 12, 6, 16, 14, 10, 10, 14, 10, 14, 14, 13, 8, 6, 8, 13, NA…
+$ subject         [3m[38;5;246m<fct>[39m[23m Math, Math, Math, Math, Math, Math, Math, Math, Math, Math, Math, Math, Math, …
+$ Ach             [3m[38;5;246m<int>[39m[23m 6, 6, 10, 15, 10, 15, 11, 6, 19, 15, 9, 12, 14, 11, 16, 14, 14, 10, 5, 10, 15,…
+$ school_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ gender_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ age_NA          [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ location_NA     [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ famsize_NA      [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ ParentStat_NA   [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ MomEdu_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ DadEdi_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ MomJob_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ DadJob_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ StuParent_NA    [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ traveltime_NA   [3m[38;5;246m<fct>[39m[23m !NA, !NA, NA, NA, !NA, !NA, !NA, !NA, NA, !NA, !NA, !NA, NA, NA, !NA, !NA, !NA…
+$ readingtime_NA  [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ fail_NA         [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ scholarship_NA  [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ club_act_NA     [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ nursery_NA      [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ higher_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ internet_NA     [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ InLove_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ fam_relation_NA [3m[38;5;246m<fct>[39m[23m NA, !NA, !NA, !NA, !NA, NA, NA, !NA, !NA, NA, NA, NA, !NA, !NA, !NA, !NA, !NA,…
+$ freetime_NA     [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ goout_NA        [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ Drink_alc_NA    [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ health_NA       [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ absences_NA     [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ PreTest_NA      [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ subject_NA      [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…
+$ Ach_NA          [3m[38;5;246m<fct>[39m[23m !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA, !NA…"
+"1",""
+"1","
+"

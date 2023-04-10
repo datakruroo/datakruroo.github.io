@@ -145,6 +145,15 @@ vis_miss(dat, cluster = TRUE, sort_miss = TRUE)
 ผู้วิเคราะห์แปลงข้อมูลตัวแปรทั้งหมดในชุดข้อมูลให้เป็นตัวแปรแบบให้คะแนนสองค่า โดยมีค่าเท่ากับ 1 เมื่อมีข้อมูล และมีค่าเท่ากับ 0 เมื่อเป็นข้อมูลสูญหาย ผลลัพธ์ที่ได้จะได้เมทริกซ์ค่าสูญหาย (D) ดังนี้
 
 ```{r}
+head(dat_preproc)
+glimpse(dat_preproc, width=50)
+miss_var_summary(dat_preproc)
+
+dat_preproc %>%
+  bind_shadow() %>%
+  glimpse()
+
+
 na<-function(x){
   y<-ifelse(x=="NA",1,0)
   return(y)
@@ -153,8 +162,7 @@ missing <- dat_preproc %>%
   bind_shadow() %>%
   dplyr::select(contains("NA")) %>%
   mutate_all(na)
-missing %>% dplyr::select(traveltime_NA, fam_relation_NA, PreTest_NA) %>%
-  summary()
+missing %>% dplyr::select(traveltime_NA, fam_relation_NA, PreTest_NA) 
 ```
 
 จากนั้นดำเนินการวิเคราะห์องค์ประกอบหลัก (PCA) โดยใช้ binary matrix ดังกล่าวเป็นข้อมูลนำเข้า ผลการวิเคราะห์ที่ใช้พิจารณามีด้านล่างได้แก่ biplot และ factor score plot ผลการวิเคราะห์สรุปได้ดังนี้
@@ -172,6 +180,8 @@ library(FactoMineR)
 library(gridExtra)
 # do PCA
 pca_result<-PCA(missing, graph = F)
+pca_result$eig
+
 # eigen values and Cumulative percentage of variance
 round(pca_result$eig %>% head(),4)
 # factor loading matrix
@@ -444,15 +454,18 @@ library(ggrepel)
 library(cluster)
 #do cluster analysis with mixed variable
 library(clustMixType)
+
 k_range <- 2:10
 tot_withinSS <- numeric(length(k_range))
 sil_scores <- numeric(length(k_range))
+
 imputed_bag_scaled<-recipe(Ach~.,data=imputed_bag) %>%
   step_normalize(all_numeric()) %>%
   prep(NULL) %>%
   juice()
 
 gower_dist <- daisy(imputed_bag_scaled, metric = "gower")
+
 for(k in k_range){
   kproto_res <- kproto(imputed_bag_scaled, k)
   tot_withinSS[k-1]<-kproto_res$tot.withinss
@@ -630,7 +643,7 @@ temp <- imputed_bag %>%
 table(temp$Ach_class)
 ```
 
-การแบ่งระดับผลสัมฤทธิ์ข้างต้นจะเห็นว่าก่อให้เกิดปัญหา Imbalance class ขึ้น สภาพดังกล่าวอาจทำให้การวิเคราะห์มีประสิทธิภาพการทำนายที่ต่ำกว่าที่ควรจะเป็น ดังนั้น job แรกของการวิเคราะห์จะพิจารณาผลกระทบของ imbalance class ดังกล่าวก่อน วิธีการแก้ไขที่ใช้ในตัวอย่างจะใช้ SMOTE (synthetic minority over-sampling) ซึ่งเป็นวิธีการพื้นฐานตัวหนึ่งที่ใช้แก้ปัญหา imbalance class ดังกล่าว
+การแบ่งระดับผลสัมฤทธิ์ข้างต้นจะเห็นว่าก่อให้เกิดปัญหา **Imbalance class** ขึ้น สภาพดังกล่าวอาจทำให้การวิเคราะห์มีประสิทธิภาพการทำนายที่ต่ำกว่าที่ควรจะเป็น ดังนั้น job แรกของการวิเคราะห์จะพิจารณาผลกระทบของ imbalance class ดังกล่าวก่อน วิธีการแก้ไขที่ใช้ในตัวอย่างจะใช้ SMOTE (synthetic minority over-sampling) ซึ่งเป็นวิธีการพื้นฐานตัวหนึ่งที่ใช้แก้ปัญหา imbalance class ดังกล่าว
 
 SMOTE จะสร้างข้อมูลสังเคราะห์ (synthetic data) ให้กับ minority class โดยใช้การ interpolate ระหว่างหน่วยข้อมูลของกลุ่ม minority ภายใต้ปริภูมิของ feature หลักสำคัญของการสร้างข้อมูลสังเคราะห์คือ จะสร้างข้อมูลใหม่ที่เหมือนกับหน่วยข้อมูลเดิมในกลุ่ม minority แต่จะไม่เท่ากับหน่วยข้อมูลเดิมดังกล่าว ทั้งนี้เพื่อลดความลำเอียงที่จะเกิดขึ้นจากการบิดเบือนการแจกแจงของข้อมูล อัลกอริทึมดังกล่าวจะดำเนินไปเพื่อสร้างข้อมูลสังเคราะห์ให้กับหน่วยข้อมูลแต่ละหน่วยของ minority class มีขั้นตอนดำเนินการในแต่ละหน่วยข้อมูล (x) ดังนี้
 
@@ -756,6 +769,8 @@ fold<-vfold_cv(train, v=5, repeats=2, strata = Ach_class)
 
 # tuning hyperparameters
 eval_metrics <- metric_set(roc_auc, sens, spec)
+library(doMC)
+registerDoMC(cores=15)
 start <- Sys.time()
 result <- wfset %>%
   workflow_map(resamples = fold,
