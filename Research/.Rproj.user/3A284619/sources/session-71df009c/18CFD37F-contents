@@ -1,0 +1,22 @@
+project:
+  type: website
+
+website:
+  title: "2756306 Section 13"
+  favicon: logo.png
+  navbar:
+    logo: logo.png
+    right:
+      - icon: bi bi-house-door-fill  # https://icons.getbootstrap.com/
+        href: index.html
+
+  description: "Educational Datascience Blog"
+format:
+  html:
+    theme: united
+    hightlight: textmate
+    css: styles.css
+    body-footer: footer.html
+
+editor: visual
+
