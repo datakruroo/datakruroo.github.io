@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+
+<title>2758688 ML PRIN APPLN - Simple Regression Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<meta property="og:title" content="2758688 ML PRIN APPLN - Simple Regression Analysis">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Simple Regression Analysis</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main">
+    <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://posit.co/download/rstudio-desktop/" title="RStudio" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">เนื้อหารายสัปดาห์</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Simple Regression Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.0.0 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ broom        1.0.3     ✔ rsample      1.1.1
+✔ dials        1.1.0     ✔ tibble       3.1.8
+✔ ggplot2      3.4.1     ✔ tidyr        1.3.0
+✔ infer        1.0.4     ✔ tune         1.0.1
+✔ modeldata    1.1.0     ✔ workflows    1.1.3
+✔ parsnip      1.0.4     ✔ workflowsets 1.0.0
+✔ purrr        1.0.1     ✔ yardstick    1.1.0
+✔ recipes      1.0.5     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ purrr::discard() masks scales::discard()
+✖ dplyr::filter()  masks stats::filter()
+✖ dplyr::lag()     masks stats::lag()
+✖ recipes::step()  masks stats::step()
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"Math.csv"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat, <span class="at">width=</span><span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 395
+Columns: 28
+$ school       &lt;chr&gt; "obec.sec", "obec.sec", "ob…
+$ gender       &lt;chr&gt; "F", "F", "F", "F", "F", "M…
+$ age          &lt;int&gt; 14, 13, 11, 11, 12, 12, 12,…
+$ location     &lt;chr&gt; "U", "U", "U", "U", "U", "U…
+$ famsize      &lt;chr&gt; "GT3", "GT3", "LE3", "GT3",…
+$ ParentStat   &lt;chr&gt; "A", "T", "T", "T", "T", "T…
+$ MomEdu       &lt;int&gt; 4, 1, 1, 4, 3, 4, 2, 4, 3, …
+$ DadEdi       &lt;int&gt; 4, 1, 1, 2, 3, 3, 2, 4, 2, …
+$ MomJob       &lt;chr&gt; "at_home", "at_home", "at_h…
+$ DadJob       &lt;chr&gt; "teacher", "other", "other"…
+$ StuParent    &lt;chr&gt; "mother", "father", "mother…
+$ traveltime   &lt;int&gt; 2, 1, 1, 1, 1, 1, 1, 2, 1, …
+$ readingtime  &lt;int&gt; 2, 2, 2, 3, 2, 2, 2, 2, 2, …
+$ fail         &lt;int&gt; 0, 0, 3, 0, 0, 0, 0, 0, 0, …
+$ scholarship  &lt;chr&gt; "yes", "no", "yes", "no", "…
+$ club_act     &lt;chr&gt; "no", "no", "no", "yes", "n…
+$ nursery      &lt;chr&gt; "yes", "no", "yes", "yes", …
+$ higher       &lt;chr&gt; "yes", "yes", "yes", "yes",…
+$ internet     &lt;chr&gt; "no", "yes", "yes", "yes", …
+$ InLove       &lt;chr&gt; "no", "no", "no", "yes", "n…
+$ fam_relation &lt;int&gt; 4, 5, 4, 3, 4, 5, 4, 4, 4, …
+$ freetime     &lt;int&gt; 3, 3, 3, 2, 3, 4, 4, 1, 2, …
+$ goout        &lt;int&gt; 4, 3, 2, 2, 2, 2, 4, 4, 2, …
+$ Drink_alc    &lt;int&gt; 1, 1, 2, 1, 1, 1, 1, 1, 1, …
+$ health       &lt;int&gt; 3, 3, 3, 5, 5, 5, 3, 1, 1, …
+$ absences     &lt;int&gt; 6, 4, 10, 2, 4, 10, 0, 6, 0…
+$ PreTest      &lt;int&gt; 5, 5, 7, 15, 6, 15, 12, 6, …
+$ Ach          &lt;int&gt; 6, 6, 10, 15, 10, 15, 11, 6…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Ach<span class="sc">~</span>., <span class="at">data=</span>dat) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_string2factor</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">MomEdu =</span> <span class="fu">factor</span>(MomEdu, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"none"</span>,<span class="st">"primary"</span>,<span class="st">"highsch1"</span>,<span class="st">"highsch2"</span>,<span class="st">"grad"</span>)),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">DadEdi =</span> <span class="fu">factor</span>(DadEdi, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"none"</span>,<span class="st">"primary"</span>,<span class="st">"highsch1"</span>,<span class="st">"highsch2"</span>,<span class="st">"grad"</span>)),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">traveltime =</span> <span class="fu">factor</span>(traveltime, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                             <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"&lt;15mins"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"15-30mins"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"30-60mins"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">"&gt;60mins"</span>)),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">readingtime =</span> <span class="fu">factor</span>(readingtime, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"&lt;2hours"</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"2-5hours"</span>,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"5-10hours"</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"&gt;10hours"</span>)),</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">fam_relation =</span> <span class="fu">factor</span>(fam_relation, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>),</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                               <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"worst"</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"bad"</span>,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"fair"</span>,</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"good"</span>,</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"very good"</span>)),</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">freetime =</span> <span class="fu">factor</span>(freetime, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>),</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                           <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"very little"</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"litter"</span>,</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"moderate"</span>,</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"high"</span>,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"highest"</span>)),</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">goout =</span> <span class="fu">factor</span>(goout, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>),</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>                           <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"very little"</span>,</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"litter"</span>,</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"moderate"</span>,</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"high"</span>,</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"highest"</span>)),</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">Drink_alc =</span> <span class="fu">factor</span>(Drink_alc, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>),</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>                            <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"very little"</span>,</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"litter"</span>,</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"moderate"</span>,</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"high"</span>,</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"highest"</span>)),</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>         <span class="at">health =</span> <span class="fu">factor</span>(health, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>),</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>                         <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"worst"</span>,</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"bad"</span>,</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"fair"</span>,</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"good"</span>,</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"very good"</span>))</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>temp1 <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>()</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(rec, <span class="at">width=</span><span class="dv">50</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 7
+ $ var_info    : tibble [28 × 4] (S3: tbl_df/tbl/data.frame)
+  ..$ variable: chr [1:28] "school" "gender" "age" "location" ...
+  ..$ type    :List of 28
+  ..$ role    : chr [1:28] "predictor" "predictor" "predictor" "predictor" ...
+  ..$ source  : chr [1:28] "original" "original" "original" "original" ...
+ $ term_info   : tibble [28 × 4] (S3: tbl_df/tbl/data.frame)
+  ..$ variable: chr [1:28] "school" "gender" "age" "location" ...
+  ..$ type    :List of 28
+  ..$ role    : chr [1:28] "predictor" "predictor" "predictor" "predictor" ...
+  ..$ source  : chr [1:28] "original" "original" "original" "original" ...
+ $ steps       :List of 2
+  ..$ :List of 7
+  .. ..$ terms  :List of 1
+  .. .. ..- attr(*, "class")= chr [1:2] "quosures" "list"
+  .. ..$ role   : logi NA
+  .. ..$ trained: logi FALSE
+  .. ..$ levels : NULL
+  .. ..$ ordered: logi FALSE
+  .. ..$ skip   : logi FALSE
+  .. ..$ id     : chr "string2factor_8qe5K"
+  .. ..- attr(*, "class")= chr [1:2] "step_string2factor" "step"
+  ..$ :List of 5
+  .. ..$ role   : chr "predictor"
+  .. ..$ trained: logi FALSE
+  .. ..$ inputs :List of 9
+  .. .. ..- attr(*, "class")= chr [1:2] "quosures" "list"
+  .. ..$ skip   : logi FALSE
+  .. ..$ id     : chr "mutate_lzcFo"
+  .. ..- attr(*, "class")= chr [1:2] "step_mutate" "step"
+ $ template    : tibble [395 × 28] (S3: tbl_df/tbl/data.frame)
+  ..$ school      : chr [1:395] "obec.sec" "obec.sec" "obec.sec" "obec.sec" ...
+  ..$ gender      : chr [1:395] "F" "F" "F" "F" ...
+  ..$ age         : int [1:395] 14 13 11 11 12 12 12 13 11 11 ...
+  ..$ location    : chr [1:395] "U" "U" "U" "U" ...
+  ..$ famsize     : chr [1:395] "GT3" "GT3" "LE3" "GT3" ...
+  ..$ ParentStat  : chr [1:395] "A" "T" "T" "T" ...
+  ..$ MomEdu      : int [1:395] 4 1 1 4 3 4 2 4 3 3 ...
+  ..$ DadEdi      : int [1:395] 4 1 1 2 3 3 2 4 2 4 ...
+  ..$ MomJob      : chr [1:395] "at_home" "at_home" "at_home" "health" ...
+  ..$ DadJob      : chr [1:395] "teacher" "other" "other" "services" ...
+  ..$ StuParent   : chr [1:395] "mother" "father" "mother" "mother" ...
+  ..$ traveltime  : int [1:395] 2 1 1 1 1 1 1 2 1 1 ...
+  ..$ readingtime : int [1:395] 2 2 2 3 2 2 2 2 2 2 ...
+  ..$ fail        : int [1:395] 0 0 3 0 0 0 0 0 0 0 ...
+  ..$ scholarship : chr [1:395] "yes" "no" "yes" "no" ...
+  ..$ club_act    : chr [1:395] "no" "no" "no" "yes" ...
+  ..$ nursery     : chr [1:395] "yes" "no" "yes" "yes" ...
+  ..$ higher      : chr [1:395] "yes" "yes" "yes" "yes" ...
+  ..$ internet    : chr [1:395] "no" "yes" "yes" "yes" ...
+  ..$ InLove      : chr [1:395] "no" "no" "no" "yes" ...
+  ..$ fam_relation: int [1:395] 4 5 4 3 4 5 4 4 4 5 ...
+  ..$ freetime    : int [1:395] 3 3 3 2 3 4 4 1 2 5 ...
+  ..$ goout       : int [1:395] 4 3 2 2 2 2 4 4 2 1 ...
+  ..$ Drink_alc   : int [1:395] 1 1 2 1 1 1 1 1 1 1 ...
+  ..$ health      : int [1:395] 3 3 3 5 5 5 3 1 1 5 ...
+  ..$ absences    : int [1:395] 6 4 10 2 4 10 0 6 0 0 ...
+  ..$ PreTest     : int [1:395] 5 5 7 15 6 15 12 6 16 14 ...
+  ..$ Ach         : int [1:395] 6 6 10 15 10 15 11 6 19 15 ...
+ $ levels      : NULL
+ $ retained    : logi NA
+ $ requirements:List of 1
+  ..$ bake: Named logi(0) 
+  .. ..- attr(*, "names")= chr(0) 
+ - attr(*, "class")= chr "recipe"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>temp2<span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ach<span class="sc">~</span>., <span class="at">data=</span>temp1)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">abs</span>(t.value)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           Estimate Std..Error       t.value     Pr...t..
+PreTest                1.0897175544 0.05048528 21.5848589736 2.243350e-65
+InLoveyes             -1.0438469345 0.31582483 -3.3051452145 1.052038e-03
+absences               0.0487773352 0.01882898  2.5905457560 1.000111e-02
+age                   -0.3285557517 0.14399577 -2.2817042464 2.313367e-02
+scholarshipyes         0.9821877579 0.45152977  2.1752447276 3.031067e-02
+MomEduprimary         -3.0787480975 1.65949641 -1.8552303415 6.444162e-02
+(Intercept)            6.9271970253 3.81752459  1.8145782311 7.048306e-02
+gooutmoderate          1.0738681687 0.64332037  1.6692587605 9.600029e-02
+fail                  -0.3699539005 0.22788546 -1.6234203764 1.054401e-01
+gooutlitter            1.0423278293 0.65140029  1.6001341284 1.105114e-01
+DadJobservices         1.1085296735 0.69452567  1.5960960346 1.114102e-01
+MomEduhighsch1        -2.5993219142 1.65511235 -1.5704806468 1.172473e-01
+healthbad             -0.9322486847 0.59529658 -1.5660239316 1.182871e-01
+DadJobhealth           1.4639005026 0.94298127  1.5524173612 1.215066e-01
+readingtime&gt;10hours   -0.9867660278 0.64784033 -1.5231623885 1.286615e-01
+DadJobother            1.0015529695 0.67398576  1.4860150212 1.382156e-01
+schoolobec.sec        -0.7385356963 0.52401606 -1.4093760776 1.596516e-01
+MomEduhighsch2        -2.3066392522 1.67304550 -1.3787068227 1.689051e-01
+traveltime15-30mins   -0.4022741516 0.33657195 -1.1952099912 2.328504e-01
+DadEdigrad            -2.3837514636 2.03725128 -1.1700822045 2.427996e-01
+traveltime30-60mins   -0.7579452204 0.65495751 -1.1572433460 2.479974e-01
+Drink_alclitter       -0.4426652522 0.38350494 -1.1542621834 2.492155e-01
+DadEdihighsch1        -2.1954050859 2.00053962 -1.0974064531 2.732519e-01
+fam_relationbad       -1.2750570756 1.21106786 -1.0528370178 2.931745e-01
+club_actyes           -0.3070084558 0.29177017 -1.0522270149 2.934538e-01
+famsizeLE3             0.3379743902 0.32871683  1.0281627111 3.046151e-01
+goouthigh              0.6844830043 0.67486066  1.0142582742 3.111915e-01
+MomJobteacher         -0.6528802105 0.70849264 -0.9215059878 3.574495e-01
+MomEdugrad            -1.5765485211 1.72418033 -0.9143756582 3.611771e-01
+DadEdihighsch2        -1.7034137253 2.00357218 -0.8501883487 3.958276e-01
+goouthighest           0.5942587177 0.72423267  0.8205356423 4.124943e-01
+ParentStatT           -0.3535990104 0.48385730 -0.7307919245 4.654171e-01
+MomJobother            0.3351334988 0.46646232  0.7184578181 4.729758e-01
+Drink_alchighest       0.7123868787 1.01408880  0.7024896428 4.828617e-01
+internetyes            0.2850104643 0.40775877  0.6989683181 4.850568e-01
+genderM                0.2208565696 0.33144458  0.6663453963 5.056490e-01
+healthvery good       -0.3090084776 0.49061377 -0.6298406093 5.292282e-01
+DadEdiprimary         -1.1809140633 2.00061865 -0.5902744458 5.554046e-01
+Drink_alcmoderate      0.3477309311 0.63139013  0.5507386219 5.821799e-01
+healthgood            -0.2757270468 0.55599449 -0.4959168709 6.202783e-01
+DadJobteacher          0.4157010336 0.87590910  0.4745938050 6.353857e-01
+fam_relationgood      -0.4422854409 1.03223673 -0.4284728765 6.685822e-01
+healthfair            -0.2093494066 0.53010900 -0.3949176586 6.931550e-01
+MomJobservices         0.2050638998 0.52895497  0.3876774225 6.985010e-01
+fam_relationfair      -0.3966396446 1.06334377 -0.3730116798 7.093757e-01
+higheryes             -0.2625630463 0.70690065 -0.3714284972 7.105532e-01
+traveltime&gt;60mins      0.3774824534 1.06165348  0.3555608876 7.223932e-01
+StuParentother        -0.1991556010 0.65454958 -0.3042635853 7.611160e-01
+locationU              0.1121932387 0.38706740  0.2898545263 7.721069e-01
+fam_relationvery good -0.3002804898 1.04755755 -0.2866482028 7.745589e-01
+freetimehigh           0.1920349771 0.71862962  0.2672238550 7.894612e-01
+Drink_alchigh          0.2428569346 0.96485929  0.2517019194 8.014258e-01
+nurseryyes            -0.0700113942 0.36483572 -0.1918984102 8.479380e-01
+freetimehighest        0.1433275672 0.82752667  0.1731999369 8.625989e-01
+readingtime5-10hours  -0.0811004712 0.51650076 -0.1570190736 8.753244e-01
+freetimemoderate      -0.0853904035 0.69867023 -0.1222184650 9.027993e-01
+StuParentmother       -0.0373811460 0.36281797 -0.1030300303 9.180008e-01
+readingtime2-5hours   -0.0059968914 0.36110497 -0.0166070587 9.867600e-01
+MomJobhealth           0.0053796001 0.74742499  0.0071975117 9.942616e-01
+freetimelitter        -0.0001745365 0.73221258 -0.0002383686 9.998100e-01</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>temp1 <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ach<span class="sc">&gt;</span><span class="dv">0</span>)<span class="ot">-&gt;</span>temp1</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Ach<span class="sc">~</span>., <span class="at">data=</span>temp1)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">abs</span>(t.value)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           Estimate Std..Error      t.value     Pr...t..
+PreTest                0.8536319319 0.02858745 29.860375543 1.933709e-91
+absences              -0.0399934859 0.01067523 -3.746380443 2.155027e-04
+(Intercept)            6.4604339968 2.12087170  3.046122023 2.526179e-03
+age                   -0.1893871352 0.08177224 -2.316032213 2.123730e-02
+healthfair            -0.5619309220 0.29352516 -1.914421678 5.652699e-02
+healthvery good       -0.4576148812 0.27006193 -1.694481264 9.122211e-02
+freetimehighest       -0.7610320774 0.47033882 -1.618050733 1.067131e-01
+internetyes            0.3276033385 0.22861607  1.432984734 1.529140e-01
+scholarshipyes        -0.3452704547 0.25015400 -1.380231583 1.685533e-01
+freetimelitter        -0.5521059861 0.41621105 -1.326504879 1.856916e-01
+locationU              0.2705717725 0.21843875  1.238661983 2.164488e-01
+readingtime2-5hours   -0.2503706491 0.20538246 -1.219045923 2.237941e-01
+ParentStatT           -0.3107534100 0.26941765 -1.153426329 2.496628e-01
+freetimehigh          -0.4524118445 0.41252695 -1.096684343 2.736678e-01
+nurseryyes            -0.2097155586 0.20737693 -1.011277194 3.127069e-01
+higheryes             -0.4472498434 0.45840889 -0.975657008 3.300285e-01
+traveltime&gt;60mins      0.5694726055 0.61595751  0.924532289 3.559598e-01
+MomJobhealth           0.3552943897 0.42007365  0.845790712 3.983504e-01
+MomEduprimary         -0.7356203820 0.89613917 -0.820877385 4.123745e-01
+DadJobteacher          0.3889678097 0.50713663  0.766988200 4.436978e-01
+healthbad             -0.2460003376 0.33425139 -0.735974017 4.623274e-01
+DadEdihighsch1        -0.7825442509 1.07072554 -0.730854196 4.654444e-01
+MomJobservices         0.2193032024 0.30804404  0.711921597 4.770722e-01
+goouthigh             -0.2836282780 0.40026570 -0.708600014 4.791285e-01
+gooutlitter            0.2697366196 0.38424774  0.701986228 4.832375e-01
+DadJobother            0.2694844920 0.38903460  0.692700583 4.890387e-01
+freetimemoderate      -0.2757155029 0.40084685 -0.687832524 4.920951e-01
+healthgood            -0.2160581536 0.31441249 -0.687180569 4.925052e-01
+DadEdihighsch2        -0.6508534329 1.07269658 -0.606745136 5.444836e-01
+InLoveyes             -0.1063043983 0.18157493 -0.585457454 5.586847e-01
+fail                   0.0819653942 0.14462385  0.566748814 5.713129e-01
+DadEdigrad            -0.6067438598 1.09213200 -0.555559090 5.789305e-01
+MomJobteacher         -0.2211465642 0.40019216 -0.552600943 5.809523e-01
+schoolobec.sec         0.1578836970 0.29303200  0.538793370 5.904331e-01
+fam_relationvery good  0.3191483957 0.60064923  0.531339056 5.955810e-01
+DadEdiprimary         -0.5632365638 1.07238823 -0.525217033 5.998242e-01
+traveltime15-30mins   -0.0920593441 0.18921122 -0.486542724 6.269413e-01
+readingtime5-10hours  -0.1389903971 0.29060538 -0.478278809 6.328036e-01
+traveltime30-60mins   -0.1811174261 0.37938420 -0.477398442 6.334295e-01
+Drink_alcmoderate      0.1633802103 0.35351830  0.462154886 6.443086e-01
+goouthighest          -0.1930461205 0.42571650 -0.453461685 6.505475e-01
+DadJobservices         0.1804201560 0.40279792  0.447917303 6.545394e-01
+MomEduhighsch1        -0.3816924422 0.89658634 -0.425717442 6.706221e-01
+Drink_alclitter       -0.0726442975 0.21844228 -0.332556036 7.397040e-01
+famsizeLE3             0.0542993599 0.18218455  0.298045902 7.658765e-01
+DadJobhealth          -0.1566132885 0.53015422 -0.295410813 7.678865e-01
+MomEdugrad            -0.2544799732 0.93155576 -0.273177393 7.849067e-01
+readingtime&gt;10hours   -0.0991508085 0.36686405 -0.270265804 7.871435e-01
+Drink_alchighest      -0.1332055265 0.54847605 -0.242864802 8.082778e-01
+MomEduhighsch2        -0.2186609019 0.90812248 -0.240783491 8.098891e-01
+MomJobother            0.0581880761 0.27163821  0.214211672 8.305290e-01
+fam_relationfair       0.1269599015 0.61452525  0.206598348 8.364651e-01
+gooutmoderate         -0.0767579892 0.38127301 -0.201320278 8.405860e-01
+fam_relationbad       -0.1374326369 0.70481402 -0.194991349 8.455330e-01
+fam_relationgood      -0.0449497431 0.59374176 -0.075705881 9.397041e-01
+club_actyes            0.0098124597 0.16629244  0.059007252 9.529860e-01
+StuParentmother        0.0104990532 0.20127832  0.052161868 9.584348e-01
+StuParentother        -0.0199094721 0.38458057 -0.051769314 9.587473e-01
+Drink_alchigh          0.0204918422 0.51789394  0.039567643 9.684644e-01
+genderM               -0.0001972624 0.18395236 -0.001072356 9.991451e-01</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'car'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    some</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    recode</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit2<span class="ot">&lt;-</span><span class="fu">lm</span>(Ach<span class="sc">~</span>., <span class="at">data=</span>temp2)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit2)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">abs</span>(t.value))) <span class="sc">%&gt;%</span> <span class="fu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Estimate Std..Error t.value Pr...t..
+PreTest                   0.79       0.04   21.58     0.00
+InLoveyes                -0.23       0.07   -3.31     0.00
+absences                  0.09       0.03    2.59     0.01
+age                      -0.09       0.04   -2.28     0.02
+scholarshipyes            0.21       0.10    2.18     0.03
+MomEduprimary            -0.67       0.36   -1.86     0.06
+gooutmoderate             0.23       0.14    1.67     0.10
+fail                     -0.06       0.04   -1.62     0.11
+gooutlitter               0.23       0.14    1.60     0.11
+DadJobservices            0.24       0.15    1.60     0.11
+MomEduhighsch1           -0.57       0.36   -1.57     0.12
+healthbad                -0.20       0.13   -1.57     0.12
+DadJobhealth              0.32       0.21    1.55     0.12
+readingtime&gt;10hours      -0.22       0.14   -1.52     0.13
+DadJobother               0.22       0.15    1.49     0.14
+schoolobec.sec           -0.16       0.11   -1.41     0.16
+(Intercept)               0.96       0.69    1.39     0.16
+MomEduhighsch2           -0.50       0.37   -1.38     0.17
+traveltime15-30mins      -0.09       0.07   -1.20     0.23
+DadEdigrad               -0.52       0.44   -1.17     0.24
+traveltime30-60mins      -0.17       0.14   -1.16     0.25
+Drink_alclitter          -0.10       0.08   -1.15     0.25
+DadEdihighsch1           -0.48       0.44   -1.10     0.27
+fam_relationbad          -0.28       0.26   -1.05     0.29
+club_actyes              -0.07       0.06   -1.05     0.29
+famsizeLE3                0.07       0.07    1.03     0.30
+goouthigh                 0.15       0.15    1.01     0.31
+MomJobteacher            -0.14       0.15   -0.92     0.36
+MomEdugrad               -0.34       0.38   -0.91     0.36
+DadEdihighsch2           -0.37       0.44   -0.85     0.40
+goouthighest              0.13       0.16    0.82     0.41
+ParentStatT              -0.08       0.11   -0.73     0.47
+MomJobother               0.07       0.10    0.72     0.47
+Drink_alchighest          0.16       0.22    0.70     0.48
+internetyes               0.06       0.09    0.70     0.49
+genderM                   0.05       0.07    0.67     0.51
+healthvery good          -0.07       0.11   -0.63     0.53
+DadEdiprimary            -0.26       0.44   -0.59     0.56
+Drink_alcmoderate         0.08       0.14    0.55     0.58
+healthgood               -0.06       0.12   -0.50     0.62
+DadJobteacher             0.09       0.19    0.47     0.64
+fam_relationgood         -0.10       0.23   -0.43     0.67
+healthfair               -0.05       0.12   -0.39     0.69
+MomJobservices            0.04       0.12    0.39     0.70
+fam_relationfair         -0.09       0.23   -0.37     0.71
+higheryes                -0.06       0.15   -0.37     0.71
+traveltime&gt;60mins         0.08       0.23    0.36     0.72
+StuParentother           -0.04       0.14   -0.30     0.76
+locationU                 0.02       0.08    0.29     0.77
+fam_relationvery good    -0.07       0.23   -0.29     0.77
+freetimehigh              0.04       0.16    0.27     0.79
+Drink_alchigh             0.05       0.21    0.25     0.80
+nurseryyes               -0.02       0.08   -0.19     0.85
+freetimehighest           0.03       0.18    0.17     0.86
+readingtime5-10hours     -0.02       0.11   -0.16     0.88
+freetimemoderate         -0.02       0.15   -0.12     0.90
+StuParentmother          -0.01       0.08   -0.10     0.92
+readingtime2-5hours       0.00       0.08   -0.02     0.99
+MomJobhealth              0.00       0.16    0.01     0.99
+freetimelitter            0.00       0.16    0.00     1.00</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="00Regression_files/figure-html/unnamed-chunk-2-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2023, DataKruRoo</div>   
+    <div class="nav-footer-right">This page is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
