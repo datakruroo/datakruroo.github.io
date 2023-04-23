@@ -1,0 +1,8 @@
+"0","sentiment_dat %>%"
+"0","  mutate(sentiment_score = ifelse(sentiment.y==""pos"",1,-1)) %>%"
+"0","#  group_by(id, word) %>%"
+"0","  count(word, sentiment.y, sort = TRUE) %>%"
+"0","  ggplot(aes(x=n, y=word, fill=sentiment.y))+"
+"0","  geom_col()+"
+"0","  facet_wrap(~sentiment.y)+"
+"0","  theme(text=element_text(family=""ChulaCharasNew""))"

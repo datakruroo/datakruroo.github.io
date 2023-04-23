@@ -1,0 +1,5 @@
+"0","## the best logistic model"
+"0","best<-result %>% "
+"0","  extract_workflow_set_result(id = ""recipe_logistic_reg"") %>%"
+"0","  show_best(n=1, metric = ""roc_auc"")"
+"0","best"

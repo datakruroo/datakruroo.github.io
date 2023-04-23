@@ -1,0 +1,10 @@
+"0","def stop word():"
+"2","SyntaxError: invalid syntax (<string>, line 1)
+"
+"0","  import pythainlp"
+"0","  "
+"0","  stopword = pythainlp.corpus.common.thai_stopwords()"
+"0","  stopword = list(stopword)"
+"0","  return stopword"
+"2","SyntaxError: 'return' outside function (<string>, line 1)
+"

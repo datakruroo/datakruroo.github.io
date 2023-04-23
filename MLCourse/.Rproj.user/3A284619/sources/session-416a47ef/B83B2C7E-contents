@@ -1,0 +1,370 @@
+---
+title: "Text Analytics"
+---
+
+การวิเคราะห์ข้อความเป็นวิธีการวิเคราะห์ข้อมูลที่มีวัตถุประสงค์หลักคือเพื่อสกัดสารสนเทศที่มีความหมายออกมาจากข้อมูลแบบข้อความ ซึ่งเป็นข้อมูลแบบไม่มีโครงสร้างประเภทหนึ่ง การวิเคราะห์ข้อมูลสามารถจำแนกได้เป็นหลายประเภท ตามวัตถุประสงค์ของการวิเคราะห์ได้แก่
+
+-   sentiment analysis
+
+-   topic modeling
+
+-   text classification
+
+-   text summarization
+
+-   relationship extraction
+
+-   trend analysis
+
+-   keyword extraction
+
+เนื้อหาในส่วนนี้จะกล่าวถึงการวิเคราะห์ในบางตัวที่มีการใช้ ML เข้ามาช่วย รายละเอียดมีดังนี้
+
+# Sentiment analysis
+
+การวิเคราะห์ความรู้สึก (sentiment analysis) เป็นการวิเคราะห์เพื่อวินิจฉัยอารมณ์หรือความรู้สึกของกลุ่มเป้าหมายโดยใช้ข้อความที่ได้จากการพูด การเขียน โดยปกติการวิเคราะหความรู้สึกจะให้สารสนเทศของความรู้สึกเป็น อารมณ์เชิงบวก เชิงลบ หรือกลาง ๆ นอกจากนี้ยังอาจจำแนกความรู้สึกให้ละเอียดได้ตามต้องการ เช่น โกรธ กลัว ขยะแขยง หรือ ดีใจ
+
+ปัจจุบันมีการพัฒนาการวิเคราะห์ความรู้สึกหลายวิธีการ ซึ่งแต่ละวิธีการจะมีความเหมาะสมที่แตกต่างกัน ขึ้นอยู่กับลักษณะของปัญหา และลักษณะของข้อมูลที่ผู้วิเคราะห์มี วิธีการที่มีการใช้กันในปัจจุบัน ได้แก่
+
+1.  **lexicon-bases methods:** การประเมินความรู้สึกด้วยวิธีการนี้จะประเมินโดยอิงจากฐานข้อมูลของคำที่ได้มีการให้คะแนนความรู้สึก (sentiment score) เอาไว้ก่อนหน้าแล้ว เรียกฐานข้อมูลดังกล่าวว่า lexicons วิธีการนี้จะนำคะแนนความรู้สึกของคำแต่ละคำภายในประโยคที่สนใจมาหาค่าเฉลี่ย และสรุปแนวโน้มของอารมณ์ความรู้สึกจากค่าเฉลี่ยดังกล่าว
+2.  **machine learning methods:** วิธีการนี้มีการใช้อัลกอริทึมการเรียนรู้ของเครื่องเข้ามาช่วย หลักการคร่าว ๆ คือ ผู้วิเคราะห์จะต้องมีชุดข้อมูลฝึกหัดและทดสอบที่มีการให้ label กับข้อความเอาไว้ก่อนหน้า แล้วใช้ชุดข้อมูลดังกล่าวในการพัฒนาโมเดลทำนายอารมณ์ความรู้สึกจากข้อความ
+3.  **deep learning methods:** วิธีการนี้มีความคล้ายกับ ML methods แต่อัลกอริทึมที่ใช้ในการทำนายจะเป็นอัลกอริทึมในกลุ่ม deep learning เช่น RNNs, LSTM วิธีการนี้ถึงแม้จะเป็นวิธีการที่มีประสิทธิภาพสูง แต่มีข้อจำกัดคือต้องการข้อมูลขนาดใหญ่ในการวิเคราะห์
+4.  **hybrid methods**: เป็นวิธีการที่บูรณาการร่วมกันระหว่าง 3 วิธีการข้างต้น เช่น ผู้วิเคราะห์อาจใช้ lexicon-based ในกระบวนการ data preprocess และใช้อัลกอริทึมการเรียนรู้ของเครื่องเพื่อพัฒนาโมเดลทำนาย
+
+## Lexicon-based methods
+
+การวิเคราะห์ความรู้สึกด้วยวิธีการนี้สามารถทำใน R ได้หลายวิธี วิธีการหนึ่งที่แนะนำคือการใช้ package `tidytext` ข้อดีของการใช้ package ดังกล่าวคือสามารถใช้ grammar เดียวกับการทำงานบน tidyverse ซึ่งง่ายต่อการจัดกระทำ วิเคราะห์ นำเสนอและเชื่อมโยงกับเครื่องมือต่าง ๆ ที่จำเป็น ก่อนการดำเนินการวิเคราะห์จำเป็นต้องติดตั้งและเรียกใช้ package ต่อไปนี้ก่อน
+
+```{r message=F}
+library(dplyr)
+library(tidyr)
+library(tidytext)
+library(readxl)
+```
+
+ชุดข้อมูลตัวอย่างที่ใช้
+
+```{r}
+dat <- read.csv("https://raw.githubusercontent.com/PyThaiNLP/thai-sentiment-analysis-dataset/master/review_shopping.csv",
+                header=F, col.names = c("text","sentiment"),
+                sep = "\t")
+dat$id <- 1:dim(dat)[1]
+head(dat)
+glimpse(dat, width=60)
+```
+
+สร้าง dictionary สำหรับประเมินอารมณ์ความรู้สึกของข้อความ
+
+```{r}
+neg<- read.csv("https://raw.githubusercontent.com/PyThaiNLP/lexicon-thai/master/%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1/neg.txt", header = F, col.names = "word")
+pos <- read.csv("https://raw.githubusercontent.com/PyThaiNLP/lexicon-thai/master/%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1/pos.txt", header = F, col.names = "word")
+neg$sentiment <- "neg"
+pos$sentiment <- "pos"
+lexicon <- neg %>% bind_rows(pos)
+head(lexicon)
+dim(lexicon)
+lexicon <- distinct(lexicon)
+dim(lexicon)
+```
+
+#### Tokenization
+
+จากลักษณะของ lexicon-based method ที่ต้องมีการเปรียบเทียบคำในชุดข้อมูลกับพจณานุกรมเพื่อให้คะแนน sentiment ของคำแต่ละคำภายในแต่ละข้อความ ผู้วิเคราะห์จึงจำเป็นต้องตัดข้อความในชุดข้อมูลออกเป็นคำย่อย ๆ ก่อนที่จะดำเนินการวิเคราะห์ กระบวนการตัดคำดังกล่าวเรียกว่า tokenization
+
+ใน package tidytext การตัดคำสามารถทำได้ด้วยฟังก์ชัน `unnest_tokens()` ฟังก์ชันดังกล่าวมีอาร์กิวเมนท์สำคัญได้แก่ `tbl` คือชุดข้อมูลแบบ data.frame ที่เก็บข้อความทั้งหมด `token` ใช้กำหนดหน่วยของการตัดคำ เช่น `words` , `ngrams`, `skip_ngrams` , `sentences`, `lines` หรือ `paragraphs`
+
+```{r message=F}
+library(reticulate)
+# Import pythainlp library
+pythainlp <- import("pythainlp")
+
+# Define a custom tokenization function for textrecipes
+tokenize_thai <- function(text) {
+  tokens <- lapply(text, pythainlp$word_tokenize, engine="deepcut")
+  tokens_list <- lapply(tokens, function(x) {
+                              paste(x, collapse = " ")})
+  tokens_list <- unlist(tokens_list)
+return(tokens_list)
+}
+
+## tokenized via mutate function
+temp<-dat %>%
+  mutate(token = tokenize_thai(text))
+head(temp)
+
+tokenized_dat <- temp %>%
+  unnest_tokens(input = token, token = "words", 
+                output = word)
+glimpse(tokenized_dat, width=60)
+```
+
+#### stopword
+
+Stopwords คือคำที่ไม่ให้ความหมายหรือไม่มีประโยชน์ในการตีความหมายของประโยคหรือข้อความเป้าหมาย เช่น a, and, the, และ หรือ อะ ซึ่งในชุดข้อมูลหากมีคำประเภทนี้อยู่มาก ๆ จะกลายเป็น noise ที่รบกวนการวิเคราะห์ ใน library pythainlp มีการรวบรวม stopwords สำหรับภาษาไทยเอาไว้พอสมควร ผู้วิเคราะห์สามารถนำมาใช้ได้ การเรียก stopword จาก pythinlp มาใช้สามารถทำได้ในทำนองเดียวกับการตัดคำดังนี้
+
+```{python eval=F}
+def stop word():
+  import pythainlp
+  
+  stopword = pythainlp.corpus.common.thai_stopwords()
+  stopword = list(stopword)
+  return stopword
+```
+
+การเรียก stopword จาก pythainlp ออกมาใช้สามารถทำได้ดังนี้ จะเห็นว่าชุดข้อมูล stopword ดังกล่าวรวบรวมคำไว้จำนวน 1,030 คำ
+
+```{r}
+source_python("stopword.py")
+length(stopword())
+head(stopword(),10)
+tail(stopword(),10)
+tokenized_dat<-tokenized_dat %>%
+  filter(!word %in% stopword()) %>%
+  filter(!word %in% c("ค่ะ","ครับ"))
+tokenized_dat %>% dim()
+```
+
+```{r}
+sentiment_dat <- tokenized_dat %>%
+  inner_join(lexicon, by="word")
+glimpse(sentiment_dat, width=60)
+```
+
+#### calculate sentiment score
+
+```{r}
+library(ggplot2)
+sentiment_dat %>%
+  mutate(sentiment_score = ifelse(sentiment.y=="pos",1,-1)) %>%
+  group_by(id) %>%
+  summarise(sentiment_score = sum(sentiment_score)) %>%
+  ggplot(aes(x=sentiment_score))+
+  geom_histogram(bins=5, col="white")
+```
+
+```{r}
+sentiment_dat %>%
+  mutate(sentiment_score = ifelse(sentiment.y=="pos",1,-1)) %>%
+#  group_by(id, word) %>%
+  count(word, sentiment.y, sort = TRUE) %>%
+  ggplot(aes(x=n, y=word, fill=sentiment.y))+
+  geom_col()+
+  facet_wrap(~sentiment.y)+
+  theme(text=element_text(family="ChulaCharasNew"))
+```
+
+## Machine Learning based
+
+ตัวอย่างส่วนนี้จะวิเคราะห์ sentiment ด้วยอัลกอริทึม ML ชุดข้อมูลที่ใช้จะใช้ชุดข้อมูลตัวอย่างเดียวกับตัวอย่างแรก โดยใช้ label ที่อยู่ในคอลัมน์ `sentiment` ที่มาพร้อมกับชุดข้อมูลดังกล่าวเพื่อสร้าง train model
+
+```{r message=F}
+library(tidyverse)
+library(tidymodels)
+library(textrecipes)
+glimpse(dat, width=60)
+```
+
+การสร้างโมเดลทำนายในตัวอย่างนี้จะใช้กรอบของ tidymodels โดยก่อนที่จะดำเนินการวิเคราะห์ ผู้วิเคราะห์จะดำเนินการตัดคำที่ไม่เกี่ยวข้องบ้างส่วนก่อน
+
+```{r}
+pythainlp <- import("pythainlp")
+# Define a custom tokenization function for textrecipes
+tokenize_thai <- function(text) {
+  tokens <- lapply(text, pythainlp$word_tokenize, engine="newmm")
+  tokens_list <- lapply(tokens, function(x) {
+                              paste(x, collapse = " ")})
+  tokens_list <- unlist(tokens_list)
+return(tokens_list)
+}
+## tokenized via mutate function
+temp<-dat %>%
+  mutate(token = tokenize_thai(text))
+head(temp)
+
+tokenized_dat <- temp %>%
+  unnest_tokens(input = token, token = "words", 
+                output = word)
+# remove stopwords
+source_python("stopword.py")
+length(stopword())
+head(stopword(),10)
+tail(stopword(),10)
+tokenized_dat<-tokenized_dat %>%
+  filter(!word %in% stopword()) %>%
+  filter(!word %in% c("ค่ะ","ครับ","เ","เตก","อะ","10","ป","ก๊อ",
+                      "ๆๆๆๆ","ๆ","ๆๆๆ","ๆๆ","ใด","ค","ร",
+                      "ส","ง","วจะ"))
+glimpse(tokenized_dat, width=60)
+```
+
+นำชุดข้อมูลข้างต้นมา train ในตัวอย่างนี้จะใช้ 2 โมเดลได้แก่ logistic regression และ random forest
+
+การสร้างโมเดลทำนายอารมณ์ความรู้สึก (sentiment) ด้วยข้อความจะใช้คำ/วลี/ประโยคภายในข้อความที่ผ่านการจัดระเบียบและทำความสะอาดแล้วมาสร้างเป็น feature matrix สำหรับทำนาย feature matrix ของข้อความดังกล่าวจะมีลักษณะคือ แถวเป็นข้อความเต็มที่มีความหมายบวกหรือลบหรืออื่น ๆ ส่วนคอลัมน์เป็นความถี่ของคำแต่ละคำที่ปรากฎอยู่ภายในแต่ละข้อความ เมทริกซ์ดังกล่าวมีสามประเภท ได้แก่ Term Frequency matrix (TF matrix), Inverse Document Frequency matrix (IDF matrix) และ TF-IDF matrix รายละเอียดมีดังนี้
+
+-   TF matrix เป็นเมทริกซ์ที่ใช้แสดงความถี่ของการเกิดคำแต่ละคำภายในข้อความ/เอกสารเป้าหมาย โดยส่วนใหญ่ค่าความถี่ดังกล่าวจะรายงานเป็นร้อยละการพบคำดังกล่าวเทียบกับข้อความทั้งหมด หากมีแนวโน้มที่จะพบคำที่แตกต่างกันภายในข้อความ/เอกสารที่แตกต่างประเภทกัน แสดงว่ามีความสัมพันธ์กันระหว่างคำที่ใช้กับข้อความ ผู้วิเคราะห์สามารถใช้ความสัมพันธ์ดังกล่าวมาสร้างเป็นโมเดลทำนายได้
+-   IDF matrix เป็นเมทริกซ์ที่ให้ค่าน้ำหนัก/ความสำคัญของคำแต่ละคำภายในข้อความ/เอกสารเป้าหมายทั้งหมด (เรียกว่า corpus) ค่าน้ำหนักดังกล่าวมีค่าเท่ากับ $log(n)/n_j$ เมื่อ $n$ คือจำนวนข้อความทั้งหมด และ $n_j$ คือจำนวนข้อความที่พบคำที่ $j$ จากค่าน้ำหนักดังกล่าวจะเห็นว่า หากคำ ๆ ใดพบมากพบบ่อยในหลาย ๆ ข้อความ แสดงว่าคำนั้นเป็นคำทั่วไปและมีแนวโน้มที่จะมีความสามารถในการจำแนกข้อความที่มีความแตกต่างกันได้ยาก ในทางกลับกันคำ ๆ ใดที่พบน้อยแสดงว่าเป็นคำเฉพาะสำหรับข้อความบางประเภท ดังนั้นคำดังกล่าวจึงมีแนวโน้มที่จะใช้จำแนกข้อความที่มีความแตกต่างกันได้ดีกว่า
+-   TF-IDF matrix เป็นเมทริกซ์ที่รวมสูตรการคำนวณระหว่าง TF และ IDF matrix โดย TF-IDF จะคำนวณน้ำหนักของคำโดยใช้ ผลคูณระหว่าง TF กับ IDF วิธีการนี้จึงทำให้สามารถระบุน้ำหนักของคำต่าง ๆ ภายใต้ข้อความเป้าหมายได้ครอบคลุมมิติทั้งในด้านความบ่อยและความสำคัญไปได้พร้อมกัน โดยปกติ TF-IDF matrix เป็นเทคนิคที่ใช้มากกว่าสองเมทริกซ์ข้างต้น
+
+```{r}
+set.seed(123)
+split<-initial_split(tokenized_dat, strata = sentiment)
+train<-training(split)
+test<-testing(split)
+## create preprocessing recipe
+train_rec <- recipe(sentiment~text, data=train) %>%
+  step_tokenize(text) %>%
+  step_stopwords(text) %>%
+  step_tokenfilter(text) %>%
+  step_tfidf(text) %>%
+  step_normalize(all_numeric_predictors())
+## model specification 1
+lasso_spec <- logistic_reg(penalty = tune(), mixture = 1) %>%
+  set_engine("glmnet")
+## model specification 2
+rf_spec <- rand_forest(mtry = tune(),
+                       trees=300,
+                       min_n=tune()) %>%
+  set_engine("ranger",importance = "permutation") %>%
+  set_mode("classification")
+## create workflowset
+wf_set <- workflow_set(
+  preproc = list(train_rec),
+  models = list(lasso_spec, rf_spec)
+)
+## training 
+doParallel::registerDoParallel()
+set.seed(321)
+folds <- vfold_cv(train, v = 10, repeats = 3, strata = sentiment)
+result <- workflow_map(
+  wf_set,
+  resamples = folds,
+  grid = 50,
+  control = control_grid(save_pred = T),
+  metrics = metric_set(roc_auc, sens,spec)
+)
+autoplot(result)
+```
+
+ผลการวิเคราะห์ข้างต้นแสดงให้เห็นว่าทั้งสองโมเดลสามารถทำนายได้อยู่ในระดับที่ดีขึ้นไป โดย random forest เป็นโมเดลที่ทำนายได้ดีมากที่สุด
+
+```{r}
+result %>%
+  collect_metrics() %>%
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+```
+
+ลองพิจารณาประสิทธิภาพของโมเดล random forest ภายใต้ hyperparameters ที่กำหนด
+
+```{r}
+result %>%
+  extract_workflow_set_result(id = "recipe_rand_forest") %>%
+  collect_metrics() %>%
+  ggplot(aes(mtry, mean, color = .metric)) +
+  geom_line(size = 1.5, show.legend = FALSE) +
+  facet_wrap(~.metric) +
+  scale_x_log10()
+
+result %>%
+  extract_workflow_set_result(id = "recipe_rand_forest") %>%
+  collect_metrics() %>%
+  ggplot(aes(min_n, mean, color = .metric)) +
+  geom_line(size = 1.5, show.legend = FALSE) +
+  facet_wrap(~.metric) +
+  scale_x_log10()
+```
+
+ผลการวิเคราะห์ส่วนแรกจะใช้ ML เพื่อทำ sentiment analysis ดังนั้นการใช้ logistic regression จะเหมาะสมกว่า random forest (เพราะอะไร?)
+
+```{r}
+## the best logistic model
+best<-result %>% 
+  extract_workflow_set_result(id = "recipe_logistic_reg") %>%
+  show_best(n=1, metric = "roc_auc")
+best
+## extract logistic regressionworkflow
+logit_wf <- wf_set%>%
+  extract_workflow(id = "recipe_logistic_reg")
+final_logit <- logit_wf %>%
+  finalize_workflow(best)
+final_logit
+## sentiment analysis
+library(vip)
+final_logit %>%
+  last_fit(split) %>%
+  extract_fit_engine() %>%
+  vi() %>%
+  group_by(Sign) %>%
+  top_n(10, wt = abs(Importance)) %>%
+  ungroup() %>%
+  mutate(
+    Importance = abs(Importance),
+    Variable = str_remove(Variable, "tfidf_text_"),
+    Variable = fct_reorder(Variable, Importance)
+  ) %>%
+  ggplot(aes(x = Importance, y = Variable, fill = Sign)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Sign, scales = "free_y") +
+  labs(y = NULL)+
+  theme(text=element_text(family="ChulaCharasNew"))
+```
+
+ลองสร้างโมเดลทำนายจาก random forest
+
+```{r}
+## the best random forest
+best<-result %>% 
+  extract_workflow_set_result(id = "recipe_rand_forest") %>%
+  show_best(n=1, metric = "roc_auc")
+best
+## extract logistic regressionworkflow
+rf_wf <- wf_set%>%
+  extract_workflow(id = "recipe_rand_forest")
+final_rf <- rf_wf %>%
+  finalize_workflow(best)
+final_rf
+## create model using whole training dataset
+rf_lastfit <-final_rf %>%
+  last_fit(split, metrics=metric_set(roc_auc, sens,spec))
+```
+
+ประสิทธิภาพของโมเดลทำนายเป็นดังนี้
+
+```{r}
+rf_lastfit %>%
+  collect_metrics()
+```
+
+ทดลองทำนายชุดข้อมูลใหม่
+
+```{r}
+new_dat <- c("ซื้อมาแล้วใช้งานไม่ได้เลย",
+             "ถ้าราคาถูกกว่านี้จะดีมาก",
+             "แพคกล่องมาแย่มาก แต่ของไม่เสีย")
+new_dat <- tibble(text = new_dat)
+rf_lastfit  %>%
+  extract_workflow() %>%
+  predict(new_data= new_dat)
+```
+
+# กิจกรรมพัฒนาโมเดลตรวจการบ้าน
+
+ขอให้นิสิตตอบคำถามต่อไปนี้
+
+พิจารณาผลการวิเคราะห์การถดถอยด้านล่าง โดยตัวแปรตามคือเงินเดือนอาจารย์ และตัวแปรอิสระคือประสบการณ์ทำงานของอาจารย์มหาวิทยาลัย
+
+```{r}
+salary <- read.csv("/Users/siwachoat/Downloads/Salary_Data (1).csv")
+head(salary)
+fit <- lm(Salary ~ Experience, data= salary)
+summary(fit)
+```
+
+ตอบคำถามที่นี่ ---\> <https://forms.gle/PAXJzC1DjoiibpKE8>
+
+```{r}
+dat<-read_excel("answer.xlsx")
+glimpse(dat, width=60)
+```
+
+ขอให้นิสิตใช้ข้อมูลข้างต้นเพื่อพัฒนาโมเดลทำนายสำหรับตรวจข้อสอบข้อเขียน

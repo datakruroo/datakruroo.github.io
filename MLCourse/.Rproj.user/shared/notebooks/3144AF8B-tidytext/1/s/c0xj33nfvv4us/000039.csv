@@ -1,0 +1,7 @@
+"0","result %>%"
+"0","  extract_workflow_set_result(id = ""recipe_rand_forest"") %>%"
+"0","  collect_metrics() %>%"
+"0","  ggplot(aes(mtry, mean, color = .metric)) +"
+"0","  geom_line(size = 1.5, show.legend = FALSE) +"
+"0","  facet_wrap(~.metric) +"
+"0","  scale_x_log10()"

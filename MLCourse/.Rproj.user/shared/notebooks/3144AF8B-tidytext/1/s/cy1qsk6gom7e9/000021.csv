@@ -1,0 +1,6 @@
+"0","dat <- read.csv(""https://raw.githubusercontent.com/PyThaiNLP/thai-sentiment-analysis-dataset/master/review_shopping.csv"","
+"0","                header=F, col.names = c(""text"",""sentiment""),"
+"0","                sep = ""\t"")"
+"0","dat<-read_excel(""/Users/siwachoat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/ML/MLcourse/MLCourse/documents/res_feedback.xlsx"")"
+"0","dat$id <- 1:dim(dat)[1]"
+"0","head(dat)"

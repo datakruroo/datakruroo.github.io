@@ -1,0 +1,142 @@
+tokens_df \<- tibble(
+
+text = c("the quick brown fox", "jumped over the lazy dog"),
+
+token = c("the", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog")
+
+)
+
+---
+title: "Untitled"
+format: revealjs
+---
+
+นำข้อมูลเข้า
+
+```{r}
+library(tidyverse)
+library(readxl)
+dat<-read_excel("/Users/siwachoat/Downloads/การบ้าน Simple Regression (Responses) (1).xlsx")
+
+temp<-dat %>%
+  unnest_tokens(word, `จงแปลผลสัมประสิทธิ์การตัดสินใจ (R2) ของสมการถดถอยเส้นนี้`)%>% 
+  # Remove stop words
+  anti_join(stop_words)
+
+temp %>%
+  count(word) %>%
+  arrange(desc(n))
+
+library(tidytext)
+library(rJava)
+library(devtools)
+install_github("slphyx/RLongLexTo", INSTALL_opts="--no-multiarch")
+library(RLongLexTo)
+Sys.setlocale("LC_CTYPE","Thai")
+
+RLongLexToC(c("ทดสอบแบ่งคำภาษาไทย"))
+sentence <- "สวัสดีครับ ผมชื่อเอกพล"
+tokens <- tokens(sentence, what = "word", lang = "thai")
+
+
+data.frame(sentence) %>%
+  unnest_tokens(word, sentence)
+```
+
+```{python}
+!pip install deepcut
+!pip install --upgrade pip
+import pythainlp
+import deepcut
+
+sentence = "จำนวนปีของประสบการณ์ทำงานของคุณครูอธิบายความผันเเปรในเงินเดือนของคุณครูคิดเป็นร้อยละ 96"
+
+sentences = [
+    "สวัสดีครับ ผมชื่อเอกพล",
+    "วันนี้ฝนตกหนักมาก",
+  "จำนวนปีของประสบการณ์ทำงานของคุณครูอธิบายความผันเเปรในเงินเดือนของคุณครูคิดเป็นร้อยละ 96",
+]
+tokens_list = []
+for sentence in sentences:
+    tokens = pythainlp.word_tokenize(sentence, engine='newmm', keep_whitespace=False)
+    tokens_list.append(tokens)
+
+```
+
+```{r}
+library(reticulate)
+text<-py$tokens_list
+text
+```
+
+```{python}
+
+
+
+```
+
+```{r}
+library(reticulate)
+library(tidytext)
+
+
+source_python("token.py")
+tokenize_thai_sentence(thai_text)
+
+# Define a Python function to tokenize a single Thai sentence
+
+
+# Define a Thai text corpus
+thai_corpus <- c("สวัสดีครับ ผมชื่อเอกพล", 
+                 "ทดสอบโปรแกรมการทำงานของ Python และ R", 
+                 "ผมอยากที่จะเรียนรู้เพิ่มเติมเกี่ยวกับการวิเคราะห์ข้อมูล")
+
+# Tokenize the Thai text corpus using pythainlp.word_tokenize()
+tokens_list <- lapply(thai_corpus, tokenize_thai_sentence)
+ tibble(text = thai_corpus, tokens = tokens_list) %>%
+  unnest(tokens)
+
+
+# Define a Thai text to tokenize
+thai_text <- "สวัสดีครับ ผมชื่อเอกพล"
+
+# Tokenize the Thai text using the Python function and convert the result to a tidy data frame
+tokens_df <- data.frame(text = thai_text) %>%
+  mutate(tokens = tokenize_thai_sentence(text)) #%>%
+  unnest_tokens(token, tokens)
+
+# Print the resulting token data frame
+print(tokens_df)
+
+```
+
+```{r}
+dat<-read_excel("/Users/siwachoat/Downloads/การบ้าน Simple Regression (Responses) (1).xlsx", sheet=2)
+glimpse(dat,width=80)
+names(dat)[5]<-"slope"
+
+source_python("token.py")
+
+# Tokenize the Thai text corpus using pythainlp.word_tokenize()
+tokens_list <- lapply(dat$slope, tokenize_thai_sentence)
+ temp<-tibble(dat, tokens = tokens_list) %>%
+  unnest(tokens) 
+names(temp)[7] <-"word"
+temp<- temp%>%
+   anti_join(stop_words)%>%
+   anti_join(tibble(word = c(",",".","(",")")))
+
+temp %>%
+  group_by(result) %>%
+  count(word) %>%
+  arrange(desc(n)) %>%
+  mutate(percent = n*100/sum(n)) %>%
+  ggplot(aes(x=percent, y=reorder(word,percent)))+
+  geom_bar(stat="identity")+
+  facet_wrap(~result)+
+  theme(text=element_text(family="ChulaCharasNew"))
+
+dtm<-temp %>%
+  count(student_id, word) %>%
+  cast_dfm(document = student_id, term = word, n)
+```

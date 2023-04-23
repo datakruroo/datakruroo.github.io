@@ -1,0 +1,13 @@
+"0","dtm<-temp %>%
+  count(result, word) %>%
+  cast_dfm(document = student_id, term = word, n)
+"
+"1","[1m[33mError[39m in `distinct()`:[22m
+[38;5;232m[33m![38;5;232m Must use existing variables.
+[31m✖[38;5;232m `student_id` not found in `.data`.[39m
+Backtrace:
+[90m 1. [39mtemp %>% count(result, word) %>% ...
+[90m 2. [39m[1mtidytext[22m::cast_dfm(., document = student_id, term = word, n)
+[90m 3. [39mtidytext::cast_sparse(data, !!document, !!term, !!value, ...)
+[90m 5. [39m[1m[94mdplyr:::distinct.data.frame([39m[22mdata, !!sym(row_col), !!sym(column_col), .keep_all = TRUE[1m[94m)[39m[22m
+"

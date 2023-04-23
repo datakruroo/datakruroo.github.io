@@ -1,0 +1,7 @@
+"0","library(ggplot2)"
+"0","sentiment_dat %>%"
+"0","  mutate(sentiment_score = ifelse(sentiment==""pos"",1,-1)) %>%"
+"0","  group_by(id) %>%"
+"0","  summarise(sentiment_score = sum(sentiment_score)) %>%"
+"0","  ggplot(aes(x=sentiment_score))+"
+"0","  geom_histogram(bins=5, col=""white"")"
