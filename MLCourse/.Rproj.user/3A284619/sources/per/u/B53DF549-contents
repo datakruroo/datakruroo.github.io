@@ -33,3 +33,6 @@ new_dat <- tibble(text = new_dat)
 mod %>%
   extract_workflow() %>%
   predict(new_data= new_dat)
+
+
+
