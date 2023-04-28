@@ -1,0 +1,62 @@
+---
+format:
+  html: 
+   linestretch: 1.7
+---
+
+# sleepstudy dataset
+
+[![](images/image-2067038425.png){fig-align="left" width="311"}](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.nagwa.com%2Fen%2Fexplainers%2F289171070462%2F&psig=AOvVaw0eMicoCoaj3OtSUestNdAD&ust=1677863647822000&source=images&cd=vfe&ved=0CBEQjhxqFwoTCOibt6ffvf0CFQAAAAAdAAAAABAI)
+
+ชุดข้อมูล `sleepstudy` เป็นชุดข้อมูลตัวอย่างของ pacakge lme4 ในการวิจัยที่ศึกษาการอดนอนของคน ตัวแปรตามคือ `Reaction` เป็นค่าเฉลี่ยของความเร็วในการตอบสนองของผู้เข้าร่วมวิจัย (ms) ส่วนตัวแปรที่เหลือได้แก่ `day` คือจำนวนวันที่อดนอน และ `subject` คือรหัสของผู้เข้าร่วมวิจัย
+
+```{r}
+#install.packages(lme4)
+library(lme4)
+head(sleepstudy)
+```
+
+หากลองสำรวจข้อมูลข้างต้นจะเห็นว่ามีโครงสร้างเป็นข้อมูลระดับลดหลั่นแบบ 2 ระดับ โดยระดับที่ 1 คือวันที่อดนอน และระดับที่ 2 คือผู้เข้าร่วมวิจัย
+
+### **ขอให้นิสิตดำเนินการวิเคราะห์ข้อมูลและตอบคำถามต่อไปนี้**
+
+1.  ทดลองวิเคราะห์ ols regression โดยตัวแปรตามเป็น `Reaction` และตัวแปรอิสระเป็น `Day` ผลที่ได้เป็นอย่างไร?
+2.  พิจารณาผลการสำรวจข้อมูลในรูปด้านล่าง นิสิตสามารถสรุปอะไรได้บ้าง?
+
+```{r message = F, echo=F}
+library(dplyr)
+library(ggplot2)
+sleepstudy %>%
+  ggplot(aes(x = Days, y= Reaction))+
+  geom_line(aes(col = Subject), show.legend = F)+
+  theme_light()
+```
+
+3.  เมื่อพิจารณารูปแล้วนิสิตคิดว่า ols regression ในข้อ 1. เป็นโมเดลที่เหมาะสำหรับวิเคราะห์ข้อมูลชุดนี้อยู่หรือไม่ เพราะเหตุใด
+4.  จงดำเนินการวิเคราะห์ข้อมูลเพื่อตอบคำถามวิจัย "ค่าเฉลี่ยของความเร็วในการตอบสนองของคนที่อดนอนมีความแตกต่างกันอย่างไร"
+5.  จงดำเนินการวิเคราะห์ข้อมูลเพื่อตอบคำถามวิจัย "ระยะเวลาการอดนอน (วัน) มีผลต่อ[ค่าเฉลี่ย]{.underline}ของความเร็วในการตอบสนองของคนที่อดนอนอย่างไร"
+6.  จงดำเนินการวิเคราะห์ข้อมูลเพื่อตอบคำถามวิจัย "อิทธิพลของการอดนอนที่มีต่อความเร็วในการตอบสนองต่อส่ิงเร้า มีความแตกต่างกันระหว่างผู้เข้าร่วมวิจัยหรือไม่"
+
+## ส่งงาน
+
+ส่งงานโดยแนบ file มาใน padlet ด้านล่างนี้
+
+::: {.padlet-embed style="border:1px solid rgba(0,0,0,0.1);border-radius:2px;box-sizing:border-box;overflow:hidden;position:relative;width:100%;background:#F4F4F4"}
+<p style="padding:0;margin:0">
+
+<iframe src="https://padlet.com/embed/oguy948f6jw687mh" frameborder="0" allow="camera;microphone;geolocation" style="width:100%;height:608px;display:block;padding:0;margin:0">
+
+</iframe>
+
+</p>
+
+::: {style="display:flex;align-items:center;justify-content:end;margin:0;height:28px"}
+<a href="https://padlet.com?ref=embed" style="display:block;flex-grow:0;margin:0;border:none;padding:0;text-decoration:none" target="_blank">
+
+::: {style="display:flex;align-items:center;"}
+<img src="https://padlet.net/embeds/made_with_padlet_2022.png" alt="Made with Padlet" width="114" height="28" style="padding:0;margin:0;background:0 0;border:none;box-shadow:none"/>
+:::
+
+</a>
+:::
+:::

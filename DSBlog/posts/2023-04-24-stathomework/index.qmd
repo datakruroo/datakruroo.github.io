@@ -1,0 +1,360 @@
+---
+title: "การบ้าน Multiple Regression"
+author: "สิวะโชติ ศรีสุทธิยากร"
+date: "2023-04-24"
+categories: [GitHub]
+toc: true
+---
+
+## 1. ภาพรวมของการทำกิจกรรมการบ้าน Multiple Regression
+
+ผลการวิเคราะห์ส่วนนี้แสดงภาพรวมในการทำกิจกรรมการบ้านของนิสิต ประกอบด้วยผลการวิเคราะห์แนวโน้มการเข้ามาทำกิจกรรม และคะแนนกิจกรรมการบ้านในภาพรวมของนิสิต รายละเอียดมีดังนี้
+
+### 1.1 แนวโน้มการเข้ามาทำการบ้านเรื่อง Multiple Regression
+
+update วันที่ 25 เมษายน 2566 เวลา 12:00 น. มีนิสิตเข้ามาทำการบ้านแล้วจำนวน 155 คน
+
+```{r echo=F, message = F, warning =F}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(viridis)
+responses <- read_excel("/Users/siwachoat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/datakruroo/datakruroo.github.io/DSBlog/posts/2023-04-24-stathomework/การบ้าน Multiple Regression (Responses) (1).xlsx")
+
+responses_up<-read_excel("/Users/siwachoat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/datakruroo/datakruroo.github.io/DSBlog/posts/2023-04-24-stathomework/การบ้าน Multiple Regression (Responses)_update.xlsx")
+## คะแนนเต็ม 13 คะแนน
+select_col <- c(paste0("result",1:7),
+                   paste0("pic",1:4))
+responses<-responses %>%
+  mutate(result2 = as.numeric(result2)) %>% 
+  mutate(total = rowSums(dplyr::select(.,all_of(select_col)))*100/13)
+
+library(lubridate)
+responses_up %>%
+  arrange(Timestamp) %>%
+  mutate(cumsum = 1:dim(responses_up)[1]) %>%
+  ggplot(aes(x = Timestamp, y= cumsum)) +
+  geom_line(stat = "identity")+
+  geom_point(size = 2)+
+  ylab("จำนวนนิสิตสะสม")+
+  xlab(" ")+
+  scale_color_viridis_c(option = "A")+
+  theme_light()+
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(family="ChulaCharasNew",
+                            size=16))+
+  labs(col = "คะแนนรวม")
+```
+
+### 1.2 ภาพรวมของคะแนนการบ้าน
+
+*update 24 Apr 2023*
+
+นิสิตที่เข้ามาทำการบ้านมีคะแนนเฉลี่ยคิดเป็นร้อยละ 82.22 (SD = 12.07) โดยมีนิสิตมากกว่าร้อยละ 99 ที่มีคะแนนการบ้านสูงกว่าร้อยละ 75
+
+```{r echo=F, message = F, warning =F, fig.width=9}
+library(kableExtra)
+library(gridExtra)
+responses %>%
+  summarise(n=n(),
+            mean = mean(total),
+            sd = sd(total),
+            min = min(total),
+            q1 = quantile(total, probs = 0.25),
+            q2 = quantile(total, 0.5),
+            q3 = quantile(total, 0.75),
+            max = max(total)) %>%
+  kbl() %>%
+  kable_styling()
+  
+
+p1<-responses %>% ggplot(aes(x = total))+
+  geom_histogram(bins = 15, col="white", fill = "steelblue")+
+  xlim(0,100)+
+  xlab("\n คะแนนรวม (ร้อยละ)")+
+  ylab("จำนวนนิสิต\n ")+
+  theme_light()+
+  theme(panel.grid.major = element_blank(),
+        text=element_text(family="ChulaCharasNew", size = 16))
+
+
+p2<-responses %>% ggplot(aes(x = Timestamp, y=total)) +
+  geom_point(col = "steelblue")+
+  ylab("คะแนนรวม (ร้อยละ) \n")+
+  xlab("\n วันเวลาที่ส่งการบ้าน")+
+  theme_light()+
+  theme(panel.grid.major = element_blank(),
+        text=element_text(family="ChulaCharasNew", size = 16))
+
+grid.arrange(p1,p2, ncol = 2)
+```
+
+## 2. เฉลยการบ้าน
+
+### 2.1 จงเขียนสมการถดถอยของการวิเคราะห์ในสถานการณ์ข้างต้น
+
+จากตาราง coefficient สมการถดถอยที่ได้คือ
+
+$\hat{mathach} = 13.909 + 5.002 ses - 0.024 p.female - 0.827 stressclim$
+
+![](Screenshot%202566-04-25%20at%2009.32.20.png){width="60%"}
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่สามารถตอบได้อย่างถูกต้อง
+
+```{r echo=F}
+responses %>%
+  ggplot(aes(x=remark1))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+### 2.2 upload residual plot
+
+![](Screenshot%202566-04-25%20at%2010.49.10.png){width="60%"}
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่สามารถตอบได้อย่างถูกต้อง
+
+```{r echo=F}
+responses %>% 
+  mutate(pic1 = factor(pic1, labels=c("ผิด","ถูก")))%>%
+  ggplot(aes(x = pic1))+
+   geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+![](Screenshot%202566-04-25%20at%2010.54.49.png){width="44%"}
+
+### 2.3 upload Heteroskedasticity
+
+![](Screenshot%202566-04-25%20at%2010.58.56.png){width="341"}
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่สามารถตอบได้อย่างถูกต้อง
+
+```{r echo=F}
+responses %>% 
+  mutate(pic2 = factor(pic2, labels=c("ผิด","ถูก")))%>%
+  ggplot(aes(x = pic2))+
+   geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+![](Screenshot%202566-04-25%20at%2011.05.12.png){width="44%"}
+
+### 2.3 upload normality test
+
+![](Screenshot%202566-04-25%20at%2011.01.53.png){width="360"}
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่สามารถตอบได้อย่างถูกต้อง
+
+```{r echo=F}
+responses %>% 
+  mutate(pic3 = factor(pic3, labels=c("ผิด","ถูก")))%>%
+  ggplot(aes(x = pic3))+
+   geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+![](Screenshot%202566-04-25%20at%2011.06.33.png){width="44%"}
+
+### 2.4 upload Collinearity Statistics
+
+![](Screenshot%202566-04-25%20at%2011.03.50.png){width="287"}
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่สามารถตอบได้อย่างถูกต้อง
+
+```{r echo=F}
+responses %>% 
+  mutate(pic4 = factor(pic4, labels=c("ผิด","ถูก")))%>%
+  ggplot(aes(x = pic4))+
+   geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+![](Screenshot%202566-04-25%20at%2011.07.58.png){width="44%"}
+
+### 2.5 สมการถดถอยที่ประมาณได้มีปัญหาละเมิดข้อตกลงเบื้องต้นด้านใดบ้าง (ตอบได้มากกว่า 1 ข้อ)
+
+คำตอบ: ไม่พบหลักฐานว่ามีการละเมิดข้อตกลงเบื้องต้น
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่าส่วนใหญ่สามารถตอบได้อย่างถูกต้อง
+
+```{r echo=F}
+responses %>%
+  mutate(result2 = factor(result2, labels=c("ผิด","ถูก")))%>%
+  ggplot(aes(x = result2))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+### 2.6 สมการถดถอยที่ประมาณได้มีความเหมาะสมที่จะใช้ทำนาย/อธิบายความสัมพันธ์ที่พบในข้อมูลหรือไม่ เพราะเหตุใด
+
+คำตอบ : เหมาะสม ด้วยเหตุผล 2 ประการ ประการแรก คือไม่พบหลักฐานว่ามีการละเมิดข้อตกลงเบื้องต้นของการวิเคราะห์การถดถอย และประการที่สอง ค่าสัมประสิทธิ์การตัดสินใจของสมการถดถอยที่ประมาณได้มีค่าเท่ากับ 0.697 แสดงว่าสมการสามารถอธิบายความผันแปรใน mathach ได้คิดเป็นร้อยละ 69.7 ซึ่งอยู่ในระดับที่สูง
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า ส่วนใหญ่สามารถตอบได้อย่างถูกต้องบางส่วน
+
+```{r}
+responses %>%
+  mutate(result3 = factor(result3, labels=c("ผิด","ถูกบางส่วน","ถูกทั้งหมด")))%>%
+  ggplot(aes(x = result3))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+### 2.7 นักวิจัยสามารถใช้การวิเคราะห์การถดถอยในข้างต้นเพื่อสร้างข้อสรุปอ้างอิงไปยังประชากรของโรงเรียนในเขตพื้นที่ดังกล่าวได้หรือไม่ เพราะเหตุใด
+
+คำตอบ : จากสถานการณ์ที่กำหนดพบว่า นักวิจัยมีการใช้กระบวนการสุ่มเพื่อให้ได้มาซึ่งตัวอย่างของโรงเรียนภายในเขตพื้นที่ A และจากผลการตรวจสอบข้อตกลงเบื้องต้นไม่พบว่ามีการละเมิดข้อตกลงเบื้องต้น (โดยเฉพาะในด้านการแจกแจงแบบปกติ (normality) ของความคลาดเคลื่อนของสมการถดถอย) ดังนั้นจึงสามารถใช้ผลการวิเคราะห์ที่ได้เพื่อสร้างข้อสรุปอ้างอิงไปยังประชากรของโรงเรียนในเขตพื้นที่ A
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า ส่วนใหญ่ยังไม่สามารถตอบได้ถูกต้อง
+
+```{r echo=F}
+responses %>%
+  mutate(result4 = factor(result4, levels=c(0,0.5,1),
+                          labels=c("ผิด","ถูกบางส่วน","ถูกทั้งหมด")))%>%
+  ggplot(aes(x = result4))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+```
+
+ตัวอย่างคำตอบที่ไม่ถูกต้อง
+
+```{r echo=F}
+responses %>%
+  filter(result4 == 0) %>%
+  dplyr::select(text4) %>%
+  head(20) %>%
+  kbl()%>%
+  kable_styling()
+```
+
+### 2.8 จงแปลความหมายสัมประสิทธิ์ความชันแบบคะแนนดิบ (raw regression coefficient) ของตัวแปรอิสระ p.female 
+
+คำตอบ : เนื่องจาก p.female คือร้อยละของของนักเรียนเพศหญิงในโรงเรียน และสัมประสิทธิ์ความชันของตัวแปรอิสระดังกล่าวมีค่าเท่ากับ -0.024 ดังนั้นสามารถแปลความหมายความชันดังกล่าวว่า เมื่อกำหนดให้ตัวแปรอิสระตัวอื่น ๆ คงที่ หากโรงเรียนมีนักเรียนเพศหญิงเพิ่มขึ้นร้อยละ 1.00 ผลสัมฤทธิ์ทางการเรียนคณิตศาสตร์ของโรงเรียนมีแนวโน้มลดลงโดยเฉลี่ย 0.024 คะแนน
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า
+
+```{r echo=F}
+responses %>%
+  mutate(result5 = factor(result5, levels=c(0,0.5,1),
+                          labels=c("ผิด","ถูกบางส่วน","ถูกทั้งหมด")))%>%
+  ggplot(aes(x = result5))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+
+```
+
+ตัวอย่างคำตอบที่ไม่ถูกต้อง
+
+```{r echo=F}
+responses %>%
+  filter(result5 == 0) %>%
+  dplyr::select(text5) %>%
+  distinct() %>%
+  head() %>%
+  kbl()%>%
+  kable_styling()
+```
+
+### 2.9 จากสมการถดถอยข้างต้น นิสิตคิดว่าตัวแปร/ปัจจัยใดที่มีผลต่อคะแนนเฉลี่ยผลสัมฤทธิ์ทางการเรียนทางคณิตศาสตร์ของนักเรียนในโรงเรียนมากที่สุด และน้อยที่สุด เพราะเหตุใด
+
+คำตอบ : พิจารณาจากสัมประสิทธิ์การถดถอยคะแนนมาตรฐาน พบว่า SES และ p.female เป็นตัวแปรที่มีผลต่อ mathach มากและน้อยที่สุดตามลำดับ
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่ตอบได้ถูกต้อง
+
+```{r echo=F}
+responses %>%
+  mutate(result6 = factor(result6, levels=c(0,1,2),
+                          labels=c("ผิด","ถูกบางส่วน","ถูกทั้งหมด")))%>%
+  ggplot(aes(x = result6))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+
+```
+
+### 2.10 จากสมการถดถอยข้างต้น มีตัวแปรอิสระที่มีผลทางลบต่อคะแนนผลสัมฤทธิ์ทางการเรียนหรือไม่ และมีตัวแปรอะไรบ้าง
+
+คำตอบ : ตัวแปรอิสระที่มีผลทางลบได้แก่ p.female และ stressclim
+
+ผลการวิเคราะห์คำตอบของนิสิตพบว่า นิสิตส่วนใหญ่ตอบได้ถูกต้อง
+
+```{r echo=F}
+responses %>%
+  mutate(result7 = factor(result7, levels=c(0.5,2),
+                          labels=c("ถูกนิดหน่อย","ถูกทั้งหมด")))%>%
+  ggplot(aes(x = result7))+
+  geom_bar(fill = "steelblue")+
+  theme_light()+
+  theme(text = element_text(family="ChulaCharasNew",
+                            size = 16),
+        panel.grid.minor = element_blank())+
+  coord_flip()+
+  ylab("\n จำนวนนิสิต")+
+  xlab(" ")
+
+```
+
+```{r}
+responses %>% 
+  filter(result7 == 0.5) %>%
+  dplyr::select(text7)
+```
