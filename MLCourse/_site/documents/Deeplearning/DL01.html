@@ -682,17 +682,20 @@ $ TheifperPop            &lt;dbl&gt; 242.37, 758.14, 1301.78, 72…</code></pre>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>mse <span class="ot">&lt;-</span> result<span class="sc">$</span>model<span class="sc">$</span><span class="fu">evaluate</span>(<span class="at">x =</span> test_x, <span class="at">y =</span> test_y)</span>
 <span id="cb11-2"><a href="#cb11-2"></a>mse[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 255819.6</code></pre>
+<pre><code>[1] 202797.5</code></pre>
 </div>
 </div>
 </section>
 <section id="predicting-the-new-data" class="slide level2">
 <h2>Predicting the new data</h2>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>pred_test <span class="ot">&lt;-</span> model<span class="sc">$</span><span class="fu">predict</span>(test_x)</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">plot</span>(test_y, pred_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">cor</span>(test_y, pred_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 [,1]
-TheifperPop 0.5913123</code></pre>
+TheifperPop 0.6467302</code></pre>
 </div>
 </div>
 

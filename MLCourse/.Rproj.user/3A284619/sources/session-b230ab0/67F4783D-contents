@@ -429,7 +429,7 @@ mse[1]
 
 ## Predicting the new data
 
-```{r echo=F}
+```{r echo=T}
 pred_test <- model$predict(test_x)
 plot(test_y, pred_test)
 cor(test_y, pred_test)

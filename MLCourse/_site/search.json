@@ -746,14 +746,14 @@
     "href": "documents/Deeplearning/DL01.html#model-evaluation",
     "title": "Deep Learning 101",
     "section": "Model Evaluation",
-    "text": "Model Evaluation\n\ndata.frame(epoch = 1:500, rmse_train = sqrt(result$history$mse),\n           rmse_validate = sqrt(result$history$val_mse)) %>%\n  ggplot(aes(x=epoch))+\n  geom_line(aes(y=rmse_train), col=\"steelblue\")+\n  geom_line(aes(y=rmse_validate), col=\"orange\")+\n  ylab(\"RMSE\")\n\n\n\nmse <- result$model$evaluate(x = test_x, y = test_y)\nmse[1]\n\n[1] 255819.6"
+    "text": "Model Evaluation\n\ndata.frame(epoch = 1:500, rmse_train = sqrt(result$history$mse),\n           rmse_validate = sqrt(result$history$val_mse)) %>%\n  ggplot(aes(x=epoch))+\n  geom_line(aes(y=rmse_train), col=\"steelblue\")+\n  geom_line(aes(y=rmse_validate), col=\"orange\")+\n  ylab(\"RMSE\")\n\n\n\nmse <- result$model$evaluate(x = test_x, y = test_y)\nmse[1]\n\n[1] 202797.5"
   },
   {
     "objectID": "documents/Deeplearning/DL01.html#predicting-the-new-data",
     "href": "documents/Deeplearning/DL01.html#predicting-the-new-data",
     "title": "Deep Learning 101",
     "section": "Predicting the new data",
-    "text": "Predicting the new data\n\n\n\n                 [,1]\nTheifperPop 0.5913123"
+    "text": "Predicting the new data\n\npred_test <- model$predict(test_x)\nplot(test_y, pred_test)\n\ncor(test_y, pred_test)\n\n                 [,1]\nTheifperPop 0.6467302"
   },
   {
     "objectID": "documents/Deeplearning/DL01.html#splitting-dataset",

@@ -1,0 +1,26 @@
+"0","library(reticulate)"
+"0","keras <- import(""keras"")"
+"0","# create sequential model"
+"0","model <- keras$Sequential()"
+"0","# add layers"
+"0","model$add(keras$layers$Dense(units = 8, activation = 'relu', input_dim = ncol(train_x)))"
+"0","model$add(keras$layers$Dense(units = 1, activation = 'relu'))"
+"0","# Compile the model"
+"0","model$compile(loss = 'mse', optimizer = 'adam', metrics = 'mse')"
+"0","model$summary()"
+"1","Model: ""sequential_43""
+_________________________________________________________________
+"
+"1"," Layer (type)                Output Shape              Param #   
+=================================================================
+ dense_87 (Dense)            (None, 8)                 136       
+                                                                 
+"
+"1"," dense_88 (Dense)            (None, 1)                 9         
+                                                                 
+=================================================================
+Total params: 145
+Trainable params: 145
+Non-trainable params: 0
+_________________________________________________________________
+"
