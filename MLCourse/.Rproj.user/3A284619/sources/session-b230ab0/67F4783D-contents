@@ -1,0 +1,436 @@
+---
+title: "Deep Learning 101"
+format: 
+  revealjs:
+     theme: slide.scss
+     scrollable: true
+---
+
+# What's Deep Learning {.small}
+
+พิจารณา neural network ต่อไปนี้
+
+![](images/Screen%20Shot%202564-05-15%20at%2002.29.19.png)
+
+## Deep Learning
+
+![](images/Screenshot%202566-04-28%20at%2021.22.05.png)
+
+## Outline {.small}
+
+-   Neuron
+
+-   Activation function
+
+-   How do neural networks work?
+
+-   How do neural networks learn?
+
+-   Gradient descent
+
+-   Stochastic gradient descent
+
+-   backpropagation
+
+# The Neuron
+
+![](images/Screen%20Shot%202564-05-15%20at%2002.32.24.png)
+
+# Activation Functions {.small}
+
+activation function เป็นฟังก์ชันทางคณิตศาสตร์ ที่ผู้วิเคราะห์ใช้สำหรับแปลงค่าผลรวมเชิงเส้นของข้อมูลนำเข้า ให้มีพิสัยอยู่ในช่วงที่สมเหตุสมผลหรือสอดคล้องกับตัวแปรตามที่ต้องการทำนาย
+
+![](images/Screenshot%202566-04-28%20at%2022.04.23.png)
+
+## Linear Activation Function
+
+```{r}
+library(ggplot2)
+
+# Define the identity activation function
+identity_activation <- function(x) {
+  x
+}
+
+# Generate a sequence of x values
+x_values <- seq(-10, 10, by = 0.1)
+
+# Calculate the corresponding y values using the identity_activation function
+y_values <- sapply(x_values, identity_activation)
+
+# Create a data frame with the x and y values
+data <- data.frame(x = x_values, y = y_values)
+
+# Plot the identity activation function
+p <- ggplot(data, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "Identity Activation Function",
+       x = "Wx+b",
+       y = "Output") +
+  theme_minimal()
+
+# Add equation text to the plot
+equation <- expression(paste("y =", "x"))
+
+p <- p + annotate("text", x = 0, y = -5,
+                  label = equation,
+                  parse = TRUE,
+                  size = 5)
+
+# Display the plot
+print(p)
+```
+
+## Step Function
+
+```{r echo=F}
+library(ggplot2)
+
+# Define the threshold activation function
+threshold_activation <- function(x) {
+  ifelse(x >= 0, 1, 0)
+}
+
+# Generate a sequence of x values
+x_values <- seq(-10, 10, by = 0.1)
+
+# Calculate the corresponding y values using the threshold_activation function
+y_values <- sapply(x_values, threshold_activation)
+
+# Create a data frame with the x and y values
+data <- data.frame(x = x_values, y = y_values)
+
+# Plot the threshold activation function
+p <- ggplot(data, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "Threshold Activation Function",
+       x = "Wx+b",
+       y = "Output") +
+  theme_minimal()
+
+# Add equation text to the plot
+p <- p + annotate("text", x = -8, y = 0.5,
+                  label = "y = ifelse(Wx+b >= 0, 1, 0)",
+                  size = 5, hjust = 0)
+
+# Display the plot
+print(p)
+
+
+```
+
+## Sigmoid Function
+
+```{r}
+library(ggplot2)
+
+# Define the sigmoid activation function
+sigmoid_activation <- function(x) {
+  1 / (1 + exp(-x))
+}
+
+# Generate a sequence of x values
+x_values <- seq(-10, 10, by = 0.1)
+
+# Calculate the corresponding y values using the sigmoid_activation function
+y_values <- sapply(x_values, sigmoid_activation)
+
+# Create a data frame with the x and y values
+data <- data.frame(x = x_values, y = y_values)
+
+# Plot the sigmoid activation function
+p <- ggplot(data, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "Sigmoid Activation Function",
+       x = "Wx+b",
+       y = "Output") +
+  theme_minimal()
+
+# Add equation text to the plot
+equation <- expression(paste("Wx+b =", frac(1, (1 + e^(-x)))))
+
+p <- p + annotate("text", x = 1, y = 0.6,
+                  label = equation,
+                  parse = TRUE,
+                  size = 5)
+
+# Display the plot
+print(p)
+
+```
+
+## Rectified Linear Activation Function
+
+```{r}
+library(ggplot2)
+
+# Define the rectified activation function (ReLU)
+relu_activation <- function(x) {
+  ifelse(x > 0, x, 0)
+}
+
+# Generate a sequence of x values
+x_values <- seq(-10, 10, by = 0.1)
+
+# Calculate the corresponding y values using the relu_activation function
+y_values <- sapply(x_values, relu_activation)
+
+# Create a data frame with the x and y values
+data <- data.frame(x = x_values, y = y_values)
+
+# Plot the rectified activation function (ReLU)
+p <- ggplot(data, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "Rectified Activation Function (ReLU)",
+       x = "Wx+b",
+       y = "Output") +
+  theme_minimal()
+
+# Add equation text to the plot
+equation <- expression(paste("Wx+b =", "max(0, x)"))
+
+p <- p + annotate("text", x = 1, y = 6,
+                  label = equation,
+                  parse = TRUE,
+                  size = 5)
+
+# Display the plot
+print(p)
+
+```
+
+## Hyperbolic Tangent Activation Function
+
+```{r}
+library(ggplot2)
+
+# Define the hyperbolic tangent activation function (tanh)
+tanh_activation <- function(x) {
+  (exp(x) - exp(-x)) / (exp(x) + exp(-x))
+}
+
+# Generate a sequence of x values
+x_values <- seq(-10, 10, by = 0.1)
+
+# Calculate the corresponding y values using the tanh_activation function
+y_values <- sapply(x_values, tanh_activation)
+
+# Create a data frame with the x and y values
+data <- data.frame(x = x_values, y = y_values)
+
+# Plot the hyperbolic tangent activation function (tanh)
+p <- ggplot(data, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "Hyperbolic Tangent Activation Function (tanh)",
+       x = "Wx+b",
+       y = "Output") +
+  theme_minimal()
+
+# Add equation text to the plot
+equation <- expression(paste("Wx+b =", "(e^{x} - e^{-x}) / (e^{x} + e^{-x})"))
+
+p <- p + annotate("text", x = -5, y = 0.25,
+                  label = equation,
+                  parse = TRUE,
+                  size = 5)
+
+# Display the plot
+print(p)
+
+```
+
+## Activation Function
+
+![](images/Screen%20Shot%202564-05-15%20at%2002.29.19.png)
+
+# How do NNs works? {.small}
+
+ตัวอย่างที่ใช้ประกอบจะใช้ชุดข้อมูลเงินเดือนอาจารย์ (TeacherSalarydata.csv)
+
+```{r}
+dat <- read.csv("~/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/ML/MLcourse/MLCourse/documents/TeacherSalaryData.csv")
+head(dat[,-1])
+```
+
+![](images/Screenshot%202566-04-28%20at%2023.27.25.png)
+
+# How do NNs learn? {.small}
+
+-   Forward propagation
+
+-   Backward propagation
+
+![](images/Screenshot%202566-04-29%20at%2000.27.16.png)
+
+## Forward Propagation
+
+![](images/Screenshot%202566-04-29%20at%2001.00.43.png)
+
+## Backward Propagation
+
+![](images/Screenshot%202566-04-29%20at%2008.51.19.png)
+
+## Backward Propagation : (Whole Batch) Gradient Descent
+
+![](images/Screenshot%202566-04-29%20at%2012.35.21.png)
+
+## Gradient Descent
+
+-   https://en.wikipedia.org/wiki/Gradient_descent
+
+![](images/Screenshot%202566-04-29%20at%2010.44.47.png)
+
+## Gradient Descent (Regression)
+
+![](images/Screenshot%202566-04-29%20at%2010.47.49.png)
+
+## Gradient Descent
+
+![](images/Screenshot%202566-04-29%20at%2010.55.41.png)
+
+## Gradient Descent (Classification)
+
+![](images/Screenshot%202566-04-29%20at%2010.58.00.png)
+
+## Gradient Descent
+
+![https://machinelearningnotepad.wordpress.com/2018/04/15/gradient-descent/](https://cdn-images-1.medium.com/max/1600/1*vXpodxSx-nslMSpOELhovg.png)
+
+## Stochastic Gradient Descent {.small}
+
+![](images/Screenshot%202566-04-29%20at%2012.28.31.png)
+
+## Stochastic Gradient Descent {.small}
+
+![](images/Screenshot%202566-04-29%20at%2012.49.32.png)
+
+-   Stochastic gradient descent (SGD) is a more computationally efficient implementation of gradient descent, which considers **1 training example** per iteration rather than summing over the cost of all training examples.
+
+-   The stochastic (random) aspect comes from the random shuffling of the training examples before hand. By harnessing this random selection of the training example, the path to the minimum of the cost function may be noisier (less direct) but will take less time to converge.
+
+https://machinelearningnotepad.wordpress.com/2018/04/15/gradient-descent/
+
+## Minibatch Stochastic Gradient Descent {.small}
+
+![](images/Screenshot%202566-04-29%20at%2012.49.32.png)
+
+## Training ANN with SGD {.small}
+
+1.  กำหนดน้ำหนัก (weight) ใน NN model อย่างสุ่ม โดยให้มีค่าใกล้ 0
+2.  ป้อนข้อมูล X แถวแรกของชุดข้อมูลเข้าไปใน input layer
+3.  ทำ forward propagation เพื่อคำนวณค่าทำนาย $\hat{y}$
+4.  คำนวณค่า error ของการทำนาย ตาม cost function ที่กำหนด
+5.  ทำ backward propagation
+6.  เรียกกระบวนการข้อ 2. - 5. ว่า **iteration** ให้ดำเนินการทำซ้ำข้อ 2. - 5. จนครบทั้งชุดข้อมูล
+7.  เมื่อดำเนินการข้อ 6. จนครบทั้งชุดข้อมูลแล้ว เรียกว่า train ครบ 1 วงรอบ (**1 epoch**)
+
+# How to Train ANNs {.small}
+
+ANNs หรือ Multi-layer perceptron เป็น neural network ประเภทหนึ่งที่เรียกว่า Feedforward neural networks (FFNNs) ซึ่งเป็นโมเดลพื้นฐานที่ใช้ในการทำงานทั่วไป ภายในโมเดลประกอบด้วย input, hidden และ output layers ดังที่กล่าวมาแล้ว โมเดลประเภทนี้สามารถประยุกต์ใช้ได้กับทั้งปัญหา classification และ regression
+
+![](images/Screenshot%202566-04-28%20at%2021.22.05.png)
+
+## Keras {.small}
+
+-   ***Tensorflow was previously the most widely used Deep Learning library, however, it was tricky to figure with for newbies.*** A simple one-layer network involves a substantial amount of code. With Keras, however, the entire process of creating a Neural Network's structure, as well as training and tracking it, becomes exceedingly straightforward.
+
+-   Keras is a high-level API that works with the backends Tensorflow, Theano, and CNTK. It includes a good and user-friendly API for implementing neural network tests. It's also capable of running on both CPUs as well as GPUs.Keras comes with 10 different neural network modelling and training API modules. Let's take a look at a few of them one by one.
+
+https://www.analyticsvidhya.com/blog/2021/11/training-neural-network-with-keras-and-basics-of-deep-learning/
+
+## Keras {.small}
+
+keras สามารถใช้งานได้ทั้งบน Python และ R ทั้งนี้ก่อนการใช้งานผู้วิเคราะห์จำเป็นต้องดำเนินการติดตั้ง library ที่เกี่ยวข้องดังนี้
+
+สำหรับผู้ใช้งาน Python เป็นหลักใน terminal ให้ดาวน์โหลดและติดตั้ง tensorflow และ keras ดังนี้
+
+```{terminal eval=F, echo=T}
+# in terminal
+pip install --upgrade tensorflow
+pip install --upgrade keras
+```
+
+ปัจจุบันสามารถใช้งาน keras จาก Python ผ่าน reticulate ซึ่งทำให้มีความสะดวกมากขึ้น
+
+### Criminal CSV
+
+```{r echo=T}
+library(tidyverse)
+dat <- read.csv("criminal.csv")
+glimpse(dat[,-1], 60)
+```
+
+## Data Preprocessing
+
+```{r echo=T}
+library(tidymodels)
+dat <- dat %>% drop_na()
+dat_preproc <- recipe(TheifperPop~., data= dat) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_select(-X) %>%
+  prep(NULL) %>%
+  juice()
+glimpse(dat_preproc, 60)
+```
+
+## Splitting Dataset
+
+```{r echo=T}
+## data spliting
+split <- initial_split(dat_preproc, prop = 0.8)
+train <- training(split)
+test <- testing(split)
+train_x <- train %>% select(-TheifperPop) %>% as.matrix()
+train_y <- train %>% select(TheifperPop) %>% as.matrix()
+test_x <- test %>% select(-TheifperPop) %>% as.matrix()
+test_y <- test %>% select(TheifperPop) %>% as.matrix()
+#write.csv(train, file="train.csv")
+#write.csv(test, file="test.csv")
+```
+
+## Model specification
+
+```{r echo=T}
+library(reticulate)
+keras <- import("keras")
+# create sequential model
+model <- keras$Sequential()
+# add layers
+model$add(keras$layers$Dense(units = 8, activation = 'relu', input_dim = ncol(train_x)))
+model$add(keras$layers$Dense(units = 1, activation = 'relu'))
+# Compile the model
+model$compile(loss = 'mse', optimizer = 'adam', metrics = 'mse')
+model$summary()
+```
+
+## Training
+
+```{r warning = F, echo=T}
+result <- model$fit(x = train_x, y =train_y, 
+                        epochs=as.integer(500),
+                    validation_split = 0.3, verbose=F)
+```
+
+## Model Evaluation
+
+```{r echo=T}
+data.frame(epoch = 1:500, rmse_train = sqrt(result$history$mse),
+           rmse_validate = sqrt(result$history$val_mse)) %>%
+  ggplot(aes(x=epoch))+
+  geom_line(aes(y=rmse_train), col="steelblue")+
+  geom_line(aes(y=rmse_validate), col="orange")+
+  ylab("RMSE")
+```
+
+```{r echo=T}
+mse <- result$model$evaluate(x = test_x, y = test_y)
+mse[1]
+```
+
+## Predicting the new data
+
+```{r echo=F}
+pred_test <- model$predict(test_x)
+plot(test_y, pred_test)
+cor(test_y, pred_test)
+```

@@ -130,14 +130,14 @@
     "href": "documents/Deeplearning/DL101.html",
     "title": "Deep Learning 101",
     "section": "",
-    "text": "ปัจจุบันมีการใช้คำว่า AI, ML และ DL แทนกันไปมาจนบางครั้งเหมือนว่าจะเป็นคำเดียวกัน ในความเป็นจริงทั้งสามคำดังกล่าวม่ได้เป็นสิ่งเดียวกันเลยทีเดียว แต่มีทั้งส่วนที่เหมือนและแตกต่างกัน รายละเอียดมีดังนี้\n\nAI ย่อมาจาก Artificial Intelligent เป็นเทคนิคหรือวิธีการที่นักวิทยาการข้อมูลใช้เพื่อพัฒนาโปรแกรมคอมพิวเตอร์ รวมถึงหุ่นยนต์หรือจักรกลที่สามารถเลียนแบบการทำงานต่าง ๆ ของมนุษย์ได้ AI จะมีความสามารถในการทำงานใกล้เคียงหรือดีกว่ามนุษย์ ทั้งความสามารถในการจดจำ จำแนก และตัดสินใจดำเนินงานเองโดยอาศัยข้อมูลที่เป็นไปได้ทั้งข้อมูลตัวเลข ข้อความ รูปภาพ และเสียง ตัวอย่างของ AI เช่น รถยนต์หรือยานพาหนะไร้คนขับ, AlphaGo - DeepMind, Chatgpt เป็นต้น\nMachine Learning (ML) เป็นกลุ่มของเทคนิคหรือศาสตร์ย่อยแขนงนึงภายใต้ AI ที่เกี่ยวข้องกับการใช้ประยุกต์ใช้ทฤษฎีทางสถิติและคณิตศาสตร์เพื่อเรียนรู้หรือสกัดสารสนเทศจากข้อมูล สารสนเทศดังกล่าวสามารถนำมาใช้ได้หลายลักษณะ ทั้งการบรรยาย อธิบาย ทำนาย และตัดสินใจ ML ถือเป็นส่วนประกอบที่สำคัญที่สนับสนุนการทำงานของ AI\nDeep Learning (DL) เป็นแขนงย่อย (subdivision) ของ ML ที่เกี่ยวข้องกับการใช้เทคนิคที่เรียกว่าเครือข่ายประสาทเทียม (artificial neural network: ANN) ที่มีความลึกของเครือข่ายหลายชั้นเพื่อเรียนรู้หรือสกัดสารสนเทศจากข้อมูลและใช้ในวัตถุประสงค์หลักคือเพื่อทำนาย/จำแนกค่าสังเกตของตัวแปรตาม นอกจากนี้ลักษณะเฉพาะตัวที่โดดเด่นของ DL คือเครือข่ายประสาทเทียมที่ใช้ในการเรียนรู้นั้นถูกพัฒนาขึ้นเลียนแบบการทำงานของเซลล์เครือข่ายสมองของมนุษย์ การเรียนรู้ของเครื่องที่ใช้ DL จึงสามารถเรียนรู้ข้อมูลที่มีความซับซ้อนเช่น ข้อความ ภาพ และเสียงได้มีประสิทธิภาพมากกว่าการใช้เทคนิค ML แบบปกติ\n\n\n\n\nAI, ML และ DL\n\n\nจากความหมายในข้างต้นจะเห็นว่า DL ถือเป็น machine learning ตัวหนึ่งที่ใช้ในวัตถุประสงค์เพื่อทำนายหรือจำแนกค่าสังเกตของตัวแปรตาม เมื่อเปรียบเทียบความแตกต่างระหว่าง machine learning algorithm ในกลุ่มที่ใช้สำหรับทำนาย กับ DL มีความแตกต่างหนึ่งที่เห็นได้อย่างชัดเจนคือในส่วนของกระบวนการเรียนรู้ของโมเดล ดังรูปด้านล่าง\n\n\n\nMachine Learning Process\n\n\n\n\n\nDeep Learning Process\n\n\nจากรูปข้างต้นจะเห็นว่า ทั้ง ML และ DL เป็นเครื่องมือที่มีวัตถุประสงค์เดียวกันคือเพื่อทำนาย หรือจำแนกประเภทของหน่วยข้อมูล โดยใช้ข้อมูลจากตัวแปรอิสระที่มี การพัฒนาโมเดลทำนายมีกระบวนการที่จะต้อง train และตรวจสอบประสิทธิภาพของโมเดลเหมือนกัน แต่ส่วนที่มีความแตกต่างกันอย่างชัดเจนระหว่าง ML กับ DL คือ การพัฒนาโมเดลประเภท ML ผู้วิเคราะห์จะต้องเป็นผู้ดำเนินการสำรวจ คัดเลือก รวมทั้งเตรียมข้อมูลของตัวแปรอิสระที่จะใช้ในโมเดลทำนายด้วยตนเอง เรียกขั้นตอนนี้ว่า feature extraction ในขณะที่ DL เป็นโมเดลแบบเครือข่ายประสาทเทียมที่มีชั้นของการเรียนรู้หรือประมวลผลข้อมูลหลายชั้น ทำให้สามารถผนวกส่วนของการทำ feature extraction และส่วนของการทำนายเอาไว้ภายในโมเดล DL เดียวกันได้ และมีแนวโน้มที่จะช่วยให้ผู้วิเคราะห์สามารถใช้ประโยชน์ได้จากข้อมูลที่มีปริมาณมาก ๆ ได้อย่างสูงสุด"
+    "text": "พิจารณา neural network ต่อไปนี้\n\nจากรูปจะเห็นว่า neural network ประกอบด้วยส่วนประกอบหลัก เรียกว่า layer จำนวน 3 ส่วนได้แก่\n\ninput layer\nhidden layer\noutput layer\n\n\n\n\n\nPerceptron model"
   },
   {
     "objectID": "documents/Deeplearning/DL101.html#simple-artificial-neural",
     "href": "documents/Deeplearning/DL101.html#simple-artificial-neural",
     "title": "Deep Learning 101",
     "section": "Simple artificial neural",
-    "text": "Simple artificial neural\nหรืออาจเรียกว่า perceptron เป็นโมเดลตัวพื้นฐานมากที่สุดในกลุ่มของ ANN รูปด้านล่างแสดงโครงสร้างของ perceptron model ดังกล่าว จากรูปจะเห็นว่าโมเดลประกอบด้วยส่วนประกอบหลัก 3 ส่วนได้แก่\n\n\n\nPerceptron model"
+    "text": "Simple artificial neural\nหรืออาจเรียกว่า perceptron เป็นโมเดลตัวพื้นฐานมากที่สุดในกลุ่มของ ANN รูปด้านล่างแสดงโครงสร้างของ perceptron model ดังกล่าว จากรูปจะเห็นว่าโมเดลประกอบด้วยส่วนประกอบหลัก 3 ส่วนได้แก่"
   },
   {
     "objectID": "documents/XGBoost.html",
@@ -453,5 +453,313 @@
     "title": "2758688 ML PRIN APPLN",
     "section": "",
     "text": "Instructor\n\nผศ.ดร.สิวะโชติ ศรีสุทธิยากร\n\nอาจารย์ประจำภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\nDataKruRoo Founder\n\n\nความเชี่ยวชาญเฉพาะ\n\nสถิติและวิทยาการข้อมูลทางการศึกษา\nการพัฒนาทัศนภาพข้อมูลทางการศึกษา\nการเรียนรู้ของเครื่องและการประยุกต์สำหรับการวิจัยทางการศึกษา\nการจำลองแบบมอนติคาร์โล\nสถิติวิเคราะห์แบบเบย์\nR programming\n\n\n\nผลงานทางวิชาการ\nPanidvadtana, P., Sujiva, S., & Srisuttiyakorn, S. (2021). A Comparison of the Accuracy of Multidimensional IRT equating methods for Mixed-Format Tests, Kasetsart Journal of Social Sciences, 42, 215-220. (Scopus)\nสิวะโชติ ศรีสุทธิยากร. (2562). ความเหลื่อมล้ำทางการศึกษาและปัจจัยที่ส่งผล : การวิเคราะห์พหุระดับร่วมกับดัชนีเอ็นโทรปีนัยทั่วไปที่อิงมัธยฐาน. วารสารวิธีวิทยาการวิจัย. 32(3), 342-379. (TCI1)\nวรรณี แกมเกตุ, ดวงกมล ไตรวิจิตรคุณ, สิวะโชติ ศรีสุทธิยากร, เมษา นวลศรี, กษิดิศ ครุฑางคะ  และภานุวัฒน์ เข็มกลัด. (2562). รายงานการติดตามและประเมินผลการดำเนินงานตามแผนการศึกษาแห่งชาติ พ.ศ. 2560-2579 : ช่วงปี พ.ศ. 2560-2562. สำนักงานเลขาธิการสภาการศึกษา กระทรวงศึกษาธิการ.\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)\n\n\nหนังสือ\nสิวะโชติ ศรีสุทธิยากร. (2564). สถิติและวิทยาการข้อมูลทางการศึกษา : R สำหรับจัดระเบียบและจัดกระทำข้อมูล. กรุงเทพมหานคร : คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย. สืบค้นจาก https://m.chulabook.com/th/product-details/120204"
+  },
+  {
+    "objectID": "documents/TextPreprocessing.html",
+    "href": "documents/TextPreprocessing.html",
+    "title": "Text PreProcessing",
+    "section": "",
+    "text": "เนื้อหาในบทความนี้จะกล่าวถึงการจัดระเบียบและจัดกระทำข้อมูลแบบข้อความด้วย R และ library PyThaiNLP ของ Python ก่อนการดำเนินการผู้วิเคราะห์จำเป็นต้องดำเนินการติดตั้งโปรแกรมและ library ที่จำเป็นก่อนดังนี้\n\nติดตั้ง R และ RStudio\nติดตั้ง Python และดำเนินการตั้งค่าตามขั้นตอนในลิงค์ https://support.posit.co/hc/en-us/articles/360023654474-Installing-and-Configuring-Python-with-RStudio\nติดตั้ง package reticulate บน R โดยพิมคำสั่ง install.packages(\"reticulate\") บน R console\nติดตั้ง PyThaiNLP โดยเข้าไปที่หน้า Terminal ใน RStudio จากนั้นพิมพ์คำสั่ง pip install pythainlp\n\nเมื่อดำเนินการในขั้นตอนทั้ง 4 เรียบร้อยแล้ว ขั้นตอนต่อมาคือการเรียกใช้ library pythainlp บน R โดยพิมพ์คำสั่งดังนี้\n\nlibrary(tidyverse)\nlibrary(reticulate)\npythainlp <- import(\"pythainlp\")\n\nเอกสารอ้างอิง\n\nคู่มือการใช้งาน PyThaiNLP\nhttps://towardsdatascience.com/analysis-of-presidential-speeches-throughout-american-history-bb088d36d7dd"
+  },
+  {
+    "objectID": "documents/TextPreprocessing.html#word-tokenization",
+    "href": "documents/TextPreprocessing.html#word-tokenization",
+    "title": "Text PreProcessing",
+    "section": "Word tokenization",
+    "text": "Word tokenization\nwork tokenization หรือการตัดคำเป็นเทคนิคการแบ่งข้อความออกเป็นคำ ซึ่งสามารถทำได้หลายลักษณะ ทั้งการตัดคำด้วยเครื่องหมายวรรคตอนหรืออักขระที่กำหนด หรือการตัดคำด้วยอัลกอริทึม การตัดคำเป็นเทคนิคที่ใช้อย่างมากในกระบวนการวิเคราะห์ข้อความ เช่น การวิเคราะห์ sentiment หรือการจำแนกข้อความ\nการตัดคำภาษาไทยสามารถทำได้อย่างมีประสิทธิภาพมากขึ้นด้วย libraryPyThaiNLP ที่ถูกพัฒนาขึ้นบนภาษา Python และสามารถเรียกใช้ได้บนภาษา R ผ่าน package reticulate โดยฟังก์ชันที่ใช้สำหรับตัดคำคือ word_tokenize()\nฟังก์ชัน word_tokenize() มีพารามิเตอร์ที่สามารถกำหนดเพื่อปรับเปลี่ยนการทำงานได้หลายตัว พารามิเตอร์จำเป็นได้แก่ text เป็นข้อความนำเข้าสำหรับฟังก์ชัน ส่วนพารามิเตอร์ engine ใช้สำหรับกำหนดอัลกอริทึมเพื่อตัดคำภายในประโยคที่กำหนด อัลกอริทึมที่แตกต่างกันมีผลให้การตัดคำที่ได้อาจมีความแตกต่างกัน ค่าเริ่มต้นของพารามิเตอร์นี้คือ engine = \"newmm\" เป็นวิธีการตัดคำโดยพยายามให้คำที่ตัดมีความสอดคล้องกับคำภายในพจนานุกรมภาษาไทยมากที่สุด ส่วนวิธีการอื่น ๆ ที่สามารถกำหนดได้ เช่น longest, icu หรือ deepcut เป็นต้น อีกพารามิเตอร์หนึ่งที่มีประโยชน์มากคือ keep_whitespace โดยมีค่าเริ่มต้นเท่ากับ True ซึ่งหมายถึงการเก็บเว้นวรรคไว้ในผลการตัดคำ ในกรณีที่ผู้วิเคราะห์ต้องการให้นำเครื่องหมายเว้นวรรคทั้งหมดออกจากผลการตัดคำให้กำหนดพารามิเตอร์นี้เป็น False\nตัวอย่างต่อไปนี้แสดงการใช้ฟังก์ชันดังกล่าวเพื่อตัดคำในประโยคที่กำหนด\n\ntext <- \"ส่วนเบี่ยงเบนมาตรฐานให้วัดการกระจายสัมบูรณ์ แต่สัมประสิทธิ์การแปรผันใช้วัดการกระจายสัมพัทธ์\"\n\ntokennized_text <- pythainlp$word_tokenize(text)\ntokennized_text\n\n [1] \"ส่วน\"      \"เบี่ยงเบน\"  \"มาตรฐาน\"  \"ให้\"       \"วัด\"       \"การ\"     \n [7] \"กระจาย\"   \"สัมบูรณ์\"    \" \"        \"แต่\"       \"สัมประสิทธิ์\" \"การ\"     \n[13] \"แปรผัน\"    \"ใช้\"       \"วัด\"       \"การ\"      \"กระจาย\"   \"สัมพัทธ์\"   \n\n\nตัวอย่างต่อไปนี้แสดงผลการตัดคำด้วยฟังก์ชัน word_tokenize() ที่มีการกำหนดพารามิเตอร์ต่าง ๆ\n\n#default\npythainlp$word_tokenize(text)\n\n [1] \"ส่วน\"      \"เบี่ยงเบน\"  \"มาตรฐาน\"  \"ให้\"       \"วัด\"       \"การ\"     \n [7] \"กระจาย\"   \"สัมบูรณ์\"    \" \"        \"แต่\"       \"สัมประสิทธิ์\" \"การ\"     \n[13] \"แปรผัน\"    \"ใช้\"       \"วัด\"       \"การ\"      \"กระจาย\"   \"สัมพัทธ์\"   \n\n# longest engine\npythainlp$word_tokenize(text, engine = \"longest\")\n\n [1] \"ส่วน\"      \"เบี่ยงเบน\"  \"มาตรฐาน\"  \"ให้\"       \"วัด\"       \"การก\"    \n [7] \"ระ\"       \"จา\"       \"ย\"        \"สัมบูรณ์\"    \" \"        \"แต่\"      \n[13] \"สัมประสิทธิ์\" \"การแปร\"   \"ผัน\"       \"ใช้\"       \"วัด\"       \"การก\"    \n[19] \"ระ\"       \"จา\"       \"ย\"        \"สัมพัทธ์\"   \n\n# keep whitespace = False\npythainlp$word_tokenize(text, engine = \"longest\", \n                        keep_whitespace = F)\n\n [1] \"ส่วน\"      \"เบี่ยงเบน\"  \"มาตรฐาน\"  \"ให้\"       \"วัด\"       \"การก\"    \n [7] \"ระ\"       \"จา\"       \"ย\"        \"สัมบูรณ์\"    \"แต่\"       \"สัมประสิทธิ์\"\n[13] \"การแปร\"   \"ผัน\"       \"ใช้\"       \"วัด\"       \"การก\"     \"ระ\"      \n[19] \"จา\"       \"ย\"        \"สัมพัทธ์\"   \n\n# use deepcut and keep whitespace = False\npythainlp$word_tokenize(text, engine = \"deepcut\", \n                        keep_whitespace = F)\n\n [1] \"ส่วน\"      \"เบี่ยงเบน\"  \"มาตรฐาน\"  \"ให้\"       \"วัด\"       \"การ\"     \n [7] \"กระจาย\"   \"สัมบูรณ์\"    \"แต่\"       \"สัมประสิทธิ์\" \"การ\"      \"แปร\"     \n[13] \"ผัน\"       \"ใช้\"       \"วัด\"       \"การ\"      \"กระจาย\"   \"สัมพัทธ์\"   \n\n\nผลการตัดคำข้างต้นจะเห็นว่าการใช้อัลกอริทึม newmm และ deepcut มีแนวโน้มที่จะได้คำที่มีความหมายถูกต้องมากที่สุด อย่างไรก็ตามจะเห็นว่ามีคำศัพท์เฉพาะที่มีการตัดคำที่ยังไม่ถูกต้อง ได้แก่ ส่วนเบี่ยงเบนมาตรฐาน การกระจายสัมบูรณ์ สัมประสิทธิ์การแปรผัน และการกระจายสัมพัทธ์ ในกรณีนี้ผู้วิเคราะห์สามารถเพิ่มคำศัพท์เฉพาะที่ใช้สำหรับประกอบการตัดคำได้ดังนี้\n\ntrie <- pythainlp$tokenize$Trie\n## custom word\ncustom_word <- c(\"ส่วนเบี่ยงเบนมาตรฐาน\",\n                 \"การกระจายสัมบูรณ์\",\n                 \"สัมประสิทธิ์การแปรผัน\",\n                 \"การกระจายสัมพัทธ์\")\n## load thai dictionary from pythainlp\ndict_default <- pythainlp$corpus$thai_words()\n\nextended_dict <- trie(pythainlp$corpus$thai_words())\nfor (word in custom_word) {\n  extended_dict$add(word)\n}\n\n\npythainlp$word_tokenize(text, custom_dict = extended_dict)\n\n [1] \"ส่วนเบี่ยงเบนมาตรฐาน\" \"ให้\"                \"วัด\"               \n [4] \"การกระจายสัมบูรณ์\"    \" \"                 \"แต่\"               \n [7] \"สัมประสิทธิ์การแปรผัน\"  \"ใช้\"                \"วัด\"               \n[10] \"การกระจายสัมพัทธ์\"   \n\n\nจากตัวอย่างข้างต้นจะเห็นว่า การกำหนด dictionary เพิ่มเติมทำให้ผู้วิเคราะห์สามารถตัดคำ/ดึงคำจากข้อความที่มีความหมายสอดคล้องกับบริบทของการวิเคราะห์ได้มากขึ้น"
+  },
+  {
+    "objectID": "documents/TextPreprocessing.html#sentences-tokenization",
+    "href": "documents/TextPreprocessing.html#sentences-tokenization",
+    "title": "Text PreProcessing",
+    "section": "Sentences tokenization",
+    "text": "Sentences tokenization\nเป็นเทคนิคการแบ่งข้อความออกเป็นประโยคหรือวลีย่อย โดยอาจใช้เว้นวรรคหรือเครื่องหมายจบประโยคต่าง ๆ เป็นตัวแบ่ง การทำ tokenization ลักษณะนี้เหมาะสำหรับงานวิเคราะห์ที่ต้องการสรุปความ (text summarization) ที่โครงสร้างของประโยคมีความสำคัญ\nการทำ sentences tokenization ด้วย PyThaiNLP สามารถทำได้ด้วยฟังก์ชัน sent_tokenize() ทั้งนี้ก่อนการใช้ฟังก์ชันดังกล่าวผู้วิเคราะห์จำเป็นต้องติดตั้ง library python-crfsuite ก่อนโดยพิมพ์คำสั่งต่อไปนี้ใน terminal ของ R Studio\n\npip install python-crfsuite\n\nฟังก์ชัน sent_tokenize() มีพารามิเตอร์ที่สำคัญ 2 ตัว ได้แก่ text เป็นข้อความนำเข้าสำหรับฟังก์ชัน ส่วนพารามิเตอร์ engine ใช้สำหรับกำหนดอัลกอริทึมเพื่อแบ่งประโยคจากข้อความที่กำหนด โดยมี 2 อัลกอริทึมให้เลือกได้แก่ ‘whitespace’ กับ ‘whitespace+newline’ ซึ่งเป็นการแบ่งประโยคด้วยช่องว่าง และการเว้นบรรทัด\n\npythainlp$sent_tokenize(text, engine = \"whitespace\")\n\n[1] \"ส่วนเบี่ยงเบนมาตรฐานให้วัดการกระจายสัมบูรณ์\" \n[2] \"แต่สัมประสิทธิ์การแปรผันใช้วัดการกระจายสัมพัทธ์\"\n\nmytext <- readLines(\"mytext.txt\")\ntemp<-pythainlp$sent_tokenize(text = mytext[1],engine = \"whitespace+newline\")\ntemp\n\n[1] \"การวิเคราะห์การถดถอย\""
+  },
+  {
+    "objectID": "documents/TextPreprocessing.html#data-preprocessing",
+    "href": "documents/TextPreprocessing.html#data-preprocessing",
+    "title": "Text PreProcessing",
+    "section": "data preprocessing",
+    "text": "data preprocessing\nผู้วิเคราะห์สร้างชุดข้อมูลใหม่สำหรับพัฒนาโมเดลก่อนดังนี้\n\nhw3 <- dat %>% select(`รหัสนิสิต`,result3, text3)\nhead(hw3)\n\n# A tibble: 6 × 3\n    `รหัสนิสิต` result3 text3                                                      \n       <dbl>   <dbl> <chr>                                                      \n1 6441127027       0 สมการถดถอยที่คำนวณมาได้นั้น นิสิตคิดว่ายังมีตัวแปรบางประการที่ไม่มีความเหม…\n2 6441153327       1 มีความเหมาะสม เพราะ แม้ว่าเมื่อใช้การวิเคราะห์สหสัมพันธ์แบบเพียร์สัน พบว่…\n3 6442505827       2 เหมาะสมเพราะไม่ละเมิดข้อตกลงเบื้องต้นใดๆเลย และมีRscore อยู่ที่69.7%  \n4 6441193427       1 มีความเหมาะสมที่จะใช้ทำนาย/อธิบายความสัมพันธ์ที่พบในข้อมูล เพราะเศษเหลื…\n5 6441140127       2 เหมาะสม เพราะจากการวิเคราะห์เศษเหลือ เมื่อพิจารณา Linearity, Nor…\n6 6441037227       1 เหมาะสม เพราะ เมื่อพิจารณาสัมประสิทธิ์การตัดสินใจ (R2) พบว่ามีค่า 0.69…\n\n\nขั้นตอนต่อมาจะทำ tokenization เพื่อแบ่งคำจากข้อความที่นิสิตตอบมา\n\n# define tokenization function\ntokenize_thai <- function(text) {\n  tokens <- lapply(text, pythainlp$word_tokenize, engine=\"newmm\")\n  tokens_list <- lapply(tokens, function(x) {\n                              paste(x, collapse = \" \")})\n  tokens_list <- unlist(tokens_list)\nreturn(tokens_list)\n}\n## tokenized via mutate function\ntemp<-hw3 %>%\n  mutate(token = tokenize_thai(text3))\nhead(temp$token,10)\n\n [1] \"สมการ ถดถอย ที่ คำนวณ มา ได้ นั้น   นิสิต คิด ว่า ยังมี ตัวแปร บางประการ ที่ ไม่ มี ความเหมาะสม กับ การ วิเคราะห์   เช่น จำนวน ร้อยละ ของ นักเรียน เพศหญิง ใน โรง เร ีน   ซึ่ง อาจจะ ไม่ ถือว่า เป็น ดัชนี ชี้ วัด ว่า   ค่าเฉลี่ย นั้น จะ เพิ่มขึ้น หรือ ลดลง อย่างไร ได้ จาก การ มี จำนวน นักเรียน หญิง ที่ เพิ่มขึ้น   เป็นต้น\"                                                                                                                                                                                                \n [2] \"มี ความเหมาะสม   เพราะ   แม้ว่า เมื่อ ใช้การ วิเคราะห์ สห สัมพันธ์ แบบ เพียร์ สัน   พบ ว่า   ตัวแปร สัดส่วน นักเรียน หญิง ภายใน โรงเรียน มี ความสัมพันธ์ เชิงเส้น กับ ตัวแปร ตาม ใน ระดับ ต่ำ   ( r   =   - 2.70 )   ทำให้ ละเมิด ข้อตกลง   แต่ เมื่อ ดู จาก แผนภาพ   residual   พบ ว่า มี การ กระจาย ของ เศษเหลือ ที่ มีแนวโน้ม เป็น เส้นตรง   มี ความ เป็น   Homoskedasticity   (ฺ Breusch-Pagan   =   1.04 ,   p   =   0.792 )   และ ไม่ มีปัญหา   Multicollinearity   เนื่องจาก   VIF   ของ ทุก ตัวแปร อิสระ มีค่า น้อยกว่า   4\"\n [3] \"เหมาะสม เพราะ ไม่ ละเมิด ข้อตกลง เบื้องต้น ใดๆ เลย   และ มี Rscore   อยู่ ที่ 69.7 %\"                                                                                                                                                                                                                                                                                                                                                                                           \n [4] \"มี ความเหมาะสม ที่จะ ใช้ ทำนาย / อธิบาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล   เพราะ เศษเหลือ มี การ เ เจ กเ เจ ง แบบ ปกติ   เศษเหลือ มี การ กระจาย ตัว รอบ เส้น สมการ ถดถอย อย่าง สม่ำเสมอ ใกล้เคียง กัน   และ ไม่ มีค่า ผิดปกติ ที่ มีอิทธิพล ต่อ การประมาณ สมการ ถดถอย\"                                                                                                                                                                                                                                     \n [5] \"เหมาะสม   เพราะ จาก การ วิเคราะห์ เศษเหลือ   เมื่อ พิจารณา   Linearity ,   Normality   และ   Homoscedasticity   ไม่ พบ ปัญหา ละเมิด ข้อตกลง เบื้องต้น   และ เมื่อ พิจารณา สัมประสิทธิ์ การตัดสินใจ   บ่งบอก ว่า สมการ ถดถอย สามารถ อธิบาย ความแปรผัน ที่ เกิดขึ้น ใน ตัวแปร ตาม คิด เป็น ถึง ร้อยละ   70\"                                                                                                                                                                                                \n [6] \"เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์ การตัดสินใจ   ( R 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   สรุป ได้ ว่า   สมการ ถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปร ตาม ได้ อย่าง แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย / อธิบาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล\"                                                                                                                                                                                                                               \n [7] \"เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์ การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1              สรุป ได้ ว่า   สมการ ถดถอย ที่ ประมาณ ได้   สามารถ ทำนาย ตัวแปร ตาม ได้ แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล\"                                                                                                                                                                                                                             \n [8] \"เหมาะสม   เพราะว่า พิจารณา จาก สัมประสิทธิ์ การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   ดังนั้น จะ ได้ ว่า สมการ ถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปร ตาม ได้ อย่าง แม่นยำ   สรุป จึง เหมาะสม ที่จะ ใช้ ทำนาย / อธิบาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล\"                                                                                                                                                                                                                       \n [9] \"R ^ 2   =   0.697   ดังนั้น สมการ ถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การ ทำนาย มาก   เพราะ   R ^ 2   มีค่า ใกล้เคียง   1\"                                                                                                                                                                                                                                                                                                                                                      \n[10] \"R ^ 2 = 0.697   นั่น คือ สมการ ถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การ ทำนาย ตัวแปร ตาม ได้ แม่น มาก   เพราะ มีค่า ใกล้เคียง 1\"                                                                                                                                                                                                                                                                                                                                                    \n\n\nจะสังเกตเห็นว่าการตัดคำด้วย dictionary ของ pythainlp สามารถทำได้ดีพอสมควร แต่คำศัพท์ทางสถิติที่แปลเป็นภาษาไทยยังไม่สามารถตัดคำได้อย่างเหมาะสม ดังนั้นเพื่อให้การตัดคำทำได้อย่างมีประสิทธิภาพมากขึ้น ผู้วิเคราะห์จึงจะเพิ่มคำศัพท์ทางสถิติที่เกี่ยวข้องไว้ใน dictionary โดยเก็บคำศัพท์ดังกล่าวไว้ในไฟล์ mytext.txt\n\ntrie <- pythainlp$tokenize$Trie\n## custom word\ncustom_word <- readLines(\"mytext.txt\", skipNul = TRUE)\n## load thai dictionary from pythainlp\ndict_default <- pythainlp$corpus$thai_words()\n\nextended_dict <- trie(pythainlp$corpus$thai_words())\nfor (word in custom_word) {\n  extended_dict$add(word)\n}\n\nจากนั้นลองดำเนินการตัดคำใหม่ด้วย dictionary ข้างต้น\n\n# define tokenization function\ntokenize_thai <- function(text) {\n  tokens <- lapply(text, pythainlp$word_tokenize, engine=\"newmm\",\n                   custom_dict = extended_dict)\n  tokens_list <- lapply(tokens, function(x) {\n                              paste(x, collapse = \" \")})\n  tokens_list <- unlist(tokens_list)\nreturn(tokens_list)\n}\n## tokenized via mutate function\ntemp<-hw3 %>%\n  mutate(token = tokenize_thai(text3))\nhead(temp$token,10)\n\n [1] \"สมการถดถอย ที่ คำนวณ มา ได้ นั้น   นิสิต คิด ว่า ยังมี ตัวแปร บางประการ ที่ ไม่ มี ความเหมาะสม กับ การ วิเคราะห์   เช่น จำนวน ร้อยละ ของ นักเรียน เพศหญิง ใน โรง เร ีน   ซึ่ง อาจจะ ไม่ ถือว่า เป็น ดัชนี ชี้ วัด ว่า   ค่าเฉลี่ย นั้น จะ เพิ่มขึ้น หรือ ลดลง อย่างไร ได้ จาก การ มี จำนวน นักเรียน หญิง ที่ เพิ่มขึ้น   เป็นต้น\"                                                                                                                                                                                           \n [2] \"มี ความเหมาะสม   เพราะ   แม้ว่า เมื่อ ใช้การ วิเคราะห์ สหสัมพันธ์ แบบ เพียร์สัน   พบ ว่า   ตัวแปร สัดส่วน นักเรียน หญิง ภายใน โรงเรียน มี ความสัมพันธ์เชิงเส้น กับ ตัวแปรตาม ใน ระดับ ต่ำ   ( r   =   - 2.70 )   ทำให้ ละเมิด ข้อตกลง   แต่ เมื่อ ดู จาก แผนภาพ   residual   พบ ว่า มี การกระจาย ของ เศษเหลือ ที่ มีแนวโน้ม เป็น เส้นตรง   มี ความ เป็น   Homoskedasticity   (ฺ Breusch-Pagan   =   1.04 ,   p   =   0.792 )   และ ไม่ มีปัญหา   Multicollinearity   เนื่องจาก   VIF   ของ ทุก ตัวแปรอิสระ มีค่า น้อยกว่า   4\"\n [3] \"เหมาะสม เพราะ ไม่ ละเมิด ข้อตกลงเบื้องต้น ใดๆ เลย   และ มี Rscore   อยู่ ที่ 69.7 %\"                                                                                                                                                                                                                                                                                                                                                                                      \n [4] \"มี ความเหมาะสม ที่จะ ใช้ ทำนาย/อธิบายความสัมพันธ์ ที่ พบ ใน ข้อมูล   เพราะ เศษเหลือ มี การ เ เจ กเ เจ ง แบบ ปกติ   เศษเหลือ มี การกระจาย ตัว รอบ เส้น สมการถดถอย อย่าง สม่ำเสมอ ใกล้เคียง กัน   และ ไม่ มีค่า ผิดปกติ ที่ มีอิทธิพล ต่อ การประมาณ สมการถดถอย\"                                                                                                                                                                                                                                     \n [5] \"เหมาะสม   เพราะ จาก การวิเคราะห์เศษเหลือ   เมื่อ พิจารณา   Linearity ,   Normality   และ   Homoscedasticity   ไม่ พบ ปัญหา ละเมิด ข้อตกลงเบื้องต้น   และ เมื่อ พิจารณา สัมประสิทธิ์การตัดสินใจ   บ่งบอก ว่า สมการถดถอย สามารถ อธิบาย ความแปรผัน ที่ เกิดขึ้น ใน ตัวแปรตาม คิด เป็น ถึง ร้อยละ   70\"                                                                                                                                                                                                \n [6] \"เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์การตัดสินใจ   ( R2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   สรุป ได้ ว่า   สมการถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปรตาม ได้ อย่าง แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย/อธิบายความสัมพันธ์ ที่ พบ ใน ข้อมูล\"                                                                                                                                                                                                                                \n [7] \"เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1              สรุป ได้ ว่า   สมการถดถอย ที่ ประมาณ ได้   สามารถ ทำนาย ตัวแปรตาม ได้ แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล\"                                                                                                                                                                                                                          \n [8] \"เหมาะสม   เพราะว่า พิจารณา จาก สัมประสิทธิ์การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   ดังนั้น จะ ได้ ว่า สมการถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปรตาม ได้ อย่าง แม่นยำ   สรุป จึง เหมาะสม ที่จะ ใช้ ทำนาย/อธิบายความสัมพันธ์ ที่ พบ ใน ข้อมูล\"                                                                                                                                                                                                                       \n [9] \"R ^ 2   =   0.697   ดังนั้น สมการถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การทำนาย มาก   เพราะ   R ^ 2   มีค่า ใกล้เคียง   1\"                                                                                                                                                                                                                                                                                                                                                  \n[10] \"R ^ 2 = 0.697   นั่น คือ สมการถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การทำนาย ตัวแปรตาม ได้ แม่น มาก   เพราะ มีค่า ใกล้เคียง 1\"                                                                                                                                                                                                                                                                                                                                                 \n\n\nสำรวจข้อมูลเบื้องต้น\n\nlibrary(tidytext)\ntemp<-temp %>%\n  unnest_tokens(input = token, output = word, token = \"ptb\") %>%\n  filter(!word %in% py$stopword()) %>%\n  #filter(!word %in% py$negations()) %>%\n  filter(!word %in% py$syllables())\n\ntemp %>% \n  # remove all numbers\n  mutate(word = str_replace_all(word, \"\\\\d+\", \"\")) %>%\n  # remove all english words\n  mutate(word = str_remove_all(word, \"\\\\b(?!R2\\\\b|\\\\bR\\\\s?\\\\^\\\\s?2\\\\b)[A-Za-z]+\\\\b\")) %>%\n  # correct word\n  mutate(word = str_replace(word, \"อารีสแควร์\",\"อาร์สแควร์\"))%>%\n  #mutate(word = str_replace(word, \"เหมาะสม\",\"ความเหมาะสม\")) %>%\n  #mutate(word = str_replace(word , \"ถดถอย\",\"สมการถดถอย\")) %>%\n  # remove punctuation\n  mutate(word = str_remove(word, \"^[[:punct:]]+$\")) %>%\n  mutate(word = str_remove(word,\" \")) %>%\n  # remove unnescessary words\n  filter(!word %in% c(\"มีค่า\",\"ที่จะ\",\"=\",\"นำมา\",\"^\",\"เ\",\"ใกล้เคียง\",\"ยังมี\",\"ยกกำลัง\",\"ทำการ\",\"ใชต้รวจ\",\"ขอ้\",\"ืองตน้\",\"ดังนั้น\",\"ว่าการ\",\n                      \"บางประการ\",\"ทั้งสอง\")) %>%\n  filter(!word %in% c(\".\",\"\"))%>%\n  group_by(result3,word) %>%\n  count() %>%\n  arrange(desc(n)) %>%\n  head(20) %>%\n  ggplot(aes(x = n, y= reorder(word,n)))+\n  geom_col(aes(fill = factor(result3,\n                             levels=c(0,1,2),\n                             labels=c(\"ผิด\",\"ถูกบางส่วน\",\"ถูก\"))))+\n  theme(text=element_text(family=\"ChulaCharasNew\"))+\n  labs(fill = \"ผลการตอบ\")\n\n\n\n\n\n#install.packages(\"wordcloud2\")\nlibrary(wordcloud2)\nword_count<-temp %>% \n  # remove all numbers\n  mutate(word = str_replace_all(word, \"\\\\d+\", \"\")) %>%\n  # remove all english words\n  mutate(word = str_remove_all(word, \"\\\\b(?!R2\\\\b|\\\\bR\\\\s?\\\\^\\\\s?2\\\\b)[A-Za-z]+\\\\b\")) %>%\n  # correct word\n  mutate(word = str_replace(word, \"อารีสแควร์\",\"อาร์สแควร์\"))%>%\n  #mutate(word = str_replace(word, \"เหมาะสม\",\"ความเหมาะสม\")) %>%\n  #mutate(word = str_replace(word , \"ถดถอย\",\"สมการถดถอย\")) %>%\n  # remove punctuation\n  mutate(word = str_remove(word, \"^[[:punct:]]+$\")) %>%\n  mutate(word = str_remove(word,\" \")) %>%\n  # remove unnescessary words\n  filter(!word %in% c(\"มีค่า\",\"ที่จะ\",\"=\",\"นำมา\",\"^\",\"เ\",\"ใกล้เคียง\",\"ยังมี\",\"ยกกำลัง\",\"ทำการ\",\"ใชต้รวจ\",\"ขอ้\",\"ืองตน้\",\"ดังนั้น\",\"ว่าการ\",\n                      \"บางประการ\",\"ทั้งสอง\")) %>%\n  filter(!word %in% c(\".\",\"\"))%>%\n  group_by(result3,word) %>%\n  count() \n\ncol<-ifelse(word_count[,1]==0,\"maroon\",\n            ifelse(word_count[,1]==1,\"orange\",\"steelblue\"))\nwordcloud2(data = word_count[,-1], size = 3, fontFamily = \"ChulaCharasNew\",\n           color = col, backgroundColor = \"white\",\n           shape = \"square\")\n\n\n\n\n\n\nจะเห็นว่าคำตอบของผู้เรียนมีแนวโน้มที่จะกล่าวถึงข้อตกลงเบื้องต้นของการวิเคราะห์การถดถอยว่ามีความเหมาะสมอย่างไร\nผลการวิเคราะห์ข้างต้นยังทำให้ผู้วิเคราะห์ทำความสะอาดข้อมูลไปได้ระดับหนึ่ง ขั้นตอนต่อไปคือจะนำข้อมูลที่จัดระเบียบและทำความสะอาดนี้ไปพัฒนาโมเดลตรวจคำตอบต่อไป"
+  },
+  {
+    "objectID": "documents/TextPreprocessing.html#training-classification-models",
+    "href": "documents/TextPreprocessing.html#training-classification-models",
+    "title": "Text PreProcessing",
+    "section": "Training Classification models",
+    "text": "Training Classification models\nการวิเคราะห์ในส่วนนี้เป็นการพัฒนาโมเดลทำนาย เพื่อตรวจคำตอบแบบข้อเขียนของนักเรียน การพัฒนาโมเดลประกอบด้วยขั้นตอนได้แก่ (1) การนำเข้าและจัดการข้อมูลก่อนการวิเคราะห์​ (2) การแบ่งส่วนชุดข้อมูล (3) การกำหนดและระบุโมเดลทำนาย (4) การปรับแต่งค่า hyperparameters ด้วยเทคนิค cross-validation (5) การประเมินประสิทธิภาพของโมเดล และ (6) การนำโมเดลไปใช้ รายละเอียดมีดังนี้\n\n1. การนำเข้าและจัดการข้อมูลก่อนการวิเคราะห์\nชุดข้อมูลที่ใช้พัฒนาโมเดลคือ traindataset_hw.xlsx สามารถนำเข้าได้ดังนี้\n\ndat <- read_excel(\"traindataset_hw.xlsx\")\nnames(dat)\n\n [1] \"Timestamp\"   \"Score\"       \"รหัสนิสิต\"      \"ช่ือ นามสกุล\"   \"ตอนเรียนที่\"   \n [6] \"text1\"       \"result1\"     \"remark1\"     \"residual\"    \"pic1\"       \n[11] \"hetoro\"      \"pic2\"        \"norm\"        \"pic3\"        \"coll\"       \n[16] \"pic4\"        \"text2\"       \"result2\"     \"text3\"       \"result3\"    \n[21] \"text4\"       \"result4\"     \"text5\"       \"result5\"     \"text6\"      \n[26] \"result6\"     \"text7\"       \"result7\"     \"total score\"\n\n\nเปลี่ยนชื่อคอลัมน์บางตัวเพื่อให้สะดวกในการเรียกใช้งาน\n\nnames(dat)[3]<-\"student_id\"\nnames(dat)[4]<-\"student_name\"\nnames(dat)[5]<-\"section\"\n\nผู้วิเคราะห์จะดำเนินการจัดการข้อมูลทั้งชุดก่อนตามขั้นตอนที่ได้ทำในการสำรวจข้อมูลเบื้องต้น รายละเอียดมีดังนี้\n\n### ---- define tokenization function for Thai language\ntokenize_thai <- function(text) {\n  tokens <- lapply(text, pythainlp$word_tokenize, engine=\"newmm\",\n                   custom_dict = extended_dict)\n  tokens_list <- lapply(tokens, function(x) {\n                              paste(x, collapse = \" \")})\n  tokens_list <- unlist(tokens_list)\nreturn(tokens_list)\n}\n### ---- python stopword script\nstopword_fn <-\"\ndef stopword():\n  import pythainlp\n  stopword = pythainlp.corpus.common.thai_stopwords()\n  stopword = list(stopword)\n  return stopword\n\"\n### ---- syllables dictionary\nsyllables_fn<-\"\ndef syllables():\n  import pythainlp\n  syllable = pythainlp.corpus.common.thai_syllables()\n  syllable = list(syllable)\n  return(syllable)\n\"\n\nคำสั่งต่อไปนี้ใช้จัดเตรียมข้อมูล training dataset ทั้งหมด ทั้งนี้ผู้วิเคราะห์ได้ตรวจคำตอบตามแนวคำตอบที่กำหนดไว้แล้ว ผลการตรวจอยู่ใน column result3\n\nq3_dat <- dat %>% select(student_id, result3, text3)\n\n\nlibrary(tidymodels)\nlibrary(themis)\nlibrary(textrecipes)\n\n## tokenized via mutate function\ntemp<-hw3 %>%\n  mutate(word = tokenize_thai(text3)) %>%\n  # remove all numbers\n  mutate(word = str_replace_all(word, \"\\\\d+\", \"\")) %>%\n  # remove all english words\n  mutate(word = str_remove_all(word, \"\\\\b(?!R2\\\\b|\\\\bR\\\\s?\\\\^\\\\s?2\\\\b)[A-Za-z]+\\\\b\")) %>%\n  # correct word\n  mutate(word = str_replace(word, \"อารีสแควร์\",\"อาร์สแควร์\"))%>%\n  #mutate(word = str_replace(word, \"เหมาะสม\",\"ความเหมาะสม\")) %>%\n  #mutate(word = str_replace(word , \"ถดถอย\",\"สมการถดถอย\")) %>%\n  # remove punctuation\n  mutate(word = str_remove(word, \"^[[:punct:]]+$\")) %>%\n  mutate(word = str_remove(word,\" \")) %>%\n  # remove unnescessary words\n  filter(!word %in% c(\"มีค่า\",\"ที่จะ\",\"=\",\"นำมา\",\"^\",\"เ\",\"ใกล้เคียง\",\"ยังมี\",\"ยกกำลัง\",\"ทำการ\",\"ใชต้รวจ\",\"ขอ้\",\"ืองตน้\",\"ดังนั้น\",\"ว่าการ\",\n                      \"บางประการ\",\"ทั้งสอง\")) %>%\n  filter(!word %in% c(\".\",\"\")) %>%\n    filter(!word %in% py$stopword()) %>%\n  #filter(!word %in% py$negations()) %>%\n  filter(!word %in% py$syllables()) %>%\n  mutate(result3 = factor(result3, levels=c(0,1,2),\n                          labels=c(\"ผิด\",\"ถูก\",\"ถูก\")))\n###----\nrecipe_obj <- recipe(result3~ word, data = temp) %>%\n  step_tokenize(word, token = \"ptb\") %>%\n  step_tfidf(word) %>%  \n  step_normalize(all_numeric_predictors()) %>%\n  step_adasyn(result3)\n\n### --- model specification\nlasso_spec <- multinom_reg(penalty = tune(),\n                           mixture = 1) %>%\n  set_engine(\"glmnet\") %>%\n  set_mode(\"classification\")\nknn_spec <- nearest_neighbor(neighbors = tune(),\n                             weight_func = tune())%>%\n  set_engine(\"kknn\") %>%\n  set_mode(\"classification\")\n\n\nwf<- workflow_set(\n  preproc = list(recipe_obj),\n  models = list(lasso_spec, knn_spec)\n)\n  \n\nfold<-vfold_cv(temp, v=10)\neval_metric <- metric_set(accuracy, sens, spec)\nlibrary(doMC)\nregisterDoMC(cores=15)\nresult <- wf %>%\n  workflow_map(\n            resamples = fold,\n            grid = 30,\n            metrics = eval_metric\n            )\nresult %>% autoplot() +\n  theme(legend.position = \"top\")+\n  scale_y_continuous(breaks=seq(0,1,0.1))\n\n\n\n\n\nresult %>%\n  extract_workflow_set_result(id = \"recipe_nearest_neighbor\") %>%\n  collect_metrics() %>%\n  ggplot(aes(neighbors, mean, color = .metric)) +\n  geom_line(size = 1, show.legend = FALSE) +\n  geom_point()+\n  facet_wrap(~.metric) +\n  scale_x_log10()\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n\n\nresult %>%\n  extract_workflow_set_result(id = \"recipe_nearest_neighbor\") %>%\n  collect_metrics() %>%\n  ggplot(aes(y=factor(weight_func),x= mean, fill = .metric)) +\n  geom_boxplot(size = 0.5, show.legend = FALSE) +\n  facet_wrap(~.metric)\n\n\n\n\nlast_fit"
+  },
+  {
+    "objectID": "documents/NLP/01RegExpress.html",
+    "href": "documents/NLP/01RegExpress.html",
+    "title": "01Regular Expression",
+    "section": "",
+    "text": "NLP เป็นศาสตร์แขนงหนึ่งทางวิทยาการข้อมูลที่มีการใช้สถิติและเทคโนโลยีเข้ามาช่วยสร้างสารสนเทศจากข้อมูลประเภทข้อความ ซึ่งสามารถนำไปประยุกต์ใช้ได้หลายลักษณะเช่น\n\nการสร้าง chatbots\nพัฒนาโมเดลจำแนกข้อความ\nแปลภาษา\nการวิเคราะห์ sentiment\n…\n\nบทเรียนนี้จะกล่าวถึงพื้นฐานที่จำเป็นสำหรับการเรียนรู้เกี่ยวกับ NLP รายละเอียดมีดังนี้\n\n1. Regular Expression\nregular expression คือการกำหนดรูปแบบของตัวอักษร เพื่อใช้ในการจับคู่ คัดกรอง หรือค้นหา ตัวอักษร/คำ หรือข้อความที่มีความสอดคล้องกับเงื่อนไข การใช้ regular expression ทำให้ผู้วิเคราะห์สามารถดึงข้อมูลที่ต้องการออกจากข้อความหรือเอกสารที่เป็นข้อมูลดิบได้อย่างเป็นระบบ ข้อมูลดังกล่าวเป็นอะไรก็ได้ที่สามารถกำหนดเงื่อนไขหรือรูปแบบของข้อความได้ เช่น\n\nweb link บนเอกสาร\nemail address\nเบอร์โทรศัพท์\n\nนอกจากนี้ยังสามารถใช้ regular expression เพื่อคัดกรอง/แทนที่ข้อความ/ตัวอักษรที่ไม่ต้องการออกจากชุดข้อมูลได้อีกด้วย ใน R เราอาจใช้ฟังก์ชัน regexpr() เพื่อจับค\n\npattern <- \"^ตัวอย่าง\"\ntext <- c(\"นี่คือข้อควา ตัวอย่าง\",\"ตัวอย่าง มันเป็นอย่างงี้\")\nmatch_position <- regexpr(pattern, text)\nmatch_position\n\n\nimport re\nre.match(\"[a-c]\",\"abcde\")\n\n\nstr_match(text, pattern)\n\nใน R ผู้วิเคราะห์สามารถคัดกรองข้อความที่ต้องการด้วย regular expression โดยใช้ package stringr\n\npackage stringr มีฟังก์ชันที่สามารถใช้เพื่อคัดกรองหรือแก้ไขข้อความด้วย regular expression หลายตัว ได้แก่ str_detect() , str_replace() เป็นต้น"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#the-neuron",
+    "href": "documents/Deeplearning/DL01.html#the-neuron",
+    "title": "Deep Learning 101",
+    "section": "The Neuron",
+    "text": "The Neuron"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#activation-functions",
+    "href": "documents/Deeplearning/DL01.html#activation-functions",
+    "title": "Deep Learning 101",
+    "section": "Activation Functions",
+    "text": "Activation Functions\nactivation function เป็นฟังก์ชันทางคณิตศาสตร์ ที่ผู้วิเคราะห์ใช้สำหรับแปลงค่าผลรวมเชิงเส้นของข้อมูลนำเข้า ให้มีพิสัยอยู่ในช่วงที่สมเหตุสมผลหรือสอดคล้องกับตัวแปรตามที่ต้องการทำนาย\n\nLinear Activation Function\n\n\n\n\n\nStep Function\n\n\n\n\n\nSigmoid Function\n\n\n\n\n\nRectified Linear Activation Function\n\n\n\n\n\nHyperbolic Tangent Activation Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#activation-function",
+    "href": "documents/Deeplearning/DL01.html#activation-function",
+    "title": "Deep Learning 101",
+    "section": "Activation Function",
+    "text": "Activation Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#how-do-nns-works",
+    "href": "documents/Deeplearning/DL01.html#how-do-nns-works",
+    "title": "Deep Learning 101",
+    "section": "How do NNs works?",
+    "text": "How do NNs works?\nตัวอย่างที่ใช้ประกอบจะใช้ชุดข้อมูลเงินเดือนอาจารย์ (TeacherSalarydata.csv)\n\n\n       rank discipline yrs.since.phd yrs.service  sex salary\n1      Prof          B            19          18 Male 139750\n2      Prof          B            20          16 Male 173200\n3  AsstProf          B             4           3 Male  79750\n4      Prof          B            45          39 Male 115000\n5      Prof          B            40          41 Male 141500\n6 AssocProf          B             6           6 Male  97000"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#input-layers",
+    "href": "documents/Deeplearning/DL01.html#input-layers",
+    "title": "Deep Learning 101",
+    "section": "Input Layers",
+    "text": "Input Layers"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html",
+    "href": "documents/Deeplearning/DL01.html",
+    "title": "Deep Learning 101",
+    "section": "",
+    "text": "พิจารณา neural network ต่อไปนี้"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#how-do-nns-learn",
+    "href": "documents/Deeplearning/DL01.html#how-do-nns-learn",
+    "title": "Deep Learning 101",
+    "section": "How do NNs learn?",
+    "text": "How do NNs learn?\n\n\n\nIteration: 10, Error: 0.0045, Weights: 0.8271  0.4326  0.3380 \nIteration: 20, Error: 0.0016, Weights: 0.8435  0.4522  0.3609 \nIteration: 30, Error: 0.0006, Weights: 0.8533  0.4640  0.3746 \nIteration: 40, Error: 0.0002, Weights: 0.8592  0.4711  0.3829 \nIteration: 50, Error: 0.0001, Weights: 0.8628  0.4754  0.3879 \nIteration: 60, Error: 0.0000, Weights: 0.8649  0.4779  0.3909 \nIteration: 70, Error: 0.0000, Weights: 0.8662  0.4795  0.3927 \nIteration: 80, Error: 0.0000, Weights: 0.8670  0.4804  0.3938 \nIteration: 90, Error: 0.0000, Weights: 0.8675  0.4810  0.3945 \nIteration: 100, Error: 0.0000, Weights: 0.8678  0.4813  0.3949"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#deep-learning",
+    "href": "documents/Deeplearning/DL01.html#deep-learning",
+    "title": "Deep Learning 101",
+    "section": "Deep Learning",
+    "text": "Deep Learning"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#outline",
+    "href": "documents/Deeplearning/DL01.html#outline",
+    "title": "Deep Learning 101",
+    "section": "Outline",
+    "text": "Outline\n\nNeuron\nActivation function\nHow do neural networks work?\nHow do neural networks learn?\nGradient descent\nStochastic gradient descent\nbackpropagation"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#linear-activation-function",
+    "href": "documents/Deeplearning/DL01.html#linear-activation-function",
+    "title": "Deep Learning 101",
+    "section": "Linear Activation Function",
+    "text": "Linear Activation Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#step-function",
+    "href": "documents/Deeplearning/DL01.html#step-function",
+    "title": "Deep Learning 101",
+    "section": "Step Function",
+    "text": "Step Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#sigmoid-function",
+    "href": "documents/Deeplearning/DL01.html#sigmoid-function",
+    "title": "Deep Learning 101",
+    "section": "Sigmoid Function",
+    "text": "Sigmoid Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#rectified-linear-activation-function",
+    "href": "documents/Deeplearning/DL01.html#rectified-linear-activation-function",
+    "title": "Deep Learning 101",
+    "section": "Rectified Linear Activation Function",
+    "text": "Rectified Linear Activation Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#hyperbolic-tangent-activation-function",
+    "href": "documents/Deeplearning/DL01.html#hyperbolic-tangent-activation-function",
+    "title": "Deep Learning 101",
+    "section": "Hyperbolic Tangent Activation Function",
+    "text": "Hyperbolic Tangent Activation Function"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#forward-propagation",
+    "href": "documents/Deeplearning/DL01.html#forward-propagation",
+    "title": "Deep Learning 101",
+    "section": "Forward Propagation",
+    "text": "Forward Propagation"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#backward-propagation",
+    "href": "documents/Deeplearning/DL01.html#backward-propagation",
+    "title": "Deep Learning 101",
+    "section": "Backward Propagation",
+    "text": "Backward Propagation"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#gradient-descent",
+    "href": "documents/Deeplearning/DL01.html#gradient-descent",
+    "title": "Deep Learning 101",
+    "section": "Gradient Descent",
+    "text": "Gradient Descent\n\nhttps://en.wikipedia.org/wiki/Gradient_descent"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#section",
+    "href": "documents/Deeplearning/DL01.html#section",
+    "title": "Deep Learning 101",
+    "section": "",
+    "text": "Gradient Descent"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#gradient-descent-1",
+    "href": "documents/Deeplearning/DL01.html#gradient-descent-1",
+    "title": "Deep Learning 101",
+    "section": "Gradient Descent",
+    "text": "Gradient Descent"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#gradient-descent-2",
+    "href": "documents/Deeplearning/DL01.html#gradient-descent-2",
+    "title": "Deep Learning 101",
+    "section": "Gradient Descent",
+    "text": "Gradient Descent\n\nhttps://machinelearningnotepad.wordpress.com/2018/04/15/gradient-descent/"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#gradient-descent-regression",
+    "href": "documents/Deeplearning/DL01.html#gradient-descent-regression",
+    "title": "Deep Learning 101",
+    "section": "Gradient Descent (Regression)",
+    "text": "Gradient Descent (Regression)"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#gradient-descent-classification",
+    "href": "documents/Deeplearning/DL01.html#gradient-descent-classification",
+    "title": "Deep Learning 101",
+    "section": "Gradient Descent (Classification)",
+    "text": "Gradient Descent (Classification)"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#stochastic-gradient-descent",
+    "href": "documents/Deeplearning/DL01.html#stochastic-gradient-descent",
+    "title": "Deep Learning 101",
+    "section": "Stochastic Gradient Descent",
+    "text": "Stochastic Gradient Descent"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#backward-propagation-whole-batch-gradient-descent",
+    "href": "documents/Deeplearning/DL01.html#backward-propagation-whole-batch-gradient-descent",
+    "title": "Deep Learning 101",
+    "section": "Backward Propagation : (Whole Batch) Gradient Descent",
+    "text": "Backward Propagation : (Whole Batch) Gradient Descent"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#stochastic-gradient-descent-1",
+    "href": "documents/Deeplearning/DL01.html#stochastic-gradient-descent-1",
+    "title": "Deep Learning 101",
+    "section": "Stochastic Gradient Descent",
+    "text": "Stochastic Gradient Descent\n\n\nStochastic gradient descent (SGD) is a more computationally efficient implementation of gradient descent, which considers 1 training example per iteration rather than summing over the cost of all training examples.\nThe stochastic (random) aspect comes from the random shuffling of the training examples before hand. By harnessing this random selection of the training example, the path to the minimum of the cost function may be noisier (less direct) but will take less time to converge.\n\nhttps://machinelearningnotepad.wordpress.com/2018/04/15/gradient-descent/"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#minibatch-stochastic-gradient-descent",
+    "href": "documents/Deeplearning/DL01.html#minibatch-stochastic-gradient-descent",
+    "title": "Deep Learning 101",
+    "section": "Minibatch Stochastic Gradient Descent",
+    "text": "Minibatch Stochastic Gradient Descent"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#training-ann-with-sgd",
+    "href": "documents/Deeplearning/DL01.html#training-ann-with-sgd",
+    "title": "Deep Learning 101",
+    "section": "Training ANN with SGD",
+    "text": "Training ANN with SGD\n\nกำหนดน้ำหนัก (weight) ใน NN model อย่างสุ่ม โดยให้มีค่าใกล้ 0\nป้อนข้อมูล X แถวแรกของชุดข้อมูลเข้าไปใน input layer\nทำ forward propagation เพื่อคำนวณค่าทำนาย \\(\\hat{y}\\)\nคำนวณค่า error ของการทำนาย ตาม cost function ที่กำหนด\nทำ backward propagation\nเรียกกระบวนการข้อ 2. - 5. ว่า iteration ให้ดำเนินการทำซ้ำข้อ 2. - 5. จนครบทั้งชุดข้อมูล\nเมื่อดำเนินการข้อ 6. จนครบทั้งชุดข้อมูลแล้ว เรียกว่า train ครบ 1 วงรอบ (1 epoch)"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#tools",
+    "href": "documents/Deeplearning/DL01.html#tools",
+    "title": "Deep Learning 101",
+    "section": "Tools",
+    "text": "Tools\nมีเครื่องมือหลายตัวที่สามารถใช้พัฒนา ANNs และ deep learning โมเดลอื่น ๆ ได้ ในรายวิชานี้แนะนำให้ใช้ library keras ซึ่งเป็น api สำหรับพัฒนา deep learning models ที่ต่อยอดมาจาก tensorflow จุดเด่นคือ syntax ของโมเดลเขียนได้ง่ายและมีความยืดหยุ่นสูง สามารถพัฒนา deep learning model ได้หลากหลายประเภท"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#keras",
+    "href": "documents/Deeplearning/DL01.html#keras",
+    "title": "Deep Learning 101",
+    "section": "Keras",
+    "text": "Keras\n\nTensorflow was previously the most widely used Deep Learning library, however, it was tricky to figure with for newbies. A simple one-layer network involves a substantial amount of code. With Keras, however, the entire process of creating a Neural Network’s structure, as well as training and tracking it, becomes exceedingly straightforward.\nKeras is a high-level API that works with the backends Tensorflow, Theano, and CNTK. It includes a good and user-friendly API for implementing neural network tests. It’s also capable of running on both CPUs as well as GPUs.Keras comes with 10 different neural network modelling and training API modules. Let’s take a look at a few of them one by one.\n\nhttps://www.analyticsvidhya.com/blog/2021/11/training-neural-network-with-keras-and-basics-of-deep-learning/"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#keras-1",
+    "href": "documents/Deeplearning/DL01.html#keras-1",
+    "title": "Deep Learning 101",
+    "section": "Keras",
+    "text": "Keras\nkeras สามารถใช้งานได้ทั้งบน Python และ R ทั้งนี้ก่อนการใช้งานผู้วิเคราะห์จำเป็นต้องดำเนินการติดตั้ง library ที่เกี่ยวข้องดังนี้\nสำหรับผู้ใช้งาน Python เป็นหลักใน terminal ให้ดาวน์โหลดและติดตั้ง tensorflow และ keras ดังนี้\n\n# in terminal\npip install --upgrade tensorflow\npip install --upgrade keras\n\nปัจจุบันสามารถใช้งาน keras จาก Python ผ่าน reticulate ซึ่งทำให้มีความสะดวกมากขึ้น\nCriminal CSV\n\nlibrary(tidyverse)\ndat <- read.csv(\"criminal.csv\")\nglimpse(dat[,-1], 60)\n\nRows: 2,212\nColumns: 17\n$ householdSize          <dbl> NA, 2.82, 2.43, 2.40, 2.76,…\n$ pct.lao                <dbl> 1.37, 0.80, 0.74, 1.70, 0.5…\n$ pct.thai               <dbl> 91.78, 95.57, 94.33, 97.35,…\n$ pct.myanmar            <dbl> 6.50, 3.44, 3.43, 0.50, 1.1…\n$ pct.cambodia           <dbl> 1.88, 0.85, 2.35, 0.70, 0.5…\n$ numPop.urban           <int> 11980, 23123, 29344, 0, 0, …\n$ medIncome.household    <int> 75122, 47917, 35669, 20580,…\n$ pctWPubAsst            <dbl> 1.03, 2.75, 2.94, 11.71, 11…\n$ pctPop.poor            <dbl> 1.96, 3.98, 4.75, 17.23, 29…\n$ pchLessM3              <dbl> 5.81, 5.61, 2.80, 11.05, 12…\n$ PctUnemployed          <dbl> 2.70, 2.43, 4.01, 9.86, 9.0…\n$ NumIlllegal.labor      <int> 1277, 1920, 1468, 339, 196,…\n$ HousVacant             <int> 64, 240, 544, 669, 333, 511…\n$ Num.HomelessInShelters <int> 11, 0, 16, 0, 2, 327, 0, 21…\n$ Num.HomelessInStreet   <int> 0, 0, 0, 0, 0, 4, 0, 0, 15,…\n$ PopDens                <dbl> 1845.9, 2186.7, 2780.9, 321…\n$ TheifperPop            <dbl> 114.85, 242.37, 758.14, 130…"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#teachersalarydata",
+    "href": "documents/Deeplearning/DL01.html#teachersalarydata",
+    "title": "Deep Learning 101",
+    "section": "TeacherSalaryData",
+    "text": "TeacherSalaryData\n\nlibrary(tidyverse)\ndat <- read.csv(\"~/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/ML/MLcourse/MLCourse/documents/TeacherSalaryData.csv\")\nhead(dat[,-1])\n\n       rank discipline yrs.since.phd yrs.service  sex salary\n1      Prof          B            19          18 Male 139750\n2      Prof          B            20          16 Male 173200\n3  AsstProf          B             4           3 Male  79750\n4      Prof          B            45          39 Male 115000\n5      Prof          B            40          41 Male 141500\n6 AssocProf          B             6           6 Male  97000\n\nglimpse(dat[,-1])\n\nRows: 397\nColumns: 6\n$ rank          <chr> \"Prof\", \"Prof\", \"AsstProf\", \"Prof\", \"Prof\", \"AssocProf\",…\n$ discipline    <chr> \"B\", \"B\", \"B\", \"B\", \"B\", \"B\", \"B\", \"B\", \"B\", \"B\", \"B\", \"…\n$ yrs.since.phd <int> 19, 20, 4, 45, 40, 6, 30, 45, 21, 18, 12, 7, 1, 2, 20, 1…\n$ yrs.service   <int> 18, 16, 3, 39, 41, 6, 23, 45, 20, 18, 8, 2, 1, 0, 18, 3,…\n$ sex           <chr> \"Male\", \"Male\", \"Male\", \"Male\", \"Male\", \"Male\", \"Male\", …\n$ salary        <int> 139750, 173200, 79750, 115000, 141500, 97000, 175000, 14…\n\n\nData Preprocessing\n\nlibrary(tidymodels)\ndat_preproc <- recipe(salary~., data= dat) %>%\n  step_normalize(all_numeric_predictors()) %>%\n  step_dummy(rank, discipline, sex) %>%\n  step_select(-X) %>%\n  prep(NULL) %>%\n  juice()\nglimpse(dat_preproc, 60)\n\nRows: 397\nColumns: 7\n$ yrs.since.phd <dbl> -0.2572252, -0.1796276, -1.4211885, …\n$ yrs.service   <dbl> 0.02963169, -0.12414321, -1.12368006…\n$ salary        <int> 139750, 173200, 79750, 115000, 14150…\n$ rank_AsstProf <dbl> 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, …\n$ rank_Prof     <dbl> 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, …\n$ discipline_B  <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ sex_Male      <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, …\n\n## data spliting\nsplit <- initial_split(dat_preproc, prop = 0.8)\ntrain <- training(split)\ntest <- testing(split)\n\ntrain_x <- train %>% select(-salary)\ntrain_y <- train %>% select(salary)\ntest_x <- test %>% select(-salary)\ntest_y <- test %>% select(-salary)\n\nloading required library\n\n# Load reticulate\nlibrary(reticulate)\n# Import Python libraries\nkeras <- import(\"keras\")\n\ncreate ANN model using keras\n\n# access the \"layers\" and \"models\" modules from keras\nlayers <- keras$layers\nmodels <- keras$models\n\n# create sequential model\nmodel <- models$Sequential()\n# add input and the first hidden layers\nmodel$add(layers$Dense(units = 10, \n                       activation = 'linear', \n                       input_dim = ncol(train_x)))\nmodel$add(layers$Dense(units = 10,\n                       activation = 'linear'))\n# add output layer\nmodel$add(layers$Dense(units = 1, activation = 'linear'))\n# model summary\nmodel$summary()\n\nCompile ANN model\n\nmodel$compile(optimizer = 'adam', \n              loss = 'mean_squared_error', metrics = c('accuracy'))\n\nTrain the model\n\nresult <- model$fit(as.matrix(train_x), as.matrix(train_y))\n\n\nmodel$evaluate(as.matrix(test_x), as.matrix(test_y))\n\n[1] 2.6095033 0.3541667"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#criminal-csv",
+    "href": "documents/Deeplearning/DL01.html#criminal-csv",
+    "title": "Deep Learning 101",
+    "section": "Criminal CSV",
+    "text": "Criminal CSV\n\nlibrary(tidyverse)\ndat <- read.csv(\"criminal.csv\")\nhead(dat[,-1])\n\n  householdSize pct.lao pct.thai pct.myanmar pct.cambodia numPop.urban\n1            NA    1.37    91.78        6.50         1.88        11980\n2          2.82    0.80    95.57        3.44         0.85        23123\n3          2.43    0.74    94.33        3.43         2.35        29344\n4          2.40    1.70    97.35        0.50         0.70            0\n5          2.76    0.53    89.16        1.17         0.52            0\n6          2.45      NA    95.65        0.90         0.95       140494\n  medIncome.household pctWPubAsst pctPop.poor pchLessM3 PctUnemployed\n1               75122        1.03        1.96      5.81          2.70\n2               47917        2.75        3.98      5.61          2.43\n3               35669        2.94        4.75      2.80          4.01\n4               20580       11.71       17.23     11.05          9.86\n5               17390       11.21       29.99     12.15          9.08\n6               21577        7.12       17.78      8.76          5.72\n  NumIlllegal.labor HousVacant Num.HomelessInShelters Num.HomelessInStreet\n1              1277         64                     11                    0\n2              1920        240                      0                    0\n3              1468        544                     16                    0\n4               339        669                      0                    0\n5               196        333                      2                    0\n6              2091       5119                    327                    4\n  PopDens TheifperPop\n1  1845.9      114.85\n2  2186.7      242.37\n3  2780.9      758.14\n4  3217.7     1301.78\n5   974.2      728.93\n6  1995.7     1386.46\n\nglimpse(dat[,-1], 60)\n\nRows: 2,212\nColumns: 17\n$ householdSize          <dbl> NA, 2.82, 2.43, 2.40, 2.76,…\n$ pct.lao                <dbl> 1.37, 0.80, 0.74, 1.70, 0.5…\n$ pct.thai               <dbl> 91.78, 95.57, 94.33, 97.35,…\n$ pct.myanmar            <dbl> 6.50, 3.44, 3.43, 0.50, 1.1…\n$ pct.cambodia           <dbl> 1.88, 0.85, 2.35, 0.70, 0.5…\n$ numPop.urban           <int> 11980, 23123, 29344, 0, 0, …\n$ medIncome.household    <int> 75122, 47917, 35669, 20580,…\n$ pctWPubAsst            <dbl> 1.03, 2.75, 2.94, 11.71, 11…\n$ pctPop.poor            <dbl> 1.96, 3.98, 4.75, 17.23, 29…\n$ pchLessM3              <dbl> 5.81, 5.61, 2.80, 11.05, 12…\n$ PctUnemployed          <dbl> 2.70, 2.43, 4.01, 9.86, 9.0…\n$ NumIlllegal.labor      <int> 1277, 1920, 1468, 339, 196,…\n$ HousVacant             <int> 64, 240, 544, 669, 333, 511…\n$ Num.HomelessInShelters <int> 11, 0, 16, 0, 2, 327, 0, 21…\n$ Num.HomelessInStreet   <int> 0, 0, 0, 0, 0, 4, 0, 0, 15,…\n$ PopDens                <dbl> 1845.9, 2186.7, 2780.9, 321…\n$ TheifperPop            <dbl> 114.85, 242.37, 758.14, 130…"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#data-preprocessing",
+    "href": "documents/Deeplearning/DL01.html#data-preprocessing",
+    "title": "Deep Learning 101",
+    "section": "Data Preprocessing",
+    "text": "Data Preprocessing\n\nlibrary(tidymodels)\ndat <- dat %>% drop_na()\ndat_preproc <- recipe(TheifperPop~., data= dat) %>%\n  step_normalize(all_numeric_predictors()) %>%\n  step_select(-X) %>%\n  prep(NULL) %>%\n  juice()\nglimpse(dat_preproc, 60)\n\nRows: 1,476\nColumns: 17\n$ householdSize          <dbl> 0.43882185, -0.83914743, -0…\n$ pct.lao                <dbl> -0.55228025, -0.55727423, -…\n$ pct.thai               <dbl> 0.606938897, 0.515639240, 0…\n$ pct.myanmar            <dbl> 0.32422511, 0.32134682, -0.…\n$ pct.cambodia           <dbl> -0.4595089, -0.3148988, -0.…\n$ numPop.urban           <dbl> -0.090254530, 0.004414026, …\n$ medIncome.household    <dbl> 0.9568309, 0.0393216, -1.09…\n$ pctWPubAsst            <dbl> -0.8094356, -0.7606976, 1.4…\n$ pctPop.poor            <dbl> -0.7965221, -0.6979778, 0.8…\n$ pchLessM3              <dbl> -0.45100194, -0.96290986, 0…\n$ PctUnemployed          <dbl> -1.2901782, -0.6322239, 1.8…\n$ NumIlllegal.labor      <dbl> -0.076327167, -0.119778750,…\n$ HousVacant             <dbl> -0.24422840, -0.15522650, -…\n$ Num.HomelessInShelters <dbl> -0.28719746, -0.09787561, -…\n$ Num.HomelessInStreet   <dbl> -0.14990463, -0.14990463, -…\n$ PopDens                <dbl> -0.11341205, 0.12376845, 0.…\n$ TheifperPop            <dbl> 242.37, 758.14, 1301.78, 72…"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#model-specification",
+    "href": "documents/Deeplearning/DL01.html#model-specification",
+    "title": "Deep Learning 101",
+    "section": "Model specification",
+    "text": "Model specification\n\nlibrary(reticulate)\nkeras <- import(\"keras\")\n# create sequential model\nmodel <- keras$Sequential()\n# add layers\nmodel$add(keras$layers$Dense(units = 8, activation = 'relu', input_dim = ncol(train_x)))\nmodel$add(keras$layers$Dense(units = 1, activation = 'relu'))\n# Compile the model\nmodel$compile(loss = 'mse', optimizer = 'adam', metrics = 'mse')\nmodel$summary()"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#training",
+    "href": "documents/Deeplearning/DL01.html#training",
+    "title": "Deep Learning 101",
+    "section": "Training",
+    "text": "Training\n\nresult <- model$fit(x = train_x, y =train_y, \n                        epochs=as.integer(500),\n                    validation_split = 0.3, verbose=F)"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#model-evaluation",
+    "href": "documents/Deeplearning/DL01.html#model-evaluation",
+    "title": "Deep Learning 101",
+    "section": "Model Evaluation",
+    "text": "Model Evaluation\n\ndata.frame(epoch = 1:500, rmse_train = sqrt(result$history$mse),\n           rmse_validate = sqrt(result$history$val_mse)) %>%\n  ggplot(aes(x=epoch))+\n  geom_line(aes(y=rmse_train), col=\"steelblue\")+\n  geom_line(aes(y=rmse_validate), col=\"orange\")+\n  ylab(\"RMSE\")\n\n\n\nmse <- result$model$evaluate(x = test_x, y = test_y)\nmse[1]\n\n[1] 255819.6"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#predicting-the-new-data",
+    "href": "documents/Deeplearning/DL01.html#predicting-the-new-data",
+    "title": "Deep Learning 101",
+    "section": "Predicting the new data",
+    "text": "Predicting the new data\n\n\n\n                 [,1]\nTheifperPop 0.5913123"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL01.html#splitting-dataset",
+    "href": "documents/Deeplearning/DL01.html#splitting-dataset",
+    "title": "Deep Learning 101",
+    "section": "Splitting Dataset",
+    "text": "Splitting Dataset\n\n## data spliting\nsplit <- initial_split(dat_preproc, prop = 0.8)\ntrain <- training(split)\ntest <- testing(split)\ntrain_x <- train %>% select(-TheifperPop) %>% as.matrix()\ntrain_y <- train %>% select(TheifperPop) %>% as.matrix()\ntest_x <- test %>% select(-TheifperPop) %>% as.matrix()\ntest_y <- test %>% select(TheifperPop) %>% as.matrix()\n#write.csv(train, file=\"train.csv\")\n#write.csv(test, file=\"test.csv\")"
   }
 ]

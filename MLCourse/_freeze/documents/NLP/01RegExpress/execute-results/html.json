@@ -1,0 +1,14 @@
+{
+  "hash": "a4de3d2a81ef1528e782228a06f4f25e",
+  "result": {
+    "markdown": "---\ntitle: \"01Regular Expression\"\n---\n\n\nNLP เป็นศาสตร์แขนงหนึ่งทางวิทยาการข้อมูลที่มีการใช้สถิติและเทคโนโลยีเข้ามาช่วยสร้างสารสนเทศจากข้อมูลประเภทข้อความ ซึ่งสามารถนำไปประยุกต์ใช้ได้หลายลักษณะเช่น\n\n-   การสร้าง chatbots\n\n-   พัฒนาโมเดลจำแนกข้อความ\n\n-   แปลภาษา\n\n-   การวิเคราะห์ sentiment\n\n-   ...\n\nบทเรียนนี้จะกล่าวถึงพื้นฐานที่จำเป็นสำหรับการเรียนรู้เกี่ยวกับ NLP รายละเอียดมีดังนี้\n\n# 1. Regular Expression\n\nregular expression คือการกำหนดรูปแบบของตัวอักษร เพื่อใช้ในการจับคู่ คัดกรอง หรือค้นหา ตัวอักษร/คำ หรือข้อความที่มีความสอดคล้องกับเงื่อนไข การใช้ regular expression ทำให้ผู้วิเคราะห์สามารถดึงข้อมูลที่ต้องการออกจากข้อความหรือเอกสารที่เป็นข้อมูลดิบได้อย่างเป็นระบบ ข้อมูลดังกล่าวเป็นอะไรก็ได้ที่สามารถกำหนดเงื่อนไขหรือรูปแบบของข้อความได้ เช่น\n\n-   web link บนเอกสาร\n\n-   email address\n\n-   เบอร์โทรศัพท์\n\nนอกจากนี้ยังสามารถใช้ regular expression เพื่อคัดกรอง/แทนที่ข้อความ/ตัวอักษรที่ไม่ต้องการออกจากชุดข้อมูลได้อีกด้วย ใน R เราอาจใช้ฟังก์ชัน `regexpr()` เพื่อจับค\n\n\n::: {.cell}\n\n```{.r .cell-code}\npattern <- \"^ตัวอย่าง\"\ntext <- c(\"นี่คือข้อควา ตัวอย่าง\",\"ตัวอย่าง มันเป็นอย่างงี้\")\nmatch_position <- regexpr(pattern, text)\nmatch_position\n```\n:::\n\n::: {.cell}\n\n```{.python .cell-code}\nimport re\nre.match(\"[a-c]\",\"abcde\")\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code}\nstr_match(text, pattern)\n```\n:::\n\n\nใน R ผู้วิเคราะห์สามารถคัดกรองข้อความที่ต้องการด้วย regular expression โดยใช้ package stringr\n\n![](images/stringr.png){width=\"108\"}\n\npackage stringr มีฟังก์ชันที่สามารถใช้เพื่อคัดกรองหรือแก้ไขข้อความด้วย regular expression หลายตัว ได้แก่ `str_detect()` , `str_replace()` เป็นต้น\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

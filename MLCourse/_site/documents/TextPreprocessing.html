@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2758688 ML PRIN APPLN - Text PreProcessing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="../site_libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="../site_libs/wordcloud2-0.0.1/wordcloud.css" rel="stylesheet">
+<script src="../site_libs/wordcloud2-0.0.1/wordcloud2-all.js"></script>
+<script src="../site_libs/wordcloud2-0.0.1/hover.js"></script>
+<script src="../site_libs/wordcloud2-binding-0.2.1/wordcloud2.js"></script>
+
+
+<meta property="og:title" content="2758688 ML PRIN APPLN - Text PreProcessing">
+<meta property="og:description" content="เนื้อหาในบทความนี้จะกล่าวถึงการจัดระเบียบและจัดกระทำข้อมูลแบบข้อความด้วย R และ library PyThaiNLP ของ Python ก่อนการดำเนินการผู้วิเคราะห์จำเป็นต้องดำเนินการติดตั้งโปรแกรมและ library…">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Text PreProcessing</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main">
+    <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://posit.co/download/rstudio-desktop/" title="RStudio" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">เนื้อหารายสัปดาห์</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#prerequired" id="toc-prerequired" class="nav-link active" data-scroll-target="#prerequired">Prerequired</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">Tokenization</a>
+  <ul class="collapse">
+  <li><a href="#word-tokenization" id="toc-word-tokenization" class="nav-link" data-scroll-target="#word-tokenization">Word tokenization</a></li>
+  <li><a href="#sentences-tokenization" id="toc-sentences-tokenization" class="nav-link" data-scroll-target="#sentences-tokenization">Sentences tokenization</a></li>
+  </ul></li>
+  <li><a href="#stopword-removal" id="toc-stopword-removal" class="nav-link" data-scroll-target="#stopword-removal">Stopword removal</a></li>
+  <li><a href="#วเคราะหคำตอบอตนยของผเรยน" id="toc-วเคราะหคำตอบอตนยของผเรยน" class="nav-link" data-scroll-target="#วเคราะหคำตอบอตนยของผเรยน">วิเคราะห์คำตอบอัตนัยของผู้เรียน</a>
+  <ul class="collapse">
+  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">data preprocessing</a></li>
+  <li><a href="#training-classification-models" id="toc-training-classification-models" class="nav-link" data-scroll-target="#training-classification-models">Training Classification models</a>
+  <ul class="collapse">
+  <li><a href="#การนำเขาและจดการขอมลกอนการวเคราะห" id="toc-การนำเขาและจดการขอมลกอนการวเคราะห" class="nav-link" data-scroll-target="#การนำเขาและจดการขอมลกอนการวเคราะห">1. การนำเข้าและจัดการข้อมูลก่อนการวิเคราะห์</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Text PreProcessing</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="prerequired" class="level1">
+<h1>Prerequired</h1>
+<p>เนื้อหาในบทความนี้จะกล่าวถึงการจัดระเบียบและจัดกระทำข้อมูลแบบข้อความด้วย R และ library PyThaiNLP ของ Python ก่อนการดำเนินการผู้วิเคราะห์จำเป็นต้องดำเนินการติดตั้งโปรแกรมและ library ที่จำเป็นก่อนดังนี้</p>
+<ol type="1">
+<li>ติดตั้ง R และ RStudio</li>
+<li>ติดตั้ง Python และดำเนินการตั้งค่าตามขั้นตอนในลิงค์ <a href="https://support.posit.co/hc/en-us/articles/360023654474-Installing-and-Configuring-Python-with-RStudio" class="uri">https://support.posit.co/hc/en-us/articles/360023654474-Installing-and-Configuring-Python-with-RStudio</a></li>
+<li>ติดตั้ง package reticulate บน R โดยพิมคำสั่ง <code>install.packages("reticulate")</code> บน R console</li>
+<li>ติดตั้ง PyThaiNLP โดยเข้าไปที่หน้า Terminal ใน RStudio จากนั้นพิมพ์คำสั่ง <code>pip install pythainlp</code></li>
+</ol>
+<p>เมื่อดำเนินการในขั้นตอนทั้ง 4 เรียบร้อยแล้ว ขั้นตอนต่อมาคือการเรียกใช้ library pythainlp บน R โดยพิมพ์คำสั่งดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pythainlp <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"pythainlp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>เอกสารอ้างอิง</strong></p>
+<ul>
+<li><a href="https://pythainlp.readthedocs.io/en/latest/#pythainlp">คู่มือการใช้งาน PyThaiNLP</a></li>
+<li><a href="https://towardsdatascience.com/analysis-of-presidential-speeches-throughout-american-history-bb088d36d7dd" class="uri">https://towardsdatascience.com/analysis-of-presidential-speeches-throughout-american-history-bb088d36d7dd</a></li>
+</ul>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>การทำ text preprocessing เป็นขั้นตอนสำคัญสำหรับการดำเนินการวิเคราะห์ข้อความ วัตถุประสงค์ของการดำเนินงานในขั้นตอนนี้คือเพื่อ (1) จัดระเบียบและทำความสะอาดข้อความแบบข้อความ เพื่อสร้างชุดข้อมูลที่มีโครงสร้างจากข้อความดิบ และ (2) จัดกระทำข้อมูลเพื่อให้อยู่ในรูปแบบที่มีความสอดคล้องกับการวิเคราะห์ตามวัตถุประสงค์</p>
+<p>การทำ text preprocessing มีเทคนิคเฉพาะหลายตัวซึ่งผู้เรียนจำเป็นต้องรู้จักไว้ การเลือกใช้เทคนิคต่าง ๆ ขึ้นอยู่กับความต้องการของเทคนิคการวิเคราะห์ที่เลือกใช้ หรือสภาพ/ปัญหาที่พบในข้อมูลแต่ละชุด เทคนิคดังกล่าวมีดังนี้</p>
+<ol type="1">
+<li><strong>Lowercasing:</strong> คือการแปลงตัวอักษรตัวใหญ่ให้เป็นตัวเล็ก (ใช้ในภาษาอังกฤษ)</li>
+<li><strong>Tokenization:</strong> คือการแปลงข้อความออกเป็นส่วนย่อย ๆ เช่น คำ/วลี หรือประโยค ที่สามารถนำไปวิเคราะห์ได้อย่างมีความหมาย ส่วนย่อยของข้อความดังกล่าวเรียกว่า tokens</li>
+<li><strong>Stopword removal:</strong> stopword คือคำที่ไม่ให้ความหมายหรือไม่ได้มีประโยชน์ในการตีความหมายของข้อความ โดยมากมักเป็นคำเชื่อมหรือคำลงท้ายที่เขียนเพื่อให้ประโยคมีความสมบูรณ์มากขึ้น เช่น a, is, are, and, the หรือในภาษาไทย เช่น ที่ ซึ่ง อัน และ</li>
+<li><strong>Stemming:</strong> เป็นเทคนิคการแปลงประเภทหนึ่ง มีวัตถุประสงค์เพื่อลดรูปคำที่พบในข้อความให้กลับไปเป็นรากศัพท์ (root words) ของคำ ๆ นั้น เช่น running, runs หรือ ran ทั้งหมดนี้มาจาก stem เดียวกันคือ run ดังนั้นการทำ stemming จะช่วยลด noise ที่เกิดขึ้นโดยจะจัดกลุ่มคำที่มีความหมายเหมือนกันดังกล่าวให้กลายเป็นคำเดียวกัน</li>
+<li><strong>Lemmatization:</strong> เป็นเทคนิคที่คล้ายกับ stemming แต่มีความซับซ้อนกว่า กล่าวคือเป็นการแปลง/ลดรูปคำที่พบโดยใช้บริบทของข้อความและการวิเคราะห์ morphological (morphological analysis) ซึ่งช่วยให้คำที่ผ่านกระบวนการดังกล่าวจะมีความหมาย และสอดคล้องกับบริบทของข้อความ</li>
+<li><strong>Removing special character and punctuation:</strong> เป็นการคัดกรองสัญลักษณ์หรืออักขระที่ไม่จำเป็นออกไปจากการวิเคราะห์ เป็นเทคนิคที่ดำเนินการเพื่อลด noise ออกจากข้อมูล</li>
+<li><strong>Removing HTML tags and URLs:</strong> ในกรณีที่ข้อมูลถูก scrapping จาก website การวิเคราะห์ข้อความดังกล่าวอาจจะต้องมีการลบ HTML tags หรือ URL รวมทั้ง syntax อื่น ๆ ที่ติดมากับข้อความด้วยก่อนดำเนินการวิเคราะห์</li>
+<li><strong>Spell checking and correction:</strong> เนื่องจากข้อความอาจมีการพิมพ์ผิดพลาดหรือคลาดเคลื่อนมาจากต้นทางของข้อมูล การแก้ไขคำผิดดังกล่าวจะช่วยให้การวิเคราะห์/นำเสนอความหมายสามารถทำได้อย่างถูกต้องและคงเส้นคงวามากขึ้น</li>
+<li><strong>n-grams:</strong> คือคำภายในข้อความที่ต่อเนื่องกันเป็นลำดับจำนวน n คำ การดึงคำแบบ n-gram ขึ้นมาจะช่วยให้ได้ข้อมูลเกี่ยวกับความหมายและบริบทของข้อความนั้นได้ดีขึ้น</li>
+</ol>
+<p>ในเชิงปฏิบัติผู้วิเคราะห์จะต้องเป็นผู้พิจารณาว่าจะเลือกใช้เทคนิคใดบ้างมาทำ text preprocessing ในงานของตนเอง ต้องอย่าลืมว่ากระบวนการ text preprocessing เป็นกระบวนการทวนซ้ำที่อาจจะต้องใช้เวลาและลองผิดลองถูกหลายรอบจนกว่าจะได้ผลการวิเคราะห์ที่มีความสมบูรณ์ นอกจากนี้เทคนิคดังกล่าวยังอาจมีการใช้งานที่แตกต่างกันในภาษาต่าง ๆ ที่ผู้วิเคราะห์ทำงานด้วย ส่วนที่เหลือของบทความนี้จะกล่าวถึงการใช้เทคนิคข้างต้นนการทำ text preprocessing โดยเน้นการใช้งานสำหรับภาษาไทย รายละเอียดมีดังนี้</p>
+</section>
+<section id="tokenization" class="level1">
+<h1>Tokenization</h1>
+<p>การตัดคำ (tokenization) เป็นเทคนิคพื้นฐานที่สำคัญสำหรับการทำ text preprocessing ในการประมวลผลภาษาธรรมชาติ (NLP) กระบวนการนี้เป็นส่วนสำคัญที่สุดส่วนหนึ่งเพราะเป็นการแปลงข้อมูลข้อความที่ไม่มีโครงสร้าง (unstructure) ให้เป็นข้อมูลที่มีโครงสร้าง (structure) การแบ่งส่วนของข้อความออกเป็นส่วนย่อย เช่น คำ (words) วลี (phrases) หรือประโยค (sentences) ที่มีความหมาย ทั้งนี้การเลือกว่าควรใช้การแบ่งคำลักษณะไหนขึ้นอยู่กับบริบทของข้อความ และความละเอียดของผลการวิเคราะห์ที่ต้องการ tokenization อาจจำแนกได้เป็น 3 ประเภท ได้แก่</p>
+<ol type="1">
+<li>Word tokenization</li>
+<li>Sentence tokenization</li>
+<li>Subword tokenization</li>
+</ol>
+<section id="word-tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="word-tokenization">Word tokenization</h2>
+<p>work tokenization หรือการตัดคำเป็นเทคนิคการแบ่งข้อความออกเป็นคำ ซึ่งสามารถทำได้หลายลักษณะ ทั้งการตัดคำด้วยเครื่องหมายวรรคตอนหรืออักขระที่กำหนด หรือการตัดคำด้วยอัลกอริทึม การตัดคำเป็นเทคนิคที่ใช้อย่างมากในกระบวนการวิเคราะห์ข้อความ เช่น การวิเคราะห์ sentiment หรือการจำแนกข้อความ</p>
+<p>การตัดคำภาษาไทยสามารถทำได้อย่างมีประสิทธิภาพมากขึ้นด้วย libraryPyThaiNLP ที่ถูกพัฒนาขึ้นบนภาษา Python และสามารถเรียกใช้ได้บนภาษา R ผ่าน package reticulate โดยฟังก์ชันที่ใช้สำหรับตัดคำคือ <code>word_tokenize()</code></p>
+<p>ฟังก์ชัน <code>word_tokenize()</code> มีพารามิเตอร์ที่สามารถกำหนดเพื่อปรับเปลี่ยนการทำงานได้หลายตัว พารามิเตอร์จำเป็นได้แก่ <code>text</code> เป็นข้อความนำเข้าสำหรับฟังก์ชัน ส่วนพารามิเตอร์ <code>engine</code> ใช้สำหรับกำหนดอัลกอริทึมเพื่อตัดคำภายในประโยคที่กำหนด อัลกอริทึมที่แตกต่างกันมีผลให้การตัดคำที่ได้อาจมีความแตกต่างกัน ค่าเริ่มต้นของพารามิเตอร์นี้คือ <code>engine = "newmm"</code> เป็นวิธีการตัดคำโดยพยายามให้คำที่ตัดมีความสอดคล้องกับคำภายในพจนานุกรมภาษาไทยมากที่สุด ส่วนวิธีการอื่น ๆ ที่สามารถกำหนดได้ เช่น <code>longest</code>, <code>icu</code> หรือ <code>deepcut</code> เป็นต้น อีกพารามิเตอร์หนึ่งที่มีประโยชน์มากคือ <code>keep_whitespace</code> โดยมีค่าเริ่มต้นเท่ากับ <code>True</code> ซึ่งหมายถึงการเก็บเว้นวรรคไว้ในผลการตัดคำ ในกรณีที่ผู้วิเคราะห์ต้องการให้นำเครื่องหมายเว้นวรรคทั้งหมดออกจากผลการตัดคำให้กำหนดพารามิเตอร์นี้เป็น <code>False</code></p>
+<p>ตัวอย่างต่อไปนี้แสดงการใช้ฟังก์ชันดังกล่าวเพื่อตัดคำในประโยคที่กำหนด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>text <span class="ot">&lt;-</span> <span class="st">"ส่วนเบี่ยงเบนมาตรฐานให้วัดการกระจายสัมบูรณ์ แต่สัมประสิทธิ์การแปรผันใช้วัดการกระจายสัมพัทธ์"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tokennized_text <span class="ot">&lt;-</span> pythainlp<span class="sc">$</span><span class="fu">word_tokenize</span>(text)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tokennized_text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ส่วน"      "เบี่ยงเบน"  "มาตรฐาน"  "ให้"       "วัด"       "การ"     
+ [7] "กระจาย"   "สัมบูรณ์"    " "        "แต่"       "สัมประสิทธิ์" "การ"     
+[13] "แปรผัน"    "ใช้"       "วัด"       "การ"      "กระจาย"   "สัมพัทธ์"   </code></pre>
+</div>
+</div>
+<p>ตัวอย่างต่อไปนี้แสดงผลการตัดคำด้วยฟังก์ชัน <code>word_tokenize()</code> ที่มีการกำหนดพารามิเตอร์ต่าง ๆ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#default</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span><span class="fu">word_tokenize</span>(text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ส่วน"      "เบี่ยงเบน"  "มาตรฐาน"  "ให้"       "วัด"       "การ"     
+ [7] "กระจาย"   "สัมบูรณ์"    " "        "แต่"       "สัมประสิทธิ์" "การ"     
+[13] "แปรผัน"    "ใช้"       "วัด"       "การ"      "กระจาย"   "สัมพัทธ์"   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># longest engine</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span><span class="fu">word_tokenize</span>(text, <span class="at">engine =</span> <span class="st">"longest"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ส่วน"      "เบี่ยงเบน"  "มาตรฐาน"  "ให้"       "วัด"       "การก"    
+ [7] "ระ"       "จา"       "ย"        "สัมบูรณ์"    " "        "แต่"      
+[13] "สัมประสิทธิ์" "การแปร"   "ผัน"       "ใช้"       "วัด"       "การก"    
+[19] "ระ"       "จา"       "ย"        "สัมพัทธ์"   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># keep whitespace = False</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span><span class="fu">word_tokenize</span>(text, <span class="at">engine =</span> <span class="st">"longest"</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">keep_whitespace =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ส่วน"      "เบี่ยงเบน"  "มาตรฐาน"  "ให้"       "วัด"       "การก"    
+ [7] "ระ"       "จา"       "ย"        "สัมบูรณ์"    "แต่"       "สัมประสิทธิ์"
+[13] "การแปร"   "ผัน"       "ใช้"       "วัด"       "การก"     "ระ"      
+[19] "จา"       "ย"        "สัมพัทธ์"   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use deepcut and keep whitespace = False</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span><span class="fu">word_tokenize</span>(text, <span class="at">engine =</span> <span class="st">"deepcut"</span>, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">keep_whitespace =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ส่วน"      "เบี่ยงเบน"  "มาตรฐาน"  "ให้"       "วัด"       "การ"     
+ [7] "กระจาย"   "สัมบูรณ์"    "แต่"       "สัมประสิทธิ์" "การ"      "แปร"     
+[13] "ผัน"       "ใช้"       "วัด"       "การ"      "กระจาย"   "สัมพัทธ์"   </code></pre>
+</div>
+</div>
+<p>ผลการตัดคำข้างต้นจะเห็นว่าการใช้อัลกอริทึม <code>newmm</code> และ <code>deepcut</code> มีแนวโน้มที่จะได้คำที่มีความหมายถูกต้องมากที่สุด อย่างไรก็ตามจะเห็นว่ามีคำศัพท์เฉพาะที่มีการตัดคำที่ยังไม่ถูกต้อง ได้แก่ ส่วนเบี่ยงเบนมาตรฐาน การกระจายสัมบูรณ์ สัมประสิทธิ์การแปรผัน และการกระจายสัมพัทธ์ ในกรณีนี้ผู้วิเคราะห์สามารถเพิ่มคำศัพท์เฉพาะที่ใช้สำหรับประกอบการตัดคำได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>trie <span class="ot">&lt;-</span> pythainlp<span class="sc">$</span>tokenize<span class="sc">$</span>Trie</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="do">## custom word</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>custom_word <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ส่วนเบี่ยงเบนมาตรฐาน"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"การกระจายสัมบูรณ์"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"สัมประสิทธิ์การแปรผัน"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"การกระจายสัมพัทธ์"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="do">## load thai dictionary from pythainlp</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>dict_default <span class="ot">&lt;-</span> pythainlp<span class="sc">$</span>corpus<span class="sc">$</span><span class="fu">thai_words</span>()</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>extended_dict <span class="ot">&lt;-</span> <span class="fu">trie</span>(pythainlp<span class="sc">$</span>corpus<span class="sc">$</span><span class="fu">thai_words</span>())</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (word <span class="cf">in</span> custom_word) {</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  extended_dict<span class="sc">$</span><span class="fu">add</span>(word)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span><span class="fu">word_tokenize</span>(text, <span class="at">custom_dict =</span> extended_dict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "ส่วนเบี่ยงเบนมาตรฐาน" "ให้"                "วัด"               
+ [4] "การกระจายสัมบูรณ์"    " "                 "แต่"               
+ [7] "สัมประสิทธิ์การแปรผัน"  "ใช้"                "วัด"               
+[10] "การกระจายสัมพัทธ์"   </code></pre>
+</div>
+</div>
+<p>จากตัวอย่างข้างต้นจะเห็นว่า การกำหนด dictionary เพิ่มเติมทำให้ผู้วิเคราะห์สามารถตัดคำ/ดึงคำจากข้อความที่มีความหมายสอดคล้องกับบริบทของการวิเคราะห์ได้มากขึ้น</p>
+</section>
+<section id="sentences-tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="sentences-tokenization">Sentences tokenization</h2>
+<p>เป็นเทคนิคการแบ่งข้อความออกเป็นประโยคหรือวลีย่อย โดยอาจใช้เว้นวรรคหรือเครื่องหมายจบประโยคต่าง ๆ เป็นตัวแบ่ง การทำ tokenization ลักษณะนี้เหมาะสำหรับงานวิเคราะห์ที่ต้องการสรุปความ (text summarization) ที่โครงสร้างของประโยคมีความสำคัญ</p>
+<p>การทำ sentences tokenization ด้วย PyThaiNLP สามารถทำได้ด้วยฟังก์ชัน <code>sent_tokenize()</code> ทั้งนี้ก่อนการใช้ฟังก์ชันดังกล่าวผู้วิเคราะห์จำเป็นต้องติดตั้ง library <code>python-crfsuite</code> ก่อนโดยพิมพ์คำสั่งต่อไปนี้ใน terminal ของ R Studio</p>
+<div class="cell">
+<pre class="terminal cell-code"><code>pip install python-crfsuite</code></pre>
+</div>
+<p>ฟังก์ชัน <code>sent_tokenize()</code> มีพารามิเตอร์ที่สำคัญ 2 ตัว ได้แก่ <code>text</code> เป็นข้อความนำเข้าสำหรับฟังก์ชัน ส่วนพารามิเตอร์ <code>engine</code> ใช้สำหรับกำหนดอัลกอริทึมเพื่อแบ่งประโยคจากข้อความที่กำหนด โดยมี 2 อัลกอริทึมให้เลือกได้แก่ ‘whitespace’ กับ ‘whitespace+newline’ ซึ่งเป็นการแบ่งประโยคด้วยช่องว่าง และการเว้นบรรทัด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span><span class="fu">sent_tokenize</span>(text, <span class="at">engine =</span> <span class="st">"whitespace"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ส่วนเบี่ยงเบนมาตรฐานให้วัดการกระจายสัมบูรณ์" 
+[2] "แต่สัมประสิทธิ์การแปรผันใช้วัดการกระจายสัมพัทธ์"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mytext <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">"mytext.txt"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>temp<span class="ot">&lt;-</span>pythainlp<span class="sc">$</span><span class="fu">sent_tokenize</span>(<span class="at">text =</span> mytext[<span class="dv">1</span>],<span class="at">engine =</span> <span class="st">"whitespace+newline"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "การวิเคราะห์การถดถอย"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="stopword-removal" class="level1">
+<h1>Stopword removal</h1>
+<p>Stopwords คือคำที่ไม่ให้ความหมายหรือไม่มีประโยชน์ในการตีความหมายของประโยคหรือข้อความเป้าหมาย เช่น a, and, the, และ หรือ อะ ซึ่งในชุดข้อมูลหากมีคำประเภทนี้อยู่มาก ๆ จะกลายเป็น noise ที่รบกวนการวิเคราะห์ ใน library pythainlp มีการรวบรวม stopwords สำหรับภาษาไทยเอาไว้พอสมควร ผู้วิเคราะห์สามารถนำมาใช้ได้ การเรียก stopword จาก pythinlp มาใช้สามารถทำได้ในทำนองเดียวกับการตัดคำดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>stopword <span class="ot">&lt;-</span> pythainlp<span class="sc">$</span>corpus<span class="sc">$</span>thai_stopwords</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>stopword</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;function thai_stopwords at 0x10d333130&gt;</code></pre>
+</div>
+</div>
+<p>อย่างไรก็ตาม stopword ข้างต้นอยู่ใน format แบบ frozenset ซึ่งไม่สามารถนำมาใช้บน R ได้โดยตรง การนำ stopword ดังกล่าวมาใช้บน R สามารถเขียนคำสั่งเพิ่มเติมได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># python stopword script</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>stopword_fn <span class="ot">&lt;-</span><span class="st">"</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="st">def stopword():</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="st">  import pythainlp</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="st">  stopword = pythainlp.corpus.common.thai_stopwords()</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="st">  stopword = list(stopword)</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="st">  return stopword</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">py_run_string</span>(stopword_fn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ผลลัพธ์ที่ได้จากการเรียก stopword จากฟังก์ชันใน python script ด้วย <code>py_run_string()</code> จะเก็บอยู่ใน object ชื่อ <code>py</code> ซึ่งจะเก็บในชื่อเดียวกับฟังก์ชันดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">stopword</span>() <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "คุณๆ"        "ขาด"        "กระนั้น"      "เพิ่ง"        "ส่วน"       
+ [6] "นู่น"         "เท่าใด"      "เพียงใด"     "คราวหลัง"    "ตลอดวัน"    
+[11] "ยาก"        "เห็น"        "นอกเหนือจาก" "สมัยนั้น"      "ประการ"    
+[16] "ๆ"          "จึง"         "เถอะ"       "หน่อย"       "เพิ่งจะ"     </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span>corpus<span class="sc">$</span>thai_negations</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;function thai_negations at 0x10d3331c0&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pythainlp<span class="sc">$</span>corpus<span class="sc">$</span>thai_syllables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;function thai_syllables at 0x10d333010&gt;</code></pre>
+</div>
+</div>
+<p>นอกจาก stopword แล้ว pythainlp ยังมี dictionary ตัวอื่น ๆ ที่สามารถนำมาใช้ประโยชน์ได้ ได้แก่ พจนานุกรมคำปฏิเสธ <code>thai_negations</code> และพจนานุกรมพยางค์ <code>thai_syllables</code> ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># negations dictionary</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>negations_fn <span class="ot">&lt;-</span><span class="st">"</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="st">def negations():</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="st">  import pythainlp</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="st">  stopword = pythainlp.corpus.common.thai_negations()</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="st">  stopword = list(stopword)</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="st">  return stopword</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co"># syllables dictionary</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>syllables_fn<span class="ot">&lt;-</span><span class="st">"</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="st">def syllables():</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="st">  import pythainlp</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="st">  syllable = pythainlp.corpus.common.thai_syllables()</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="st">  syllable = list(syllable)</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="st">  return(syllable)</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="fu">py_run_string</span>(negations_fn)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="fu">py_run_string</span>(syllables_fn)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">negations</span>() <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ไม่" "แต่"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span><span class="fu">syllables</span>() <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "เพิ่ง"  "คดี"   "จี้"    "สข."  "บอย." "พัด"   "ทอ"   "ไบ"   "เทสก์" "ตึ่ง"  
+[11] "เรือก" "หวิว"  "เก"   "ทารณ์" "ษิต"   "ใช้"   "คล่อง" "มณ"   "ไมล์"  "ฝรั่ง" </code></pre>
+</div>
+</div>
+</section>
+<section id="วเคราะหคำตอบอตนยของผเรยน" class="level1">
+<h1>วิเคราะห์คำตอบอัตนัยของผู้เรียน</h1>
+<p>ตัวอย่างส่วนนี้ผู้วิเคราะห์จะพัฒนาโมเดลตรวจคำตอบการบ้านของนิสิต ข้อมูลฝึกหัดได้จากผลการตอบการบ้านของนิสิตจำนวน 74 คน ในรายวิชา 2758501 ภาคปลาย ปีการศึกษา 2565 เรื่องการวิเคราะห์การถดถอย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># importing data</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"traindataset_hw.xlsx"</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat,<span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 74
+Columns: 29
+$ Timestamp     &lt;dttm&gt; 2023-04-19 14:36:46, 2023-04-19 15:…
+$ Score         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ `รหัสนิสิต`      &lt;dbl&gt; 6441127027, 6441153327, 6442505827, …
+$ `ช่ือ นามสกุล`   &lt;chr&gt; "ชลิต เชี่ยวเชิงงาน", "นายถิรนัย ธนัครสมบัติ"…
+$ `ตอนเรียนที่`    &lt;dbl&gt; 4, 4, 7, 4, 4, 7, 7, 8, 7, 7, 7, 9, …
+$ text1         &lt;chr&gt; "mathach=13.9090-0.8267(stressclim)+…
+$ result1       &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ remark1       &lt;chr&gt; "normal", "normal", "normal", "norma…
+$ residual      &lt;chr&gt; "https://drive.google.com/open?id=1V…
+$ pic1          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ hetoro        &lt;chr&gt; "https://drive.google.com/open?id=1M…
+$ pic2          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ norm          &lt;chr&gt; "https://drive.google.com/open?id=1Q…
+$ pic3          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ coll          &lt;chr&gt; "https://drive.google.com/open?id=1q…
+$ pic4          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ text2         &lt;chr&gt; "ไม่มีปัญหาใด ๆ", "Linearity", "ไม่มีปัญหา…
+$ result2       &lt;chr&gt; "1", "0", "1", "1", "1", "1", "1", "…
+$ text3         &lt;chr&gt; "สมการถดถอยที่คำนวณมาได้นั้น นิสิตคิดว่ายังมีตัว…
+$ result3       &lt;dbl&gt; 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 0, …
+$ text4         &lt;chr&gt; "ได้ จากการทดสอบสมมุติฐานพบว่าค่า p value…
+$ result4       &lt;dbl&gt; 0.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0…
+$ text5         &lt;chr&gt; "เมื่อกำหนดให้บรรยากาศความเครียดในการเรีย…
+$ result5       &lt;dbl&gt; 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1…
+$ text6         &lt;chr&gt; "จากสมการถดถอยข้างต้นนั้น mathach=13.909…
+$ result6       &lt;dbl&gt; 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, …
+$ text7         &lt;chr&gt; "มี ได้แก่ 1. stressclim (บรรยากาศความเ…
+$ result7       &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+$ `total score` &lt;dbl&gt; 11.0, 12.0, 13.0, 11.5, 12.5, 11.0, …</code></pre>
+</div>
+</div>
+<p>คำถามที่จะนำมาทดลองพัฒนาโมเดลคือ “สมการถดถอยที่ประมาณได้มีความเหมาะสมที่จะใช้ทำนาย/อธิบายความสัมพันธ์ที่พบในข้อมูลหรือไม่ เพราะเหตุใด” แนวคำตอบของคำถามนี้คือ “เหมาะสม ด้วยเหตุผล 2 ประการ ประการแรก คือไม่พบหลักฐานว่ามีการละเมิดข้อตกลงเบื้องต้นของการวิเคราะห์การถดถอย และประการที่สอง ค่าสัมประสิทธิ์การตัดสินใจของสมการถดถอยที่ประมาณได้มีค่าเท่ากับ 0.697 แสดงว่าสมการสามารถอธิบายความผันแปรใน mathach ได้คิดเป็นร้อยละ 69.7 ซึ่งอยู่ในระดับที่สูง”</p>
+<p>การให้คะแนนมีการให้คะแนน 3 ระดับ คือ 0, 1, 2 หมายถึงตอบผิด ตอบถูกบางส่วน และตอบถูกทั้งหมด การวิเคราะห์ด้านล่างแสดงการแจกแจงความถี่ของคะแนนที่ได้ซึ่งพบว่า ส่วนใหญ่สามารถตอบถูกได้บางส่วน และมีส่วนน้อยที่สามารถตอบถูกได้ทั้งหมด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>result3 <span class="sc">%&gt;%</span> <span class="fu">table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>.
+ 0  1  2 
+12 57  5 </code></pre>
+</div>
+</div>
+<section id="data-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing">data preprocessing</h2>
+<p>ผู้วิเคราะห์สร้างชุดข้อมูลใหม่สำหรับพัฒนาโมเดลก่อนดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>hw3 <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">`</span><span class="at">รหัสนิสิต</span><span class="st">`</span>,result3, text3)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hw3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+    `รหัสนิสิต` result3 text3                                                      
+       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                                                      
+1 6441127027       0 สมการถดถอยที่คำนวณมาได้นั้น นิสิตคิดว่ายังมีตัวแปรบางประการที่ไม่มีความเหม…
+2 6441153327       1 มีความเหมาะสม เพราะ แม้ว่าเมื่อใช้การวิเคราะห์สหสัมพันธ์แบบเพียร์สัน พบว่…
+3 6442505827       2 เหมาะสมเพราะไม่ละเมิดข้อตกลงเบื้องต้นใดๆเลย และมีRscore อยู่ที่69.7%  
+4 6441193427       1 มีความเหมาะสมที่จะใช้ทำนาย/อธิบายความสัมพันธ์ที่พบในข้อมูล เพราะเศษเหลื…
+5 6441140127       2 เหมาะสม เพราะจากการวิเคราะห์เศษเหลือ เมื่อพิจารณา Linearity, Nor…
+6 6441037227       1 เหมาะสม เพราะ เมื่อพิจารณาสัมประสิทธิ์การตัดสินใจ (R2) พบว่ามีค่า 0.69…</code></pre>
+</div>
+</div>
+<p>ขั้นตอนต่อมาจะทำ tokenization เพื่อแบ่งคำจากข้อความที่นิสิตตอบมา</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define tokenization function</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>tokenize_thai <span class="ot">&lt;-</span> <span class="cf">function</span>(text) {</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  tokens <span class="ot">&lt;-</span> <span class="fu">lapply</span>(text, pythainlp<span class="sc">$</span>word_tokenize, <span class="at">engine=</span><span class="st">"newmm"</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  tokens_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tokens, <span class="cf">function</span>(x) {</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">" "</span>)})</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  tokens_list <span class="ot">&lt;-</span> <span class="fu">unlist</span>(tokens_list)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(tokens_list)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="do">## tokenized via mutate function</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>temp<span class="ot">&lt;-</span>hw3 <span class="sc">%&gt;%</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">token =</span> <span class="fu">tokenize_thai</span>(text3))</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(temp<span class="sc">$</span>token,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "สมการ ถดถอย ที่ คำนวณ มา ได้ นั้น   นิสิต คิด ว่า ยังมี ตัวแปร บางประการ ที่ ไม่ มี ความเหมาะสม กับ การ วิเคราะห์   เช่น จำนวน ร้อยละ ของ นักเรียน เพศหญิง ใน โรง เร ีน   ซึ่ง อาจจะ ไม่ ถือว่า เป็น ดัชนี ชี้ วัด ว่า   ค่าเฉลี่ย นั้น จะ เพิ่มขึ้น หรือ ลดลง อย่างไร ได้ จาก การ มี จำนวน นักเรียน หญิง ที่ เพิ่มขึ้น   เป็นต้น"                                                                                                                                                                                                
+ [2] "มี ความเหมาะสม   เพราะ   แม้ว่า เมื่อ ใช้การ วิเคราะห์ สห สัมพันธ์ แบบ เพียร์ สัน   พบ ว่า   ตัวแปร สัดส่วน นักเรียน หญิง ภายใน โรงเรียน มี ความสัมพันธ์ เชิงเส้น กับ ตัวแปร ตาม ใน ระดับ ต่ำ   ( r   =   - 2.70 )   ทำให้ ละเมิด ข้อตกลง   แต่ เมื่อ ดู จาก แผนภาพ   residual   พบ ว่า มี การ กระจาย ของ เศษเหลือ ที่ มีแนวโน้ม เป็น เส้นตรง   มี ความ เป็น   Homoskedasticity   (ฺ Breusch-Pagan   =   1.04 ,   p   =   0.792 )   และ ไม่ มีปัญหา   Multicollinearity   เนื่องจาก   VIF   ของ ทุก ตัวแปร อิสระ มีค่า น้อยกว่า   4"
+ [3] "เหมาะสม เพราะ ไม่ ละเมิด ข้อตกลง เบื้องต้น ใดๆ เลย   และ มี Rscore   อยู่ ที่ 69.7 %"                                                                                                                                                                                                                                                                                                                                                                                           
+ [4] "มี ความเหมาะสม ที่จะ ใช้ ทำนาย / อธิบาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล   เพราะ เศษเหลือ มี การ เ เจ กเ เจ ง แบบ ปกติ   เศษเหลือ มี การ กระจาย ตัว รอบ เส้น สมการ ถดถอย อย่าง สม่ำเสมอ ใกล้เคียง กัน   และ ไม่ มีค่า ผิดปกติ ที่ มีอิทธิพล ต่อ การประมาณ สมการ ถดถอย"                                                                                                                                                                                                                                     
+ [5] "เหมาะสม   เพราะ จาก การ วิเคราะห์ เศษเหลือ   เมื่อ พิจารณา   Linearity ,   Normality   และ   Homoscedasticity   ไม่ พบ ปัญหา ละเมิด ข้อตกลง เบื้องต้น   และ เมื่อ พิจารณา สัมประสิทธิ์ การตัดสินใจ   บ่งบอก ว่า สมการ ถดถอย สามารถ อธิบาย ความแปรผัน ที่ เกิดขึ้น ใน ตัวแปร ตาม คิด เป็น ถึง ร้อยละ   70"                                                                                                                                                                                                
+ [6] "เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์ การตัดสินใจ   ( R 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   สรุป ได้ ว่า   สมการ ถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปร ตาม ได้ อย่าง แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย / อธิบาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล"                                                                                                                                                                                                                               
+ [7] "เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์ การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1              สรุป ได้ ว่า   สมการ ถดถอย ที่ ประมาณ ได้   สามารถ ทำนาย ตัวแปร ตาม ได้ แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล"                                                                                                                                                                                                                             
+ [8] "เหมาะสม   เพราะว่า พิจารณา จาก สัมประสิทธิ์ การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   ดังนั้น จะ ได้ ว่า สมการ ถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปร ตาม ได้ อย่าง แม่นยำ   สรุป จึง เหมาะสม ที่จะ ใช้ ทำนาย / อธิบาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล"                                                                                                                                                                                                                       
+ [9] "R ^ 2   =   0.697   ดังนั้น สมการ ถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การ ทำนาย มาก   เพราะ   R ^ 2   มีค่า ใกล้เคียง   1"                                                                                                                                                                                                                                                                                                                                                      
+[10] "R ^ 2 = 0.697   นั่น คือ สมการ ถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การ ทำนาย ตัวแปร ตาม ได้ แม่น มาก   เพราะ มีค่า ใกล้เคียง 1"                                                                                                                                                                                                                                                                                                                                                    </code></pre>
+</div>
+</div>
+<p>จะสังเกตเห็นว่าการตัดคำด้วย dictionary ของ pythainlp สามารถทำได้ดีพอสมควร แต่คำศัพท์ทางสถิติที่แปลเป็นภาษาไทยยังไม่สามารถตัดคำได้อย่างเหมาะสม ดังนั้นเพื่อให้การตัดคำทำได้อย่างมีประสิทธิภาพมากขึ้น ผู้วิเคราะห์จึงจะเพิ่มคำศัพท์ทางสถิติที่เกี่ยวข้องไว้ใน dictionary โดยเก็บคำศัพท์ดังกล่าวไว้ในไฟล์ <code>mytext.txt</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>trie <span class="ot">&lt;-</span> pythainlp<span class="sc">$</span>tokenize<span class="sc">$</span>Trie</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="do">## custom word</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>custom_word <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">"mytext.txt"</span>, <span class="at">skipNul =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="do">## load thai dictionary from pythainlp</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>dict_default <span class="ot">&lt;-</span> pythainlp<span class="sc">$</span>corpus<span class="sc">$</span><span class="fu">thai_words</span>()</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>extended_dict <span class="ot">&lt;-</span> <span class="fu">trie</span>(pythainlp<span class="sc">$</span>corpus<span class="sc">$</span><span class="fu">thai_words</span>())</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (word <span class="cf">in</span> custom_word) {</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  extended_dict<span class="sc">$</span><span class="fu">add</span>(word)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>จากนั้นลองดำเนินการตัดคำใหม่ด้วย dictionary ข้างต้น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define tokenization function</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>tokenize_thai <span class="ot">&lt;-</span> <span class="cf">function</span>(text) {</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  tokens <span class="ot">&lt;-</span> <span class="fu">lapply</span>(text, pythainlp<span class="sc">$</span>word_tokenize, <span class="at">engine=</span><span class="st">"newmm"</span>,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">custom_dict =</span> extended_dict)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  tokens_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tokens, <span class="cf">function</span>(x) {</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">" "</span>)})</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  tokens_list <span class="ot">&lt;-</span> <span class="fu">unlist</span>(tokens_list)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(tokens_list)</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="do">## tokenized via mutate function</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>temp<span class="ot">&lt;-</span>hw3 <span class="sc">%&gt;%</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">token =</span> <span class="fu">tokenize_thai</span>(text3))</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(temp<span class="sc">$</span>token,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "สมการถดถอย ที่ คำนวณ มา ได้ นั้น   นิสิต คิด ว่า ยังมี ตัวแปร บางประการ ที่ ไม่ มี ความเหมาะสม กับ การ วิเคราะห์   เช่น จำนวน ร้อยละ ของ นักเรียน เพศหญิง ใน โรง เร ีน   ซึ่ง อาจจะ ไม่ ถือว่า เป็น ดัชนี ชี้ วัด ว่า   ค่าเฉลี่ย นั้น จะ เพิ่มขึ้น หรือ ลดลง อย่างไร ได้ จาก การ มี จำนวน นักเรียน หญิง ที่ เพิ่มขึ้น   เป็นต้น"                                                                                                                                                                                           
+ [2] "มี ความเหมาะสม   เพราะ   แม้ว่า เมื่อ ใช้การ วิเคราะห์ สหสัมพันธ์ แบบ เพียร์สัน   พบ ว่า   ตัวแปร สัดส่วน นักเรียน หญิง ภายใน โรงเรียน มี ความสัมพันธ์เชิงเส้น กับ ตัวแปรตาม ใน ระดับ ต่ำ   ( r   =   - 2.70 )   ทำให้ ละเมิด ข้อตกลง   แต่ เมื่อ ดู จาก แผนภาพ   residual   พบ ว่า มี การกระจาย ของ เศษเหลือ ที่ มีแนวโน้ม เป็น เส้นตรง   มี ความ เป็น   Homoskedasticity   (ฺ Breusch-Pagan   =   1.04 ,   p   =   0.792 )   และ ไม่ มีปัญหา   Multicollinearity   เนื่องจาก   VIF   ของ ทุก ตัวแปรอิสระ มีค่า น้อยกว่า   4"
+ [3] "เหมาะสม เพราะ ไม่ ละเมิด ข้อตกลงเบื้องต้น ใดๆ เลย   และ มี Rscore   อยู่ ที่ 69.7 %"                                                                                                                                                                                                                                                                                                                                                                                      
+ [4] "มี ความเหมาะสม ที่จะ ใช้ ทำนาย/อธิบายความสัมพันธ์ ที่ พบ ใน ข้อมูล   เพราะ เศษเหลือ มี การ เ เจ กเ เจ ง แบบ ปกติ   เศษเหลือ มี การกระจาย ตัว รอบ เส้น สมการถดถอย อย่าง สม่ำเสมอ ใกล้เคียง กัน   และ ไม่ มีค่า ผิดปกติ ที่ มีอิทธิพล ต่อ การประมาณ สมการถดถอย"                                                                                                                                                                                                                                     
+ [5] "เหมาะสม   เพราะ จาก การวิเคราะห์เศษเหลือ   เมื่อ พิจารณา   Linearity ,   Normality   และ   Homoscedasticity   ไม่ พบ ปัญหา ละเมิด ข้อตกลงเบื้องต้น   และ เมื่อ พิจารณา สัมประสิทธิ์การตัดสินใจ   บ่งบอก ว่า สมการถดถอย สามารถ อธิบาย ความแปรผัน ที่ เกิดขึ้น ใน ตัวแปรตาม คิด เป็น ถึง ร้อยละ   70"                                                                                                                                                                                                
+ [6] "เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์การตัดสินใจ   ( R2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   สรุป ได้ ว่า   สมการถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปรตาม ได้ อย่าง แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย/อธิบายความสัมพันธ์ ที่ พบ ใน ข้อมูล"                                                                                                                                                                                                                                
+ [7] "เหมาะสม   เพราะ   เมื่อ พิจารณา สัมประสิทธิ์การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1              สรุป ได้ ว่า   สมการถดถอย ที่ ประมาณ ได้   สามารถ ทำนาย ตัวแปรตาม ได้ แม่นยำ   จึง เหมาะสม ที่จะ ใช้ ทำนาย ความสัมพันธ์ ที่ พบ ใน ข้อมูล"                                                                                                                                                                                                                          
+ [8] "เหมาะสม   เพราะว่า พิจารณา จาก สัมประสิทธิ์การตัดสินใจ   ( R ^ 2 )   พบ ว่า มีค่า   0.697   ซึ่ง มีค่า เข้าใกล้   1   ดังนั้น จะ ได้ ว่า สมการถดถอย ที่ ประมาณ ได้ สามารถ ทำนาย ตัวแปรตาม ได้ อย่าง แม่นยำ   สรุป จึง เหมาะสม ที่จะ ใช้ ทำนาย/อธิบายความสัมพันธ์ ที่ พบ ใน ข้อมูล"                                                                                                                                                                                                                       
+ [9] "R ^ 2   =   0.697   ดังนั้น สมการถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การทำนาย มาก   เพราะ   R ^ 2   มีค่า ใกล้เคียง   1"                                                                                                                                                                                                                                                                                                                                                  
+[10] "R ^ 2 = 0.697   นั่น คือ สมการถดถอย ที่ ประมาณ ได้ มีประสิทธิภาพ ใน การทำนาย ตัวแปรตาม ได้ แม่น มาก   เพราะ มีค่า ใกล้เคียง 1"                                                                                                                                                                                                                                                                                                                                                 </code></pre>
+</div>
+</div>
+<p>สำรวจข้อมูลเบื้องต้น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>temp<span class="ot">&lt;-</span>temp <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="at">input =</span> token, <span class="at">output =</span> word, <span class="at">token =</span> <span class="st">"ptb"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> py<span class="sc">$</span><span class="fu">stopword</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(!word %in% py$negations()) %&gt;%</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> py<span class="sc">$</span><span class="fu">syllables</span>())</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>temp <span class="sc">%&gt;%</span> </span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove all numbers</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_replace_all</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">d+"</span>, <span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove all english words</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove_all</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">b(?!R2</span><span class="sc">\\</span><span class="st">b|</span><span class="sc">\\</span><span class="st">bR</span><span class="sc">\\</span><span class="st">s?</span><span class="sc">\\</span><span class="st">^</span><span class="sc">\\</span><span class="st">s?2</span><span class="sc">\\</span><span class="st">b)[A-Za-z]+</span><span class="sc">\\</span><span class="st">b"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># correct word</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_replace</span>(word, <span class="st">"อารีสแควร์"</span>,<span class="st">"อาร์สแควร์"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(word = str_replace(word, "เหมาะสม","ความเหมาะสม")) %&gt;%</span></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(word = str_replace(word , "ถดถอย","สมการถดถอย")) %&gt;%</span></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove punctuation</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove</span>(word, <span class="st">"^[[:punct:]]+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove</span>(word,<span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove unnescessary words</span></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"มีค่า"</span>,<span class="st">"ที่จะ"</span>,<span class="st">"="</span>,<span class="st">"นำมา"</span>,<span class="st">"^"</span>,<span class="st">"เ"</span>,<span class="st">"ใกล้เคียง"</span>,<span class="st">"ยังมี"</span>,<span class="st">"ยกกำลัง"</span>,<span class="st">"ทำการ"</span>,<span class="st">"ใชต้รวจ"</span>,<span class="st">"ขอ้"</span>,<span class="st">"ืองตน้"</span>,<span class="st">"ดังนั้น"</span>,<span class="st">"ว่าการ"</span>,</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"บางประการ"</span>,<span class="st">"ทั้งสอง"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"."</span>,<span class="st">""</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(result3,word) <span class="sc">%&gt;%</span></span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y=</span> <span class="fu">reorder</span>(word,n)))<span class="sc">+</span></span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> <span class="fu">factor</span>(result3,</span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>                             <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"ผิด"</span>,<span class="st">"ถูกบางส่วน"</span>,<span class="st">"ถูก"</span>))))<span class="sc">+</span></span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text=</span><span class="fu">element_text</span>(<span class="at">family=</span><span class="st">"ChulaCharasNew"</span>))<span class="sc">+</span></span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"ผลการตอบ"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="TextPreprocessing_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("wordcloud2")</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wordcloud2)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>word_count<span class="ot">&lt;-</span>temp <span class="sc">%&gt;%</span> </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove all numbers</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_replace_all</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">d+"</span>, <span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove all english words</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove_all</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">b(?!R2</span><span class="sc">\\</span><span class="st">b|</span><span class="sc">\\</span><span class="st">bR</span><span class="sc">\\</span><span class="st">s?</span><span class="sc">\\</span><span class="st">^</span><span class="sc">\\</span><span class="st">s?2</span><span class="sc">\\</span><span class="st">b)[A-Za-z]+</span><span class="sc">\\</span><span class="st">b"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># correct word</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_replace</span>(word, <span class="st">"อารีสแควร์"</span>,<span class="st">"อาร์สแควร์"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(word = str_replace(word, "เหมาะสม","ความเหมาะสม")) %&gt;%</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(word = str_replace(word , "ถดถอย","สมการถดถอย")) %&gt;%</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove punctuation</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove</span>(word, <span class="st">"^[[:punct:]]+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove</span>(word,<span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove unnescessary words</span></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"มีค่า"</span>,<span class="st">"ที่จะ"</span>,<span class="st">"="</span>,<span class="st">"นำมา"</span>,<span class="st">"^"</span>,<span class="st">"เ"</span>,<span class="st">"ใกล้เคียง"</span>,<span class="st">"ยังมี"</span>,<span class="st">"ยกกำลัง"</span>,<span class="st">"ทำการ"</span>,<span class="st">"ใชต้รวจ"</span>,<span class="st">"ขอ้"</span>,<span class="st">"ืองตน้"</span>,<span class="st">"ดังนั้น"</span>,<span class="st">"ว่าการ"</span>,</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"บางประการ"</span>,<span class="st">"ทั้งสอง"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"."</span>,<span class="st">""</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(result3,word) <span class="sc">%&gt;%</span></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() </span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>col<span class="ot">&lt;-</span><span class="fu">ifelse</span>(word_count[,<span class="dv">1</span>]<span class="sc">==</span><span class="dv">0</span>,<span class="st">"maroon"</span>,</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>            <span class="fu">ifelse</span>(word_count[,<span class="dv">1</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="st">"orange"</span>,<span class="st">"steelblue"</span>))</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a><span class="fu">wordcloud2</span>(<span class="at">data =</span> word_count[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fontFamily =</span> <span class="st">"ChulaCharasNew"</span>,</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> col, <span class="at">backgroundColor =</span> <span class="st">"white"</span>,</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>           <span class="at">shape =</span> <span class="st">"square"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="wordcloud2 html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-5f1310d86619d1112ec8" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-5f1310d86619d1112ec8">{"x":{"word":["การกระจาย","ข้อมูล","ความสัมพันธ์","ความเหมาะสม","คำทำนาย","คำนวณ","ค่าเฉลี่ย","จำนวน","ดัชนี","ตรงกลาง","ตัวแปร","ทำนาย","นักเรียน","นิสิต","บริเวณ","ร้อยละ","ลดลง","วิเคราะห์","สมการถดถอย","สส","อารี","อาร์สแควร์","ีน","เป็นตัวแทน","เพศหญิง","เพิ่มขึ้น","เส้นตรง","เหมาะสม","เเควร์","แควร์","<","=.","การกระจาย","การทำนาย","การประมาณ","การพิจารณา","การวิเคราะห์การถดถอย","การวิเคราะห์เศษเหลือ","การเรียน","การแจกแจงแบบปกติ","กเ","ข้อตกลง","ข้อตกลงเบื้องต้น","ข้อมูล","ค","คณิตศาสตร์","คลาดเคลื่อน","ความสัมพันธ์","ความสัมพันธ์เชิงเส้น","ความเหมาะสม","ความแปรปรวน","คะแนน","คุณสมบัติ","ค่าที่","ค่าเฉลี่ย","ง","จำเป็นต้อง","ตกลง","ตรวจสอบ","ตัวแปร","ตัวแปรตาม","ตัวแปรอิสระ","ถดถอย","ท","ทดสอบ","ทำนาย","ทำนาย/อธิบายความสัมพันธ์","ที่นา","ที่สูง","นักเรียน","นัยสำคัญ","นำมาใช้","นำไปใช้","นิสิต","ปกติ","ปฏิเสธ","ปัญหา","ผลสัมฤทธิ์","ผิดปกติ","ผู้วิจัย","พิจารณา","มากเกินไป","มีประสิทธิภาพ","มีปัญหา","มีอิทธิพล","มีแนวโน้ม","รท","ระดับ","ร้อยละ","ละเมิด","ละเมิน","วิชา","วิเคราะห์","สมการ","สมการถดถอย","สมมติฐาน","สม่ำเสมอ","สหสัมพันธ์","สอดคล้อง","สัดส่วน","สัมประสิทธิ์การตัดสินใจ","สำหรับ","อธิบาย","ออกจาก","ะห์","า","ฺ","เข้าใกล้","เบื้องต้น","เป็นไปตาม","เป็นไปตามข้อตกลงเบื้องต้น","เพียร์สัน","เศษเหลือ","เส้นตรง","เหมาะสม","เเต่","แผนภาพ","แม่นยำ","โรงเรียน","ใช้การ","่","ํา","การทำนาย","การวิเคราะห์การถดถอย","การวิเคราะห์เศษเหลือ","ข้อตกลง","ข้อตกลงเบื้องต้น","ข้อมูล","ความสัมพันธ์","ความเหมาะสม","ความแปรผัน","คะแนน","ตรวจสอบ","ตัวแปร","ตัวแปรตาม","ตัวแปรอิสระ","ทดสอบ","ทำนาย","ที่อยู่","นักเรียน","นัยสำคัญ","บ่งบอก","ปัญหา","พิจารณา","ภาวะร่วมเส้นตรงพหุ","มากเกินไป","มีประสิทธิภาพ","มีปัญหา","ร้อยละ","ละเมิด","วิเคราะห์","สถิติ","สมการถดถอย","สัมประสิทธิ์การตัดสินใจ","อธิบาย","เกิดขึ้น","เกินไป","เป็นไปตามข้อตกลงเบื้องต้น","เหมาะสม","ใช้ไม่ได้"],"freq":[1,1,1,1,1,1,1,2,1,1,1,8,2,1,2,1,1,1,4,1,1,4,1,1,1,2,1,10,1,1,1,1,4,9,1,1,4,2,3,2,1,3,13,54,1,3,4,24,3,28,5,3,2,1,3,2,1,1,32,3,11,1,10,1,4,30,10,2,3,4,2,1,4,2,1,1,2,3,1,1,8,1,11,8,1,1,2,3,3,6,1,3,41,2,38,1,1,1,2,1,19,1,9,1,1,1,1,9,13,3,13,1,19,1,36,2,3,9,4,1,1,2,2,1,4,1,2,1,5,1,1,1,4,1,2,4,4,4,1,1,2,1,4,6,3,1,1,1,2,3,1,4,4,4,1,1,1,2,4,2],"fontFamily":"ChulaCharasNew","fontWeight":"bold","color":[["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["maroon"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["orange"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"],["steelblue"]],"minSize":0,"weightFactor":10,"backgroundColor":"white","gridSize":0,"minRotation":-0.785398163397448,"maxRotation":0.785398163397448,"shuffle":true,"rotateRatio":0.4,"shape":"square","ellipticity":0.65,"figBase64":null,"hover":null},"evals":[],"jsHooks":{"render":[{"code":"function(el,x){\n                        console.log(123);\n                        if(!iii){\n                          window.location.reload();\n                          iii = False;\n\n                        }\n  }","data":null}]}}</script>
+</div>
+</div>
+<p><br></p>
+<p>จะเห็นว่าคำตอบของผู้เรียนมีแนวโน้มที่จะกล่าวถึงข้อตกลงเบื้องต้นของการวิเคราะห์การถดถอยว่ามีความเหมาะสมอย่างไร</p>
+<p>ผลการวิเคราะห์ข้างต้นยังทำให้ผู้วิเคราะห์ทำความสะอาดข้อมูลไปได้ระดับหนึ่ง ขั้นตอนต่อไปคือจะนำข้อมูลที่จัดระเบียบและทำความสะอาดนี้ไปพัฒนาโมเดลตรวจคำตอบต่อไป</p>
+</section>
+<section id="training-classification-models" class="level2">
+<h2 class="anchored" data-anchor-id="training-classification-models">Training Classification models</h2>
+<p>การวิเคราะห์ในส่วนนี้เป็นการพัฒนาโมเดลทำนาย เพื่อตรวจคำตอบแบบข้อเขียนของนักเรียน การพัฒนาโมเดลประกอบด้วยขั้นตอนได้แก่ (1) การนำเข้าและจัดการข้อมูลก่อนการวิเคราะห์​ (2) การแบ่งส่วนชุดข้อมูล (3) การกำหนดและระบุโมเดลทำนาย (4) การปรับแต่งค่า hyperparameters ด้วยเทคนิค cross-validation (5) การประเมินประสิทธิภาพของโมเดล และ (6) การนำโมเดลไปใช้ รายละเอียดมีดังนี้</p>
+<section id="การนำเขาและจดการขอมลกอนการวเคราะห" class="level3">
+<h3 class="anchored" data-anchor-id="การนำเขาและจดการขอมลกอนการวเคราะห">1. การนำเข้าและจัดการข้อมูลก่อนการวิเคราะห์</h3>
+<p>ชุดข้อมูลที่ใช้พัฒนาโมเดลคือ <code>traindataset_hw.xlsx</code> สามารถนำเข้าได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"traindataset_hw.xlsx"</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Timestamp"   "Score"       "รหัสนิสิต"      "ช่ือ นามสกุล"   "ตอนเรียนที่"   
+ [6] "text1"       "result1"     "remark1"     "residual"    "pic1"       
+[11] "hetoro"      "pic2"        "norm"        "pic3"        "coll"       
+[16] "pic4"        "text2"       "result2"     "text3"       "result3"    
+[21] "text4"       "result4"     "text5"       "result5"     "text6"      
+[26] "result6"     "text7"       "result7"     "total score"</code></pre>
+</div>
+</div>
+<p>เปลี่ยนชื่อคอลัมน์บางตัวเพื่อให้สะดวกในการเรียกใช้งาน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat)[<span class="dv">3</span>]<span class="ot">&lt;-</span><span class="st">"student_id"</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat)[<span class="dv">4</span>]<span class="ot">&lt;-</span><span class="st">"student_name"</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat)[<span class="dv">5</span>]<span class="ot">&lt;-</span><span class="st">"section"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ผู้วิเคราะห์จะดำเนินการจัดการข้อมูลทั้งชุดก่อนตามขั้นตอนที่ได้ทำในการสำรวจข้อมูลเบื้องต้น รายละเอียดมีดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="do">### ---- define tokenization function for Thai language</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>tokenize_thai <span class="ot">&lt;-</span> <span class="cf">function</span>(text) {</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  tokens <span class="ot">&lt;-</span> <span class="fu">lapply</span>(text, pythainlp<span class="sc">$</span>word_tokenize, <span class="at">engine=</span><span class="st">"newmm"</span>,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">custom_dict =</span> extended_dict)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  tokens_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tokens, <span class="cf">function</span>(x) {</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">" "</span>)})</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  tokens_list <span class="ot">&lt;-</span> <span class="fu">unlist</span>(tokens_list)</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(tokens_list)</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="do">### ---- python stopword script</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>stopword_fn <span class="ot">&lt;-</span><span class="st">"</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a><span class="st">def stopword():</span></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="st">  import pythainlp</span></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="st">  stopword = pythainlp.corpus.common.thai_stopwords()</span></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="st">  stopword = list(stopword)</span></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="st">  return stopword</span></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a><span class="do">### ---- syllables dictionary</span></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>syllables_fn<span class="ot">&lt;-</span><span class="st">"</span></span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a><span class="st">def syllables():</span></span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a><span class="st">  import pythainlp</span></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a><span class="st">  syllable = pythainlp.corpus.common.thai_syllables()</span></span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a><span class="st">  syllable = list(syllable)</span></span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a><span class="st">  return(syllable)</span></span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>คำสั่งต่อไปนี้ใช้จัดเตรียมข้อมูล training dataset ทั้งหมด ทั้งนี้ผู้วิเคราะห์ได้ตรวจคำตอบตามแนวคำตอบที่กำหนดไว้แล้ว ผลการตรวจอยู่ใน column <code>result3</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>q3_dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">select</span>(student_id, result3, text3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(themis)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(textrecipes)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="do">## tokenized via mutate function</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>temp<span class="ot">&lt;-</span>hw3 <span class="sc">%&gt;%</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">tokenize_thai</span>(text3)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove all numbers</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_replace_all</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">d+"</span>, <span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove all english words</span></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove_all</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">b(?!R2</span><span class="sc">\\</span><span class="st">b|</span><span class="sc">\\</span><span class="st">bR</span><span class="sc">\\</span><span class="st">s?</span><span class="sc">\\</span><span class="st">^</span><span class="sc">\\</span><span class="st">s?2</span><span class="sc">\\</span><span class="st">b)[A-Za-z]+</span><span class="sc">\\</span><span class="st">b"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># correct word</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_replace</span>(word, <span class="st">"อารีสแควร์"</span>,<span class="st">"อาร์สแควร์"</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(word = str_replace(word, "เหมาะสม","ความเหมาะสม")) %&gt;%</span></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(word = str_replace(word , "ถดถอย","สมการถดถอย")) %&gt;%</span></span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove punctuation</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove</span>(word, <span class="st">"^[[:punct:]]+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_remove</span>(word,<span class="st">" "</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove unnescessary words</span></span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"มีค่า"</span>,<span class="st">"ที่จะ"</span>,<span class="st">"="</span>,<span class="st">"นำมา"</span>,<span class="st">"^"</span>,<span class="st">"เ"</span>,<span class="st">"ใกล้เคียง"</span>,<span class="st">"ยังมี"</span>,<span class="st">"ยกกำลัง"</span>,<span class="st">"ทำการ"</span>,<span class="st">"ใชต้รวจ"</span>,<span class="st">"ขอ้"</span>,<span class="st">"ืองตน้"</span>,<span class="st">"ดังนั้น"</span>,<span class="st">"ว่าการ"</span>,</span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"บางประการ"</span>,<span class="st">"ทั้งสอง"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"."</span>,<span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> py<span class="sc">$</span><span class="fu">stopword</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(!word %in% py$negations()) %&gt;%</span></span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> py<span class="sc">$</span><span class="fu">syllables</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">result3 =</span> <span class="fu">factor</span>(result3, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>                          <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"ผิด"</span>,<span class="st">"ถูก"</span>,<span class="st">"ถูก"</span>)))</span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a><span class="do">###----</span></span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>recipe_obj <span class="ot">&lt;-</span> <span class="fu">recipe</span>(result3<span class="sc">~</span> word, <span class="at">data =</span> temp) <span class="sc">%&gt;%</span></span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_tokenize</span>(word, <span class="at">token =</span> <span class="st">"ptb"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_tfidf</span>(word) <span class="sc">%&gt;%</span>  </span>
+<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb51-33"><a href="#cb51-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_adasyn</span>(result3)</span>
+<span id="cb51-34"><a href="#cb51-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-35"><a href="#cb51-35" aria-hidden="true" tabindex="-1"></a><span class="do">### --- model specification</span></span>
+<span id="cb51-36"><a href="#cb51-36" aria-hidden="true" tabindex="-1"></a>lasso_spec <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(),</span>
+<span id="cb51-37"><a href="#cb51-37" aria-hidden="true" tabindex="-1"></a>                           <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-38"><a href="#cb51-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-39"><a href="#cb51-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb51-40"><a href="#cb51-40" aria-hidden="true" tabindex="-1"></a>knn_spec <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>(<span class="at">neighbors =</span> <span class="fu">tune</span>(),</span>
+<span id="cb51-41"><a href="#cb51-41" aria-hidden="true" tabindex="-1"></a>                             <span class="at">weight_func =</span> <span class="fu">tune</span>())<span class="sc">%&gt;%</span></span>
+<span id="cb51-42"><a href="#cb51-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"kknn"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb51-43"><a href="#cb51-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb51-44"><a href="#cb51-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-45"><a href="#cb51-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-46"><a href="#cb51-46" aria-hidden="true" tabindex="-1"></a>wf<span class="ot">&lt;-</span> <span class="fu">workflow_set</span>(</span>
+<span id="cb51-47"><a href="#cb51-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">preproc =</span> <span class="fu">list</span>(recipe_obj),</span>
+<span id="cb51-48"><a href="#cb51-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="fu">list</span>(lasso_spec, knn_spec)</span>
+<span id="cb51-49"><a href="#cb51-49" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb51-50"><a href="#cb51-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb51-51"><a href="#cb51-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-52"><a href="#cb51-52" aria-hidden="true" tabindex="-1"></a>fold<span class="ot">&lt;-</span><span class="fu">vfold_cv</span>(temp, <span class="at">v=</span><span class="dv">10</span>)</span>
+<span id="cb51-53"><a href="#cb51-53" aria-hidden="true" tabindex="-1"></a>eval_metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, sens, spec)</span>
+<span id="cb51-54"><a href="#cb51-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doMC)</span>
+<span id="cb51-55"><a href="#cb51-55" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoMC</span>(<span class="at">cores=</span><span class="dv">15</span>)</span>
+<span id="cb51-56"><a href="#cb51-56" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> wf <span class="sc">%&gt;%</span></span>
+<span id="cb51-57"><a href="#cb51-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_map</span>(</span>
+<span id="cb51-58"><a href="#cb51-58" aria-hidden="true" tabindex="-1"></a>            <span class="at">resamples =</span> fold,</span>
+<span id="cb51-59"><a href="#cb51-59" aria-hidden="true" tabindex="-1"></a>            <span class="at">grid =</span> <span class="dv">30</span>,</span>
+<span id="cb51-60"><a href="#cb51-60" aria-hidden="true" tabindex="-1"></a>            <span class="at">metrics =</span> eval_metric</span>
+<span id="cb51-61"><a href="#cb51-61" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb51-62"><a href="#cb51-62" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb51-63"><a href="#cb51-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb51-64"><a href="#cb51-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="TextPreprocessing_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow_set_result</span>(<span class="at">id =</span> <span class="st">"recipe_nearest_neighbor"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(neighbors, mean, <span class="at">color =</span> .metric)) <span class="sc">+</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>.metric) <span class="sc">+</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="TextPreprocessing_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>result <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow_set_result</span>(<span class="at">id =</span> <span class="st">"recipe_nearest_neighbor"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="fu">factor</span>(weight_func),<span class="at">x=</span> mean, <span class="at">fill =</span> .metric)) <span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>.metric)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="TextPreprocessing_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>last_fit</p>
+<div class="cell">
+
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2023, DataKruRoo</div>   
+    <div class="nav-footer-right">This page is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

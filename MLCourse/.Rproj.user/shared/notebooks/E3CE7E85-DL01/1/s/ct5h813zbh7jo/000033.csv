@@ -1,0 +1,7 @@
+"0","data.frame(epoch = 1:500, rmse_train = sqrt(result$history$mse),"
+"0","           rmse_validate = sqrt(result$history$val_mse)) %>%"
+"0","  ggplot(aes(x=epoch))+"
+"0","  geom_line(aes(y=rmse_train), col=""steelblue"")+"
+"0","  geom_line(aes(y=rmse_validate), col=""orange"")+"
+"0","  ylim(0,600)+"
+"0","  ylab(""RMSE"")"

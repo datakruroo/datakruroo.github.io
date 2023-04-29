@@ -1,0 +1,13 @@
+"0","result <- model$fit(x = train_x, y =train_y, "
+"0","                        epochs=as.integer(10),"
+"0","                    validation_split = 0.1, verbose=F)"
+"2","WARNING:tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x15a831120> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: closure mismatch, requested ('self', 'step_function'), but source function had ('self',)
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+"
+"2","WARNING:tensorflow:AutoGraph could not transform <function Model.make_test_function.<locals>.test_function at 0x15a832680> and will run it as-is.
+Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+Cause: closure mismatch, requested ('self', 'step_function'), but source function had ()
+To silence this warning, decorate the function with @tf.autograph.experimental.do_not_convert
+"
