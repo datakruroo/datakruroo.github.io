@@ -7,6 +7,24 @@ toc-title: สารบัญ
 theme: default
 ---
 
+# What's Deep Learning
+
+พิจารณา neural network ต่อไปนี้
+
+![](images/Screen%20Shot%202564-05-15%20at%2002.29.19.png)
+
+จากรูปจะเห็นว่า neural network ประกอบด้วยส่วนประกอบหลัก เรียกว่า layer จำนวน 3 ส่วนได้แก่
+
+1.  input layer
+
+2.  hidden layer
+
+3.  output layer
+
+![](images/Screenshot%202566-04-28%20at%2021.22.05.png)
+
+![Perceptron model](images/simple%20ANN.png){alt="Perceptron model" width="60%"}
+
 # ทบทวน AI vs ML vs DL
 
 ปัจจุบันมีการใช้คำว่า AI, ML และ DL แทนกันไปมาจนบางครั้งเหมือนว่าจะเป็นคำเดียวกัน ในความเป็นจริงทั้งสามคำดังกล่าวม่ได้เป็นสิ่งเดียวกันเลยทีเดียว แต่มีทั้งส่วนที่เหมือนและแตกต่างกัน รายละเอียดมีดังนี้
@@ -34,8 +52,6 @@ theme: default
 ## Simple artificial neural
 
 หรืออาจเรียกว่า perceptron เป็นโมเดลตัวพื้นฐานมากที่สุดในกลุ่มของ ANN รูปด้านล่างแสดงโครงสร้างของ perceptron model ดังกล่าว จากรูปจะเห็นว่าโมเดลประกอบด้วยส่วนประกอบหลัก 3 ส่วนได้แก่
-
-![Perceptron model](images/simple%20ANN.png){width="60%"}
 
 # 
 

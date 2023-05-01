@@ -1,0 +1,12 @@
+---
+title: "Keras-Tuner"
+---
+
+```{r}
+library(reticulate)
+
+py_install("keras-tuner")
+
+keras <- import("keras")
+keras_tune <- import("kerastuner")
+```

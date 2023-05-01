@@ -1,0 +1,11 @@
+"0","## importing data
+response<-openai$Completion$create(
+  model = ""text-davinci-002"",
+  prompt = ""This is a story about using keras-tuner to tune hyperparameter in NN models via reticulate in Rstudio"",
+  temperature = 0.7,
+  max_tokens = 100
+  
+)
+"
+"2","Error: openai.error.RateLimitError: You exceeded your current quota, please check your plan and billing details.
+"

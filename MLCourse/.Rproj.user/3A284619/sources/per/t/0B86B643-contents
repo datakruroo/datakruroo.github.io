@@ -1,0 +1,54 @@
+---
+title: "Hyperparameter Tuning using Keras Tuner"
+---
+
+บทเรียนนี้จะกล่าวถึงการปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) ด้วย library keras-tuner ทั้งนี้ก่อนการดำเนินการใด ๆ ผู้วิเคราะห์จำเป็นต้องติดตั้งและเตรียมสภาพแวดล้อมการทำงานให้พร้อมก่อน
+
+# 1. Setup
+
+First, make sure you have the necessary Python packages installed: **`tensorflow`**, **`keras`**, and **`keras-tuner`**. You can install them using **`pip`**:
+
+เริ่มที่การติดตั้ง package ที่จำเป็นได้แก่ `tensorflow`, `keras` และ `keras-tuner` ดังนี้
+
+```{r eval=F}
+pip install tensorflow
+pip install keras
+pip install keras-tuner
+```
+
+Next, install and load the **`reticulate`** package in R:
+
+```{r echo=F}
+#install.packages("reticulate")
+library(reticulate)
+```
+
+# 2. Import Python library
+
+```{r}
+reticulate::py_run_string("import certifi; import ssl; ssl.create_default_context = lambda purpose, *, cafile=None, capath=None, cadata=None: ssl.create_default_context(purpose, cafile=certifi.where(), capath=capath, cadata=cadata)")
+
+np <- import("numpy")
+tf <- import("tensorflow")
+keras <- tf$keras
+layers <- keras$layers
+RandomSearch <- import("kerastuner.tuners")$RandomSearch
+HyperParameters <- import("kerastuner.engine.hyperparameters")$HyperParameters
+```
+
+# 3. Load the data
+
+```{r}
+data <- np$load("mnist.npz")
+x_train<-data$get("x_train")
+x_test<-data$get("x_test")
+y_train<-data$get("y_train")
+y_test<-data$get("y_test")
+```
+
+```{r}
+# Scale the pixel values to the range [0, 1]
+x_train <- x_train / 255.0
+x_test <- x_test / 255.0
+
+```

@@ -761,5 +761,12 @@
     "title": "Deep Learning 101",
     "section": "Splitting Dataset",
     "text": "Splitting Dataset\n\n## data spliting\nsplit <- initial_split(dat_preproc, prop = 0.8)\ntrain <- training(split)\ntest <- testing(split)\ntrain_x <- train %>% select(-TheifperPop) %>% as.matrix()\ntrain_y <- train %>% select(TheifperPop) %>% as.matrix()\ntest_x <- test %>% select(-TheifperPop) %>% as.matrix()\ntest_y <- test %>% select(TheifperPop) %>% as.matrix()\n#write.csv(train, file=\"train.csv\")\n#write.csv(test, file=\"test.csv\")"
+  },
+  {
+    "objectID": "documents/Deeplearning/DL02_kerastuner.html",
+    "href": "documents/Deeplearning/DL02_kerastuner.html",
+    "title": "Hyperparameter Tuning using Keras Tuner",
+    "section": "",
+    "text": "บทเรียนนี้จะกล่าวถึงการปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) ด้วย library keras-tuner ทั้งนี้ก่อนการดำเนินการใด ๆ ผู้วิเคราะห์จำเป็นต้องติดตั้งและเตรียมสภาพแวดล้อมการทำงานให้พร้อมก่อน\n\n1. Setup\nFirst, make sure you have the necessary Python packages installed: tensorflow, keras, and keras-tuner. You can install them using pip:\nเริ่มที่การติดตั้ง package ที่จำเป็นได้แก่ tensorflow, keras และ keras-tuner ดังนี้\n\npip install tensorflow\npip install keras\npip install keras-tuner\n\nNext, install and load the reticulate package in R:\n\n\n\n\n\n2. Import Python library\n\nreticulate::py_run_string(\"import certifi; import ssl; ssl.create_default_context = lambda purpose, *, cafile=None, capath=None, cadata=None: ssl.create_default_context(purpose, cafile=certifi.where(), capath=capath, cadata=cadata)\")\n\nnp <- import(\"numpy\")\ntf <- import(\"tensorflow\")\nkeras <- tf$keras\nlayers <- keras$layers\nRandomSearch <- import(\"kerastuner.tuners\")$RandomSearch\nHyperParameters <- import(\"kerastuner.engine.hyperparameters\")$HyperParameters\n\n\n\n3. Load the data\n\ndata <- np$load(\"mnist.npz\")\nx_train<-data$get(\"x_train\")\nx_test<-data$get(\"x_test\")\ny_train<-data$get(\"y_train\")\ny_test<-data$get(\"y_test\")\n\n\n# Scale the pixel values to the range [0, 1]\nx_train <- x_train / 255.0\nx_test <- x_test / 255.0"
   }
 ]
