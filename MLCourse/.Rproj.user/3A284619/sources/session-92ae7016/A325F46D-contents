@@ -1,0 +1,103 @@
+---
+title: "Simple Regression Analysis"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+toc: true
+toc-depth: 3
+toc-title: สารบัญ
+theme: default
+---
+
+```{r}
+library(dplyr)
+library(tidymodels)
+dat <- read.csv("Math.csv")
+glimpse(dat, width=50)
+
+rec <- recipe(Ach~., data=dat) %>%
+  step_string2factor(all_nominal_predictors()) %>%
+  step_mutate(MomEdu = factor(MomEdu, levels=c(0,1,2,3,4),
+         labels=c("none","primary","highsch1","highsch2","grad")),
+         DadEdi = factor(DadEdi, levels=c(0,1,2,3,4),
+         labels=c("none","primary","highsch1","highsch2","grad")),
+         traveltime = factor(traveltime, levels=c(1,2,3,4),
+                             labels=c("<15mins",
+                                      "15-30mins",
+                                      "30-60mins",
+                                      ">60mins")),
+         readingtime = factor(readingtime, levels=c(1,2,3,4),
+                              labels=c("<2hours",
+                                       "2-5hours",
+                                       "5-10hours",
+                                       ">10hours")),
+         fam_relation = factor(fam_relation, levels=c(1,2,3,4,5),
+                               labels=c("worst",
+                                        "bad",
+                                        "fair",
+                                        "good",
+                                        "very good")),
+         freetime = factor(freetime, levels=c(1,2,3,4,5),
+                           labels=c("very little",
+                                    "litter",
+                                    "moderate",
+                                    "high",
+                                    "highest")),
+         goout = factor(goout, levels=c(1,2,3,4,5),
+                           labels=c("very little",
+                                    "litter",
+                                    "moderate",
+                                    "high",
+                                    "highest")),
+         Drink_alc = factor(Drink_alc, levels=c(1,2,3,4,5),
+                            labels=c("very little",
+                                    "litter",
+                                    "moderate",
+                                    "high",
+                                    "highest")),
+         health = factor(health, levels=c(1,2,3,4,5),
+                         labels=c("worst",
+                                        "bad",
+                                        "fair",
+                                        "good",
+                                        "very good"))
+  )
+
+
+temp1 <- rec %>%
+  prep(NULL) %>%
+  juice()
+
+glimpse(rec, width=50 )
+
+temp2<- rec %>%
+  step_normalize(all_numeric()) %>%
+  prep(NULL) %>%
+  juice()
+
+fit <- lm(Ach~., data=temp1)
+summary(fit)$coefficients %>% data.frame() %>%
+  arrange(desc(abs(t.value)))
+
+
+temp1 %>%
+  filter(Ach>0)->temp1
+
+fit <- lm(Ach~., data=temp1)
+summary(fit)$coefficients %>% data.frame() %>%
+  arrange(desc(abs(t.value)))
+
+plot(fit)
+library(car)
+
+```
+
+```{r}
+fit2<-lm(Ach~., data=temp2)
+summary(fit2)$coefficients %>% data.frame() %>%
+  arrange(desc(abs(t.value))) %>% round(2)
+
+plot(fit2)
+```
+
+```{r}
+
+```

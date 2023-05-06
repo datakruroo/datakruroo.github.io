@@ -1,0 +1,24 @@
+"0","best_hp = tuner.get_best_hyperparameters(num_trials=1)[0]"
+"0","best_model = tuner.hypermodel.build(best_hp)"
+"0","best_model.summary()"
+"1","Model: ""sequential_1""
+"
+"1","_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ flatten_1 (Flatten)         (None, 4096)              0         
+                                                                 
+ dense_3 (Dense)             (None, 1600)              6555200   
+                                                                 
+"
+"1"," activation_2 (Activation)   (None, 1600)              0         
+                                                                 
+ dense_4 (Dense)             (None, 10)                16010     
+                                                                 
+=================================================================
+Total params: 6,571,210
+Trainable params: 6,571,210
+Non-trainable params: 0
+"
+"1","_________________________________________________________________
+"

@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+
+<title>2758688 ML PRIN APPLN - Deep Learning Tutorial</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<meta property="og:title" content="2758688 ML PRIN APPLN - Deep Learning Tutorial">
+<meta property="og:description" content="การเรียนรู้เชิงลึก (Deep Learning) เป็นแขนงย่อยของศาสตร์ด้านการเรียนรู้ของเครื่อง (machine learning) ที่พัฒนาขึ้นโดยใช้การทำงานของเซลล์ประสาทในสมองที่เรียกว่า neuron เป็นต้นแบบ…">
+<meta property="og:site-name" content="2758688 ML PRIN APPLN">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Deep Learning Tutorial</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../../index.html" class="sidebar-logo-link">
+      <img src="../../images/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main">
+    <a href="https://github.com/ssiwacho/2758688_ML" title="GitHub ของรายวิชา" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="https://posit.co/download/rstudio-desktop/" title="RStudio" class="sidebar-tool px-1"><i class="bi bi-code-square"></i></a>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Course information</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../course-overview.html" class="sidebar-item-text sidebar-link">Overview</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">Schedule</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../course-lecturer.html" class="sidebar-item-text sidebar-link">Instructor</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">เนื้อหารายสัปดาห์</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documents/01basicConcepts.html" class="sidebar-item-text sidebar-link">Wk01 Intro to ML</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documents/02MLProcess.html" class="sidebar-item-text sidebar-link">Wk02 ML Process</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documents/03TreeModels.html" class="sidebar-item-text sidebar-link">Wk03 Decision Trees</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documents/04Regularization.html" class="sidebar-item-text sidebar-link">Wk04 Regularization</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../documents/05RandomForest.html" class="sidebar-item-text sidebar-link">Wk05 Random Forest</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">สารบัญ</h2>
+   
+  <ul>
+  <li><a href="#ชดขอมลทใชเปนตวอยาง" id="toc-ชดขอมลทใชเปนตวอยาง" class="nav-link active" data-scroll-target="#ชดขอมลทใชเปนตวอยาง">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</a>
+  <ul class="collapse">
+  <li><a href="#นำเขาขอมล" id="toc-นำเขาขอมล" class="nav-link" data-scroll-target="#นำเขาขอมล">นำเข้าข้อมูล</a></li>
+  <li><a href="#สำรวจขอมลเบองตน" id="toc-สำรวจขอมลเบองตน" class="nav-link" data-scroll-target="#สำรวจขอมลเบองตน">สำรวจข้อมูลเบื้องต้น</a></li>
+  </ul></li>
+  <li><a href="#example-1-binary-classification-no-tuning" id="toc-example-1-binary-classification-no-tuning" class="nav-link" data-scroll-target="#example-1-binary-classification-no-tuning">Example 1: binary classification (no tuning)</a>
+  <ul class="collapse">
+  <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">Data Preprocessing</a></li>
+  <li><a href="#modelling" id="toc-modelling" class="nav-link" data-scroll-target="#modelling">Modelling</a></li>
+  <li><a href="#model-evaluation" id="toc-model-evaluation" class="nav-link" data-scroll-target="#model-evaluation">Model Evaluation</a></li>
+  </ul></li>
+  <li><a href="#example-2-multi-class-classification" id="toc-example-2-multi-class-classification" class="nav-link" data-scroll-target="#example-2-multi-class-classification">Example 2: multi-class classification</a>
+  <ul class="collapse">
+  <li><a href="#data-preprocessing-1" id="toc-data-preprocessing-1" class="nav-link" data-scroll-target="#data-preprocessing-1">Data Preprocessing</a></li>
+  <li><a href="#modelling-1" id="toc-modelling-1" class="nav-link" data-scroll-target="#modelling-1">Modelling</a>
+  <ul class="collapse">
+  <li><a href="#categorical-cross-entropy" id="toc-categorical-cross-entropy" class="nav-link" data-scroll-target="#categorical-cross-entropy">categorical cross entropy</a></li>
+  </ul></li>
+  <li><a href="#model-evaluation-1" id="toc-model-evaluation-1" class="nav-link" data-scroll-target="#model-evaluation-1">Model Evaluation</a></li>
+  </ul></li>
+  <li><a href="#regularized-techniques" id="toc-regularized-techniques" class="nav-link" data-scroll-target="#regularized-techniques">Regularized Techniques</a>
+  <ul class="collapse">
+  <li><a href="#l1-regularization-หรอ-lasso-regularization" id="toc-l1-regularization-หรอ-lasso-regularization" class="nav-link" data-scroll-target="#l1-regularization-หรอ-lasso-regularization"><strong>L1 regularization (หรือ Lasso regularization)</strong></a></li>
+  <li><a href="#l2-regularization-หรอ-ridge-regularization" id="toc-l2-regularization-หรอ-ridge-regularization" class="nav-link" data-scroll-target="#l2-regularization-หรอ-ridge-regularization"><strong>L2 regularization (หรือ Ridge regularization)</strong></a></li>
+  <li><a href="#dropout" id="toc-dropout" class="nav-link" data-scroll-target="#dropout"><strong>Dropout</strong></a></li>
+  <li><a href="#early-stopping" id="toc-early-stopping" class="nav-link" data-scroll-target="#early-stopping"><strong>Early stopping</strong></a></li>
+  <li><a href="#weight-constraints" id="toc-weight-constraints" class="nav-link" data-scroll-target="#weight-constraints"><strong>Weight constraints</strong></a></li>
+  <li><a href="#batch-normalization" id="toc-batch-normalization" class="nav-link" data-scroll-target="#batch-normalization"><strong>Batch normalization</strong></a></li>
+  </ul></li>
+  <li><a href="#example-3-hyperparameter-tuning" id="toc-example-3-hyperparameter-tuning" class="nav-link" data-scroll-target="#example-3-hyperparameter-tuning">Example 3: Hyperparameter Tuning</a>
+  <ul class="collapse">
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#data-preprocessing-2" id="toc-data-preprocessing-2" class="nav-link" data-scroll-target="#data-preprocessing-2">Data preprocessing</a></li>
+  <li><a href="#modelling-2" id="toc-modelling-2" class="nav-link" data-scroll-target="#modelling-2">Modelling</a>
+  <ul class="collapse">
+  <li><a href="#model-and-hyperparameters-space" id="toc-model-and-hyperparameters-space" class="nav-link" data-scroll-target="#model-and-hyperparameters-space">Model and hyperparameters space</a></li>
+  <li><a href="#tune-grids" id="toc-tune-grids" class="nav-link" data-scroll-target="#tune-grids">Tune Grids</a></li>
+  <li><a href="#last-fit" id="toc-last-fit" class="nav-link" data-scroll-target="#last-fit">Last fit</a></li>
+  <li><a href="#model-evaluation-2" id="toc-model-evaluation-2" class="nav-link" data-scroll-target="#model-evaluation-2">Model Evaluation</a></li>
+  </ul></li>
+  <li><a href="#แนวทางการปรบแตงคา-hyperparameter" id="toc-แนวทางการปรบแตงคา-hyperparameter" class="nav-link" data-scroll-target="#แนวทางการปรบแตงคา-hyperparameter">แนวทางการปรับแต่งค่า hyperparameter</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Deep Learning Tutorial</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>การเรียนรู้เชิงลึก (Deep Learning) เป็นแขนงย่อยของศาสตร์ด้านการเรียนรู้ของเครื่อง (machine learning) ที่พัฒนาขึ้นโดยใช้การทำงานของเซลล์ประสาทในสมองที่เรียกว่า neuron เป็นต้นแบบ เรียกโมเดลการเรียนรู้ดังกล่าวว่า โมเดลโครงข่ายประสาทเทียม (artificial neuron network models: ANNs)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://editor.analyticsvidhya.com/uploads/21745d3.png" class="img-fluid figure-img" alt="ความแตกต่างระหว่าง ML กับ DL"></p>
+<p></p><figcaption class="figure-caption">ความแตกต่างระหว่าง ML กับ DL</figcaption><p></p>
+</figure>
+</div>
+<section id="ชดขอมลทใชเปนตวอยาง" class="level1">
+<h1>ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h1>
+<p>ชุดข้อมูลที่ใช้เป็นตัวอย่างจะใช้ชุดข้อมูล <a href="https://github.com/ardamavi/Sign-Language-Digits-Dataset"><strong>Sign Language Digits Dataset</strong></a> ซึ่งมีรายละเอียดเบื้องต้น ดังนี้</p>
+<ul>
+<li><p>Image size: 100 x 100 pixels</p></li>
+<li><p>Color space: RGB</p></li>
+<li><p>Number of classes: 10 (Digits: 0-9)</p></li>
+<li><p>Number of participant students: 218</p></li>
+<li><p>Number of samples per student: 10</p></li>
+</ul>
+<section id="นำเขาขอมล" class="level2">
+<h2 class="anchored" data-anchor-id="นำเขาขอมล">นำเข้าข้อมูล</h2>
+<p>ผู้วิเคราะห์สามารถดาวน์โหลดข้อมูลจาก repository ข้างต้นโดยการ Clone the repository ซึ่งอาจใช้คำสั่ง <code>git clone</code> บน terminal หรืออาจใช้การดาวน์โหลดโดยตรงก็ได้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#python : clone repository to local machine</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>git clone https:<span class="op">//</span>github.com<span class="op">/</span>ardamavi<span class="op">/</span>Sign<span class="op">-</span>Language<span class="op">-</span>Digits<span class="op">-</span>Dataset.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>เมื่อดาวน์โหลดข้อมูลเสร็จแล้ว ขั้นตอนถัดไปคือการนำเข้าข้อมูล ในตัวอย่างนี้จะนำเข้าด้วยภาษา Python</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#python</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_data(data_dir):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> []</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    images <span class="op">=</span> []</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    img_size <span class="op">=</span> <span class="dv">64</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    number_list <span class="op">=</span> os.listdir(data_dir)[<span class="dv">1</span>:<span class="dv">11</span>]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    number_list <span class="op">=</span> <span class="bu">sorted</span>(number_list)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> folder <span class="kw">in</span> number_list: </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="bu">int</span>(folder)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> img_file <span class="kw">in</span> os.listdir(os.path.join(data_dir, folder)):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            img_path <span class="op">=</span> os.path.join(data_dir, folder, img_file)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            img <span class="op">=</span> cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            img <span class="op">=</span> cv2.resize(img, (img_size, img_size))</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            images.append(img)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            labels.append(label)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(images), np.array(labels)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>data_dir <span class="op">=</span> <span class="st">'Sign-Language-Digits-Dataset/Dataset'</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>images, labels <span class="op">=</span> load_data(data_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="สำรวจขอมลเบองตน" class="level2">
+<h2 class="anchored" data-anchor-id="สำรวจขอมลเบองตน">สำรวจข้อมูลเบื้องต้น</h2>
+<p>เมื่อดำเนินการสำรวจข้อมูลเบื้องต้นพบว่า เป็นข้อมูลรูปภาพภาษามือตัวเลขจำนวน 2,062 ภาพ แต่ละภาพถูก resize ในภาษา Python ด้วย opencv ให้มีขนาด 64 x 64 แล้ว โดยจำแนกเป็นรูปภาพของตัวเลขตั้งแต่ 0 - 9 อย่างละประมาณ 204 - 208 ภาพ ดังผลการแจกแจงความถี่ด้านล่าง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># convert python array to R array and vector</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>images <span class="ot">&lt;-</span> py<span class="sc">$</span>images</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> py<span class="sc">$</span>labels</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2062   64   64</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2062</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># frequency distribution of labels</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>labels
+  0   1   2   3   4   5   6   7   8   9 
+205 206 206 206 207 207 207 206 208 204 </code></pre>
+</div>
+</div>
+<p>รูปต่อไปนี้แสดงตัวอย่างภาพภาษามือที่นำเข้ามาจากการดำเนินงานข้างต้น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plot_list<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>){</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>number <span class="ot">&lt;-</span> <span class="fu">melt</span>(images[(j<span class="dv">-1</span>)<span class="sc">*</span><span class="dv">208</span><span class="sc">+</span><span class="dv">1</span>,,] <span class="sc">%&gt;%</span> <span class="fu">t</span>())</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(number)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"y"</span>,<span class="st">"x"</span>,<span class="st">"value"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="do">## ploting</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plot_list[[j]] <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(number, <span class="fu">aes</span>(<span class="at">x=</span>y,<span class="at">y=</span><span class="sc">-</span>x,<span class="at">fill=</span>value))<span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>()<span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>)<span class="sc">+</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()<span class="sc">+</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Number:"</span>,j<span class="dv">-1</span>))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">"grid.arrange"</span>, <span class="fu">c</span>(plot_list, <span class="at">nrow=</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DL02_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="864"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="example-1-binary-classification-no-tuning" class="level1">
+<h1>Example 1: binary classification (no tuning)</h1>
+<p>ตัวอย่างแรกจะแสดงการพัฒนาโมเดลแบบ binary classification เพื่อจำแนกตัวเลข 0, 1 จากชุดข้อมูลที่นำเข้ามาในข้างต้นก่อน ดังนั้นก่อนการดำเนินการขั้นต่อไปจะคัดกรองเฉพาะข้อมูลภาพของเลข 0 และ 1 ออกมาก่อน ดังนี้</p>
+<section id="data-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing">Data Preprocessing</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># normalized data</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> images[<span class="dv">1</span><span class="sc">:</span>(<span class="dv">205</span><span class="sc">+</span><span class="dv">206</span>),,]<span class="sc">/</span><span class="dv">255</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 411  64  64</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create label data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">205</span>),<span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">206</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># data splitting</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">411</span>, <span class="fu">ceiling</span>(<span class="fl">0.8</span><span class="sc">*</span><span class="dv">411</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>train_x <span class="ot">&lt;-</span> X[train_id,,]</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>train_y <span class="ot">&lt;-</span> y[train_id]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>test_x <span class="ot">&lt;-</span> X[<span class="sc">-</span>train_id,,]</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>test_y <span class="ot">&lt;-</span> y[<span class="sc">-</span>train_id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>เมื่อสำรวจชุดข้อมูล <code>train</code> พบว่าในตัวอย่างนี้จะมีข้อมูลสำหรับ train โมเดลจำนวน 329 หน่วย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(train_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 329  64  64</code></pre>
+</div>
+</div>
+</section>
+<section id="modelling" class="level2">
+<h2 class="anchored" data-anchor-id="modelling">Modelling</h2>
+<p>ขั้นตอนต่อไปจะนำชุดข้อมูลข้างต้นมาวิเคราะห์ด้วยโมเดลการเรียนรู้ของเครื่อง 2 โมเดล ได้แก่ (1) logistic regression และ (2) artificial neural network models (ANNs) โดยทั้งสองโมเดลจะวิเคราะห์จาก library keras ทั้งหมด</p>
+<p>ข้อมูลนำเข้าในกรณีนี้เป็นรูปภาพ ซึ่งแต่ละหน่วยข้อมูลมีลักษณะเป็นเมทริกซ์ขนาด 64 x 64 การจะนำข้อมูลดังกล่าวเข้าสู่โมเดลทั้งสองข้างต้น ผู้วิเคราะห์จำเป็นต้องแปลงข้อมูลเมทริกซ์ที่มี 2 มิติให้เป็นเวกเตอร์ที่มีมิติเดียวก่อนดังตัวอย่างในรูปด้านล่าง</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Screenshot 2566-05-02 at 00.27.46.png" class="img-fluid figure-img" width="524"></p>
+</figure>
+</div>
+<p>จากตัวอย่างรูปจะเห็นว่า ข้อมูลนำเข้าเป็นภาพขนาด 6 x 6 เมื่อจะนำเข้าสู่โมเดลมีการแปลงให้เป็นเวกเตอร์ขนาด 36 x 1 เพื่อให้เป็น input layer ของโมเดลก่อนที่จะนำไปประมวลผลในส่วนอื่น ๆ ต่อไป จากหลักการดังกล่าวสามารถเขียน syntax ของโมเดลทั้งสองภายใต้ library keras ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tf <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"tensorflow"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>keras <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"keras"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="do">## create sequential model</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>model_logistic <span class="ot">&lt;-</span> keras<span class="sc">$</span><span class="fu">Sequential</span>()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="do">## add layers</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="do">### 1. flatten layer (input layer)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>model_logistic<span class="sc">$</span><span class="fu">add</span>(keras<span class="sc">$</span>layers<span class="sc">$</span><span class="fu">Flatten</span>(<span class="at">input_shape =</span> <span class="fu">c</span>(64L,64L)))</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="do">### 2. output layer</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>model_logistic<span class="sc">$</span><span class="fu">add</span>(keras<span class="sc">$</span>layers<span class="sc">$</span><span class="fu">Dense</span>(<span class="dv">1</span>, <span class="at">activation =</span> <span class="st">"sigmoid"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ในกรณีนี้เป็นการพัฒนาโมเดลแบบ binary classification การกำหนด loss function ที่จะใช้เป็นฟังก์ชันวัตถุประสงค์สำหรับประมาณค่าพารามิเตอร์ภายในโมเดลจึงกำหนดให้เป็น <code>binary_crossentropy</code> ฟังก์ชันดังกล่าวเรียกอีกชื่อหนึ่งว่า log-loss ใช้สำหรับวัดความแตกต่างระหว่างค่าจริง (true value) ของตัวแปรตามแบบให้คะแนนสองค่า (0,1) กับค่าทำนายความน่าจะเป็นของแต่ละค่าคะแนน ฟังก์ชัน log-loss ดังกล่าวเขียนเป็นฟังก์ชันทางคณิตศาสตร์ได้ดังนี้</p>
+<p><span class="math display">\[
+L(y_i,p_i) = -[y_i \times log(p_i)+(1-y_i) \times log(1-p_i)]
+\]</span></p>
+<p>โดยที่ <span class="math inline">\(y=0,1\)</span> และ <span class="math inline">\(p = P(y=1)\)</span> เมื่อ <span class="math inline">\(i=1, 2, 3, …,n\)</span></p>
+<p>ในกรณีที่มีการเทรนโมเดลแบบ whole batch หรือ mini batch ฟังก์ชัน log-loss ดังกล่าวจะคำนวณได้จาก</p>
+<p><span class="math display">\[
+L(Y,P) = -\frac{1}{n}\sum_{i=1}^n [y_i\times log(p_i)+(1-y_i)\times log(1-p_i)]
+\]</span></p>
+<p>ฟังก์ชัน log-loss ดังกล่าวมีคุณสมบัติที่ดีในเชิงเทคนิคกล่าวคือ เป็นฟังก์ชันต่อเนื่องและสามารถหาอนุพันธ์ได้ทุกจุด (continuous and differentiable) ซึ่งเหมาะที่จะใช้กับการประมาณค่าพารามิเตอร์ด้วยอัลกอริทึมที่อิง gradient เช่น gradient หรือ stochastic gradient descent</p>
+<p>ส่วนการกำหนด metric สำหรับประเมินประสิทธิภาพการทำนายของโมเดลสามารถกำหนดได้หลายตัว ดังนี้</p>
+<ol type="1">
+<li><code>accuracy</code> เป็นตัววัดประสิทธิภาพพื้นฐานสำหรับปัญหาแบบ classification ดังที่ได้กล่าวไปแล้วในรายวิชานี้ accuracy มีค่าเท่ากับสัดส่วนของเคสที่มีการทำนายถูกต่อจำนวนเคสทั้งหมด</li>
+<li><code>precision</code> มีค่าเท่ากับ <code>TP/(TP+FP)</code> เมื่อ <code>TP</code> คือ true positive prediction และ <code>FP</code> คือ false positive prediction เป็นกรณีเฉพาะของ accuracy ในข้อ 1. กล่าวคือใช้วัดแนวโน้มความแม่นยำในการทำนายเคสที่เป็นบวก (ในเคสที่ทำนายว่าเป็นบวกทั้งหมด สามารถทำนายเป็นบวกได้ถูกต้องเท่าใด)</li>
+<li><code>recall</code> มีค่าเท่ากับ <code>TP/P</code> เมื่อ <code>P</code> คือเคสที่เป็นบวกทั้งหมด ตัวชี้วัดนี้ใช้วัดประสิทธิภาพในการค้นพบหรือระบุเคสที่เป็นบวก มีค่าเท่ากับ sensitivity ที่ได้กล่าวไว้ก่อนหน้า</li>
+<li><code>F1-score</code> เป็นค่าเฉลี่ย harmonic ระหว่างค่า precision กับ recall เป็นตัวชี้วัดที่สามารถใช้พิจารณา precision กับ recall ในภาพรวมไปพร้อม ๆ กัน F1 สามารถคำนวณได้ด้วยสูตร <code>2*(precision*recall)/(precision + recall)</code></li>
+</ol>
+<p>การกำหนด loss function และ metric ข้างต้นให้เป็นตัวชี้วัดประสิทธิภาพของ keras model สามารถกำหนดผ่านอาร์กิวเมนท์ <code>loss</code> และ <code>metrics</code> ภายใต้ฟังก์ชัน <code>complie()</code> ดังตัวอย่างต่อไปนี้</p>
+<p><a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics" class="uri">https://www.tensorflow.org/api_docs/python/tf/keras/metrics</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model_logistic<span class="sc">$</span><span class="fu">compile</span>(<span class="at">optimizer =</span> <span class="st">"adam"</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">loss =</span> <span class="st">"binary_crossentropy"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">metrics=</span><span class="fu">list</span>(<span class="st">'accuracy'</span>,tf<span class="sc">$</span>keras<span class="sc">$</span>metrics<span class="sc">$</span><span class="fu">Precision</span>(<span class="at">name=</span><span class="st">'precision'</span>)))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>model_logistic<span class="sc">$</span><span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ผลการกำหนดโมเดลข้างต้นจะเห็นว่ามีพารามิเตอร์ที่ต้องประมาณทั้งหมด 4,097 ตัว ซึ่งในที่นี้คือ regression coefficient ของตัวแปรอิสระแต่ละตัวใน flatten layers</p>
+<p>การ train model สามารถทำได้โดยคำสั่งดังนี้</p>
+<p><a href="https://keras.io/api/callbacks/early_stopping/" class="uri">https://keras.io/api/callbacks/early_stopping/</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="do">## set early stopping</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>early_stopping <span class="ot">&lt;-</span> keras<span class="sc">$</span>callbacks<span class="sc">$</span><span class="fu">EarlyStopping</span>(<span class="at">monitor =</span> <span class="st">"val_precision"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">patience =</span> 10L)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="do">## fit the predictive model</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>logistic_result_notune <span class="ot">&lt;-</span> model_logistic<span class="sc">$</span><span class="fu">fit</span>(<span class="at">x =</span> train_x,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">y =</span> train_y <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(),</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">validation_split =</span> <span class="fl">0.3</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">epochs =</span> 500L,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">callbacks =</span> <span class="fu">list</span>(early_stopping))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">epoch =</span> logistic_result_notune<span class="sc">$</span>epoch, <span class="at">acc_train =</span> logistic_result_notune<span class="sc">$</span>history<span class="sc">$</span>accuracy,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">acc_test =</span> logistic_result_notune<span class="sc">$</span>history<span class="sc">$</span>val_accuracy) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(acc_train, acc_test, <span class="at">key =</span> <span class="st">"dataset"</span>, <span class="at">value =</span> <span class="st">"accuracy"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> epoch, <span class="at">y=</span> accuracy, <span class="at">col=</span>dataset))<span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DL02_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation">Model Evaluation</h2>
+<p>ขั้นตอนถัดไปคือการประเมินประสิทธิภาพการทำนายของโมเดลที่พัฒนาขึ้นในข้างต้น การประเมินประสิทธิภาพของโมเดลจะใช้ชุดข้อมูลทดสอบ ได้แก่ <code>test_x</code> และ <code>test_y</code> ซึ่งสามารถทำได้สองลักษณะ ลักษณะแรกคือใช้ฟังก์ชัน <code>evaluate()</code> ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>eval_result <span class="ot">&lt;-</span> model_logistic<span class="sc">$</span><span class="fu">evaluate</span>(test_x, test_y <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>())</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Test loss:"</span>,eval_result[[<span class="dv">1</span>]], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test loss: 0.3591889 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Test accuracy:"</span>, eval_result[[<span class="dv">2</span>]], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test accuracy: 0.8780488 </code></pre>
+</div>
+</div>
+<p>ผลการวิเคราะห์ข้างต้นจะเห็นว่า ความแม่นยำใน test data อยู่ในระดับที่สูงพอสมควร</p>
+<p>ลักษณะที่สองสามารถทำได้โดยใช้ค่าทำนาย วิธีการนี้ทำให้ผู้วิเคราะห์สามารถประเมินประสิทธิภาพการทำนายในเชิงลึกได้มากขึ้น ขั้นตอนแรกคือการหาค่าทำนายของตัวแปรตามในชุดข้อมูลทดสอบก่อน ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>prob_one <span class="ot">&lt;-</span> model_logistic<span class="sc">$</span><span class="fu">predict</span>(test_x)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(prob_one)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]
+[1,] 0.2678992
+[2,] 0.1981595
+[3,] 0.2342714
+[4,] 0.2208772
+[5,] 0.0482427
+[6,] 0.1741302</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pred_one <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prob_one<span class="sc">&gt;</span><span class="fl">0.5</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create confusion matrix</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pred_one, test_y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        test_y
+pred_one  0  1
+       0 40  4
+       1  6 32</code></pre>
+</div>
+</div>
+<p>เราสามารถใช้ <code>tidymodels</code> มาช่วยในการวิเคราะห์ประสิทธิภาพของโมเดลบน test data ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate confusion matrix on test data</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">test =</span> <span class="fu">factor</span>(test_y), <span class="at">pred =</span> <span class="fu">factor</span>(pred_one)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">conf_mat</span>(<span class="at">truth =</span> test, <span class="at">estimate =</span> pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction  0  1
+         0 40  4
+         1  6 32</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate evaluation metrics from confusion matrix</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">test =</span> <span class="fu">factor</span>(test_y), <span class="at">pred =</span> <span class="fu">factor</span>(pred_one)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">conf_mat</span>(<span class="at">truth =</span> test, <span class="at">estimate =</span> pred) <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             binary         0.878
+ 2 kap                  binary         0.754
+ 3 sens                 binary         0.870
+ 4 spec                 binary         0.889
+ 5 ppv                  binary         0.909
+ 6 npv                  binary         0.842
+ 7 mcc                  binary         0.755
+ 8 j_index              binary         0.758
+ 9 bal_accuracy         binary         0.879
+10 detection_prevalence binary         0.537
+11 precision            binary         0.909
+12 recall               binary         0.870
+13 f_meas               binary         0.889</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="example-2-multi-class-classification" class="level1">
+<h1>Example 2: multi-class classification</h1>
+<p>ตัวอย่างนี้จะใช้ข้อมูลทั้งหมดเพื่อพัฒนาโมเดลทำนายภาษามือของเลข 0 - 9 โดยโมเดลทำนายที่ใช้จะใช้ ANN ที่มี hidder layer 1 ชั้น โดยในโมเดลเริ่มต้นมีจำนวน hidden node เท่ากับรากที่สองของผลคูณระหว่างจำนวน input กับ output nodes ซึ่งมีค่าเท่ากับ 202.3857703 (ปัดลงเป็น 200 nodes)</p>
+<section id="data-preprocessing-1" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing-1">Data Preprocessing</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># normalized data</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> images<span class="sc">/</span><span class="dv">255</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create label data (in one hot encoding format)</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> <span class="fu">factor</span>(labels)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(y<span class="sc">~</span>., <span class="at">data=</span>.) <span class="sc">%&gt;%</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(y, <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>()</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> y <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(y)<span class="ot">&lt;-</span><span class="fu">as.character</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co"># data splitting</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(X)[<span class="dv">1</span>], <span class="fu">ceiling</span>(<span class="fl">0.8</span><span class="sc">*</span><span class="fu">dim</span>(X)[<span class="dv">1</span>]))</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>train_x <span class="ot">&lt;-</span> X[train_id,,]</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>train_y <span class="ot">&lt;-</span> y[train_id,]</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>test_x <span class="ot">&lt;-</span> X[<span class="sc">-</span>train_id,,]</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>test_y <span class="ot">&lt;-</span> y[<span class="sc">-</span>train_id,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="modelling-1" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-1">Modelling</h2>
+<p>คำสั่งต่อไปนี้แสดงการกำหนดโมเดล ANNs ที่ต้องการใช้งาน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>keras <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"keras"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="do">## create sequential model</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>model_nn1 <span class="ot">&lt;-</span> keras<span class="sc">$</span><span class="fu">Sequential</span>()</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="do">## add layers</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="do">### 1. flatten layer (input layer)</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>model_nn1<span class="sc">$</span><span class="fu">add</span>(keras<span class="sc">$</span>layers<span class="sc">$</span><span class="fu">Flatten</span>(<span class="at">input_shape =</span> <span class="fu">c</span>(64L,64L)))</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="do">### 2. hidden layer</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>model_nn1<span class="sc">$</span><span class="fu">add</span>(keras<span class="sc">$</span>layers<span class="sc">$</span><span class="fu">Dense</span>(<span class="at">units =</span> <span class="dv">400</span>, </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">activation =</span> <span class="st">"relu"</span>))</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="do">### 2. output layer</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>model_nn1<span class="sc">$</span><span class="fu">add</span>(keras<span class="sc">$</span>layers<span class="sc">$</span><span class="fu">Dense</span>(<span class="dv">10</span>, <span class="at">activation =</span> <span class="st">"softmax"</span>))</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="do">## compling</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>model_nn1<span class="sc">$</span><span class="fu">compile</span>(<span class="at">optimizer =</span> <span class="st">"adam"</span>,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">loss =</span> <span class="st">"categorical_crossentropy"</span>,</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>                       <span class="at">metrics =</span> <span class="st">'accuracy'</span>)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>model_nn1<span class="sc">$</span><span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="categorical-cross-entropy" class="level3">
+<h3 class="anchored" data-anchor-id="categorical-cross-entropy">categorical cross entropy</h3>
+<p>จะเห็นว่าการกำหนดโมเดลข้างต้น มีพารามิเตอร์ภายในโมเดลที่จะต้องประมาณทั้งสิ้น 821,410 ตัว และสำหรับกรณี multi-class classification จะเห็นว่ามีการใช้ loss function เป็น log-loss อีกตัวหนึ่งที่เรียกว่า categorical cross entropy ซึ่งเป็นตัวชี้วัดที่ต่อยอดขึ้นมาจาก binary cross entropy ที่กล่าวไปก่อนหน้านี้แล้ว</p>
+<p><span class="math display">\[
+L(y_{ij}, p_{ij}) = -\sum_{j=1}^J(y_{ij} \times log(p_{ij})
+\]</span></p>
+<p>โดยที่ <span class="math inline">\(y_{ij}\)</span> เป็นค่าจริงของตัวแปรแบบจัดประเภทที่มีการให้คะแนนมากกว่าสองค่า และมีการลงรหัสแบบ one-hot encoding เมื่อ <span class="math inline">\(i\)</span> คือหน่วยข้อมูล และ <span class="math inline">\(j\)</span> คือประเภทของตัวแปรตาม</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="do">## set early stopping</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>early_stopping <span class="ot">&lt;-</span> keras<span class="sc">$</span>callbacks<span class="sc">$</span><span class="fu">EarlyStopping</span>(<span class="at">monitor =</span> <span class="st">"val_loss"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">patience =</span> 10L)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="do">## fit the predictive model</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>ann_result_notune <span class="ot">&lt;-</span> model_nn1<span class="sc">$</span><span class="fu">fit</span>(<span class="at">x =</span> train_x,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">y =</span> train_y,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">validation_split =</span> <span class="fl">0.4</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">epochs =</span> 500L,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">callbacks =</span> <span class="fu">list</span>(early_stopping))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="model-evaluation-1" class="level2">
+<h2 class="anchored" data-anchor-id="model-evaluation-1">Model Evaluation</h2>
+<p>จะเห็นว่าประสิทธิภาพที่ทำได้ไม่สูงนัก</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>eval_result <span class="ot">&lt;-</span> model_nn1<span class="sc">$</span><span class="fu">evaluate</span>(test_x, test_y <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>())</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Test loss:"</span>,eval_result[[<span class="dv">1</span>]], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test loss: 1.134076 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Test accuracy:"</span>, eval_result[[<span class="dv">2</span>]], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test accuracy: 0.6310679 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">epoch =</span> ann_result_notune<span class="sc">$</span>epoch, <span class="at">acc_train =</span> ann_result_notune<span class="sc">$</span>history<span class="sc">$</span>accuracy,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">acc_test =</span> ann_result_notune<span class="sc">$</span>history<span class="sc">$</span>val_accuracy) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(acc_train, acc_test, <span class="at">key =</span> <span class="st">"dataset"</span>, <span class="at">value =</span> <span class="st">"accuracy"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> epoch, <span class="at">y=</span> accuracy, <span class="at">col=</span>dataset))<span class="sc">+</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DL02_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>backend <span class="ot">&lt;-</span> keras<span class="sc">$</span>backend</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate predicted class</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>pred_prob <span class="ot">&lt;-</span> model_nn1<span class="sc">$</span><span class="fu">predict</span>(test_x)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(pred_prob, <span class="dv">1</span>, which.max)<span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(pred_class) <span class="co"># convert R array to matrix</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="do">## frequency distribution of predicted class</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>pred_class
+ 0  1  2  3  4  5  6  7  8  9 
+34 43 47 45 35 45 51 43 31 38 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create confusion matrix</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>test_y_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(test_y, <span class="dv">1</span>, which.max)<span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>test_y_class <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(test_y_class) <span class="co"># convert R array to matrix</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pred_class, test_y_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          test_y_class
+pred_class  0  1  2  3  4  5  6  7  8  9
+         0 24  4  0  0  3  0  0  0  2  1
+         1  7 21  7  1  0  0  3  3  1  0
+         2  2  7 27  0  1  0  6  3  1  0
+         3  0  1  2 37  0  4  1  0  0  0
+         4  0  0  0  0 21  3  2  2  4  3
+         5  0  0  0  1  0 35  1  0  0  8
+         6  0  1  4  0  8  0 26  9  0  3
+         7  1  2  2  1  3  0  3 23  8  0
+         8  3  1  1  0  4  0  1  4 17  0
+         9  1  0  0  0  1  4  1  0  2 29</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>true_val <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_y_class, <span class="at">levels=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">factor</span>(pred_class, <span class="at">levels=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>eval_dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">true =</span> true_val,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">predict =</span> pred_class)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>p1_notune<span class="ot">&lt;-</span>eval_dat <span class="sc">%&gt;%</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> true,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate =</span> predict) <span class="sc">%&gt;%</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>p2_notune<span class="ot">&lt;-</span>eval_dat <span class="sc">%&gt;%</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> true,</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate =</span> predict) <span class="sc">%&gt;%</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="st">"heatmap"</span>)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1_notune,p2_notune,<span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DL02_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="864"></p>
+</div>
+</div>
+<p>ผลการวิเคราะห์ข้างต้นแสดงให้เห็นว่า โมเดลทำนายภาษามือที่พัฒนาขึ้นยังมีการทำนายที่คลาดเคลื่อนในระดับหนึ่ง โดยเฉพาะการทำนายเลข 3, 5, 6, 7 และ 9</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>eff_notune<span class="ot">&lt;-</span>eval_dat <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> true,</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate =</span> predict) <span class="sc">%&gt;%</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>eff_notune</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             multiclass     0.631
+ 2 kap                  multiclass     0.590
+ 3 sens                 macro          0.628
+ 4 spec                 macro          0.959
+ 5 ppv                  macro          0.632
+ 6 npv                  macro          0.959
+ 7 mcc                  multiclass     0.590
+ 8 j_index              macro          0.587
+ 9 bal_accuracy         macro          0.794
+10 detection_prevalence macro          0.1  
+11 precision            macro          0.632
+12 recall               macro          0.628
+13 f_meas               macro          0.628</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'caret'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:yardstick':
+
+    precision, recall, sensitivity, specificity</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    lift</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(eval_dat<span class="sc">$</span>true, eval_dat<span class="sc">$</span>predict)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the classification summary</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>class_summary <span class="ot">&lt;-</span> conf_matrix<span class="sc">$</span>byClass</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the classification summary</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>class_summary <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Balanced.Accuracy,Sensitivity, Specificity,</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>                         F1, Precision, Recall, Prevalence)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Balanced.Accuracy Sensitivity Specificity        F1 Precision
+Class: 0         0.8344227   0.7058824   0.9629630 0.6666667 0.6315789
+Class: 1         0.7225058   0.4883721   0.9566396 0.5250000 0.5675676
+Class: 2         0.7653162   0.5744681   0.9561644 0.6000000 0.6279070
+Class: 3         0.9070239   0.8222222   0.9918256 0.8705882 0.9250000
+Class: 4         0.7734748   0.6000000   0.9469496 0.5526316 0.5121951
+Class: 5         0.8739025   0.7777778   0.9700272 0.7692308 0.7608696
+Class: 6         0.7299712   0.5098039   0.9501385 0.5473684 0.5909091
+Class: 7         0.7389866   0.5348837   0.9430894 0.5287356 0.5227273
+Class: 8         0.7505715   0.5483871   0.9527559 0.5151515 0.4857143
+Class: 9         0.8615255   0.7631579   0.9598930 0.7073171 0.6590909
+            Recall Prevalence
+Class: 0 0.7058824 0.08252427
+Class: 1 0.4883721 0.10436893
+Class: 2 0.5744681 0.11407767
+Class: 3 0.8222222 0.10922330
+Class: 4 0.6000000 0.08495146
+Class: 5 0.7777778 0.10922330
+Class: 6 0.5098039 0.12378641
+Class: 7 0.5348837 0.10436893
+Class: 8 0.5483871 0.07524272
+Class: 9 0.7631579 0.09223301</code></pre>
+</div>
+</div>
+<p>จากผลการวิเคราะห์ข้างต้น การดำเนินงานในส่วนต่อไปจะมีการปรับแต่งค่า hyperparameters ของโมเดลเพื่อเพิ่มประสิทธิภาพการทำนายให้สูงขึ้น รายละเอียดจะแสดงในหัวข้อถัดไป</p>
+</section>
+</section>
+<section id="regularized-techniques" class="level1">
+<h1>Regularized Techniques</h1>
+<p>ในทำนองเดียวกับการพัฒนาโมเดลทำนายด้วยอัลกอริทึมการเรียนรู้ของเครื่องอื่น ๆ ปัญหา overfitting และ underfitting เป็นสิ่งที่ผู้วิเคราะห์จำเป็นต้องพิจารณาและ trace-off เพื่อให้โมเดลทำนายมีประสิทธิภาพสูงที่สุดเท่าที่จะเป็นไปได้</p>
+<p><img src="https://ssiwacho.github.io/DL/DL1/Screen%2520Shot%25202564-05-15%2520at%252013.32.10.png" class="img-fluid" width="329"></p>
+<p>รูปด้านบนเรียกว่า trace plot หรือ learning curves แผนภาพนี้ใช้สารสนเทศเกี่ยวกับการเรียนรู้ของโมเดล โดยปกติ learning curve อาจจำแนกได้เป็นสองประเภทได้แก่</p>
+<ol type="1">
+<li><p><strong>loss learning curve</strong> แผนภาพนี้มีแกน Y เป็นค่าของ loss function และแกน X เป็น epoch โมเดลที่เรียนรู้ได้อย่างไม่มีปัญหาจะมีแนวโน้มของ loss learning curve ที่ลดลงเมื่อจำนวน epoch เพิ่มขึ้น และเมื่อ loss function ลดลงถึงค่าหนึ่งก็จะมีแนวโน้มคงที่ แสดงถึงการลู่เข้าของโมเดล อย่างไรก็ตามโมเดลที่มี loss learning curve ลักษณะดังกล่าวไม่จำเป็นต้องเป็นโมเดลที่ดีที่สุด ต้องพิจารณาระดับของ loss function ประกอบด้วย</p></li>
+<li><p><strong>accuracy learning curve</strong> แผนภาพนี้มีลักษณะคล้ายกับ loss learning curve แต่ตรงกันข้ามกัน แกน Y ของแผนภาพเป็นค่าความแม่นยำหรือ accuracy ส่วนแกน X เป็น epoch ในโมเดลที่เรียนรู้ได้อย่างปกติแผนภาพดังกล่าวจึงจะมีแนวโน้มเพิ่มขึ้นเมื่อจำนวน epoch เพิ่มขึ้น และแนวโน้มการเพิ่มขึ้นดังกล่าวจะดำเนินไประยะหนึ่งค่า accuracy ของโมเดลก็จะมีแนวโน้มคงที่</p></li>
+</ol>
+<p>การประเมินการเรียนรู้ของโมเดลมัก plot แผนภาพข้างต้น โดยเปรียบเทียบกันระหว่างพล็อตของชุดข้อมูลฝึกหัด และชุดข้อมูลตรวจสอบ (validation data) แนวโน้มของ learning curve จากชุดข้อมูลทั้งสองจะช่วยให้ผู้วิเคราะห์สามารถประเมิน overfiting ของโมเดลได้ โมเดลที่ validation learning curve มีแนวโน้มให้ค่าแตกต่างจาก training learning curve บ่งชี้ว่าเป็นโมเดลที่มีการระบุเกินพอดี (overfitting model) กล่าวคือโมเดลดังกล่าวไม่สามารถใช้งานได้ดีในชุดข้อมูลที่ไม่เคยรู้จักมาก่อน แม้ว่าจะเป็นชุดข้อมูลที่ได้จากประชากรเดียวกันก็ตาม อย่างไรก็ตามในการประเมิน learning curve ของโมเดล ผู้วิเคราะห์ควรกำหนดจำนวน epoch ให้มากเพียงพอเพื่อรับประกันได้ว่าแนวโน้มที่พบนั้นถูกต้องน่าเชื่อถือแล้ว</p>
+<p>regularization เป็นเทคนิคที่ใช้สำหรับป้องกันหรือลดทอนปัญหา overfitting ของ ANN models เหมือนกับโมเดลการเรียนรู้ของเครื่องอื่น ๆ หลักการของเทคนิค regularization ในการพัฒนาโมเดล ANNs เหมือนกับโมเดลการเรียนรู้ของเครื่องที่ได้กล่าวมาในรายวิชานี้ กล่าวคือเป็นเทคนิคที่พยายามเพิ่ม biased ให้กับโมเดลทำนาย เพื่อลดความแปรปรวนของโมเดลลง</p>
+<p>regularzation ใน ANNS มีหลายวิธีการดังนี้</p>
+<section id="l1-regularization-หรอ-lasso-regularization" class="level2">
+<h2 class="anchored" data-anchor-id="l1-regularization-หรอ-lasso-regularization"><strong>L1 regularization (หรือ Lasso regularization)</strong></h2>
+<p>เป็นวิธีการที่เหมือนกับ LASSO regression กล่าวคือวิธีการนี้จะเพิ่ม penalty term ไว้ใน loss function โดย penalty term ดังกล่าวเป็นฟังก์ชันค่าสัมบูรณ์ของค่าน้ำหนักหรือพารามิเตอร์ใน ANNs ดังนี้</p>
+<p><span class="math display">\[
+Loss_{LASSO} = Loss_{original} + \lambda \sum_{i=1}^p |w_i|
+\]</span></p>
+<p>เมื่อ <span class="math inline">\(w_i\)</span> คือ weight ของ ANNs และ <span class="math inline">\(\lambda\)</span> คือ regularized parameter ผลลัพธ์ที่ได้จากวิธีการนี้จะปรับค่าน้ำหนักบางตัวภายในโมเดลให้มีค่าเป็น 0 กล่าวคือเป็นเทคนิคสำหรับลดทอน feature ที่ใช้ในการประมวลผลภายในโมเดล</p>
+</section>
+<section id="l2-regularization-หรอ-ridge-regularization" class="level2">
+<h2 class="anchored" data-anchor-id="l2-regularization-หรอ-ridge-regularization"><strong>L2 regularization (หรือ Ridge regularization)</strong></h2>
+<p>เป็นวิธีที่มีหลักการเดียวกับ LASSO แต่ penalty term จะเป็นฟังก์ชันกำลังสองของค่าน้ำหนัก ดังนี้</p>
+<p><span class="math display">\[
+Loss_{ridge} = Loss_{original} + \lambda/2 \sum_{i=1}^p w_i^2
+\]</span></p>
+<p>เมื่อ <span class="math inline">\(\lambda\)</span> คือ regularized parameter ซึ่งอาจเรียกว่าค่าคงที่ ridge ผลลัพธ์ที่ได้จากวิธีการนี้จะปรับค่าน้ำหนักบางตัวภายในโมเดลให้มีค่าน้อยลงเข้าใกล้ 0 ซึ่งทำให้ค่าประมาณน้ำหนักรวมทั้งค่าทำนายที่ได้จากโมเดลมีความเสถียรมากขึ้น วิธีการนี้มีความแตกต่างจาก L1 คือไม่ใช่วิธีลดทอนจำนวน feature ที่ใช้ในการประมวลผล แต่จะเป็นการลดความสำคัญหรือบทบาทของ feature ในการประมวลผลลง</p>
+<p>การทำ L1 และ L2 regularization ด้วย keras สามารถทำได้โดยกำหนดพารามิเตอร์ <code>kernel_regularizer = l1(lambda)</code> หรือ <code>kernel_regularizer = l2(lambda)</code> ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.regularizers <span class="im">import</span> l1</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.Sequential()</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a dense layer with L1 regularization</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>, input_dim<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>                kernel_regularizer<span class="op">=</span>l1(<span class="fl">0.01</span>)))  <span class="co"># 0.01 is the regularization strength (lambda)</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add more layers as needed...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>การทำ L1 และ L2 regularization ใน keras สามารถเลือกทำได้ 3 แบบได้แก่ ทำ regularization ที่พารามิเตอร์ weight, bias และ output รายละเอียดมีดังนี้ (1) <code>kernel_regularizer</code> ใช้สำหรับทำ regularization ที่พารามิเตอร์น้ำหนัก (ใน keras เรียกว่า kernel) ของ layer ที่กำหนด ผู้วิเคราะห์สามารถเลือกได้ว่าจะทำ regularization แบบ L1 หรือ L2 หรือเลือกทำทั้งสองแบบร่วมกัน (เรียกว่า elastic-net) (2) <code>bias_regularizer</code> ใช้สำหรับทำ regularization บนพารามิเตอร์ bias หรือ intercept ของโมเดล และ (3) <code>activity_regularizer</code> ใช้สำหรับทำ regularization ที่ output ของ activation ในแต่ละ layer การ regularization ประเภทนี้มี concept เดียวกับสองประเภทแรก แต่ penalty term ที่ใช้จะเห็น output ที่ได้จาก activation function ของ neuron ในแต่ละ layer โดย loss function สำหรับกรณีนี้เขียนได้ดังนี้ <span class="math inline">\(Loss_{activity} = Loss_{original}+\lambda R(\sigma(x))\)</span> โดยที่ <span class="math inline">\(R(.)\)</span> คือ regularization ที่กำหนดให้กับ activation <span class="math inline">\(\sigma(x)\)</span></p>
+<p>ตัวอย่างคำสั่งต่อไปนี้ใช้แสดงการทำ regularization ทั้งสามประเภทร่วมกับบน layer ที่กำหนด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.regularizers <span class="im">import</span> L1L2</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a L1L2 regularizer with both L1 and L2 regularization</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> L1L2(l1<span class="op">=</span><span class="fl">0.01</span>, l2<span class="op">=</span><span class="fl">0.01</span>)</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a Dense layer with kernel, bias, and activity regularization</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>layer <span class="op">=</span> Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>, kernel_regularizer<span class="op">=</span>reg, bias_regularizer<span class="op">=</span>reg, activity_regularizer<span class="op">=</span>reg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dropout" class="level2">
+<h2 class="anchored" data-anchor-id="dropout"><strong>Dropout</strong></h2>
+<p>เป็นวิธีการ regularization เฉพาะสำหรับโมเดลโครงข่ายประสาทเทียม วิธีการนี้จะสุ่ม neuron ภายใน layer เป็นจำนวนเท่ากับร้อยละที่กำหนดออกจากโมเดล (จริง ๆ คือกำหนดให้ weight ที่ออกจาก neuron ตัวที่ถูกสุ่มมีค่าเท่ากับ 0) ซึ่งทำให้ neuron ดังกล่าวจะไม่มีส่วนในการประมวลผล ซึ่งช่วยลดการเรียนรู้ที่ซ้ำซ้อน (redundant learning) ในทางกลับกันคือช่วยเพิ่มความเป็นอิสระในการเรียนรู้ของแต่ละ neuron ที่เหลืออยู่ สภาพดังกล่าวเป็นการช่วยเพิ่มความแกร่งและประสิทธิภาพในการทำนายให้กับโมเดล</p>
+<p><img src="https://carpentries-incubator.github.io/deep-learning-intro/fig/neural_network_sketch_dropout.png" class="img-fluid"></p>
+<p>การทำ dropout ใน keras สามารถทำได้โดยเพิ่ม layer <code>Dropout</code> ต่อจาก layer ที่ต้องการ ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, Dropout</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.Sequential()</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add an input dense layer</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>, input_dim<span class="op">=</span><span class="dv">100</span>))</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a dropout layer with a dropout rate of 0.5</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>model.add(Dropout(rate<span class="op">=</span><span class="fl">0.5</span>))</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Add more layers as needed</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">32</span>, activation<span class="op">=</span><span class="st">'relu'</span>))</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Add another dropout layer</span></span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>model.add(Dropout(rate<span class="op">=</span><span class="fl">0.5</span>))</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the output layer</span></span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>จากตัวอย่างคำสั่งข้างต้นจะเห็นว่าในฟังก์ชัน <code>Dropout()</code> มีการกำหนดพาารามิเตอร์ <code>rate</code> ซึ่งมีค่าเท่ากับสัดส่วนของ neuron ภายใน layer ที่จะสุ่มเพื่อตัดออกจากโมเดล ทั้งนี้ค่าสัดส่วนดังกล่าวต้องกำหนดให้มีค่าอยู่ในช่วง [0,1]</p>
+<p>โดยปกติมักมีการใช้เทคนิค L1 และ L2 Regularization และ Dropout ควบคู่กัน ซึ่งจะใช้เพิ่มประสิทธิภาพการทำนายของโมเดลในด้านความเป็นนัยทั่วไปของโมเดลให้สูงขึ้น ทั้งนี้เป็นเพราะ L1,L2 กับ Dropout เป็นวิธีการ regularization ที่มีวัตถุประสงค์ที่แตกต่างกัน กล่าวคือ Dropout เน้นการสร้างโมเดลที่ทำให้ neuron แต่ละตัวให้มีการเรียนรู้ที่เป็นอิสระกัน ในขณะที่ L1 เป็นเทคนิคสำหรับคัดเลือกตัวแปร ส่วน L2 ช่วยเพิ่มความเสถียรในการประมาณค่าพารามิเตอร์ของโมเดล การใช้เทคนิคทั้งสามร่วมกันจึงช่วยให้การปรับแต่งค่า hyperparameters ของโมเดลสามารถทำได้อย่างมีประสิทธิภาพสูงขึ้น ซึ่งมีผลโดยตรงต่อการเพิ่มประสิทธิภาพการทำนายของโมเดล</p>
+</section>
+<section id="early-stopping" class="level2">
+<h2 class="anchored" data-anchor-id="early-stopping"><strong>Early stopping</strong></h2>
+<p>เป็นเทคนิคการควบคุมการเรียนรู้ของโมเดลไม่ให้เรียนรู้ด้วยจำนวน epoch ที่มากเกินไป เกณฑ์การพิจารณาหยุดจะพิจารณาจากการเปลี่ยนแปลงของค่า validation loss กล่าวคือ หากค่า validation loss ไม่มีการเปลี่ยนแปลงเกินกว่าจำนวน epoch ที่กำหนด โมเดลจะหยุดการประมาณค่าพารามิเตอร์ วิธีการนี้จึงช่วยให้โมเดลหยุดกระบวนการก่อนที่จะนำ noise ในข้อมูลไปเรียนรู้ การทำ earlystopping ใน keras สามารถดำเนินการได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.callbacks <span class="im">import</span> EarlyStopping</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># model specification</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.Sequential()</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>, input_dim<span class="op">=</span><span class="dv">100</span>))</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">32</span>, activation<span class="op">=</span><span class="st">'relu'</span>))</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>model.add(Dense(units<span class="op">=</span><span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>))</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="co"># compling</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>, loss<span class="op">=</span><span class="st">'categorical_crossentropy'</span>, metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="co"># configure the EarlyStopping callback</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>early_stopping <span class="op">=</span> EarlyStopping(monitor<span class="op">=</span><span class="st">'val_loss'</span>, patience<span class="op">=</span><span class="dv">3</span>, verbose<span class="op">=</span><span class="dv">1</span>, mode<span class="op">=</span><span class="st">'auto'</span>)</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a><span class="co"># model fitting with the EarlyStopping callback</span></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train, validation_split<span class="op">=</span><span class="fl">0.2</span>, epochs<span class="op">=</span><span class="dv">100</span>, batch_size<span class="op">=</span><span class="dv">32</span>, callbacks<span class="op">=</span>[early_stopping])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="weight-constraints" class="level2">
+<h2 class="anchored" data-anchor-id="weight-constraints"><strong>Weight constraints</strong></h2>
+<p>เป็นวิธีการควบคุมการเรียนรู้ของโมเดลด้วยการกำหนดเงื่อนไขหรือช่วงจำกัดให้กับขนาดของพารามิเตอร์น้ำหนัก เพื่อไม่ให้ค่าน้ำหนักดังกล่าวมีค่ามากเกินไป การควบคุมดังกล่าวทำให้โมเดลมีความแกร่งต่อการความผันแปรที่เกิดขึ้นในข้อมูลนำเข้ามากขึ้น ซึ่งจะทำให้ค่าทำนายของโมเดลมีความเสถียรมากขึ้น และลดปัญหา overfitting ลง การทำ weight constraint ดังกล่าวสามารถทำได้โดยกำหนดผ่านพารามิเตอร์ <code>kernel_constraint</code> ภายในฟังก์ชัน <code>Dense()</code> ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.constraints <span class="im">import</span> MaxNorm</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a model</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add layers with weight constraints</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">64</span>, input_shape<span class="op">=</span>(input_dim,), activation<span class="op">=</span><span class="st">'relu'</span>, kernel_constraint<span class="op">=</span>MaxNorm(max_value<span class="op">=</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>)))</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">32</span>, activation<span class="op">=</span><span class="st">'relu'</span>, kernel_constraint<span class="op">=</span>MaxNorm(max_value<span class="op">=</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">0</span>)))</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>model.add(Dense(num_classes, activation<span class="op">=</span><span class="st">'softmax'</span>))</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile the model</span></span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>, loss<span class="op">=</span><span class="st">'categorical_crossentropy'</span>, metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>จากตัวอย่างข้างต้นจะเห็นว่ามีการกำหนดให้ <code>kernel_constraint=MaxNorm(max_value=2, axis=0)</code> ซึ่งหมายถึงยอมให้ขนาดของ weight ภายใน layer ที่กำหนดมีค่าไม่เกิน 2</p>
+</section>
+<section id="batch-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="batch-normalization"><strong>Batch normalization</strong></h2>
+<p>โดยปกติการเรียนรู้ของ DL model จะมีการ normalize ข้อมูลนำเข้าที่อยู่ใน input layer เพื่อข้อมูลนำเข้าในแต่ละ neuron อยู่ภายใต้สเกลเดียวกัน ซึ่งช่วยให้การเรียนรู้ของ layer ที่อยู่ถัดจาก input สามารถเรียนรู้ได้อย่างมีประสิทธิภาพ อย่างไรก็ตามเมื่อโมเดลเรียนรู้ไประยะนึง การแจกแจงของ input สำหรับในแต่ละ hidden layer จะมีแนวโน้มเปลี่ยนแปลงไปเรื่อย ๆ เรียกปรากฏการณ์นี้ว่า internal covariate shift และอาจมีความแตกต่างกันมากจนทำให้ประสิทธิภาพในการประมาณค่าพารามิเตอร์ลดลง และการลู่เข้าของโมเดลทำได้ช้า หรือต้องใช้เวลาประมวลผลในแต่ละรอบมากกว่าปกติ จากปัญหาดังกล่าวจึงมีการเสนอให้ทำ <strong>batch normalization</strong> (Loffe, &amp; Szegedy, 2015) หลักการของวิธีการนี้คือแทนที่จะ normalize เฉพาะข้อมูลใน input layer อย่างเดียว ก็เปลี่ยนมา normalized input ของทุก hidden layer ภายในโมเดล ทั้งนี้เพื่อปรับสเกลของ output ของแต่ละ neuron ใน hidden layer ให้เป็นมาตรฐาน ขั้นตอนของ batch normalization คร่าว ๆ มีดังนี้</p>
+<p>กำหนดให้ M เป็นโมเดล ANNs และ <span class="math inline">\(x_i\)</span> คือข้อมูลนำเข้าหรือผลลัพธ์ที่ได้จาก neuron</p>
+<ol type="1">
+<li>คำนวณ mini-batch mean ดังนี้ <span class="math inline">\(\mu_B = (1/N)\sum_{i=1}^Nx_i\)</span> สำหรับ <span class="math inline">\(i=1,2,3,…,N\)</span> และ <span class="math inline">\(N\)</span> คือจำนวนหน่วยข้อมูลภายใน mini-batch</li>
+<li>คำนวณ mini-batch variance ดังนี้ <span class="math inline">\(\sigma^2_B = (1/N) \sum_{i=1}^N (x_i-\mu_B)^2\)</span></li>
+<li>คำนวณค่ามาตรฐานของแต่ละ neuron (หนังสือบางเล่มเรียกว่า activations) ค่ามาตรฐานดังกล่าวมีค่าเท่ากับ <span class="math inline">\(\hat{x} = \frac{x_i-\mu_B}{\sqrt{\sigma^2_B + \epsilon}}\)</span> เมื่อ <span class="math inline">\(\epsilon\)</span> เป็นค่าคงที่ที่มีค่าเป็นบวกและมีค่าใกล้ 0 เพื่อช่วยให้เทอมส่วนของสูตรคะแนนมาตรฐานไม่เข้าใกล้ 0 มากเกินไป โดยปกติมักกำหนดค่าคงที่ดังกล่าวไว้ในช่วง <span class="math inline">\([10^{-10}, 10^{-8}]\)</span> และเรียก <span class="math inline">\(\hat{x_i}\)</span> ว่า normalization activation</li>
+<li>ปรับสเกลของ normalization activation เพื่อให้มีความสอดคล้องกับธรรมชาติของข้อมูล ดังนี้ <span class="math inline">\(y_i=\gamma \hat{x}_i +\beta\)</span> เรียก <span class="math inline">\(y_i\)</span> ว่า final batch-normalized activation และเรียก <span class="math inline">\(\gamma\)</span> และ <span class="math inline">\(\beta\)</span> ว่า พารามิเตอร์ learned scaling และ shifting ตามลำดับ พารามิเตอร์ทั้งสองนี้หาได้จากกระบวนการ backpropagation กล่าวคือ เมื่อเริ่ม forward propagation ในรอบแรกจะกำหนดค่าพารามิเตอร์ทั้งสองนี้ด้วยค่าเริ่มต้น ซึ่งโดยมากมักกำหนดให้มีค่าเท่ากับ 1 และ 0 ตามลำดับ จากนั้นกระบวน backpropagation จะปรับค่าพารามิเตอร์ทั้งสองเหมือนกับพารามิเตอร์น้ำหนักในโมเดล</li>
+</ol>
+<p>การทำ batch normallization ใน keras สามารถทำได้ดังตัวอย่างคำสั่งต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Dense, BatchNormalization, Activation</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a model</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add input layer</span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">64</span>, input_shape<span class="op">=</span>(input_dim,)))</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add batch normalization layer !!!</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>model.add(BatchNormalization())</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add activation function</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>model.add(Activation(<span class="st">'relu'</span>))</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Add hidden layer</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">32</span>))</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Add batch normalization layer !!!</span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>model.add(BatchNormalization())</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Add activation function</span></span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>model.add(Activation(<span class="st">'relu'</span>))</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Add output layer</span></span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>model.add(Dense(num_classes, activation<span class="op">=</span><span class="st">'softmax'</span>))</span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile the model</span></span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer<span class="op">=</span><span class="st">'adam'</span>, loss<span class="op">=</span><span class="st">'categorical_crossentropy'</span>, metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="example-3-hyperparameter-tuning" class="level1">
+<h1>Example 3: Hyperparameter Tuning</h1>
+<p>จากตัวอย่างที่ 2 จะเห็นว่าโมเดลทำนายที่พัฒนาขึ้นยังมีประสิทธิภาพการทำนายที่ไม่สูงนัก ในเชิงปฏิบัติผู้วิเคราะห์สามารถเพิ่มประสิทธิภาพของโมเดลทำนายดังกล่าวได้โดยใช้การปรับแต่งค่า hyperparameters โดยในโมเดลโครงข่ายประสาทเทียม มี hyperparameters ที่สามารถปรับ</p>
+<p>การปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) เป็นขั้นตอนสำคัญของการพัฒนาโมเดลการเรียนรู้เชิงลึก hyperparameters ของ neural network models มีหลายตัว ได้แก่ จำนวน hidden layer จำนวน node ภายในแต่ละ layer ระดับของ learning rate ขนาดของ batch, activation function รวมไปถึงเทคนิค regulaization ที่เลือกใช้</p>
+<p>ตัวอย่างนี้จะแสดงการปรับแต่งค่า hyperparameter พร้อมทั้งใช้เทคนิค regularization เพื่อเพิ่มประสิทธิภาพการทำนายของโมเดล โดยเป็นการดำเนินการต่อจากตัวอย่าง 2</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>ก่อนการดำเนินการใด ๆ ผู้วิเคราะห์จำเป็นต้องติดตั้งและเตรียมสภาพแวดล้อมการทำงานให้พร้อมก่อน ได้แก่ การติดตั้ง <strong><code>tensorflow</code></strong>, <strong><code>keras</code></strong> และ <strong><code>keras-tuner</code></strong> ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">#terminal</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>pip install tensorflow</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>pip install keras</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>pip install keras<span class="op">-</span>tuner</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>จากนั้นติดตั้งและเรียก reticulate</p>
+<div class="cell">
+
+</div>
+</section>
+<section id="data-preprocessing-2" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing-2">Data preprocessing</h2>
+<p>ทำเหมือนกับตัวอย่างที่ผ่านมา</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># normalized data</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> images<span class="sc">/</span><span class="dv">255</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create label data (in one hot encoding format)</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> <span class="fu">factor</span>(labels)) <span class="sc">%&gt;%</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(y<span class="sc">~</span>., <span class="at">data=</span>.) <span class="sc">%&gt;%</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(y, <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>()</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> y <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="co"># data splitting</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(X)[<span class="dv">1</span>], <span class="fu">ceiling</span>(<span class="fl">0.8</span><span class="sc">*</span><span class="fu">dim</span>(X)[<span class="dv">1</span>]))</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>train_x <span class="ot">&lt;-</span> X[train_id,,]</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>train_y <span class="ot">&lt;-</span> y[train_id,]</span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>test_x <span class="ot">&lt;-</span> X[<span class="sc">-</span>train_id,,]</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>test_y <span class="ot">&lt;-</span> y[<span class="sc">-</span>train_id,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="modelling-2" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-2">Modelling</h2>
+<p>ขั้นแรกคือนำเข้า library ต่าง ๆ ที่จำเป็นทั้งหมด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kerastuner.tuners <span class="im">import</span> RandomSearch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>สร้างฟังก์ชันของ ANNs model เพื่อใช้สำหรับทำ hyperparameter tuning ฟังก์ชันดังกล่าวจะต้องมีอาร์กิวเมนท์ <code>hp</code> เพื่อใช้กำหนดการปรับแต่งค่า hyperparameter ดังกล่าว ทั้งนี้จะใช้โครงของโมเดลใน example 2 เป็นหลัก</p>
+<section id="model-and-hyperparameters-space" class="level3">
+<h3 class="anchored" data-anchor-id="model-and-hyperparameters-space">Model and hyperparameters space</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># defined model</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_model(hp):</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> keras.Sequential()</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    model.add(layers.Flatten(input_shape<span class="op">=</span>(<span class="dv">64</span>, <span class="dv">64</span>)))</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Tune the number of hidden layers</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>    hp_num_layers <span class="op">=</span> hp.Int(<span class="st">'num_layers'</span>, min_value<span class="op">=</span><span class="dv">1</span>, max_value<span class="op">=</span><span class="dv">1</span>, step<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(hp_num_layers):</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Tune the number of units in the Dense layer</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>        hp_units <span class="op">=</span> hp.Int(<span class="st">'units_'</span> <span class="op">+</span> <span class="bu">str</span>(i), min_value<span class="op">=</span><span class="dv">600</span>, max_value<span class="op">=</span><span class="dv">3000</span>, step<span class="op">=</span><span class="dv">200</span>)</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Tune the L1 regularization factor</span></span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">#hp_l1 = hp.Float('l1_' + str(i), min_value=0, max_value=0.1, step=0.01)</span></span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Tune the L2 regularization factor</span></span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>        hp_l2 <span class="op">=</span> hp.Float(<span class="st">'l2_'</span> <span class="op">+</span> <span class="bu">str</span>(i), min_value<span class="op">=</span><span class="dv">0</span>, max_value<span class="op">=</span><span class="fl">0.1</span>, step<span class="op">=</span><span class="fl">0.01</span>)</span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a>        model.add(layers.Dense(units<span class="op">=</span>hp_units, kernel_regularizer<span class="op">=</span>keras.regularizers.l2(l2<span class="op">=</span>hp_l2)))</span>
+<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a>        model.add(layers.Activation(<span class="st">'relu'</span>))</span>
+<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Tune the dropout rate</span></span>
+<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">#hp_dropout = hp.Float('dropout_' + str(i), 0, 0.2, step=0.1)</span></span>
+<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">#model.add(layers.Dropout(hp_dropout))</span></span>
+<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>    model.add(layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>))</span>
+<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Tune the learning rate</span></span>
+<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>    hp_learning_rate <span class="op">=</span> hp.Choice(<span class="st">'learning_rate'</span>, values<span class="op">=</span>[<span class="fl">1e-2</span>, <span class="fl">1e-3</span>, <span class="fl">1e-4</span>])</span>
+<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-28"><a href="#cb62-28" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">compile</span>(optimizer<span class="op">=</span>keras.optimizers.Adam(learning_rate<span class="op">=</span>hp_learning_rate),</span>
+<span id="cb62-29"><a href="#cb62-29" aria-hidden="true" tabindex="-1"></a>                  loss<span class="op">=</span><span class="st">'categorical_crossentropy'</span>,</span>
+<span id="cb62-30"><a href="#cb62-30" aria-hidden="true" tabindex="-1"></a>                  metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb62-31"><a href="#cb62-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-32"><a href="#cb62-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>tuner <span class="op">=</span> RandomSearch(</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>    build_model,</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    objective<span class="op">=</span><span class="st">'val_accuracy'</span>,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>    max_trials<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>    executions_per_trial<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    directory<span class="op">=</span><span class="st">'my_dir3'</span>,</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    project_name<span class="op">=</span><span class="st">'signal_tuning_regularization'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>tuner.search_space_summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Search space summary
+Default search space size: 4
+num_layers (Int)
+{'default': None, 'conditions': [], 'min_value': 1, 'max_value': 1, 'step': 1, 'sampling': 'linear'}
+units_0 (Int)
+{'default': None, 'conditions': [], 'min_value': 600, 'max_value': 3000, 'step': 200, 'sampling': 'linear'}
+l2_0 (Float)
+{'default': 0.0, 'conditions': [], 'min_value': 0.0, 'max_value': 0.1, 'step': 0.01, 'sampling': 'linear'}
+learning_rate (Choice)
+{'default': 0.01, 'conditions': [], 'values': [0.01, 0.001, 0.0001], 'ordered': True}</code></pre>
+</div>
+</div>
+</section>
+<section id="tune-grids" class="level3">
+<h3 class="anchored" data-anchor-id="tune-grids">Tune Grids</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>train_x <span class="op">=</span> r.train_x</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>train_y <span class="op">=</span> r.train_y</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set early stopping</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>early_stopping<span class="op">=</span>keras.callbacks.EarlyStopping(monitor <span class="op">=</span> <span class="st">"val_accuracy"</span>, patience <span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>min_delta <span class="op">=</span> <span class="dv">0</span>,</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    baseline<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">'auto'</span>)</span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>tuner.search(train_x, train_y,</span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>             epochs<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>             validation_split<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>             batch_size <span class="op">=</span> <span class="dv">300</span>,</span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>             callbacks <span class="op">=</span> [early_stopping],</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>             verbose<span class="op">=</span><span class="va">False</span></span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>best_hp <span class="op">=</span> tuner.get_best_hyperparameters(num_trials<span class="op">=</span><span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> tuner.hypermodel.build(best_hp)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>best_model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential_2"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ flatten_2 (Flatten)         (None, 4096)              0         
+                                                                 
+ dense_3 (Dense)             (None, 2200)              9013400   
+                                                                 
+ activation (Activation)     (None, 2200)              0         
+                                                                 
+ dense_4 (Dense)             (None, 10)                22010     
+                                                                 
+=================================================================
+Total params: 9,035,410
+Trainable params: 9,035,410
+Non-trainable params: 0
+_________________________________________________________________</code></pre>
+</div>
+</div>
+</section>
+<section id="last-fit" class="level3">
+<h3 class="anchored" data-anchor-id="last-fit">Last fit</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> py<span class="sc">$</span>best_model</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>best_model_fit<span class="ot">&lt;-</span>best_model<span class="sc">$</span><span class="fu">fit</span>(train_x, train_y,</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">epochs =</span> 100L,</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">validation_split =</span> <span class="fl">0.3</span>,</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">batch_size =</span> 256L,</span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">callbacks =</span> <span class="fu">list</span>(early_stopping)</span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">epoch =</span> best_model_fit<span class="sc">$</span>epoch, <span class="at">acc_train =</span> best_model_fit<span class="sc">$</span>history<span class="sc">$</span>accuracy,</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">acc_test =</span> best_model_fit<span class="sc">$</span>history<span class="sc">$</span>val_accuracy) <span class="sc">%&gt;%</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(acc_train, acc_test, <span class="at">key =</span> <span class="st">"dataset"</span>, <span class="at">value =</span> <span class="st">"accuracy"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> epoch, <span class="at">y=</span> accuracy, <span class="at">col=</span>dataset))<span class="sc">+</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DL02_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-evaluation-2" class="level3">
+<h3 class="anchored" data-anchor-id="model-evaluation-2">Model Evaluation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>backend <span class="ot">&lt;-</span> keras<span class="sc">$</span>backend</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="do">## calculate predicted class</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>pred_prob <span class="ot">&lt;-</span> best_model<span class="sc">$</span><span class="fu">predict</span>(test_x)</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(pred_prob, <span class="dv">1</span>, which.max)<span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(pred_class) <span class="co"># convert R array to matrix</span></span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="do">## frequency distribution of predicted class</span></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>pred_class
+ 0  1  2  3  4  5  6  7  8  9 
+38 47 32 36 18 46 49 63 23 60 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create confusion matrix</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>test_y_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(test_y, <span class="dv">1</span>, which.max)<span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>test_y_class <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(test_y_class) <span class="co"># convert R array to matrix</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pred_class, test_y_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          test_y_class
+pred_class  0  1  2  3  4  5  6  7  8  9
+         0 33  2  0  0  2  0  1  0  0  0
+         1  1 31  7  1  0  0  0  3  3  1
+         2  0  1 24  0  1  0  1  3  1  1
+         3  0  1  1 34  0  0  0  0  0  0
+         4  0  0  0  0 16  0  0  1  1  0
+         5  0  0  0  1  3 40  1  0  0  1
+         6  2  0  4  0  7  0 33  2  0  1
+         7  1  1  6  1  7  0  5 33  7  2
+         8  0  0  1  0  1  0  0  1 20  0
+         9  1  1  0  3  4  6  3  1  3 38</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>true_val <span class="ot">&lt;-</span> <span class="fu">factor</span>(test_y_class)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">factor</span>(pred_class, <span class="at">levels=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>eval_dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">true =</span> true_val,</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">predict =</span> pred_class)</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>p1_tune<span class="ot">&lt;-</span>eval_dat <span class="sc">%&gt;%</span></span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> true,</span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate =</span> predict) <span class="sc">%&gt;%</span></span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>p2_tune<span class="ot">&lt;-</span>eval_dat <span class="sc">%&gt;%</span></span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> true,</span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate =</span> predict) <span class="sc">%&gt;%</span></span>
+<span id="cb75-12"><a href="#cb75-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="st">"heatmap"</span>)</span>
+<span id="cb75-13"><a href="#cb75-13" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1_notune, p2_notune,p1_tune,p2_tune,<span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DL02_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>eff_tune<span class="ot">&lt;-</span>eval_dat <span class="sc">%&gt;%</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> true,</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate =</span> predict) <span class="sc">%&gt;%</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>eff_tune</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 3
+   .metric              .estimator .estimate
+   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
+ 1 accuracy             multiclass     0.733
+ 2 kap                  multiclass     0.703
+ 3 sens                 macro          0.731
+ 4 spec                 macro          0.970
+ 5 ppv                  macro          0.768
+ 6 npv                  macro          0.971
+ 7 mcc                  multiclass     0.706
+ 8 j_index              macro          0.701
+ 9 bal_accuracy         macro          0.851
+10 detection_prevalence macro          0.1  
+11 precision            macro          0.768
+12 recall               macro          0.731
+13 f_meas               macro          0.730</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(eval_dat<span class="sc">$</span>true, eval_dat<span class="sc">$</span>predict)</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the classification summary</span></span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>class_summary <span class="ot">&lt;-</span> conf_matrix<span class="sc">$</span>byClass</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the classification summary</span></span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>class_summary <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Balanced.Accuracy,Sensitivity, Specificity,</span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a>                         F1, Precision, Recall, Prevalence)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Balanced.Accuracy Sensitivity Specificity        F1 Precision
+Class: 0         0.9275260   0.8684211   0.9866310 0.8684211 0.8684211
+Class: 1         0.8215681   0.6595745   0.9835616 0.7380952 0.8378378
+Class: 2         0.8500000   0.7500000   0.9500000 0.6400000 0.5581395
+Class: 3         0.9642435   0.9444444   0.9840426 0.8947368 0.8500000
+Class: 4         0.9127186   0.8888889   0.9365482 0.5423729 0.3902439
+Class: 5         0.9265859   0.8695652   0.9836066 0.8695652 0.8695652
+Class: 6         0.8215832   0.6734694   0.9696970 0.7096774 0.7500000
+Class: 7         0.7461454   0.5238095   0.9684814 0.6168224 0.7500000
+Class: 8         0.9155024   0.8695652   0.9614396 0.6896552 0.5714286
+Class: 9         0.8081439   0.6333333   0.9829545 0.7307692 0.8636364
+            Recall Prevalence
+Class: 0 0.8684211 0.09223301
+Class: 1 0.6595745 0.11407767
+Class: 2 0.7500000 0.07766990
+Class: 3 0.9444444 0.08737864
+Class: 4 0.8888889 0.04368932
+Class: 5 0.8695652 0.11165049
+Class: 6 0.6734694 0.11893204
+Class: 7 0.5238095 0.15291262
+Class: 8 0.8695652 0.05582524
+Class: 9 0.6333333 0.14563107</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="แนวทางการปรบแตงคา-hyperparameter" class="level2">
+<h2 class="anchored" data-anchor-id="แนวทางการปรบแตงคา-hyperparameter">แนวทางการปรับแต่งค่า hyperparameter</h2>
+<ol type="1">
+<li><p>วิเคราะห์ baseline model ด้วยค่าเริ่มต้นที่ makesense ก่อน การกำหนดค่าเริ่มต้นต่าง ๆ ให้กับ hyperparameter ในโมเดลอาจใช้บริบทของข้อมูล และ rule of thumb ประกอบกัน การวิเคราะห์ในขั้นตอนนี้จะทำให้ผู้วิเคราะห์ได้จุดอ้างอิงสำหรับการปรับแต่งโมเดลต่อไป</p></li>
+<li><p>ทำ random grid search หรือวิธีการ grid search อื่น ๆ ที่เหมาะสม เพื่อค้นหา combination ของ hyperparameter ที่มีแนวโน้มทำให้โมเดลจะมีประสิทธิภาพการทำนายสูงที่สุด</p></li>
+<li><p>พิจารณาว่า hyperparameter ตัวไหนที่มีผลกระทบต่อประสิทธิภาพของโมเดลมาก การปรับแต่งในรอบถัดไปให้ focus ที่ hyperparameter ตัวนั้นมาก ๆ</p></li>
+<li><p>ปรับแต่งการทำ grid search ในข้อ 2 ให้ละเอียดมากขึ้น บริเวณที่ประสิทธิภาพการทำนายของโมเดลสูง เพื่อให้ได้ค่า hyperparameter ที่เหมาะสมมากที่สุด</p></li>
+<li><p>พยายามใช้ early stopping เพื่อป้องกันการเกิด overfitting ระหว่างการ train และช่วยลดทรัพยากรที่ต้องใช้ในการประมวลผล</p></li>
+<li><p>กระบวนการทั้งหมดอาจจะต้องมีการทวนซ้ำหลายรอบจนกระทั่งได้ผลลัพธ์ที่ลงตัวมากที่สุด</p></li>
+</ol>
+<p>อ้างอิง</p>
+<ul>
+<li>Kyle Krafka, Aditya Khosla, Petr Kellnhofer, Harini Kannan, Suchi Bhandarkar, Wojciech Matusik and Antonio Torralba. “Eye Tracking for Everyone”. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2023, DataKruRoo</div>   
+    <div class="nav-footer-right">This page is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

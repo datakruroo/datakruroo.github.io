@@ -1,0 +1,9 @@
+"0","np <- import(""numpy"")"
+"0","tf <- import(""tensorflow"")"
+"2","2023-05-01 11:28:07.344394: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+"
+"0","keras <- tf$keras"
+"0","layers <- keras$layers"
+"0","RandomSearch <- import(""kerastuner.tuners"")$RandomSearch"
+"0","HyperParameters <- import(""kerastuner.engine.hyperparameters"")$HyperParameters"

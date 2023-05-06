@@ -1,5 +1,0 @@
-"0","# Scale the pixel values to the range [0, 1]
-x_train <- x_train$astype(""float32"") / 255.0
-"
-"2","Error in x_train$astype : $ operator is invalid for atomic vectors
-"

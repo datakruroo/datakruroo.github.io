@@ -123,7 +123,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <meta property="og:title" content="2758688 ML PRIN APPLN - Hyperparameter Tuning using Keras Tuner">
-<meta property="og:description" content="บทเรียนนี้จะกล่าวถึงการปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) ด้วย library keras-tuner ทั้งนี้ก่อนการดำเนินการใด ๆ…">
+<meta property="og:description" content="การเรียนรู้เชิงลึก (Deep Learning) เป็นแขนงย่อยของศาสตร์ด้านการเรียนรู้ของเครื่อง (machine learning) ที่พัฒนาขึ้นโดยใช้การทำงานของเซลล์ประสาทในสมองที่เรียกว่า neuron เป็นต้นแบบ…">
 <meta property="og:site-name" content="2758688 ML PRIN APPLN">
 </head>
 
@@ -229,9 +229,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#ชดขอมลทใชเปนตวอยาง" id="toc-ชดขอมลทใชเปนตวอยาง" class="nav-link active" data-scroll-target="#ชดขอมลทใชเปนตวอยาง">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</a>
+  <ul class="collapse">
+  <li><a href="#details-of-datasets" id="toc-details-of-datasets" class="nav-link" data-scroll-target="#details-of-datasets">Details of datasets:</a></li>
+  </ul></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">1. Setup</a></li>
   <li><a href="#import-python-library" id="toc-import-python-library" class="nav-link" data-scroll-target="#import-python-library">2. Import Python library</a></li>
   <li><a href="#load-the-data" id="toc-load-the-data" class="nav-link" data-scroll-target="#load-the-data">3. Load the data</a></li>
+  <li><a href="#model-specification" id="toc-model-specification" class="nav-link" data-scroll-target="#model-specification">4. Model Specification</a></li>
   </ul>
 </nav>
     </div>
@@ -255,17 +260,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>บทเรียนนี้จะกล่าวถึงการปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) ด้วย library keras-tuner ทั้งนี้ก่อนการดำเนินการใด ๆ ผู้วิเคราะห์จำเป็นต้องติดตั้งและเตรียมสภาพแวดล้อมการทำงานให้พร้อมก่อน</p>
+<p>การเรียนรู้เชิงลึก (Deep Learning) เป็นแขนงย่อยของศาสตร์ด้านการเรียนรู้ของเครื่อง (machine learning) ที่พัฒนาขึ้นโดยใช้การทำงานของเซลล์ประสาทในสมองที่เรียกว่า neuron เป็นต้นแบบ เรียกโมเดลการเรียนรู้ดังกล่าวว่า โมเดลโครงข่ายประสาทเทียม (artificial neuron network models: ANNs)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://editor.analyticsvidhya.com/uploads/21745d3.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">ความแตกต่างระหว่าง ML กับ DL</figcaption><p></p>
+</figure>
+</div>
+<section id="ชดขอมลทใชเปนตวอยาง" class="level1">
+<h1>ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h1>
+<p>ชุดข้อมูลที่ใช้เป็นตัวอย่างจะใช้ชุดข้อมูล <a href="https://github.com/ardamavi/Sign-Language-Digits-Dataset"><strong>Sign Language Digits Dataset</strong></a></p>
+<section id="details-of-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="details-of-datasets">Details of datasets:</h3>
+<ul>
+<li><p>Image size: 100 x 100 pixels</p></li>
+<li><p>Color space: RGB</p></li>
+<li><p>Number of classes: 10 (Digits: 0-9)</p></li>
+<li><p>Number of participant students: 218</p></li>
+<li><p>Number of samples per student: 10</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="st">"git clone https://github.com/ardamavi/Sign-Language-Digits-Dataset.git"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir</span>(<span class="st">"~/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/ML/MLcourse/MLCourse/documents/Deeplearning/sign"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>การนำเข้าไฟล์ข้อมูลทั้งสองสามารถทำได้โดยใช้ library <code>numpy</code> ซึ่งสามารถทำบน R ผ่าน reticulate library ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"numpy"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x_array <span class="ot">&lt;-</span> np<span class="sc">$</span><span class="fu">load</span>(<span class="st">"sign/X.npy"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>y_array <span class="ot">&lt;-</span> np<span class="sc">$</span><span class="fu">load</span>(<span class="st">"sign/Y.npy"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ชุดข้อมูลดังกล่าวประกอบด้วยภาพภาษามือของตัวเลข 10 ตัว ตั้งแต่ 0, 1, 2, …, 9 จำนวน 2,062 ภาพ โดยที่แต่ละภาพมีขนาด 64 x 64 pixels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(x_array)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(y_array)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ในเบื้องต้นจะลอง train โมเดลเพื่อจำแนกภาษามือสำหรับตัวเลข 0 กับ 1 ก่อน เมื่อพิจารณาใน <code>y_array</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>y_array <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>บทเรียนนี้จะกล่าวถึงการปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) ซึ่งเป็นขั้นตอนสำคัญของการพัฒนาโมเดลการเรียนรู้เชิงลึก hyperparameters ของ neural network models มีหลายตัวได้แก่ จำนวน hidden layer จำนวน node ภายในแต่ละ layer ระดับของ learning rate และ activation function ที่เลือกใช้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper function to convert image data to a data frame for ggplot2</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>prepare_image_data <span class="ot">&lt;-</span> <span class="cf">function</span>(image_data) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">melt</span>(image_data)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"value"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare image data for plotting</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>image_1 <span class="ot">&lt;-</span> <span class="fu">prepare_image_data</span>(x_array[<span class="dv">206</span>,,])</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>image_2 <span class="ot">&lt;-</span> <span class="fu">prepare_image_data</span>(x_array[<span class="dv">4</span>,,])</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot images using ggplot2</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(image_1, <span class="fu">aes</span>(<span class="at">x =</span> y, <span class="at">y =</span> <span class="sc">-</span>x, <span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>())</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>p1</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(image_2, <span class="fu">aes</span>(<span class="at">x =</span> y, <span class="at">y =</span> <span class="sc">-</span>x, <span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>())</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plots</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1, p2, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
 <section id="setup" class="level1">
 <h1>1. Setup</h1>
-<p>First, make sure you have the necessary Python packages installed: <strong><code>tensorflow</code></strong>, <strong><code>keras</code></strong>, and <strong><code>keras-tuner</code></strong>. You can install them using <strong><code>pip</code></strong>:</p>
-<p>เริ่มที่การติดตั้ง package ที่จำเป็นได้แก่ <code>tensorflow</code>, <code>keras</code> และ <code>keras-tuner</code> ดังนี้</p>
+<p>ก่อนการดำเนินการใด ๆ ผู้วิเคราะห์จำเป็นต้องติดตั้งและเตรียมสภาพแวดล้อมการทำงานให้พร้อมก่อน ได้แก่ การติดตั้ง <strong><code>tensorflow</code></strong>, <strong><code>keras</code></strong> และ <strong><code>keras-tuner</code></strong> ดังนี้</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pip install tensorflow</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pip install keras</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pip install keras<span class="sc">-</span>tuner</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pip install tensorflow</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pip install keras</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pip install keras<span class="sc">-</span>tuner</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Next, install and load the <strong><code>reticulate</code></strong> package in R:</p>
+<p>จากนั้นติดตั้งและเรียก reticulate</p>
 <div class="cell">
 
 </div>
@@ -273,29 +356,91 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="import-python-library" class="level1">
 <h1>2. Import Python library</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>reticulate<span class="sc">::</span><span class="fu">py_run_string</span>(<span class="st">"import certifi; import ssl; ssl.create_default_context = lambda purpose, *, cafile=None, capath=None, cadata=None: ssl.create_default_context(purpose, cafile=certifi.where(), capath=capath, cadata=cadata)"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"numpy"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>tf <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"tensorflow"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>keras <span class="ot">&lt;-</span> tf<span class="sc">$</span>keras</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>layers <span class="ot">&lt;-</span> keras<span class="sc">$</span>layers</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>RandomSearch <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"kerastuner.tuners"</span>)<span class="sc">$</span>RandomSearch</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>HyperParameters <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"kerastuner.engine.hyperparameters"</span>)<span class="sc">$</span>HyperParameters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>np <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"numpy"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tf <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"tensorflow"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>keras_tuner <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"keras_tuner"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>keras <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"keras"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>layers <span class="ot">&lt;-</span> keras<span class="sc">$</span>layers</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>RandomSearch <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"kerastuner.tuners"</span>)<span class="sc">$</span>RandomSearch</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>HyperParameters <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"kerastuner.engine.hyperparameters"</span>)<span class="sc">$</span>HyperParameters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="load-the-data" class="level1">
 <h1>3. Load the data</h1>
+<p>นำข้อมูลเข้าและจัดกระทำข้อมูลก่อนการวิเคราะห์</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> np<span class="sc">$</span><span class="fu">load</span>(<span class="st">"mnist.npz"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>x_train<span class="ot">&lt;-</span>data<span class="sc">$</span><span class="fu">get</span>(<span class="st">"x_train"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x_test<span class="ot">&lt;-</span>data<span class="sc">$</span><span class="fu">get</span>(<span class="st">"x_test"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>y_train<span class="ot">&lt;-</span>data<span class="sc">$</span><span class="fu">get</span>(<span class="st">"y_train"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>y_test<span class="ot">&lt;-</span>data<span class="sc">$</span><span class="fu">get</span>(<span class="st">"y_test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"criminal.csv"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">recipe</span>(TheifperPop <span class="sc">~</span>., <span class="at">data =</span> dat) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(dat)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="do">## convert training dataset to train_x and train_y matrix</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>train_x <span class="ot">&lt;-</span> train <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>TheifperPop) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>train_y <span class="ot">&lt;-</span> train <span class="sc">%&gt;%</span> <span class="fu">select</span>(TheifperPop) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>test_x <span class="ot">&lt;-</span> test <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>TheifperPop) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>test_y <span class="ot">&lt;-</span> test <span class="sc">%&gt;%</span> <span class="fu">select</span>(TheifperPop) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="model-specification" class="level1">
+<h1>4. Model Specification</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale the pixel values to the range [0, 1]</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> x_train <span class="sc">/</span> <span class="fl">255.0</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>x_test <span class="ot">&lt;-</span> x_test <span class="sc">/</span> <span class="fl">255.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the model function</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>build_model <span class="ot">&lt;-</span> <span class="cf">function</span>(hp) {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="st">"units_1"</span>, <span class="at">min_value =</span> 32L, <span class="at">max_value =</span> 512L, <span class="at">step =</span> 32L), </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">activation =</span> <span class="st">"relu"</span>, <span class="at">input_shape =</span> 17L) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="st">"units_2"</span>, <span class="at">min_value =</span> 32L, <span class="at">max_value =</span> 512L, <span class="at">step =</span> 32L), </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> 1L)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  model <span class="sc">%&gt;%</span> <span class="fu">compile</span>(</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">optimizer =</span> <span class="fu">optimizer_adam</span>(</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">learning_rate =</span> hp<span class="sc">$</span><span class="fu">Float</span>(<span class="st">"learning_rate"</span>, <span class="at">min_value =</span> <span class="fl">1e-4</span>, <span class="at">max_value =</span> <span class="fl">1e-2</span>, <span class="at">sampling =</span> <span class="st">"LOG"</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="st">"mse"</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="st">"mse"</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(model)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Configure the tuner</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>RandomSearch <span class="ot">&lt;-</span> keras_tuner<span class="sc">$</span>tuners<span class="sc">$</span>RandomSearch</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>tuner <span class="ot">&lt;-</span> <span class="fu">RandomSearch</span>(</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  build_model,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">objective =</span> <span class="st">"val_mse"</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_trials =</span> 20L,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">executions_per_trial =</span> 2L,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">directory =</span> <span class="st">"tuning_results"</span>,</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">project_name =</span> <span class="st">"test_keras_tuner"</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace the following lines with your own dataset</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#train_x &lt;- matrix(runif(1107 * 17), nrow = 1107) %&gt;% class()</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#train_y &lt;- matrix(runif(1107), nrow = 1107)</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#test_x &lt;- matrix(runif(369 * 17), nrow = 369)</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">#test_y &lt;- matrix(runif(369), nrow = 369)</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Set early stopping</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>early_stopping <span class="ot">&lt;-</span> keras<span class="sc">$</span>callbacks<span class="sc">$</span><span class="fu">EarlyStopping</span>(<span class="at">monitor =</span> <span class="st">"val_loss"</span>, <span class="at">patience =</span> 3L)</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Search for the best hyperparameters</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>result<span class="ot">&lt;-</span>tuner<span class="sc">$</span><span class="fu">search</span>(</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>  train_x,</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>  train_y,</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">validation_data =</span> <span class="fu">list</span>(test_x, test_y),</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">epochs =</span> 10L,</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">batch_size =</span> 256L,</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">callbacks =</span> <span class="fu">list</span>(early_stopping)</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

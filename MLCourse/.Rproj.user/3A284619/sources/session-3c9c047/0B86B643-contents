@@ -1,0 +1,101 @@
+---
+title: "Hyperparameter Tuning using Keras Tuner"
+---
+
+บทเรียนนี้จะกล่าวถึงการปรับแต่งค่า hyperparameters ในโมเดลโครงข่ายประสาทเทียม (neural network models) ซึ่งเป็นขั้นตอนสำคัญของการพัฒนาโมเดลการเรียนรู้เชิงลึก hyperparameters ของ neural network models มีหลายตัวได้แก่ จำนวน hidden layer จำนวน node ภายในแต่ละ layer ระดับของ learning rate และ activation function ที่เลือกใช้
+
+# 1. Setup
+
+ก่อนการดำเนินการใด ๆ ผู้วิเคราะห์จำเป็นต้องติดตั้งและเตรียมสภาพแวดล้อมการทำงานให้พร้อมก่อน ได้แก่ การติดตั้ง **`tensorflow`**, **`keras`** และ **`keras-tuner`** ดังนี้
+
+```{r eval=F}
+pip install tensorflow
+pip install keras
+pip install keras-tuner
+```
+
+จากนั้นติดตั้งและเรียก reticulate
+
+```{r echo=F}
+#install.packages("reticulate")
+library(reticulate)
+```
+
+# 2. Import Python library
+
+```{r}
+np <- import("numpy")
+tf <- import("tensorflow")
+keras <- tf$keras
+layers <- keras$layers
+RandomSearch <- import("kerastuner.tuners")$RandomSearch
+HyperParameters <- import("kerastuner.engine.hyperparameters")$HyperParameters
+```
+
+# 3. Load the data
+
+นำข้อมูลเข้าและจัดกระทำข้อมูลก่อนการวิเคราะห์
+
+```{r message=F}
+library(tidymodels)
+dat <- read.csv("criminal.csv")
+dat <- recipe(TheifperPop ~., data= dat) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  prep(NULL) %>%
+  juice()
+split <- initial_split(dat)
+train <- training(split)
+test <- testing(split)
+## convert training dataset to train_x and train_y matrix
+train_x <- train %>% select(-TheifperPop) %>% as.matrix()
+train_y <- train %>% select(TheifperPop) %>% as.matrix()
+test_x <- test %>% select(-TheifperPop) %>% as.matrix()
+test_y <- test %>% select(TheifperPop) %>% as.matrix()
+```
+
+# 4. Model Specification
+
+```{r}
+build_model <- function(hp) {
+  model <- keras$Sequential()
+  model$add(layers$Flatten(input_shape = c(as.integer(28), as.integer(28))))
+  
+  num_layers <- hp$Int("num_layers", min_value = 1L, max_value = 3L)
+  for (i in 0:(num_layers - 1)) {
+    model$add(
+      layers$Dense(
+        units = hp$Int(paste0("units_", i), min_value = 32L, max_value = 128L, step = 16L),
+        activation = "relu"
+      )
+    )
+  }
+  
+  model$add(layers$Dense(10, activation = "relu"))
+  
+  optimizer <- keras$optimizers$Adam(
+    learning_rate = hp$Float("learning_rate", min_value = 1e-4, max_value = 1e-2, sampling = "LOG")
+  )
+  
+  model$compile(optimizer = optimizer, loss = "mse", metrics = c("mse"))
+  return(model)
+}
+```
+
+```{r}
+tuner <- RandomSearch(
+  build_model,
+  objective = "val_accuracy",
+  max_trials = 20L,  # The maximum number of different hyperparameter combinations to try
+  executions_per_trial = 2L,  # The number of times to train each hyperparameter combination
+  directory = "tuning_results",
+  project_name = "test_keras_tuner"
+)
+
+tuner$search(train_x, train_y,
+             validation_data=(test_x, test_y),
+             epochs=10,
+             batch_size=256,
+             )
+
+
+```

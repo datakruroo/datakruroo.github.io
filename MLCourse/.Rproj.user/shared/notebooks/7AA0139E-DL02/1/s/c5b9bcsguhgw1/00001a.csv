@@ -1,0 +1,6 @@
+"0","data.frame(epoch = ann_result_notune$epoch, acc_train = ann_result_notune$history$accuracy,"
+"0","           acc_test = ann_result_notune$history$val_accuracy) %>%"
+"0","  gather(acc_train, acc_test, key = ""dataset"", value = ""accuracy"") %>%"
+"0","  ggplot(aes(x = epoch, y= accuracy, col=dataset))+"
+"0","  geom_line()+"
+"0","  scale_y_continuous(limits=c(0,1))"

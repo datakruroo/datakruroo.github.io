@@ -1,0 +1,6 @@
+library(haven)
+dat <- read_spss("/Users/siwachoat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/ML/MLcourse/MLCourse/documents/mmreg.sav")
+head(dat )
+dat$method<-factor(dat$method)
+fit <- lm(ACH~., data=dat)
+summary(fit)
