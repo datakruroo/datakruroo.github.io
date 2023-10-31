@@ -1,0 +1,230 @@
+---
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    slide-number: c/t
+    logo: "https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true"
+    center-title-slide: false
+    code-link: true
+    code-overflow: wrap
+    highlight-style: a11y
+    height: 650
+    width: 1200
+    keep-md: true
+    incremental: true   
+    scrollable: true
+    footer: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+---
+
+
+
+# Chatbot 101
+
+<center>
+![](https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true){width="300"}
+</center>
+
+<div class="authors">
+<center>
+  <span>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span><br>
+  <span>ภาควิชาวิจัยและจิตวิทยาการศึกษา</span><br>
+  <span>คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</span>
+</center>
+</div>
+
+
+
+## Today Topics
+
+1. มโนทัศน์ของ Chatbot
+
+2. หลักการออกแบบ Chatbot
+
+3. การพัฒนา Chatbot ด้วย Dialogflow
+
+4. การ Deploy Chatbot
+
+5. ประเด็นต่อยอด
+
+
+
+
+
+
+## Chatbot คืออะไร
+
+:::: {.columns}
+
+::: {.column width="40%"}
+[![](https://coruzant.com/wp-content/uploads/2022/10/chatbot-robot.jpg)](https://coruzant.com/ai/how-to-build-an-ai-based-chatbot-in-2022-2023/)
+:::
+
+::: {.column width="60%"}
+- โปรแกรมที่พัฒนาขึ้นเพื่อทำหน้าที่จำลองการโต้ตอบการสนทนากับมนุษย์แบบอัตโนมัติผ่านการพิมพ์ข้อความหรือเสียงพูด 
+
+- สนับสนุน/บริการกลุ่มเป้าหมายให้สามารถบรรลุวัตถุประสงค์ของการดำเนินงานต่าง ๆ 
+:::
+
+::::
+
+## Chatbot กับงานด้านการศึกษา {.smaller}
+
+เพื่อสนับสนุนกระบวนการจัดการเรียนรู้ของครู และการเรียนรู้ของผู้เรียน ให้มีประสิทธิภาพ และประสิทธิผลมากขึ้น
+
+<hr>
+
+- **งานทั่วไป **
+  - ให้ข้อมูลเกี่ยวกับหลักสูตร ตารางเรียน รายละเอียดเกี่ยวกับรายวิชา
+
+  - แนะนำทรัพยากรสำหรับการเรียนรู้
+
+- **สนับสนุนการเรียนรู้**
+
+  - ตอบคำถามในเชิงวิชาการ
+
+  - วัดและประเมินผลการเรียนรู้ของผู้เรียน
+
+  - ให้คำแนะนำในการทบทวนบทเรียน หรือปรับปรุงการเรียนรู้
+
+  - กระตุ้นความสนใจ ส่งเสริมการมีส่วนร่วม/ความยึดมั่นผูกพันในการเรียน
+
+  - ส่งเสริมการสร้างชุมชนการเรียนรู้/การทำงานร่วมกันระหว่างผู้เรียน
+  
+## Chatbot กับงานด้านการศึกษา {.smaller}
+
+เพื่อสนับสนุนกระบวนการจัดการเรียนรู้ของครู และการเรียนรู้ของผู้เรียน ให้มีประสิทธิภาพ และประสิทธิผลมากขึ้น
+
+<hr>
+
+- **สนับสนุนทางอารมณ์**
+
+  - ให้คำปรึกษา ลดความเครียดและความวิตกกังวลในการเรียน
+
+  - ส่งเสริมสุขภาพจิตที่ดี
+
+  - คัดกรอง/วินิจฉัยผู้เรียนที่เป็นกลุ่มเสี่ยงหรือกลุ่มที่มีปัญหาทางด้านอารมณ์/จิตใจ
+
+  - ให้ความช่วยเหลือในการดำเนินงาน
+
+
+## ตัวอย่าง Chatbot สำหรับงานด้านการศึกษา
+
+:::: {.columns}
+
+::: {.column width="60%"}
+</br>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/haEGrf052qI?si=5lufGApM4tKjB8Lq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+:::
+
+::: {.column width="40%"}
+![](https://scontent.fbkk2-4.fna.fbcdn.net/v/t39.30808-6/350957047_1021101905935445_4417844840093786587_n.jpg?stp=dst-jpg_s600x600&_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGfmg3YIGkSoTFjwWkEge3_AZDqQjVN2csBkOpCNU3Zy5EPUIlTGIIxO5a81ybPussbvwy1iqix-q8hZgrfnS33&_nc_ohc=WUXNgWmebUgAX8fQ2wY&_nc_ht=scontent.fbkk2-4.fna&oh=00_AfCLDFup9OIkjmmeZRrexrDVnUiGvQKtzdAPDsJQaQzWAg&oe=6546E82F)
+:::
+
+::::
+
+![](https://github.com/ssiwacho/picture/blob/main/Edtech_chatbot.png?raw=true){width="50%"}
+
+
+## การออกแบบ Chatbot
+
+- เพื่อให้ Chatbot สามารถทำงานได้ตรงตามวัตถุประสงค์/ความต้องการของผู้พัฒนาและผู้ใช้
+
+- เพื่อให้ได้ประสบการณ์ผู้ใช้ที่ดีและบริการที่มีประสิทธิภาพ
+
+
+## หลักการออกแบบ Chatbot
+
+:::: {.columns}
+::: {.column width="60%"}
+<br>
+![](https://github.com/ssiwacho/picture/blob/main/design.,png.png?raw=true){width="100%"}
+:::
+::: {.column width="40%"}
+<br>
+
+- Accessible
+
+- Trustworthy
+
+- Elegant
+:::
+::::
+
+## การออกแบบ Chatbot 
+
+1. วัตถุประสงค์ของ Chatbot ---> ประเภท/ความซับซ้อนของ Chatbot
+
+2. ขอบเขต/กรอบการสนทนา ---> Dialog Tree
+
+3. กลุ่มเป้าหมาย ---> บุคลิก/Mood & Tone/ภาษาที่ใช้ใน Chatbot
+
+4. ช่องทางของ Chatbot เช่น Website, Facebook Messenger, Line, ...
+
+## Designing Chatbot
+ออกแบบ Chatbot เพื่อสนับสนุนการเรียนรู้ของผู้เรียนในหลักสูตร DTCA เรื่อง Chatbot
+<hr>
+
+</br>
+
+- **วัตถุประสงค์** : พัฒนา Chatbot ที่ช่วยสนับสนุนการเรียนรู้เรื่อง Chatbot
+
+- **ขอบเขตการทำงาน**
+
+  - แนะนำมโนทัศน์พื้นฐานเกี่ยวกับ Chatbot
+
+  - ตอบคำถามที่พบบ่อย
+
+  - แนะนำเทคโนโลยีและเครื่องมือที่ใช้พัฒนา Chatbot
+  
+- **กลุ่มเป้าหมาย** ผู้เรียนในหลักสูตร DTCA 
+
+
+
+
+
+```{=html}
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+```
+<df-messenger
+  id="chatbot"
+  session-id = "slide1"
+  intent="WELCOME"
+  chat-title="DataKruRoo"
+  chat-icon ="logo.png"
+  agent-id="02b05078-7dfe-4606-a76b-a4199b23ac24"
+  language-code="th"
+></df-messenger>
+
+
+
+```{=html}
+<style>
+  #chatbot {
+    pointer-events: auto !important;
+  }
+  df-messenger {
+   --df-messenger-bot-message: #878fac;
+   --df-messenger-button-titlebar-color: #df9b56;
+   --df-messenger-chat-background-color: #fafafa;
+   --df-messenger-font-color: white;
+   --df-messenger-send-icon: #878fac;
+   --df-messenger-user-message: #479b3d;
+  
+  }
+
+</style>
+```
+```{=html}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatbot = document.getElementById('chatbot');
+    chatbot.addEventListener('focusin', () => {
+      Reveal.configure({ keyboard: false });
+    });
+    chatbot.addEventListener('focusout', () => {
+      Reveal.configure({ keyboard: true });
+    });
+  });
+</script>
+```

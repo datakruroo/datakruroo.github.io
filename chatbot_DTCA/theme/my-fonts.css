@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Bree+Serif&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@400;500&family=Noto+Serif+Thai:wght@400;600&family=Sarabun:wght@200;400;700&display=swap');
+
+body {
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 200;
+  color: #404040;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'IBM Plex Sans Thai Looped', sans-serif;
+  font-weight: 400;
+  color: #5699cc;
+}
+
+.remark-code {
+  font-family: 'Source Code Pro', monospace;
+}
+
+.remark-inline-code {
+  font-family: 'Source Code Pro', monospace;
+}
+
+@media print {
+  body {
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 200;
+}
+}
