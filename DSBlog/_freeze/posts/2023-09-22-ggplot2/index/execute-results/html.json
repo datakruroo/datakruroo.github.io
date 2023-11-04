@@ -1,0 +1,16 @@
+{
+  "hash": "efa7670628bcad18a1d1e1c15155c24f",
+  "result": {
+    "markdown": "---\ntitle: Guide on ggplot2 and extensions in R\ntoc: true\ntoc-depth: 3\ntoc-title: สารบัญ\n---\n\n\nบทเรียนนี้จะกล่าวถึงการสร้างแผนภาพประเภทต่าง ๆ ด้วย ggplot2 และ library ส่วนต่อขยายของ ggplot2 โดยจำแนกแผนภาพออกเป็น 6 กลุ่ม (Wilke, 2019) ได้แก่\n\n-   Amounts/ Comparisons\n\n-   Distributions\n\n-   Compositions\n\n-   Relationships\n\n-   Uncertainty\n\n-   Geospatial data\n\nรายละเอียดมีดังนี้\n\n# Amounts/ Comparisons\n\nแผนภาพกลุ่มนี้มีวัตถุประสงค์เพื่อนำเสนอปริมาณของข้อมูลหรือค่าของตัวแปร หรือเปรียบเทียบปริมาณข้อมูลหรือค่าของตัวแปร แผนภาพในกลุ่มนี้เช่น\n\n-   แผนภูมิแท่งทั้ง 3 ประเภท\n\n-   แผนภาพจุด\n\n-   แผนที่ความร้อน\n\n## แผนภูมิแท่ง\n\n## แผนภาพจุด\n\nการสร้างแผนภาพจุดด้วย ggplot2 จะใช้ geometries สองประเภทได้แก่ `geom_point()` และ/หรือ `geom_segment()` โดยที่ `geom_segment()` มีการกำหนด aesthetic mapping ที่แตกต่างจาก geometry ทั่วไปดังนี้\n\n``` R\ngeom_segment(aes(x,xend,y,yend,...))\n```\n\nยกตัวอย่างเช่นจากชุดข้อมูล gapminder หากต้องการสร้างทัศนภาพข้อมูลเพื่อเปรียบเทียบอายุขัยเฉลี่ยของประชากรในแต่ละประเทศ และจำแนกตามทวีป ในปี ค.ศ. 2007 อาจเขียนคำสั่งดังนี้\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(gapminder)\n\ngapminder %>%\n  filter(year == \"2007\") %>%\n  ggplot(aes(x = lifeExp, y=country))+\n  geom_point()+\n  geom_segment(aes(x=0, xend=lifeExp,\n                   y=country, yend=country))+\n  facet_wrap(~continent, ncol = 2)\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=1440}\n:::\n:::\n\n\n## Coord_polar\n\nในกรณีที่มีหน่วยข้อมูลที่ต้องการนำเสนอจำนวนมาก บางกรณีผู้วิเคราะห์อาจกำหนดพิกัดให้เป็นแบบเชิงขั้วเพื่อลดความยาวของแกนข้อมูล ดังตัวอย่างต่อไปนี้\n\n\n::: {.cell}\n\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

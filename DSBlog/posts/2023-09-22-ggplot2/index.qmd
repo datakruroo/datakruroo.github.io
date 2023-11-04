@@ -1,0 +1,568 @@
+---
+title: Guide on ggplot2 and extensions in R
+toc: true
+toc-depth: 3
+toc-title: สารบัญ
+---
+
+บทเรียนนี้จะกล่าวถึงการสร้างแผนภาพประเภทต่าง ๆ ด้วย ggplot2 และ library ส่วนต่อขยายของ ggplot2 โดยจำแนกแผนภาพออกเป็น 6 กลุ่ม (Wilke, 2019) ได้แก่
+
+-   Amounts/ Comparisons
+
+-   Distributions
+
+-   Compositions
+
+-   Relationships
+
+-   Uncertainty
+
+-   Geospatial data
+
+รายละเอียดมีดังนี้
+
+# **Amounts/ Comparisons**
+
+แผนภาพกลุ่มนี้มีวัตถุประสงค์เพื่อนำเสนอปริมาณของข้อมูลหรือค่าของตัวแปร หรือเปรียบเทียบปริมาณข้อมูลหรือค่าของตัวแปร แผนภาพในกลุ่มนี้เช่น
+
+-   แผนภูมิแท่งทั้ง 3 ประเภท
+
+-   แผนภาพจุด
+
+-   แผนที่ความร้อน
+
+## แผนภูมิแท่ง
+
+## แผนภาพจุด
+
+การสร้างแผนภาพจุดด้วย ggplot2 จะใช้ geometries สองประเภทได้แก่ `geom_point()` และ/หรือ `geom_segment()` โดยที่ `geom_segment()` มีการกำหนด aesthetic mapping ที่แตกต่างจาก geometry ทั่วไปดังนี้
+
+``` r
+geom_segment(aes(x,xend,y,yend,...))
+```
+
+ยกตัวอย่างเช่นจากชุดข้อมูล gapminder หากต้องการสร้างทัศนภาพข้อมูลเพื่อเปรียบเทียบอายุขัยเฉลี่ยของประชากรในแต่ละประเทศ และจำแนกตามทวีป ในปี ค.ศ. 2007 อาจเขียนคำสั่งดังนี้
+
+```{r message = F, fig.height = 12, fig.width = 15}
+library(dplyr)
+library(ggplot2)
+library(gapminder)
+
+gapminder %>%
+  filter(year == "2007") %>%
+  ggplot(aes(x = lifeExp, y=country))+
+  geom_point()+
+  geom_segment(aes(x=0, xend=lifeExp,
+                   y=country, yend=country))+
+  facet_wrap(~continent, ncol = 2)
+```
+
+**แผนภาพข้างต้นมีปัญหาอะไรเกิดขึ้นหรือไม่ จะผู้วิเคราะห์จะต้องดำเนินการปรับแก้ส่วนไหนบ้างอย่างไร?**
+
+## Coord_polar
+
+ในกรณีที่มีหน่วยข้อมูลที่ต้องการนำเสนอจำนวนมาก บางกรณีผู้วิเคราะห์อาจกำหนดพิกัดให้เป็นแบบเชิงขั้วเพื่อลดความยาวของแกนข้อมูล พิกัดฉากหรือพิกัดคาร์ทีเซียน (cartesian) เป็นพิกัดที่ระบุตำแหน่งข้อมูลโดยใช้คู่อันดับ (coordinate) ของแกนข้อมูล แต่พิกัดเชิงขั้วจะระบุตำแหน่งของข้อมูลจากมุมและรัศมีของวงกลม ฟังก์ชันใน ggplot2 สำหรับแปลงพิกัดเป็นเชิงขั้วคือฟังก์ชัน `coord_polar()` มีอาร์กิวเมนท์ที่สำคัญดังนี้
+
+```{r eval=F}
+coord_polar(theta = "x", start = 0, direction = 1, clip = "on")
+```
+
+โดยที่ `theta` ใช้ระบุคุณลักษณะที่ต้องการจับคู่กับมุมใน polar coordinate ส่วน `start` ใช้กำหนดตำแหน่งเริ่มต้นของเส้นรัศมีของหน่วยข้อมูลแรกโดยเมื่อ `start = 0` ตำแหน่งของหน่วยข้อมูลแรกจะอยู่ตั้งแต่จุด 12 นาฬิกาเป็นต้นไป การกำหนดตำแหน่งอัลกอริทึมจะกำหนดให้ทุกหน่วยข้อมูลทำมุมต่อกันมากที่สุด `direction` ใช้กำหนดทิศทางการเรียงลำดับข้อมูลค่าเริ่มต้น `direction = 1` หมายถึงลำดับข้อมูลตามเข็มนาฬิกา หากกำหนด `direction = -1` หมายถึงลำดับข้อมูลทวนเข็มนาฬิกา
+
+```{r}
+p <- gapminder %>%
+  filter(year == "2007",
+         continent == "Asia") %>%
+  ggplot(aes(x = lifeExp, y=country))+
+  geom_point()+
+  geom_segment(aes(x=0, xend=lifeExp,
+                   y=country, yend=country))
+
+p + 
+  coord_polar(theta = "y", start = 0, clip = "off")
+```
+
+```{r fig.height = 6}
+temp <- gapminder %>%
+  filter(year == "2007",
+         continent == "Asia") %>%
+  arrange(desc(lifeExp))
+number_dot <- nrow(temp) ## number of country
+temp$id <- 1:number_dot ## assign country id
+angle <- 90-360*(temp$id-0.5)/number_dot## calculate angle of labels
+temp$hjust <- ifelse(angle < -90, 1,0)
+angle <- ifelse(angle < -90, angle + 180, angle)
+temp$angle <- angle
+
+
+p <- temp %>%
+  ggplot(aes(x=factor(id), y=lifeExp))+
+  geom_point(size = 4, col = "steelblue")+
+  geom_segment(aes(y=0, yend=lifeExp,
+                   x=factor(id), xend=factor(id)),
+               linetype = "dashed")+
+  theme_void()+
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+   # panel.grid.major = element_line(linetype = 3, colour = "grey"),
+    panel.grid.minor = element_blank(),
+    plot.margin = unit(rep(1,4), "cm")
+  )+
+  coord_polar("x", clip = "off")+
+  geom_text(aes(x = id, y=lifeExp+10, label = paste(country, "(", round(lifeExp),")"), 
+                angle = angle, hjust = hjust), size = 4, col = "grey20")
+
+p
+```
+
+การสร้างแผนภาพข้างต้นสามารถทำได้กับแผนภูมิแท่งด้วยวิธีการในทำนองเดียวกัน
+
+```{r}
+library(viridis)
+p <- temp %>%
+  ggplot(aes(x=factor(id), y=lifeExp))+
+  geom_col(aes(fill = lifeExp))+
+  theme_void()+
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+   # panel.grid.major = element_line(linetype = 3, colour = "grey"),
+    panel.grid.minor = element_blank(),
+    plot.margin = unit(rep(1,4), "cm")
+  )+
+  scale_y_continuous(limits = c(-30,100))+
+  scale_fill_viridis_c(option = "D")+
+  coord_polar("x", clip = "off")+
+  geom_text(aes(x = id, y=lifeExp+10, label = paste(country, "(", round(lifeExp),")"), 
+                angle = angle, hjust = hjust), size = 4, col = "grey20")
+p
+```
+
+## แผนที่ความร้อน
+
+การสร้างแผนที่ความร้อนด้วย ggplot2 สามารถทำได้ด้วยฟังก์ชัน `geom_tile()` ดังนี้
+
+```{r fig.height = 16}
+p<-gapminder %>%
+  ggplot(aes(x=year, y=reorder(country, lifeExp)))+
+  geom_tile(aes(fill = lifeExp))+
+  scale_fill_viridis_c()
+p
+```
+
+อย่างไรก็ตามการสร้างแผนที่ความร้อนด้วยฟังก์ชัน `heatmap()` ของ base package มีประสิทธิภาพมากกว่า ggplot2
+
+```{r eval=F}
+heatmap(x, Rowv = NULL, Colv = if(symm)"Rowv" else NULL,
+        distfun = dist, hclustfun = hclust,
+        reorderfun = function(d, w) reorder(d, w),
+        add.expr, symm = FALSE, revC = identical(Colv, "Rowv"),
+        scale = c("row", "column", "none"), na.rm = TRUE,
+        margins = c(5, 5), ColSideColors, RowSideColors,
+        cexRow = 0.2 + 1/log10(nr), cexCol = 0.2 + 1/log10(nc),
+        labRow = NULL, labCol = NULL, main = NULL,
+        xlab = NULL, ylab = NULL,
+        keep.dendro = FALSE, verbose = getOption("verbose"), ...)
+```
+
+เช่น
+
+```{r}
+library(tidyr)
+temp <-gapminder %>% dplyr::select(country,year, lifeExp) %>%
+  pivot_wider(names_from = year, values_from = lifeExp)
+
+gapminder_matrix <- as.matrix(temp[,-1])
+rownames(gapminder_matrix)<-temp$country
+head(gapminder_matrix) %>% round(1)
+```
+
+```{r fig.height=6}
+par(family = "ChulaCharasNew")
+library(rcartocolor)
+display_carto_all(type="quantitative")
+my_col <- carto_pal(name = "Teal")
+
+heatmap(gapminder_matrix, 
+        Colv = NA,
+        xlab = "ปี ค.ศ.",
+        main = "อายุขัยเฉลี่ยของประชากรในแต่ละประเทศ",
+        col	 = my_col)
+```
+
+# **Distributions**
+
+การวิเคราะห์หรือนำเสนอการแจกแจงของข้อมูลเป็นการนำเสนอขอบเขตและแนวโน้มความหนาแน่นของข้อมูล ซึ่งสามารถทำได้หลายลักษณะเช่น
+
+-   histogram
+
+-   density plot
+
+-   Q-Q plot
+
+-   box plot
+
+-   violin plot
+
+-   strip chart
+
+-   sina plot
+
+-   overlapping densities and Ridgeline plot
+
+บทเรียนนี้จะแสดงการสร้างบางแผนภาพ
+
+## Q-Q plot
+
+แผนภาพนี้พล็อตจุดโดยให้แกน Y เป็นค่า quantile ของข้อมูลที่อิงกับการแจกแจงความน่าจะเป็นตามทฤษฎี ส่วนแกน X เป็นค่า quantile ของข้อมูลในตัวอย่าง หากทั้งสอง quantile มีความสอดคล้องกันแสดงว่าการแจกแจงของข้อมูลตัวอย่างเป็นไปตามทฤษฎีหรือสมมุติฐานของผู้วิเคราะห์ แผนภาพนี้ใช้มากในการตรวจสอบข้อตกลงเบื้องต้นของการแจกแจงแบบปกติของข้อมูลหรือเศษเหลือในโมเดลเชิงเส้น (general linear models) ตั้งแต่โมเดลเปรียบเทียบค่าเฉลี่ย ไปจนถึงโมเดลการวิเคราะห์การถดถอย และการวิเคราะห์ความแปรปรวนร่วม อย่างไรก็ตามในกรณีทั่วไป Q-Q plot สามารถใช้ตรวจสอบสมมุติฐานเกี่ยวกับการแจกแจงความน่าจะเป็นแบบอื่นได้ด้วย
+
+ตัวอย่างต่อไปนี้แสดงการสร้าง Q-Q plot ด้วยมือ สมมุติว่ามีตัวแปร x และต้องการตรวจสอบว่า x มีการแจกแจงแบบปกติหรือไม่ สามารถดำเนินการได้ดังนี้
+
+```{r}
+x <- rnorm(40,50,10)
+## 1. sort x 
+sample_quantile <- scale(sort(x))
+
+## 2. calculate expected quantile (theoretical quantile)
+## ถ้าสุ่มตัวอย่าง n=40 จากการแจกแจงแบบปกติ ควรได้ค่า quantile เป็นดังนี้
+## ลบ 0.5 เพื่อปรับให้สามารถคำนวณค่า quantile ได้ทุกจุด
+theoretic_quantile <- qnorm((1:40-0.5)/40, 0,1)
+theoretic_quantile
+
+## 3. plot Q-Q plot
+plot(sample_quantile, theoretic_quantile)
+```
+
+สำหรับใน ggplot2 สามารถสร้าง Q-Q plot ได้โดยใช้ฟังก์ชัน `stat_qq()` และ/หรือ `stat_qq_line()` ดังนี้
+
+-   **`aes(sample = values)`** specifies the data column to be tested.
+
+-   **`stat_qq()`** creates the QQ plot points. The **`distribution`** argument is set to **`qnorm`** for the normal distribution, and **`dparams`** is set to the mean & sd.
+
+-   **`stat_qq_line()`** adds the theoretical QQ line to the plot.
+
+```{r}
+test_norm <- data.frame(x)
+test_norm %>% head()
+
+test_norm %>%
+  mutate(z_x = scale(x)) %>%
+  ggplot(aes(sample = z_x))+
+  stat_qq(distribution = qnorm,
+          dparams = list(mean = 0, sd = 1))+
+  stat_qq_line(distribution = qnorm,
+          dparams = list(mean = 0, sd = 1))+
+  theme_light()
+```
+
+## Sina plots with ggforce library
+
+เป็นแผนภาพที่รวมกันระหว่าง violin plot กับ jitter plot (หรือ strip chart) การสร้าง sina plot สามารถทำได้โดยใช้ extension ของ ggplot2 คือ library-ggforce
+
+<https://cloud.r-project.org/web/packages/ggforce/ggforce.pdf>
+
+```{r}
+# install.packages("ggforce")
+library(ggforce)
+
+gapminder %>%
+  filter(year == "2007") %>%
+  ggplot(aes(x=continent, y=gdpPercap))+
+  geom_boxplot()+
+  geom_sina()+
+  theme_light()
+```
+
+`ggforce` ยังมี feature ที่ช่วยให้สามารถสร้างแผนภาพเฉพาะทางได้มากขึ้นตัวอย่างและรายละเอียดการใช้ ggforce สามารถศึกษาเพิ่มเติมได้จาก
+
+-   <https://ggforce.data-imaginist.com/reference/index.html>
+
+-   <https://www.data-imaginist.com/2019/the-ggforce-awakens-again/>
+
+-   <https://youtu.be/xj73U_PmVMM?si=u8TbGYofSEdZi-6N>
+
+-   <https://youtu.be/pOhz7kpLoi8?si=AsnX1FXzB0URm0R9>
+
+```{r}
+# If you got values for a pie chart, use stat_pie
+states <- c(
+  'eaten', "eaten but said you didn\'t", 'cat took it', 'for tonight',
+  'will decompose slowly'
+)
+pie <- data.frame(
+  state = factor(rep(states, 2), levels = states),
+  type = rep(c('Pie', 'Donut'), each = 5),
+  r0 = rep(c(0, 0.8), each = 5),
+  focus = rep(c(0.2, 0, 0, 0, 0), 2),
+  amount = c(4, 3, 1, 1.5, 6, 6, 1, 2, 3, 2)
+)
+
+# Look at the cakes
+ggplot() + geom_arc_bar(aes(
+  x0 = 0, y0 = 0, r0 = r0, r = 1, amount = amount,
+  fill = state, explode = focus
+),
+data = pie, stat = 'pie'
+) +
+  facet_wrap(~type, ncol = 1) +
+  coord_fixed() +
+  theme_no_axes() +
+  scale_fill_brewer('', type = 'qual')
+```
+
+ฟังก์ชันหนึ่งที่อาจมีประโยชน์คือ `facet_zoom()` ซึ่งสามารถใช้ highlight ส่วนย่อยของแผนภาพที่ต้องการเน้นรายละเอียด ทำให้ผู้อ่านสามารถเห็นภาพรวมและส่วนรายละเอียดที่ต้องการเน้นไปได้พร้อมกัน ยกตัวอย่างเช่น
+
+```{r}
+gapminder %>%
+  filter(year == "2007") %>%
+  ggplot(aes(x=gdpPercap, y= lifeExp))+
+  geom_point()+
+  facet_zoom(y = lifeExp>60,
+             horizontal = F)+
+  scale_x_log10()+
+  theme_light()
+```
+
+# **Composition**
+
+แผนภาพประเภทนี้ใช้นำเสนอสัดส่วน หรือเปรียบเทียบสัดส่วน เน้นการนำเสนอเพื่อเปรียบเทียบส่วนย่อยของข้อมูลเมื่อเทียบกับข้อมูลทั้งหมด
+
+-   stacked bar chart
+
+-   pie chart
+
+-   stacked area/densities chart
+
+-   mosaic plot
+
+-   treemap
+
+-   parallel set
+
+## Stacked Bar chart
+
+stacked bar chart มีวัตถุประสงค์หลักคือใช้เปรียบเทียบสัดส่วนระหว่างหน่วยข้อมูล ยกตัวอย่างเช่น แผนภาพด้านล่างใช้เปรียบเทียบสัดส่วนของประเทศที่ประชากรมีอายุขัยโดยเฉลี่ยมากกว่า 70 ปี จำแนกตามทวีป
+
+```{r fig.height = 6}
+library(patchwork)
+# stacked barplot
+p1 <-gapminder %>% 
+  group_by(continent, lifeExp>70) %>%
+  count() %>%
+  ggplot(aes(x=reorder(continent,n), y= n)) +
+  geom_col(aes(fill = `lifeExp > 70`))+
+  ylab("Count")
+
+# 100% stacked barplot
+p2 <-gapminder %>% 
+  group_by(continent, lifeExp>70) %>%
+  count() %>%
+  ggplot(aes(x=reorder(continent,n), y= n)) +
+  geom_bar(aes(fill = `lifeExp > 70`),
+           stat = "identity",
+           position = "fill")+
+  ylab("Percentage")
+
+p1/p2
+
+```
+
+stacked bar chart ยังสามารถใช้ในการเปรียบเทียบสัดส่วนหรือวิเคราะห์แนวโน้มของสัดส่วนที่สนใจตามเวลา เช่น รูปด้านล่างแสดงแนวโน้มสัดส่วนของประเทศในทวีปเอเซียที่ประชากรมีอายุขัยโดยเฉลี่ยมากกว่า 70 ปี
+
+```{r}
+p1 <- gapminder %>% 
+  filter(continent == "Asia") %>%
+  group_by(year,lifeExp>70) %>%
+  count() %>%
+  ggplot(aes(x=year, y=n, fill = `lifeExp > 70`))+
+  geom_bar(stat = "identity", position = "fill")
+
+p2<-  gapminder %>% 
+  filter(continent == "Asia") %>%
+  group_by(year,lifeExp>70) %>%
+  count() %>%
+  ggplot(aes(x=year, y=n, fill = `lifeExp > 70`))+
+  geom_bar(stat = "identity", position = "stack")
+
+p1/p2
+```
+
+## Pie Chart
+
+การสร้าง pie chart ใน ggplot2 คือการปรับพิกัดของ stacked bar chart จากพิกัดคาร์ทีเซียนให้เป็นพิกัดเชิงขั้ว
+
+```{r}
+gapminder %>% 
+  filter(continent == "Asia", year == "2007") %>%
+  group_by(lifeExp>70) %>%
+  count() %>%
+  ggplot(aes(x="", y=n, fill = `lifeExp > 70`))+
+  geom_bar(stat = "identity", position = "stack")+
+  geom_text(aes(label = n),
+            position = position_stack(vjust = 0.5))+
+  ggtitle("จำนวนประเทศในทวีปเอเซียที่อายุขัยเฉลี่ยของประชากรเกิน 70 ปี")+
+  theme_void()+
+  theme(text = element_text(family="ChulaCharasNew"))+
+  scale_fill_carto_d(palette = 4, direction = -1)+
+  coord_polar(theta = "y")
+```
+
+## Stacked Area chart
+
+คล้าย ๆ กับ stacked bar แต่ใช้ `geom_area()` แทน เหมาะกับตัวแปรบนแกน x ที่มีลักษณะเป็นตัวแปรต่อเนื่อง เช่น เวลา
+
+```{r}
+gapminder %>% 
+  filter(continent == "Asia") %>%
+  group_by(year,lifeExp>70) %>%
+  count() %>%
+  ggplot(aes(x=year, y=n, fill = `lifeExp > 70`))+
+  geom_area(position = "fill")
+```
+
+## Mosaic plot
+
+เป็นแผนภาพสำหรับแสดงความสัมพันธ์ระหว่างตัวแปรจัดประเภท 2 ตัวขึ้นไป กล่าวคือเป็นแผนภาพที่นำมาใช้แทนตารางแจกแจงความถี่หลายทาง การสร้าง mosaic plot ใน R สามารถทำได้ด้วยฟังก์ชัน `mosaicplot()` ดังนี้
+
+```{r}
+mosaic_dat <- gapminder %>% 
+  filter(year == 1997) %>%
+  dplyr::select(continent, lifeExp) %>%
+  mutate(lifeExp = lifeExp>70) 
+
+mosaic_dat <- table(mosaic_dat)
+mosaic_dat
+```
+
+```{r}
+mosaicplot(mosaic_dat)
+```
+
+สำหรับตารางแจกแจงความถี่หลายทางจำเป็นต้องใช้ฟังก์ชันตัวอื่น เช่น `mosaic()` จาก library-vcd
+
+```{r fig.height=9}
+mosaic(HairEyeColor, shade=TRUE,
+       split_vertical = TRUE)
+```
+
+หมายเหตุ: Pearson Residual คือ $r = \frac{O-E}{\sqrt{E}}$ โดยที่ $O$ คือความถี่ในตัวอย่าง ส่วน $E$ คือความถี่ภายใต้สมมุติฐานที่ตัวแปรใน row และ column เป็นอิสระซึ่งกันและกัน แสดงว่า
+
+-   ถ้าค่า residual ดังกล่าวมีค่ามากจะแสดงว่าความถี่ใน cell นั้นมีแนวโน้มที่จะสูงกว่าค่าเฉลี่ยภายใต้สถานการณ์ที่ตัวแปรทั้งสองเป็นอิสระกัน ในทางกลับกันถ้าค่า residual ติดลบแสดงว่าความถี่ใน cell นั้นมีแนวโน้มจะต่ำกว่าค่าเฉลี่ยภายใต้สถานการณ์ที่ตัวแปรทั้งสองเป็นอิสระกัน
+
+-   cell ที่มีค่า residual สูงมาก ๆ จะเป็น cell ที่มีส่วนทำให้ค่าสถิติ chi-square (test of independent) มีค่าสูงตามไปด้วย residual จึงเป็นสถิติที่ให้รายละเอียดเกี่ยวกับความสัมพันธ์ระหว่างตัวแปรจัดประเภท
+
+ตัวอย่างด้านล่างแสดงการคำนวณ pearson residual ในกลุ่มเพศชาย
+
+```{r}
+row_totals <- margin.table(HairEyeColor[,,1], margin = 1)
+col_totals <- margin.table(HairEyeColor[,,1], margin = 2)
+row_totals
+col_totals
+```
+
+```{r}
+expected <- outer(row_totals,col_totals,"*")/sum(HairEyeColor[,,1])
+expected
+```
+
+```{r}
+## pearson residual for Male
+pearson_residual<-(HairEyeColor[,,1] - expected)/sqrt(expected)
+pearson_residual
+```
+
+อีกตัวอย่างหนึ่งจากชุดข้อมูล `Titanic`
+
+```{r}
+mosaic(Survived~., data = Titanic, split_vertical = TRUE)
+```
+
+การสร้าง mosaic ด้วย ggplot2 อาจใช้ library-ggmosaic ก่อนใช้งานจำเป็นต้องติดตั้งก่อนดังนี้
+
+```{r}
+devtools::install_github("haleyjeppson/ggmosaic")
+library(ggmosaic)
+```
+
+เอกสารอ้างอิง : <https://haleyjeppson.github.io/ggmosaic/>
+
+## Treemap
+
+แผนภาพนี้มักใช้นำเสนอสัดส่วนของข้อมูลที่มีลักษณะเป็น hierarchy หรือเป็นข้อมูลที่มีโครงสร้างเป็นลำดับชั้น การสร้าง treemap สามารถทำได้หลายวิธี วิธีการคือใช้ฟังก์ชัน `treemap()` ใน library-treemap
+
+A treemap is a space-filling visualization of hierarchical structures. This function offers great flexibility to draw treemaps. **Required is a data.frame (`dtf`) that contains one or more hierarchical index columns given by `index`, a column that determines the rectangle area sizes (`vSize`), and optionally a column that determines the rectangle colors (`vColor`).** The way how rectangles are colored is determined by the argument `type`.
+
+<https://cran.r-project.org/web/packages/treemapify/vignettes/introduction-to-treemapify.html>
+
+```{r}
+library(treemapify)
+
+gapminder %>% filter(year == "2007") %>%
+  group_by(continent, pop > 10^8) %>%
+  count() %>%
+  mutate(`pop > 10^8` = factor(`pop > 10^8`,
+                                 levels = c(FALSE, TRUE),
+                                  labels=c("No","Yes")))%>%
+  ggplot(aes(area = n, 
+             fill = `pop > 10^8`, 
+             subgroup = `pop > 10^8`)) +
+  geom_treemap()+
+  geom_treemap_subgroup_border(col = "black")+ 
+  geom_treemap_text(aes(label = continent),
+                    col = "grey")+
+  geom_treemap_subgroup_text(col="white")+
+  scale_fill_carto_d(palette = 5)
+```
+
+## Parallel set
+
+แผนภาพนี้เน้นการนำเสนอการแจกแจงของตัวแปรแบบจัดประเภทหลายตัวพร้อมกัน
+
+-   ตัวแปรแต่ละตัวจะมีค่าที่เป็นไปได้อยู่บนแกนหรือคอลัมน์บนแผนภาพ
+
+-   ใช้ ribbons เป็น mark เพื่อแสดงการแจกแจงร่วมระหว่างตัวแปรจัดประเภท
+
+-   ขนาดของ ribbon แสดงสัดส่วนหรือความถี่ของการแจกแจงร่วมดังกล่าว
+
+<https://corybrunson.github.io/ggalluvial/>
+
+```{r fig.height=5}
+library(ggalluvial)
+
+gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent, poor = gdpPercap<30000, long_life = lifeExp > 70) %>%
+  count() %>%
+  mutate(poor = factor(poor, levels=c("FALSE","TRUE"),
+                       labels=c("not poor","poor"))) %>%
+  ggplot(aes(axis1 = continent,
+             axis2 = poor,
+             axis3 = long_life,
+             y = n))+
+  geom_alluvium(aes(fill = poor))+
+  geom_stratum(alpha = 0.2, col="white", fill = "black") +
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum)),
+            col = "white")+
+  theme_void()
+```
+
+```{r}
+gapminder %>%
+  filter(year == 2007) %>%
+  group_by(continent, poor = gdpPercap<30000, long_life = lifeExp > 70) %>%
+  count() %>%
+  mutate(poor = factor(poor, levels=c("FALSE","TRUE"),
+                       labels=c("not poor","poor"))) %>%
+  ggplot(aes(axis1 = continent,
+             axis2 = poor,
+             axis3 = long_life,
+             y = n))+
+  geom_flow(aes(fill = poor))+
+  geom_stratum(alpha = 0.4, col="white", fill = "black") +
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum)),
+            col = "black", family="ChulaCharasNew", size = 3)+
+  theme_void()
+```

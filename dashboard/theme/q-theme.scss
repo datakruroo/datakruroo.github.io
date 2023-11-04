@@ -1,0 +1,54 @@
+/*-- scss:defaults --*/
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);
+@import url(https://fonts.googleapis.com/css?family=Fira+Mono:400,700);
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@400;500&family=Noto+Serif+Thai:wght@400;600&family=Sarabun:wght@200;400;700&display=swap');
+
+
+// fonts
+$font-family-sans-serif: 'Sarabun', sans-serif !default;
+$font-family-serif: 'Noto Serif Thai', serif !default;
+$font-family-monospace: "Fira Mono", monospace !default;
+
+$mainColor: #333;
+$mainFontSize: 30px;
+
+// colors
+$backgroundColor: #fcfbf9;
+$body-bg: #fff !default;
+$body-color: #000 !default;
+$link-color: #00008b !default;
+$code-block-bg: #f2f2f2;
+$code-block-font-size: 0.7em;
+
+$presentation-font-smaller: 0.6rem;
+
+/*-- scss:rules --*/
+
+h1 {
+  font-family: "Fira Mono";
+  font-size: 24px;
+  text-align: left;
+}
+
+.author, .date {
+  font-size: 34px;
+}
+
+
+// Headings
+$headingMargin: 0.5 0 $blockMargin 0;
+$headingFont: 'Abhaya Libre', Impact, sans-serif;
+$headingColor: #006791;
+$headingLineHeight: 1.4;
+$headingLetterSpacing: normal;
+$headingTextTransform: none;
+$headingTextShadow: none;
+$headingFontWeight: normal;
+$heading1TextShadow: $headingTextShadow;
+
+$heading1Size: 3.00em;
+$heading2Size: 2.11em;
+$heading3Size: 1.55em;
+$heading4Size: 1.00em;
