@@ -439,6 +439,33 @@ function doPost(e) {
 
 # Futher Issues
 
+<center>
+
+การปรับแต่งรูปแบบการสนทนาบน Line Chatbot
+
+การวิเคราะห์ข้อความ (text analytics) จาก Chatbot
+
+การออกแบบ Chatbot ที่ให้ผลป้อนกลับแบบ Realtime
+
+การออกแบบ AI Chatbot 
+
+</center>
+
+## Text Analytics
+
+<center>
+![](https://github.com/ssiwacho/picture/blob/main/dataset.png?raw=true)
+</center>
+
+## Text Analytics
+
+
+![](https://github.com/ssiwacho/picture/blob/main/wellbeing.png?raw=true)
+
+
+![](https://github.com/ssiwacho/picture/blob/main/wellbeing2.png?raw=true)
+
+
 # Q&A
 
 ## ตัวอย่าง
