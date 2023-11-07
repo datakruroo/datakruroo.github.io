@@ -1,0 +1,536 @@
+---
+title: <br> <br> Chatbot 101
+subtitle: "![](https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true){width='30%'}"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร <br> ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+image-alt: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    slide-number: c/t
+    logo: "https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true"
+    center-title-slide: false
+    code-link: true
+    code-overflow: wrap
+    highlight-style: a11y
+    height: 788
+    width: 1110
+    keep-md: true
+    incremental: false
+    scrollable: true
+    footer: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+    css: ["theme/my-theme.css"]
+---
+
+
+# Overview
+
+<center>
+
+Concept
+
+Design Principle
+
+Creating Chatbot
+
+Data Collecting with Chatbot
+
+Further issues
+
+Q&A
+
+</center>
+
+# Chatbot Concept
+
+<center>
+
+![](https://img.freepik.com/premium-vector/chatbot-concept-hand-holding-smartphone-with-human-conversation-with-robot_136162-361.jpg?w=2000){width="20%"}
+
+-   Chatbot คืออะไร?
+-   ประเภทของ Chatbot
+-   Chatbot กับงานด้านการศึกษา
+
+</center>
+
+##    Chatbot คืออะไร
+
+<center>![](https://meeycrm.com/tin-tuc/wp-content/uploads/2022/09/Chatbotb.jpg){width="100%"}</center>
+
+## ประโยชน์ของ Chatbot
+
+<center>![](https://github.com/ssiwacho/picture/blob/main/chatbotex.png?raw=true){width="75%"}</center>
+
+## Chatbot กับงานด้านการศึกษา {.smaller}
+
+-   **งานทั่วไป**
+
+    -   ให้ข้อมูลเกี่ยวกับหลักสูตร ตารางเรียน รายละเอียดเกี่ยวกับรายวิชา
+
+    -   แนะนำทรัพยากรสำหรับการเรียนรู้
+
+-   **สนับสนุนการเรียนรู้และการจัดการเรียนรู้**
+
+    -   ตอบคำถามในเชิงวิชาการ ผู้เรียนสามารถเข้าถึงข้อมูลได้ทันที
+
+    -   สนับสนุนการจัดการเรียนรู้แบบ personalized learning
+
+    -   ฝึกฝนทักษะโดยเฉพาะทางด้านภาษา
+
+    -   วัดและประเมินผลการเรียนรู้ของผู้เรียน
+
+    -   ให้คำแนะนำในการทบทวนบทเรียน หรือปรับปรุงการเรียนรู้
+
+    -   กระตุ้นความสนใจ ส่งเสริมการมีส่วนร่วม/ความยึดมั่นผูกพันในการเรียน
+
+    -   ส่งเสริมการสร้างชุมชนการเรียนรู้/การทำงานร่วมกันระหว่างผู้เรียน
+
+    -   เป็นช่องทางที่ผู้เรียน/ผู้เกี่ยวข้องให้ข้อมูลป้อนกลับเพื่อพัฒนาการจัดการเรียนรู้
+
+
+
+## Chatbot กับงานด้านการศึกษา {.smaller}
+
+-   **สนับสนุนทางอารมณ์**
+
+    -   ให้คำปรึกษา ลดความเครียดและความวิตกกังวลในการเรียน
+
+    -   ส่งเสริมสุขภาพจิตที่ดี
+
+    -   คัดกรอง/วินิจฉัยผู้เรียนที่เป็นกลุ่มเสี่ยงหรือกลุ่มที่มีปัญหาทางด้านอารมณ์/จิตใจ
+
+    -   ให้ความช่วยเหลือในการดำเนินงาน
+
+# Designing Chatbot
+
+<center>![](https://images.ctfassets.net/foc8yxpzaiuk/4MGqn04jE619oyMrNt3gIt/e8fc367112210fa17d4e18f6902c4bbb/Artboard_21_copy_2x.png?w=488&h=488&q=50){width="40%"}</center>
+
+## ประเภทของ Chatbot
+
+-   Rule-Based Chatbots
+
+-   AI-Based Chatbots
+
+-   Hybrid Chatbots
+
+## ตัวอย่าง AI Chatbot
+
+![](https://github.com/ssiwacho/picture/blob/main/aichatbot.png?raw=true)
+
+## Design Principle
+
+::: columns
+::: {.column width="60%"}
+<br> ![](https://github.com/ssiwacho/picture/blob/main/dieterram.png?raw=true){width="100%"}
+:::
+
+::: {.column width="40%"}
+<br>
+
+-   Accessible
+
+-   Trustworthy
+
+-   Elegant
+:::
+:::
+
+## Designing Principle
+
+<br> <left> ![](https://github.com/ssiwacho/picture/blob/main/desig2.png?raw=true){width="60%"} </left>
+
+## ตัวอย่าง
+
+ออกแบบ Chatbot เพื่อเก็บรวบรวมข้อมูลกับงานอดิเรกของผู้เรียน 🤸‍♀️
+
+<hr>
+
+-   **Objective:** พัฒนา Chatbot เพื่อเก็บรวบรวมข้อมูลเกี่ยวกับงานอดิเรกของผู้เรียน
+
+-   **Scope:**
+
+    1.  งานอดิเรกของผู้เรียน (มี/ไม่มี) ถ้ามีทำอะไร?
+    2.  การให้ความสำคัญเกี่ยวกับงานอดิเรกของผู้เรียน
+    3.  การรับรู้เกี่ยวกับประโยชน์ของการทำงานอดิเรกที่มีต่อตัวเอง
+
+-   **Target Group:** นักเรียนระดับ ม.ปลาย
+
+-   **Channel:** Line chatbot
+
+## ตัวอย่าง : Dialog tree
+
+![](https://github.com/ssiwacho/picture/blob/main/dialogtree.png?raw=true)
+
+## กิจกรรม 1 : ออกแบบ chatbot (10 นาที)
+
+ออกแบบ Chatbot ของกลุ่ม โดยระบุรายละเอียด 4 ประเด็นหลัก
+
+::: nonincremental
+-   วัตถุประสงค์
+
+-   ขอบเขตของ chatbot
+
+-   กลุ่มเป้าหมาย
+
+-   ช่องทางการใช้
+
+-   ออกแบบ dialog tree ที่มี
+
+    -   การกล่าวต้อนรับ
+    -   Intent ที่เกี่ยวข้องกับวัตถุประสงค์หลักของ chatbot อย่างน้อย 1 intent
+    -   intent ที่เป็น end conversation
+:::
+
+<hr>
+
+::: {style="font-size: 0.75em;"}
+[Jamboard สำหรับกลุ่ม 1-10](https://jamboard.google.com/d/1czzBzWgDiCQRC3ydZ6Vke7ED3QM_kb8pfXNCbtExg-I/edit?usp=sharing)
+
+[Jamboard สำหรับกลุ่ม 11-21](https://jamboard.google.com/d/1E9h0acjah7QB523IyNyQ7sy6WWsBeiXkNFtOg3aBHms/edit?usp=sharing)
+:::
+
+# Creating Chatbot
+
+<center>![](https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/302049236/original/efc832edcb9f34b9ef9fe95d67a1a83c59432371/make-a-chat-bot-for-you.png)</center>
+
+## เครื่องมือ
+
+ปัจจุบันมีเครื่องมือหลายตัวที่สามารถใช้พัฒนา chatbot ให้ทำงานตามวัตถุประสงค์ที่ต้องการได้
+
+-   [Dialogflow (by google)](https://dialogflow.cloud.google.com/)
+
+-   [Chatfuel](https://chatfuel.com/)
+
+-   [Microsoft Bot Framework](https://dev.botframework.com/)
+
+-   [IBM Watson Assistant](https://www.ibm.com/products/watsonx-assistant)
+
+-   [Amazon Lex](https://aws.amazon.com/th/lex/)
+
+-   [Rasa](https://rasa.com/)
+
+## What is Dialogflow?
+
+<br>
+
+เป็นเครื่องมือช่วยพัฒนา Chatbot ให้มีความสามารถในการเข้าใจภาษามนุษย์ โดยเบื้องหลังของ Dialogflow จะมีระบบประมวลภาษาธรรมชาติ (natural language processing: NLP) ช่วยสนับสนุนการแปลงคำพูดของมนุษย์ให้เป็นข้อมูลที่สามารถประมวลผลได้โดยเครื่อง
+
+![](https://cloud.google.com/static/dialogflow/es/docs/images/intent-match-forecast.svg)
+
+[เอกสารอ้างอิง](https://cloud.google.com/dialogflow/es/docs/concepts)
+
+## คำศัพท์ที่ควรทราบ 1
+
+เมื่อทำงานกับ dialogflow มีคำศัพท์ที่ควรทราบดังนี้
+
+::: nonincremental
+-   [**Agent**](https://cloud.google.com/dialogflow/es/docs/agents-overview) ใน Dialogflow, agent คือ chatbot หรือ voice app ที่จะพัฒนาและนำไปใช้
+
+-   [**Intents**](https://cloud.google.com/dialogflow/es/docs/intents-overview) หรือ intention หมายถึงการดำเนินงานที่ผู้ใช้ต้องการทำผ่าน chatbot
+
+-   [**Integration**](https://cloud.google.com/dialogflow/es/docs/integrations) Dialogflow สามารถบูรณาการกับแพลตฟอร์มสนทนาหลายแห่ง
+
+<br>
+
+::: columns
+::: {.column width="50%"}
+#### Intents
+
+![](https://cloud.google.com/static/dialogflow/es/docs/images/intent-match-respond-basic.svg){width="100%"}
+:::
+
+::: {.column width="50%"}
+#### Integrations
+
+![](https://github.com/ssiwacho/picture/blob/main/integration.png?raw=true){width="100%"}
+:::
+:::
+:::
+
+## กิจกรรม 2 : My First Agent (1)
+
+<center>![](https://github.com/ssiwacho/picture/blob/main/newagent.png?raw=true){width="70%"}</center>
+
+-   ไปที่ <https://dialogflow.cloud.google.com/#/login>
+
+-   เข้าสู่ระบบโดยใช้ google account (สำหรับผู้ที่ยังไม่มี google account ให้สร้างก่อนโดยเข้าไปที่ [สร้างบัญชี google](https://support.google.com/accounts/answer/27441?hl=th))
+
+-   สร้าง project ใหม่ โดยการคลิปเลือกที่ "Create new agent" จากนั้นตั้งชื่อ agent ตามความต้องการ
+
+## กิจกรรม 2 : My First Agent (2)
+
+![](https://github.com/ssiwacho/picture/blob/main/training_intent.png?raw=true)
+
+-   เลือก "Intents" จากนั้นคลิก "Create Intent"
+
+-   กำหนด training phrases และ responses ตามที่ได้ออกแบบไว้ใน dialog tree
+
+-   สร้าง chatbot จาก dialogflow เพื่อสนทนาตอบโต้ตามที่ได้ออกแบบไว้
+
+## Integrations
+
+![](https://github.com/ssiwacho/picture/blob/main/line_dialogflow.png?raw=true){width="70%"}
+
+## กิจกรรม 3 : Line Messaging API
+
+::: nonincremental
+1.  เข้าไปที่ <https://developers.line.biz/console/> แล้วเลือก log in with Line account
+
+2.  เข้าสู่ระบบด้วย Line account ที่มีอยู่แล้ว
+
+3.  กรอกข้อมูลได้แก่ ชื่อ และ email กดยอมรับ agreement แล้วกดปุ่ม Create my account
+
+4.  **สร้าง Provider (Superset)** โดยเลือก Create a new provider แล้วระบุชื่อของ Provider ลงไป (หนึ่ง Account สามารถมีได้สูงสุด 10 Providers และไม่สามารถมีคำว่า LINE ในชื่อ Provider ได้)
+
+5.  **สร้าง Channel (subset)** $\rightarrow$ Create a Messaging API channel
+
+-   Channel name : ระบุชื่อของ Chatbot
+-   Channel description : คำบรรยาย Chatbot
+-   Category : ประเภทของ Chatbot
+-   Subcatogory : ประเภทของ Chatbot
+:::
+
+<center>
+
+![](https://github.com/ssiwacho/picture/blob/main/line.png?raw=true){width="70%"}
+
+![](https://github.com/ssiwacho/picture/blob/main/provider.png?raw=true){width="70%"}
+
+</center>
+
+## กิจกรรม 4 : Channel Configuration
+
+เราสามารถปรับแต่ง Chatbot ได้ตามต้องการ เช่น เปิด/ปิด/ปรับเปลี่ยน ข้อความต้อนรับ (Greeting message) หรือ Auto-reply messages
+
+![](https://github.com/ssiwacho/picture/blob/main/config.png?raw=true)
+
+## กิจกรรม 5 : เชื่อมต่อ Dialogflow เข้ากับ Line Chatbot
+
+บน dialogflow ...
+
+::: nonincremental
+1.  คลิกเลือกเมนู Integrations ด้านซ้ายมือ
+
+2.  เลือก Line
+
+3.  กรอกข้อมูล Line Chatbot ที่จะผูกไว้กับ Dialogflow ---\> กลับไปดูที่กิจกรรม 2 : Channel Config.
+:::
+
+<center>
+
+![](https://github.com/ssiwacho/picture/blob/main/connect_line.png?raw=true){width="80%"}
+
+![](https://github.com/ssiwacho/picture/blob/main/connect2.png?raw=true){width="80%"}
+
+![](https://github.com/ssiwacho/picture/blob/main/connect3.png?raw=true){width="80%"}
+
+</center>
+
+## Follow-up Intent
+
+![](https://github.com/ssiwacho/picture/blob/main/followup_case.png?raw=true)
+
+## Follow-up Intent
+
+![](https://github.com/ssiwacho/picture/blob/main/dialogtree2.png?raw=true)
+
+## Follow-up Intent
+
+-   จาก dialog tree อันล่าสุดจะเห็นว่ามีการออกแบบ intent ที่มีลักษณะเป็นเงื่อนไข กล่าวคือ เมื่อมีการเรียก intent หนึ่ง และมีการตอบแบบหนึ่งจะได้รับการดำเนินการแบบหนึ่ง แต่เมื่อเลือกตอบอีกแบบหนึ่งก็จะได้รับการดำเนินการอีกแบบหนึ่ง
+
+-   diaglog flow สามารถออกแบบ chatbot ที่มี intent ลักษณะดังกล่าวได้ภาย feature ที่เรียกว่า follow-up intent
+
+<center>![](https://github.com/ssiwacho/picture/blob/main/followup2.png?raw=true){width="100%"}</center>
+
+## Action & Parameters
+
+::: columns
+::: {.column width="50%"}
+![](https://github.com/ssiwacho/picture/blob/main/level1.png?raw=true){width="100%"}
+:::
+
+::: {.column width="50%"}
+![](https://github.com/ssiwacho/picture/blob/main/level2.png?raw=true){width="100%"}
+:::
+:::
+
+## กิจกรรม 6 : ออกแบบ Follow-up Intent (10 นาที)
+
+-   จากกิจกรรม 1 ขอให้ออกแบบ diaglog tree เพิ่มเติมโดยให้มี follow-up Intent เพื่อทำการสนทนาในบริบทเฉพาะ
+
+-   ทดลองสร้าง chatbot ที่มี follow-up Intent ตามที่ออกแบบ
+
+# Data Collection Chatbot
+
+<center>![](https://images.ctfassets.net/3viuren4us1n/288E0SWjmRgYQScyJeXpwt/19e6700ccf4f32dd638d73adad8279cc/data-collection---resized-3.jpg){width="60%"}</center>
+
+## How to Collect data using Chatbot? (1)
+
+1.  สร้าง intent ที่มีกำหนดให้มีการเก็บค่า parameters ที่ต้องการ
+
+2.  สร้าง google sheets จากนั้นกำหนดชื่อคอลัมน์ให้สอดคล้องกับ parameters ที่เก็บค่าไว้ใน intent ของ dialogflow
+
+3.  สร้าง google apps script เพื่อกำหนดการทำงานให้รับค่า parameters จาก dialogflow
+
+4.  Deploy google apps script โดย
+
+    -   คลิก "Deploy" $\rightarrow$ "New deployment"
+
+    -   เลือก Type $\rightarrow$ "Web app"
+
+    -   ตั้งค่าการเข้าถึงการใช้งานแอป
+
+    -   คลิก "Deploy" จากนั้นคัดลอก URL ที่ได้มา
+
+5.  ใน Diaglogflow ส่วน Fulfillment ให้เปิดใช้งาน webhook แล้ววาง URL ที่ได้ใน 4. ลงไป
+
+6.  ใน Intent ที่ต้องการบันทึกค่า parameters ในส่วน Fulfillment ให้คลิกเลือก "Enable webhook call for this intent"
+
+
+## How to Collect data using Chatbot? (3)
+
+::: columns
+::: {.column width="40%"}
+![](https://github.com/ssiwacho/picture/blob/main/ggsheet.png?raw=true)
+:::
+
+::: {.column width="60%"}
+![](https://github.com/ssiwacho/picture/blob/main/ggappscript.png?raw=true)
+:::
+:::
+
+
+
+
+```{tex}
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var postData = JSON.parse(e.postData.contents);
+
+  var parameters = postData.queryResult.parameters;
+
+  var name = parameters.name;
+  var job = parameters.job;
+  var it_know = parameters.it_know;
+  var motiv = parameters.motiv;
+  var quiz1 = parameters.quiz1;
+  var quiz2 = parameters.quiz2;
+
+
+  var newrow = [name, job, it_know, motiv, quiz1, quiz2];
+  // เพิ่มข้อมูลลงในแถวใหม่
+  sheet.appendRow(newrow);
+}
+```
+
+
+
+## How to Collect data using Chatbot? (3)
+
+
+::: columns
+::: {.column width="60%"}
+![](https://github.com/ssiwacho/picture/blob/main/fulfillment.png?raw=true)
+:::
+
+::: {.column width="40%"}
+![](https://github.com/ssiwacho/picture/blob/main/intent_fulfillment.png?raw=true)
+:::
+:::
+
+# Futher Issues
+
+# Q&A
+
+## ตัวอย่าง
+
+ออกแบบ Chatbot เพื่อสนับสนุนการเรียนรู้ของผู้เรียนในหลักสูตร DTCA เรื่อง Chatbot
+
+<hr>
+
+-   **Objective:** พัฒนา Chatbot ที่ช่วยสนับสนุนการเรียนรู้เรื่อง Chatbot 😆
+
+-   **Scope:** ให้ concept เกี่ยวกับการพัฒนา chatbot และทดสอบความรู้
+
+    1.  มโนทัศน์พื้นฐาน
+    2.  การออกแบบ Chatbot
+    3.  เครื่องมือและเทคโนโลยี
+    4.  ตัวอย่างกรณีศึกษา
+    5.  ทดสอบความรู้เกี่ยวกับ chatbot
+
+-   **Target Group:** ผู้เรียนในหลักสูตร DTCA
+
+-   **Channel:**
+
+    1.  เอกสารประกอบการสอน (Website)
+
+    2.  Line chatbot
+
+
+
+
+
+```{=html}
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<meta name="viewport" content="width=900px, initial-scale=2">
+```
+
+
+<df-messenger
+  id="chatbot"
+  session-id = "slide1"
+  intent="WELCOME"
+  chat-title="DataKruRoo Chatbot"
+  chat-icon ="logo.png"
+  agent-id="02b05078-7dfe-4606-a76b-a4199b23ac24"
+  language-code="th"
+></df-messenger>
+
+
+
+```{=html}
+<style>
+  #chatbot {
+    pointer-events: auto !important;
+      width: 500px;
+  height: 300px;
+  }
+  df-messenger {
+   --df-messenger-bot-message: #282A3A;
+   --df-messenger-button-titlebar-color: black;
+   --df-messenger-chat-background-color: #fafafa;
+   --df-messenger-input-box-color: #fafafa;
+   --df-messenger-font-color: white;
+   --df-messenger-send-icon: white;
+   --df-messenger-user-message: #C69749;
+
+  }
+
+const dfMessenger = document.querySelector('df-messenger');
+dfMessenger.addEventListener('df-response-received', function (event) {
+  const { response } = event.detail;
+  const messages = response.queryResult.fulfillmentMessages;
+
+  if (messages.length > 1) {
+    event.preventDefault(); // ป้องกันการส่งข้อความทั้งหมดทันที
+    sendMessagesWithDelay(messages, 0);
+  }
+});
+
+
+
+</style>
+```
+
+```{=html}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatbot = document.getElementById('chatbot');
+    chatbot.addEventListener('focusin', () => {
+      Reveal.configure({ keyboard: false });
+    });
+    chatbot.addEventListener('focusout', () => {
+      Reveal.configure({ keyboard: true });
+    });
+  });
+</script>
+```

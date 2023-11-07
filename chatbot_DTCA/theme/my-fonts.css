@@ -16,7 +16,12 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'IBM Plex Sans Thai Looped', sans-serif;
   font-weight: 400;
-  color: #5699cc;
+  color:  #3b4245;
+}
+
+p {
+  line-height: 2.5;
+  color:  #3b4245;
 }
 
 .remark-code {

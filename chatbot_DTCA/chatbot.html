@@ -10,7 +10,8 @@
 <link href="chatbot_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.450">
 
-  <title>chatbot</title>
+  <meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร   ภาควิชาวิจัยและจิตวิทยาการศึกษา   คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย">
+  <title>    Chatbot 101</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -28,8 +29,74 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #767676;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #767676;  padding-left: 4px; }
+    div.sourceCode
+      { color: #545454; background-color: #fefefe; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #545454; } /* Normal */
+    code span.al { color: #7928a1; } /* Alert */
+    code span.an { color: #696969; } /* Annotation */
+    code span.at { color: #a55a00; } /* Attribute */
+    code span.bn { color: #7928a1; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #d91e18; } /* ControlFlow */
+    code span.ch { color: #008000; } /* Char */
+    code span.cn { color: #d91e18; } /* Constant */
+    code span.co { color: #696969; } /* Comment */
+    code span.cv { color: #696969; font-style: italic; } /* CommentVar */
+    code span.do { color: #696969; font-style: italic; } /* Documentation */
+    code span.dt { color: #7928a1; } /* DataType */
+    code span.dv { color: #7928a1; } /* DecVal */
+    code span.er { color: #7928a1; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #a55a00; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #696969; } /* Information */
+    code span.kw { color: #d91e18; } /* Keyword */
+    code span.op { color: #00769e; } /* Operator */
+    code span.ot { color: #d91e18; } /* Other */
+    code span.pp { color: #7928a1; } /* Preprocessor */
+    code span.sc { color: #00769e; } /* SpecialChar */
+    code span.ss { color: #008000; } /* SpecialString */
+    code span.st { color: #008000; } /* String */
+    code span.va { color: #a55a00; } /* Variable */
+    code span.vs { color: #008000; } /* VerbatimString */
+    code span.wa { color: #696969; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="chatbot_files/libs/revealjs/dist/theme/quarto.css">
+  <link rel="stylesheet" href="theme/my-theme.css">
   <link href="chatbot_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="chatbot_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="chatbot_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -324,154 +391,443 @@
   <div class="reveal">
     <div class="slides">
 
+<section id="title-slide" class="quarto-title-block">
+  <h1 class="title"><br> <br> Chatbot 101</h1>
+  <p class="subtitle"><img data-src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" style="width:30.0%"></p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+ผศ.ดร.สิวะโชติ ศรีสุทธิยากร <br> ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย 
+</div>
+</div>
+</div>
+
+</section>
+<section id="overview" class="title-slide slide level1">
+<h1>Overview</h1>
+<center>
+<p>Concept</p>
+<p>Design Principle</p>
+<p>Creating Chatbot</p>
+<p>Data Collecting with Chatbot</p>
+<p>Further issues</p>
+<p>Q&amp;A</p>
+</center>
+</section>
 
 <section>
-<section id="chatbot-101" class="title-slide slide level1">
-<h1>Chatbot 101</h1>
+<section id="chatbot-concept" class="title-slide slide level1">
+<h1>Chatbot Concept</h1>
 <center>
-<img data-src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" width="300">
+<p><img data-src="https://img.freepik.com/premium-vector/chatbot-concept-hand-holding-smartphone-with-human-conversation-with-robot_136162-361.jpg?w=2000" style="width:20.0%"></p>
+<ul>
+<li>Chatbot คืออะไร?</li>
+<li>ประเภทของ Chatbot</li>
+<li>Chatbot กับงานด้านการศึกษา</li>
+</ul>
 </center>
-<div class="authors">
-<center>
-<span>ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span><br> <span>ภาควิชาวิจัยและจิตวิทยาการศึกษา</span><br> <span>คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</span>
-</center>
-</div>
-</section>
-<section id="today-topics" class="slide level2">
-<h2>Today Topics</h2>
-<ol type="1">
-<li class="fragment"><p>มโนทัศน์ของ Chatbot</p></li>
-<li class="fragment"><p>หลักการออกแบบ Chatbot</p></li>
-<li class="fragment"><p>การพัฒนา Chatbot ด้วย Dialogflow</p></li>
-<li class="fragment"><p>การ Deploy Chatbot</p></li>
-<li class="fragment"><p>ประเด็นต่อยอด</p></li>
-</ol>
 </section>
 <section id="chatbot-คออะไร" class="slide level2">
-<h2>Chatbot คืออะไร</h2>
-<div class="columns">
-<div class="column" style="width:40%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><a href="https://coruzant.com/ai/how-to-build-an-ai-based-chatbot-in-2022-2023/"><img data-src="https://coruzant.com/wp-content/uploads/2022/10/chatbot-robot.jpg"></a></p>
-</figure>
-</div>
-</div><div class="column" style="width:60%;">
-<ul>
-<li class="fragment"><p>โปรแกรมที่พัฒนาขึ้นเพื่อทำหน้าที่จำลองการโต้ตอบการสนทนากับมนุษย์แบบอัตโนมัติผ่านการพิมพ์ข้อความหรือเสียงพูด</p></li>
-<li class="fragment"><p>สนับสนุน/บริการกลุ่มเป้าหมายให้สามารถบรรลุวัตถุประสงค์ของการดำเนินงานต่าง ๆ</p></li>
-</ul>
-</div>
-</div>
+<h2>&nbsp;&nbsp;&nbsp;Chatbot คืออะไร</h2>
+<center>
+<img data-src="https://meeycrm.com/tin-tuc/wp-content/uploads/2022/09/Chatbotb.jpg" style="width:100.0%">
+</center>
+</section>
+<section id="ประโยชนของ-chatbot" class="slide level2">
+<h2>ประโยชน์ของ Chatbot</h2>
+<center>
+<img data-src="https://github.com/ssiwacho/picture/blob/main/chatbotex.png?raw=true" style="width:75.0%">
+</center>
 </section>
 <section id="chatbot-กบงานดานการศกษา" class="slide level2 smaller">
 <h2>Chatbot กับงานด้านการศึกษา</h2>
-<p>เพื่อสนับสนุนกระบวนการจัดการเรียนรู้ของครู และการเรียนรู้ของผู้เรียน ให้มีประสิทธิภาพ และประสิทธิผลมากขึ้น</p>
-<hr>
 <ul>
-<li class="fragment"><p><strong>งานทั่วไป </strong></p>
+<li><p><strong>งานทั่วไป</strong></p>
 <ul>
-<li class="fragment"><p>ให้ข้อมูลเกี่ยวกับหลักสูตร ตารางเรียน รายละเอียดเกี่ยวกับรายวิชา</p></li>
-<li class="fragment"><p>แนะนำทรัพยากรสำหรับการเรียนรู้</p></li>
+<li><p>ให้ข้อมูลเกี่ยวกับหลักสูตร ตารางเรียน รายละเอียดเกี่ยวกับรายวิชา</p></li>
+<li><p>แนะนำทรัพยากรสำหรับการเรียนรู้</p></li>
 </ul></li>
-<li class="fragment"><p><strong>สนับสนุนการเรียนรู้</strong></p>
+<li><p><strong>สนับสนุนการเรียนรู้และการจัดการเรียนรู้</strong></p>
 <ul>
-<li class="fragment"><p>ตอบคำถามในเชิงวิชาการ</p></li>
-<li class="fragment"><p>วัดและประเมินผลการเรียนรู้ของผู้เรียน</p></li>
-<li class="fragment"><p>ให้คำแนะนำในการทบทวนบทเรียน หรือปรับปรุงการเรียนรู้</p></li>
-<li class="fragment"><p>กระตุ้นความสนใจ ส่งเสริมการมีส่วนร่วม/ความยึดมั่นผูกพันในการเรียน</p></li>
-<li class="fragment"><p>ส่งเสริมการสร้างชุมชนการเรียนรู้/การทำงานร่วมกันระหว่างผู้เรียน</p></li>
+<li><p>ตอบคำถามในเชิงวิชาการ ผู้เรียนสามารถเข้าถึงข้อมูลได้ทันที</p></li>
+<li><p>สนับสนุนการจัดการเรียนรู้แบบ personalized learning</p></li>
+<li><p>ฝึกฝนทักษะโดยเฉพาะทางด้านภาษา</p></li>
+<li><p>วัดและประเมินผลการเรียนรู้ของผู้เรียน</p></li>
+<li><p>ให้คำแนะนำในการทบทวนบทเรียน หรือปรับปรุงการเรียนรู้</p></li>
+<li><p>กระตุ้นความสนใจ ส่งเสริมการมีส่วนร่วม/ความยึดมั่นผูกพันในการเรียน</p></li>
+<li><p>ส่งเสริมการสร้างชุมชนการเรียนรู้/การทำงานร่วมกันระหว่างผู้เรียน</p></li>
+<li><p>เป็นช่องทางที่ผู้เรียน/ผู้เกี่ยวข้องให้ข้อมูลป้อนกลับเพื่อพัฒนาการจัดการเรียนรู้</p></li>
 </ul></li>
 </ul>
 </section>
 <section id="chatbot-กบงานดานการศกษา-1" class="slide level2 smaller">
 <h2>Chatbot กับงานด้านการศึกษา</h2>
-<p>เพื่อสนับสนุนกระบวนการจัดการเรียนรู้ของครู และการเรียนรู้ของผู้เรียน ให้มีประสิทธิภาพ และประสิทธิผลมากขึ้น</p>
-<hr>
 <ul>
-<li class="fragment"><p><strong>สนับสนุนทางอารมณ์</strong></p>
+<li><p><strong>สนับสนุนทางอารมณ์</strong></p>
 <ul>
-<li class="fragment"><p>ให้คำปรึกษา ลดความเครียดและความวิตกกังวลในการเรียน</p></li>
-<li class="fragment"><p>ส่งเสริมสุขภาพจิตที่ดี</p></li>
-<li class="fragment"><p>คัดกรอง/วินิจฉัยผู้เรียนที่เป็นกลุ่มเสี่ยงหรือกลุ่มที่มีปัญหาทางด้านอารมณ์/จิตใจ</p></li>
-<li class="fragment"><p>ให้ความช่วยเหลือในการดำเนินงาน</p></li>
+<li><p>ให้คำปรึกษา ลดความเครียดและความวิตกกังวลในการเรียน</p></li>
+<li><p>ส่งเสริมสุขภาพจิตที่ดี</p></li>
+<li><p>คัดกรอง/วินิจฉัยผู้เรียนที่เป็นกลุ่มเสี่ยงหรือกลุ่มที่มีปัญหาทางด้านอารมณ์/จิตใจ</p></li>
+<li><p>ให้ความช่วยเหลือในการดำเนินงาน</p></li>
 </ul></li>
 </ul>
+</section></section>
+<section>
+<section id="designing-chatbot" class="title-slide slide level1">
+<h1>Designing Chatbot</h1>
+<center>
+<img data-src="https://images.ctfassets.net/foc8yxpzaiuk/4MGqn04jE619oyMrNt3gIt/e8fc367112210fa17d4e18f6902c4bbb/Artboard_21_copy_2x.png?w=488&amp;h=488&amp;q=50" style="width:40.0%">
+</center>
 </section>
-<section id="ตวอยาง-chatbot-สำหรบงานดานการศกษา" class="slide level2">
-<h2>ตัวอย่าง Chatbot สำหรับงานด้านการศึกษา</h2>
-<div class="columns">
-<div class="column" style="width:60%;">
-<p><br></p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/haEGrf052qI?si=5lufGApM4tKjB8Lq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="">
-</iframe>
-</div><div class="column" style="width:40%;">
-<p><img data-src="https://scontent.fbkk2-4.fna.fbcdn.net/v/t39.30808-6/350957047_1021101905935445_4417844840093786587_n.jpg?stp=dst-jpg_s600x600&amp;_nc_cat=101&amp;ccb=1-7&amp;_nc_sid=5f2048&amp;_nc_eui2=AeGfmg3YIGkSoTFjwWkEge3_AZDqQjVN2csBkOpCNU3Zy5EPUIlTGIIxO5a81ybPussbvwy1iqix-q8hZgrfnS33&amp;_nc_ohc=WUXNgWmebUgAX8fQ2wY&amp;_nc_ht=scontent.fbkk2-4.fna&amp;oh=00_AfCLDFup9OIkjmmeZRrexrDVnUiGvQKtzdAPDsJQaQzWAg&amp;oe=6546E82F"></p>
-</div>
-</div>
-<p><img data-src="https://github.com/ssiwacho/picture/blob/main/Edtech_chatbot.png?raw=true" style="width:50.0%"></p>
-</section>
-<section id="การออกแบบ-chatbot" class="slide level2">
-<h2>การออกแบบ Chatbot</h2>
+<section id="ประเภทของ-chatbot" class="slide level2">
+<h2>ประเภทของ Chatbot</h2>
 <ul>
-<li class="fragment"><p>เพื่อให้ Chatbot สามารถทำงานได้ตรงตามวัตถุประสงค์/ความต้องการของผู้พัฒนาและผู้ใช้</p></li>
-<li class="fragment"><p>เพื่อให้ได้ประสบการณ์ผู้ใช้ที่ดีและบริการที่มีประสิทธิภาพ</p></li>
+<li><p>Rule-Based Chatbots</p></li>
+<li><p>AI-Based Chatbots</p></li>
+<li><p>Hybrid Chatbots</p></li>
 </ul>
 </section>
-<section id="หลกการออกแบบ-chatbot" class="slide level2">
-<h2>หลักการออกแบบ Chatbot</h2>
+<section id="ตวอยาง-ai-chatbot" class="slide level2">
+<h2>ตัวอย่าง AI Chatbot</h2>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/aichatbot.png?raw=true" class="r-stretch"></section>
+<section id="design-principle" class="slide level2">
+<h2>Design Principle</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
-<p><br> <img data-src="https://github.com/ssiwacho/picture/blob/main/design.,png.png?raw=true" style="width:100.0%"></p>
+<p><br> <img data-src="https://github.com/ssiwacho/picture/blob/main/dieterram.png?raw=true" style="width:100.0%"></p>
 </div><div class="column" style="width:40%;">
 <p><br></p>
 <ul>
-<li class="fragment"><p>Accessible</p></li>
-<li class="fragment"><p>Trustworthy</p></li>
-<li class="fragment"><p>Elegant</p></li>
+<li><p>Accessible</p></li>
+<li><p>Trustworthy</p></li>
+<li><p>Elegant</p></li>
 </ul>
 </div>
 </div>
 </section>
-<section id="การออกแบบ-chatbot-1" class="slide level2">
-<h2>การออกแบบ Chatbot</h2>
+<section id="designing-principle" class="slide level2">
+<h2>Designing Principle</h2>
+<p><br> <left> <img data-src="https://github.com/ssiwacho/picture/blob/main/desig2.png?raw=true" style="width:60.0%"> </left></p>
+</section>
+<section id="ตวอยาง" class="slide level2">
+<h2>ตัวอย่าง</h2>
+<p>ออกแบบ Chatbot เพื่อเก็บรวบรวมข้อมูลกับงานอดิเรกของผู้เรียน 🤸‍♀️</p>
+<hr>
+<ul>
+<li><p><strong>Objective:</strong> พัฒนา Chatbot เพื่อเก็บรวบรวมข้อมูลเกี่ยวกับงานอดิเรกของผู้เรียน</p></li>
+<li><p><strong>Scope:</strong></p>
 <ol type="1">
-<li class="fragment"><p>วัตถุประสงค์ของ Chatbot —&gt; ประเภท/ความซับซ้อนของ Chatbot</p></li>
-<li class="fragment"><p>ขอบเขต/กรอบการสนทนา —&gt; Dialog Tree</p></li>
-<li class="fragment"><p>กลุ่มเป้าหมาย —&gt; บุคลิก/Mood &amp; Tone/ภาษาที่ใช้ใน Chatbot</p></li>
-<li class="fragment"><p>ช่องทางของ Chatbot เช่น Website, Facebook Messenger, Line, …</p></li>
+<li>งานอดิเรกของผู้เรียน (มี/ไม่มี) ถ้ามีทำอะไร?</li>
+<li>การให้ความสำคัญเกี่ยวกับงานอดิเรกของผู้เรียน</li>
+<li>การรับรู้เกี่ยวกับประโยชน์ของการทำงานอดิเรกที่มีต่อตัวเอง</li>
+</ol></li>
+<li><p><strong>Target Group:</strong> นักเรียนระดับ ม.ปลาย</p></li>
+<li><p><strong>Channel:</strong> Line chatbot</p></li>
+</ul>
+</section>
+<section id="ตวอยาง-dialog-tree" class="slide level2">
+<h2>ตัวอย่าง : Dialog tree</h2>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/dialogtree.png?raw=true" class="r-stretch"></section>
+<section id="กจกรรม-1-ออกแบบ-chatbot-10-นาท" class="slide level2">
+<h2>กิจกรรม 1 : ออกแบบ chatbot (10 นาที)</h2>
+<p>ออกแบบ Chatbot ของกลุ่ม โดยระบุรายละเอียด 4 ประเด็นหลัก</p>
+<div>
+<ul>
+<li><p>วัตถุประสงค์</p></li>
+<li><p>ขอบเขตของ chatbot</p></li>
+<li><p>กลุ่มเป้าหมาย</p></li>
+<li><p>ช่องทางการใช้</p></li>
+<li><p>ออกแบบ dialog tree ที่มี</p>
+<ul>
+<li>การกล่าวต้อนรับ</li>
+<li>Intent ที่เกี่ยวข้องกับวัตถุประสงค์หลักของ chatbot อย่างน้อย 1 intent</li>
+<li>intent ที่เป็น end conversation</li>
+</ul></li>
+</ul>
+</div>
+<hr>
+<div style="font-size: 0.75em;">
+<p><a href="https://jamboard.google.com/d/1czzBzWgDiCQRC3ydZ6Vke7ED3QM_kb8pfXNCbtExg-I/edit?usp=sharing">Jamboard สำหรับกลุ่ม 1-10</a></p>
+<p><a href="https://jamboard.google.com/d/1E9h0acjah7QB523IyNyQ7sy6WWsBeiXkNFtOg3aBHms/edit?usp=sharing">Jamboard สำหรับกลุ่ม 11-21</a></p>
+</div>
+</section></section>
+<section>
+<section id="creating-chatbot" class="title-slide slide level1">
+<h1>Creating Chatbot</h1>
+<center>
+<img data-src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/302049236/original/efc832edcb9f34b9ef9fe95d67a1a83c59432371/make-a-chat-bot-for-you.png">
+</center>
+</section>
+<section id="เครองมอ" class="slide level2">
+<h2>เครื่องมือ</h2>
+<p>ปัจจุบันมีเครื่องมือหลายตัวที่สามารถใช้พัฒนา chatbot ให้ทำงานตามวัตถุประสงค์ที่ต้องการได้</p>
+<ul>
+<li><p><a href="https://dialogflow.cloud.google.com/">Dialogflow (by google)</a></p></li>
+<li><p><a href="https://chatfuel.com/">Chatfuel</a></p></li>
+<li><p><a href="https://dev.botframework.com/">Microsoft Bot Framework</a></p></li>
+<li><p><a href="https://www.ibm.com/products/watsonx-assistant">IBM Watson Assistant</a></p></li>
+<li><p><a href="https://aws.amazon.com/th/lex/">Amazon Lex</a></p></li>
+<li><p><a href="https://rasa.com/">Rasa</a></p></li>
+</ul>
+</section>
+<section id="what-is-dialogflow" class="slide level2">
+<h2>What is Dialogflow?</h2>
+<p><br></p>
+<p>เป็นเครื่องมือช่วยพัฒนา Chatbot ให้มีความสามารถในการเข้าใจภาษามนุษย์ โดยเบื้องหลังของ Dialogflow จะมีระบบประมวลภาษาธรรมชาติ (natural language processing: NLP) ช่วยสนับสนุนการแปลงคำพูดของมนุษย์ให้เป็นข้อมูลที่สามารถประมวลผลได้โดยเครื่อง</p>
+
+<img data-src="https://cloud.google.com/static/dialogflow/es/docs/images/intent-match-forecast.svg" class="r-stretch"><p><a href="https://cloud.google.com/dialogflow/es/docs/concepts">เอกสารอ้างอิง</a></p>
+</section>
+<section id="คำศพททควรทราบ-1" class="slide level2">
+<h2>คำศัพท์ที่ควรทราบ 1</h2>
+<p>เมื่อทำงานกับ dialogflow มีคำศัพท์ที่ควรทราบดังนี้</p>
+<div>
+<ul>
+<li><p><a href="https://cloud.google.com/dialogflow/es/docs/agents-overview"><strong>Agent</strong></a> ใน Dialogflow, agent คือ chatbot หรือ voice app ที่จะพัฒนาและนำไปใช้</p></li>
+<li><p><a href="https://cloud.google.com/dialogflow/es/docs/intents-overview"><strong>Intents</strong></a> หรือ intention หมายถึงการดำเนินงานที่ผู้ใช้ต้องการทำผ่าน chatbot</p></li>
+<li><p><a href="https://cloud.google.com/dialogflow/es/docs/integrations"><strong>Integration</strong></a> Dialogflow สามารถบูรณาการกับแพลตฟอร์มสนทนาหลายแห่ง</p></li>
+</ul>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="intents">Intents</h4>
+<p><img data-src="https://cloud.google.com/static/dialogflow/es/docs/images/intent-match-respond-basic.svg" style="width:100.0%"></p>
+</div><div class="column" style="width:50%;">
+<h4 id="integrations">Integrations</h4>
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/integration.png?raw=true" style="width:100.0%"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="กจกรรม-2-my-first-agent-1" class="slide level2">
+<h2>กิจกรรม 2 : My First Agent (1)</h2>
+<center>
+<img data-src="https://github.com/ssiwacho/picture/blob/main/newagent.png?raw=true" style="width:70.0%">
+</center>
+<ul>
+<li><p>ไปที่ <a href="https://dialogflow.cloud.google.com/#/login" class="uri">https://dialogflow.cloud.google.com/#/login</a></p></li>
+<li><p>เข้าสู่ระบบโดยใช้ google account (สำหรับผู้ที่ยังไม่มี google account ให้สร้างก่อนโดยเข้าไปที่ <a href="https://support.google.com/accounts/answer/27441?hl=th">สร้างบัญชี google</a>)</p></li>
+<li><p>สร้าง project ใหม่ โดยการคลิปเลือกที่ “Create new agent” จากนั้นตั้งชื่อ agent ตามความต้องการ</p></li>
+</ul>
+</section>
+<section id="กจกรรม-2-my-first-agent-2" class="slide level2">
+<h2>กิจกรรม 2 : My First Agent (2)</h2>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/training_intent.png?raw=true" class="r-stretch"><ul>
+<li><p>เลือก “Intents” จากนั้นคลิก “Create Intent”</p></li>
+<li><p>กำหนด training phrases และ responses ตามที่ได้ออกแบบไว้ใน dialog tree</p></li>
+<li><p>สร้าง chatbot จาก dialogflow เพื่อสนทนาตอบโต้ตามที่ได้ออกแบบไว้</p></li>
+</ul>
+</section>
+<section id="integrations-1" class="slide level2">
+<h2>Integrations</h2>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/line_dialogflow.png?raw=true" style="width:70.0%" class="r-stretch"></section>
+<section id="กจกรรม-3-line-messaging-api" class="slide level2">
+<h2>กิจกรรม 3 : Line Messaging API</h2>
+<div>
+<ol type="1">
+<li><p>เข้าไปที่ <a href="https://developers.line.biz/console/" class="uri">https://developers.line.biz/console/</a> แล้วเลือก log in with Line account</p></li>
+<li><p>เข้าสู่ระบบด้วย Line account ที่มีอยู่แล้ว</p></li>
+<li><p>กรอกข้อมูลได้แก่ ชื่อ และ email กดยอมรับ agreement แล้วกดปุ่ม Create my account</p></li>
+<li><p><strong>สร้าง Provider (Superset)</strong> โดยเลือก Create a new provider แล้วระบุชื่อของ Provider ลงไป (หนึ่ง Account สามารถมีได้สูงสุด 10 Providers และไม่สามารถมีคำว่า LINE ในชื่อ Provider ได้)</p></li>
+<li><p><strong>สร้าง Channel (subset)</strong> <span class="math inline">\(\rightarrow\)</span> Create a Messaging API channel</p></li>
+</ol>
+<ul>
+<li>Channel name : ระบุชื่อของ Chatbot</li>
+<li>Channel description : คำบรรยาย Chatbot</li>
+<li>Category : ประเภทของ Chatbot</li>
+<li>Subcatogory : ประเภทของ Chatbot</li>
+</ul>
+</div>
+<center>
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/line.png?raw=true" style="width:70.0%"></p>
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/provider.png?raw=true" style="width:70.0%"></p>
+</center>
+</section>
+<section id="กจกรรม-4-channel-configuration" class="slide level2">
+<h2>กิจกรรม 4 : Channel Configuration</h2>
+<p>เราสามารถปรับแต่ง Chatbot ได้ตามต้องการ เช่น เปิด/ปิด/ปรับเปลี่ยน ข้อความต้อนรับ (Greeting message) หรือ Auto-reply messages</p>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/config.png?raw=true" class="r-stretch"></section>
+<section id="กจกรรม-5-เชอมตอ-dialogflow-เขากบ-line-chatbot" class="slide level2">
+<h2>กิจกรรม 5 : เชื่อมต่อ Dialogflow เข้ากับ Line Chatbot</h2>
+<p>บน dialogflow …</p>
+<div>
+<ol type="1">
+<li><p>คลิกเลือกเมนู Integrations ด้านซ้ายมือ</p></li>
+<li><p>เลือก Line</p></li>
+<li><p>กรอกข้อมูล Line Chatbot ที่จะผูกไว้กับ Dialogflow —&gt; กลับไปดูที่กิจกรรม 2 : Channel Config.</p></li>
+</ol>
+</div>
+<center>
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/connect_line.png?raw=true" style="width:80.0%"></p>
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/connect2.png?raw=true" style="width:80.0%"></p>
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/connect3.png?raw=true" style="width:80.0%"></p>
+</center>
+</section>
+<section id="follow-up-intent" class="slide level2">
+<h2>Follow-up Intent</h2>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/followup_case.png?raw=true" class="r-stretch"></section>
+<section id="follow-up-intent-1" class="slide level2">
+<h2>Follow-up Intent</h2>
+
+<img data-src="https://github.com/ssiwacho/picture/blob/main/dialogtree2.png?raw=true" class="r-stretch"></section>
+<section id="follow-up-intent-2" class="slide level2">
+<h2>Follow-up Intent</h2>
+<ul>
+<li><p>จาก dialog tree อันล่าสุดจะเห็นว่ามีการออกแบบ intent ที่มีลักษณะเป็นเงื่อนไข กล่าวคือ เมื่อมีการเรียก intent หนึ่ง และมีการตอบแบบหนึ่งจะได้รับการดำเนินการแบบหนึ่ง แต่เมื่อเลือกตอบอีกแบบหนึ่งก็จะได้รับการดำเนินการอีกแบบหนึ่ง</p></li>
+<li><p>diaglog flow สามารถออกแบบ chatbot ที่มี intent ลักษณะดังกล่าวได้ภาย feature ที่เรียกว่า follow-up intent</p></li>
+</ul>
+<center>
+<img data-src="https://github.com/ssiwacho/picture/blob/main/followup2.png?raw=true" style="width:100.0%">
+</center>
+</section>
+<section id="action-parameters" class="slide level2">
+<h2>Action &amp; Parameters</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/level1.png?raw=true" style="width:100.0%"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/level2.png?raw=true" style="width:100.0%"></p>
+</div>
+</div>
+</section>
+<section id="กจกรรม-6-ออกแบบ-follow-up-intent-10-นาท" class="slide level2">
+<h2>กิจกรรม 6 : ออกแบบ Follow-up Intent (10 นาที)</h2>
+<ul>
+<li><p>จากกิจกรรม 1 ขอให้ออกแบบ diaglog tree เพิ่มเติมโดยให้มี follow-up Intent เพื่อทำการสนทนาในบริบทเฉพาะ</p></li>
+<li><p>ทดลองสร้าง chatbot ที่มี follow-up Intent ตามที่ออกแบบ</p></li>
+</ul>
+</section></section>
+<section>
+<section id="data-collection-chatbot" class="title-slide slide level1">
+<h1>Data Collection Chatbot</h1>
+<center>
+<img data-src="https://images.ctfassets.net/3viuren4us1n/288E0SWjmRgYQScyJeXpwt/19e6700ccf4f32dd638d73adad8279cc/data-collection---resized-3.jpg" style="width:60.0%">
+</center>
+</section>
+<section id="how-to-collect-data-using-chatbot-1" class="slide level2">
+<h2>How to Collect data using Chatbot? (1)</h2>
+<ol type="1">
+<li><p>สร้าง intent ที่มีกำหนดให้มีการเก็บค่า parameters ที่ต้องการ</p></li>
+<li><p>สร้าง google sheets จากนั้นกำหนดชื่อคอลัมน์ให้สอดคล้องกับ parameters ที่เก็บค่าไว้ใน intent ของ dialogflow</p></li>
+<li><p>สร้าง google apps script เพื่อกำหนดการทำงานให้รับค่า parameters จาก dialogflow</p></li>
+<li><p>Deploy google apps script โดย</p>
+<ul>
+<li><p>คลิก “Deploy” <span class="math inline">\(\rightarrow\)</span> “New deployment”</p></li>
+<li><p>เลือก Type <span class="math inline">\(\rightarrow\)</span> “Web app”</p></li>
+<li><p>ตั้งค่าการเข้าถึงการใช้งานแอป</p></li>
+<li><p>คลิก “Deploy” จากนั้นคัดลอก URL ที่ได้มา</p></li>
+</ul></li>
+<li><p>ใน Diaglogflow ส่วน Fulfillment ให้เปิดใช้งาน webhook แล้ววาง URL ที่ได้ใน 4. ลงไป</p></li>
+<li><p>ใน Intent ที่ต้องการบันทึกค่า parameters ในส่วน Fulfillment ให้คลิกเลือก “Enable webhook call for this intent”</p></li>
 </ol>
 </section>
-<section id="designing-chatbot" class="slide level2">
-<h2>Designing Chatbot</h2>
-ออกแบบ Chatbot เพื่อสนับสนุนการเรียนรู้ของผู้เรียนในหลักสูตร DTCA เรื่อง Chatbot
+<section id="how-to-collect-data-using-chatbot-3" class="slide level2">
+<h2>How to Collect data using Chatbot? (3)</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/ggsheet.png?raw=true"></p>
+</div><div class="column" style="width:60%;">
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/ggappscript.png?raw=true"></p>
+</div>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource {tex} number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1"></a>function doPost(e) {</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  var postData = JSON.parse(e.postData.contents);</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  var parameters = postData.queryResult.parameters;</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>  var name = parameters.name;</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  var job = parameters.job;</span>
+<span id="cb1-9"><a href="#cb1-9"></a>  var it_know = parameters.it_know;</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  var motiv = parameters.motiv;</span>
+<span id="cb1-11"><a href="#cb1-11"></a>  var quiz1 = parameters.quiz1;</span>
+<span id="cb1-12"><a href="#cb1-12"></a>  var quiz2 = parameters.quiz2;</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a>  var newrow = [name, job, it_know, motiv, quiz1, quiz2];</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  // เพิ่มข้อมูลลงในแถวใหม่</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  sheet.appendRow(newrow);</span>
+<span id="cb1-18"><a href="#cb1-18"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="how-to-collect-data-using-chatbot-3-1" class="slide level2">
+<h2>How to Collect data using Chatbot? (3)</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/fulfillment.png?raw=true"></p>
+</div><div class="column" style="width:40%;">
+<p><img data-src="https://github.com/ssiwacho/picture/blob/main/intent_fulfillment.png?raw=true"></p>
+</div>
+</div>
+</section></section>
+<section id="futher-issues" class="title-slide slide level1">
+<h1>Futher Issues</h1>
+
+</section>
+
+<section>
+<section id="qa" class="title-slide slide level1">
+<h1>Q&amp;A</h1>
+
+</section>
+<section id="ตวอยาง-1" class="slide level2">
+<h2>ตัวอย่าง</h2>
+<p>ออกแบบ Chatbot เพื่อสนับสนุนการเรียนรู้ของผู้เรียนในหลักสูตร DTCA เรื่อง Chatbot</p>
 <hr>
-<p><br></p>
 <ul>
-<li class="fragment"><p><strong>วัตถุประสงค์</strong> : พัฒนา Chatbot ที่ช่วยสนับสนุนการเรียนรู้เรื่อง Chatbot</p></li>
-<li class="fragment"><p><strong>ขอบเขตการทำงาน</strong></p>
-<ul>
-<li class="fragment"><p>แนะนำมโนทัศน์พื้นฐานเกี่ยวกับ Chatbot</p></li>
-<li class="fragment"><p>ตอบคำถามที่พบบ่อย</p></li>
-<li class="fragment"><p>แนะนำเทคโนโลยีและเครื่องมือที่ใช้พัฒนา Chatbot</p></li>
-</ul></li>
-<li class="fragment"><p><strong>กลุ่มเป้าหมาย</strong> ผู้เรียนในหลักสูตร DTCA</p></li>
+<li><p><strong>Objective:</strong> พัฒนา Chatbot ที่ช่วยสนับสนุนการเรียนรู้เรื่อง Chatbot 😆</p></li>
+<li><p><strong>Scope:</strong> ให้ concept เกี่ยวกับการพัฒนา chatbot และทดสอบความรู้</p>
+<ol type="1">
+<li>มโนทัศน์พื้นฐาน</li>
+<li>การออกแบบ Chatbot</li>
+<li>เครื่องมือและเทคโนโลยี</li>
+<li>ตัวอย่างกรณีศึกษา</li>
+<li>ทดสอบความรู้เกี่ยวกับ chatbot</li>
+</ol></li>
+<li><p><strong>Target Group:</strong> ผู้เรียนในหลักสูตร DTCA</p></li>
+<li><p><strong>Channel:</strong></p>
+<ol type="1">
+<li><p>เอกสารประกอบการสอน (Website)</p></li>
+<li><p>Line chatbot</p></li>
+</ol></li>
 </ul>
 <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-<p><df-messenger id="chatbot" session-id="slide1" intent="WELCOME" chat-title="DataKruRoo" chat-icon="logo.png" agent-id="02b05078-7dfe-4606-a76b-a4199b23ac24" language-code="th"></df-messenger></p>
+<meta name="viewport" content="width=900px, initial-scale=2">
+<p><df-messenger id="chatbot" session-id="slide1" intent="WELCOME" chat-title="DataKruRoo Chatbot" chat-icon="logo.png" agent-id="02b05078-7dfe-4606-a76b-a4199b23ac24" language-code="th"></df-messenger></p>
 <style>
   #chatbot {
     pointer-events: auto !important;
+      width: 500px;
+  height: 300px;
   }
   df-messenger {
-   --df-messenger-bot-message: #878fac;
-   --df-messenger-button-titlebar-color: #df9b56;
+   --df-messenger-bot-message: #282A3A;
+   --df-messenger-button-titlebar-color: black;
    --df-messenger-chat-background-color: #fafafa;
+   --df-messenger-input-box-color: #fafafa;
    --df-messenger-font-color: white;
-   --df-messenger-send-icon: #878fac;
-   --df-messenger-user-message: #479b3d;
-  
+   --df-messenger-send-icon: white;
+   --df-messenger-user-message: #C69749;
+
   }
+
+const dfMessenger = document.querySelector('df-messenger');
+dfMessenger.addEventListener('df-response-received', function (event) {
+  const { response } = event.detail;
+  const messages = response.queryResult.fulfillmentMessages;
+
+  if (messages.length > 1) {
+    event.preventDefault(); // ป้องกันการส่งข้อความทั้งหมดทันที
+    sendMessagesWithDelay(messages, 0);
+  }
+});
+
+
 
 </style>
 <script>
@@ -667,9 +1023,9 @@
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1200,
+        width: 1110,
 
-        height: 650,
+        height: 788,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,

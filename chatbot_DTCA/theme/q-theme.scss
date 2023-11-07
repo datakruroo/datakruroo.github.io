@@ -11,13 +11,13 @@ $font-family-sans-serif: 'Sarabun', sans-serif !default;
 $font-family-serif: 'Noto Serif Thai', serif !default;
 $font-family-monospace: "Fira Mono", monospace !default;
 
-$mainColor: #333;
+$mainColor:  #3b4245;
 $mainFontSize: 30px;
 
 // colors
 $backgroundColor: #fcfbf9;
 $body-bg: #fff !default;
-$body-color: #000 !default;
+$body-color:  #3b4245 !default;
 $link-color: #00008b !default;
 $code-block-bg: #f2f2f2;
 $code-block-font-size: 0.7em;
@@ -30,6 +30,8 @@ h1 {
   font-family: "Fira Mono";
   font-size: 24px;
   text-align: center;
+  line-height: 2em;
+  color:  #3b4245;
 }
 
 .author, .date {
