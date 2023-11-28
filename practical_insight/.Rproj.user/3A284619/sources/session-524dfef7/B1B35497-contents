@@ -1,0 +1,144 @@
+---
+title: "4. Data Preprocessing"
+subtitle: "<b>Practical Insight: Doing Data Science in Education with R</b>"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+logo: "images/logo.png"
+footer: "[Practical Insight: Doing Data Science in Education with R](https://datakruroo.netlify.app/practical_insight/_site/)"
+format: 
+  revealjs: 
+    theme: slides.scss
+    multiplex: true
+    transition: slide
+    slide-number: true
+    navigation-mode: vertical
+    scrollable: true
+    chalkboard: true
+    menu: 
+      numbers: true
+    slide-tone: false
+editor: visual
+execute:
+  freeze: auto
+---
+
+# Data Preprocessing
+
+เป็นกระบวนการที่มีวัตถุประสงค์หลักคือเพื่อจัดกระทำหรือแปลงข้อมูลดิบที่เก็บรวบรวมมาจากแหล่งข้อมูลต่าง ๆ ให้อยู่ในรูปแบบที่พร้อมและมีคุณภาพเพียงพอสำหรับการนำไปวิเคราะห์ 
+
+- Exploring Data
+- Cleaning Data
+- Manipulating Data
+- Data Reduction
+
+
+## Data Preprocessing
+
+![ที่มา : Max Khun, & Kjell Johnson (2019)](images/image-27453011.png)
+
+
+# กิจกรรม : Messy Data (Revisited)
+
+จากชุดข้อมูล messydata.xlsx ขอให้ผู้เรียน
+
+-   ทดลองใช้ฟังก์ชันพื้นฐานข้างต้น สำรวจชุดข้อมูลผลลัพธ์ที่ได้เป็นอย่างไร
+
+-   ชุดข้อมูลที่นำเข้าจาก messydata.xlsx มีคุณสมบัติ tidy data หรือไม่ อย่างไร
+
+-   ผู้เรียนคิดว่า tidy data ของชุดข้อมูล messydata.xlsx ควรมีหน้าตาเป็นอย่างไร
+
+## Messy Data (Revisited) {.smaller}
+
+```{r}
+library(readxl)
+messy_dat <- read_excel("dataset/messydata.xlsx")
+messy_dat
+```
+
+
+# Tidying Data {.smaller}
+
+เป็นกระบวนการปรับแต่งโครงสร้างของข้อมูลให้เป็นรูปแบบที่เหมาะสมกับการวิเคราะห์ โดยใช้เครื่องมือต่าง ๆ ในการจัดการกับข้อมูล ซึ่งสามารถแบ่งออกเป็น 3 ขั้นส่วนหลักได้แก่
+
+- การจัดการกับตาราง (Table)
+
+- การจัดการกับคอลัมน์ (Column)
+
+- การจัดการกับแถว (Row)
+
+
+## [`Tidyr`]() package {.smaller}
+
+![](https://tidyr.tidyverse.org/logo.png){width="20%"}
+
+
+```{r eval=F, echo=T}
+install.packages("tidyr")
+library(tidyr)
+```
+
+
+
+## การจัดการกับคอลัมน์ (Column) {.smaller}
+
+
+
+```{r eval=F, echo=T}
+install.packages("dplyr")
+library(dplyr)
+```
+
+- `head()` และ `tail()` - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย
+
+- `glimpse()` ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล
+
+- `select()` ใช้เลือกคอลัมน์ที่ต้องการ
+
+- `rename()` ใช้เปลี่ยนชื่อคอลัมน์
+
+- `mutate()` ใช้สร้างคอลัมน์ใหม่ที่คำนวณจากคอลัมน์ที่มีอยู่แล้ว
+
+- `arrange()` ใช้เรียงลำดับข้อมูลตามคอลัมน์ที่กำหนด
+
+- `summarise()` ใช้สรุปข้อมูลตามคอลัมน์ที่กำหนด
+
+
+
+## การจัดการกับแถว (Row) {.smaller}
+
+- `filter()` ใช้กรองข้อมูลตามเงื่อนไขที่กำหนด
+
+- `slice()` ใช้เลือกแถวตามลำดับที่กำหนด
+
+- `distinct()` ใช้เลือกแถวที่ไม่ซ้ำกัน
+
+
+## การจัดการกับตาราง (Table) {.smaller}
+
+#### [`tidyr`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf)
+
+```{r eval=F, echo=T}
+install.packages("tidyr")
+library(tidyr)
+```
+
+- `gather()` ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ long format
+
+- `spread()` ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ wide format
+
+
+
+
+
+
+## ฟังก์ชันพื้นฐานใน R สำหรับสำรวจข้อมูล
+
+-   `str()` - ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล
+
+-   `head()` และ `tail()` - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย
+
+-   `names()` - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย
+
+-   `summary()` - เรียกดูค่าสถิติเบื้องต้นของตัวแปรแต่ละตัวภายในชุดข้อมูล
+
+
+

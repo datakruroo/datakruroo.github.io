@@ -186,7 +186,7 @@
     "href": "index.html#materials",
     "title": "Practical Insight: Doing Data Science in Education with R",
     "section": "Materials",
-    "text": "Materials\nMaterial สำหรับการอบรม Practical Insight: Doing Data Science in Education with R\n\n\n\n\n\n\n\n\n\nModule\nหัวข้อ\nชุดข้อมูลตัวอย่าง\nกิจกรรม/การบ้าน\n\n\n\n\n1\n1.1 Introduction to Data Science\n\n\n\n\n\n1.2 Importing data\nTeacherSalaryData.csv; Score.xlsx; AchSolve.sav\n\n\n\n\n1.3 Tidy Data\nmessydata.xlsx\n\n\n\n2\n2.1 Data Preprocessing"
+    "text": "Materials\nMaterial สำหรับการอบรม Practical Insight: Doing Data Science in Education with R\n\n\n\n\n\n\n\n\n\nModule\nหัวข้อ\nชุดข้อมูลตัวอย่าง\nกิจกรรม\n\n\n\n\n1\n1.1 Introduction to Data Science\n\n\n\n\n\n1.2 แนะนำ R และ Rstudio\n\n01IntroR_Notebook\n\n\n\n1.3 Importing data\nTeacherSalaryData.csv; Score.xlsx; AchSolve.sav\n\n\n\n\n1.4 Tidy Data\nmessydata.xlsx\n\n\n\n2\n2.1 Data Preprocessing"
   },
   {
     "objectID": "instructors.html",
@@ -360,8 +360,8 @@
     "objectID": "04DataPreprocessing/datapreprocessing.html#data-preprocessing-1",
     "href": "04DataPreprocessing/datapreprocessing.html#data-preprocessing-1",
     "title": "4. Data Preprocessing",
-    "section": "Data Preprocessing",
-    "text": "Data Preprocessing\n\nที่มา : Max Khun, & Kjell Johnson (2019)"
+    "section": "",
+    "text": "ที่มา : Max Khun, & Kjell Johnson (2019)"
   },
   {
     "objectID": "04DataPreprocessing/datapreprocessing.html#ฟงกชนพนฐานใน-r-สำหรบสำรวจขอมล",
@@ -382,6 +382,265 @@
     "href": "04DataPreprocessing/datapreprocessing.html#การจดการกบคอลมน-column",
     "title": "4. Data Preprocessing",
     "section": "การจัดการกับคอลัมน์ (Column)",
-    "text": "การจัดการกับคอลัมน์ (Column)\nฟังก์ชันพื้นฐานที่เกี่ยวข้อง\n\nglimpse() ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล\nhead() และ tail() - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย\nnames() - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย"
+    "text": "การจัดการกับคอลัมน์ (Column)\n\ninstall.packages(\"dplyr\")\nlibrary(dplyr)\n\n\nhead() และ tail() - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย\nglimpse() ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล\nselect() ใช้เลือกคอลัมน์ที่ต้องการ\nrename() ใช้เปลี่ยนชื่อคอลัมน์\nmutate() ใช้สร้างคอลัมน์ใหม่ที่คำนวณจากคอลัมน์ที่มีอยู่แล้ว\narrange() ใช้เรียงลำดับข้อมูลตามคอลัมน์ที่กำหนด\nsummarise() ใช้สรุปข้อมูลตามคอลัมน์ที่กำหนด"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#messy-data-revisited",
+    "href": "04DataPreprocessing/datapreprocessing.html#messy-data-revisited",
+    "title": "4. Data Preprocessing",
+    "section": "Messy Data (Revisited)",
+    "text": "Messy Data (Revisited)\n\nlibrary(readxl)\nmessy_dat &lt;- read_excel(\"dataset/messydata.xlsx\")\n\nNew names:\n• `` -&gt; `...1`\n\nmessy_dat\n\n# A tibble: 20 × 5\n   ...1            Lecture.pre PBL.pre Lecture.post PBL.post\n   &lt;chr&gt;           &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   \n 1 Ancient One     20          -       45           -       \n 2 Adam Warlock    16          -       34           -       \n 3 Captain America -           18      -            67      \n 4 Colossus        -           25      -            93      \n 5 Captain Marvel  13          -       50           -       \n 6 Diablo          -           17      &lt;NA&gt;         71      \n 7 Doctor Doom     14          -       48           -       \n 8 Deadpool        -           20      -            83      \n 9 Dr. Strange     -           28      -            75      \n10 Exodus          -           21      -            73      \n11 Falcon          22          -       32           -       \n12 Groot           -           17      -            68      \n13 Hitman          14          -       70           -       \n14 Hulk            15          -       64           -       \n15 Iceman          19          -       55           -       \n16 Iron Man        -           15      -            82      \n17 Jimmy Woo       18          -       59           -       \n18 Kingpin         -           12      -            68      \n19 Kronos          8           -       62           -       \n20 Logan           -           25      -            87"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#การจดการกบแถว-row",
+    "href": "04DataPreprocessing/datapreprocessing.html#การจดการกบแถว-row",
+    "title": "4. Data Preprocessing",
+    "section": "การจัดการกับแถว (Row)",
+    "text": "การจัดการกับแถว (Row)\n\nfilter() ใช้กรองข้อมูลตามเงื่อนไขที่กำหนด\nslice() ใช้เลือกแถวตามลำดับที่กำหนด\ndistinct() ใช้เลือกแถวที่ไม่ซ้ำกัน"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#การจดการกบตาราง-table",
+    "href": "04DataPreprocessing/datapreprocessing.html#การจดการกบตาราง-table",
+    "title": "4. Data Preprocessing",
+    "section": "การจัดการกับตาราง (Table)",
+    "text": "การจัดการกับตาราง (Table)\n\ntidyr\n\ninstall.packages(\"tidyr\")\nlibrary(tidyr)\n\n\ngather() ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ long format\nspread() ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ wide format"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#tidyr-package",
+    "href": "04DataPreprocessing/datapreprocessing.html#tidyr-package",
+    "title": "4. Data Preprocessing",
+    "section": "Tidyr package",
+    "text": "Tidyr package\n\n\ninstall.packages(\"tidyr\")\nlibrary(tidyr)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio",
+    "href": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "1. แนะนำ R และ RStudio",
+    "text": "1. แนะนำ R และ RStudio\n\n\nOpen Source Statistical Programming Language –&gt; Free !!\nMultiple Platform : Windows, Mac OS, Linux, & Chrome OS"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio-1",
+    "href": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio-1",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "แนะนำ R และ RStudio",
+    "text": "แนะนำ R และ RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio-2",
+    "href": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio-2",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "แนะนำ R และ RStudio",
+    "text": "แนะนำ R และ RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio-3",
+    "href": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-และ-rstudio-3",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "แนะนำ R และ RStudio",
+    "text": "แนะนำ R และ RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#ตดตง-r-และ-rstudio",
+    "href": "01Intro_to_DS/RandRStudio.html#ตดตง-r-และ-rstudio",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "ติดตั้ง R และ RStudio",
+    "text": "ติดตั้ง R และ RStudio\n\n\nผู้เรียนสามารถดาวน์โหลด R ที่โดยคลิกที่ลิงค์นี้ —&gt; ดาวน์โหลด R\nและดาวน์โหลด RStudio ได้ที่นี่ —&gt; ดาวน์โหลด RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สภาพแวดลอมของ-r",
+    "href": "01Intro_to_DS/RandRStudio.html#สภาพแวดลอมของ-r",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สภาพแวดล้อมของ R",
+    "text": "สภาพแวดล้อมของ R\nสภาพแวดล้อมของ R ประกอบด้วยหน้าต่างหลัก 3 หน้าต่างได้แก่ Console, Editor และ Graphics ดังรูปด้านล่าง\n\nConsole มีหน้าที่รับคำสั่ง/ข้อมูล และรายงานผลลัพธ์ที่ได้จากการประมวลผล\nEditor ใช้เขียนชุดคำสั่งต่าง ๆ ผู้วิเคราะห์สามารถบันทึกคำสั่งใน Editor ไว้ใช้ต่อไปภายหลังได้อีกด้วย\nGraphics ใช้รายงานผลลัพธ์เชิงกราฟิกของโปรแกรม\n\nลองพิมพ์คำสั่งต่อไปนี้บน Console และ/หรือ Editor จากนั้นสังเกตผลลัพธ์ที่ได้\n\n1+1\nsummary(anscombe)\nhist(iris$Petal.Length, nclass=50)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สภาพแวดลอมของ-r-1",
+    "href": "01Intro_to_DS/RandRStudio.html#สภาพแวดลอมของ-r-1",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สภาพแวดล้อมของ R",
+    "text": "สภาพแวดล้อมของ R\n\nที่มา: สิวะโชติ ศรีสุทธิยากร (2564)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สภาพแวดลอมของ-rstudio",
+    "href": "01Intro_to_DS/RandRStudio.html#สภาพแวดลอมของ-rstudio",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สภาพแวดล้อมของ RStudio",
+    "text": "สภาพแวดล้อมของ RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#section-1",
+    "href": "01Intro_to_DS/RandRStudio.html#section-1",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "",
+    "text": "R เป็นโปรแกรมที่มีฟังก์ชันให้เลือกใช้งานจำนวนมาก ในทางปฏิบัติจึงยากที่จะจำวิธีการใช้ฟังก์ชันทั้งหมดได้ ผู้ใช้ R สามารถเรียกดูคู่มือของฟังก์ชันที่ต้องการได้โดยพิมพ์คำสั่ง ? หรือ help() ดังตัวอย่างต่อไปนี้"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#กจกรรม-1-my-first-code",
+    "href": "01Intro_to_DS/RandRStudio.html#กจกรรม-1-my-first-code",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "กิจกรรม 1 : My First Code",
+    "text": "กิจกรรม 1 : My First Code\n\nบนแถบเมนูของ RStudio คลิก File –&gt; New File –&gt; R Script\nในหน้าต่าง Untitled1 ให้ลองเขียนคำสั่งจากนั้นทำการประมวลผล และสังเกตผลลัพธ์ที่ได้\nบนแถบเมนูคลิกเลือก File –&gt; Save —&gt; ตั้งชื่อไฟล์ และบันทึกไว้ในคอมพิวเตอร์\n\n\n\n\nการคำนวณ\nฟังก์ชัน\nตัวอย่างการเขียนคำสั่ง\nผลลัพธ์\n\n\n\n\nบวก\n+\n1+1\n\n\n\nลบ\n-\n5-19\n\n\n\nคูณ\n*\n15*7\n\n\n\nหาร\n/\n1665/28\n\n\n\nผสม\n\n3^3+5/2*exp(10)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#section-2",
+    "href": "01Intro_to_DS/RandRStudio.html#section-2",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "",
+    "text": "R เป็นโปรแกรมที่มีฟังก์ชันให้เลือกใช้งานจำนวนมาก ในทางปฏิบัติจึงยากที่จะจำวิธีการใช้ฟังก์ชันทั้งหมดได้ ผู้ใช้ R สามารถเรียกดูคู่มือของฟังก์ชันที่ต้องการได้โดยพิมพ์คำสั่ง ? หรือ help() ดังตัวอย่างต่อไปนี้"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#รปแบบคำสงใน-r",
+    "href": "01Intro_to_DS/RandRStudio.html#รปแบบคำสงใน-r",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "รูปแบบคำสั่งใน R",
+    "text": "รูปแบบคำสั่งใน R\nปกติการเรียนใช้ฟังก์ชันใน R มีรูปแบบคำสั่งดังนี้\nfunction_name(arg1, arg2, ...)\n\nfunction_name() คือชื่อของฟังก์ชันที่ต้องการเรียกใช้\narg1, arg2, … เป็นส่วนข้อมูลนำเข้าเรียกว่า อาร์กิวเมนท์ (arguments)\n\n\nlog(x = 10, base = exp(1))\nlog(x = 10, base = 10)\nsummary(anscombe)\nhist(iris$Petal.Length, nclass=30)\nhist(iris$Petal.Length, nclass=50)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#section-3",
+    "href": "01Intro_to_DS/RandRStudio.html#section-3",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "",
+    "text": "R เป็นโปรแกรมที่มีฟังก์ชันให้เลือกใช้งานจำนวนมาก ในทางปฏิบัติจึงยากที่จะจำวิธีการใช้ฟังก์ชันทั้งหมดได้ ผู้ใช้ R สามารถเรียกดูคู่มือของฟังก์ชันที่ต้องการได้โดยพิมพ์คำสั่ง ? หรือ help() ดังตัวอย่างต่อไปนี้"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#คำนวณคาสถตพนฐาน",
+    "href": "01Intro_to_DS/RandRStudio.html#คำนวณคาสถตพนฐาน",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "คำนวณค่าสถิติพื้นฐาน",
+    "text": "คำนวณค่าสถิติพื้นฐาน\n\nsummary(iris)\n\n  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   \n Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  \n 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  \n Median :5.800   Median :3.000   Median :4.350   Median :1.300  \n Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  \n 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  \n Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  \n       Species  \n setosa    :50  \n versicolor:50  \n virginica :50"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#คำนวณคาสถตพนฐาน-1",
+    "href": "01Intro_to_DS/RandRStudio.html#คำนวณคาสถตพนฐาน-1",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "คำนวณค่าสถิติพื้นฐาน",
+    "text": "คำนวณค่าสถิติพื้นฐาน\n\nmean(iris$Sepal.Length)\n\n[1] 5.843333\n\nsd(iris$Sepal.Length)\n\n[1] 0.8280661\n\nmin(iris$Sepal.Length)\n\n[1] 4.3\n\nmax(iris$Sepal.Length)\n\n[1] 7.9\n\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#คำนวณคาสถตพนฐาน-2",
+    "href": "01Intro_to_DS/RandRStudio.html#คำนวณคาสถตพนฐาน-2",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "คำนวณค่าสถิติพื้นฐาน",
+    "text": "คำนวณค่าสถิติพื้นฐาน\n\n\n[1] 5.843333\n\n\n[1] 0.8280661\n\n\n[1] 4.3\n\n\n[1] 7.9"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมล",
+    "href": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมล",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สร้างทัศนภาพข้อมูล",
+    "text": "สร้างทัศนภาพข้อมูล"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมลดวย-ggplot2",
+    "href": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมลดวย-ggplot2",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สร้างทัศนภาพข้อมูลด้วย ggplot2",
+    "text": "สร้างทัศนภาพข้อมูลด้วย ggplot2"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมลดวย-ggplot2-1",
+    "href": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมลดวย-ggplot2-1",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สร้างทัศนภาพข้อมูลด้วย ggplot2",
+    "text": "สร้างทัศนภาพข้อมูลด้วย ggplot2"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมลดวย-ggplot2-2",
+    "href": "01Intro_to_DS/RandRStudio.html#สรางทศนภาพขอมลดวย-ggplot2-2",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "สร้างทัศนภาพข้อมูลด้วย ggplot2",
+    "text": "สร้างทัศนภาพข้อมูลด้วย ggplot2"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#ตดตง-r-และ-rstudio-data-link1.1-ตดตง-r-และ-rstudio-.smaller",
+    "href": "01Intro_to_DS/RandRStudio.html#ตดตง-r-และ-rstudio-data-link1.1-ตดตง-r-และ-rstudio-.smaller",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "ติดตั้ง R และ RStudio {data-link=“1.1 ติดตั้ง R และ RStudio”, .smaller}",
+    "text": "ติดตั้ง R และ RStudio {data-link=“1.1 ติดตั้ง R และ RStudio”, .smaller}\n\n\nผู้เรียนสามารถดาวน์โหลด R ที่โดยคลิกที่ลิงค์นี้ —&gt; ดาวน์โหลด R\nและดาวน์โหลด RStudio ได้ที่นี่ —&gt; ดาวน์โหลด RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#ตดตง-r-และ-rstudio-data-link1.1-ตดตง-r-และ-rstudio",
+    "href": "01Intro_to_DS/RandRStudio.html#ตดตง-r-และ-rstudio-data-link1.1-ตดตง-r-และ-rstudio",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "ติดตั้ง R และ RStudio {data-link=“1.1 ติดตั้ง R และ RStudio”}",
+    "text": "ติดตั้ง R และ RStudio {data-link=“1.1 ติดตั้ง R และ RStudio”}\n\n\nผู้เรียนสามารถดาวน์โหลด R ที่โดยคลิกที่ลิงค์นี้ —&gt; ดาวน์โหลด R\nและดาวน์โหลด RStudio ได้ที่นี่ —&gt; ดาวน์โหลด RStudio"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#section",
+    "href": "01Intro_to_DS/RandRStudio.html#section",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "",
+    "text": "R เป็นโปรแกรมที่มีฟังก์ชันให้เลือกใช้งานจำนวนมาก ในทางปฏิบัติจึงยากที่จะจำวิธีการใช้ฟังก์ชันทั้งหมดได้ ผู้ใช้ R สามารถเรียกดูคู่มือของฟังก์ชันที่ต้องการได้โดยพิมพ์คำสั่ง ? หรือ help() ดังตัวอย่างต่อไปนี้"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-notebook",
+    "href": "01Intro_to_DS/RandRStudio.html#แนะนำ-r-notebook",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "2. แนะนำ R Notebook",
+    "text": "2. แนะนำ R Notebook"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#การดำเนนการทางคณตศาสตรพนฐาน",
+    "href": "01Intro_to_DS/RandRStudio.html#การดำเนนการทางคณตศาสตรพนฐาน",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "3. การดำเนินการทางคณิตศาสตร์พื้นฐาน",
+    "text": "3. การดำเนินการทางคณิตศาสตร์พื้นฐาน\nโปรแกรม R มีฟังก์ชันสำหรับการดำเนินงานทางคณิตศาสตร์จำนวนมาก เช่น\n\nฟังก์ชันสำหรับการดำเนินการพีชคณิตพื้นฐานได้แก่ การบวก (+) ลบ (-) คูณ (*) หาร (/) ยกกำลัง (^) และรากที่สอง (sqrt()) เป็นต้น\nฟังก์ชันตรีโกณมิติ ได้แก่ sin(), cos(), tan()\nฟังก์ชัน exponential —&gt; exp()\nฟังก์ชัน logarithm —&gt; log(x, base=exp(1))"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#ฟงกชน-functions",
+    "href": "01Intro_to_DS/RandRStudio.html#ฟงกชน-functions",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "4. ฟังก์ชัน (functions)",
+    "text": "4. ฟังก์ชัน (functions)\n\nฟังก์ชันเป็นชุดคำสั่งสำเร็จรูปที่ถูกพัฒนาขึ้นสำหรับการทำงานเฉพาะด้าน\nการใช้ฟังก์ชันในการดำเนินงานช่วยให้ผู้ใช้ประหยัดเวลา ลดความผิดพลาดในการทำงาน และทำให้กระบวนการทำงานมีประสิทธิภาพมากยิ่งขึ้น\nฟังก์ชันใน R แต่ละตัวมีส่วนประกอบจำนวน 3 ส่วนหลัก ได้แก่ ข้อมูลนำเข้า (input) ส่วนประมวลผล (process) และส่วนผลลัพธ์ (output)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#help-me-plese",
+    "href": "01Intro_to_DS/RandRStudio.html#help-me-plese",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "5. Help me plese!",
+    "text": "5. Help me plese!\nR เป็นโปรแกรมที่มีฟังก์ชันให้เลือกใช้งานจำนวนมาก ในทางปฏิบัติจึงยากที่จะจำวิธีการใช้ฟังก์ชันทั้งหมดได้ ผู้ใช้ R สามารถเรียกดูคู่มือของฟังก์ชันที่ต้องการได้โดยพิมพ์คำสั่ง ? หรือ help() ดังตัวอย่างต่อไปนี้\n\n?log()\nhelp(exp())"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#กจกรรม-เขยนคำสงบน-r",
+    "href": "01Intro_to_DS/RandRStudio.html#กจกรรม-เขยนคำสงบน-r",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "7. กิจกรรม : เขียนคำสั่งบน R",
+    "text": "7. กิจกรรม : เขียนคำสั่งบน R"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#github-copilot-chatgpt",
+    "href": "01Intro_to_DS/RandRStudio.html#github-copilot-chatgpt",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "6. Github Copilot & Chatgpt",
+    "text": "6. Github Copilot & Chatgpt"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#github-copilot",
+    "href": "01Intro_to_DS/RandRStudio.html#github-copilot",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "6. Github Copilot",
+    "text": "6. Github Copilot"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html#กจกรรม-คำนวณคาสถตพนฐาน",
+    "href": "01Intro_to_DS/RandRStudio.html#กจกรรม-คำนวณคาสถตพนฐาน",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "7. กิจกรรม : คำนวณค่าสถิติพื้นฐาน",
+    "text": "7. กิจกรรม : คำนวณค่าสถิติพื้นฐาน\nกิจกรรมนี้จะใช้ชุดข้อมูล iris ซึ่งเป็นชุดมูลตัวอย่างที่ติดตั้งมาพร้อมกับโปรแกรม R ขอให้ผู้เรียนลอง run คำสั่งต่อไปนี้พร้อมทั้งสังเกตผลลัพธ์ที่ได้\n\nhead(iris)\n\n  Sepal.Length Sepal.Width Petal.Length Petal.Width Species\n1          5.1         3.5          1.4         0.2  setosa\n2          4.9         3.0          1.4         0.2  setosa\n3          4.7         3.2          1.3         0.2  setosa\n4          4.6         3.1          1.5         0.2  setosa\n5          5.0         3.6          1.4         0.2  setosa\n6          5.4         3.9          1.7         0.4  setosa"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html",
+    "href": "04DataPreprocessing/datapreprocessing.html",
+    "title": "4. Data Preprocessing",
+    "section": "",
+    "text": "เป็นกระบวนการที่มีวัตถุประสงค์หลักคือเพื่อจัดกระทำหรือแปลงข้อมูลดิบที่เก็บรวบรวมมาจากแหล่งข้อมูลต่าง ๆ ให้อยู่ในรูปแบบที่พร้อมและมีคุณภาพเพียงพอสำหรับการนำไปวิเคราะห์\n\nExploring Data\nCleaning Data\nManipulating Data\nData Reduction\n\n\n\n\n\n\nที่มา : Max Khun, & Kjell Johnson (2019)"
+  },
+  {
+    "objectID": "01Intro_to_DS/RandRStudio.html",
+    "href": "01Intro_to_DS/RandRStudio.html",
+    "title": "2. แนะนำ R และ Rstudio",
+    "section": "",
+    "text": "Open Source Statistical Programming Language –&gt; Free !!\nMultiple Platform : Windows, Mac OS, Linux, & Chrome OS"
   }
 ]

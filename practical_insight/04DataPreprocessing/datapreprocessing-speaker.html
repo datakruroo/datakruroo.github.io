@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -360,22 +425,97 @@
 
 <img data-src="images/image-27453011.png" class="r-stretch quarto-figure-center"><p class="caption">ที่มา : Max Khun, &amp; Kjell Johnson (2019)</p></section></section>
 <section>
-<section id="tidying-data" class="title-slide slide level1 center">
+<section id="กจกรรม-messy-data-revisited" class="title-slide slide level1 center">
+<h1>กิจกรรม : Messy Data (Revisited)</h1>
+<p>จากชุดข้อมูล messydata.xlsx ขอให้ผู้เรียน</p>
+<ul>
+<li><p>ทดลองใช้ฟังก์ชันพื้นฐานข้างต้น สำรวจชุดข้อมูลผลลัพธ์ที่ได้เป็นอย่างไร</p></li>
+<li><p>ชุดข้อมูลที่นำเข้าจาก messydata.xlsx มีคุณสมบัติ tidy data หรือไม่ อย่างไร</p></li>
+<li><p>ผู้เรียนคิดว่า tidy data ของชุดข้อมูล messydata.xlsx ควรมีหน้าตาเป็นอย่างไร</p></li>
+</ul>
+</section>
+<section id="messy-data-revisited" class="slide level2 smaller">
+<h2>Messy Data (Revisited)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 5
+   ...1            Lecture.pre PBL.pre Lecture.post PBL.post
+   &lt;chr&gt;           &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   
+ 1 Ancient One     20          -       45           -       
+ 2 Adam Warlock    16          -       34           -       
+ 3 Captain America -           18      -            67      
+ 4 Colossus        -           25      -            93      
+ 5 Captain Marvel  13          -       50           -       
+ 6 Diablo          -           17      &lt;NA&gt;         71      
+ 7 Doctor Doom     14          -       48           -       
+ 8 Deadpool        -           20      -            83      
+ 9 Dr. Strange     -           28      -            75      
+10 Exodus          -           21      -            73      
+11 Falcon          22          -       32           -       
+12 Groot           -           17      -            68      
+13 Hitman          14          -       70           -       
+14 Hulk            15          -       64           -       
+15 Iceman          19          -       55           -       
+16 Iron Man        -           15      -            82      
+17 Jimmy Woo       18          -       59           -       
+18 Kingpin         -           12      -            68      
+19 Kronos          8           -       62           -       
+20 Logan           -           25      -            87      </code></pre>
+</div>
+</div>
+</section></section>
+<section>
+<section id="tidying-data" class="title-slide slide level1 smaller center">
 <h1>Tidying Data</h1>
 <p>เป็นกระบวนการปรับแต่งโครงสร้างของข้อมูลให้เป็นรูปแบบที่เหมาะสมกับการวิเคราะห์ โดยใช้เครื่องมือต่าง ๆ ในการจัดการกับข้อมูล ซึ่งสามารถแบ่งออกเป็น 3 ขั้นส่วนหลักได้แก่</p>
 <ul>
+<li><p>การจัดการกับตาราง (Table)</p></li>
 <li><p>การจัดการกับคอลัมน์ (Column)</p></li>
 <li><p>การจัดการกับแถว (Row)</p></li>
-<li><p>การจัดการกับตาราง (Table)</p></li>
 </ul>
 </section>
-<section id="การจดการกบคอลมน-column" class="slide level2">
+<section id="tidyr-package" class="slide level2 smaller">
+<h2><code>Tidyr</code> package</h2>
+
+<img data-src="https://tidyr.tidyverse.org/logo.png" style="width:20.0%" class="r-stretch"><div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyr"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="การจดการกบคอลมน-column" class="slide level2 smaller">
 <h2>การจัดการกับคอลัมน์ (Column)</h2>
-<p>ฟังก์ชันพื้นฐานที่เกี่ยวข้อง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">install.packages</span>(<span class="st">"dplyr"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <ul>
-<li><p><code>glimpse()</code> ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล</p></li>
 <li><p><code>head()</code> และ <code>tail()</code> - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย</p></li>
-<li><p><code>names()</code> - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย</p></li>
+<li><p><code>glimpse()</code> ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล</p></li>
+<li><p><code>select()</code> ใช้เลือกคอลัมน์ที่ต้องการ</p></li>
+<li><p><code>rename()</code> ใช้เปลี่ยนชื่อคอลัมน์</p></li>
+<li><p><code>mutate()</code> ใช้สร้างคอลัมน์ใหม่ที่คำนวณจากคอลัมน์ที่มีอยู่แล้ว</p></li>
+<li><p><code>arrange()</code> ใช้เรียงลำดับข้อมูลตามคอลัมน์ที่กำหนด</p></li>
+<li><p><code>summarise()</code> ใช้สรุปข้อมูลตามคอลัมน์ที่กำหนด</p></li>
+</ul>
+</section>
+<section id="การจดการกบแถว-row" class="slide level2 smaller">
+<h2>การจัดการกับแถว (Row)</h2>
+<ul>
+<li><p><code>filter()</code> ใช้กรองข้อมูลตามเงื่อนไขที่กำหนด</p></li>
+<li><p><code>slice()</code> ใช้เลือกแถวตามลำดับที่กำหนด</p></li>
+<li><p><code>distinct()</code> ใช้เลือกแถวที่ไม่ซ้ำกัน</p></li>
+</ul>
+</section>
+<section id="การจดการกบตาราง-table" class="slide level2 smaller">
+<h2>การจัดการกับตาราง (Table)</h2>
+<h4 id="tidyr"><a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf"><code>tidyr</code></a></h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyr"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><code>gather()</code> ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ long format</p></li>
+<li><p><code>spread()</code> ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ wide format</p></li>
 </ul>
 </section>
 <section id="ฟงกชนพนฐานใน-r-สำหรบสำรวจขอมล" class="slide level2">
@@ -386,20 +526,9 @@
 <li><p><code>names()</code> - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย</p></li>
 <li><p><code>summary()</code> - เรียกดูค่าสถิติเบื้องต้นของตัวแปรแต่ละตัวภายในชุดข้อมูล</p></li>
 </ul>
-</section>
-<section id="กจกรรม-การสำรวจชดขอมล" class="slide level2">
-<h2>กิจกรรม : การสำรวจชุดข้อมูล</h2>
-<p>จากชุดข้อมูล messydata.xlsx ขอให้ผู้เรียน</p>
-<ul>
-<li><p>ทดลองใช้ฟังก์ชันพื้นฐานข้างต้น สำรวจชุดข้อมูลผลลัพธ์ที่ได้เป็นอย่างไร</p></li>
-<li><p>ชุดข้อมูลที่นำเข้าจาก messydata.xlsx มีคุณสมบัติ tidy data หรือไม่ อย่างไร</p></li>
-<li><p>ผู้เรียนคิดว่า tidy data ของชุดข้อมูล messydata.xlsx ควรมีหน้าตาเป็นอย่างไร</p></li>
-</ul>
-<p>โปรด upload รูป tidy data ของท่านที่นี่ —&gt; <a href="https://padlet.com/choat_cu/my-tidy-data-lhxzt12qbhra11yf">upload เลย</a> หรือ scan QR code</p>
-<p><img data-src="images/image-270854875.png" style="width:25.0%"></p>
 
-<p><img src="images/logo.png" class="slide-logo"></p>
-<div class="footer footer-default">
+
+<img src="images/logo.png" class="slide-logo r-stretch"><div class="footer footer-default">
 <p><a href="https://datakruroo.netlify.app/practical_insight/_site/">Practical Insight: Doing Data Science in Education with R</a></p>
 </div>
 </section></section>
@@ -619,6 +748,44 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

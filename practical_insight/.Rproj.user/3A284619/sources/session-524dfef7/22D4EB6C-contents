@@ -1,0 +1,190 @@
+---
+title: "2. แนะนำ R และ Rstudio"
+subtitle: "<b>Practical Insight: Doing Data Science in Education with R</b>"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+logo: "images/logo.png"
+footer: "[Practical Insight: Doing Data Science in Education with R](https://datakruroo.netlify.app/practical_insight/_site/)"
+format: 
+  revealjs: 
+    theme: slides.scss
+    multiplex: true
+    transition: slide
+    slide-number: true
+    smaller: true
+    navigation-mode: vertical
+    scrollable: true
+    chalkboard: true
+    echo: true
+    menu: 
+      numbers: true
+    slide-tone: false
+editor: visual
+execute:
+  freeze: auto
+---
+
+## 1. แนะนำ R และ RStudio {.smaller}
+
+![](images/image-112277722.png){width="20%"}
+
+-   **Open Source** Statistical Programming Language --\> Free !!
+
+-   **Multiple Platform** : Windows, Mac OS, Linux, & Chrome OS
+
+## แนะนำ R และ RStudio {.smaller}
+
+![](images/image-781335933.png){width="20%"}
+
+![](images/image-1727132220.png){width="80%"}
+
+## แนะนำ R และ RStudio {.smaller}
+
+::: columns
+::: {.column width="50%"}
+[![](images/image-236579237.png)](https://www.google.com/url?sa=i&url=https%3A%2F%2Fagstats.io%2Fpost%2Fkeeping-up-with-r%2F&psig=AOvVaw2tN9M5THImaDE4QctvUmr9&ust=1676097618422000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCIDtkKusiv0CFQAAAAAdAAAAABAE)
+:::
+
+::: {.column width="50%"}
+[![](images/image-1571751836.png)](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.researchgate.net%2Ffigure%2FThe-number-of-R-packages-contributed-to-the-Comprehensive-R-Archive-Network-CRAN-58_fig3_342528768&psig=AOvVaw25q4kOaT_UZKaLx21f6Sdc&ust=1676097643960000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCJj1uresiv0CFQAAAAAdAAAAABAI)
+:::
+:::
+
+## แนะนำ R และ RStudio {.smaller}
+
+![](images/image-2013186119.png){width="90%"}
+
+## ติดตั้ง R และ RStudio {.smaller}
+
+![](images/image-112277722.png){width="20%"}
+
+-   ผู้เรียนสามารถดาวน์โหลด R ที่โดยคลิกที่ลิงค์นี้ ---\> [ดาวน์โหลด R](https://cran.r-project.org/mirrors.html)
+
+-   และดาวน์โหลด RStudio ได้ที่นี่ ---\> [ดาวน์โหลด RStudio](https://posit.co/download/rstudio-desktop/)
+
+## สภาพแวดล้อมของ R {.smaller}
+
+สภาพแวดล้อมของ R ประกอบด้วยหน้าต่างหลัก 3 หน้าต่างได้แก่ Console, Editor และ Graphics ดังรูปด้านล่าง
+
+-   **Console** มีหน้าที่รับคำสั่ง/ข้อมูล และรายงานผลลัพธ์ที่ได้จากการประมวลผล
+
+-   **Editor** ใช้เขียนชุดคำสั่งต่าง ๆ ผู้วิเคราะห์สามารถบันทึกคำสั่งใน Editor ไว้ใช้ต่อไปภายหลังได้อีกด้วย
+
+-   **Graphics** ใช้รายงานผลลัพธ์เชิงกราฟิกของโปรแกรม
+
+ลองพิมพ์คำสั่งต่อไปนี้บน Console และ/หรือ Editor จากนั้นสังเกตผลลัพธ์ที่ได้
+
+```{r eval=F, echo=T}
+1+1
+summary(anscombe)
+hist(iris$Petal.Length, nclass=50)
+```
+
+## สภาพแวดล้อมของ R {.smaller}
+
+![ที่มา: สิวะโชติ ศรีสุทธิยากร (2564)](images/image-817207077.png){width="90%"}
+
+## สภาพแวดล้อมของ RStudio {.smaller}
+
+
+![](images/image-621105702.png){width="70%"}
+
+
+## 2. แนะนำ R Notebook
+
+![](images/image-194262132.png)
+
+## 3. การดำเนินการทางคณิตศาสตร์พื้นฐาน
+
+โปรแกรม R มีฟังก์ชันสำหรับการดำเนินงานทางคณิตศาสตร์จำนวนมาก เช่น
+
+-   ฟังก์ชันสำหรับการดำเนินการพีชคณิตพื้นฐานได้แก่ การบวก (`+`) ลบ (`-`) คูณ (`*`) หาร (`/`) ยกกำลัง (`^`) และรากที่สอง (`sqrt()`) เป็นต้น
+
+-   ฟังก์ชันตรีโกณมิติ ได้แก่ `sin()`, `cos()`, `tan()`
+
+-   ฟังก์ชัน exponential ---\> `exp()`
+
+-   ฟังก์ชัน logarithm ---\> `log(x, base=exp(1))`
+
+## กิจกรรม 1 : My First Code {.smaller}
+
+1.  บนแถบเมนูของ RStudio คลิก File --\> New File --\> R Script
+
+2.  ในหน้าต่าง Untitled1 ให้ลองเขียนคำสั่งจากนั้นทำการประมวลผล และสังเกตผลลัพธ์ที่ได้
+
+3.  บนแถบเมนูคลิกเลือก File --\> Save ---\> ตั้งชื่อไฟล์ และบันทึกไว้ในคอมพิวเตอร์
+
+| การคำนวณ | ฟังก์ชัน | ตัวอย่างการเขียนคำสั่ง | ผลลัพธ์ |
+|----------|-------|-------------------|-------|
+| บวก      | `+`   | `1+1`             |       |
+| ลบ       | `-`   | `5-19`            |       |
+| คูณ       | `*`   | `15*7`            |       |
+| หาร      | `/`   | `1665/28`         |       |
+| ผสม      |       | `3^3+5/2*exp(10)` |       |
+
+## 4. ฟังก์ชัน (functions)  {.smaller}
+
+
+-   ฟังก์ชันเป็นชุดคำสั่งสำเร็จรูปที่ถูกพัฒนาขึ้นสำหรับการทำงานเฉพาะด้าน
+
+-   การใช้ฟังก์ชันในการดำเนินงานช่วยให้ผู้ใช้ประหยัดเวลา ลดความผิดพลาดในการทำงาน และทำให้กระบวนการทำงานมีประสิทธิภาพมากยิ่งขึ้น
+
+-   ฟังก์ชันใน R แต่ละตัวมีส่วนประกอบจำนวน 3 ส่วนหลัก ได้แก่ **ข้อมูลนำเข้า (input) ส่วนประมวลผล (process) และส่วนผลลัพธ์ (output)**
+
+## รูปแบบคำสั่งใน R
+
+ปกติการเรียนใช้ฟังก์ชันใน R มีรูปแบบคำสั่งดังนี้
+
+        
+`function_name(arg1, arg2, ...)`
+
+
+-   `function_name()` คือชื่อของฟังก์ชันที่ต้องการเรียกใช้
+
+-   `arg1`, `arg2`, ... เป็นส่วนข้อมูลนำเข้าเรียกว่า อาร์กิวเมนท์ (arguments)
+
+
+```{r eval=F, echo=T}
+log(x = 10, base = exp(1))
+log(x = 10, base = 10)
+summary(anscombe)
+hist(iris$Petal.Length, nclass=30)
+hist(iris$Petal.Length, nclass=50)
+```
+
+## 5. Help me plese!
+
+R เป็นโปรแกรมที่มีฟังก์ชันให้เลือกใช้งานจำนวนมาก ในทางปฏิบัติจึงยากที่จะจำวิธีการใช้ฟังก์ชันทั้งหมดได้ ผู้ใช้ R สามารถเรียกดูคู่มือของฟังก์ชันที่ต้องการได้โดยพิมพ์คำสั่ง `?` หรือ `help()` ดังตัวอย่างต่อไปนี้
+
+```{r eval=F, echo=T}
+?log()
+help(exp())
+```
+
+## 6. Github Copilot 
+
+![](images/copilot.png)
+
+
+## 7. กิจกรรม : คำนวณค่าสถิติพื้นฐาน
+
+กิจกรรมนี้จะใช้ชุดข้อมูล `iris` ซึ่งเป็นชุดมูลตัวอย่างที่ติดตั้งมาพร้อมกับโปรแกรม R ขอให้ผู้เรียนลอง run คำสั่งต่อไปนี้พร้อมทั้งสังเกตผลลัพธ์ที่ได้
+
+```{r}
+head(iris)
+```
+
+## คำนวณค่าสถิติพื้นฐาน
+
+```{r}
+summary(iris)
+```
+
+## คำนวณค่าสถิติพื้นฐาน
+
+```{r}
+mean(iris$Sepal.Length)
+sd(iris$Sepal.Length)
+min(iris$Sepal.Length)
+max(iris$Sepal.Length)
+```
+
