@@ -5,7 +5,9 @@ author: ผศ.ดร.สิวะโชติ ศรีสุทธิยาก
 logo: "images/logo.png"
 footer: "[Practical Insight: Doing Data Science in Education with R](https://datakruroo.netlify.app/practical_insight/_site/)"
 format: 
-  revealjs: 
+  html: default
+  revealjs:
+    output-file: tidydata_slide.html
     theme: slides.scss
     multiplex: true
     transition: slide
@@ -31,13 +33,7 @@ execute:
 dat <- read_excel("messydata.xlsx", na="-")
 ```
 
-3.  ลองสำรวจข้อมูลข้างต้นแล้วตอบคำถาม
-
-วัตถุประสงค์ของการวิจัยคือ เพื่อเปรียบเทียบทักษะการแก้ปัญหาของนักเรียน ภายหลังจากได้รับการจัดการเรียนรู้ด้วย วิธีการสอนแบบบรรยาย (Lecture) กับ วิธีการสอนแบบใช้ปัญหาเป็นฐาน (PBL)
-
-<br>
-
-**ท่านคิดว่า ข้อมูล messydata.xlsx มีความพร้อมที่จะนำไปวิเคราะห์เพื่อตอบวัตถุประสงค์ดังกล่าวหรือไม่?**
+3.  ลองสำรวจข้อมูลข้างต้นแล้วตอบคำถาม หากวัตถุประสงค์ของการวิเคราะห์คือ เพื่อเปรียบเทียบทักษะการแก้ปัญหาของนักเรียน ภายหลังจากได้รับการจัดการเรียนรู้ด้วย วิธีการสอนแบบบรรยาย (Lecture) กับ วิธีการสอนแบบใช้ปัญหาเป็นฐาน (PBL) **ท่านคิดว่า ข้อมูล messydata.xlsx มีความพร้อมที่จะนำไปวิเคราะห์เพื่อตอบวัตถุประสงค์ดังกล่าวหรือไม่?**
 
 
 # Tidydata {.smaller}

@@ -5,7 +5,9 @@ author: ผศ.ดร.สิวะโชติ ศรีสุทธิยาก
 logo: "images/logo.png"
 footer: "[Practical Insight: Doing Data Science in Education with R](https://datakruroo.netlify.app/practical_insight/_site/)"
 format: 
-  revealjs: 
+  html: default
+  revealjs:
+    output-file: Intro_slide.html
     theme: slides.scss
     multiplex: true
     transition: slide
@@ -63,7 +65,7 @@ https://miro.medium.com/v2/resize:fit:902/1\*vBkth1ZSveUyXuQ7pDym9Q.png
 
 ## Data Science in Education {.smaller}
 
-```{r}
+```{r echo=F}
 library(knitr)
 library(kableExtra)
 
