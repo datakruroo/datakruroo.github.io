@@ -1,0 +1,279 @@
+---
+title: "Multilevel General Linear Modelling (2)"
+subtitle: "2758672 หลักของเบส์และการประยุกต์"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+logo: "images/logo.png"
+footer: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+editor: visual
+execute:
+  freeze: auto
+---
+
+```{r}
+library(haven)
+library(dplyr)
+```
+
+## Datasets 1
+
+ไฟล์ข้อมูลที่ใช้ประกอบการเรียนมี 2 ไฟล์ ได้แก่ hsb.sav และ hsb2.sav
+
+-   [HSB.sav](https://drive.google.com/file/d/0B3lh4V2Mrl14ekV2YkJqM1NFU0U/view?usp=drive_link&resourcekey=0-qGRGhnReltohO1JSj-7baA)
+
+-   [HSB2.sav](https://drive.google.com/file/d/0B3lh4V2Mrl14QmhmbHd5OGFydVU/view?usp=drive_link&resourcekey=0-vTPARcCoWTXDEOPY8wMkfQ)
+
+```{r}
+# student level data
+dat<-read_spss("datasets/HSB.SAV")
+glimpse(dat, 60)
+```
+
+**คำอธิบายข้อมูล HSB**
+
+-   `mathach` = ผลสัมฤทธิทางการเรียนคณิตศาสตร์ของนักเรียน
+
+-   `ses` = เศรษฐานะของนักเรียน มีหน่วยเป็นคะแนนมาตรฐาน
+
+-   `sector` = ประเภทของโรงเรียนเป็นตัวแปรดัมมี่ (1 = Catholic, 0 = Public)
+
+-   `schid` = รหัสโรงเรียนของนักเรียน
+
+```{r echo=F}
+# school level data
+dat2<-read_spss("/Users/siwachoat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/MSEM/MSEM/datasets/hsb2.sav")
+glimpse(dat2, 60)
+
+hist(dat2$disclim)
+summary(dat2$disclim)
+
+head(dat2)
+```
+
+**คำอธิบายข้อมูล HSB2**
+
+-   `size` คือ จำนวนนักเรียนภายในโรงเรียน
+
+-   `sector` คือ ประเภทของโรงเรียน (เหมือน hsb.sav)
+
+-   `pracad` คือ สัดส่วนของนักเรียนในโรงเรียนที่เรียนสายสามัญ
+
+-   `disclim` คือ คะแนนบรรยากาศความมีวินัยในโรงเรียน มีหน่วยเป็นคะแนนมาตรฐาน
+
+-   `meanses` คือ ค่าเฉลี่ยของคะแนนเศรษฐานะระดับโรงเรียน
+
+-   `himnty` คือ ตัวแปรดัมมี่
+
+    -   1 = มีชนกลุ่มน้อยในโรงเรียนมากกว่าร้อยละ 40
+    -   0 = น้อยกว่าร้อยละ 40
+
+## คำถามวิจัย {.smaller}
+
+1.  โรงเรียนคาธอลิก กับ โรงเรียนรัฐบาล มีค่าเฉลี่ยคะแนนผลสัมฤทธิ์ทางการเรียนแตกต่างกันอย่างไร
+
+2.  ประเภทของโรงเรียน (sector) และสัดส่วนชนกลุ่มน้อยในโรงเรียน (himnty) เป็นปัจจัยที่มีผลต่ออิทธิพลของเศรษฐานะของครอบครัวนักเรียนที่มีต่อผลสัมฤทธิ์ทางการเรียนของนักเรียนอย่างไร
+
+## ไม่รู้จัก multilevel
+
+เราอาจจะต้องแบ่งการวิเคราะห์ออกเป็น 2 งาน
+
+งาน 1: เพื่อเปรียบเทียบความแตกต่างของค่าเฉลี่ย ach ระหว่างโรงเรียนทั้งสองสังกัด
+
+```{r}
+sch_dat <- dat |> 
+  group_by(schid, sector) |> 
+  summarise(mean_ach = mean(mathach))
+t.test(mean_ach~sector, data=sch_dat)
+```
+
+งาน 2: เพื่อวิเคราะห์อิทธิพลปฏิสััมพันธ์ระหว่างประเภทโรงเรียน และสัดส่วนชนกลุ่มน้อยกับ ses ที่มีต่อ ach
+
+```{r}
+head(dat)
+head(dat2)
+
+full_dat <- dat |> 
+  rename(schoolid = schid) |> 
+  mutate(schoolid = as.numeric(schoolid)) |> 
+  left_join(y=dat2 |> select(-sector), by = "schoolid")
+glimpse(full_dat)
+fit_reg <- lm(mathach ~ ses + sector + himnty+ ses:sector + ses:himnty, data=full_dat)
+summary(fit_reg)
+
+```
+
+## Analysis Model: Intercept and slopes as outcomes regression {.smaller}
+
+**student-level model**
+
+$mathach_{ij} = \beta_{0j} + \beta_{1j}SES_{ij} + e_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} + \gamma_{01}Sector_j + u_{0j}$
+
+$\beta_{1j} = \gamma_{10} + \gamma_{11}Sector_j + \gamma_{12}Himnty_j + u_{1j}$
+
+**Combined-model**
+
+$mathach_{ij} = \gamma_{00} + \gamma_{01}Sector_j + u_{0j} + ( \gamma_{10} + \gamma_{11}Sector_j + \gamma_{12}Himnty_j + u_{1j})SES_{ij} + e_{ij}$
+
+$mathach_{ij} = \gamma_{00} + \gamma_{01}Sector_j + u_{0j} + \gamma_{10}SES_{ij} + \gamma_{11}Sector_jSES_{ij} + \gamma_{12}Himnty_jSES_{ij} + u_{1j}SES_{ij} + e_{ij}$
+
+$mathach_{ij} = \gamma_{00} + \gamma_{01}Sector_j + \gamma_{10}SES_{ij} + \gamma_{11}Sector_jSES_{ij} + \gamma_{12}Himnty_jSES_{ij} + u_{0j}+u_{1j}SES_{ij} + e_{ij}$
+
+## Data Preprocessing {.smaller}
+
+```{r}
+full_dat <- dat |> 
+  rename(schoolid = schid) |> 
+  mutate(schoolid = as.numeric(schoolid)) |>  
+  left_join(y = dat2, by = "schoolid")
+
+full_dat
+```
+
+## Frequentist Approaches {.smaller}
+
+1.  วิเคราะห์ Null Model เพื่อพิสูจน์ว่าตัวแปรตามมีความผันแปรอันเนื่องมาจากปัจจัยของหน่วยข้อมูลในระดับโรงเรียน (ระดับที่สอง/สาม) หรือกล่าวได้ว่าเป็นการพิสูจน์ว่า ข้อมูลมีโครงสร้างแบบ hierarchical data structure จริง ๆ
+
+2.  วิเคราะห์ Random Coefficient Model เพื่อวิเคราะห์ว่า ses มีผล/มีความสัมพันธืกับ ach จริง และเพื่อวิเคราะห์ว่า slope ของ ses มันมีความแตกต่างกันระหว่างโรงเรียน\*\* \<--- ถ้ามีความแตกต่างกันระหว่างโรงเรียน แปลว่า เราสามารถใส่ตัวแปรอิสระของโรงเรียนเข้าไปอธิบายความแตกต่างของ slope ดังกล่าวได้
+
+3.  วิเคราะห์โมเดลตามกรอบแนวคิดของการวิจัย
+
+```{r}
+library(lme4)
+library(lmerTest)
+library(performance)
+## Null model == One-way ANOVA with random effect
+fit_ranova_freq <- lmer(mathach~1+(1|schid), data =dat)
+summary(fit_ranova_freq)
+icc(fit_ranova_freq)
+
+
+## random coefficient model
+fit_randomcoef_freq <- lmer(mathach ~ 1 + ses + (1+ses|schid), data=dat)
+summary(fit_randomcoef_freq)
+```
+
+```{r}
+ranova(fit_ranova_freq)
+
+## partial F-test/Likelihood ratio test
+anova(fit_randomcoef_freq, fit_ranova_freq)
+
+```
+
+## Bayesian Approaches
+
+1.  วิเคราะห์ Null Model
+
+2.  วิเคราะห์ Random Coefficient Model
+
+3.  วิเคราะห์โมเดลตามกรอบแนวคิดของการวิจัย
+
+```{r}
+library(brms)
+library(tidybayes)
+fit_ranova_bayes <- brm(mathach~1+(1|schid), data =dat,
+                        family = gaussian(),
+                        chains = 3,
+                        iter = 3000,
+                        thin = 3, 
+                        cores = 3,
+                        save_pars = save_pars(all = TRUE))
+summary(fit_ranova_bayes)
+fit_ranova_bayes %>%
+  tidybayes::tidy_draws() %>%
+  mutate(icc = sd_schid__Intercept^2/(sd_schid__Intercept^2+sigma^2)) %>%
+  ggplot(aes(x=icc))+
+  stat_halfeye()+
+  xlim(0,1)
+
+
+## random coefficient
+fit_randomcoef_bayes <- brm(mathach~1+ses+(1+ses|schid), data =dat,
+                        family = gaussian(),
+                        chains = 2,
+                        iter = 3000,
+                        thin = 3, 
+                        cores = 2,
+                        save_pars = save_pars(all = TRUE))
+
+summary(fit_randomcoef_bayes)
+
+fit_randomcoef_bayes %>%
+  tidy_draws() %>%
+  ggplot(aes(x=sd_schid__ses))+
+  stat_halfeye()
+
+bayes_factor(fit_randomcoef_bayes, fit_ranova_bayes)
+waic(fit_randomcoef_bayes, fit_ranova_bayes)
+loo(fit_randomcoef_bayes, fit_ranova_bayes)
+
+## full model
+fit_fullmodel <- brm(mathach~1+sector+ses+sector:ses+himnty:ses + (1 + ses|schoolid),
+                     data =full_dat,
+                      family = gaussian(),
+                      chains = 2,
+                      iter = 3000,
+                      thin = 3, 
+                      cores = 2,
+                      save_pars = save_pars(all = TRUE))
+
+fit_fullmodel |> 
+  summary()
+```
+
+## คำถามวิจัย {.smaller}
+
+1.  โรงเรียนคาธอลิก กับ โรงเรียนรัฐบาล มีค่าเฉลี่ยคะแนนผลสัมฤทธิ์ทางการเรียนแตกต่างกันอย่างไร
+
+**sector = 0 (รัฐบาล)**
+
+$\beta_{0j} = 11.74$
+
+นักเรียนฐานะปานกลางของประเทศในโรงเรียนรัฐบาลมีค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียน 11.74 คะแนน
+
+**sector = 1 (คาธอลิก)**
+
+$\beta_{0j} = 11.74 + 2.15$
+
+นักเรียนฐานะปานกลางของประเทศในโรงเรียนคาธอลิกมีค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนสูงกว่าในโรงเรียนรัฐบาล 2.15 คะแนน = 11.74+2.15 คะแนน
+
+2.  ประเภทของโรงเรียน (sector) และสัดส่วนชนกลุ่มน้อยในโรงเรียน (himnty) เป็นปัจจัยที่มีผลต่ออิทธิพลของเศรษฐานะของครอบครัวนักเรียนที่มีต่อผลสัมฤทธิ์ทางการเรียนของนักเรียนอย่างไร
+
+**student-level model**
+
+$mathach_{ij} = \beta_{0j} + \beta_{1j}SES_{ij} + e_{ij}$
+
+**school-level model**
+
+$\beta_{0j} = \gamma_{00} + 2.15Sector_j + u_{0j}$
+
+$\beta_{1j} = \gamma_{10} -1.30Sector_j -0.33Himnty_j + u_{1j}$
+
+**combined model**
+
+$mathach_{ij} = \gamma_{00} + \gamma_{01}Sector_j + \gamma_{10}SES_{ij} + \gamma_{11}Sector_jSES_{ij} + \gamma_{12}Himnty_jSES_{ij} + u_{0j}+u_{1j}SES_{ij} + e_{ij}$
+
+## Dataset 2: Sleep Study
+
+ชุดข้อมูล `sleepstudy` เป็นชุดข้อมูลตัวอย่างของ pacakge lme4 ในการวิจัยที่ศึกษาการอดนอนของคน ตัวแปรตามคือ `Reaction` เป็นค่าเฉลี่ยของความเร็วในการตอบสนองของผู้เข้าร่วมวิจัย (ms) ส่วนตัวแปรที่เหลือได้แก่ `day` คือจำนวนวันที่อดนอน และ `subject` คือรหัสของผู้เข้าร่วมวิจัย
+
+```{r}
+library(lme4)
+glimpse(sleepstudy, 60)
+```
+
+หากคำถามวิจัยคือ
+
+1.  การอดนอนมีผลต่อปฏิกิริยาตอบสนองของคนอย่างไร
+2.  ผลกระทบที่เกิดขึ้นจากการอดนอนมีความแตกต่างกันไปตามบุคคลหรือไม่
+
+```{r}
+library(ggplot2)
+sleepstudy %>%
+  ggplot(aes(x=Days, y= Reaction, group = Subject))+
+  geom_line()+
+  scale_x_continuous(breaks=seq(0,9,1))
+```

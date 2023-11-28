@@ -1,0 +1,338 @@
+[
+  {
+    "objectID": "02Importing_data/importing_data.html#ประเภทของไฟลขอมล-1",
+    "href": "02Importing_data/importing_data.html#ประเภทของไฟลขอมล-1",
+    "title": "2. Importing Data",
+    "section": "ประเภทของไฟล์ข้อมูล",
+    "text": "ประเภทของไฟล์ข้อมูล\nR สามารถดำเนินการร่วมกับไฟล์ข้อมูลที่หลากหลาย\n\n\n\nFlat Files\nMS Excel Files\nStatistical softwares\nDatabases\nInternet"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#flat-files-1",
+    "href": "02Importing_data/importing_data.html#flat-files-1",
+    "title": "2. Importing Data",
+    "section": "Flat Files",
+    "text": "Flat Files\n\nเป็นไฟล์ข้อมูลที่จัดเก็บโดยไม่มีโครงสร้างตาราง และบันทึกอยู่ในรูปแบบไฟล์ข้อความ (text files)\nFlat file จำแนกได้หลายประเภท ขึ้นอยู่กับลักษณะของตัวคั่นข้อมูล (separator) เช่น CSV, TSV\n\n\nที่มา : สิวะโชติ ศรีสุทธิยากร (2564)"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#importing-csv-files",
+    "href": "02Importing_data/importing_data.html#importing-csv-files",
+    "title": "2. Importing Data",
+    "section": "Importing CSV Files",
+    "text": "Importing CSV Files\nการนําข้อมูล .csv เข้าสู่โปรแกรมสามารถใช้ฟังก์ชัน read.csv() โดยมีรูปแบบของคําสั่งดังนี้\nอาร์กิวเมนท์สำคัญของ read.csv() ได้แก่\n\nfile\nheader\nstringsFactors"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-นำเขา-csv-file",
+    "href": "02Importing_data/importing_data.html#กจกรรม-นำเขา-csv-file",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : นำเข้า CSV file",
+    "text": "กิจกรรม : นำเข้า CSV file\n\nดาวน์โหลด TeacherSalaryData.csv\nนำเข้าไฟล์ข้อมูล TeacherSalaryData.csv โดยพิมพ์คำสั่งต่อไปนี้\n\n\nสังเกตผลลัพธ์ที่ได้ ท่านสามารถนำไฟล์ข้อมูลดังกล่าวเข้าสู่ R ได้หรือไม่ ถ้าไม่ท่านคิดว่าเกิดปัญหาอะไร"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-การกำหนด-working-directory",
+    "href": "02Importing_data/importing_data.html#กจกรรม-การกำหนด-working-directory",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : การกำหนด Working Directory",
+    "text": "กิจกรรม : การกำหนด Working Directory\nการจะนำไฟล์ข้อมูลเข้าใน R ไฟล์ข้อมูลดังกล่าวจะต้องบันทึกอยู่ใน working directory ของ R"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-นำเขา-csv-file-revisited",
+    "href": "02Importing_data/importing_data.html#กจกรรม-นำเขา-csv-file-revisited",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : นำเข้า CSV file (revisited)",
+    "text": "กิจกรรม : นำเข้า CSV file (revisited)\n\nดาวน์โหลด TeacherSalaryData.csv\nกำหนด working directory ของ R ให้เป็น folder เดียวกันกับที่บันทึกไฟล์ข้อมูลในข้อ 1.\nนำเข้าไฟล์ข้อมูล TeacherSalaryData.csv โดยพิมพ์คำสั่งต่อไปนี้\n\n\nลองพิมพ์คำสั่ง head(mydata) ผลลัพธ์ที่ได้เป็นอย่างไร"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-dataframe",
+    "href": "02Importing_data/importing_data.html#กจกรรม-dataframe",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : Dataframe",
+    "text": "กิจกรรม : Dataframe\nลองตรวจสอบสถานะของตัวแปร mydata ที่เก็บไฟล์ข้อมูล csv ในข้างต้นด้วยฟังก์ชัน class(mydata)\nผลลัพธ์ที่ได้เป็นอย่างไร?"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#dataframe-1",
+    "href": "02Importing_data/importing_data.html#dataframe-1",
+    "title": "2. Importing Data",
+    "section": "Dataframe",
+    "text": "Dataframe\n\nมีโครงสร้างการเก็บข้อมูลแบบตารางคล้ายเมทริกซ์\nสามารถเก็บข้อมูลต่างประเภทอยู่ภายใต้ dataframe เดียวกันได้\nเป็นรูปแบบ input มาตรฐานตัวหนึ่ง ที่ใช้สำหรับการวิเคราะห์ข้อมูลใน R\nข้อมูลที่นำเข้าด้วย read.csv() จะอยู่ในสถานะ data.frame โดยอัตโนมัติ\n\nเราสามารถสร้าง dataframe ได้ด้วยวิธีการในทำนองเดียวกับการสร้างเมทริกซ์ แต่ใช้ฟังก์ชัน data.frame() แทน ดังรูปแบบต่อไปนี้"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#ตวอยางการสราง-dataframe",
+    "href": "02Importing_data/importing_data.html#ตวอยางการสราง-dataframe",
+    "title": "2. Importing Data",
+    "section": "ตัวอย่างการสร้าง Dataframe",
+    "text": "ตัวอย่างการสร้าง Dataframe\n\n\n  gender thai math\n1      M   87   72\n2      F   72   63\n3      M   68   65\n4      F   78   74\n5      F   81   89\n6      M   92   91"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#การอางองสมาชกใน-dataframe",
+    "href": "02Importing_data/importing_data.html#การอางองสมาชกใน-dataframe",
+    "title": "2. Importing Data",
+    "section": "การอ้างอิงสมาชิกใน dataframe",
+    "text": "การอ้างอิงสมาชิกใน dataframe\nผู้วิเคราะห์สามารถใช้การอ้างอิงสมาชิกของเมทริกซ์กับ dataframe ได้ทั้งหมด และ dataframe ยังมี feature พิเศษสำหรับใช้คัดเลือกตัวแปรจาก dataframe ใด ๆ ได้ดังตัวอย่างต่อไปนี้\n\n\n[1] 87 72 68 78 81 92\n\n\n[1] \"M\" \"F\" \"M\" \"F\" \"F\" \"M\""
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#behind-dataframe",
+    "href": "02Importing_data/importing_data.html#behind-dataframe",
+    "title": "2. Importing Data",
+    "section": "Behind Dataframe",
+    "text": "Behind Dataframe\n\n\n'data.frame':   6 obs. of  3 variables:\n $ gender: chr  \"M\" \"F\" \"M\" \"F\" ...\n $ thai  : num  87 72 68 78 81 92\n $ math  : num  72 63 65 74 89 91"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#summary-dataframe",
+    "href": "02Importing_data/importing_data.html#summary-dataframe",
+    "title": "2. Importing Data",
+    "section": "Summary Dataframe",
+    "text": "Summary Dataframe\n\n\n    gender               thai            math      \n Length:6           Min.   :68.00   Min.   :63.00  \n Class :character   1st Qu.:73.50   1st Qu.:66.75  \n Mode  :character   Median :79.50   Median :73.00  \n                    Mean   :79.67   Mean   :75.67  \n                    3rd Qu.:85.50   3rd Qu.:85.25  \n                    Max.   :92.00   Max.   :91.00"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-behind-teachersalarydata.csv",
+    "href": "02Importing_data/importing_data.html#กจกรรม-behind-teachersalarydata.csv",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : behind TeacherSalaryData.csv",
+    "text": "กิจกรรม : behind TeacherSalaryData.csv\nลองใช้ฟังก์ชัน str() เพื่อสำรวจข้อมูลเบื้องหลังชุดข้อมูล TeacherSalaryData.csv ที่นำเข้ามาในกิจกรรมก่อนหน้า แล้วตอบคำถามต่อไปนี้\n\nชุดข้อมูลนี้มีหน่วยข้อมูลกี่หน่วย\nมีตัวแปรกี่ตัว อะไรบ้าง\nข้อมูลของตัวแปรแต่ละตัวมีสถานะอะไรบ้าง"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#section",
+    "href": "02Importing_data/importing_data.html#section",
+    "title": "2. Importing Data",
+    "section": "",
+    "text": "'data.frame':   397 obs. of  7 variables:\n $ X            : int  1 2 3 4 5 6 7 8 9 10 ...\n $ rank         : chr  \"Prof\" \"Prof\" \"AsstProf\" \"Prof\" ...\n $ discipline   : chr  \"B\" \"B\" \"B\" \"B\" ...\n $ yrs.since.phd: int  19 20 4 45 40 6 30 45 21 18 ...\n $ yrs.service  : int  18 16 3 39 41 6 23 45 20 18 ...\n $ sex          : chr  \"Male\" \"Male\" \"Male\" \"Male\" ...\n $ salary       : int  139750 173200 79750 115000 141500 97000 175000 147765 119250 129000 ..."
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#factors-1",
+    "href": "02Importing_data/importing_data.html#factors-1",
+    "title": "2. Importing Data",
+    "section": "Factors",
+    "text": "Factors\nfactor เป็นตัวแปรอีกประเภทหนึ่งที่ใช้สำหรับเก็บข้อมูลจัดประเภท (categorical data) โดยเฉพาะ การเก็บข้อมูลใน Factor จะจําแนกการเก็บออกเป็น 2 ส่วน\n\nค่าสังเกตของตัวแปรที่จะลงรหัสในรูปแบบของตัวเลข 1, 2, 3, …,k เมื่อ k คือจํานวนระดับของตัวแปรจัดประเภท\nLabel ของระดับหรือค่าของตัวแปรแบบ Factor โดยปกติมักใช้ตัวอักษรหรือข้อความแทนระดับของคุณลักษณะตามหมายเลข"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#การสราง-factor",
+    "href": "02Importing_data/importing_data.html#การสราง-factor",
+    "title": "2. Importing Data",
+    "section": "การสร้าง factor",
+    "text": "การสร้าง factor\n\nการสร้าง factor สามารถทำได้หลายวิธี วิธีการสร้างโดยตรงคือการใช้ฟังก์ชัน factor() ดังตัวอย่างต่อไปนี้"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#สำรวจ-factor",
+    "href": "02Importing_data/importing_data.html#สำรวจ-factor",
+    "title": "2. Importing Data",
+    "section": "สำรวจ factor",
+    "text": "สำรวจ factor\n\n\n  gender thai math\n1      M   87   72\n2      F   72   63\n3      M   68   65\n4      F   78   74\n5      F   81   89\n6      M   92   91\n\n\n'data.frame':   6 obs. of  3 variables:\n $ gender: Factor w/ 2 levels \"F\",\"M\": 2 1 2 1 1 2\n $ thai  : num  87 72 68 78 81 92\n $ math  : num  72 63 65 74 89 91"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#สำรวจ-factor-1",
+    "href": "02Importing_data/importing_data.html#สำรวจ-factor-1",
+    "title": "2. Importing Data",
+    "section": "สำรวจ factor",
+    "text": "สำรวจ factor\n\n\n gender      thai            math      \n F:3    Min.   :68.00   Min.   :63.00  \n M:3    1st Qu.:73.50   1st Qu.:66.75  \n        Median :79.50   Median :73.00  \n        Mean   :79.67   Mean   :75.67  \n        3rd Qu.:85.50   3rd Qu.:85.25  \n        Max.   :92.00   Max.   :91.00"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#การเปลยนลำดบและ-label-ของ-factor",
+    "href": "02Importing_data/importing_data.html#การเปลยนลำดบและ-label-ของ-factor",
+    "title": "2. Importing Data",
+    "section": "การเปลี่ยนลำดับและ label ของ factor",
+    "text": "การเปลี่ยนลำดับและ label ของ factor\nหากไม่ได้มีการระบุ โปรแกรมจะเรียงลำดับระดับของ factor ตามตัวอักษร หรือตามตัวเลขที่ใช้เป็นรหัสข้อมูล ฟังก์ชัน levels() ช่วยในการสำรวจระดับของ factor ในตัวแปรดังกล่าวได้\n\n\n[1] \"F\" \"M\"\n\n\nผู้วิเคราะห์สามารถเปลี่ยนลำดับ และ label ของระดับ factor ดังกล่าวผ่านอาร์กิวเมนท์ levels และ labels ของฟังก์ชัน factor() ดังนี้"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#การเปลยนลำดบและ-label-ของ-factor-1",
+    "href": "02Importing_data/importing_data.html#การเปลยนลำดบและ-label-ของ-factor-1",
+    "title": "2. Importing Data",
+    "section": "การเปลี่ยนลำดับและ label ของ factor",
+    "text": "การเปลี่ยนลำดับและ label ของ factor\n\n\n'data.frame':   6 obs. of  3 variables:\n $ gender: Factor w/ 2 levels \"Male\",\"Female\": 1 2 1 2 2 1\n $ thai  : num  87 72 68 78 81 92\n $ math  : num  72 63 65 74 89 91\n\n\n    gender       thai            math      \n Male  :3   Min.   :68.00   Min.   :63.00  \n Female:3   1st Qu.:73.50   1st Qu.:66.75  \n            Median :79.50   Median :73.00  \n            Mean   :79.67   Mean   :75.67  \n            3rd Qu.:85.50   3rd Qu.:85.25  \n            Max.   :92.00   Max.   :91.00"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-behind-teachersalarydata.csv-revisited",
+    "href": "02Importing_data/importing_data.html#กจกรรม-behind-teachersalarydata.csv-revisited",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : behind TeacherSalaryData.csv (revisited)",
+    "text": "กิจกรรม : behind TeacherSalaryData.csv (revisited)\nลองนำเข้าไฟล์ข้อมูล TeacherSalaryData.csv ใหม่ ด้วยฟังก์ชันต่อไปนี้\n\nmydata &lt;- read.csv(file = \"dataset/TeacherSalaryData.csv\",\n                   header = TRUE,\n                   stringsAsFactors = TRUE)\n\nจากนั้นลองสำรวจชุดข้อมูลที่นำเข้าใหม่ด้วยฟังก์ชัน str() และ summary() ผลที่ได้รับมีความเหมือนหรือแตกต่างจากกิจกรรม : behind TeacherSalaryData.csvอย่างไร"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#importing-ms-excel-files",
+    "href": "02Importing_data/importing_data.html#importing-ms-excel-files",
+    "title": "2. Importing Data",
+    "section": "Importing MS Excel files",
+    "text": "Importing MS Excel files\nการนำเข้าไฟล์ข้อมูล .xlsx ของ MS Excel จะต้องติดตั้ง package-readxl เพิ่มเติม การดาวน์โหลดและเรียกใช้ package ดังกล่าวสามารถดำเนินการได้ดังนี้\nการนำเข้าไฟล์ .xlsx สามารถทำได้โดยใช้ฟังก์ชัน read_excel() ที่มีรูปแบบของคำสั่งดังนี้"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-การนำเขา-.xlsx-files",
+    "href": "02Importing_data/importing_data.html#กจกรรม-การนำเขา-.xlsx-files",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : การนำเข้า .xlsx files",
+    "text": "กิจกรรม : การนำเข้า .xlsx files\n\nดาวน์โหลด Score.xlsx\nพิมพ์คำสั่ง excel_sheets(\"Score.xlsx\") แล้วสังเกตผลลัพธ์ที่ได้\nนำเข้าไฟล์ข้อมูลจาก sheet ที่ชื่อว่า Score3 ด้วยฟังก์ชัน read_excel()\nผลลัพธ์ที่ได้ถูกต้องหรือไม่\n\n\n\n# A tibble: 20 × 5\n   ...1   ...2  ...3  ...4  ...5\n   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1 M       2.7     9   4    17.6\n 2 F       2.9    22   3.2  23  \n 3 M       3.3    12   4    13.7\n 4 M       4.2    16   4.8  18  \n 5 M       4.4    23   4.5  14.9\n 6 F       4.7    20   5.2  25.8\n 7 F       5.4    17   2.7  13.8\n 8 M       5.8    22   3.7  17.6\n 9 F       6      20   5    23.3\n10 M       6      22   3.7  20.9\n11 F       6.1    20   5.6  21.2\n12 F       6.5    21   5.2  18.5\n13 F       6.6    22   6.2  29.6\n14 F       6.6    21   6.9  15.9\n15 F       6.7    25   7.1  24.6\n16 M       6.7    20   4.8  15.8\n17 M       7      24   6.4  29  \n18 M       7.8    24   6.7  29.3\n19 F       8.9    28   8    28.2\n20 F       9.1    28   5.4  28.6"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#กจกรรม-การนำเขา-.xlsx-files-revisited",
+    "href": "02Importing_data/importing_data.html#กจกรรม-การนำเขา-.xlsx-files-revisited",
+    "title": "2. Importing Data",
+    "section": "กิจกรรม : การนำเข้า .xlsx files (revisited)",
+    "text": "กิจกรรม : การนำเข้า .xlsx files (revisited)\nจากกิจกรรมที่แล้ว ลองปรับอาร์กิวเมนท์ col_names ให้เป็น\nสังเกตผลลัพธ์ที่ได้\n\n\n# A tibble: 20 × 5\n   gender interaction pretest  quiz posttest\n   &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;\n 1 M              2.7       9   4       17.6\n 2 F              2.9      22   3.2     23  \n 3 M              3.3      12   4       13.7\n 4 M              4.2      16   4.8     18  \n 5 M              4.4      23   4.5     14.9\n 6 F              4.7      20   5.2     25.8\n 7 F              5.4      17   2.7     13.8\n 8 M              5.8      22   3.7     17.6\n 9 F              6        20   5       23.3\n10 M              6        22   3.7     20.9\n11 F              6.1      20   5.6     21.2\n12 F              6.5      21   5.2     18.5\n13 F              6.6      22   6.2     29.6\n14 F              6.6      21   6.9     15.9\n15 F              6.7      25   7.1     24.6\n16 M              6.7      20   4.8     15.8\n17 M              7        24   6.4     29  \n18 M              7.8      24   6.7     29.3\n19 F              8.9      28   8       28.2\n20 F              9.1      28   5.4     28.6"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#haven-package",
+    "href": "02Importing_data/importing_data.html#haven-package",
+    "title": "2. Importing Data",
+    "section": "Haven package",
+    "text": "Haven package\n\n\n\n\n\n\n\n\nSAS: read_sas()\nSPSS: read_sav()\nStata: read_dta()\n\n\nในทำนองเดียวกัน ก่อนใช้ฟังก์ชันใน package-haven จะต้องดาวน์โหลด และเรียกใช้ package ดังนี้"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#importing-spss-files",
+    "href": "02Importing_data/importing_data.html#importing-spss-files",
+    "title": "2. Importing Data",
+    "section": "Importing SPSS Files",
+    "text": "Importing SPSS Files\n\n\n\n\n# A tibble: 6 × 3\n    ach solve group      \n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl+lbl&gt;  \n1  49.6   1.2 1 [Lecture]\n2  43.6   6.3 1 [Lecture]\n3  50.3   1.8 1 [Lecture]\n4  34.4   5.7 1 [Lecture]\n5  56.8   5.9 1 [Lecture]\n6  32.8   8   1 [Lecture]\n\n\n\n\n\n# A tibble: 6 × 3\n    ach solve group    \n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl+lbl&gt;\n1  82.7  13.8 2 [PBL]  \n2  67.4  13.1 2 [PBL]  \n3  59.5  13.8 2 [PBL]  \n4  36    11.6 2 [PBL]  \n5  84.4  12.8 2 [PBL]  \n6  55.5  11.8 2 [PBL]"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#terminology",
+    "href": "02Importing_data/importing_data.html#terminology",
+    "title": "2. Importing Data",
+    "section": "Terminology",
+    "text": "Terminology\n\n\n\n\nDataset\nVariables\nObservations\nTypes"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#tidy-data",
+    "href": "02Importing_data/importing_data.html#tidy-data",
+    "title": "2. Importing Data",
+    "section": "Tidy Data",
+    "text": "Tidy Data\n\n\n\n\nEach variable you measure should be in one column.\nEach different observation of that variable should be in a different row.\nOne cell should contain one value."
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#rules-for-storing-data-in-tidydata-format",
+    "href": "02Importing_data/importing_data.html#rules-for-storing-data-in-tidydata-format",
+    "title": "2. Importing Data",
+    "section": "Rules for storing data in tidydata format",
+    "text": "Rules for storing data in tidydata format"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#data-quality-1",
+    "href": "02Importing_data/importing_data.html#data-quality-1",
+    "title": "2. Importing Data",
+    "section": "Data Quality",
+    "text": "Data Quality\n\n\n\nAccuracy\nCompleteness\nConsistency\nValidity\nReliability\n\n\n\nTrustworthiness\nTimeliness\nRelevancy\nAccessibility\nUsability"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#data-quality-2",
+    "href": "02Importing_data/importing_data.html#data-quality-2",
+    "title": "2. Importing Data",
+    "section": "Data Quality",
+    "text": "Data Quality"
+  },
+  {
+    "objectID": "02Importing_data/importing_data.html#data-preprocessing",
+    "href": "02Importing_data/importing_data.html#data-preprocessing",
+    "title": "2. Importing Data",
+    "section": "Data Preprocessing",
+    "text": "Data Preprocessing\n\nData preprocessing is a technique that involves transforming raw data into an understandable format.\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Practical Insight: Doing Data Science in Education with R",
+    "section": "",
+    "text": "Material สำหรับรายวิชา การวิจัยโมเดลสมการโครงสร้างพหุระดับ\n\n\n\n\n\n\n\n\n\nModule\nหัวข้อ\nชุดข้อมูลตัวอย่าง\nกิจกรรม/การบ้าน\n\n\n\n\n1\n1.1 Introduction to Data Science\n\n\n\n\n\n1.2 Importing data\nTeacherSalaryData.csv"
+  },
+  {
+    "objectID": "index.html#materials",
+    "href": "index.html#materials",
+    "title": "Practical Insight: Doing Data Science in Education with R",
+    "section": "",
+    "text": "Material สำหรับรายวิชา การวิจัยโมเดลสมการโครงสร้างพหุระดับ\n\n\n\n\n\n\n\n\n\nModule\nหัวข้อ\nชุดข้อมูลตัวอย่าง\nกิจกรรม/การบ้าน\n\n\n\n\n1\n1.1 Introduction to Data Science\n\n\n\n\n\n1.2 Importing data\nTeacherSalaryData.csv"
+  },
+  {
+    "objectID": "instructors.html",
+    "href": "instructors.html",
+    "title": "Instructor",
+    "section": "",
+    "text": "ท่านหัวหน้าภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\n\n\n\n\nวิธีวิทยาการวิจัยเพื่อพัฒนานวัตกรรมทางการศึกษา\n\nการวิจัยปฏิบัติการทางการศึกษา\nการวิจัยการออกแบบ\nการวิจัยการคิดเชิงออกแบบ\n\nการวิจัยสมการโครงสร้าง\nการวิจัยโมเดลสมการเชิงโครงสร้างพหุระดับ\nการวิเคราะห์ข้อมูลการวิจัยด้วยโปรแกรมคอมพิวเตอร์ เช่น SPSS, Mplus, LISREL\nการเลือกและซื้อกระเป๋า Brand name สำหรับการสะสมและลงทุน\n\n\n\n\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)"
+  },
+  {
+    "objectID": "instructors.html#ผศ.ดร.กนษฐ-ศรเคลอบ",
+    "href": "instructors.html#ผศ.ดร.กนษฐ-ศรเคลอบ",
+    "title": "Instructor",
+    "section": "",
+    "text": "ท่านหัวหน้าภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\n\n\n\n\nวิธีวิทยาการวิจัยเพื่อพัฒนานวัตกรรมทางการศึกษา\n\nการวิจัยปฏิบัติการทางการศึกษา\nการวิจัยการออกแบบ\nการวิจัยการคิดเชิงออกแบบ\n\nการวิจัยสมการโครงสร้าง\nการวิจัยโมเดลสมการเชิงโครงสร้างพหุระดับ\nการวิเคราะห์ข้อมูลการวิจัยด้วยโปรแกรมคอมพิวเตอร์ เช่น SPSS, Mplus, LISREL\nการเลือกและซื้อกระเป๋า Brand name สำหรับการสะสมและลงทุน\n\n\n\n\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)"
+  },
+  {
+    "objectID": "instructors.html#ผศ.ดร.สวะโชต-ศรสทธยากร",
+    "href": "instructors.html#ผศ.ดร.สวะโชต-ศรสทธยากร",
+    "title": "Instructor",
+    "section": "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร",
+    "text": "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร\n\n\nอาจารย์ประจำภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\nDataKruRoo Founder\n\n\nความเชี่ยวชาญเฉพาะ\n\nสถิติและวิทยาการข้อมูลทางการศึกษา\nการพัฒนาทัศนภาพข้อมูลทางการศึกษา\nการเรียนรู้ของเครื่องและการประยุกต์สำหรับการวิจัยทางการศึกษา\nการจำลองแบบมอนติคาร์โล\nสถิติวิเคราะห์แบบเบย์\nR programming\n\n\n\nผลงานทางวิชาการ\nPanidvadtana, P., Sujiva, S., & Srisuttiyakorn, S. (2021). A Comparison of the Accuracy of Multidimensional IRT equating methods for Mixed-Format Tests, Kasetsart Journal of Social Sciences, 42, 215-220. (Scopus)\nสิวะโชติ ศรีสุทธิยากร. (2562). ความเหลื่อมล้ำทางการศึกษาและปัจจัยที่ส่งผล : การวิเคราะห์พหุระดับร่วมกับดัชนีเอ็นโทรปีนัยทั่วไปที่อิงมัธยฐาน. วารสารวิธีวิทยาการวิจัย. 32(3), 342-379. (TCI1)\nวรรณี แกมเกตุ, ดวงกมล ไตรวิจิตรคุณ, สิวะโชติ ศรีสุทธิยากร, เมษา นวลศรี, กษิดิศ ครุฑางคะ  และภานุวัฒน์ เข็มกลัด. (2562). รายงานการติดตามและประเมินผลการดำเนินงานตามแผนการศึกษาแห่งชาติ พ.ศ. 2560-2579 : ช่วงปี พ.ศ. 2560-2562. สำนักงานเลขาธิการสภาการศึกษา กระทรวงศึกษาธิการ.\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)\n\n\nหนังสือ\nสิวะโชติ ศรีสุทธิยากร. (2564). สถิติและวิทยาการข้อมูลทางการศึกษา : R สำหรับจัดระเบียบและจัดกระทำข้อมูล. กรุงเทพมหานคร : คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย. สืบค้นจาก https://m.chulabook.com/th/product-details/120204"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#what-is-data-sciene",
+    "href": "01Intro_to_DS/Intro.html#what-is-data-sciene",
+    "title": "1. Introduction to  Data Science",
+    "section": "What is Data Sciene?",
+    "text": "What is Data Sciene?\nData Science is the study of the generalizable extraction of knowledge from data.\n\n\n\nhttps://www.wuestpartner.com/tachyon/sites/10/2021/12/Blog_190227_DE_datashift_data_science.png"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#data-insight",
+    "href": "01Intro_to_DS/Intro.html#data-insight",
+    "title": "1. Introduction to  Data Science",
+    "section": "Data Insight",
+    "text": "Data Insight\nData Science is the study of the generalizable extraction of knowledge from data."
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#data-insight-1",
+    "href": "01Intro_to_DS/Intro.html#data-insight-1",
+    "title": "1. Introduction to  Data Science",
+    "section": "Data Insight",
+    "text": "Data Insight"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#types-of-data-analytics",
+    "href": "01Intro_to_DS/Intro.html#types-of-data-analytics",
+    "title": "1. Introduction to  Data Science",
+    "section": "Types of Data Analytics",
+    "text": "Types of Data Analytics\n\n\n\nhttps://miro.medium.com/v2/resize:fit:902/1*vBkth1ZSveUyXuQ7pDym9Q.png"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#example",
+    "href": "01Intro_to_DS/Intro.html#example",
+    "title": "1. Introduction to  Data Science",
+    "section": "Example",
+    "text": "Example"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#data-science-in-education-1",
+    "href": "01Intro_to_DS/Intro.html#data-science-in-education-1",
+    "title": "1. Introduction to  Data Science",
+    "section": "Data Science in Education",
+    "text": "Data Science in Education\n\n\n\n\n\nCriteria\nLearning_Analytics\nAcademic_Analytics\nPolicy_Analytics\n\n\n\n\nFocus\nIndividual learner's educational process\nInstitution-wide educational processes\nEducation policy and its social/economic impact\n\n\nPrimary Users\nLearners, instructors, educational practitioners\nEducational institutions, administrators, academic officers\nPolicy makers, government agencies, education authorities\n\n\nData Sources\nLearning management systems (LMS), online interactive platforms, educational applications\nInstitutional databases, student information systems, academic performance data\nLarge-scale educational data sets, government and institutional reports, public data sources\n\n\nMain Objectives\nImprove educational outcomes, personalize learning experiences, identify learning difficulties\nEnhance academic program quality, optimize resource allocation, track institutional performance\nInform and guide policy decisions, assess policy impacts, support strategic planning"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#learning-analytics",
+    "href": "01Intro_to_DS/Intro.html#learning-analytics",
+    "title": "1. Introduction to  Data Science",
+    "section": "Learning Analytics",
+    "text": "Learning Analytics"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#academic-analytics",
+    "href": "01Intro_to_DS/Intro.html#academic-analytics",
+    "title": "1. Introduction to  Data Science",
+    "section": "Academic Analytics",
+    "text": "Academic Analytics"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#policy-analytics",
+    "href": "01Intro_to_DS/Intro.html#policy-analytics",
+    "title": "1. Introduction to  Data Science",
+    "section": "Policy Analytics",
+    "text": "Policy Analytics"
+  },
+  {
+    "objectID": "01Intro_to_DS/Intro.html#data-science-process-1",
+    "href": "01Intro_to_DS/Intro.html#data-science-process-1",
+    "title": "1. Introduction to  Data Science",
+    "section": "Data Science Process",
+    "text": "Data Science Process\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  }
+]

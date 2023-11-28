@@ -1,0 +1,132 @@
+---
+title: "1. Introduction to <br> Data Science"
+subtitle: "<b>Practical Insight: Doing Data Science in Education with R</b>"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+logo: "images/logo.png"
+footer: "Practical Insight: Doing Data Science in Education with R"
+format: 
+  revealjs: 
+    theme: slides.scss
+    multiplex: true
+    transition: slide
+    slide-number: true
+    navigation-mode: vertical
+    scrollable: true
+    chalkboard: true
+    in_header: style.css
+    menu: 
+      numbers: true
+    slide-tone: false
+editor: visual
+execute:
+  freeze: auto
+---
+
+# What is Data Science?
+
+## What is Data Sciene? {.smaller}
+
+Data Science is the study of the generalizable extraction of knowledge from data.
+
+<center>![](images/ds.png){width="90%"}</center>
+
+https://www.wuestpartner.com/tachyon/sites/10/2021/12/Blog_190227_DE_datashift_data_science.png
+
+## Data Insight {.smaller}
+
+Data Science is the study of the generalizable extraction of knowledge from data.
+
+<center>![](images/insight.png){width="80%"}</center>
+
+## Data Insight {.smaller}
+
+<center>![](images/insight2.png){width="80%"}</center>
+
+## Types of Data Analytics {.smaller}
+
+<center>![](images/analytictypes.png){width="80%"}</center>
+
+https://miro.medium.com/v2/resize:fit:902/1\*vBkth1ZSveUyXuQ7pDym9Q.png
+
+## Example
+
+::: columns
+::: {.column width="50%"}
+![](images/ach.png){width="80%"} ![](images/diag.png)
+:::
+
+::: {.column width="50%"}
+![](images/modelling.png){width="100%"}
+:::
+:::
+
+# Data Science in Education
+
+## Data Science in Education {.smaller}
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+# Create a data frame with the comparison data
+comparison_data <- data.frame(
+  Criteria = c("Focus", "Primary Users", "Data Sources", "Main Objectives"),
+  Learning_Analytics = c(
+    "Individual learner's educational process",
+    "Learners, instructors, educational practitioners",
+    "Learning management systems (LMS), online interactive platforms, educational applications",
+    "Improve educational outcomes, personalize learning experiences, identify learning difficulties"
+  ),
+  Academic_Analytics = c(
+    "Institution-wide educational processes",
+    "Educational institutions, administrators, academic officers",
+    "Institutional databases, student information systems, academic performance data",
+    "Enhance academic program quality, optimize resource allocation, track institutional performance"
+  ),
+  Policy_Analytics = c(
+    "Education policy and its social/economic impact",
+    "Policy makers, government agencies, education authorities",
+    "Large-scale educational data sets, government and institutional reports, public data sources",
+    "Inform and guide policy decisions, assess policy impacts, support strategic planning"
+  )
+)
+
+# Generate the HTML table with kable
+kable(comparison_data, "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F,
+                font_size = 25) %>%
+  column_spec(1, bold = TRUE, border_right = TRUE) %>%
+  row_spec(0, bold = TRUE, background = "#D3D3D3")
+
+```
+
+## Learning Analytics {.smaller}
+
+![](images/LA.png){width="100%"}
+
+## Academic Analytics {.smaller}
+
+![](images/AA.png){width="60%"}
+
+## Policy Analytics {.smaller}
+
+![](images/PA.png){width="70%"}
+
+# Data Science Process
+
+-   Data Science Process is a framework for solving problems using data science.
+
+-   Data Science Process has 5 steps such as:
+
+    -   Problem/Context Understanding
+    -   Data Understanding and Collection
+    -   Data Preprocessing
+    -   Modeling & Evaluating
+    -   Deployment
+
+## Data Science Process {.smaller}
+
+![](images/ds_process.png){width="100%"}
+
+
+
