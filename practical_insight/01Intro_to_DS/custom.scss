@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500&family=K2D:wght@200;300;500&family=Krub:wght@300;400;500&family=Noto+Sans+Thai+Looped:wght@300;400;500&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@400;500&family=Noto+Serif+Thai:wght@400;600&family=Sarabun:wght@200;400;700&display=swap');
 /*-- scss:defaults --*/
 $theme-darkblue: #01364C;
 $theme-blue: #99D9DD;
@@ -16,7 +15,7 @@ $link-color: $theme-yellow;
 $presentation-heading-color: lighten($theme-maroon, 5%);
 $font-size-root: small;
 
-$font-family-sans-serif: 'K2D', Sarabun;
+$font-family-sans-serif: 'Sarabun';
 $presentation-heading-font: 'Noto Serif Thai', serif;
 
 /*-- scss:rules --*/
