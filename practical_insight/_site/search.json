@@ -179,56 +179,14 @@
     "href": "02Importing_data/importing_data.html#importing-spss-files",
     "title": "2. Importing Data",
     "section": "Importing SPSS Files",
-    "text": "Importing SPSS Files\n\n\n\n\n# A tibble: 6 × 3\n    ach solve group      \n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl+lbl&gt;  \n1  49.6   1.2 1 [Lecture]\n2  43.6   6.3 1 [Lecture]\n3  50.3   1.8 1 [Lecture]\n4  34.4   5.7 1 [Lecture]\n5  56.8   5.9 1 [Lecture]\n6  32.8   8   1 [Lecture]\n\n\n\n\n\n# A tibble: 6 × 3\n    ach solve group    \n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl+lbl&gt;\n1  82.7  13.8 2 [PBL]  \n2  67.4  13.1 2 [PBL]  \n3  59.5  13.8 2 [PBL]  \n4  36    11.6 2 [PBL]  \n5  84.4  12.8 2 [PBL]  \n6  55.5  11.8 2 [PBL]"
-  },
-  {
-    "objectID": "02Importing_data/importing_data.html#terminology",
-    "href": "02Importing_data/importing_data.html#terminology",
-    "title": "2. Importing Data",
-    "section": "Terminology",
-    "text": "Terminology\n\n\n\n\nDataset\nVariables\nObservations\nTypes"
-  },
-  {
-    "objectID": "02Importing_data/importing_data.html#tidy-data",
-    "href": "02Importing_data/importing_data.html#tidy-data",
-    "title": "2. Importing Data",
-    "section": "Tidy Data",
-    "text": "Tidy Data\n\n\n\n\nEach variable you measure should be in one column.\nEach different observation of that variable should be in a different row.\nOne cell should contain one value."
-  },
-  {
-    "objectID": "02Importing_data/importing_data.html#rules-for-storing-data-in-tidydata-format",
-    "href": "02Importing_data/importing_data.html#rules-for-storing-data-in-tidydata-format",
-    "title": "2. Importing Data",
-    "section": "Rules for storing data in tidydata format",
-    "text": "Rules for storing data in tidydata format"
-  },
-  {
-    "objectID": "02Importing_data/importing_data.html#data-quality-1",
-    "href": "02Importing_data/importing_data.html#data-quality-1",
-    "title": "2. Importing Data",
-    "section": "Data Quality",
-    "text": "Data Quality\n\n\n\nAccuracy\nCompleteness\nConsistency\nValidity\nReliability\n\n\n\nTrustworthiness\nTimeliness\nRelevancy\nAccessibility\nUsability"
-  },
-  {
-    "objectID": "02Importing_data/importing_data.html#data-quality-2",
-    "href": "02Importing_data/importing_data.html#data-quality-2",
-    "title": "2. Importing Data",
-    "section": "Data Quality",
-    "text": "Data Quality"
-  },
-  {
-    "objectID": "02Importing_data/importing_data.html#data-preprocessing",
-    "href": "02Importing_data/importing_data.html#data-preprocessing",
-    "title": "2. Importing Data",
-    "section": "Data Preprocessing",
-    "text": "Data Preprocessing\n\nData preprocessing is a technique that involves transforming raw data into an understandable format.\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+    "text": "Importing SPSS Files\n\n\n\n\n# A tibble: 6 × 3\n    ach solve group      \n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl+lbl&gt;  \n1  49.6   1.2 1 [Lecture]\n2  43.6   6.3 1 [Lecture]\n3  50.3   1.8 1 [Lecture]\n4  34.4   5.7 1 [Lecture]\n5  56.8   5.9 1 [Lecture]\n6  32.8   8   1 [Lecture]\n\n\n\n\n\n# A tibble: 6 × 3\n    ach solve group    \n  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl+lbl&gt;\n1  82.7  13.8 2 [PBL]  \n2  67.4  13.1 2 [PBL]  \n3  59.5  13.8 2 [PBL]  \n4  36    11.6 2 [PBL]  \n5  84.4  12.8 2 [PBL]  \n6  55.5  11.8 2 [PBL]  \n\n\n\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
   },
   {
     "objectID": "index.html#materials",
     "href": "index.html#materials",
     "title": "Practical Insight: Doing Data Science in Education with R",
     "section": "Materials",
-    "text": "Materials\nMaterial สำหรับการอบรม Practical Insight: Doing Data Science in Education with R\n\n\n\n\n\n\n\n\n\nModule\nหัวข้อ\nชุดข้อมูลตัวอย่าง\nกิจกรรม/การบ้าน\n\n\n\n\n1\n1.1 Introduction to Data Science\n\n\n\n\n\n1.2 Importing data\nTeacherSalaryData.csv"
+    "text": "Materials\nMaterial สำหรับการอบรม Practical Insight: Doing Data Science in Education with R\n\n\n\n\n\n\n\n\n\nModule\nหัวข้อ\nชุดข้อมูลตัวอย่าง\nกิจกรรม/การบ้าน\n\n\n\n\n1\n1.1 Introduction to Data Science\n\n\n\n\n\n1.2 Importing data\nTeacherSalaryData.csv; Score.xlsx; AchSolve.sav\n\n\n\n\n1.3 Tidy Data\nmessydata.xlsx\n\n\n\n2\n2.1 Data Preprocessing"
   },
   {
     "objectID": "instructors.html",
@@ -250,6 +208,55 @@
     "title": "Instructor",
     "section": "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร",
     "text": "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร\n\n\nอาจารย์ประจำภาควิชาวิจัยและจิตวิทยาการศึกษา คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย\nKruRoo Co-Founder\nDataKruRoo Founder\n\n\nความเชี่ยวชาญเฉพาะ\n\nสถิติและวิทยาการข้อมูลทางการศึกษา\nการพัฒนาทัศนภาพข้อมูลทางการศึกษา\nการเรียนรู้ของเครื่องและการประยุกต์สำหรับการวิจัยทางการศึกษา\nการจำลองแบบมอนติคาร์โล\nสถิติวิเคราะห์แบบเบย์\nR programming\n\n\n\nผลงานทางวิชาการ\nPanidvadtana, P., Sujiva, S., & Srisuttiyakorn, S. (2021). A Comparison of the Accuracy of Multidimensional IRT equating methods for Mixed-Format Tests, Kasetsart Journal of Social Sciences, 42, 215-220. (Scopus)\nสิวะโชติ ศรีสุทธิยากร. (2562). ความเหลื่อมล้ำทางการศึกษาและปัจจัยที่ส่งผล : การวิเคราะห์พหุระดับร่วมกับดัชนีเอ็นโทรปีนัยทั่วไปที่อิงมัธยฐาน. วารสารวิธีวิทยาการวิจัย. 32(3), 342-379. (TCI1)\nวรรณี แกมเกตุ, ดวงกมล ไตรวิจิตรคุณ, สิวะโชติ ศรีสุทธิยากร, เมษา นวลศรี, กษิดิศ ครุฑางคะ  และภานุวัฒน์ เข็มกลัด. (2562). รายงานการติดตามและประเมินผลการดำเนินงานตามแผนการศึกษาแห่งชาติ พ.ศ. 2560-2579 : ช่วงปี พ.ศ. 2560-2562. สำนักงานเลขาธิการสภาการศึกษา กระทรวงศึกษาธิการ.\nกนิษฐ์ ศรีเคลือบ, สิวะโชติ ศรีสุทธิยากร และคณะ. (2562). รายงานผลการสำรวจการวิเคราะห์ความต้องการและความจำเป็นของนักเรียนทุนเสมอภาคในสถานการณ์การระบาดไวรัสโคโรนา (COVID-19). กองทุนเพื่อความเสมอภาคทางการศึกษา (กสศ.)\n\n\nหนังสือ\nสิวะโชติ ศรีสุทธิยากร. (2564). สถิติและวิทยาการข้อมูลทางการศึกษา : R สำหรับจัดระเบียบและจัดกระทำข้อมูล. กรุงเทพมหานคร : คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย. สืบค้นจาก https://m.chulabook.com/th/product-details/120204"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#กจกรรม-messydata",
+    "href": "03Tidydata/tidydata.html#กจกรรม-messydata",
+    "title": "3. Tidy Data",
+    "section": "กิจกรรม : Messydata",
+    "text": "กิจกรรม : Messydata\n\nดาวน์โหลดไฟล์ข้อมูล messydata.xlsx\nนำไฟล์ข้อมูล messydata.xlsx เข้าโปรแกรม R\n\n\ndat &lt;- read_excel(\"messydata.xlsx\", na=\"-\")\n\n\nลองสำรวจข้อมูลข้างต้นแล้วตอบคำถาม\n\nวัตถุประสงค์ของการวิจัยคือ เพื่อเปรียบเทียบทักษะการแก้ปัญหาของนักเรียน ภายหลังจากได้รับการจัดการเรียนรู้ด้วย วิธีการสอนแบบบรรยาย (Lecture) กับ วิธีการสอนแบบใช้ปัญหาเป็นฐาน (PBL)\n\nท่านคิดว่า ข้อมูล messydata.xlsx มีความพร้อมที่จะนำไปวิเคราะห์เพื่อตอบวัตถุประสงค์ดังกล่าวหรือไม่?"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#terminology",
+    "href": "03Tidydata/tidydata.html#terminology",
+    "title": "3. Tidy Data",
+    "section": "Terminology",
+    "text": "Terminology\n\n\n\n\nDataset\nVariables\nObservations\nTypes"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#tidy-data",
+    "href": "03Tidydata/tidydata.html#tidy-data",
+    "title": "Tidy Data",
+    "section": "Tidy Data",
+    "text": "Tidy Data\n\n\n\n\nEach variable you measure should be in one column.\nEach different observation of that variable should be in a different row.\nOne cell should contain one value."
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#rules-for-storing-data-in-tidydata-format",
+    "href": "03Tidydata/tidydata.html#rules-for-storing-data-in-tidydata-format",
+    "title": "3. Tidy Data",
+    "section": "Rules for storing data in tidydata format",
+    "text": "Rules for storing data in tidydata format"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#data-quality-1",
+    "href": "03Tidydata/tidydata.html#data-quality-1",
+    "title": "3. Tidy Data",
+    "section": "Data Quality",
+    "text": "Data Quality\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#data-quality-2",
+    "href": "03Tidydata/tidydata.html#data-quality-2",
+    "title": "3. Tidy Data",
+    "section": "Data Quality",
+    "text": "Data Quality"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#data-preprocessing",
+    "href": "03Tidydata/tidydata.html#data-preprocessing",
+    "title": "3. Tidy Data",
+    "section": "Data Preprocessing",
+    "text": "Data Preprocessing\n\nData preprocessing is a technique that involves transforming raw data into an understandable format.\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
   },
   {
     "objectID": "01Intro_to_DS/Intro.html#what-is-data-sciene",
@@ -327,5 +334,54 @@
     "title": "About",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#what-is-tidy-data",
+    "href": "03Tidydata/tidydata.html#what-is-tidy-data",
+    "title": "3. Tidy Data",
+    "section": "What is Tidy Data?",
+    "text": "What is Tidy Data?\n\n\n\n\nแต่ละตัวแปรมีคอลัมน์ของตัวเอง\nแต่ละหน่วยข้อมูลมีแถวของตัวเอง\nแต่ละเซลล์จะจัดเก็บข้อมูลเพียงค่าเดียวเท่านั้น\nหากมีหลายตาราง จะต้องมีคอลัมน์ที่สามารถเป็นตัวอ้างอิง/ใช้เชื่อมตารางเหล่านั้นเข้าด้วยกัน"
+  },
+  {
+    "objectID": "03Tidydata/tidydata.html#data-quality",
+    "href": "03Tidydata/tidydata.html#data-quality",
+    "title": "3. Tidy Data",
+    "section": "Data Quality",
+    "text": "Data Quality\n\nData quality is the degree to which data is fit for its intended uses in operations, decision making and planning.\nData quality is a perception or an assessment of data’s fitness to serve its purpose in a given context."
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#ภาพรวมของการเตรยมขอมล",
+    "href": "04DataPreprocessing/datapreprocessing.html#ภาพรวมของการเตรยมขอมล",
+    "title": "4. Data Preprocessing",
+    "section": "ภาพรวมของการเตรียมข้อมูล",
+    "text": "ภาพรวมของการเตรียมข้อมูล\n\nTidying Data\nCleaning Data\nMissing Values Analysis and Imputation\nOutlier Detection and Handling\nData Reduction\nFeature Selection\n…\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#data-preprocessing-1",
+    "href": "04DataPreprocessing/datapreprocessing.html#data-preprocessing-1",
+    "title": "4. Data Preprocessing",
+    "section": "Data Preprocessing",
+    "text": "Data Preprocessing\n\nที่มา : Max Khun, & Kjell Johnson (2019)"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#ฟงกชนพนฐานใน-r-สำหรบสำรวจขอมล",
+    "href": "04DataPreprocessing/datapreprocessing.html#ฟงกชนพนฐานใน-r-สำหรบสำรวจขอมล",
+    "title": "4. Data Preprocessing",
+    "section": "ฟังก์ชันพื้นฐานใน R สำหรับสำรวจข้อมูล",
+    "text": "ฟังก์ชันพื้นฐานใน R สำหรับสำรวจข้อมูล\n\nstr() - ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล\nhead() และ tail() - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย\nnames() - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย\nsummary() - เรียกดูค่าสถิติเบื้องต้นของตัวแปรแต่ละตัวภายในชุดข้อมูล"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#กจกรรม-การสำรวจชดขอมล",
+    "href": "04DataPreprocessing/datapreprocessing.html#กจกรรม-การสำรวจชดขอมล",
+    "title": "4. Data Preprocessing",
+    "section": "กิจกรรม : การสำรวจชุดข้อมูล",
+    "text": "กิจกรรม : การสำรวจชุดข้อมูล\nจากชุดข้อมูล messydata.xlsx ขอให้ผู้เรียน\n\nทดลองใช้ฟังก์ชันพื้นฐานข้างต้น สำรวจชุดข้อมูลผลลัพธ์ที่ได้เป็นอย่างไร\nชุดข้อมูลที่นำเข้าจาก messydata.xlsx มีคุณสมบัติ tidy data หรือไม่ อย่างไร\nผู้เรียนคิดว่า tidy data ของชุดข้อมูล messydata.xlsx ควรมีหน้าตาเป็นอย่างไร\n\nโปรด upload รูป tidy data ของท่านที่นี่ —&gt; upload เลย หรือ scan QR code\n\n\n\n\nPractical Insight: Doing Data Science in Education with R"
+  },
+  {
+    "objectID": "04DataPreprocessing/datapreprocessing.html#การจดการกบคอลมน-column",
+    "href": "04DataPreprocessing/datapreprocessing.html#การจดการกบคอลมน-column",
+    "title": "4. Data Preprocessing",
+    "section": "การจัดการกับคอลัมน์ (Column)",
+    "text": "การจัดการกับคอลัมน์ (Column)\nฟังก์ชันพื้นฐานที่เกี่ยวข้อง\n\nglimpse() ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล\nhead() และ tail() - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย\nnames() - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย"
   }
 ]
