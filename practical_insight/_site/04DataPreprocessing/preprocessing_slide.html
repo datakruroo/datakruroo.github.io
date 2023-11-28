@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
-  <title>Practical Insight: Doing Data Science in Education with R - 4. Data Preprocessing</title>
+  <title>Practical Insight: Doing Data Science in Education with R - 5. Data Preprocessing</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -387,7 +387,7 @@
       margin-right: 0; 
     }
   </style>
-<meta property="og:title" content="Practical Insight: Doing Data Science in Education with R - 4. Data Preprocessing">
+<meta property="og:title" content="Practical Insight: Doing Data Science in Education with R - 5. Data Preprocessing">
 <meta property="og:description" content="Practical Insight: Doing Data Science in Education with R">
 <meta property="og:site-name" content="Practical Insight: Doing Data Science in Education with R">
 </head>
@@ -396,7 +396,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">4. Data Preprocessing</h1>
+  <h1 class="title">5. Data Preprocessing</h1>
   <p class="subtitle"><b>Practical Insight: Doing Data Science in Education with R</b></p>
 
 <div class="quarto-title-authors">
@@ -408,7 +408,6 @@
 </div>
 
 </section>
-<section>
 <section id="data-preprocessing" class="title-slide slide level1 center">
 <h1>Data Preprocessing</h1>
 <p>เป็นกระบวนการที่มีวัตถุประสงค์หลักคือเพื่อจัดกระทำหรือแปลงข้อมูลดิบที่เก็บรวบรวมมาจากแหล่งข้อมูลต่าง ๆ ให้อยู่ในรูปแบบที่พร้อมและมีคุณภาพเพียงพอสำหรับการนำไปวิเคราะห์</p>
@@ -419,84 +418,75 @@
 <li>Data Reduction</li>
 </ul>
 </section>
-<section id="data-preprocessing-1" class="slide level2">
-<h2>Data Preprocessing</h2>
 
-<img data-src="images/image-27453011.png" class="r-stretch quarto-figure-center"><p class="caption">ที่มา : Max Khun, &amp; Kjell Johnson (2019)</p></section></section>
 <section>
-<section id="กจกรรม-messy-data-revisited" class="title-slide slide level1 center">
-<h1>กิจกรรม : Messy Data (Revisited)</h1>
+<section id="data-preprocessing-1" class="title-slide slide level1 center">
+<h1>Data Preprocessing</h1>
+
+<img data-src="images/image-27453011.png" class="r-stretch quarto-figure-center"><p class="caption">ที่มา : Max Khun, &amp; Kjell Johnson (2019)</p></section>
+<section id="tidyr-dplyr-package" class="slide level2 smaller">
+<h2><code>Tidyr</code> &amp; <code>dplyr</code> package</h2>
+<p><a href="https://tidyr.tidyverse.org/"><img data-src="https://tidyr.tidyverse.org/logo.png" style="width:20.0%"></a> <a href="https://dplyr.tidyverse.org/"><img data-src="https://dplyr.tidyverse.org/logo.png" style="width:20.0%"></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyr"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">install.packages</span>(<span class="st">"dplyr"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
+<section>
+<section id="exploring-data" class="title-slide slide level1 center">
+<h1>Exploring Data</h1>
+<p>ใน R มีเครื่องมือพื้นฐานสำหรับสำรวจภาพรวมของข้อมูลหลายตัว</p>
+<ul>
+<li><p><code>head()</code> และ <code>tail()</code> - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย</p></li>
+<li><p><code>glimpse()</code> หรือ <code>str()</code> ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล</p></li>
+<li><p><code>summary()</code> ใช้สรุปค่าสถิติเบื้องต้นของชุดข้อมูล</p></li>
+<li><p><code>View()</code> ใช้เรียกดูชุดข้อมูลในหน้าต่างเฉพาะ</p></li>
+</ul>
+</section>
+<section id="กจกรรม-messy-data-revisited" class="slide level2">
+<h2>กิจกรรม : Messy Data (Revisited)</h2>
 <p>จากชุดข้อมูล messydata.xlsx ขอให้ผู้เรียน</p>
 <ul>
 <li><p>ทดลองใช้ฟังก์ชันพื้นฐานข้างต้น สำรวจชุดข้อมูลผลลัพธ์ที่ได้เป็นอย่างไร</p></li>
 <li><p>ชุดข้อมูลที่นำเข้าจาก messydata.xlsx มีคุณสมบัติ tidy data หรือไม่ อย่างไร</p></li>
 <li><p>ผู้เรียนคิดว่า tidy data ของชุดข้อมูล messydata.xlsx ควรมีหน้าตาเป็นอย่างไร</p></li>
 </ul>
-</section>
-<section id="messy-data-revisited" class="slide level2 smaller">
-<h2>Messy Data (Revisited)</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>messy_dat <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"dataset/messydata.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>New names:
-• `` -&gt; `...1`</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>messy_dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 20 × 5
-   ...1            Lecture.pre PBL.pre Lecture.post PBL.post
-   &lt;chr&gt;           &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   
- 1 Ancient One     20          -       45           -       
- 2 Adam Warlock    16          -       34           -       
- 3 Captain America -           18      -            67      
- 4 Colossus        -           25      -            93      
- 5 Captain Marvel  13          -       50           -       
- 6 Diablo          -           17      &lt;NA&gt;         71      
- 7 Doctor Doom     14          -       48           -       
- 8 Deadpool        -           20      -            83      
- 9 Dr. Strange     -           28      -            75      
-10 Exodus          -           21      -            73      
-11 Falcon          22          -       32           -       
-12 Groot           -           17      -            68      
-13 Hitman          14          -       70           -       
-14 Hulk            15          -       64           -       
-15 Iceman          19          -       55           -       
-16 Iron Man        -           15      -            82      
-17 Jimmy Woo       18          -       59           -       
-18 Kingpin         -           12      -            68      
-19 Kronos          8           -       62           -       
-20 Logan           -           25      -            87      </code></pre>
-</div>
-</div>
 </section></section>
 <section>
-<section id="tidying-data" class="title-slide slide level1 smaller center">
-<h1>Tidying Data</h1>
-<p>เป็นกระบวนการปรับแต่งโครงสร้างของข้อมูลให้เป็นรูปแบบที่เหมาะสมกับการวิเคราะห์ โดยใช้เครื่องมือต่าง ๆ ในการจัดการกับข้อมูล ซึ่งสามารถแบ่งออกเป็น 3 ขั้นส่วนหลักได้แก่</p>
+<section id="cleaning-manipulating-data" class="title-slide slide level1 center">
+<h1>Cleaning &amp; Manipulating Data</h1>
 <ul>
-<li><p>การจัดการกับตาราง (Table)</p></li>
-<li><p>การจัดการกับคอลัมน์ (Column)</p></li>
-<li><p>การจัดการกับแถว (Row)</p></li>
+<li><p>Reshaping data</p></li>
+<li><p>Joining data</p></li>
+<li><p>Manipulating Columns</p></li>
+<li><p>Manipulating Rows</p></li>
+<li><p>Handling Missing Values</p></li>
+<li><p>Outlier Detection &amp; Treatment</p></li>
+<li><p>Data Reduction</p></li>
 </ul>
 </section>
-<section id="tidyr-package" class="slide level2 smaller">
-<h2><a href=""><code>Tidyr</code></a> package</h2>
-
-<img data-src="https://tidyr.tidyverse.org/logo.png" style="width:20.0%" class="r-stretch"><div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyr"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="การจดการกบคอลมน-column" class="slide level2 smaller">
-<h2>การจัดการกับคอลัมน์ (Column)</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">install.packages</span>(<span class="st">"dplyr"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="reshaping-data" class="slide level2 smaller">
+<h2>Reshaping data</h2>
 <ul>
-<li><p><code>head()</code> และ <code>tail()</code> - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย</p></li>
-<li><p><code>glimpse()</code> ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล</p></li>
+<li><p><code>gather()</code> หรือ <code>pivot_longer()</code> ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ long format</p></li>
+<li><p><code>spread()</code> หรือ <code>pivot_wider()</code> ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ wide format</p></li>
+<li><p><code>separate()</code> ใช้แยกข้อมูลในคอลัมน์เดียวเป็นหลายคอลัมน์</p></li>
+<li><p><code>unite()</code> ใช้รวมข้อมูลจากหลายคอลัมน์เป็นคอลัมน์เดียว</p></li>
+</ul>
+</section>
+<section id="long-vs-wide-format" class="slide level2 smaller">
+<h2>long vs wide format</h2>
+
+<img data-src="https://www.statology.org/wp-content/uploads/2021/12/wideLong1-1.png" style="width:70.0%" class="r-stretch"></section>
+<section id="joining-data" class="slide level2 smaller">
+<h2>Joining data</h2>
+
+<img data-src="images/joining.png" style="width:50.0%" class="r-stretch"></section>
+<section id="manipulating-columns" class="slide level2 smaller">
+<h2>Manipulating Columns</h2>
+<ul>
 <li><p><code>select()</code> ใช้เลือกคอลัมน์ที่ต้องการ</p></li>
 <li><p><code>rename()</code> ใช้เปลี่ยนชื่อคอลัมน์</p></li>
 <li><p><code>mutate()</code> ใช้สร้างคอลัมน์ใหม่ที่คำนวณจากคอลัมน์ที่มีอยู่แล้ว</p></li>
@@ -504,34 +494,103 @@
 <li><p><code>summarise()</code> ใช้สรุปข้อมูลตามคอลัมน์ที่กำหนด</p></li>
 </ul>
 </section>
-<section id="การจดการกบแถว-row" class="slide level2 smaller">
-<h2>การจัดการกับแถว (Row)</h2>
+<section id="data-type-conversion" class="slide level2 smaller">
+<h2>Data Type Conversion</h2>
+<ul>
+<li><p><code>as.numeric()</code> ใช้แปลงข้อมูลเป็นตัวเลข</p></li>
+<li><p><code>as.character()</code> ใช้แปลงข้อมูลเป็นตัวอักษร</p></li>
+<li><p><code>factor()</code> ใช้แปลงข้อมูลเป็นตัวแปรประเภท factor</p></li>
+</ul>
+</section>
+<section id="manipulating-data-with-dplyr" class="slide level2 smaller">
+<h2>Manipulating Data with <code>dplyr</code></h2>
+<p><left></left></p>
+
+<img data-src="images/manipulate.png" style="width:80.0%" class="r-stretch quarto-figure-center"><p class="caption">สิวะโชติ ศรีสุทธิยากร (2564)</p><p></p>
+</section>
+<section id="manipulating-rows" class="slide level2 smaller">
+<h2>Manipulating Rows</h2>
 <ul>
 <li><p><code>filter()</code> ใช้กรองข้อมูลตามเงื่อนไขที่กำหนด</p></li>
 <li><p><code>slice()</code> ใช้เลือกแถวตามลำดับที่กำหนด</p></li>
 <li><p><code>distinct()</code> ใช้เลือกแถวที่ไม่ซ้ำกัน</p></li>
 </ul>
 </section>
-<section id="การจดการกบตาราง-table" class="slide level2 smaller">
-<h2>การจัดการกับตาราง (Table)</h2>
-<h4 id="tidyr"><a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf"><code>tidyr</code></a></h4>
+<section id="piping-operator" class="slide level2 smaller">
+<h2>piping operator (<code>%&gt;%</code>)</h2>
+<p>ตัวดำเนินการ piping มีประโยชน์อย่างมากในการดำเนินงานที่มีหลายขั้นตอน ใช้สำหรับส่งผ่านข้อมูลทางซ้ายของตัวดำเนินการ ไปยังฟังก์ชันที่อยู่ทางด้านขวาของตัวดำเนินการเป็นลูกโซ่ต่อไปเรื่อย ๆ</p>
+
+<img data-src="images/piping.png" style="width:80.0%" class="r-stretch"></section></section>
+<section id="กจกรรม-tidying-messy-data" class="title-slide slide level1 smaller center">
+<h1>กิจกรรม : Tidying “Messy Data”</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyr"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>messy_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>, </span>
+<span id="cb2-3"><a href="#cb2-3"></a>                 <span class="at">names_to =</span> <span class="st">"method_time"</span>, </span>
+<span id="cb2-4"><a href="#cb2-4"></a>                 <span class="at">values_to =</span> <span class="st">"score"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="fu">separate</span>(<span class="at">col =</span> <span class="st">"method_time"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6"></a>             <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"method"</span>,<span class="st">"time"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7"></a>             <span class="at">sep=</span><span class="st">"[.]"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"time"</span>, </span>
+<span id="cb2-9"><a href="#cb2-9"></a>                <span class="at">values_from =</span> <span class="st">"score"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="fu">mutate</span>(<span class="at">pre =</span> <span class="fu">ifelse</span>(pre <span class="sc">==</span> <span class="st">"-"</span>,<span class="cn">NA</span>,pre),</span>
+<span id="cb2-11"><a href="#cb2-11"></a>           <span class="at">post =</span> <span class="fu">ifelse</span>(post <span class="sc">==</span> <span class="st">"-"</span>,<span class="cn">NA</span>,post)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="fu">rename</span>(<span class="at">student_name =</span> ...<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<ul>
-<li><p><code>gather()</code> ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ long format</p></li>
-<li><p><code>spread()</code> ใช้แปลงชุดข้อมูลให้อยู่ในรูปแบบ wide format</p></li>
-</ul>
 </section>
-<section id="ฟงกชนพนฐานใน-r-สำหรบสำรวจขอมล" class="slide level2">
-<h2>ฟังก์ชันพื้นฐานใน R สำหรับสำรวจข้อมูล</h2>
-<ul>
-<li><p><code>str()</code> - ใช้สำรวจโครงสร้างโดยรวมของชุดข้อมูล</p></li>
-<li><p><code>head()</code> และ <code>tail()</code> - ใช้เรียกดูตารางข้อมูลส่วนหัว และส่วนท้าย</p></li>
-<li><p><code>names()</code> - ใช้เรียกดูชื่อคอลัมน์ในชุดข้อมูล และยังสามารถใช้เปลี่ยนชื่อคอลัมน์ได้ด้วย</p></li>
-<li><p><code>summary()</code> - เรียกดูค่าสถิติเบื้องต้นของตัวแปรแต่ละตัวภายในชุดข้อมูล</p></li>
-</ul>
+
+<section id="กจกรรมสำรวจขอมล" class="title-slide slide level1 center">
+<h1>กิจกรรมสำรวจข้อมูล</h1>
+<ol type="1">
+<li><p>จากชุดข้อมูล <code>tidy_dat</code> ที่ได้จากกิจกรรมก่อนหน้า จงใช้ฟังก์ชัน <code>summarise()</code> เพื่อสรุปข้อมูลเบื้องต้นของคะแนนสอบ pretest และ posttest</p></li>
+<li><p>ฟังก์ชัน <code>group_by()</code> มีประโยชน์มากเมื่อต้องการสรุปข้อมูลโดยจำแนกตามกลุ่มหรือตัวแปรจัดประเภทที่กำหนด ลองใช้ฟังก์ชัน <code>group_by()</code> และ <code>summarise()</code> เพื่อสรุปข้อมูลเบื้องต้นของคะแนนสอบ pretest และ posttest โดยจำแนกตามวิธีการสอนที่ผู้เรียนได้รับ</p></li>
+</ol>
+</section>
+
+<section>
+<section id="การเขยนไฟลขอมล" class="title-slide slide level1 smaller center">
+<h1>การเขียนไฟล์ข้อมูล</h1>
+<p>ผู้วิเคราะห์สามารถเขียนไฟล์ข้อมูลที่จัดกระทำหรือวิเคราะห์แล้วไปบันทึกไว้ในรูปแบบไฟล์ที่ต้องการได้ โดยใช้ฟังก์ชัน <code>write_*()</code> ซึ่งมีหลายรูปแบบ</p>
+</section>
+<section id="ฟงกชนทเกยวของ" class="slide level2">
+<h2>ฟังก์ชันที่เกี่ยวข้อง</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">install.packages</span>(<span class="st">"readr"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">install.packages</span>(<span class="st">"writexl"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">library</span>(readr)</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">library</span>(writexl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Function</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>write_csv()</code></td>
+<td style="text-align: left;">บันทึกข้อมูลเป็นไฟล์ .csv</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>write_tsv()</code></td>
+<td style="text-align: left;">บันทึกข้อมูลเป็นไฟล์ .tsv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>write_excel_csv()</code></td>
+<td style="text-align: left;">บันทึกข้อมูลเป็นไฟล์ .csv ที่สามารถเปิดได้ใน Excel</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>write_xlsx()</code></td>
+<td style="text-align: left;">บันทึกข้อมูลเป็นไฟล์ .xlsx</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="กจกรรม-การเขยนไฟลขอมล" class="slide level2 smaller">
+<h2>กิจกรรม : การเขียนไฟล์ข้อมูล</h2>
+<p>ลองเขียนไฟล์ข้อมูล <code>tidy_dat</code> ที่ได้จากกิจกรรมก่อนหน้านี้ ในรูปแบบไฟล์ .csv และ .xlsx</p>
 
 
 <img src="images/logo.png" class="slide-logo r-stretch"><div class="footer footer-default">

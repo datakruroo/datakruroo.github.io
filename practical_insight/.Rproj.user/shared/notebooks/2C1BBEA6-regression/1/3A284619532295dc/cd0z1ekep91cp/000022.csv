@@ -1,0 +1,9 @@
+"0","knn_result |> 
+  extract_workflow() |> 
+  finalize_workflow(best_knn) 
+"
+"1","[1m[33mError[39m in `finalize_workflow()`:[22m
+[33m![39m `x` should be a workflow
+Backtrace:
+[90m 1. [39m[1m[94mtune::finalize_workflow([39m[22mextract_workflow(knn_result), best_knn[1m[94m)[39m[22m
+"

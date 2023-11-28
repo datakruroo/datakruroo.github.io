@@ -1,5 +1,5 @@
 ---
-title: "3. Tidy Data"
+title: "4. Tidy Data"
 subtitle: "<b>Practical Insight: Doing Data Science in Education with R</b>"
 author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
 logo: "images/logo.png"
@@ -23,7 +23,6 @@ execute:
   freeze: auto
 ---
 
-
 ## กิจกรรม : Messydata {.smaller}
 
 1.  ดาวน์โหลดไฟล์ข้อมูล messydata.xlsx
@@ -35,16 +34,15 @@ dat <- read_excel("messydata.xlsx", na="-")
 
 3.  ลองสำรวจข้อมูลข้างต้นแล้วตอบคำถาม หากวัตถุประสงค์ของการวิเคราะห์คือ เพื่อเปรียบเทียบทักษะการแก้ปัญหาของนักเรียน ภายหลังจากได้รับการจัดการเรียนรู้ด้วย วิธีการสอนแบบบรรยาย (Lecture) กับ วิธีการสอนแบบใช้ปัญหาเป็นฐาน (PBL) **ท่านคิดว่า ข้อมูล messydata.xlsx มีความพร้อมที่จะนำไปวิเคราะห์เพื่อตอบวัตถุประสงค์ดังกล่าวหรือไม่?**
 
-
 # Tidydata {.smaller}
 
-- Terminology
+-   Terminology
 
-- What is Tidydata?
+-   What is Tidydata?
 
-- Rules for storing data in tidydata format
+-   Rules for storing data in tidydata format
 
-- Data Quality
+-   Data Quality
 
 ## Terminology
 
@@ -78,10 +76,7 @@ dat <- read_excel("messydata.xlsx", na="-")
 
 -   แต่ละเซลล์จะจัดเก็บข้อมูลเพียงค่าเดียวเท่านั้น
 
--  หากมีหลายตาราง จะต้องมีคอลัมน์ที่สามารถเป็นตัวอ้างอิง/ใช้เชื่อมตารางเหล่านั้นเข้าด้วยกัน
-
-
-
+-   หากมีหลายตาราง จะต้องมีคอลัมน์ที่สามารถเป็นตัวอ้างอิง/ใช้เชื่อมตารางเหล่านั้นเข้าด้วยกัน
 :::
 
 ::: {.column width="60%"}
@@ -118,4 +113,3 @@ Data quality is the degree to which data is fit for its intended uses in operati
 ## Data Quality {.smaller}
 
 ![](images/dataqua.png){width="75%"}
-

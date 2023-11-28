@@ -1,0 +1,257 @@
+---
+title: "Analytics Example 1"
+subtitle: "<b>Practical Insight: Doing Data Science in Education with R</b>"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร
+logo: "images/logo.png"
+footer: "[Practical Insight: Doing Data Science in Education with R](https://datakruroo.netlify.app/practical_insight/_site/)"
+format: 
+  html:
+    number_sections: true
+editor: visual
+execute:
+  freeze: auto
+---
+
+## Types of Data Analytics
+
+<center>![](images/analytictypes.png){width="80%"}</center>
+
+
+## สถานการณ์
+
+นักวิเคราะห์ต้องการทำนายเงินเดือนของอาจารย์มหาวิทยาลัย ด้วยตัวแปรทำนายได้แก่ เพศ ตำแหน่งทางวิชาการ สาขาวิชา ประสบการณ์ในการเป็นอาจารย์ และประสบการณ์ทำงานตั้งแต่จบปริญญาเอก โดยตัวแปรตามคือเงินเดือนของอาจารย์มหาวิทยาลัยที่ต้องการวิเคราะห์เป็นตัวแปรจัดประเภทที่มี 2 กลุ่ม กลุ่มแรกเป็นอาจารย์รายได้สูง (ตั้งแต่ 90,000 บาทขึ้นไป) และกลุ่มอาจารย์รายได้ปกติ
+
+```{r message =F}
+library(readr)
+library(dplyr)
+dat <- read_csv("TeacherSalaryData.csv")
+glimpse(dat, 60)
+```
+
+```{r}
+## สร้างตัวแปรรายได้แบบจัดประเภท
+dat |> 
+  mutate(high_salary = ifelse(salary >= 90000, "high", "normal"))-> dat_new
+```
+
+## มโนทัศน์ของการพัฒนาโมเดลทำนาย
+
+เราต้องการโมเดลทำนายที่มีคุณสมบัตื
+
+- Unbiased
+
+- Minimum variance
+
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1638148101.png)
+
+
+## กระบวนการพัฒนาโมเดลทำนาย
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1728379488.png)
+
+## Resampling 
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-468626522.png)
+
+- K-fold cross-validation
+
+- Bootstraping
+
+## K-fold cross-validation
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1150746472.png)
+
+
+## Tidymodels Framework
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-258190158.png)
+
+
+- package-rsample ใช้ในงาน resampling ข้อมูล เช่นการสร้าง training/validation/test dataset การสร้าง cross-validation dataset หรือการสร้าง bootstrape dataset ซึ่งได้กล่าวการใช้งานเบื้องต้นไปแล้ว
+
+- package-recipes ใช้แปลง/แก้ปัญหาที่เกิดขึ้นในข้อมูลของตัวแปรที่ใช้ในการพัฒนาโมเดล ขั้นตอนนี้เรียกว่า feature engineering
+
+- package-parsnip ใช้ fit machine learning กับข้อมูล
+
+- package-Tune และ package-dials มีฟังก์ชันที่อำนวยความสะดวกในการ fine tune hyperparameter ของโมเดลเพื่อเพิ่มประสิทธิภาพการทำนายของโมเดลให้สูงที่สุด
+
+- package-yardstick มีฟังก์ชันของ metric ที่ใช้ประเมินประสิทธิภาพของโมเดลทำนาย
+
+tidymodels ถูกพัฒนาขึ้นโดยได้รับการออกแบบให้สามารถทำซ้ำกระบวนการพัฒนาโมเดลได้ง่าย โดยใช้ไวยกรณ์ของภาษาในลักษณะเดียวกัน และถูกออกแบบโดยเน้นใช้กับ supervised learning เป็นหลัก ผู้ใช้งานไม่จำเป็นต้องติดตั้งทุก package ในข้างต้นด้วยตนเอง แต่ติดตั้งเพียง package-tidymodels ก็สามารถใช้งานทุก package ภายใต้ framework ดังกล่าวได้แล้ว โดยการพิมพ์คำสั่งต่อไปนี้
+
+```{r message = F}
+#install.packages("tidymodels")
+library(tidymodels)
+```
+
+
+### แบ่งชุดข้อมูลออกเป็น training และ test set
+
+```{r}
+set.seed(123)
+split <- initial_split(dat_new, prop = 0.8)
+train <- training(split)
+test <- testing(split)
+```
+
+
+
+### การสำรวจข้อมูล 1
+
+```{r}
+#install.packages("DataExplorer")
+library(DataExplorer)
+plot_intro(train)
+plot_missing(train)
+plot_bar(train)
+plot_histogram(train)
+plot_correlation(train, maxcat = 3)
+```
+
+### สำรวจข้อมูล 2
+
+```{r}
+library(ggplot2)
+train |>
+  ggplot(aes(x = high_salary, y = yrs.since.phd, fill = sex))+
+  geom_boxplot()
+
+train %>%
+  group_by(rank, discipline) |> 
+  count(high_salary) |> 
+  ggplot(aes(x=rank, y=n, fill=high_salary))+
+  geom_col()+
+  facet_wrap(~discipline, ncol=2)
+```
+
+
+### Data Preprocessing
+
+```{r}
+## Preprocessing1 
+recipe1_nointerc <- recipe(high_salary ~., data=train) |> 
+  step_select(-salary, -...1) |>
+  step_mutate(rank = factor(rank, levels=c("AsstProf", "AssocProf", "Prof"))) |> 
+  step_normalize(all_numeric_predictors()) |> 
+  step_dummy(all_nominal_predictors()) |> 
+  prep(data = train)
+
+## Preprocessing2
+recipe2_withinterc <- recipe(high_salary ~., data=train) |> 
+  step_select(-salary, -...1) |>
+  step_mutate(rank = factor(rank, levels=c("AsstProf", "AssocProf", "Prof"))) |> 
+  step_interact(terms = ~rank:discipline) |>
+  step_normalize(all_numeric_predictors()) |> 
+  step_dummy(all_nominal_predictors()) |> 
+  prep(data = train) 
+
+```
+
+### Fitting Model using parsnip
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-538379331.png){width="30%"}
+การ fit machine learning model กับข้อมูลด้วย R ในยุคเริ่มแรกค่อนข้างมีความยากลำบากพอสมควร เพราะ R ไม่ได้มี package ที่เป็น framework รวมสำหรับการ fit ML model ดังกล่าว การที่จะ fit ML model ในงานหนึ่ง ๆ ผู้วิเคราะห์อาจจะต้องยุ่งเกี่ยวกับ package จำนวนมาก เช่น
+
+- package rpart สำหรับ fit decision tree
+
+- package glmnet สำหรับ fit regularized regression model
+
+- package knn สำหรับ fit K-NN model
+
+parsnip ถูกพัฒนาขึ้นเพื่อแก้ปัญหาดังกล่าว โดยมีวัตถุประสงค์เพื่อให้ผู้วิเคราะห์สามารถ fit ML model ได้โดยใช้ไวยากรณ์เดียวกัน และไม่จำเป็นต้องรู้ถึงวิธีการทำงานของแต่ละ model ที่จะใช้ โดยในปัจจุบัน parsnip สามารถใช้ได้กับ model ที่มีอยู่ใน tidymodels ได้แก่
+
+[https://www.tidymodels.org/find/parsnip/](https://www.tidymodels.org/find/parsnip/)
+
+จากสถานการณ์ข้างต้นหากจะใช้ logistic regression เพื่อเป็นโมเดลทำนาย สามารถระบุโมเดลได้ดังนี้
+
+```{r}
+logistic_model <- logistic_reg() |> 
+  set_engine("glm") |> 
+  set_mode("classification")
+```
+
+### สร้าง workflowset เพื่อ fit model ข้างต้น และประเมินผล
+
+```{r}
+## สร้าง workflowset
+my_workflowset <- workflow_set(
+  preproc = list(recipe1_nointerc, recipe2_withinterc),
+  models = list(logistic_model)
+)
+my_workflowset
+```
+
+```{r}
+## กำหนด evaluation metric
+eval_metric <- metric_set(roc_auc, accuracy, sens, spec, f_meas)
+train_result <- my_workflowset |> 
+  workflow_map(
+    resamples = vfold_cv(train, v = 5),
+    metrics = eval_metric
+  )
+```
+
+
+### ดูผลลัพธ์จากการประเมิน
+
+ผลลัพธ์ด้านล่างแสดงให้เห็นว่าโมเดลแรกให้ผลดีที่สุด
+
+```{r}
+# พิจารณา validation performance
+train_result |> 
+  rank_results()
+
+train_result |> 
+  collect_metrics() |> 
+  filter(.metric == "roc_auc") |> 
+  arrange(desc(mean))
+
+```
+
+เลิือก best workflow จากผลลัพธ์ด้านบน
+
+```{r}
+best_workflow <- train_result |> 
+  extract_workflow(id = "recipe_1_logistic_reg") |> 
+  fit(train)
+
+test_rec <- recipe1_nointerc |> 
+  bake(new_data = test)
+
+library(caret)
+test_pred <- best_workflow |> 
+  extract_fit_parsnip() |>
+  predict(test_rec) |> 
+  bind_cols(test) |> 
+  mutate(high_salary = factor(high_salary, levels=c("high","normal"))) 
+
+confusionMatrix(test_pred$.pred_class, test_pred$high_salary, positive = "high")
+```
+
+ลองนำโมเดลที่ได้มาทำนาย salary ใน test set
+
+```{r eval = F}
+trained_logistic1 <- train_result |>
+  extract_workflow(id = "recipe_1_logistic_reg") |> 
+  select_best(metric = "roc_auc")
+
+trained_logistic2 <- train_result |>
+  extract_workflow_set_result(id = "recipe_2_logistic_reg")
+
+trained_logistic1 |> 
+  finalize_workflow() |>
+  last_fit(split = split) -> logistic1_fit
+
+predict(trained_logistic1, test) |> 
+  bind_cols(test) |> 
+  select(high_salary, .pred_class, .pred_0, .pred_1)
+)
+```
+
+### การสรุปผลการวิเคราะห์ข้อมูล
+
+
+
+
+
