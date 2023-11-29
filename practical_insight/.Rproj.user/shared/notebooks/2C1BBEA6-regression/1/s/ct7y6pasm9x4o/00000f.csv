@@ -1,0 +1,4 @@
+"0","train |> "
+"0","  ggplot(aes(x=yrs.service, y=salary))+"
+"0","  geom_point()+"
+"0","  geom_smooth(aes(col = discipline), method = ""lm"")"

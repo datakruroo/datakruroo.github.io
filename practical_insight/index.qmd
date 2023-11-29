@@ -3,7 +3,7 @@ title: "Practical Insight: Doing Data Science in Education with R"
 author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
 toc: false
 toc-title: " "
-tbl-colwidths: [1,7,7,3]
+tbl-colwidths: [1,7,7]
 ---
 
 <br>
@@ -16,14 +16,40 @@ tbl-colwidths: [1,7,7,3]
 
 Material สำหรับการอบรม Practical Insight: Doing Data Science in Education with R
 
-| Module | หัวข้อ                                                                                | ชุดข้อมูลตัวอย่าง                                                                                                                   | กิจกรรม |
-|-------------|------------------|-----------------------------|-------------|
-| 1      | [1.1 Introduction to Data Science](01Intro_to_DS/intro.html)                        |                                                                                                                                |        |
-|        | [1.2 แนะนำ R และ Rstudio](01Intro_to_DS/RandRstudio.html)                           |                                                                                                                                |        |
-|        | [1.3 Importing data](02Importing_data/importing_data.html)                          | [TeacherSalaryData.csv](dataset/TeacherSalaryData.csv); [Score.xlsx](dataset/Score.xlsx); [AchSolve.sav](dataset/AchSolve.sav) |        |
-|        | [1.4 Tidy Data](03Tidydata/tidydata.html)                                           | [messydata.xlsx](dataset/messydata.xlsx)                                                                                       |        |
-| 2      | [2.1 Data Preprocessing](04datapreprocessing/datapreprocessing.html)                |                                                                                                                                |        |
-| 3      | [3.1 Basic Visualization using ggplot2](05DataVisualization/datvis.html)            |                                                                                                                                |        |
-|        | [3.2 Data Representation using ggplot2](05DataVisualization/datarepresentation.pdf) |                                                                                                                                |        |
-| 4      | [4.1 Regression](06Analytics/regression.html)                                       |                                                                                                                                |        |
-|        | [4.2 Classification](06Analytics/classification.html)                               |                                                                                                                                |        |
+| Module | หัวข้อ                                                                                | Notebook                                             |
+|-------------|------------------|------------------------------------|
+| 1      | [1.1 Introduction to Data Science](01Intro_to_DS/intro.html)                        |                                                      |
+|        | [1.2 แนะนำ R และ Rstudio](01Intro_to_DS/RandRstudio.html)                           | [Notebook_introR.qmd](notebooks/Notebook_introR.qmd) |
+|        | [1.3 Importing data](02Importing_data/importing_data.html)                          |                                                      |
+|        | [1.4 Tidy Data](03Tidydata/tidydata.html)                                           |                                                      |
+| 2      | [2.1 Data Preprocessing](04datapreprocessing/datapreprocessing.html)                |                                                      |
+| 3      | [3.1 Basic Visualization using ggplot2](05DataVisualization/datvis.html)            |                                                      |
+|        | [3.2 Data Representation using ggplot2](05DataVisualization/datarepresentation.pdf) |                                                      |
+| 4      | [4.1 Regression](06Analytics/regression.html)                                       |                                                      |
+|        | [4.2 Classification](06Analytics/classification.html)                               |                                                      |
+
+**ชุดข้อมูลที่ใช้เป็นตัวอย่าง**
+
+-   [Score.xlsx](dataset/Score.xlsx)
+
+-   [AchSolve.sav](dataset/AchSolve.sav)
+
+-   [messydata.xlsx](dataset/messydata.xlsx)
+
+-   [TeacherSalaryData.csv](dataset/TeacherSalaryData.csv)
+
+**เอกสารอ้างอิง**
+
+-   <https://moderndive.com/>
+
+-   <https://ggplot2-book.org/>
+
+-   <https://r4ds.hadley.nz/data-tidy>
+
+-   <https://r4ds.had.co.nz/transform.html>
+
+-   <https://www.tidymodels.org/>
+
+-   <https://parsnip.tidymodels.org/>
+
+-   <https://www.chulabook.com/test-prep/120204>

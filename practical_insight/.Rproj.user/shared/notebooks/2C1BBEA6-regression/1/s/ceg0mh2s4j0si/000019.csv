@@ -1,0 +1,15 @@
+"0","ols_trained |> 
+  predict(test_noint)
+"
+"1","[1m[33mError[39m in `validate_column_names()`:[22m
+[33m![39m The following required columns are missing: '...1', 'rank', 'discipline', 'sex'.
+Backtrace:
+[90m  1. [39m[1mstats[22m::predict(ols_trained, test_noint)
+[90m  2. [39m[1mworkflows[22m:::predict.workflow(ols_trained, test_noint)
+[90m  3. [39mworkflows:::forge_predictors(new_data, workflow)
+[90m  5. [39m[1mhardhat[22m:::forge.data.frame(new_data, blueprint = mold$blueprint)
+[90m  7. [39mhardhat:::run_forge.default_recipe_blueprint(...)
+[90m  8. [39mhardhat:::forge_recipe_default_clean(...)
+[90m  9. [39mhardhat::shrink(new_data, blueprint$ptypes$predictors)
+[90m 10. [39m[1m[94mhardhat::validate_column_names([39m[22mdata, cols[1m[94m)[39m[22m
+"

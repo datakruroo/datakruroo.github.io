@@ -1,0 +1,8 @@
+"0","## กำหนด evaluation metric"
+"0","eval_metric <- metric_set(rmse, rsq)"
+"0","train_result <- my_workflowset |> "
+"0","  workflow_map("
+"0","    grid = 10,"
+"0","    resamples = vfold_cv(train, v = 5, repeats = 3),"
+"0","    metrics = eval_metric"
+"0","  )"
