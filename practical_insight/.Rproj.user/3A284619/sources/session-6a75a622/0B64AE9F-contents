@@ -1,0 +1,76 @@
+---
+title: "6. Basic Visualization using ggplot2"
+format: html
+---
+
+# Graphics
+
+```{r echo=F, fig.height=5, message = F, warning = F}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gapminder)
+library(ggrepel)
+
+p<-gapminder %>% 
+  filter(year == "2007") %>%
+  ggplot(aes(x = gdpPercap, 
+             y= lifeExp, 
+             col=continent))+
+  geom_point(aes(size = pop),alpha=0.5)+
+  geom_text_repel(aes(label=country, size = pop), 
+                  show.legend = F,
+                  max.overlaps = 12)+
+  scale_x_log10(limits=c(250,150000),
+                breaks=c(250, 500, 1000,2000,4000,8000,16000,32000,64000,128000))+
+  scale_size(breaks=c(10^6, 10^7, 10^8, 10^9),
+                  labels = c("1","10","100","1,000 Millions"),
+                  # max_size=30
+                  range = c(1,10)
+                  )+
+  scale_color_brewer(type = "qual", palette=2)+
+  xlab("Income (GDP per capita, $ per year)")+
+  ylab("Lifespan (Life expectancy, years)")+
+  labs(size = "Size: Population",
+       col = "Color: Region")+
+  theme_light()+
+  theme(panel.grid.minor = element_blank())
+p
+```
+
+# กิจกรรม : My First Scatter plot
+
+1.  ติดตั้ง library-`gapminder` และ `ggplot2`
+
+2.  นำเข้าข้อมูล `gapminder` โดยพิมพ์คำสั่ง `library(gapminder)` และ `gapminder`
+
+3.  ลองสำรวจข้อมูลเบื้องต้น ชุดข้อมูล `gapminder` มีตัวแปรกี่ตัว และมีข้อมูลกี่แถว
+
+4.  ขั้นตอนต่อไปนี้จะเริ่มสร้าง scatter plot ด้วย ggplot2
+
+-   พิมพ์คำสั่ง `ggplot(data = gapminder)` ผลลัพธ์ที่ได้เป็นอย่างไร
+
+-   เพิ่ม aesthetic mapping โดยพิมพ์คำสั่ง `ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))` ผลลัพธ์ที่ได้เป็นอย่างไร
+
+-   เพิ่ม geometric object โดยพิมพ์คำสั่ง
+
+```{r eval=F}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point()
+```
+
+# กิจกรรม : Creating any plots with ggplot2
+
+1.  จำนวนประเทศจำแนกตามทวีปเป็นอย่างไร ในปี 2007
+
+2.  การแจกแจงของ lifeExp กับ gdpPercap ในปี 2007 มีลักษณะเหมือนหรือแตกต่างกันอย่างไร
+
+3.  การแจกแจงของอายุขัยเฉลี่ยของประชากรในปี 2007 ระหว่างประเทศที่มี gdpPercap มากกว่า 10000\$ กับต่ำกว่า 10000\$ เหมือนหรือแตกต่างกันอย่างไร
+
+4.  อายุขัยเฉลี่ยของประชากรในทวีปเอเซียมีแนวโน้มเปลี่ยนแปลงอย่างไรในช่วงปี 1952-2007
+
+-   line plot
+-   boxplot
+-   heatmap
+
+5.  เปรียบเทียบสัดส่วนประเทศที่มีค่า gdpPercap มากกว่า 10000\$ กับต่ำกว่า 10000\$ ในช่วงปี 1952 - 2007

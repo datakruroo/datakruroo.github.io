@@ -16,17 +16,17 @@ tbl-colwidths: [1,7,7]
 
 Material สำหรับการอบรม Practical Insight: Doing Data Science in Education with R
 
-| Module | หัวข้อ                                                                                | Notebook                                             |
+| Module | หัวข้อ                                                                                | Notebook                                                                   |
 |-------------|------------------|------------------------------------|
-| 1      | [1.1 Introduction to Data Science](01Intro_to_DS/intro.html)                        |                                                      |
-|        | [1.2 แนะนำ R และ Rstudio](01Intro_to_DS/RandRstudio.html)                           | [Notebook_introR.qmd](notebooks/Notebook_introR.qmd) |
-|        | [1.3 Importing data](02Importing_data/importing_data.html)                          |                                                      |
-|        | [1.4 Tidy Data](03Tidydata/tidydata.html)                                           |                                                      |
-| 2      | [2.1 Data Preprocessing](04datapreprocessing/datapreprocessing.html)                |                                                      |
-| 3      | [3.1 Basic Visualization using ggplot2](05DataVisualization/datvis.html)            |                                                      |
-|        | [3.2 Data Representation using ggplot2](05DataVisualization/datarepresentation.pdf) |                                                      |
-| 4      | [4.1 Regression](06Analytics/regression.html)                                       |                                                      |
-|        | [4.2 Classification](06Analytics/classification.html)                               |                                                      |
+| 1      | [1.1 Introduction to Data Science](01Intro_to_DS/intro.html)                        |                                                                            |
+|        | [1.2 แนะนำ R และ Rstudio](01Intro_to_DS/RandRstudio.html)                           | [Notebook_introR.qmd](notebooks/Notebook_introR.qmd)                       |
+|        | [1.3 Importing data](02Importing_data/importing_data.html)                          | [Notebook_importing_data.qmd](notebooks/Notebook_importing_data.qmd)       |
+|        | [1.4 Tidy Data](03Tidydata/tidydata.html)                                           |                                                                            |
+| 2      | [2.1 Data Preprocessing](04datapreprocessing/datapreprocessing.html)                | [Notebook_datapreprocessing.qmd](notebooks/Notebook_datapreprocessing.qmd) |
+| 3      | [3.1 Basic Visualization using ggplot2](05DataVisualization/datvis.html)            | [Notebook_datvis.qmd](notebooks/Notebook_datvis.qmd)                       |
+|        | [3.2 Data Representation using ggplot2](05DataVisualization/datarepresentation.pdf) |                                                                            |
+| 4      | [4.1 Regression](06Analytics/regression.html)                                       | [Notebook_regression.qmd](notebooks/Notebook_regression.qmd)               |
+|        | [4.2 Classification](06Analytics/classification.html)                               |                                                                            |
 
 **ชุดข้อมูลที่ใช้เป็นตัวอย่าง**
 
@@ -38,7 +38,9 @@ Material สำหรับการอบรม Practical Insight: Doing Data S
 
 -   [TeacherSalaryData.csv](dataset/TeacherSalaryData.csv)
 
-**เอกสารอ้างอิง**
+-   [Math_miss.csv](dataset/Math_miss.csv)
+
+**เอกสารประกอบ**
 
 -   <https://moderndive.com/>
 
@@ -53,3 +55,5 @@ Material สำหรับการอบรม Practical Insight: Doing Data S
 -   <https://parsnip.tidymodels.org/>
 
 -   <https://www.chulabook.com/test-prep/120204>
+
+-   <https://shiny.posit.co/>

@@ -502,6 +502,33 @@
 <li><p><code>factor()</code> ใช้แปลงข้อมูลเป็นตัวแปรประเภท factor</p></li>
 </ul>
 </section>
+<section id="transforming-data" class="slide level2 smaller">
+<h2>Transforming Data</h2>
+<ol type="1">
+<li><strong>การแปลงข้อมูลให้เป็นค่ามาตรฐาน (standardization)</strong> เป็นการแปลงให้ข้อมูลเชิงปริมาณใด ๆ อยู่ในสเกลมาตรฐานที่มีค่าเฉลี่ยเท่ากับ 0 และส่วนเบี่ยงเบนมาตรฐานเท่ากับ 1 ด้วยสูตร <span class="math inline">\(Z = \frac{X-\bar{X}}{SD}\)</span></li>
+<li><strong>การแปลงข้อมูลให้เป็นค่าปกติ (normalization)</strong> เป็นการแปลงข้อมูลเชิงปริมาณใด ๆ ให้มีค่าอยู่บนช่วงปิด [0,1] ด้วยสูตร <span class="math inline">\(N = \frac{X-Min}{Max-Min}\)</span></li>
+</ol>
+</section>
+<section id="transforming-data-1" class="slide level2 smaller">
+<h2>Transforming Data</h2>
+<ol start="3" type="1">
+<li><strong>Box-Cox และ Yeo-Johnson transformation</strong> เป็นวิธีการแปลงข้อมูลเพื่อแก้ปัญหาความเบ้หรือค่าผิดปกติที่เกิดขึ้นในชุดข้อมูล โดย Box-Cox transformation มีเงื่อนไขสำคัญคือสามารถใช้ได้กับข้อมูลที่มีพิสัยเป็นจำนวนจริงบวก สูตรการแปลงข้อมูลของ Box-Cox เป็นดังนี้</li>
+</ol>
+<p><span class="math display">\[
+y(\lambda) =
+\begin{cases}
+\frac{y^{\lambda} - 1}{\lambda} &amp; \text{if } \lambda \neq 0 \\
+\log(y) &amp; \text{if } \lambda = 0
+\end{cases}
+\]</span></p>
+</section>
+<section id="transforming-data-2" class="slide level2 smaller">
+<h2>Transforming Data</h2>
+<ol start="4" type="1">
+<li><p>One-Hot encoding</p></li>
+<li><p>Dummy encoding</p></li>
+</ol>
+</section>
 <section id="manipulating-data-with-dplyr" class="slide level2 smaller">
 <h2>Manipulating Data with <code>dplyr</code></h2>
 <p><left></left></p>
@@ -516,6 +543,10 @@
 <li><p><code>distinct()</code> ใช้เลือกแถวที่ไม่ซ้ำกัน</p></li>
 </ul>
 </section>
+<section id="check-list" class="slide level2">
+<h2>Check list</h2>
+
+<img data-src="images/transform.png" style="width:80.0%" class="r-stretch"></section>
 <section id="piping-operator" class="slide level2 smaller">
 <h2>piping operator (<code>%&gt;%</code>)</h2>
 <p>ตัวดำเนินการ piping มีประโยชน์อย่างมากในการดำเนินงานที่มีหลายขั้นตอน ใช้สำหรับส่งผ่านข้อมูลทางซ้ายของตัวดำเนินการ ไปยังฟังก์ชันที่อยู่ทางด้านขวาของตัวดำเนินการเป็นลูกโซ่ต่อไปเรื่อย ๆ</p>
@@ -549,11 +580,11 @@
 </section>
 
 <section>
-<section id="การเขยนไฟลขอมล" class="title-slide slide level1 smaller center">
+<section id="การเขยนไฟลขอมล" class="title-slide slide level1 center">
 <h1>การเขียนไฟล์ข้อมูล</h1>
 <p>ผู้วิเคราะห์สามารถเขียนไฟล์ข้อมูลที่จัดกระทำหรือวิเคราะห์แล้วไปบันทึกไว้ในรูปแบบไฟล์ที่ต้องการได้ โดยใช้ฟังก์ชัน <code>write_*()</code> ซึ่งมีหลายรูปแบบ</p>
 </section>
-<section id="ฟงกชนทเกยวของ" class="slide level2">
+<section id="ฟงกชนทเกยวของ" class="slide level2 smaller">
 <h2>ฟังก์ชันที่เกี่ยวข้อง</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">install.packages</span>(<span class="st">"readr"</span>)</span>

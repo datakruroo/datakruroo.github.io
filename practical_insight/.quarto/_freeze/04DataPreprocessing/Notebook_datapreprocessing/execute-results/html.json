@@ -1,0 +1,14 @@
+{
+  "hash": "2c33c0805973fe0d5723aefbd3521fc5",
+  "result": {
+    "markdown": "---\ntitle: \"5. Data Preprocessing\"\nformat: html\n---\n\n\n# Data Preprocessing\n\nเป็นกระบวนการที่มีวัตถุประสงค์หลักคือเพื่อจัดกระทำหรือแปลงข้อมูลดิบที่เก็บรวบรวมมาจากแหล่งข้อมูลต่าง ๆ ให้อยู่ในรูปแบบที่พร้อมและมีคุณภาพเพียงพอสำหรับการนำไปวิเคราะห์\n\n-   Exploring Data\n-   Cleaning Data\n-   Manipulating Data\n-   Data Reduction\n\n## `Tidyr` & `dplyr` package {.smaller}\n\n\n::: {.cell}\n\n```{.r .cell-code}\ninstall.packages(\"tidyr\")\ninstall.packages(\"dplyr\")\nlibrary(tidyr)\nlibrary(dplyr)\n```\n:::\n\n\n# กิจกรรม : Tidying \"Messy Data\" {.smaller}\n\n\n::: {.cell}\n\n```{.r .cell-code}\nmessy_dat %>% \n    pivot_longer(cols = 2:5, \n                 names_to = \"method_time\", \n                 values_to = \"score\") %>%\n    separate(col = \"method_time\",\n             into = c(\"method\",\"time\"),\n             sep=\"[.]\") %>%\n    pivot_wider(names_from = \"time\", \n                values_from = \"score\") %>%\n    mutate(pre = ifelse(pre == \"-\",NA,pre),\n           post = ifelse(post == \"-\",NA,post)) %>%\n    drop_na() %>%\n    rename(student_name = ...1)\n```\n:::\n\n\n# กิจกรรมสำรวจข้อมูล\n\n1.  จากชุดข้อมูล `tidy_dat` ที่ได้จากกิจกรรมก่อนหน้า จงใช้ฟังก์ชัน `summarise()` เพื่อสรุปข้อมูลเบื้องต้นของคะแนนสอบ pretest และ posttest\n\n2.  ฟังก์ชัน `group_by()` มีประโยชน์มากเมื่อต้องการสรุปข้อมูลโดยจำแนกตามกลุ่มหรือตัวแปรจัดประเภทที่กำหนด ลองใช้ฟังก์ชัน `group_by()` และ `summarise()` เพื่อสรุปข้อมูลเบื้องต้นของคะแนนสอบ pretest และ posttest โดยจำแนกตามวิธีการสอนที่ผู้เรียนได้รับ\n\n# การเขียนไฟล์ข้อมูล {.smaller}\n\nผู้วิเคราะห์สามารถเขียนไฟล์ข้อมูลที่จัดกระทำหรือวิเคราะห์แล้วไปบันทึกไว้ในรูปแบบไฟล์ที่ต้องการได้ โดยใช้ฟังก์ชัน `write_*()` ซึ่งมีหลายรูปแบบ\n\n## ฟังก์ชันที่เกี่ยวข้อง\n\n\n::: {.cell}\n\n```{.r .cell-code}\ninstall.packages(\"readr\")\ninstall.packages(\"writexl\")\nlibrary(readr)\nlibrary(writexl)\n```\n:::\n\n\n| Function            | Description                              |\n|:--------------------|:-----------------------------------------|\n| `write_csv()`       | บันทึกข้อมูลเป็นไฟล์ .csv                      |\n| `write_tsv()`       | บันทึกข้อมูลเป็นไฟล์ .tsv                      |\n| `write_excel_csv()` | บันทึกข้อมูลเป็นไฟล์ .csv ที่สามารถเปิดได้ใน Excel |\n| `write_xlsx()`      | บันทึกข้อมูลเป็นไฟล์ .xlsx                     |\n\n## กิจกรรม : การเขียนไฟล์ข้อมูล {.smaller}\n\nลองเขียนไฟล์ข้อมูล `tidy_dat` ที่ได้จากกิจกรรมก่อนหน้านี้ ในรูปแบบไฟล์ .csv และ .xlsx\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
