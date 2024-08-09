@@ -1,0 +1,712 @@
+---
+title: "Week 1: Introduction to Data Visualization"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 1: 2758686 Data Visualization <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/datavis.png
+      data-background-opacity: 20%
+      data-background-size: contain
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+# 1. แนะนำรายวิชา
+
+**รายวิชา 2758686 Data Visualization**
+
+**หน่วยกิต :** 2.0 (2.0 - 0.0 - 6.0)
+
+## Course Objectives
+
+<br>
+
+::: {style="font-size: 80%;"}
+- ออกแบบทัศนภาพข้อมูลได้อย่างเหมาะสม
+
+- ใช้เทคโนโลยีที่เกี่ยวข้องและเหมาะสมในการสร้างทัศนภาพข้อมูล
+
+- สามารถค้นหาเอกสารอ้างอิงหรือเอกสารวิชาการที่เกี่ยวข้อง เพื่อสนับสนุน/<br>แก้ปัญหาในการทำงาน
+
+- อภิปรายและวิพากษ์อย่างสร้างสรรค์ในประเด็นที่เกี่ยวกับทัศนภาพข้อมูล/วิทยาการข้อมูลการศึกษา
+
+- มีจรรยาบรรณและจริยธรรมทางวิชาการ
+
+:::
+
+## Course Outline {.smaller}
+
+
+```{r echo=F}
+## https://pharmacoecon.me/post/2021-04-18-timeline-graph/
+## 
+library(tidyverse)
+library(plotly)
+# สร้างข้อมูลตัวอย่าง
+content_data <- tibble(
+  year = c(2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024),
+  months = c(8, 8, 8, 9, 9, 10, 10, 10, 11, 11),
+  day = as.Date(c("2024-08-10", "2024-08-17", "2024-08-24", "2024-09-07", "2024-09-21", 
+                  "2024-10-05", "2024-10-12", "2024-10-19", "2024-11-02", "2024-11-30")),
+  day2 = c(10,17,24,7,21,5,12,19,2,30),
+  content = c("Basic Concepts of DV", "Basic ggplot2 and \n Aesthetic Mapping", 
+              "Basic Data Representation", "Fine-Tunning the plots: \n Design Principle", 
+              "Multivariate \n Data Visualization", "ggplot2 Extensions and \n Other Useful Libraries", 
+              "Geospatial \n Data Visualization", "Network \n Visualization", 
+              "Reproducible Report \n and Related Topics", 
+              "Designing Interactive \n Data Visualization and Dashboard"),
+  position = c(0.5, -0.5, 1, -1, 1.5, -1.5, 1, -1, 0.5, -0.5),
+  hours = c(3, 3, 6, 6, 6, 3, 3, 3, 6, 6),
+  description = c("- มโนทัศน์พื้นฐาน \n - ประเภทของทัศนภาพข้อมูล",
+                  "- มโนทัศน์พื้นฐานของ Grammar of Graphic \n - พื้นฐาน ggplot2 และ Aesthetic Mapping",
+                  "- การนำเสนอสารสนเทศลักษณะต่าง ๆ ด้วยทัศนภาพข้อมูล",
+                  "- หลักการออกแบบทัศนภาพข้อมูล \n - การปรับแต่งทัศนภาพข้อมูลให้มีประสิทธิภาพ",
+                  "- Multiple Layers Plot \n - Multiple Geometries \n - Multi-panel (faceting) \n - Dimension reduction \n - Clustering",
+                  "- แนะนำ library ส่วนต่อขยายของ ggplot2 \n - library อื่น ๆ ที่เกี่ยวข้อง",
+                  "- การนำเข้าและจัดการข้อมูลประเภท geospatial \n - การสร้างทัศนภาพข้อมูลเชิงพื้นที่",
+                  "- มโนทัศน์ของ network \n - โครงสร้างข้อมูลแบบ network \n - การสร้างทัศนภาพข้อมูลแบบ network \n - การวิเคราะห์ network",
+                  "- การสร้างเอกสารแบบ reproducible \n - แนะนำ rmarkdown, quarto และ library ที่เกี่ยวข้อง",
+                  "- หลักการออกแบบ interactive data visualization \n
+                   - การออกแบบและสร้าง Dashboard")
+)
+
+content_data <- content_data %>%
+  mutate(day2 = format(day, "%d"),
+         tooltip_text = paste("หัวข้อ :", content, 
+         "<br> จำนวนชั่วโมง :", hours,"ชั่วโมง",
+         "<br> รายละเอียด : <br>", description))
+
+# สร้างกราฟหลัก
+p <- ggplot() +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_segment(data = content_data, aes(x = day, xend = day, y = 0, yend = position, col = factor(months)), alpha = 0.8) +
+  geom_point(data = content_data, aes(x = day, y = position, col = factor(months),
+                                      text = tooltip_text), 
+                                      alpha = 1.0, size = 3) +
+  geom_text(data = content_data, aes(x = day, y = position, label = content, col = factor(months)), 
+            nudge_y = ifelse(content_data$position > 0, 0.2, -0.2), size = 3, check_overlap = TRUE) +
+  scale_color_manual(values = c("#2C4E80", "#337357", "#A34343", "#FC4100")) +
+  theme(axis.text.x = element_text(margin = margin(t = 15)),
+        legend.position = "none")
+
+# สร้างชั้นใหม่ของแกน X เพื่อแสดงชื่อเดือน
+month_labels <- content_data %>%
+  mutate(month = format(day, "%B")) %>%
+  group_by(month) %>%
+  summarise(day = first(day))
+
+# เพิ่มชื่อเดือนและวัน
+p2 <- p +
+  geom_text(data = month_labels, aes(x = day, y = -0.25, label = month), vjust = 4, hjust = 1, size = 5, inherit.aes = FALSE, fontface = "bold", col = "grey20") +
+  geom_text(data = content_data, aes(x = day, y = -0.1, label = day2), col = "grey20", size = 3) +
+  theme_classic() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.line.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x.top = element_text(margin = margin(b = 15)),
+    axis.line.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "none"
+  ) +
+  coord_cartesian(clip = "off") +
+  scale_x_date(date_labels = "%d", limits = c(min(content_data$day) - 10, max(content_data$day) + 10), breaks = content_data$day)
+
+# แปลงเป็นกราฟเชิงโต้ตอบ
+interactive_plot <- ggplotly(p2, tooltip = "text",
+                            width = 1000, height = 600) |> 
+                            config(displayModeBar = FALSE)
+
+# แสดงกราฟเชิงโต้ตอบ
+interactive_plot
+
+```
+
+
+## การวัดประเมินผล
+
+
+
+```{r echo=F}
+mycols <- c("#187498", "#36AE7C", "#EB5353")
+
+type <- c("การสอบ",
+          "งานที่มอบหมาย",
+          "ปฏิสัมพันธ์ในชั้นเรียน")
+weight <- c(50,30,20)
+data.frame(type,weight) |> 
+  mutate(type = factor(type, levels=c(type[1],type[2],type[3]))) |> 
+  arrange(weight) |> 
+  mutate(lab.xpos = cumsum(weight) - 0.5*weight) |> 
+  ggplot(aes(x = "", y=weight, fill = type))+
+  geom_col()+
+  geom_text(aes(y = lab.xpos,
+            label = paste0(type,"\n",weight,"%")), angle = 0,
+              family = "ChulaCharasNew", size = 6,
+              col = "white", hjust = 0.3,
+              vjust = 0.7)+
+  scale_fill_manual(values = mycols)+
+  theme_void()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.title = element_blank())+
+  scale_y_continuous(breaks = c(0,20,50,100))+
+  coord_polar(theta = "y")
+```
+
+
+## หนังสือ/เอกสารแนะนำ
+
+![](img/book.png){fig-align="center"}
+
+
+## แหล่งการเรียนรู้และแหล่งข้อมูลแนะนำ
+
+- [https://www.kaggle.com/](https://www.kaggle.com/)
+
+- [https://ourworldindata.org/charts](https://ourworldindata.org/charts) 
+
+- [https://r-graph-gallery.com/](https://r-graph-gallery.com/)
+
+- [https://github.com/erikgahner/awesome-ggplot2](https://github.com/erikgahner/awesome-ggplot2)
+
+- [https://gdcatalog.go.th/fi/](https://gdcatalog.go.th/fi/)
+
+# 2. Basic Concepts
+
+## What's Data Visualization? 
+
+> "The **visual representation** and **presentation** of data to **facilitate understanding**" ([Kirk, 2019](https://visualisingdata.com/))
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](img/image2.webp){width=80% fig-align="center"}
+
+:::
+::: {.column width="50%"}
+
+![](img/image.webp){width=80% fig-align="center"}
+
+:::
+::::
+
+
+## Visual Representation (1) {.smaller}
+
+
+กระบวนการออกแบบ/ตัดสินใจเพื่อแปลงข้อมูลที่มีให้อยู่ในรูปของแผนภาพ หรืออาจกล่าวว่าเป็นกระบวนการตัดสินใจเลือกใช้แผนภาพที่เหมาะสมสำหรับแสดงสาระสำคัญของข้อมูล
+
+<br>
+
+::: {style="font-size: 120%;"}
+
+<center> **แผนภาพ (Chart) = Marks + Attributes** </center>
+
+:::
+
+<br>
+
+. . .
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Marks** -- องค์ประกอบที่ใช้แสดงข้อมูล
+
+- จุด (points)
+- เส้น (lines)
+- แท่ง (bars)
+- พื้นที่ (areas)
+- ปริมาตร (volume)
+
+:::
+
+::: {.column width="50%"}
+
+**Attributes** -- variants ของ Marks
+
+- ตำแหน่ง (position)
+- ขนาด (size)
+- สี (color)
+- รูปร่าง (shape)
+- ทิศทาง (orientation)
+- ลักษณะพื้นผิว (texture)
+
+:::
+
+::::
+
+## Visual Representation (2) {.smaller}
+
+เงินเดือนอาจารย์มหาวิทยาลัยเป็นอย่างไร ?
+
+
+:::: {.columns}
+
+::: {.column width="15%"}
+
+```{r echo = F}
+library(gt)
+library(readxl)
+visual_data <- read_csv("TeacherSalaryData.csv")
+visual_data |> 
+  select(...1, salary, rank) |> 
+  rename(ID = ...1) |> 
+  slice(1:20) |> 
+  gt() |>
+  tab_options(
+    table.font.size = "12px",
+    table.align = "left"  # Align the table to the left
+  ) |>
+  tab_style(
+    style = cell_text(align = "left"),  # Align text in all cells to the left
+    locations = cells_body(columns = everything())
+  )
+```
+
+:::
+
+
+::: {.column width="85%"}
+
+<br>
+
+```{r echo=F}
+library(patchwork)
+p1 <- visual_data |> 
+  select(salary, rank) |> 
+  group_by(rank) |> 
+  mutate(rank = factor(rank,
+  levels = c("AsstProf","AssocProf","Prof"))) |> 
+  summarise(salary = mean(salary)) |> 
+  ggplot(aes(x=rank, y=salary, fill = rank))+
+  geom_bar(stat = "identity")+
+  xlab("")+
+  ylab("Average Salary \n ")+
+  theme(legend.position = "none",
+  text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_y_continuous(labels = scales::number_format(suffix = "Bath"))+
+  ggtitle("Summarise Barplot")
+
+p2 <- visual_data |> 
+  select(salary, rank) |> 
+  mutate(rank = factor(rank,
+  levels = c("AsstProf","AssocProf","Prof"))) |> 
+  ggplot(aes(x=rank, y=salary, fill = rank))+
+  geom_boxplot()+
+  xlab("")+
+  ylab("Salary \n ")+
+theme(legend.position = "none",
+  text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Boxplot")
+
+
+p3 <- visual_data |> 
+  select(...1, salary, rank) |> 
+  rename(ID = 1) |> 
+  mutate(rank = factor(rank,
+  levels = c("AsstProf","AssocProf","Prof"))) |> 
+  ggplot(aes(
+    x=reorder(ID,salary), y=salary, fill = rank))+
+  geom_col()+
+  xlab("\n อาจารย์มหาวิทยาลัย")+
+  ylab("เงินเดือน \n ")+
+  theme_light()+
+theme(
+  text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Barplot")
+
+
+p4 <- visual_data |> 
+  select(salary, rank) |> 
+  mutate(rank = factor(rank,
+  levels = c("AsstProf","AssocProf","Prof"))) |> 
+  ggplot(aes(x=salary, fill = rank))+
+  geom_density(alpha = 0.8)+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Density plot")
+
+```
+
+```{r echo = F}
+#| fig.width: 17
+#| fig.height: 9
+#| fig-align: right
+
+(p1+p2)/(p3+p4)
+```
+
+:::
+
+::::
+
+## Visual Representation (3)
+
+<center>
+![](img/data_representation.png){width="80%"}
+</center>
+
+<div class="caption2">Source: ดัดแปลงจาก Kirk (2019)</div>
+
+
+## Visual Representation (4)
+
+<br>
+
+![](img/The-Mackinlay-ranking-of-perceptual-task.png){width="70%"}
+
+
+<div class="caption">Source: https://www.researchgate.net/figure/The-Mackinlay-ranking-of-perceptual-task_fig2_221098028</div>
+
+## Presentation (1) {.smaller}
+
+- การจัดรูปแบบและการออกแบบองค์ประกอบทั้งหมดของการแสดงภาพ เพื่อสื่อสารข้อมูลให้มีประสิทธิภาพสูงสุด 
+
+- ต้องคำนึงถึงทั้งการแสดงผล (representation) และการนำเสนอ (presentation) อย่างเป็นระบบและเชื่อมโยงกัน การเลือกประเภทของแผนภาพหรือการเพิ่มฟีเจอร์ interactive ต้องมีการคิดถึงทุกองค์ประกอบที่เกี่ยวข้องเพื่อให้การสื่อสารข้อมูลมีประสิทธิภาพสูงสุด
+
+- หลายครั้งการปรับแต่ง/เพิ่มองค์ประกอบเพียงเล็กน้อย ช่วยให้ประสิทธิภาพในการสื่อสารข้อมูลดีขึ้นได้อย่างมาก
+
+## Presentation (2)
+
+
+![](img/education.png){width="80%" fig-align="center"}
+
+
+## Presentation (3)
+
+<br>
+<br>
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/item2.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/item1.png)
+
+:::
+
+::::
+
+<div class="caption">Source: สิวะโชติ ศรีสุทธิยากร และคณะ (2567)</div>
+
+
+## Presentation (4)
+
+<center>
+![](img/presentation.png){width="80%"}
+</center>
+
+<div class="caption2">Source: Knaflic (2015)</div>
+
+## Facilitate Understanding (1) {.smaller}
+
+- ทัศนภาพข้อมูลที่สร้างขึ้นควรมีวัตถุประสงค์หลักคือเพื่อให้กลุ่มเป้าหมายหรือผู้ใช้สามารถทำความเข้าใจข้อมูลได้ดีขึ้น
+
+- ทุกองค์ประกอบของการออกแบบควรมุ่งเน้นไปที่การทำให้ผู้ชมสามารถรับรู้และเข้าใจข้อมูลที่แสดงได้ง่ายและชัดเจน
+
+- ประสบการณ์/ความรู้พื้นฐานของกลุ่มเป้าหมายเป็นปัจจัยที่มีผลต่อการเข้าถึงสาระสำคัญในแผนภาพ
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/facilitate.png)
+
+<div class="caption">Source: Kirk (2019)</div>
+:::
+
+
+::: {.column width="60%"}
+
+
+![](img/insight.png)
+
+:::
+
+::::
+
+
+## Facilitate Understanding (2)
+
+<center>
+![](img/education_datavis.png){width="70%"}
+</center>
+
+<div class="caption">Source: วรรณี แกมเกตุ และคณะ (2566)</div>
+
+
+## Facilitate Understanding (3)
+
+<br>
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/item1.png)
+
+:::
+
+
+::: {.column width="50%"}
+
+
+![](img/item3.png)
+
+:::
+
+::::
+
+<div class="caption">Source: สิวะโชติ ศรีสุทธิยากร และคณะ (2567)</div>
+
+
+# 3. Important of Data visualization
+
+## 3.1 มนุษย์รับข้อมูลผ่านการมองมากที่สุด
+
+![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1C1ekVCBq-H0ENIkD_tkQUN4tMnj8tp4_JRtv8TWpNM6P_45-ASG3XTkWOyrAWhBsZcfPvmo74h9kd-tnqfixYDc3MVhSIX_Y5U5zKPE8TwIM2cdWi16apbYEmsDyOdwX1SP26hh81K0s/s1600/The-Importance-of-Visuals.png)
+
+<div class="caption2">Source: https://hautedeliciousak23.blogspot.com/2015/09/power-of-visual-communication.html</div>
+
+
+<br>
+<br>
+
+![](img/visual_power.png)
+
+## 3.2 เป็นวิธีการที่มีประสิทธิภาพสูงสำหรับนำเสนอข้อมูลจำนวนมาก
+
+![](img/alluvial.png){width="80%"}
+
+
+
+![](https://s3.eu-west-1.amazonaws.com/static.gapminder.org/GapminderMedia/wp-uploads/20161215191134/countries_health_wealth_2016_v13.jpg){width="90%"}
+
+
+## 3.3 Interactive 
+
+<iframe src="https://ourworldindata.org/grapher/productivity-vs-educational-attainment?tab=chart" loading="lazy" style="width: 100%; height: 600px; border: 0px none;" allow="web-share; clipboard-write"></iframe>
+
+
+## 3.4 มีประสิทธิภาพสูงสำหรับ EDA
+
+
+
+:::: {style="font-size: 65%;"}
+
+ชุดข้อมูล `anscombe` ประกอบด้วยข้อมูลของตัวแปรตาม `y` กับตัวแปรอิสระ `x` จำนวน 4 ชุด วัตถุประสงค์ของการวิเคราะห์นี้คือเพื่อวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม y กับตัวแปรอิสระ x ของข้อมูลแต่ละชุด
+
+```{r echo = F}
+glimpse(anscombe)
+```
+
+```{r echo = F}
+library(broom)
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  group_by(ind, dep) |> 
+  nest() |> 
+  mutate(reg_model = map(data, ~lm(Y ~ X, data = .x))) -> temp
+```
+
+ลองคำนวณค่าสถิติบรรยายของตัวแปรตามกับตัวแปรอิสระในแต่ละชุดข้อมูล
+
+```{r echo = F}
+anscombe |> 
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |> 
+  group_by(variable) |> 
+  summarise(mean = mean(value),
+              sd = sd(value))
+```
+
+::::
+
+:::: {style="font-size: 65%;"}
+
+ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระของข้อมูลแต่ละชุดด้วย correlation
+
+```{r echo = F}
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  group_by(ind, dep) |> 
+  nest() |> 
+  mutate(cor = map(.x = data, .f = ~cor(.x)[,2])) |> 
+  unnest("cor") |> 
+  slice(c(1,3,5,7)) |> 
+  select(ind,dep,4) |> 
+  rename(correlation = 3) |> 
+  ungroup() |> 
+  data.frame()
+```
+
+
+ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression $y_i = \beta_0 + \beta_1x + \epsilon_i$
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = F}
+names(temp$reg_model)<-paste0("Dataset",1:4)
+temp$reg_model |> map(~tidy(.x))->temp1
+temp1[1:2]
+```
+
+:::
+
+
+
+
+::: {.column width="50%"}
+
+```{r echo = F}
+temp1[3:4]
+```
+
+:::
+
+::::
+::::
+
+##
+
+:::: {style="font-size: 65%;"}
+
+<br>
+
+จากตัวอย่าง anscombe ข้างต้นจะเห็นว่าผลการวิเคราะห์ด้วยสถิติพื้นฐาน หรือการใช้โมเดลเชิงสถิติอาจให้สารสนเทศที่บิดเบือนไปจากความเป็นจริง
+
+
+```{r echo = F}
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  ggplot(aes(x=X, y=Y))+
+  geom_point()+
+  geom_smooth(method = "lm", linewidth = 1, se=F)+
+  facet_wrap(~ind)+
+  theme_light()+
+  theme(strip.text = element_text(color = "black", size = 14))
+  
+```
+
+::::
+
+## Airbnb
+
+![](img/airbnb.png)
+
+![](img/airbnb2.png)
+
+
+# 4. Types of Visualization
+
+## 4.1 จำแนกตามคุณภาพ {.smaller}
+
+![](img/typesDV.png){width="90%"}
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/bad1.png)
+
+![](img/bad2.png)
+
+![](img/bad3.png)
+
+![](img/wrong.png)
+
+
+:::
+
+::: {.column width="50%"}
+
+![](img/bad_ugly.png)
+
+![](img/bad_ugly2.png)
+
+![](img/wrong2.png)
+
+![](img/bad_ugly3.png)
+
+
+:::
+
+::::
+
+
+## 4.2 จำแนกตามวัตถุประสงค์การนำไปใช้
+
+1. Is the information **conceptual** or **data-driven**?
+
+2. Am I **declaring something** or **exploring something**?
+
+![](img/typeDV2.png)
+
+<div class="caption3">Source: Berinato (2016)</div>
+
+
+## 4.3 จำแนกตามสารสนเทศสำคัญ
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/typeDV3.png)
+
+<div class="caption2">Source: Wilk (2019)</div>
+
+:::
+
+::: {.column width="60%"}
+
+<br>
+
+![](img/typeDV4.png)
+
+:::
+
+::::
+
+
+## 4.4 จำแนกตามลักษณะการนำเสนอ
+
+- Static
+
+- Dynamic/Interactive
