@@ -481,6 +481,9 @@ predict(fit_lm, newdata = data_use) %>% data.frame() %>%
 
 :::
 
+<br>
+<br>
+
 
 ## กิจกรรม 2: {.smaller}
 
@@ -557,6 +560,9 @@ pred |>
 ผลการวิเคราะห์ข้างต้นเป็นประสิทธิภาพในของโมเดลที่เรียนรู้ใน `train_data` บนชุดข้อมูล `test_data`
 
 :::
+
+<br>
+
 
 ## Overfitting and Underfitting Model
 

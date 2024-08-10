@@ -838,6 +838,7 @@ true_res      0.6963408 1.0000000</code></pre>
 </div>
 <p>โดยเฉลี่ยแล้วโมเดลจะทำนายคะแนนผลสัมฤทธิ์รายวิชาวิจัยคลาดเคลื่อนไปประมาณ 7 คะแนน</p>
 </div>
+<p><br> <br></p>
 </section>
 <section id="กจกรรม-2" class="slide level2 smaller">
 <h2>กิจกรรม 2:</h2>
@@ -877,25 +878,25 @@ lm(formula = research_score ~ ., data = train_data)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--18.6684  -4.5291   0.3305   4.6254  19.2074 
+-17.9521  -4.9095   0.3397   4.8863  19.1284 
 
 Coefficients:
-                      Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)          37.907590   4.961074   7.641 3.09e-13 ***
-choose_method         0.104122   0.025060   4.155 4.27e-05 ***
-concepts              0.149659   0.029413   5.088 6.47e-07 ***
-interpretation        0.212339   0.029799   7.126 8.08e-12 ***
-submit_time          -0.008356   0.016194  -0.516 0.606253    
-percent_submit        0.143992   0.036866   3.906 0.000117 ***
-learning_performance  0.070422   0.035977   1.957 0.051248 .  
-cheat_index          -4.754186   2.351948  -2.021 0.044149 *  
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          40.09865    4.95556   8.092 1.58e-14 ***
+choose_method         0.08979    0.02605   3.446 0.000651 ***
+concepts              0.15635    0.03016   5.185 4.04e-07 ***
+interpretation        0.20231    0.02876   7.035 1.41e-11 ***
+submit_time          -0.01177    0.01603  -0.734 0.463406    
+percent_submit        0.11976    0.03765   3.181 0.001626 ** 
+learning_performance  0.06863    0.03689   1.860 0.063836 .  
+cheat_index          -3.15504    2.32332  -1.358 0.175512    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 6.899 on 293 degrees of freedom
+Residual standard error: 7.037 on 293 degrees of freedom
   (2 observations deleted due to missingness)
-Multiple R-squared:  0.5166,    Adjusted R-squared:  0.505 
-F-statistic: 44.73 on 7 and 293 DF,  p-value: &lt; 2.2e-16</code></pre>
+Multiple R-squared:  0.4696,    Adjusted R-squared:  0.457 
+F-statistic: 37.06 on 7 and 293 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <ul>
@@ -912,12 +913,12 @@ F-statistic: 44.73 on 7 and 293 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code># A tibble: 6 × 2
   predict_score actual_score
           &lt;dbl&gt;        &lt;dbl&gt;
-1          78.1           75
-2          80.9           74
-3          77.0           69
-4          67.8           73
-5          79.6           83
-6          70.3           73</code></pre>
+1          72.4           72
+2          68.3           62
+3          67.4           68
+4          83.6           82
+5          70.8           59
+6          90.8           97</code></pre>
 </div>
 </div>
 <ul>
@@ -951,11 +952,12 @@ F-statistic: 44.73 on 7 and 293 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code># A tibble: 1 × 2
    rmse    r2
   &lt;dbl&gt; &lt;dbl&gt;
-1  7.29 0.342</code></pre>
+1  6.78 0.536</code></pre>
 </div>
 </div>
 <p>ผลการวิเคราะห์ข้างต้นเป็นประสิทธิภาพในของโมเดลที่เรียนรู้ใน <code>train_data</code> บนชุดข้อมูล <code>test_data</code></p>
 </div>
+<p><br></p>
 </section>
 <section id="overfitting-and-underfitting-model" class="slide level2">
 <h2>Overfitting and Underfitting Model</h2>
