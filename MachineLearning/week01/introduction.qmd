@@ -373,6 +373,8 @@ data.frame(type,weight) |>
 - ประเมินประสิทธิภาพในการทำนายของโมเดลที่สร้างขึ้น
 
 
+::: {style="font-size: 80%;"}
+
 
 ```{r}
 ### required packages
@@ -410,6 +412,7 @@ data_use %>%
   geom_histogram()
 ```
 
+<br>
 
 2. สร้าง linear regression model จากชุดข้อมูล `data_use`
 
@@ -430,6 +433,8 @@ data_use %>%
 data_use %>% cor()
 ```
 
+<br>
+
 fit linear regression model กับข้อมูล
 
 ```{r}
@@ -438,6 +443,8 @@ fit_lm <- lm(formula = research_score ~ ., data = data_use)
 summary(fit_lm)
 ```
 
+
+<br>
 
 วิเคราะห์ประสิทธิภาพของการทำนายด้วยการดูความสัมพันธ์/เปรียบเทียบค่าทำนายและค่าจริงของ `research_score` ในชุดข้อมูล `data_use` 
 
@@ -472,16 +479,84 @@ predict(fit_lm, newdata = data_use) %>% data.frame() %>%
 
 โดยเฉลี่ยแล้วโมเดลจะทำนายคะแนนผลสัมฤทธิ์รายวิชาวิจัยคลาดเคลื่อนไปประมาณ 7 คะแนน
 
+:::
+
+
 ## กิจกรรม 2: {.smaller}
+
+::: {style="font-size: 80%;"}
 
 - แบ่งชุดข้อมูล `learning_data.csv` ออกเป็นสองชุดได้แก่ training data และ test data
 
+การแบ่งชุดข้อมูลใน R สามารถทำได้หลายวิธีการ วิธีการที่เสนอในบทเรียนนี้จะใช้ library-rsample ที่มีกระบวนการดังนี้
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+split <- initial_split(data = data_use,  # ชุดข้อมูลที่ต้องการแบ่ง
+                       prop = 0.8, # สัดส่วนข้อมูลใน training data
+                       strata = "research_score", # ตัวแปรที่ใช้กำหนดชั้นภูมิในการสุ่ม
+                       breaks = 10) # จำนวนอันตรภาคชั้นของ research_score ที่ใช้กำหนดชั้นภูมิ
+split
+```
+
+
+```{r}
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
 - นำ training data มาสร้างโมเดล regression
+
+จะสร้างสมการถดถอยด้วยฟังก์ชัน `lm()` เหมือนเดิม แต่จะใช้เฉพาะชุดข้อมูลใน `train_data` มาสร้างโมเดลเท่านั้น
+
+```{r}
+fit_lm <- lm(research_score ~ . ,data = train_data)
+summary(fit_lm)
+```
+
 
 - นำโมเดล regression ที่สร้างขึ้นไปทำนายข้อมูลใน test data
 
+คำนวณค่าทำนายใน `test_data` ด้วยฟังก์ชัน `predict()` และนำไปเปรียบเทียบกับค่าจริงดังนี้
+
+```{r}
+pred <- predict(fit_lm, newdata = test_data) |> 
+  bind_cols(test_data$research_score) |> 
+  rename(predict_score = 1,
+         actual_score = 2) 
+head(pred)
+```
+
 - ประเมินประสิทธิภาพในการทำนาย ผลการประเมินเป็นอย่างไร
 
+เราสามารถนำค่าทำนายและค่าจริงมาวิเคราะห์ประสิทธิภาพได้หลายวิธีการ ทั้งการใช้ทัศนภาพข้อมูล และการใช้ตัวชี้วัดต่าง ๆ เช่น RMSE และ R2 ดังนี้
+
+```{r}
+pred |> 
+  ggplot(aes(x=actual_score, y=predict_score))+
+  geom_point()+
+  geom_abline(intercept = 0, slope = 1, linetype = 2)+
+  coord_obs_pred()
+```
+
+จากแผนภาพข้างต้นดูออกมั้ยว่า โมเดลทำนายได้ดีในส่วนไหนของการแจกแจงผลสัมฤทธิ์วิจัย และทำนายไม่ค่อยดีในส่วนไหน
+
+คำนวณดัชนีวัดประสิทธิภาพ
+
+```{r}
+pred |>
+  mutate(residual = actual_score - predict_score, ## error
+          res2 = residual^2) |> ## error squares
+  drop_na() |> # drop NA value
+  summarise(rmse = sqrt(mean(res2)),
+            r2 = cor(actual_score, predict_score)^2)
+```
+
+ผลการวิเคราะห์ข้างต้นเป็นประสิทธิภาพในของโมเดลที่เรียนรู้ใน `train_data` บนชุดข้อมูล `test_data`
+
+:::
 
 ## Overfitting and Underfitting Model
 

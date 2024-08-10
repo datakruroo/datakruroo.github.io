@@ -633,6 +633,7 @@ Source: https://medium.com/<span class="citation" data-cites="metehankozan/super
 <li><p>สร้าง regression model เพื่อทำนายคะแนน <code>research_score</code> โดยใช้ตัวแปรอิสระในชุดข้อมูล</p></li>
 <li><p>ประเมินประสิทธิภาพในการทำนายของโมเดลที่สร้างขึ้น</p></li>
 </ul>
+<div style="font-size: 80%;">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="do">### required packages</span></span>
 <span id="cb1-2"><a href=""></a><span class="co">#install.packages("tidymodels")</span></span>
@@ -713,6 +714,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.593489…</code></pre>
 </div>
 </div>
 </div>
+<p><br></p>
 <ol start="2" type="1">
 <li>สร้าง linear regression model จากชุดข้อมูล <code>data_use</code></li>
 </ol>
@@ -764,6 +766,7 @@ learning_performance          NA
 cheat_index                    1</code></pre>
 </div>
 </div>
+<p><br></p>
 <p>fit linear regression model กับข้อมูล</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> research_score <span class="sc">~</span> ., <span class="at">data =</span> data_use)</span>
@@ -797,6 +800,7 @@ Multiple R-squared:  0.4849,    Adjusted R-squared:  0.4753
 F-statistic: 50.43 on 7 and 375 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+<p><br></p>
 <p>วิเคราะห์ประสิทธิภาพของการทำนายด้วยการดูความสัมพันธ์/เปรียบเทียบค่าทำนายและค่าจริงของ <code>research_score</code> ในชุดข้อมูล <code>data_use</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">predict</span>(fit_lm, <span class="at">newdata =</span> data_use) <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
@@ -833,15 +837,125 @@ true_res      0.6963408 1.0000000</code></pre>
 </div>
 </div>
 <p>โดยเฉลี่ยแล้วโมเดลจะทำนายคะแนนผลสัมฤทธิ์รายวิชาวิจัยคลาดเคลื่อนไปประมาณ 7 คะแนน</p>
+</div>
 </section>
 <section id="กจกรรม-2" class="slide level2 smaller">
 <h2>กิจกรรม 2:</h2>
+<div style="font-size: 80%;">
 <ul>
-<li><p>แบ่งชุดข้อมูล <code>learning_data.csv</code> ออกเป็นสองชุดได้แก่ training data และ test data</p></li>
-<li><p>นำ training data มาสร้างโมเดล regression</p></li>
-<li><p>นำโมเดล regression ที่สร้างขึ้นไปทำนายข้อมูลใน test data</p></li>
-<li><p>ประเมินประสิทธิภาพในการทำนาย ผลการประเมินเป็นอย่างไร</p></li>
+<li>แบ่งชุดข้อมูล <code>learning_data.csv</code> ออกเป็นสองชุดได้แก่ training data และ test data</li>
 </ul>
+<p>การแบ่งชุดข้อมูลใน R สามารถทำได้หลายวิธีการ วิธีการที่เสนอในบทเรียนนี้จะใช้ library-rsample ที่มีกระบวนการดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb20-2"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb20-3"><a href=""></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(<span class="at">data =</span> data_use,  <span class="co"># ชุดข้อมูลที่ต้องการแบ่ง</span></span>
+<span id="cb20-4"><a href=""></a>                       <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="co"># สัดส่วนข้อมูลใน training data</span></span>
+<span id="cb20-5"><a href=""></a>                       <span class="at">strata =</span> <span class="st">"research_score"</span>, <span class="co"># ตัวแปรที่ใช้กำหนดชั้นภูมิในการสุ่ม</span></span>
+<span id="cb20-6"><a href=""></a>                       <span class="at">breaks =</span> <span class="dv">10</span>) <span class="co"># จำนวนอันตรภาคชั้นของ research_score ที่ใช้กำหนดชั้นภูมิ</span></span>
+<span id="cb20-7"><a href=""></a>split</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;Training/Testing/Total&gt;
+&lt;303/82/385&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb22-2"><a href=""></a>test_data <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>นำ training data มาสร้างโมเดล regression</li>
+</ul>
+<p>จะสร้างสมการถดถอยด้วยฟังก์ชัน <code>lm()</code> เหมือนเดิม แต่จะใช้เฉพาะชุดข้อมูลใน <code>train_data</code> มาสร้างโมเดลเท่านั้น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(research_score <span class="sc">~</span> . ,<span class="at">data =</span> train_data)</span>
+<span id="cb23-2"><a href=""></a><span class="fu">summary</span>(fit_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = research_score ~ ., data = train_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-17.9964  -4.8771   0.3457   4.5288  18.9256 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          41.75668    4.95983   8.419 1.69e-15 ***
+choose_method         0.06877    0.02676   2.570 0.010659 *  
+concepts              0.15863    0.02967   5.347 1.80e-07 ***
+interpretation        0.19005    0.02959   6.422 5.39e-10 ***
+submit_time          -0.02495    0.01573  -1.586 0.113782    
+percent_submit        0.14318    0.03911   3.661 0.000298 ***
+learning_performance  0.05351    0.03893   1.374 0.170378    
+cheat_index          -2.69371    2.36279  -1.140 0.255192    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.18 on 294 degrees of freedom
+  (1 observation deleted due to missingness)
+Multiple R-squared:  0.4515,    Adjusted R-squared:  0.4384 
+F-statistic: 34.57 on 7 and 294 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<ul>
+<li>นำโมเดล regression ที่สร้างขึ้นไปทำนายข้อมูลใน test data</li>
+</ul>
+<p>คำนวณค่าทำนายใน <code>test_data</code> ด้วยฟังก์ชัน <code>predict()</code> และนำไปเปรียบเทียบกับค่าจริงดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_lm, <span class="at">newdata =</span> test_data) <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href=""></a>  <span class="fu">bind_cols</span>(test_data<span class="sc">$</span>research_score) <span class="sc">|&gt;</span> </span>
+<span id="cb25-3"><a href=""></a>  <span class="fu">rename</span>(<span class="at">predict_score =</span> <span class="dv">1</span>,</span>
+<span id="cb25-4"><a href=""></a>         <span class="at">actual_score =</span> <span class="dv">2</span>) </span>
+<span id="cb25-5"><a href=""></a><span class="fu">head</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  predict_score actual_score
+          &lt;dbl&gt;        &lt;dbl&gt;
+1          73.9           72
+2          72.5           72
+3          74.3           71
+4          70.8           72
+5          69.8           79
+6          75.8           85</code></pre>
+</div>
+</div>
+<ul>
+<li>ประเมินประสิทธิภาพในการทำนาย ผลการประเมินเป็นอย่างไร</li>
+</ul>
+<p>เราสามารถนำค่าทำนายและค่าจริงมาวิเคราะห์ประสิทธิภาพได้หลายวิธีการ ทั้งการใช้ทัศนภาพข้อมูล และการใช้ตัวชี้วัดต่าง ๆ เช่น RMSE และ R2 ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>pred <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>actual_score, <span class="at">y=</span>predict_score))<span class="sc">+</span></span>
+<span id="cb27-3"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb27-4"><a href=""></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb27-5"><a href=""></a>  <span class="fu">coord_obs_pred</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="introduction_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>จากแผนภาพข้างต้นดูออกมั้ยว่า โมเดลทำนายได้ดีในส่วนไหนของการแจกแจงผลสัมฤทธิ์วิจัย และทำนายไม่ค่อยดีในส่วนไหน</p>
+<p>คำนวณดัชนีวัดประสิทธิภาพ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>pred <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">residual =</span> actual_score <span class="sc">-</span> predict_score, <span class="do">## error</span></span>
+<span id="cb28-3"><a href=""></a>          <span class="at">res2 =</span> residual<span class="sc">^</span><span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="do">## error squares</span></span>
+<span id="cb28-4"><a href=""></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="co"># drop NA value</span></span>
+<span id="cb28-5"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(res2)),</span>
+<span id="cb28-6"><a href=""></a>            <span class="at">r2 =</span> <span class="fu">cor</span>(actual_score, predict_score)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+   rmse    r2
+  &lt;dbl&gt; &lt;dbl&gt;
+1  6.22 0.607</code></pre>
+</div>
+</div>
+<p>ผลการวิเคราะห์ข้างต้นเป็นประสิทธิภาพในของโมเดลที่เรียนรู้ใน <code>train_data</code> บนชุดข้อมูล <code>test_data</code></p>
+</div>
 </section>
 <section id="overfitting-and-underfitting-model" class="slide level2">
 <h2>Overfitting and Underfitting Model</h2>
