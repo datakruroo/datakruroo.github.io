@@ -1,0 +1,429 @@
+---
+title: "Week 1: Introduction to Machine Learning"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 1: 2758686 Data Visualization <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+
+
+# 1. แนะนำรายวิชา
+
+รายวิชา : 2758623 Machine Learning Principles and Application  
+หน่วยกิต : 3.0 (2.0-2.0-8.0)
+
+## Course Outline {.smaller}
+
+<br>
+
+:::: {style="font-size: 80%;"}
+:::: {.columns}
+::: {.column width="50%"}
+
+**Week 1:**
+
+Basic Concepts of ML
+
+**Week 2-3:**
+
+Modelling Process (Supervised Learning)
+
+**Week 4-5:**
+
+Data Preprocessing (Part I) and Feature Selection
+
+**Week 6-7:**
+
+Single Learners Algorithms
+
+**Week 8:**
+
+Data Preprocessing (Part II)
+
+**Week 9:**
+
+Model Interpretations
+:::
+::: {.column width="50%"}
+
+**Week 10-11:**
+
+Ensemble Learning
+
+**Week 12-13:**
+
+Unsupervised Learning
+
+**Week 14:**
+
+Model Deployment
+
+**Week 15:**
+
+Machine Learning Fairness
+
+**Week 16:**
+
+Project Presentation
+
+:::
+
+::::
+::::
+
+## การวัดประเมินผลการเรียนรู้
+
+
+```{r echo=F}
+library(tidyverse)
+mycols <- c("#187498", "#36AE7C", "#EB5353")
+
+type <- c("การสอบ",
+          "งานที่มอบหมาย",
+          "ปฏิสัมพันธ์ในชั้นเรียน")
+weight <- c(40,40,20)
+data.frame(type,weight) |> 
+  mutate(type = factor(type, levels=c(type[1],type[2],type[3]))) |> 
+  arrange(weight) |> 
+  mutate(lab.xpos = cumsum(weight) - 0.5*weight) |> 
+  ggplot(aes(x = "", y=weight, fill = type))+
+  geom_col()+
+  geom_text(aes(y = lab.xpos,
+            label = paste0(type,"\n",weight,"%")), angle = 0,
+              family = "ChulaCharasNew", size = 6,
+              col = "white", hjust = 0.35,
+              vjust = 0.7)+
+  scale_fill_manual(values = mycols)+
+  theme_void()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.title = element_blank())+
+  scale_y_continuous(breaks = c(0,20,50,100))+
+  coord_polar(theta = "y")
+```
+
+## หนังสือแนะนำ
+
+![](img/books.png)
+
+
+
+## แหล่งการเรียนรู้/แหล่งข้อมูลแนะนำ {.smaller}
+
+:::: {.columns}
+
+::: {.column width="65%"}
+
+<br>
+<br>
+
+- [https://www.kaggle.com/](https://www.kaggle.com)
+
+- [https://www.tidymodels.org/learn/](https://www.tidymodels.org/learn/)
+
+- [https://scikit-learn.org/stable/](https://scikit-learn.org/stable/)
+
+- [https://onlinelibrary.wiley.com/journal/17453992](https://onlinelibrary.wiley.com/journal/17453992)
+
+- [https://ourworldindata.org/charts](https://ourworldindata.org/charts)
+
+:::
+
+::: {.column width="35%"}
+
+![](https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif?cid=790b7611r6cptmsfn8sbp6b5gkexalce4gn5pz8hqftoezl2&ep=v1_gifs_search&rid=giphy.gif&ct=g)
+:::
+::::
+
+# 2. Basic Concepts
+
+## 2.1 Algorithms {.smaller}
+
+กระบวนการ/ขั้นตอนการดำเนินงานที่กำหนดให้ประสบผลสำเร็จ
+
+
+- มีความชัดเจนแน่นอน
+
+- มีขั้นตอนการดำเนินงานที่จำกัด
+
+- มีประสิทธิภาพ
+
+- เป็นอิสระจากโปรแกรมภาษา
+
+## {.smaller}
+
+
+ลองคิดอัลกอริทึมที่ใช้สำหรับแก้ปัญหางานต่อไปนี้
+
+- การทอดไข่เจียวให้ไข่ขาวกรอบ แต่ไข่แดงต้องยังไม่สุกตัดออกมาต้องเยิ้มเป็นลาวา
+
+- ทดแทนค่าสูญหายในตัวแปร `Continent` ของชุดข้อมูล `OECD_dataset.csv` 
+  
+- อัลกอริทึมอ่านตัวเลขจากป้ายไฟ
+
+
+
+:::: {.columns}
+
+::: {.column width="60%"}
+![](https://media.geeksforgeeks.org/wp-content/uploads/20200413202916/Untitled-Diagram-237.png)
+:::
+
+::: {.column width="40%"}
+![](https://media.geeksforgeeks.org/wp-content/uploads/20200413205321/Capture429.png)
+
+:::
+::::
+
+
+<div class="caption">Source: https://www.geeksforgeeks.org/seven-segment-displays/</div>
+
+## Behind the Scene
+
+<center>
+![](img/rulebased.png){width=80%}
+</center>
+
+
+## {.smaller}
+
+จากปัญหาการอ่านตัวเลขจากป้ายไฟ หากข้อมูลนำเข้าเป็นลายมือจริงของคนดังรูป อัลกอริทึมข้างต้นยังสามารถใช้ได้ดีหรือไม่
+
+
+<center>
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1795009334.png){width="50%"}
+</center>
+
+<div class="caption">Source: Geron (2019)</div>
+
+## Types of Algorithms {.smaller}
+
+- **Rule-based algorithms** เป็นอัลกอริธึมที่ตัดสินใจหรือดำเนินการตามชุดของกฎที่กำหนดไว้ล่วงหน้า กฎเหล่านี้จะถูก**สร้างขึ้นโดยมนุษย์** โดยอิงจากความรู้ที่มีอยู่และถูกนำไปใช้ในสถานการณ์ที่เฉพาะเจาะจง อัลกอริธึมประเภทนี้มักถูกใช้ในระบบผู้เชี่ยวชาญ (expert systems) หรือระบบที่ต้องการการตัดสินใจที่เป็นระบบและสามารถตรวจสอบได้
+
+- **Machine-based algorithms** อัลกอริธึมที่ตัดสินใจหรือดำเนินการตามแบบจำลองหรือโมเดลที่เรียนรู้จากข้อมูลแทนการกำหนดจากผู้เชี่ยวชาญ ซึ่งทำให้การเรียนรู้มีความยืดหยุ่นสูง และสามารถปรับตัวและปรับปรุงตนเองได้เมื่อได้รับข้อมูลใหม่อย่างรวดเร็ว โดยไม่ต้องการการกำหนดกฎเกณฑ์อย่างละเอียดล่วงหน้าจากมนุษย์
+
+
+
+:::: {.columns}
+
+::: {.column width="52%"}
+![](img/rulebased.png){width="88%"}
+:::
+
+::: {.column width="48%"}
+![](img/MLbased.png)
+
+:::
+::::
+
+<div class="caption">Source: Geron (2019)</div>
+
+
+## 2.2 Machine Learning (ML) {.smaller}
+
+- กฎเกณฑ์ต่าง ๆ ในบริบทของ ML จะเรียกว่าแบบจำลองหรือโมเดล (models) สร้างขึ้นโดยการเรียนรู้จากข้อมูล
+
+- มีการใช้งานที่หลากหลายโดยอาจจำแนกเป็นการนำไปใช้เพื่อทำนาย/จำแนก และการทำความเข้าใจข้อมูลเชิงลึก
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-744630750.png)
+
+<div class = "caption">Source: https://k21academy.com/datascience-blog/deep-learning/dl-vs-ml/</div>
+
+
+## 2.3 Type of Machine Learnings {.smaller}
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+<br>
+
+- Supervised Learning
+
+- Unsupervised Learning
+
+- Semi-Supervised Learning
+
+- Reinforcement Learning
+
+:::
+::: {.column width="65%"}
+
+![](img/ML.png){width="100%"}
+
+<div class="caption">Source: [https://towardsdatascience.com/machine-learning-types-2-c1291d4f04b1](https://towardsdatascience.com/machine-learning-types-2-c1291d4f04b1)</div>
+:::
+
+::::
+
+## Supervised Learning {.smaller}
+
+> "Supervised machine learning involves training a model on a labeled dataset, where each example consists of input data and corresponding output labels. The goal is for the model to learn the mapping between inputs and outputs, enabling it to make predictions on unseen data accurately."
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+
+![](https://miro.medium.com/v2/format:webp/1*Iz7bCLrPTImnBDOOEyE3LA.png){width="100%" fig-align="right"}
+
+:::
+
+::: {.column width="40%"}
+<br>
+
+- Regression
+
+- Classification
+
+
+:::
+::::
+
+<div class="caption2">Source: https://medium.com/@ngneha090/a-guide-to-supervised-learning-f2ddf1018ee0</div>
+
+## Example
+
+
+![](img/supervised.png){fig-align="center"}
+
+
+## Unsupervised Learning {.smaller}
+
+> Unsupervised learning is the case where we fit the model without known outputs. Our goal does not involve to predict any labels here. Rather we expect our model to enlighten us by finding unseen patterns within the data set.
+
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*PaGnLVKs6lCuL3r9p1c2LQ.png){width="100%" fig-align="right"}
+
+:::
+
+::: {.column width="40%"}
+
+<br>
+
+- Clustering
+
+- Dimension Reduction
+
+- Anomaly Detection
+
+- Association
+
+:::
+::::
+
+<div class="caption2">Source: https://medium.com/@metehankozan/supervised-and-unsupervised-learning-an-intuitive-approach-cd8f8f64b644</div>
+
+## Example
+
+<br>
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/clustering1.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/clustering2.png)
+
+:::
+
+::::
+
+
+## กิจกรรม 1: My first ML model {.smaller}
+
+- ดาวน์โหลดและเรียกใช้ {tidyverse} และ {tidymodels}
+
+- นำเข้าชุดข้อมูล `learning_data.csv`
+
+- สร้าง regression model เพื่อทำนายคะแนน `research_score` โดยใช้ตัวแปรอิสระในชุดข้อมูล
+
+- ประเมินประสิทธิภาพในการทำนายของโมเดลที่สร้างขึ้น
+
+
+## กิจกรรม 2: {.smaller}
+
+- แบ่งชุดข้อมูล `learning_data.csv` ออกเป็นสองชุดได้แก่ training data และ test data
+
+- นำ training data มาสร้างโมเดล regression
+
+- นำโมเดล regression ที่สร้างขึ้นไปทำนายข้อมูลใน test data
+
+- ประเมินประสิทธิภาพในการทำนาย ผลการประเมินเป็นอย่างไร
+
+
+## Overfitting and Underfitting Model
+
+![](https://scott.fortmann-roe.com/docs/docs/BiasVariance/biasvariance.png){width="80%"}
+
+<div class="caption2">Source: https://scott.fortmann-roe.com/docs/BiasVariance.html</div>
+
+
+## Modelling Process
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1728379488.png)
+
+## ตัวอย่างงานวิจัย
+
+- [https://online-journals.org/index.php/i-jep/article/view/48205/14941](https://online-journals.org/index.php/i-jep/article/view/48205/14941)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/jcal.13041](https://onlinelibrary.wiley.com/doi/epdf/10.1111/jcal.13041)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12543](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12543)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12602](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12602)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12470](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12470)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12544](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12544)
+
+
+
+##
+
+<br>
+<br>
+<br>
+
+
+<center>
+
+![](https://media.giphy.com/media/TgF6xfH8V0mZcUyneP/giphy.gif?cid=ecf05e474f9o45pevyyvhdf9m6m8ppfbrjjgfizgtpg3lf9s&ep=v1_gifs_related&rid=giphy.gif&ct=g)
+
+</center>
+
+## 
+
+
