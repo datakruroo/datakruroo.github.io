@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
   </style>
   <link rel="stylesheet" href="introduction_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="my_css.css">
@@ -560,7 +625,7 @@ Source: https://medium.com/<span class="citation" data-cites="metehankozan/super
 <p><img data-src="img/clustering2.png"></p>
 </div></div>
 </section>
-<section id="กจกรรม-1-my-first-ml-model" class="slide level2 smaller">
+<section id="กจกรรม-1-my-first-ml-model" class="slide level2 smaller scrollable">
 <h2>กิจกรรม 1: My first ML model</h2>
 <ul>
 <li><p>ดาวน์โหลดและเรียกใช้ {tidyverse} และ {tidymodels}</p></li>
@@ -568,6 +633,206 @@ Source: https://medium.com/<span class="citation" data-cites="metehankozan/super
 <li><p>สร้าง regression model เพื่อทำนายคะแนน <code>research_score</code> โดยใช้ตัวแปรอิสระในชุดข้อมูล</p></li>
 <li><p>ประเมินประสิทธิภาพในการทำนายของโมเดลที่สร้างขึ้น</p></li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="do">### required packages</span></span>
+<span id="cb1-2"><a href=""></a><span class="co">#install.packages("tidymodels")</span></span>
+<span id="cb1-3"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-5"><a href=""></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p>วัตถุประสงค์ของงานนี้คือ สร้างโมเดลทำนายคะแนนสอบวิชาวิจัย (<code>research_score</code>) โดยใช้ตัวแปรที่เกี่ยวกับพฤติกรรมการเรียน และความรู้/ทักษะด้านสถิติเป็นตัวแปรทำนาย</p>
+<ol type="1">
+<li>ขั้นแรกนำชุดข้อมูลเข้าสู่ R ด้วยฟังก์ชัน <code>read_csv()</code> จากนั้นสำรวจโครงสร้างของชุดข้อมูลด้วย <code>glimpse()</code></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Desktop/learning_data2.csv"</span>) <span class="co">#readr</span></span>
+<span id="cb2-2"><a href=""></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  choose_method concepts interpretation research_score submit_time
+          &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;       &lt;dbl&gt;
+1            60     57.1           56.2             72        156.
+2            40     57.1           31.2             72        145.
+3            40     42.9           50               71        141.
+4            20     50             43.8             72        150.
+5            10     21.4           50               62        129.
+6            20     42.9           75               75        162.
+# ℹ 5 more variables: percent_submit &lt;dbl&gt;, gender &lt;chr&gt;, department &lt;chr&gt;,
+#   learning_performance &lt;dbl&gt;, cheat_index &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">glimpse</span>(data, <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 385
+Columns: 10
+$ choose_method        &lt;dbl&gt; 60, 40, 40, 20, 10,…
+$ concepts             &lt;dbl&gt; 57.14286, 57.14286,…
+$ interpretation       &lt;dbl&gt; 56.25000, 31.25000,…
+$ research_score       &lt;dbl&gt; 72, 72, 71, 72, 62,…
+$ submit_time          &lt;dbl&gt; 156.41160, 145.0840…
+$ percent_submit       &lt;dbl&gt; 66.66667, 100.00000…
+$ gender               &lt;chr&gt; "ช", "ช", "ญ", "ญ",…
+$ department           &lt;chr&gt; "ไทยสังคม", "ภาษาอังก…
+$ learning_performance &lt;dbl&gt; 95.00000, 73.33333,…
+$ cheat_index          &lt;dbl&gt; 0.9143358, 0.593489…</code></pre>
+</div>
+</div>
+<p>ผลการสำรวจพบว่ามีตัวแปรที่ไม่เกี่ยวข้องคือภูมิหลังได้แก่ เพศ และสาขาวิชาของนักเรียน ดังนั้นเราจะคัดตัวแปรดังกล่าวออกไปจากชุดข้อมูลก่อน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>data_use <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>gender, <span class="sc">-</span>department)</span>
+<span id="cb6-2"><a href=""></a>data_use</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 385 × 8
+   choose_method concepts interpretation research_score submit_time
+           &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;       &lt;dbl&gt;
+ 1            60     57.1           56.2             72       156. 
+ 2            40     57.1           31.2             72       145. 
+ 3            40     42.9           50               71       141. 
+ 4            20     50             43.8             72       150. 
+ 5            10     21.4           50               62       129. 
+ 6            20     42.9           75               75       162. 
+ 7            20     64.3           56.2             82       130. 
+ 8            40     57.1           50               76        88.6
+ 9            50     64.3           62.5             85       130. 
+10            60     42.9           56.2             73       109. 
+# ℹ 375 more rows
+# ℹ 3 more variables: percent_submit &lt;dbl&gt;, learning_performance &lt;dbl&gt;,
+#   cheat_index &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>สำรวจการแจกแจงของตัวแปรตาม <code>research_score</code> ด้วย histogram</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>data_use <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> research_score))<span class="sc">+</span></span>
+<span id="cb8-3"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="introduction_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="2" type="1">
+<li>สร้าง linear regression model จากชุดข้อมูล <code>data_use</code></li>
+</ol>
+<p>ในโปรแกรม R สามารถสร้าง linear regression ได้หลายวิธีการมาก ๆๆๆๆ</p>
+<p>ในกิจกรรมนี้จะใช้วิธีการพื้นฐานที่สุด ที่นักวิเคราะห์ต้องรู้ทุกคนคือการใช้ฟังก์ชัน <code>lm()</code></p>
+<p><span class="math display">\[
+researchScore = \beta_0 + \beta_1 chooseMethod + ... + \beta_p cheatIndex
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="do">### ลองสำรวจความสัมพันธ์ด้วยสถิติพื้นฐานและ visualization</span></span>
+<span id="cb9-2"><a href=""></a>data_use <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>choose_method, <span class="at">y=</span>research_score))<span class="sc">+</span></span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="introduction_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>data_use <span class="sc">%&gt;%</span> <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     choose_method   concepts interpretation research_score
+choose_method         1.0000000000  0.3056856      0.1707677      0.3130112
+concepts              0.3056856240  1.0000000      0.4706572      0.5619702
+interpretation        0.1707677156  0.4706572      1.0000000      0.5485877
+research_score        0.3130112105  0.5619702      0.5485877      1.0000000
+submit_time          -0.2059595673 -0.2824789     -0.1949572     -0.2856183
+percent_submit        0.0310793635  0.2565727      0.1920585      0.3473329
+learning_performance -0.0001048996  0.1862955      0.1940057      0.2380094
+cheat_index                     NA         NA             NA             NA
+                     submit_time percent_submit learning_performance
+choose_method         -0.2059596     0.03107936        -0.0001048996
+concepts              -0.2824789     0.25657274         0.1862955368
+interpretation        -0.1949572     0.19205852         0.1940057256
+research_score        -0.2856183     0.34733291         0.2380093505
+submit_time            1.0000000    -0.23498719        -0.1015202912
+percent_submit        -0.2349872     1.00000000         0.2867626802
+learning_performance  -0.1015203     0.28676268         1.0000000000
+cheat_index                   NA             NA                   NA
+                     cheat_index
+choose_method                 NA
+concepts                      NA
+interpretation                NA
+research_score                NA
+submit_time                   NA
+percent_submit                NA
+learning_performance          NA
+cheat_index                    1</code></pre>
+</div>
+</div>
+<p>fit linear regression model กับข้อมูล</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> research_score <span class="sc">~</span> ., <span class="at">data =</span> data_use)</span>
+<span id="cb12-2"><a href=""></a><span class="do">## เรียกผลการวิเคราะห์ของ linear regression ขึ้นมาดู</span></span>
+<span id="cb12-3"><a href=""></a><span class="fu">summary</span>(fit_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = research_score ~ ., data = data_use)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-18.2997  -4.7013   0.3642   4.7129  19.0570 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          39.57561    4.35615   9.085  &lt; 2e-16 ***
+choose_method         0.08829    0.02289   3.857 0.000135 ***
+concepts              0.16139    0.02606   6.192 1.56e-09 ***
+interpretation        0.19486    0.02565   7.597 2.45e-13 ***
+submit_time          -0.01840    0.01372  -1.341 0.180750    
+percent_submit        0.14364    0.03225   4.454 1.12e-05 ***
+learning_performance  0.06553    0.03205   2.045 0.041573 *  
+cheat_index          -3.65754    2.05969  -1.776 0.076581 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.971 on 375 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.4849,    Adjusted R-squared:  0.4753 
+F-statistic: 50.43 on 7 and 375 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>วิเคราะห์ประสิทธิภาพของการทำนายด้วยการดูความสัมพันธ์/เปรียบเทียบค่าทำนายและค่าจริงของ <code>research_score</code> ในชุดข้อมูล <code>data_use</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">predict</span>(fit_lm, <span class="at">newdata =</span> data_use) <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">rename</span>(<span class="at">predict_res =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">bind_cols</span>(data_use<span class="sc">$</span>research_score) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href=""></a>  <span class="fu">rename</span>(<span class="at">true_res =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href=""></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href=""></a>  <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            predict_res  true_res
+predict_res   1.0000000 0.6963408
+true_res      0.6963408 1.0000000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="do">## R-sq metric</span></span>
+<span id="cb16-2"><a href=""></a><span class="fl">0.6963408</span><span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4848905</code></pre>
+</div>
+</div>
+<p>จากค่า R2 พบว่า ค่าทำนายกับค่าจริงมีความผันแปรร่วมกันประมาณร้อยละ 48.5 ซึ่งแสดงว่ามีความผันแปรใน research_score อีกประมาณ 50% ที่อธิบายไม่ได้ด้วย linear regression model นี้</p>
+<p>ลองเปรียบเทียบค่าจริงกับค่าทำนายด้วย RMSE (root mean square error)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">predict</span>(fit_lm, <span class="at">newdata =</span> data_use) <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href=""></a>  <span class="fu">rename</span>(<span class="at">predict_res =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href=""></a>  <span class="fu">bind_cols</span>(data_use<span class="sc">$</span>research_score) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href=""></a>  <span class="fu">rename</span>(<span class="at">true_res =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-5"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">residual =</span> true_res <span class="sc">-</span> predict_res) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">residual2 =</span> residual<span class="sc">^</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-7"><a href=""></a>  <span class="do">## Mean Squared Error</span></span>
+<span id="cb18-8"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">rmse =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>(residual2, <span class="at">na.rm =</span> T)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      rmse
+1 6.898102</code></pre>
+</div>
+</div>
+<p>โดยเฉลี่ยแล้วโมเดลจะทำนายคะแนนผลสัมฤทธิ์รายวิชาวิจัยคลาดเคลื่อนไปประมาณ 7 คะแนน</p>
 </section>
 <section id="กจกรรม-2" class="slide level2 smaller">
 <h2>กิจกรรม 2:</h2>

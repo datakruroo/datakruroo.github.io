@@ -373,6 +373,105 @@ data.frame(type,weight) |>
 - ประเมินประสิทธิภาพในการทำนายของโมเดลที่สร้างขึ้น
 
 
+
+```{r}
+### required packages
+#install.packages("tidymodels")
+library(tidyverse)
+library(tidymodels)
+tidymodels_prefer()
+```
+
+<br>
+
+วัตถุประสงค์ของงานนี้คือ สร้างโมเดลทำนายคะแนนสอบวิชาวิจัย (`research_score`) โดยใช้ตัวแปรที่เกี่ยวกับพฤติกรรมการเรียน และความรู้/ทักษะด้านสถิติเป็นตัวแปรทำนาย
+
+
+1. ขั้นแรกนำชุดข้อมูลเข้าสู่ R ด้วยฟังก์ชัน `read_csv()` จากนั้นสำรวจโครงสร้างของชุดข้อมูลด้วย `glimpse()`
+
+```{r}
+data <- read_csv("/Users/choat/Desktop/learning_data2.csv") #readr
+head(data)
+glimpse(data, 50)
+```
+
+ผลการสำรวจพบว่ามีตัวแปรที่ไม่เกี่ยวข้องคือภูมิหลังได้แก่ เพศ และสาขาวิชาของนักเรียน ดังนั้นเราจะคัดตัวแปรดังกล่าวออกไปจากชุดข้อมูลก่อน
+
+```{r}
+data_use <- data %>% select(-gender, -department)
+data_use
+```
+
+สำรวจการแจกแจงของตัวแปรตาม `research_score` ด้วย histogram
+
+```{r}
+data_use %>% 
+  ggplot(aes(x = research_score))+
+  geom_histogram()
+```
+
+
+2. สร้าง linear regression model จากชุดข้อมูล `data_use`
+
+ในโปรแกรม R สามารถสร้าง linear regression ได้หลายวิธีการมาก ๆๆๆๆ
+
+ในกิจกรรมนี้จะใช้วิธีการพื้นฐานที่สุด ที่นักวิเคราะห์ต้องรู้ทุกคนคือการใช้ฟังก์ชัน `lm()`
+
+$$
+researchScore = \beta_0 + \beta_1 chooseMethod + ... + \beta_p cheatIndex
+$$
+
+```{r}
+### ลองสำรวจความสัมพันธ์ด้วยสถิติพื้นฐานและ visualization
+data_use %>% 
+  ggplot(aes(x=choose_method, y=research_score))+
+  geom_point()
+
+data_use %>% cor()
+```
+
+fit linear regression model กับข้อมูล
+
+```{r}
+fit_lm <- lm(formula = research_score ~ ., data = data_use)
+## เรียกผลการวิเคราะห์ของ linear regression ขึ้นมาดู
+summary(fit_lm)
+```
+
+
+วิเคราะห์ประสิทธิภาพของการทำนายด้วยการดูความสัมพันธ์/เปรียบเทียบค่าทำนายและค่าจริงของ `research_score` ในชุดข้อมูล `data_use` 
+
+```{r}
+predict(fit_lm, newdata = data_use) %>% data.frame() %>% 
+  rename(predict_res = 1) %>% 
+  bind_cols(data_use$research_score) %>% 
+  rename(true_res = 2) %>% 
+  drop_na() %>% 
+  cor()
+
+## R-sq metric
+0.6963408^2
+```
+
+จากค่า R2 พบว่า ค่าทำนายกับค่าจริงมีความผันแปรร่วมกันประมาณร้อยละ 48.5 ซึ่งแสดงว่ามีความผันแปรใน research_score อีกประมาณ 50% ที่อธิบายไม่ได้ด้วย linear regression model นี้
+
+
+
+ลองเปรียบเทียบค่าจริงกับค่าทำนายด้วย RMSE (root mean square error)
+
+```{r}
+predict(fit_lm, newdata = data_use) %>% data.frame() %>% 
+  rename(predict_res = 1) %>% 
+  bind_cols(data_use$research_score) %>% 
+  rename(true_res = 2) %>% 
+  mutate(residual = true_res - predict_res) %>% 
+  mutate(residual2 = residual^2) %>% 
+  ## Mean Squared Error
+  summarise(rmse = sqrt(mean(residual2, na.rm = T)))
+```
+
+โดยเฉลี่ยแล้วโมเดลจะทำนายคะแนนผลสัมฤทธิ์รายวิชาวิจัยคลาดเคลื่อนไปประมาณ 7 คะแนน
+
 ## กิจกรรม 2: {.smaller}
 
 - แบ่งชุดข้อมูล `learning_data.csv` ออกเป็นสองชุดได้แก่ training data และ test data
