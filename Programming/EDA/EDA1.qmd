@@ -1,0 +1,1068 @@
+---
+title: "Exploratory Data Analysis"
+author: ผศ.ดร.สิวะโชติ ศรีสุทธิยากร </br> 
+institute: ภาควิชาวิจัยและจิตวิทยาการศึกษา </br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+format: 
+  revealjs:
+    theme: theme.scss
+    scrollable: true
+    slideNumber: true
+    highlight-style: github
+    css: my_css.css
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    footer: 2758615 สมรรถนะสําคัญของการเขียนโปรแกรมวิเคราะห์ข้อมูลทางการศึกษา
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Exploratory Data Analysis (EDA) {.smaller}
+
+</br>
+
+เป็นกระบวนการที่นักสถิติและนักวิทยาการข้อมูลใช้สำหรับสำรวจและวิเคราะห์ข้อมูลเบื้องต้น โดยมีวัตถุประสงค์หลักคือ **"การทำความเข้าใจ/สร้างองค์ความรู้จากข้อมูล"**
+
+</br>
+
+1. ทำความเข้าใจลักษณะของโครงสร้างและสภาพของข้อมูล
+
+2. ตรวจสอบความผิดปกติของข้อมูล และดำเนินการแก้ไขเพื่อให้ข้อมูลมีความพร้อมสำหรับการวิเคราะห์ขั้นสูงต่อไป
+
+3. ค้นหาสาระสำคัญที่ซ่อนอยู่ในข้อมูล เช่น การเปรียบเทียบหรือตรวจสอบความสัมพันธ์ระหว่างตัวแปร 
+
+
+## 
+
+<br>
+<br>
+<br>
+
+:::: {style="font-size: 65%;"}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+### EDA
+
+- Understand the data
+
+- Conducted at preliminary stage
+
+- Generate research question/hypothesis
+
+- Using a lot of tools (not specific)
+
+
+:::
+
+::: {.column width="50%"}
+
+### CDA
+
+- Test Specific hypothesis using data
+
+- Conducted after EDA
+
+- Speicific tools
+
+
+:::
+::::
+::::
+
+
+## EDA มีขั้นตอนอย่างไร?
+
+
+:::: {style="font-size: 50%;"}
+
+::: {.fragment .fade-up}
+
+> “There are no routine statistical questions, only questionable statistical routines.” — [Sir David Roxbee Cox](https://en.wikipedia.org/wiki/David_Cox_(statistician))
+
+
+> EDA is not a formal process with a strict set of rules. More than anything, EDA is a state of mind. During the initial phases of EDA you should feel free to investigate every idea that occurs to you. Some of these ideas will pan out, and some will be dead ends. As your exploration continues, you will home in on a few particularly productive areas that you’ll eventually write up and communicate to others. (Wickham & Grolemund, 2023)
+
+:::
+
+</br>
+
+::: {.fragment .fade-up}
+
+โดยปกติการทำ EDA มักเป็นการดำเนินงานที่ต้องทำแบบทวนซ้ำ ประกอบด้วยขั้นตอนสำคัญ
+:::
+
+
+::: {.fragment .fade-up}
+
+1. **ตั้งคำถามเกี่ยวกับข้อมูล** เช่น “มีรูปแบบการกระจายตัวของข้อมูลอย่างไร?” “มีความสัมพันธ์ระหว่างตัวแปรต่าง ๆ หรือไม่?” หรือ “มีค่าผิดปกติอยู่ในข้อมูลหรือไม่?”
+:::
+
+::: {.fragment .fade-up}
+
+2. **หาคำตอบด้วยเครื่องมือทางสถิติและวิทยาการข้อมูล** เพื่อสร้างสารสนเทศ/สารสนเทศเชิงลึกจากข้อมูล เครื่องมือที่เกี่ยวข้อง เช่น สถิติพื้นฐาน ทัศนภาพข้อมูล โมเดลทางสถิติ หรืออัลกอริทึมการเรียนรู้ของเครื่อง
+:::
+
+::: {.fragment .fade-up}
+
+3. **ใช้สารสนเทศที่ได้เพื่อปรับคำถาม/สร้างคำถามใหม่** สารสนเทศที่ได้จากการวิเคราะห์อาจช่วยให้ผู้วิเคราะห์จำเป็นต้องตั้งคำถามเพิ่มเติมหรือปรับคำถามเดิม เพื่อให้การวิเคราะห์ข้อมูลสามารถเจาะลึกและมีความหมายมากขึ้น กระบวนการนี้เป็นการทวนซ้ำที่ช่วยให้เราสามารถค้นพบข้อมูลเชิงลึกที่อาจไม่สามารถเห็นได้ในขั้นตอนแรก
+:::
+
+::::
+
+
+
+## กิจกรรม: Anscombe dataset (1)
+
+:::: {style="font-size: 65%;"}
+
+ชุดข้อมูล `anscombe` ประกอบด้วยข้อมูลของตัวแปรตาม `y` กับตัวแปรอิสระ `x` จำนวน 4 ชุด วัตถุประสงค์ของการวิเคราะห์นี้คือเพื่อวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม y กับตัวแปรอิสระ x ของข้อมูลแต่ละชุด
+
+```{r echo = T}
+glimpse(anscombe)
+```
+
+```{r echo = F}
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  group_by(ind, dep) |> 
+  nest() |> 
+  mutate(reg_model = map(data, ~lm(Y ~ X, data = .x))) -> temp
+```
+
+ลองคำนวณค่าสถิติบรรยายของตัวแปรตามกับตัวแปรอิสระในแต่ละชุดข้อมูล
+
+```{r}
+anscombe |> 
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |> 
+  group_by(variable) |> 
+  summarise(mean = mean(value),
+              sd = sd(value))
+```
+
+::::
+
+## EDA: Anscombe dataset (2) 
+
+:::: {style="font-size: 65%;"}
+
+- ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระของข้อมูลแต่ละชุดด้วย correlation
+
+```{r}
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  group_by(ind, dep) |> 
+  nest() |> 
+  mutate(cor = map(.x = data, .f = ~cor(.x)[,2])) |> 
+  unnest("cor") |> 
+  slice(c(1,3,5,7)) |> 
+  select(ind,dep,4) |> 
+  rename(correlation = 3) |> 
+  ungroup() |> 
+  data.frame()
+```
+
+
+- ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression $y_i = \beta_0 + \beta_1x + \epsilon_i$
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+library(broom)
+names(temp$reg_model)<-paste0("Dataset",1:4)
+temp$reg_model |> map(~tidy(.x))->temp1
+temp1[1:2]
+```
+
+:::
+
+
+
+::: {.column width="50%"}
+
+```{r}
+temp1[3:4]
+```
+
+:::
+
+::::
+::::
+
+## EDA: Anscombe dataset (3) 
+
+```{r}
+
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  ggplot(aes(x=X, y=Y))+
+  geom_point()+
+  geom_smooth(method = "lm", linewidth = 1, se=F)+
+  facet_wrap(~ind)+
+  theme_light()
+
+
+```
+
+
+## 
+
+:::: {style="font-size: 70%;"}
+
+> “Far better an approximate answer to the right question, which is often vague, than an exact answer to the wrong question, which can always be made precise.” <br> — [John Tukey](https://en.wikipedia.org/wiki/John_Tukey)
+
+::::
+
+<center>
+![](\img\spurious_correlation.png)
+</center>
+
+##  การวิเคราะห์ที่เป็นไปได้
+
+::: {style="font-size: 70%;"}
+
+- การสํารวจโครงสร้างชุดข้อมูล เช่น `glimpse()`, `str()`, `head()`, `tail()`
+
+- สำรวจสภาพ/การแจกแจงของข้อมูล
+
+  - สถิติพื้นฐาน เช่น การแจกแจงความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน ...
+  - ทัศนภาพข้อมูล เช่น แผนภูมิแท่ง ฮิสโทแกรม แผนภาพความหนาแน่น ...
+
+- เปรียบเทียบข้อมูล/สำรวจความสัมพันธ์ระหว่างตัวแปร (Covariation/Relation)
+  - เปรียบเทียบการแจกแจงของข้อมูล ค่าเฉลี่ย แผนภาพกล่อง
+  - สหสัมพันธ์ แผนภาพการกระจาย
+  - การวิเคราะห์การถดถอย
+  - Decision tree หรืออื่น ๆ 
+
+- การวิเคราะห์จัดกลุ่ม เช่น K-means clustering, Hierarchical clustering, ...
+
+- การลดมิติข้อมูล เช่น PCA, PLS หรือ t-SNE
+
+:::
+
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+
+::: {style="font-size: 70%;"}
+
+เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
+
+วัตถุประสงค์หลักของการวิเคราะห์คือ
+
+1. วิเคราะห์ปัจจัยที่มีความสัมพันธ์กับความสำเร็จในการเรียนวิชาวิจัย
+
+2. สร้างโมเดลทำนายความสำเร็จในการเรียนวิชาวิจัย
+
+จากวัตถุประสงค์หลักจะเห็นว่าเน้นการวิเคราะห์ความสัมพันธ์และการสร้างโมเดลทำนาย การสำรวจข้อมูลจึงอาจจะเน้นสองส่วน ได้แก่ 
+
+- การสำรวจการแจกแจงของตัวแปรแต่ละตัว 
+
+- การวิเคราะห์ความสัมพันธ์ระหว่างตัวแปร
+
+
+:::
+
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+
+::: {style="font-size: 70%;"}
+
+วัตถุประสงค์หลักของการวิเคราะห์คือ
+
+- วิเคราะห์ปัจจัยที่มีความสัมพันธ์กับความสำเร็จในการเรียนวิชาวิจัย
+
+- สร้างโมเดลทำนายความสำเร็จในการเรียนวิชาวิจัย
+
+เรียก library-tidyverse และนำข้อมูลเข้า R
+
+```{r echo = T}
+
+library(tidyverse)
+
+```
+
+:::
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+
+::: {style="font-size: 70%;"}
+
+วัตถุประสงค์หลักของการวิเคราะห์คือ
+
+- วิเคราะห์ปัจจัยที่มีความสัมพันธ์กับความสำเร็จในการเรียนวิชาวิจัย
+
+- สร้างโมเดลทำนายความสำเร็จในการเรียนวิชาวิจัย
+
+เรียก library-tidyverse และนำข้อมูลเข้า R
+
+
+```{r echo = T}
+library(tidyverse)
+## importing data
+data <- read_csv("learning_data.csv")
+```
+
+:::
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"}
+
+::: {style="font-size: 70%;"}
+
+เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
+
+- วิเคราะห์ปัจจัยที่มีความสัมพันธ์กับความสำเร็จในการเรียนวิชาวิจัย
+
+- สร้างโมเดลทำนายความสำเร็จในการเรียนวิชาวิจัย
+
+เรียก library-tidyverse และนำข้อมูลเข้า R
+
+```{r echo = T}
+library(tidyverse)
+## importing data
+data <- read_csv("learning_data.csv")
+## print some of data
+data
+```
+
+:::
+
+
+## 1. สำรวจโครงสร้างชุดข้อมูล 
+
+::: {style="font-size: 60%;"}
+
+- ชุดข้อมูลนี้มีตัวแปรกี่ตัว/มีหน่วยข้อมูลกี่หน่วย หน่วยข้อมูลเป็นอะไร?
+
+- ตัวแปรในชุดข้อมูลมีตัวแปรอะไรบ้าง สามารถจำแนกประเภทของตัวแปรได้หรือไม่ อย่างไร?
+
+- สถานะการเก็บค่าของตัวแปรแต่ละตัวเหมาะสมที่จะนำไปวิเคราะห์แล้วหรือไม่?
+
+- ควรจะต้องมีการจัดระเบียบหรือจัดกระทำอะไรเพิ่มเติมมั้ย?
+
+
+จากผลลัพธ์ที่ได้จาก `glimpse()` พบว่าชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลที่มีหน่วยข้อมูลเป็นนักเรียนจำนวน 385 คน ซึ่งประกอบด้วยข้อมูลจำนวน 11 คอลัมน์ คอลัมน์แรกเป็น `student_id` ไม่นับเป็นตัวแปร ส่วนที่เหลือเป็นตัวแปรที่เกี่ยวข้องกับความรู้/ทักษะทางด้านสถิติ พฤติกรรมการเรียน ภูมิหลัง และผลสัมฤทธิ์ทางการเรียนในรายวิชาวิจัย
+
+
+
+```{r echo = T}
+glimpse(data, 60)
+```
+
+เมื่อพิจารณาสถานะการเก็บค่าของตัวแปรพบว่าตัวแปรเชิงปริมาณทั้งหมดมีการเก็บค่าแบบ `dbl` ซึ่งเหมาะสมแล้ว อย่างไรก็ตามตัวแปรภูมิหลังได้แก่ `gender` และ `department` มีการเก็บค่าเป็น `chr` อยู่ซึ่งควรเปลี่ยนเป็น `fct` และเมื่อพิจารณาชุดข้อมูลพบว่าจัดเก็บอยู่ในลักษณะ tidy data แล้วไม่จำเป็นต้องมีการจัดระเบียบอะไรเพิ่มเติม ยกเว้นจะมีวัตถุประสงค์อื่น ๆ จะแสดงให้เห็นในส่วนต่อไป
+
+คำสั่งด้านล่างแสดงการเปลี่ยนสถานะของ `gender` และ `department` เป็น `fct` ตัวอย่างด้านล่างเลือกใช้ฟังก์ชัน `mutate_if()` เพื่อแปลงตัวแปร `chr` ทั้งสองตัวพร้อมกัน จะได้ไม่ต้องเขียนคำสั่งหลายบรรทัด
+
+```{r echo = T}
+data <- data |> 
+  mutate_if(is.character, factor)
+```
+
+ลองใช้ `glimpse()` ดูอีกทีว่าสถานะของตัวแปรทั้งสองถูกเปลี่ยนเป็น `fct` เรียบร้อยแล้วหรือไม่
+
+:::
+
+
+<br>
+<br>
+
+
+## 2. การสำรวจการแจกแจงของข้อมูล {auto-animate="true"} 
+
+::: {style="font-size: 60%;"}
+
+การแจกแจงของข้อมูลให้สารสนเทศเกี่ยวกับ ขอบเขต ค่าที่เป็นไปได้ และความสมเหตุสมผลของข้อมูล นอกจากนี้ยังสามารถให้ข้อสังเกตเกี่ยวกับความผิดปกติของข้อมูล
+
+- **การแจกแจงความถี่**
+
+- **ค่าสถิติพื้นฐาน** เช่น ค่าเฉลี่ย มัธยฐาน ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด สูงสุด และ quantile
+
+- **แผนภาพต่าง ๆ** เช่น
+  - Bar chart
+  - Histogram/Density plot
+  - Boxplot
+
+:::
+
+<br>
+
+
+## 2.1 การแจกแจงความถี่
+
+::: {style="font-size: 60%;"}
+
+การแจกแจงความถี่จำแนกได้ 2 ลักษณะ คือการแจกแจงความถี่สำหรับตัวแปรจัดประเภท และการแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ 
+
+- การแจกแจงความถี่สำหรับตัวแปรจัดประเภท
+
+- การแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ
+
+:::
+
+
+## การแจกแจงความถี่ตัวแปรจัดประเภท
+
+::: {style="font-size: 60%;"}
+
+  - `summary()`
+  - `table()`
+  - `count()`
+  - `barplot()`
+  - `ggplot(aes(x))+geom_bar()`
+
+
+ตัวอย่างต่อไปนี้แสดงการแจกแจงความถี่ข้อมูลของตัวแปรจัดประเภทด้วยวิธีการต่าง ๆ ในข้างต้น
+
+```{r echo = T}
+### ใช้ summary() ซึ่งตัวแปรจัดประเภทจะต้องถูกเก็บอยุู่ในสถานะ factor
+data |> 
+  select(gender, department) |> 
+  summary()
+```
+
+
+```{r echo = T}
+### ใช้ table() ฟังก์ชันนี้รับค่าเฉพาะ vector เท่านั้น
+table(data$gender)
+table(data$department)
+```
+
+```{r echo = T}
+### ใช้ count() วิธีการนี้อยู่ภายใต้ tidyverse framework
+data |> 
+  count(gender)
+
+data |> 
+  count(department)
+```
+
+
+เราสามารถแจกแจงความถี่ของตัวแปรทั้งสองพร้อมกันได้โดยใช้ฟังก์ชัน `pivot_longer()` เข้ามาช่วยจัดระเบียบข้อมูลก่อนการแจกแจงความถี่ ดังนี้
+
+```{r echo = T}
+data |> 
+  select_if(is.factor) |> ## เลือกเฉพาะตัวแปรที่เป็น factor
+  pivot_longer(cols = everything()) |> ## ลองสังเกตผลลัพธ์ท่อนนี้
+  group_by(name) |> 
+  count(value) ## เราจะได้การแจกแจงความถี่ของทั้งสองตัวแปรพร้อมกัน
+```
+
+ผลการแจกแจงความถี่ภูมิหลังของนักเรียนเป็นอย่างไร?
+
+:::
+
+<br>
+<br>
+
+
+
+## แนะนำ [library-ggplot2](https://ggplot2.tidyverse.org/)
+
+::: {style="font-size: 60%;"}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<br>
+<center>
+![](https://ggplot2.tidyverse.org/logo.png){width="40%"}
+</center>
+
+- พัฒนาโดย Hadley Wickham และทีมงาน
+  - Based on “Grammar of Graphics” (Wilkinson, 2005)
+  - consistent and intuitive framework
+  - powerful
+  - flexible
+
+:::
+
+::: {.column width="60%"}
+
+<br>
+
+<center> **แผนภาพ (Chart) = Marks + Attributes** </center>
+
+![](img/vis.png)
+
+**Marks** -- องค์ประกอบที่ใช้แสดงข้อมูล เช่น จุด เส้น แท่ง พื้นที่ - กำหนดผ่าน `geom_xxx()`
+
+**Attributes** -- variants ของ Marks เช่น ตำแหน่ง สี ขนาด มุม - กำหนดผ่าน `aes()`
+
+:::
+::::
+:::
+
+::: {style="font-size: 60%;"}
+
+โครงสร้าง grammar การเขียนคำสั่งด้วย ggplot2 แสดงด้านล่าง 
+
+```{r eval = F, echo = T}
+#| code-line-numbers: "|1-3"
+ggplot(data = <DATA>) +
+     <geom function>(
+          mapping = aes(<mappings>))+
+     <coordinate function>() +
+     <scale function>() +
+     <theme function>() +
+     <facet function>()
+```
+
+- สามารถดูรายชื่อ `geom_XXX()` เบื้องต้นได้ที่ >> [คลิกเลย](https://github.com/rstudio/cheatsheets/blob/main/data-visualization.pdf)
+
+:::
+
+<br>
+
+## 
+
+::: {style="font-size: 60%;"}
+
+ตัวอย่างต่อไปนี้แสดงการสร้างแผนภูมิแท่งเพื่อแจกแจงความถี่ของตัวแปรภูมิหลัง `gender`
+
+- เลือกใช้แท่ง (`geom_bar()`) เป็น Mark
+
+- `geom_bar()` มีการดำเนินการเบื้องหลัง 2 ส่วนได้แก่ 
+  1. แจกแจงความถี่ของตัวแปรที่กำหนด
+  2. plot แผนภูมิแท่งลงบนแผนภาพ
+
+- `aes(x = gender)` เป็นส่วนที่เรียกว่า aesthetic mapping ทำหน้าที่กำหนดว่าจะให้ attribute ไหนของ Mark ข้างต้น แสดงความแตกต่างของข้อมูล ในที่นี้กำหนดให้ attribute ตำแหน่งของ bar บนแกน X สะท้อนความแตกต่างของข้อมูลเพศ ช และ ญ 
+
+```{r eval=T, echo=T, fig.width = 5, fig.height = 4}
+## กำหนด data layer
+ggplot(data = data)+ ## เอาข้อมูลดิบเข้าเลย
+## เลือกแท่งเป็น Marks และกำหนดให้ attribute ตำแหน่งบนแกน X แท่นค่าที่แตกต่างกันของ gender
+  geom_bar(aes(x = gender)) + ## geom_bar() จะแจกแจงความถี่แล้ว plot ให้อัตโนมัติ
+  theme(text = element_text(family = "ChulaCharasNew", size = 20))
+```
+
+:::
+
+##
+
+::: {style="font-size: 60%;"}
+
+การสร้างแผนภูมิแท่งสามารถทำได้หลายลักษณะซึ่งบางทีก็ขึ้นอยู่กับข้อมูลที่นำเข้ามา หรือการประมวลผลข้อมูลก่อนหน้าที่จะสำรวจข้อมูลด้วยแผนภูมิแท่ง ตัวอย่างด้านล่างแสดงการสร้างแผนภูมิแท่งจากการแจกแจงความถี่
+
+
+```{r eval=T, echo=T, fig.width=5, fig.height=4}
+data |> 
+  count(gender) |>  ## ลองรันท่อนนี้แล้วดูผลลัพธืที่ได้
+  ggplot(aes(x = gender, y=n))+
+  geom_bar(stat = "identity")+
+  theme(text = element_text(family = "ChulaCharasNew", size  = 20))
+
+```
+
+:::
+
+
+## การแจกแจงความถี่ของตัวแปรเชิงปริมาณ
+
+::: {style="font-size: 60%;"}
+
+การแจกแจงความถี่ของตัวแปรเชิงปริมาณ โดยปกติมักจะต้องมีการแบ่งข้อมูลของตัวแปรเชิงปริมาณออกเป็นช่วงย่อยเรียกว่า อันตรภาคชั้น (class interval) จากนั้นจึงดำเนินการแจงนับจำนวนข้อมูลในแต่ละอันตรภาคชั้น
+
+  - `summary()`
+  - ใช้ `cut()` ร่วมกับ `summary()`, `table()` หรือ `count()`
+  - `hist()`
+  - `ggplot(aes(x))+geom_histogram()`
+  - `ggplot(aes(x))+geom_density()`
+
+
+ตัวอย่างต่อไปนี้แสดงการใช้ฟังก์ชันข้างต้นเพื่อวิเคราะห์การแจกแจง และการแจกแจงความถี่ของตัวแปรเชิงปริมาณ
+
+```{r echo = T}
+## ใช้ summary() กับตัวแปรเชิงปริมาณบางตัว
+data |> 
+  select(research_score, cheat_index) |> 
+  summary()
+
+```
+
+
+```{r echo = T}
+## สร้างอันตรภาคชั้นของตัวแปรด้วย `cut()`
+data |> 
+  mutate(research_score_interval = cut(research_score,
+                                       breaks = 10)) |>  ## ลองเปลี่ยน breaks เป็นค่าอื่นแล้วสังเกตผลดู
+  select(research_score_interval) |> 
+  count(research_score_interval)
+
+```
+
+
+ลองสร้าง histogram ของคะแนน `research_score`
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = T}
+data |> 
+  ggplot(aes(x=research_score))+
+  geom_histogram()
+```
+
+:::
+
+::: {.column width="50%"}
+```{r echo = T}
+data |> 
+  ggplot(aes(x=research_score))+
+  geom_histogram(bins = 50, fill = "maroon", col = "white")
+```
+
+:::
+::::
+
+
+ลองสร้าง density plot ของคะแนน `research_score`
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = T}
+data |> 
+  ggplot(aes(x=research_score))+
+  geom_density()
+```
+
+:::
+
+::: {.column width="50%"}
+```{r echo = T}
+data |> 
+  ggplot(aes(x=research_score))+
+  geom_density(bw = 0.5, fill = "steelblue")
+```
+
+:::
+::::
+
+:::
+
+<br>
+
+## แนะนำ [library-patchwork](https://patchwork.data-imaginist.com/)
+
+::: {style="font-size: 60%;"}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+![](https://cran.r-project.org/web/packages/patchwork/readme/man/figures/logo.png)
+
+library-patchwork เป็นส่วนต่อขยายของ library-ggplot2 ทำหน้าที่จัดเรียงและผสานแผนภาพหลาย ๆ อันเข้าด้วยกัน ช่วยให้การวางเลย์เอาต์ของกราฟหลาย ๆ อันเป็นเรื่องง่ายและมีความยืดหยุ่นสูง
+
+:::
+
+::: {.column width="60%"}
+
+ตัวอย่างการใช้ library-patchwork
+
+```{r echo = T}
+## install.packages("patchwork")
+library(patchwork)
+p1 <- data |> 
+  ggplot(aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white")+
+  xlim(40,100)
+
+p2 <- data |> 
+  ggplot(aes(x=research_score, y=""))+
+  geom_boxplot()+
+  xlim(40,100)
+
+p1/p2 + plot_layout(heights = c(3, 1))
+  
+```
+
+:::
+
+::::
+:::
+
+
+
+
+
+
+
+## 2.2 สถิติพื้นฐาน
+
+
+::: {style="font-size: 70%;"}
+
+- `summary()` ใช้แจกแจงความถี่และคำนวณค่าสถิติพื้นฐาน
+- `summarise()` ของ library-dplyr โดยใช้ร่วมกับฟังก์ชันที่เกี่ยวข้อง เช่น `mean()`, `sd()`, `quantile()`, `median()`, `min()` และ `max()`
+
+```{r eval = F, echo = T}
+data |> 
+  summarise_at(vars("research_score"),
+              list(avg = mean,
+                   sd = sd,
+                   min = min,
+                   max = max))
+```
+
+- `describe()` ของ library-psych 
+
+```{r eval = F, echo = T}
+#install.packages("psych")
+library(psych)
+describe(data$research_score)
+## describe(data)
+```
+
+:::
+
+## Code Example
+
+::: {style="font-size: 60%;"}
+
+ตัวอย่างต่อไปนี้แสดงการสำรวจข้อมูลด้วยการแจกแจงความถี่และสถิติพื้นฐานในชุดข้อมูล `learning_data.csv`
+
+- สำรวจค่าสูญหายคร่าว ๆ
+
+```{r}
+library(naniar)
+data |> 
+  miss_var_summary()
+```
+
+ผลการวิเคราะห์นี้พบว่ามีปัญหาค่าสูญหายใน `cheat_index`  เพียงตัวแปรเดียว และมีจำนวนเพียง 2 ค่า
+
+
+- แจกแจงความถี่ตัวแปรเชิงปริมาณ
+
+```{r echo = T}
+### สำรวจตัวแแปรเชิงปริมาณ
+data |> 
+  select(-student_id) |> 
+  select_if(is.numeric) |> 
+  pivot_longer(cols = everything(), names_to ="variable", values_to = "value") |> 
+  ggplot(aes(x = value))+
+  geom_histogram(bins = 30)+
+  facet_wrap(~variable, scales = "free_x") ## แบ่ง panel ตามตัวแปร
+```
+
+- สร้างตารางสถิติพื้นฐาน
+
+```{r echo = T}
+data |> 
+  select(-student_id) |> 
+  select_if(is.numeric) |> 
+  rename_with(~str_remove_all(., pattern = "_")) |> 
+  summarise(across(everything(), 
+                   list(mean = ~ mean(.x, na.rm = TRUE), 
+                        sd = ~ sd(.x, na.rm = TRUE),
+                        min = ~ min(.x, na.rm = TRUE),
+                        max = ~ max(.x, na.rm = TRUE)), 
+                   .names = "{.col}_{.fn}")) |>
+  pivot_longer(cols = everything()) |> 
+  separate(col = "name", into = c("variable","statistics")) |> 
+  pivot_wider(names_from = "statistics", values_from = "value")
+
+```
+
+ผลการสำรวจข้างต้นให้สารสนเทศอะไร และนำไปสู่การดำเนินการอะไรได้บ้างในการวิเคราะห์ข้อมูลเพื่อตอบวัตถุประสงค์หลัก
+
+
+- แจกแจงความถี่ตัวแปรจัดประเภท
+
+```{r echo = T}
+### สำรวจตัวแแปรจัดประเภท
+data |> 
+  select_if(is.factor) |> 
+  pivot_longer(cols = everything()) |> 
+  ggplot(aes(x = value))+
+  geom_bar()+
+  facet_wrap(~name, scales = "free_y")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  coord_flip()
+
+```
+
+:::
+
+
+## 2.3 การสำรวจความสัมพันธ์ระหว่างตัวแปร 
+
+::: {style="font-size: 60%;"}
+
+ความสัมพันธ์จำแนกได้หลายประเภท หาก**ใช้ประเภทข้อมูลเป็นเกณฑ์** อาจจำแนกความสัมพันธ์ได้เป็นดังนี้
+
+- ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรเชิงปริมาณ
+   - Scatter plot
+   - Locally Estimated Scatterplot Smoothing (LOESS)
+   - Pearson' correlation
+   - Regression analysis
+   - Decistion tree
+   - ...
+- ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภท
+   - การเปรียบเทียบค่าสถิติพื้นฐาน เช่น ค่าเฉลี่ยจำแนกตามกลุ่ม
+   - Boxplot
+   - t-test หรือ ANOVA model
+- ความสัมพันธ์ระหว่างตัวแปรจัดประเภทกับตัวแปรจัดประเภท
+   - การแจกแจงความถี่สองทาง (contingency table)
+   - Spearman's correlation
+   - Cramer' V หรือ Phi 
+
+:::
+
+<br>
+
+
+## learning_data.csv {.smaller}
+
+การสำรวจความสัมพันธ์ระหว่างตัวแปรก่อนการวิเคราะห์ข้อมูลตามวัตถุประสงค์ ช่วยให้ผู้วิเคราะห์ทราบความสัมพันธ์ที่ปรากฏในธรรมชาติจริง ๆ ซึ่งนำไปสู่การกำหนดโมเดลการวิเคราะห์ที่สมเหตุสมผล หรืออย่างน้อยก็ทำให้มั่นใจในผลการวิเคราะห์จากโมเดลเชิงสถิติหรืออัลกอริทึมการเรียนรู้ต่าง ๆ 
+
+สำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+- scatter plot
+
+- boxplot
+
+- [LOESS regression](https://towardsdatascience.com/loess-373d43b03564)
+
+- [correlation](http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r)
+
+
+## Clustering {.smaller}
+
+- ชุดของวิธีการหรืออัลกอริธึมที่ใช้ในการค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด
+
+- การจัดกลุ่ม (Clustering) มีประโยชน์มากในการสำรวจข้อมูลเบื้องต้น (Exploratory Data Analysis: EDA) โดยเฉพาะอย่างยิ่งเมื่อผู้วิเคราะห์ต้องการทราบลักษณะหรือรูปแบบของหน่วยข้อมูลในชุดข้อมูลที่มีตัวแปรจำนวนมาก หรือในกรณีที่ชุดข้อมูลนั้นมีหน่วยข้อมูลจำนวนมาก
+
+- K-Means
+
+- Hierarchical Clustering
+
+- DBSCAN
+
+- Gaussian Mixture Models
+
+
+## K-Means Clustering {.smaller}
+
+::: {style="font-size: 80%;"}
+
+1. เลือกจำนวนกลุ่ม (k) ที่ต้องการแบ่งข้อมูลออก
+
+2. สุ่มเลือกหน่วยข้อมูลจากแต่ละกลุ่มใน 1. มาเป็นจุดศูนย์กลางเริ่มต้น (centroids) สำหรับแต่ละกลุ่ม
+
+3. จัดหน่วยข้อมูลลงกลุ่มใหม่ระยะห่างที่ใกล้ที่สุดจาก centroid ใน 2.
+
+  -- Euclidean distance
+
+  -- Manhattan distance
+
+  -- Cosine Similarity
+
+  -- Hamming distance
+
+  -- Mahalonoblis distance
+
+note : หน่วยของตัวแปรที่แตกต่างกันอาจเป็นปัจจัยแทรกซ้อนที่ทำให้การคำนวณระยะทางมีความคลาดเคลื่อนดังนั้นก่อนการจัดกลุ่มควรจะต้องมีการ standardized ค่าสังเกตของตัวแปรที่จะนำมาจัดกลุ่มก่อน
+
+4. คำนวณจุดศูนย์กลางใหม่จากการจัดกลุ่มใน 3.โดยหาค่าเฉลี่ยของจุดข้อมูลทั้งหมดในกลุ่มนั้น ๆ และใช้เป็นจุดศูนย์กลางใหม่
+
+5. จัดกลุ่มข้อมูลใหม่อีกครั้งตามจุดศูนย์กลางที่คำนวณในขั้นตอนที่ 4
+
+6. ทำซ้ำขั้นตอนที่ 4 และ 5 จนกว่าจุดศูนย์กลางจะไม่เปลี่ยนแปลงอีก หรือจนกว่าจะถึงจำนวนรอบที่กำหนดไว้ล่วงหน้า
+
+7. เมื่อการทำซ้ำเสร็จสิ้น ผลลัพธ์ที่ได้คือข้อมูลทั้งหมดที่ถูกจัดกลุ่มตามลักษณะที่คล้ายคลึงกันมากที่สุด โดยมีจุดศูนย์กลางที่แสดงถึงตำแหน่งเฉลี่ยของข้อมูลในแต่ละกลุ่ม
+
+<br>
+
+<div class="caption">Reference: https://www.analyticsvidhya.com/blog/2020/02/4-types-of-distance-metrics-in-machine-learning/</div>
+
+:::
+
+## Standardized and Normalized Score {.smaller}
+
+- Standardized score
+$$
+Z = \frac{X - \overline{x}}{SD_x}
+$$
+
+
+- Normalized Score
+$$
+X_{\text{normalized}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
+$$
+
+
+
+
+## K-Means clustering using R {.smaller}
+
+ในทางปฏิบัติการทำ K-Means clustering ประกอบด้วยขั้นตอนหลัก ได้แก่
+
+1. เตรียมข้อมูลให้เป็น tidydata ตัดค่าสูญหายออกจากชุดข้อมูล เลือกตัวแปรสำหรับจัดกลุ่ม และปรับสเกลของข้อมูลให้เป็นหน่วยมาตรฐาน
+
+2. กำหนดจำนวนกลุ่ม
+
+3. จัดกลุ่มตามอัลกอริทึม K-Means
+
+<br>
+
+#### ตัวอย่างการวิเคราะห์ในชุดข้อมูล `learning_data.csv`
+
+ลองจัดกลุ่มนักเรียนโดยใช้คะแนนความรู้พื้นฐานทางสถิติ และพฤติกรรมในการเรียน ฟังก์ชันสำหรับทำ K-Means clustering ใน R มีหลายตัว ฟังก์ชันพื้นฐานที่ใช้กันอย่างแพร่หลายคือ 
+
+<center>
+`kmeans(x, centers)`
+
+</center>
+
+
+```{r result = F, eval = T}
+### 1. เลือกตัวแปรและ standardized
+z_function <- function(x)
+{
+  z<-(x-mean(x, na.rm = T))/sd(x, na.rm = T)
+  return(z)
+}
+
+clustering_data <- data |> select(choose_method, interpretation,concepts,
+              submit_time, percent_submit, 
+              cheat_index) |> 
+              drop_na() |> 
+              mutate_all(z_function)
+```
+
+
+```{r result = F, eval = T}
+### 2. กำหนด k และทำการจัดกลุ่ม
+kmeans_result3 <- kmeans(x=clustering_data |> 
+                          drop_na(),
+                        centers = 3)
+```
+
+```{r result = F, eval = F}
+
+kmeans_result3$withinss
+
+clustering_data |> 
+  bind_cols(cluster = kmeans_result3$cluster) |> 
+  group_by(cluster) |> 
+  summarise_all(mean) |> 
+  pivot_longer(cols = -cluster) |> 
+  ggplot(aes(x=value, y=name))+
+  geom_col(aes(fill = value>0))+
+  facet_wrap(~cluster)
+
+```
+
+## How to choose `k` value? {.smaller}
+
+มีหลายวิธีในการกำหนดจำนวน k ที่เหมาะสม
+
+- theory/prior knowledge
+
+- rule of thumb เช่น $k=\sqrt{2}$ 
+
+- Statistical method เช่น Elbow method 
+
+<br>
+
+#### Elbow Method 
+
+วิธีการนี้พยายามเลือก k ที่ทำให้ค่าผลรวมกำลังสองภายในกลุ่มต่ำที่สุด
+
+$$
+Total_{withinSS} = \sum_{j=1}^k WWS_j
+$$
+
+โดยที่ $WSS = \sum_{j=1}^{k} \sum_{i \in C_j} (y_i - \bar{y}_j)^2$
+
+## `for` Loop {.smaller}
+
+for loop เป็นโครงสร้างการวนซ้ำ (iteration) ที่ใช้ในอัลกอริธึมเพื่อทำซ้ำชุดคำสั่งในโปรแกรมเป็นจำนวนครั้งที่กำหนดไว้ล่วงหน้า หรือสำหรับการทำงานกับทุกองค์ประกอบในชุดข้อมูล
+
+
+```{r eval = F, echo = T}
+for (variable in sequence) {
+  # คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ
+}
+
+```
+
+ตัวอย่างการวนซ้ำ
+
+
+```{r echo = T}
+for (i in 1:5) {
+  print(i)
+}
+```
+
+เราสามารถใช้การวนซ้ำแบบ for นี้มาช่วยให้การทำงานด้าน data science ทำได้ง่ายมากขึ้น
+
+
+## Elbow Method (Revisted)
+
+```{r}
+max_k <- 10
+wss <- numeric(max_k)
+
+for(i in 1:max_k)
+  {
+    results <- kmeans(clustering_data, centers = i)
+    wss[i] <- results$tot.withinss 
+  }
+```
+
+
+```{r}
+library(patchwork)
+p1 <- data.frame(k = 1:max_k, wss = wss) |> 
+  ggplot(aes(x=k, y=wss))+
+  geom_line()+
+  geom_point()+
+  xlab("\n number of cluster")+
+  ylab("WSS \n")
+
+
+p2 <- data.frame(k = 1:max_k, wss = wss) |> 
+  mutate(diff = -c(0,diff(wss, 1)),
+  percent_diff = diff*100/2292) |> 
+  filter(k>1) |> 
+  ggplot(aes(x=k, y=percent_diff))+
+  geom_line()+
+  geom_point()+
+  ylab("Percentage Different")+
+  xlab("number of cluster")
+
+p1/p2
+```
+
+## Kmeans Results for 3 clusters
+
+
+```{r}
+
+clustering_data |> 
+  bind_cols(cluster = kmeans_result3$cluster) |> 
+  group_by(cluster) |> 
+  summarise_all(mean) |> 
+  pivot_longer(cols = -cluster) |> 
+  ggplot(aes(x=value, y=name))+
+  geom_col(aes(fill = value>0))+
+  facet_wrap(~cluster)
+
+```
