@@ -1,0 +1,32 @@
+project:
+  type: book
+
+book:
+  title: "R_book_update"
+  author: "สิวะโชติ ศรีสุทธิยากร"
+  date: "8/12/2024"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+  sidebar:
+    style: docked
+    background: light
+  cover-image: cover2.png
+  cover-image-alt: |
+    Alternative text describing the book cover
+
+comments:
+  hypothesis: true
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
