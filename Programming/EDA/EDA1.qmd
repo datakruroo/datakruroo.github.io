@@ -5,6 +5,8 @@ institute: ภาควิชาวิจัยและจิตวิทยา
 format: 
   revealjs:
     theme: theme.scss
+    width: 1000
+    height: 1000
     scrollable: true
     slideNumber: true
     highlight-style: github
@@ -197,6 +199,7 @@ temp1[3:4]
 :::
 
 ::::
+
 ::::
 
 ## EDA: Anscombe dataset (3) 
@@ -729,7 +732,7 @@ describe(data$research_score)
 
 :::
 
-## Code Example
+## Code Example (1)
 
 ::: {style="font-size: 60%;"}
 
@@ -840,6 +843,325 @@ data |>
 
 - [correlation](http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r)
 
+<br>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dsyTQNUvqH0?si=LngLF-KxLOoJAG-w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<br>
+
+## Code Example (2.1)
+
+ตัวอย่างการสำรวจความสัมพันธ์ระหว่างตัวแปร
+
+::: {style="font-size: 60%;"}
+
+
+เนื่องจากวัตถุประสงค์เป็นการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ การสำรวจความสัมพันธ์จึงเน้นที่การวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรดังกล่าวเป็นหลัก
+
+job แรกเราจะวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณโดยใช้เครื่องมือ 2 ตัวได้แก่ scatter plot และ correlation ดังนี้
+
+#### Scatter plot และ LOESS regression
+
+การสร้าง scatter plot ด้วย ggplot2 จะใช้ `geom_point()` เป็น Marks ดังตัวอย่างด้านล่าง
+
+```{r echo = T, fig.height = 8}
+data |> 
+  select(-student_id) |> ### ถ้าใช้ learning_data2.csv บรรทัดนี้ไม่ต้องมี
+  select_if(is.numeric) |> 
+  pivot_longer(cols=-research_score, names_to = "variable", values_to ="value") |> 
+  ggplot(aes(x=value, y=research_score))+
+  geom_point()+
+  facet_wrap(~variable, scales = "free_x")
+```
+
+> ผลการสำรวจความสัมพันธ์ข้างต้นเป็นอย่างไร ??
+
+<br>
+
+นอกจากการใช้ scatter plot แล้วการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ ยังสามารถใช้ nonparametric regression หรือ LOESS regression เข้ามาช่วยในการประเมินลักษณะของความสัมพันธ์ระหว่างตัวแปรได้ด้วย การสร้าง LOESS regression ดังกล่าวสามารถใช้ `geom_smooth(method = "loess")` โดยมักสร้างคู่กับ scatter plot ข้างต้น ตัวอย่าง syntax เป็นดังนี้
+
+```{r echo = T, fig.height = 8}
+data |> 
+  select(-student_id) |> ### ถ้าใช้ learning_data2.csv บรรทัดนี้ไม่ต้องมี
+  select_if(is.numeric) |> 
+  pivot_longer(cols=-research_score, names_to = "variable", values_to ="value") |> 
+  ggplot(aes(x=value, y=research_score))+
+  geom_point()+
+  geom_smooth(method = "loess", 
+              n = 50)+ # กำหนดให้มีการใช้ x จำนวน 50 ค่าในการสร้าง local regression line
+  facet_wrap(~variable, scales = "free_x")
+```
+
+> ผลการวิเคราะห์ข้างต้น ความสัมพันธ์ระหว่าง `research_score` กับตัวแปรอิสระอื่น ๆ ที่เหลือมีลักษณะเป็นความสัมพันธ์เชิงเส้นตรงทั้งหมดหรือไม่ 
+
+**Note :** 
+
+1. การอ่านผลจาก LOESS regression ผู้วิเคราะห์ควรระมัดระวังไม่ให้เกิดปัญหาการประเมิน noise เป็นความสัมพันธ์ โดยผู้วิเคราะห์อาจป้องกันปัญหาดังกล่าวโดยประเมินแนวโน้มความสัมพันธ์ระหว่างตัวแปรในช่วงที่ค่าทำนายมีความน่าเชื่อถือ (พิจารณาจากความกว้างของ confidence band)
+
+2. LOESS regression มี hyperparameter ตัวหนึ่งคือ `n` หรือจำนวนจุดบน x ที่ใช้เป็นจุดอ้างอิงในการสร้าง local regression หากกำหนดค่ามาก LOESS regression จะมีความยืดหยุ่นสูงกล่าวคือมีความไวต่อการเปลี่ยนแปลงของแนวโน้มความสัมพันธ์ได้ดี การกำหนดค่านี้มากเกินไปจึงการได้ผลลัพธ์ที่ overfitting กล่าวคือสมการถดถอยมอง noise เป็นแนวโน้มความสัมพันธ์หลัก หากมีเวลาลองกำหนดอาร์กิวเมนท์ `n` เป็นค่าต่าง ๆ แล้วสังเกตผลลัพธ์ที่ได้
+
+
+#### Correlation
+
+อย่างไรก็ตามการสำรวจด้วย scatter plot ถึงจะมีจุดเด่นเรื่องการสะท้อนสภาพความสัมพันธ์ของตัวแปร แต่อาจมีปัญหาในการแปลความหมาย และอาจมีความลำบากมากขึ้นหากคู่ของตัวแปรมีจำนวนมาก การใข้ correlation ร่วมด้วยจะทำให้การสร้างข้อสรุปเกี่ยวกับความสัมพันธ์มีความสมบูรณ์มากขึ้น
+
+สัมประสิทธิ์สหสัมพันธ์ของเพียร์สัน (Pearson's Correlation)เ ป็นสถิติวิเคราะห์ที่ถูกพัฒนาขึ้นเพื่อใช้บรรยายสภาพของสหสัมพันธ์ (correlation) ระหว่างตัวแปรเชิงปริมาณ ซึ่งเป็นสภาพที่ตัวแปรสองตัวมีความสัมพันธ์เชิงเส้นตรง (linear
+relationship) ซึ่งกันและกัน โดยไม่ได้มีการจำแนกว่าตัวแปรใดเป็นตัวแปรตาม และตัวแปรใดเป็นตัวแปรอิสระ
+
+ฟังก์ชันที่ใช้คำนวณค่า correlation ใน R คือ `cor()` หากลองเรียก help ของฟังก์ชันดูจะพบว่า สามารถคำนวณค่า correlation ได้ 3 แบบคือ pearson, kendall และ spearman ซึ่งสองตัวหลังเป็น correlation coefficient สำหรับตัวแปรจัดประเภทที่มีอันดับ (ordinal data)
+
+การใส่ข้อมูลเพื่อคำนวณค่า correlation ในฟังก์ชัน `cor()` ทำได้สองแบบคือ 
+
+- ใส่แบบ vector จะได้ผลลัพธ์เป็น correlation ของตัวแปรคู่ดังกล่าว ตัวอย่างด้านล่างแสดงการหา correlation ระหว่าง `research_score` กับ `choose_method`
+
+```{r echo = T}
+cor(data$research_score, data$choose_method)
+```
+
+- การใช้ทั้งชุดข้อมูลเข้าไปจะได้ผลลัพธ์เป็น correlation matrix ดังนี้
+
+```{r echo = T}
+data |> select(choose_method, interpretation, concepts, research_score) |> 
+cor(use = "complete.obs")
+```
+
+<br>
+
+ในกรณีทั่วไปผู้วิเคราะห์จะพบปัญหาว่า correlation matrix มีข้อมูลจำนวนค่อนข้างมาก การอ่านและแปลความหมายทำได้ค่อนข้างยาก วิธีการหนึ่งคือกำหนดขอบเขตและคัดกรองผลการวิเคราะห์ที่ต้องการ
+
+ในกรณีข้างต้น point หลักของการวิเคราะห์คือการสำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ ผู้วิเคราะห์จึงสามารถคัดกรองค่า correlation matrix เฉพาะส่วนที่ต้องการได้ดังนี้
+
+```{r echo = T}
+cor_matrix <- data |> 
+  select(-student_id) |> 
+  select_if(is.numeric) |> 
+  cor(use = "complete.obs")
+
+filtered_correlation <- cor_matrix[,4] |> ## เลือกเฉพาะ correlation ระหว่าง research_score กับตัวแปรที่เหลือ
+  data.frame() |> ## ปรับสถานะ matrix ให้เป็น dataframe
+  slice(-4) |> ## ตัด correlation ระหว่าง research_score ด้วยกันเองออก
+  rename("correlation" = 1) |> ## เปลี่ยนชื่อ column ให้สื่อความ
+  rownames_to_column("variable") |> ## ปรับ rowname ให้เป็นตัวแปร
+  arrange(desc(correlation))
+
+filtered_correlation
+```
+
+
+นอกจากนำเสนอเป็นค่าสถิติแล้ว เรายังนำชุดข้อมูลที่สร้างขึ้นข้างต้นมาสร้างเป็นแผนภาพได้อีกด้วย โดยใช้ ggplot2
+
+```{r echo = T, fig.height = 8}
+p1 <- filtered_correlation |> 
+  ggplot(aes(x=correlation, y=variable))+
+  geom_col(aes(fill = correlation>0))
+
+p2 <- filtered_correlation |> 
+  ggplot(aes(x=correlation, y= reorder(variable, correlation)))+
+  geom_col(aes(fill = correlation>0))
+
+
+p3 <- filtered_correlation |> 
+  ggplot(aes(x=correlation, y= reorder(variable,correlation)))+
+  geom_col(aes(fill = correlation))
+
+p1/p2/p3
+```
+
+> ทั้ง 3 รูปมีความแตกต่างกันอย่างไร ส่วนประกอบใดใน syntax ข้างต้นที่ทำให้เกิดความแตกต่าง ?
+
+:::
+
+<br>
+
+## Code Example (2.2)
+
+ตัวอย่างการสำรวจความสัมพันธ์ระหว่างตัวแปร
+
+::: {style="font-size: 60%;"}
+
+job ที่สองจะลองสำรวจความสัมพันธ์ระหว่างตัวแปรตามเชิงปริมาณ กับตัวแปรอิสระแบบจัดประเภท
+
+จากชุดข้อมูลที่กำหนดไม่ได้มีตัวแปรอิสระแบบจัดประเภท แต่มีตัวแปรภูมิหลังที่เป็นตัวแปรแบบจัดประเภท เบื้องต้นจะลองสำรวจดูว่าภูมิหลังด้านสาขาวิชาของนักเรียนมีความสัมพันธ์กับผลสัมฤทธิ์ทางการเรียนวิจัยหรือไม่
+
+
+- วิธีการแรกอาจพิจารณาจากการหาค่าสถิติพื้นฐานจำแนกตามสาขาวิชา
+
+```{r echo = T}
+data |> 
+  select(research_score, department) |> 
+  group_by() |> 
+  summarise(mean = mean(research_score, na.rm = TRUE),
+            sd = sd(research_score, na.rm = TRUE),
+            min = min(research_score, na.rm = TRUE),
+            q1 = quantile(research_score, 0.25),
+            median = median(research_score, na.rm = TRUE),
+            q3 = quantile(research_score, 0.5, na.rm = TRUE),
+            max = max(research_score, na.rm = TRUE))
+```
+
+
+การเขียนคำสั่งข้างต้นมีคำสั่งที่ค่อนข้างซ้ำซ้อนเยอะ เราสามารถลดรูปการเขียนคำสั่งซ้ำ ๆ โดยใช้ฟังก์ชัน `summarise()` ร่วมกับ `across()` ดังนี้
+
+```{r echo = T}
+#| code-line-numbers: "4-13"
+data |> 
+  select(research_score, department) |> 
+  group_by(department) |> 
+  summarise(across(.cols = research_score,
+                   .fns = list(
+                          mean = mean,
+                          sd = sd,
+                          min = min,
+                          q1 = ~ quantile(.x, probs = 0.25),
+                          median = ~ median(.x, na.rm = TRUE),
+                          q3 = ~ quantile(.x, probs = 0.75),
+                          max = max),
+                    .names = "{.fn}-{.col}"))
+```
+
+
+ในทำนองเดียวกันผลลัพธ์ที่ได้จากการประมวลผลข้างต้นเป็นชุดข้อมูลใหม่ ที่สามารถนำไปวิเคราะห์หรือแปลงเป็นแผนภาพต่อไปได้ เช่น
+
+```{r echo = T}
+#| code-line-numbers: "14-18"
+data |> 
+  select(research_score, department) |> 
+  group_by(department) |> 
+  summarise(across(.cols = "research_score",
+                   .fns = list(
+                          mean = mean,
+                          sd = sd,
+                          min = min,
+                          q1 = ~ quantile(.x, probs = 0.25),
+                          median = ~ median(.x, na.rm = TRUE),
+                          q3 = ~ quantile(.x, probs = 0.75),
+                          max = max),
+                    .names = "{.fn}")) |>  # เอาชื่อ col ออกเพราะตอนนี้มีแค่ตัวแปรเดียว
+  ggplot(aes(x = mean, y= reorder(department, mean)))+
+  geom_col()+
+  ylab("")+ ## เอา title บนแกน y ออก
+  xlab("\n ค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนวิจัย") +
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))
+```
+
+
+ค่าสถิติข้างต้นสามารถนำมาสร้างแผนภาพเพื่อสำรวจข้อมูลได้หลายลักษณะ แผนภาพด้านล่างเรียกว่า errorbar plot สร้างจากค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐาน ที่เป็นค่าสถิติพื้นฐานสำหรับสะท้อนแนวโน้มสู่ส่วนกลาง และการกระจายของข้อมูล
+
+```{r echo = T}
+#| code-line-numbers: "15-16"
+data |> 
+  select(research_score, department) |> 
+  group_by(department) |> 
+  summarise(across(.cols = "research_score",
+                   .fns = list(
+                          mean = mean,
+                          sd = sd,
+                          min = min,
+                          q1 = ~ quantile(.x, probs = 0.25),
+                          median = ~ median(.x, na.rm = TRUE),
+                          q3 = ~ quantile(.x, probs = 0.75),
+                          max = max),
+                    .names = "{.fn}")) |>  # เอาชื่อ col ออกเพราะตอนนี้มีแค่ตัวแปรเดียว
+  ggplot(aes(x = mean, y= reorder(department, mean)))+
+  geom_point()+ ## จุดจะรับ aes() จาก ggplot มาใช้
+  geom_errorbar(aes(xmin = mean-sd, xmax = mean+sd)) + ## geom_errorbar มี aesthetic เฉพาะคือ xmin, xmax และ ymin, ymax เพื่อกำหนดขอบเขตบนล่างของ bar การใช้งานขึ้นอยู่กับว่าเรากำลังสร้างแผนภาพแนวไหน
+  ylab("")+ ## เอา title บนแกน y ออก
+  xlab("\n ค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนวิจัย") +
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))
+
+
+```
+
+<br>
+
+จากการสำรวจสภาพของตัวแปรก่อนหน้านี้เราพบว่ามีตัวแปรอิสระเชิงปริมาณหลายตัวที่มีการแจกแจงแบบไม่ต่อเนื่อง กล่าวคือ มีค่าที่เป็นไปได้น้อยสภาพดังกล่าวอาจมีผลต่อประสิทธิภาพของโมเดลทำนายหรือโมเดลวิเคราะห์ความสัมพันธ์ เช่น `percent_submit` ดังรูปด้านล่าง
+
+```{r echo = T}
+data |> 
+  ggplot(aes(x=percent_submit))+
+  geom_histogram()
+
+data |> 
+  select(percent_submit, research_score) |> 
+  cor()
+```
+
+เราอาจจะลองปรับค่าของตัวแปร `percent_submit` ให้เป็นตัวแปรแบบจัดประเภท แล้วนำไปวิเคราะห์ความสัมพันธ์
+
+```{r echo = T}
+#| code-line-numbers: "3|4-5"
+data |> 
+  select(percent_submit, research_score) |> 
+  mutate(percent_submit = ifelse(percent_submit > 80, "high","low")) |> 
+  group_by(percent_submit) |> 
+  summarise_all(list(mean = mean,
+                    sd = sd,
+                    min = min,
+                    max = max))
+```
+
+แผนภาพกล่องแสดงการเปรียบเทียบผลสัมฤทธิ์ทางการเรียนวิจัยจำแนกตามพฤติกรรมการส่งงาน
+
+```{r}
+#| code-line-numbers: "4-5"
+data |> 
+select(percent_submit, research_score) |> 
+  mutate(percent_submit = ifelse(percent_submit >= 80, "high","low")) |>
+  ggplot(aes(x=percent_submit, y=research_score))+
+  geom_boxplot()
+```
+
+> เราจะเห็นว่านักเรียนส่วนใหญ่ที่ส่งการบ้านอย่างสม่ำเสมอ มีผลสัมฤทธิ์ทางการเรียนวิจัยสูงกว่านักเรียนส่วนใหญ่ในกลุ่มที่ไม่ได้ส่งการบ้านสม่ำเสมอ
+
+<br>
+
+#### correlation and R2
+
+ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณและตัวแปรจัดประเภท สามารถสะท้อนผ่านสัมประสิทธิ์สหสัมพันธ์ได้ โดยสร้างจากผลการวิเคราะห์ simple regression with dummy ดังนี้
+
+```{r echo = T}
+#| code-line-numbers: "3-4"
+temp <- data |> 
+  select(percent_submit, research_score) |> 
+  mutate(percent_submit = ifelse(percent_submit >= 80, "high","low")) |> 
+  mutate(percent_submit = factor(percent_submit, levels=c("low","high")))
+```
+
+```{r echo = T}
+fit_lm <- lm(research_score ~ percent_submit, data =temp)
+summary(fit_lm)
+```
+
+ค่า R2 ของโมเดลการวิเคราะห์การถดถอยนี้มีค่าเท่ากับ
+
+```{r echo = T}
+summary(fit_lm)$r.squared
+```
+
+ซึ่งคิดเป็นค่าสหสัมพันธ์เท่ากับ
+
+```{r echo = T}
+summary(fit_lm)$r.squared |> sqrt()
+```
+
+Note: 
+
+1. สหสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทที่มีการให้คะแนนแบบสองค่า (binary data) มีชื่อเรียกเฉพาะด้วยว่า point-biserial correlation ซึ่งเป็นกรณีเฉพาะของ Pearson's correlation
+
+2. ดังนั้นเราสามารถหาสหสัมพันธ์แบบ point-biserial นี้ได้จาก `cor()` ได้ด้วย แต่เราจะต้องแปลงค่าของตัวแปรจัดประเภทให้เป็นค่า 0, 1 ก่อน ดังตัวอย่างต่อไปนี้
+
+```{r echo = T}
+#| code-line-numbers: "3-4"
+data |> 
+  select(research_score, percent_submit) |> 
+  mutate(percent_submit = ifelse(percent_submit >= 80, 1, 0)) |> ## แทนที่จะใส่ค่าเป็นชื่อกลุ่ม ใส่ค่าเป็น 1, 0 แทน
+  cor()
+```
+
+
+:::
+
+<br>
 
 ## Clustering {.smaller}
 

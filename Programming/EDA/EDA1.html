@@ -1137,8 +1137,8 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.83940…</code></pre>
 </div>
 </div>
 </section>
-<section id="code-example" class="slide level2">
-<h2>Code Example</h2>
+<section id="code-example-1" class="slide level2">
+<h2>Code Example (1)</h2>
 <div style="font-size: 60%;">
 <p>ตัวอย่างต่อไปนี้แสดงการสำรวจข้อมูลด้วยการแจกแจงความถี่และสถิติพื้นฐานในชุดข้อมูล <code>learning_data.csv</code></p>
 <ul>
@@ -1278,6 +1278,390 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.83940…</code></pre>
 <li><p><a href="https://towardsdatascience.com/loess-373d43b03564">LOESS regression</a></p></li>
 <li><p><a href="http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r">correlation</a></p></li>
 </ul>
+<p><br></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dsyTQNUvqH0?si=LngLF-KxLOoJAG-w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen="">
+</iframe>
+<p><br></p>
+</section>
+<section id="code-example-2.1" class="slide level2 scrollable">
+<h2>Code Example (2.1)</h2>
+<p>ตัวอย่างการสำรวจความสัมพันธ์ระหว่างตัวแปร</p>
+<div style="font-size: 60%;">
+<p>เนื่องจากวัตถุประสงค์เป็นการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ การสำรวจความสัมพันธ์จึงเน้นที่การวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรดังกล่าวเป็นหลัก</p>
+<p>job แรกเราจะวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณโดยใช้เครื่องมือ 2 ตัวได้แก่ scatter plot และ correlation ดังนี้</p>
+<h4 id="scatter-plot-และ-loess-regression">Scatter plot และ LOESS regression</h4>
+<p>การสร้าง scatter plot ด้วย ggplot2 จะใช้ <code>geom_point()</code> เป็น Marks ดังตัวอย่างด้านล่าง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb45-2"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id) <span class="sc">|&gt;</span> <span class="do">### ถ้าใช้ learning_data2.csv บรรทัดนี้ไม่ต้องมี</span></span>
+<span id="cb45-3"><a href=""></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb45-4"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="sc">-</span>research_score, <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span><span class="st">"value"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb45-5"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>research_score))<span class="sc">+</span></span>
+<span id="cb45-6"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb45-7"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>variable, <span class="at">scales =</span> <span class="st">"free_x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote>
+<p>ผลการสำรวจความสัมพันธ์ข้างต้นเป็นอย่างไร ??</p>
+</blockquote>
+<p><br></p>
+<p>นอกจากการใช้ scatter plot แล้วการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ ยังสามารถใช้ nonparametric regression หรือ LOESS regression เข้ามาช่วยในการประเมินลักษณะของความสัมพันธ์ระหว่างตัวแปรได้ด้วย การสร้าง LOESS regression ดังกล่าวสามารถใช้ <code>geom_smooth(method = "loess")</code> โดยมักสร้างคู่กับ scatter plot ข้างต้น ตัวอย่าง syntax เป็นดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb46-2"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id) <span class="sc">|&gt;</span> <span class="do">### ถ้าใช้ learning_data2.csv บรรทัดนี้ไม่ต้องมี</span></span>
+<span id="cb46-3"><a href=""></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb46-4"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="sc">-</span>research_score, <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span><span class="st">"value"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb46-5"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>research_score))<span class="sc">+</span></span>
+<span id="cb46-6"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb46-7"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, </span>
+<span id="cb46-8"><a href=""></a>              <span class="at">n =</span> <span class="dv">50</span>)<span class="sc">+</span> <span class="co"># กำหนดให้มีการใช้ x จำนวน 50 ค่าในการสร้าง local regression line</span></span>
+<span id="cb46-9"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>variable, <span class="at">scales =</span> <span class="st">"free_x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-35-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote>
+<p>ผลการวิเคราะห์ข้างต้น ความสัมพันธ์ระหว่าง <code>research_score</code> กับตัวแปรอิสระอื่น ๆ ที่เหลือมีลักษณะเป็นความสัมพันธ์เชิงเส้นตรงทั้งหมดหรือไม่</p>
+</blockquote>
+<p><strong>Note :</strong></p>
+<ol type="1">
+<li><p>การอ่านผลจาก LOESS regression ผู้วิเคราะห์ควรระมัดระวังไม่ให้เกิดปัญหาการประเมิน noise เป็นความสัมพันธ์ โดยผู้วิเคราะห์อาจป้องกันปัญหาดังกล่าวโดยประเมินแนวโน้มความสัมพันธ์ระหว่างตัวแปรในช่วงที่ค่าทำนายมีความน่าเชื่อถือ (พิจารณาจากความกว้างของ confidence band)</p></li>
+<li><p>LOESS regression มี hyperparameter ตัวหนึ่งคือ <code>n</code> หรือจำนวนจุดบน x ที่ใช้เป็นจุดอ้างอิงในการสร้าง local regression หากกำหนดค่ามาก LOESS regression จะมีความยืดหยุ่นสูงกล่าวคือมีความไวต่อการเปลี่ยนแปลงของแนวโน้มความสัมพันธ์ได้ดี การกำหนดค่านี้มากเกินไปจึงการได้ผลลัพธ์ที่ overfitting กล่าวคือสมการถดถอยมอง noise เป็นแนวโน้มความสัมพันธ์หลัก หากมีเวลาลองกำหนดอาร์กิวเมนท์ <code>n</code> เป็นค่าต่าง ๆ แล้วสังเกตผลลัพธ์ที่ได้</p></li>
+</ol>
+<h4 id="correlation">Correlation</h4>
+<p>อย่างไรก็ตามการสำรวจด้วย scatter plot ถึงจะมีจุดเด่นเรื่องการสะท้อนสภาพความสัมพันธ์ของตัวแปร แต่อาจมีปัญหาในการแปลความหมาย และอาจมีความลำบากมากขึ้นหากคู่ของตัวแปรมีจำนวนมาก การใข้ correlation ร่วมด้วยจะทำให้การสร้างข้อสรุปเกี่ยวกับความสัมพันธ์มีความสมบูรณ์มากขึ้น</p>
+<p>สัมประสิทธิ์สหสัมพันธ์ของเพียร์สัน (Pearson’s Correlation)เ ป็นสถิติวิเคราะห์ที่ถูกพัฒนาขึ้นเพื่อใช้บรรยายสภาพของสหสัมพันธ์ (correlation) ระหว่างตัวแปรเชิงปริมาณ ซึ่งเป็นสภาพที่ตัวแปรสองตัวมีความสัมพันธ์เชิงเส้นตรง (linear relationship) ซึ่งกันและกัน โดยไม่ได้มีการจำแนกว่าตัวแปรใดเป็นตัวแปรตาม และตัวแปรใดเป็นตัวแปรอิสระ</p>
+<p>ฟังก์ชันที่ใช้คำนวณค่า correlation ใน R คือ <code>cor()</code> หากลองเรียก help ของฟังก์ชันดูจะพบว่า สามารถคำนวณค่า correlation ได้ 3 แบบคือ pearson, kendall และ spearman ซึ่งสองตัวหลังเป็น correlation coefficient สำหรับตัวแปรจัดประเภทที่มีอันดับ (ordinal data)</p>
+<p>การใส่ข้อมูลเพื่อคำนวณค่า correlation ในฟังก์ชัน <code>cor()</code> ทำได้สองแบบคือ</p>
+<ul>
+<li>ใส่แบบ vector จะได้ผลลัพธ์เป็น correlation ของตัวแปรคู่ดังกล่าว ตัวอย่างด้านล่างแสดงการหา correlation ระหว่าง <code>research_score</code> กับ <code>choose_method</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">cor</span>(data<span class="sc">$</span>research_score, data<span class="sc">$</span>choose_method)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3130112</code></pre>
+</div>
+</div>
+<ul>
+<li>การใช้ทั้งชุดข้อมูลเข้าไปจะได้ผลลัพธ์เป็น correlation matrix ดังนี้</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>data <span class="sc">|&gt;</span> <span class="fu">select</span>(choose_method, interpretation, concepts, research_score) <span class="sc">|&gt;</span> </span>
+<span id="cb49-2"><a href=""></a><span class="fu">cor</span>(<span class="at">use =</span> <span class="st">"complete.obs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               choose_method interpretation  concepts research_score
+choose_method      1.0000000      0.1707677 0.3056856      0.3130112
+interpretation     0.1707677      1.0000000 0.4706572      0.5485877
+concepts           0.3056856      0.4706572 1.0000000      0.5619702
+research_score     0.3130112      0.5485877 0.5619702      1.0000000</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>ในกรณีทั่วไปผู้วิเคราะห์จะพบปัญหาว่า correlation matrix มีข้อมูลจำนวนค่อนข้างมาก การอ่านและแปลความหมายทำได้ค่อนข้างยาก วิธีการหนึ่งคือกำหนดขอบเขตและคัดกรองผลการวิเคราะห์ที่ต้องการ</p>
+<p>ในกรณีข้างต้น point หลักของการวิเคราะห์คือการสำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ ผู้วิเคราะห์จึงสามารถคัดกรองค่า correlation matrix เฉพาะส่วนที่ต้องการได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a>cor_matrix <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb51-2"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id) <span class="sc">|&gt;</span> </span>
+<span id="cb51-3"><a href=""></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb51-4"><a href=""></a>  <span class="fu">cor</span>(<span class="at">use =</span> <span class="st">"complete.obs"</span>)</span>
+<span id="cb51-5"><a href=""></a></span>
+<span id="cb51-6"><a href=""></a>filtered_correlation <span class="ot">&lt;-</span> cor_matrix[,<span class="dv">4</span>] <span class="sc">|&gt;</span> <span class="do">## เลือกเฉพาะ correlation ระหว่าง research_score กับตัวแปรที่เหลือ</span></span>
+<span id="cb51-7"><a href=""></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span> <span class="do">## ปรับสถานะ matrix ให้เป็น dataframe</span></span>
+<span id="cb51-8"><a href=""></a>  <span class="fu">slice</span>(<span class="sc">-</span><span class="dv">4</span>) <span class="sc">|&gt;</span> <span class="do">## ตัด correlation ระหว่าง research_score ด้วยกันเองออก</span></span>
+<span id="cb51-9"><a href=""></a>  <span class="fu">rename</span>(<span class="st">"correlation"</span> <span class="ot">=</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="do">## เปลี่ยนชื่อ column ให้สื่อความ</span></span>
+<span id="cb51-10"><a href=""></a>  <span class="fu">rownames_to_column</span>(<span class="st">"variable"</span>) <span class="sc">|&gt;</span> <span class="do">## ปรับ rowname ให้เป็นตัวแปร</span></span>
+<span id="cb51-11"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(correlation))</span>
+<span id="cb51-12"><a href=""></a></span>
+<span id="cb51-13"><a href=""></a>filtered_correlation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              variable correlation
+1             concepts   0.5594905
+2       interpretation   0.5482243
+3       percent_submit   0.3432230
+4        choose_method   0.3116422
+5 learning_performance   0.2345075
+6          cheat_index  -0.1075821
+7          submit_time  -0.2844644</code></pre>
+</div>
+</div>
+<p>นอกจากนำเสนอเป็นค่าสถิติแล้ว เรายังนำชุดข้อมูลที่สร้างขึ้นข้างต้นมาสร้างเป็นแผนภาพได้อีกด้วย โดยใช้ ggplot2</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a>p1 <span class="ot">&lt;-</span> filtered_correlation <span class="sc">|&gt;</span> </span>
+<span id="cb53-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>correlation, <span class="at">y=</span>variable))<span class="sc">+</span></span>
+<span id="cb53-3"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> correlation<span class="sc">&gt;</span><span class="dv">0</span>))</span>
+<span id="cb53-4"><a href=""></a></span>
+<span id="cb53-5"><a href=""></a>p2 <span class="ot">&lt;-</span> filtered_correlation <span class="sc">|&gt;</span> </span>
+<span id="cb53-6"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>correlation, <span class="at">y=</span> <span class="fu">reorder</span>(variable, correlation)))<span class="sc">+</span></span>
+<span id="cb53-7"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> correlation<span class="sc">&gt;</span><span class="dv">0</span>))</span>
+<span id="cb53-8"><a href=""></a></span>
+<span id="cb53-9"><a href=""></a></span>
+<span id="cb53-10"><a href=""></a>p3 <span class="ot">&lt;-</span> filtered_correlation <span class="sc">|&gt;</span> </span>
+<span id="cb53-11"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>correlation, <span class="at">y=</span> <span class="fu">reorder</span>(variable,correlation)))<span class="sc">+</span></span>
+<span id="cb53-12"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> correlation))</span>
+<span id="cb53-13"><a href=""></a></span>
+<span id="cb53-14"><a href=""></a>p1<span class="sc">/</span>p2<span class="sc">/</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-39-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote>
+<p>ทั้ง 3 รูปมีความแตกต่างกันอย่างไร ส่วนประกอบใดใน syntax ข้างต้นที่ทำให้เกิดความแตกต่าง ?</p>
+</blockquote>
+</div>
+<p><br></p>
+</section>
+<section id="code-example-2.2" class="slide level2 scrollable">
+<h2>Code Example (2.2)</h2>
+<p>ตัวอย่างการสำรวจความสัมพันธ์ระหว่างตัวแปร</p>
+<div style="font-size: 60%;">
+<p>job ที่สองจะลองสำรวจความสัมพันธ์ระหว่างตัวแปรตามเชิงปริมาณ กับตัวแปรอิสระแบบจัดประเภท</p>
+<p>จากชุดข้อมูลที่กำหนดไม่ได้มีตัวแปรอิสระแบบจัดประเภท แต่มีตัวแปรภูมิหลังที่เป็นตัวแปรแบบจัดประเภท เบื้องต้นจะลองสำรวจดูว่าภูมิหลังด้านสาขาวิชาของนักเรียนมีความสัมพันธ์กับผลสัมฤทธิ์ทางการเรียนวิจัยหรือไม่</p>
+<ul>
+<li>วิธีการแรกอาจพิจารณาจากการหาค่าสถิติพื้นฐานจำแนกตามสาขาวิชา</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb54-2"><a href=""></a>  <span class="fu">select</span>(research_score, department) <span class="sc">|&gt;</span> </span>
+<span id="cb54-3"><a href=""></a>  <span class="fu">group_by</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb54-4"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(research_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-5"><a href=""></a>            <span class="at">sd =</span> <span class="fu">sd</span>(research_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-6"><a href=""></a>            <span class="at">min =</span> <span class="fu">min</span>(research_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-7"><a href=""></a>            <span class="at">q1 =</span> <span class="fu">quantile</span>(research_score, <span class="fl">0.25</span>),</span>
+<span id="cb54-8"><a href=""></a>            <span class="at">median =</span> <span class="fu">median</span>(research_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-9"><a href=""></a>            <span class="at">q3 =</span> <span class="fu">quantile</span>(research_score, <span class="fl">0.5</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-10"><a href=""></a>            <span class="at">max =</span> <span class="fu">max</span>(research_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 7
+   mean    sd   min    q1 median    q3   max
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1  71.5  9.62    43    65     71    71    97</code></pre>
+</div>
+</div>
+<p>การเขียนคำสั่งข้างต้นมีคำสั่งที่ค่อนข้างซ้ำซ้อนเยอะ เราสามารถลดรูปการเขียนคำสั่งซ้ำ ๆ โดยใช้ฟังก์ชัน <code>summarise()</code> ร่วมกับ <code>across()</code> ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56" data-code-line-numbers="4-13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb56-2"><a href=""></a>  <span class="fu">select</span>(research_score, department) <span class="sc">|&gt;</span> </span>
+<span id="cb56-3"><a href=""></a>  <span class="fu">group_by</span>(department) <span class="sc">|&gt;</span> </span>
+<span id="cb56-4"><a href=""></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> research_score,</span>
+<span id="cb56-5"><a href=""></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(</span>
+<span id="cb56-6"><a href=""></a>                          <span class="at">mean =</span> mean,</span>
+<span id="cb56-7"><a href=""></a>                          <span class="at">sd =</span> sd,</span>
+<span id="cb56-8"><a href=""></a>                          <span class="at">min =</span> min,</span>
+<span id="cb56-9"><a href=""></a>                          <span class="at">q1 =</span> <span class="sc">~</span> <span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fl">0.25</span>),</span>
+<span id="cb56-10"><a href=""></a>                          <span class="at">median =</span> <span class="sc">~</span> <span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb56-11"><a href=""></a>                          <span class="at">q3 =</span> <span class="sc">~</span> <span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fl">0.75</span>),</span>
+<span id="cb56-12"><a href=""></a>                          <span class="at">max =</span> max),</span>
+<span id="cb56-13"><a href=""></a>                    <span class="at">.names =</span> <span class="st">"{.fn}-{.col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 8
+   department     `mean-research_score` `sd-research_score` `min-research_score`
+   &lt;fct&gt;                          &lt;dbl&gt;               &lt;dbl&gt;                &lt;dbl&gt;
+ 1 การศึกษานอกระบ…                  68.4                7.61                   54
+ 2 การศึกษาปฐมวัย                    70.7                7.36                   58
+ 3 คณิตศาสตร์                        74.0                7.79                   57
+ 4 จิตวิทยาการปรึกษ…                  74.9                8.62                   58
+ 5 ดนตรีศึกษา                        63.0                7.93                   46
+ 6 เทคโนโลยีการศึก…                  67.7                7.36                   57
+ 7 ไทยสังคม                         78.7                5.95                   69
+ 8 ธุรกิจและอาชีวศึก…                  68.6                6.61                   59
+ 9 ประถมศึกษา                       76.4                6.66                   62
+10 ภาษาอังกฤษ                       77.1                7.86                   65
+11 วิทยาศาสตร์                       77.7                9.65                   59
+12 ศิลปศึกษา                         64.9                9.64                   50
+13 สุขศึกษาและพลศึก…                  63.5                8.87                   43
+# ℹ 4 more variables: `q1-research_score` &lt;dbl&gt;, `median-research_score` &lt;dbl&gt;,
+#   `q3-research_score` &lt;dbl&gt;, `max-research_score` &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>ในทำนองเดียวกันผลลัพธ์ที่ได้จากการประมวลผลข้างต้นเป็นชุดข้อมูลใหม่ ที่สามารถนำไปวิเคราะห์หรือแปลงเป็นแผนภาพต่อไปได้ เช่น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58" data-code-line-numbers="14-18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb58-2"><a href=""></a>  <span class="fu">select</span>(research_score, department) <span class="sc">|&gt;</span> </span>
+<span id="cb58-3"><a href=""></a>  <span class="fu">group_by</span>(department) <span class="sc">|&gt;</span> </span>
+<span id="cb58-4"><a href=""></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="st">"research_score"</span>,</span>
+<span id="cb58-5"><a href=""></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(</span>
+<span id="cb58-6"><a href=""></a>                          <span class="at">mean =</span> mean,</span>
+<span id="cb58-7"><a href=""></a>                          <span class="at">sd =</span> sd,</span>
+<span id="cb58-8"><a href=""></a>                          <span class="at">min =</span> min,</span>
+<span id="cb58-9"><a href=""></a>                          <span class="at">q1 =</span> <span class="sc">~</span> <span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fl">0.25</span>),</span>
+<span id="cb58-10"><a href=""></a>                          <span class="at">median =</span> <span class="sc">~</span> <span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb58-11"><a href=""></a>                          <span class="at">q3 =</span> <span class="sc">~</span> <span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fl">0.75</span>),</span>
+<span id="cb58-12"><a href=""></a>                          <span class="at">max =</span> max),</span>
+<span id="cb58-13"><a href=""></a>                    <span class="at">.names =</span> <span class="st">"{.fn}"</span>)) <span class="sc">|&gt;</span>  <span class="co"># เอาชื่อ col ออกเพราะตอนนี้มีแค่ตัวแปรเดียว</span></span>
+<span id="cb58-14"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mean, <span class="at">y=</span> <span class="fu">reorder</span>(department, mean)))<span class="sc">+</span></span>
+<span id="cb58-15"><a href=""></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb58-16"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">""</span>)<span class="sc">+</span> <span class="do">## เอา title บนแกน y ออก</span></span>
+<span id="cb58-17"><a href=""></a>  <span class="fu">xlab</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> ค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนวิจัย"</span>) <span class="sc">+</span></span>
+<span id="cb58-18"><a href=""></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>, <span class="at">size =</span> <span class="dv">16</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-42-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>ค่าสถิติข้างต้นสามารถนำมาสร้างแผนภาพเพื่อสำรวจข้อมูลได้หลายลักษณะ แผนภาพด้านล่างเรียกว่า errorbar plot สร้างจากค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐาน ที่เป็นค่าสถิติพื้นฐานสำหรับสะท้อนแนวโน้มสู่ส่วนกลาง และการกระจายของข้อมูล</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59" data-code-line-numbers="15-16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a href=""></a>  <span class="fu">select</span>(research_score, department) <span class="sc">|&gt;</span> </span>
+<span id="cb59-3"><a href=""></a>  <span class="fu">group_by</span>(department) <span class="sc">|&gt;</span> </span>
+<span id="cb59-4"><a href=""></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="at">.cols =</span> <span class="st">"research_score"</span>,</span>
+<span id="cb59-5"><a href=""></a>                   <span class="at">.fns =</span> <span class="fu">list</span>(</span>
+<span id="cb59-6"><a href=""></a>                          <span class="at">mean =</span> mean,</span>
+<span id="cb59-7"><a href=""></a>                          <span class="at">sd =</span> sd,</span>
+<span id="cb59-8"><a href=""></a>                          <span class="at">min =</span> min,</span>
+<span id="cb59-9"><a href=""></a>                          <span class="at">q1 =</span> <span class="sc">~</span> <span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fl">0.25</span>),</span>
+<span id="cb59-10"><a href=""></a>                          <span class="at">median =</span> <span class="sc">~</span> <span class="fu">median</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb59-11"><a href=""></a>                          <span class="at">q3 =</span> <span class="sc">~</span> <span class="fu">quantile</span>(.x, <span class="at">probs =</span> <span class="fl">0.75</span>),</span>
+<span id="cb59-12"><a href=""></a>                          <span class="at">max =</span> max),</span>
+<span id="cb59-13"><a href=""></a>                    <span class="at">.names =</span> <span class="st">"{.fn}"</span>)) <span class="sc">|&gt;</span>  <span class="co"># เอาชื่อ col ออกเพราะตอนนี้มีแค่ตัวแปรเดียว</span></span>
+<span id="cb59-14"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mean, <span class="at">y=</span> <span class="fu">reorder</span>(department, mean)))<span class="sc">+</span></span>
+<span id="cb59-15"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span> <span class="do">## จุดจะรับ aes() จาก ggplot มาใช้</span></span>
+<span id="cb59-16"><a href=""></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> mean<span class="sc">-</span>sd, <span class="at">xmax =</span> mean<span class="sc">+</span>sd)) <span class="sc">+</span> <span class="do">## geom_errorbar มี aesthetic เฉพาะคือ xmin, xmax และ ymin, ymax เพื่อกำหนดขอบเขตบนล่างของ bar การใช้งานขึ้นอยู่กับว่าเรากำลังสร้างแผนภาพแนวไหน</span></span>
+<span id="cb59-17"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">""</span>)<span class="sc">+</span> <span class="do">## เอา title บนแกน y ออก</span></span>
+<span id="cb59-18"><a href=""></a>  <span class="fu">xlab</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> ค่าเฉลี่ยผลสัมฤทธิ์ทางการเรียนวิจัย"</span>) <span class="sc">+</span></span>
+<span id="cb59-19"><a href=""></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>, <span class="at">size =</span> <span class="dv">16</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-43-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><br></p>
+<p>จากการสำรวจสภาพของตัวแปรก่อนหน้านี้เราพบว่ามีตัวแปรอิสระเชิงปริมาณหลายตัวที่มีการแจกแจงแบบไม่ต่อเนื่อง กล่าวคือ มีค่าที่เป็นไปได้น้อยสภาพดังกล่าวอาจมีผลต่อประสิทธิภาพของโมเดลทำนายหรือโมเดลวิเคราะห์ความสัมพันธ์ เช่น <code>percent_submit</code> ดังรูปด้านล่าง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb60-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>percent_submit))<span class="sc">+</span></span>
+<span id="cb60-3"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-44-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb61-2"><a href=""></a>  <span class="fu">select</span>(percent_submit, research_score) <span class="sc">|&gt;</span> </span>
+<span id="cb61-3"><a href=""></a>  <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               percent_submit research_score
+percent_submit      1.0000000      0.3473329
+research_score      0.3473329      1.0000000</code></pre>
+</div>
+</div>
+<p>เราอาจจะลองปรับค่าของตัวแปร <code>percent_submit</code> ให้เป็นตัวแปรแบบจัดประเภท แล้วนำไปวิเคราะห์ความสัมพันธ์</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63" data-code-line-numbers="3|4-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb63-2"><a href=""></a>  <span class="fu">select</span>(percent_submit, research_score) <span class="sc">|&gt;</span> </span>
+<span id="cb63-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">percent_submit =</span> <span class="fu">ifelse</span>(percent_submit <span class="sc">&gt;</span> <span class="dv">80</span>, <span class="st">"high"</span>,<span class="st">"low"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb63-4"><a href=""></a>  <span class="fu">group_by</span>(percent_submit) <span class="sc">|&gt;</span> </span>
+<span id="cb63-5"><a href=""></a>  <span class="fu">summarise_all</span>(<span class="fu">list</span>(<span class="at">mean =</span> mean,</span>
+<span id="cb63-6"><a href=""></a>                    <span class="at">sd =</span> sd,</span>
+<span id="cb63-7"><a href=""></a>                    <span class="at">min =</span> min,</span>
+<span id="cb63-8"><a href=""></a>                    <span class="at">max =</span> max))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  percent_submit  mean    sd   min   max
+  &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 high            72.7  9.28    48    97
+2 low             65.2  9.00    43    85</code></pre>
+</div>
+</div>
+<p>แผนภาพกล่องแสดงการเปรียบเทียบผลสัมฤทธิ์ทางการเรียนวิจัยจำแนกตามพฤติกรรมการส่งงาน</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-46-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote>
+<p>เราจะเห็นว่านักเรียนส่วนใหญ่ที่ส่งการบ้านอย่างสม่ำเสมอ มีผลสัมฤทธิ์ทางการเรียนวิจัยสูงกว่านักเรียนส่วนใหญ่ในกลุ่มที่ไม่ได้ส่งการบ้านสม่ำเสมอ</p>
+</blockquote>
+<p><br></p>
+<h4 id="correlation-and-r2">correlation and R2</h4>
+<p>ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณและตัวแปรจัดประเภท สามารถสะท้อนผ่านสัมประสิทธิ์สหสัมพันธ์ได้ โดยสร้างจากผลการวิเคราะห์ simple regression with dummy ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a>temp <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb65-2"><a href=""></a>  <span class="fu">select</span>(percent_submit, research_score) <span class="sc">|&gt;</span> </span>
+<span id="cb65-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">percent_submit =</span> <span class="fu">ifelse</span>(percent_submit <span class="sc">&gt;=</span> <span class="dv">80</span>, <span class="st">"high"</span>,<span class="st">"low"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb65-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">percent_submit =</span> <span class="fu">factor</span>(percent_submit, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"low"</span>,<span class="st">"high"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href=""></a>fit_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(research_score <span class="sc">~</span> percent_submit, <span class="at">data =</span>temp)</span>
+<span id="cb66-2"><a href=""></a><span class="fu">summary</span>(fit_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = research_score ~ percent_submit, data = temp)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-24.7037  -6.7037   0.2963   6.2963  24.2963 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          65.246      1.183  55.174  &lt; 2e-16 ***
+percent_submithigh    7.458      1.289   5.785  1.5e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 9.236 on 383 degrees of freedom
+Multiple R-squared:  0.08037,   Adjusted R-squared:  0.07797 
+F-statistic: 33.47 on 1 and 383 DF,  p-value: 1.505e-08</code></pre>
+</div>
+</div>
+<p>ค่า R2 ของโมเดลการวิเคราะห์การถดถอยนี้มีค่าเท่ากับ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a><span class="fu">summary</span>(fit_lm)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.08036903</code></pre>
+</div>
+</div>
+<p>ซึ่งคิดเป็นค่าสหสัมพันธ์เท่ากับ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a><span class="fu">summary</span>(fit_lm)<span class="sc">$</span>r.squared <span class="sc">|&gt;</span> <span class="fu">sqrt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2834943</code></pre>
+</div>
+</div>
+<p>Note:</p>
+<ol type="1">
+<li><p>สหสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทที่มีการให้คะแนนแบบสองค่า (binary data) มีชื่อเรียกเฉพาะด้วยว่า point-biserial correlation ซึ่งเป็นกรณีเฉพาะของ Pearson’s correlation</p></li>
+<li><p>ดังนั้นเราสามารถหาสหสัมพันธ์แบบ point-biserial นี้ได้จาก <code>cor()</code> ได้ด้วย แต่เราจะต้องแปลงค่าของตัวแปรจัดประเภทให้เป็นค่า 0, 1 ก่อน ดังตัวอย่างต่อไปนี้</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb72-2"><a href=""></a>  <span class="fu">select</span>(research_score, percent_submit) <span class="sc">|&gt;</span> </span>
+<span id="cb72-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">percent_submit =</span> <span class="fu">ifelse</span>(percent_submit <span class="sc">&gt;=</span> <span class="dv">80</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">|&gt;</span> <span class="do">## แทนที่จะใส่ค่าเป็นชื่อกลุ่ม ใส่ค่าเป็น 1, 0 แทน</span></span>
+<span id="cb72-4"><a href=""></a>  <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               research_score percent_submit
+research_score      1.0000000      0.2834943
+percent_submit      0.2834943      1.0000000</code></pre>
+</div>
+</div>
+</div>
+<p><br></p>
 </section>
 <section id="clustering" class="slide level2 smaller">
 <h2>Clustering</h2>
@@ -1362,15 +1746,15 @@ Total_{withinSS} = \sum_{j=1}^k WWS_j
 <h2><code>for</code> Loop</h2>
 <p>for loop เป็นโครงสร้างการวนซ้ำ (iteration) ที่ใช้ในอัลกอริธึมเพื่อทำซ้ำชุดคำสั่งในโปรแกรมเป็นจำนวนครั้งที่กำหนดไว้ล่วงหน้า หรือสำหรับการทำงานกับทุกองค์ประกอบในชุดข้อมูล</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a><span class="cf">for</span> (variable <span class="cf">in</span> sequence) {</span>
-<span id="cb45-2"><a href=""></a>  <span class="co"># คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ</span></span>
-<span id="cb45-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a><span class="cf">for</span> (variable <span class="cf">in</span> sequence) {</span>
+<span id="cb74-2"><a href=""></a>  <span class="co"># คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ</span></span>
+<span id="cb74-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ตัวอย่างการวนซ้ำ</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
-<span id="cb46-2"><a href=""></a>  <span class="fu">print</span>(i)</span>
-<span id="cb46-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb75-2"><a href=""></a>  <span class="fu">print</span>(i)</span>
+<span id="cb75-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1
 [1] 2
@@ -1384,14 +1768,14 @@ Total_{withinSS} = \sum_{j=1}^k WWS_j
 <section id="elbow-method-revisted" class="slide level2">
 <h2>Elbow Method (Revisted)</h2>
 
-<img data-src="EDA1_files/figure-revealjs/unnamed-chunk-40-1.png" width="960" class="r-stretch"></section>
+<img data-src="EDA1_files/figure-revealjs/unnamed-chunk-58-1.png" width="960" class="r-stretch"></section>
 <section id="kmeans-results-for-3-clusters" class="slide level2">
 <h2>Kmeans Results for 3 clusters</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-41-1.png" width="960"></p>
+<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-59-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1579,9 +1963,9 @@ Total_{withinSS} = \sum_{j=1}^k WWS_j
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1000,
 
-        height: 700,
+        height: 1000,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,
