@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.55">
 
   <meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร ">
-  <title>Exploratory Data Analysis</title>
+  <title>Exploratory Data Analysis Part 1</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -393,7 +393,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Exploratory Data Analysis</h1>
+  <h1 class="title">Exploratory Data Analysis Part 1</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -1662,124 +1662,6 @@ percent_submit      0.2834943      1.0000000</code></pre>
 </div>
 </div>
 <p><br></p>
-</section>
-<section id="clustering" class="slide level2 smaller">
-<h2>Clustering</h2>
-<ul>
-<li><p>ชุดของวิธีการหรืออัลกอริธึมที่ใช้ในการค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด</p></li>
-<li><p>การจัดกลุ่ม (Clustering) มีประโยชน์มากในการสำรวจข้อมูลเบื้องต้น (Exploratory Data Analysis: EDA) โดยเฉพาะอย่างยิ่งเมื่อผู้วิเคราะห์ต้องการทราบลักษณะหรือรูปแบบของหน่วยข้อมูลในชุดข้อมูลที่มีตัวแปรจำนวนมาก หรือในกรณีที่ชุดข้อมูลนั้นมีหน่วยข้อมูลจำนวนมาก</p></li>
-<li><p>K-Means</p></li>
-<li><p>Hierarchical Clustering</p></li>
-<li><p>DBSCAN</p></li>
-<li><p>Gaussian Mixture Models</p></li>
-</ul>
-</section>
-<section id="k-means-clustering" class="slide level2 smaller scrollable">
-<h2>K-Means Clustering</h2>
-<div style="font-size: 80%;">
-<ol type="1">
-<li><p>เลือกจำนวนกลุ่ม (k) ที่ต้องการแบ่งข้อมูลออก</p></li>
-<li><p>สุ่มเลือกหน่วยข้อมูลจากแต่ละกลุ่มใน 1. มาเป็นจุดศูนย์กลางเริ่มต้น (centroids) สำหรับแต่ละกลุ่ม</p></li>
-<li><p>จัดหน่วยข้อมูลลงกลุ่มใหม่ระยะห่างที่ใกล้ที่สุดจาก centroid ใน 2.</p></li>
-</ol>
-<p>– Euclidean distance</p>
-<p>– Manhattan distance</p>
-<p>– Cosine Similarity</p>
-<p>– Hamming distance</p>
-<p>– Mahalonoblis distance</p>
-<p>note : หน่วยของตัวแปรที่แตกต่างกันอาจเป็นปัจจัยแทรกซ้อนที่ทำให้การคำนวณระยะทางมีความคลาดเคลื่อนดังนั้นก่อนการจัดกลุ่มควรจะต้องมีการ standardized ค่าสังเกตของตัวแปรที่จะนำมาจัดกลุ่มก่อน</p>
-<ol start="4" type="1">
-<li><p>คำนวณจุดศูนย์กลางใหม่จากการจัดกลุ่มใน 3.โดยหาค่าเฉลี่ยของจุดข้อมูลทั้งหมดในกลุ่มนั้น ๆ และใช้เป็นจุดศูนย์กลางใหม่</p></li>
-<li><p>จัดกลุ่มข้อมูลใหม่อีกครั้งตามจุดศูนย์กลางที่คำนวณในขั้นตอนที่ 4</p></li>
-<li><p>ทำซ้ำขั้นตอนที่ 4 และ 5 จนกว่าจุดศูนย์กลางจะไม่เปลี่ยนแปลงอีก หรือจนกว่าจะถึงจำนวนรอบที่กำหนดไว้ล่วงหน้า</p></li>
-<li><p>เมื่อการทำซ้ำเสร็จสิ้น ผลลัพธ์ที่ได้คือข้อมูลทั้งหมดที่ถูกจัดกลุ่มตามลักษณะที่คล้ายคลึงกันมากที่สุด โดยมีจุดศูนย์กลางที่แสดงถึงตำแหน่งเฉลี่ยของข้อมูลในแต่ละกลุ่ม</p></li>
-</ol>
-<p><br></p>
-<div class="caption">
-Reference: https://www.analyticsvidhya.com/blog/2020/02/4-types-of-distance-metrics-in-machine-learning/
-</div>
-</div>
-</section>
-<section id="standardized-and-normalized-score" class="slide level2 smaller">
-<h2>Standardized and Normalized Score</h2>
-<ul>
-<li><p>Standardized score <span class="math display">\[
-Z = \frac{X - \overline{x}}{SD_x}
-\]</span></p></li>
-<li><p>Normalized Score <span class="math display">\[
-X_{\text{normalized}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
-\]</span></p></li>
-</ul>
-</section>
-<section id="k-means-clustering-using-r" class="slide level2 smaller scrollable">
-<h2>K-Means clustering using R</h2>
-<p>ในทางปฏิบัติการทำ K-Means clustering ประกอบด้วยขั้นตอนหลัก ได้แก่</p>
-<ol type="1">
-<li><p>เตรียมข้อมูลให้เป็น tidydata ตัดค่าสูญหายออกจากชุดข้อมูล เลือกตัวแปรสำหรับจัดกลุ่ม และปรับสเกลของข้อมูลให้เป็นหน่วยมาตรฐาน</p></li>
-<li><p>กำหนดจำนวนกลุ่ม</p></li>
-<li><p>จัดกลุ่มตามอัลกอริทึม K-Means</p></li>
-</ol>
-<p><br></p>
-<h4 id="ตวอยางการวเคราะหในชดขอมล-learning_data.csv">ตัวอย่างการวิเคราะห์ในชุดข้อมูล <code>learning_data.csv</code></h4>
-<p>ลองจัดกลุ่มนักเรียนโดยใช้คะแนนความรู้พื้นฐานทางสถิติ และพฤติกรรมในการเรียน ฟังก์ชันสำหรับทำ K-Means clustering ใน R มีหลายตัว ฟังก์ชันพื้นฐานที่ใช้กันอย่างแพร่หลายคือ</p>
-<center>
-<p><code>kmeans(x, centers)</code></p>
-</center>
-</section>
-<section id="how-to-choose-k-value" class="slide level2 smaller">
-<h2>How to choose <code>k</code> value?</h2>
-<p>มีหลายวิธีในการกำหนดจำนวน k ที่เหมาะสม</p>
-<ul>
-<li><p>theory/prior knowledge</p></li>
-<li><p>rule of thumb เช่น <span class="math inline">\(k=\sqrt{2}\)</span></p></li>
-<li><p>Statistical method เช่น Elbow method</p></li>
-</ul>
-<p><br></p>
-<h4 id="elbow-method">Elbow Method</h4>
-<p>วิธีการนี้พยายามเลือก k ที่ทำให้ค่าผลรวมกำลังสองภายในกลุ่มต่ำที่สุด</p>
-<p><span class="math display">\[
-Total_{withinSS} = \sum_{j=1}^k WWS_j
-\]</span></p>
-<p>โดยที่ <span class="math inline">\(WSS = \sum_{j=1}^{k} \sum_{i \in C_j} (y_i - \bar{y}_j)^2\)</span></p>
-</section>
-<section id="for-loop" class="slide level2 smaller">
-<h2><code>for</code> Loop</h2>
-<p>for loop เป็นโครงสร้างการวนซ้ำ (iteration) ที่ใช้ในอัลกอริธึมเพื่อทำซ้ำชุดคำสั่งในโปรแกรมเป็นจำนวนครั้งที่กำหนดไว้ล่วงหน้า หรือสำหรับการทำงานกับทุกองค์ประกอบในชุดข้อมูล</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a><span class="cf">for</span> (variable <span class="cf">in</span> sequence) {</span>
-<span id="cb74-2"><a href=""></a>  <span class="co"># คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ</span></span>
-<span id="cb74-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>ตัวอย่างการวนซ้ำ</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
-<span id="cb75-2"><a href=""></a>  <span class="fu">print</span>(i)</span>
-<span id="cb75-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5</code></pre>
-</div>
-</div>
-<p>เราสามารถใช้การวนซ้ำแบบ for นี้มาช่วยให้การทำงานด้าน data science ทำได้ง่ายมากขึ้น</p>
-</section>
-<section id="elbow-method-revisted" class="slide level2">
-<h2>Elbow Method (Revisted)</h2>
-
-<img data-src="EDA1_files/figure-revealjs/unnamed-chunk-58-1.png" width="960" class="r-stretch"></section>
-<section id="kmeans-results-for-3-clusters" class="slide level2">
-<h2>Kmeans Results for 3 clusters</h2>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="EDA1_files/figure-revealjs/unnamed-chunk-59-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">
