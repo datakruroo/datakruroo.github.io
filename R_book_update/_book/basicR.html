@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="สิวะโชติ ศรีสุทธิยากร">
-<meta name="dcterms.date" content="2024-08-12">
 
-<title>R_book_update</title>
+<title>2&nbsp; พื้นฐาน R – R_book_update</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -32,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./intro.html" rel="next">
+<link href="./summary.html" rel="next">
+<link href="./intro.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -88,7 +87,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">คำนำ</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./basicR.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">พื้นฐาน R</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -115,7 +114,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">คำนำ</span></a>
   </div>
 </li>
@@ -127,7 +126,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./basicR.html" class="sidebar-item-text sidebar-link">
+  <a href="./basicR.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">พื้นฐาน R</span></span></a>
   </div>
 </li>
@@ -148,44 +147,22 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#คำนำ" id="toc-คำนำ" class="nav-link active" data-scroll-target="#คำนำ">คำนำ</a>
-  <ul class="collapse">
-  <li><a href="#ความรเบองตนทจำเปนสำหรบผอาน" id="toc-ความรเบองตนทจำเปนสำหรบผอาน" class="nav-link" data-scroll-target="#ความรเบองตนทจำเปนสำหรบผอาน">ความรู้เบื้องต้นที่จำเป็นสำหรับผู้อ่าน</a></li>
-  <li><a href="#ไฟลขอมลทใชเปนตวอยางในหนงสอ" id="toc-ไฟลขอมลทใชเปนตวอยางในหนงสอ" class="nav-link" data-scroll-target="#ไฟลขอมลทใชเปนตวอยางในหนงสอ">ไฟล์ข้อมูลที่ใช้เป็นตัวอย่างในหนังสือ</a></li>
-  </ul></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">R_book_update</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">พื้นฐาน R</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>สิวะโชติ ศรีสุทธิยากร </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">August 12, 2024</p>
-    </div>
-  </div>
   
     
   </div>
@@ -196,28 +173,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="คำนำ" class="level1 unnumbered">
-<h1 class="unnumbered">คำนำ</h1><p><img src="cover2.png" title="R_book_update" class="quarto-cover-image img-fluid" alt="Alternative text describing the book cover "></p>
-<p>หนังสือเล่มนี้ปรับปรุงจากหนังสือสถิติและวิทยาการข้อมูลทางการศึกษา : R สำหรับการจัดระเบียบและจัดกระทำข้อมูล เนื้อหาหลักเป็นการปูพื้นฐานให้กับผู้ที่สนใจให้มีความรู้และทักษะที่จำเป็นสำหรับการทำงานด้านวิทยาการข้อมูล และการวิจัยทางการศึกษา โดยมีการปรับปรุงเนื้อหาและชุดคำสั่งในหนังสือเล่มเดิมให้มีความทันสมัย และเพิ่มเนื้อหาในส่วนของสถิติวิเคราะห์และการเรียนรู้ของเครื่องที่เกี่ยวข้องทำให้หนังสือมีความสมบูรณ์มากยิ่งขึ้น</p>
-<p>เนื้อหาในหนังสือจำแนกออกเป็น 5 ส่วน ดังนี้</p>
-<ul>
-<li><p><strong>ส่วนแรก</strong> แนะนำภาษา R โดยเริ่มตั้งแต่การติดตั้งโปรแกรม แนะนำ IDE ที่เหมาะสำหรับการใช้ภาษา R และความรู้พื้นฐานที่จำเป็นสำหรับการใช้ภาษา R สำหรับงานด้านสถิติและวิทยาการข้อมูลทางการศึกษา เนื้อหาส่วนนี้เหมาะสำหรับผู้ที่ไม่เคยใช้ภาษา R มาก่อน เนื้อหาส่วนนี้จะอยู่ในบทที่ 1 และ 2 ของหนังสือ ผู้ที่มีความรู้พื้นฐานหรอประสบการณ์กับภาษา R มาแล้วสามารถข้ามเนื้อหาในส่วนนี้ได้</p></li>
-<li><p><strong>ส่วนที่สอง</strong> การเตรียมข้อมูล เกี่ยวข้องกับการแนะนำแหล่งข้อมูลที่ผู้อ่านสามารถเข้าไปศึกษาและดาวน์โหลดมาฝึกปฏิบัติ ประเภทของชุดข้อมูล การนำข้อมูลเข้าสู่ R การสำรวจข้อมูลเบื้องต้น การจัดระเบียบข้อมูลและจัดกระทำข้อมูล เพื่อให้ได้ตารางข้อมูลรวมทั้งข้อมูลที่พร้อมและสอดคล้องกับความต้องการของการวิเคราะห์ เนื้อหาในส่วนนี้อยู่ในบทที่ 3 และ 4 ของหนังสือ</p></li>
-<li><p><strong>ส่วนที่สาม</strong> การสร้างทัศนภาพข้อมูล (data visualization) และการวิเคราะห์ข้อมูลเชิงสำรวจ (exploratory data analysis: EDA) เนื้อหาส่วนนี้จะกล่าวถึงหลักการเลือกใช้ ออกแบบและสร้างทัศนภาพข้อมูลด้วยภาษา R โดยใช้ <code>{ggplot2}</code> ที่เป็น library หลักตัวหนึ่งที่มี่ประสิทธิภาพสูงสำหรับสร้างทัศนภาพข้อมูล เนื้อหาเน้นการสร้างและการใช้ทัศนภาพข้อมูลที่เหมาะสำหรับการวิเคราะห์ข้อมูลเชิงสำรวจ ร่วมกับการใช้สถิติพื้นฐานเพื่อทำความเข้าใจสภาพของตัวแปร เปรียบเทียบความแตกต่างของข้อมูล การสำรวจความสัมพันธ์ระหว่างตัวแปร การวิเคราะห์เพื่อจัดกลุ่ม (clustering) การลดทอนมิติของข้อมูล (dimension reduction) นอกจากนี้จะกล่าวถึงวิธีการที่สามารถใช้เพื่อตรวจสอบความผิดปกติในข้อมูลที่จะเป็นปัญหาหรือเป็นปัจจัยที่ลดประสิทธิภาพหรือความถูกต้องในการวิเคราะห์ข้อมูล ได้แก่ ปัญหาค่าผิดปกติ และข้อมูลสูญหาย เนื้อหาในส่วนนี้จะอยู่ในบทที่ 5 - 7 และการวิเคราะห์ที่เกี่ยวข้องในส่วนนี้อาจเรียกว่าอยู่ในกลุ่ม การวิเคราะห์ข้อมูลเชิงบรรยาย (descriptive analytics)</p></li>
-<li><p><strong>ส่วนที่สี่</strong> การวิเคราะห์เชิงวินิจฉัย (diagnostic analytics) การวิเคราะห์ส่วนนี้มีวัตถุประสงค์เพื่อหาคำอธิบายสภาพที่พบในข้อมูลที่เป็นประเด็นที่ผู้วิเคราะห์หรือผู้วิจัยให้ความสนใจ เป็นกลุ่มของเทคนิคทางสถิติและวิทยาการข้อมูลที่สามารถนำไปใช้เพื่อสร้างสารสนเทศเชิงลึกและนำไปใช้ประโยชน์ทั้งในเชิงวิชาการ และเชิงปฏิบัติ เช่น การวิเคราะห์เพื่อเปรียบเทียบค่าเฉลี่ย การวิเคราะห์สหสัมพันธ์ การวิเคราะห์การถดถอย และการวิเคราะห์ต้นไม้ตัดสินใจ</p></li>
-<li><p><strong>ส่วนที่ห้า</strong> การวิเคราะห์เชิงทำนาย (predictive analytics) จะกล่าวถึงการสร้างโมเดลทำนายจากอัลกอริทึมการเรียนรู้ของเครื่องในกลุ่ม supervised learning ที่สามารถใช้เพื่อสร้างโมเดลทำนายที่สามารถสร้างสารสนเทศเชิงลึกที่เป็นประโยชน์โดยเฉพาะการวางแผน และการตัดสินใจในการดำเนินงานโดยเฉพาะด้านการศึกษา เนื้อหาในส่วนนี้จะกล่าวถึงมโนทัศน์เบื่้องต้นในการสร้างโมเดลทำนาย และการสร้างโมเดลทำนายด้วย <code>{tidymodels}</code> ที่ประกอบด้วย การเตรียมข้อมูลสำหรับการสร้าง การปรับแต่ง และการตรวจสอบประสิทธิภาพของโมเดลทำนาย</p></li>
-</ul>
-<section id="ความรเบองตนทจำเปนสำหรบผอาน" class="level2">
-<h2 class="anchored" data-anchor-id="ความรเบองตนทจำเปนสำหรบผอาน">ความรู้เบื้องต้นที่จำเป็นสำหรับผู้อ่าน</h2>
-<p>ผู้อ่านไม่จำเป็นต้องมีความรู้พื้นฐานเกี่ยวกับโปรแกรม R มาก่อน แต่ควรมีพื้นฐานความรู้ เกี่ยวกับสถิติพื้นฐานหรือเคยเรียนรายวิชาสถิติพื้นฐานในระดับปริญญาบัณฑิตมาอย่างน้อย 1 รายวิชา นอกจากนี้การมีพื้นฐานทางคณิตศาสตร์ในระดับมัธยมศึกษาตอนปลายจะช่วยให้สามารถ ทำความเข้าใจเนื้อหาบางส่วนของหนังสือเล่มนี้ได้ดีมากยิ่งขึ้น</p>
-</section>
-<section id="ไฟลขอมลทใชเปนตวอยางในหนงสอ" class="level2">
-<h2 class="anchored" data-anchor-id="ไฟลขอมลทใชเปนตวอยางในหนงสอ">ไฟล์ข้อมูลที่ใช้เป็นตัวอย่างในหนังสือ</h2>
-<p>ไฟล์ข้อมูลทั้งหมดที่ใช้เป็นตัวอย่างในหนังสือสามารถดาวน์โหลดได้จาก …</p>
 
-
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -642,10 +598,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./intro.html" class="pagination-link" aria-label="แนะนำโปรแกรม R">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">แนะนำโปรแกรม R</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./intro.html" class="pagination-link" aria-label="แนะนำโปรแกรม R">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">แนะนำโปรแกรม R</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./summary.html" class="pagination-link" aria-label="Summary">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

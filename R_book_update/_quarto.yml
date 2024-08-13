@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - basicR.qmd
     - summary.qmd
     - references.qmd
   sidebar:
@@ -26,7 +27,25 @@ format:
   html:
     theme: cosmo
   pdf:
-    documentclass: scrreprt
+    latex-engine: xelatex
+    documentclass: book
+    mainfont: "TH Sarabun New"
+    papersize: a4
+    header-includes:
+      - \XeTeXlinebreaklocale "th"
+      - \XeTeXlinebreakskip = 0pt plus 0pt 
+      - \usepackage{fontspec}
+      - \defaultfontfeatures{Mapping=tex-text} 
+      - \newfontfamily{\thaifont}[Mapping=textext]{TH Sarabun New}
+      - \newenvironment{thailang}{\thaifont}{}
+      - \usepackage[Latin,Thai]{ucharclasses}
+      - \setTransitionTo{Thai}{\begin{thailang}}
+      - \setTransitionFrom{Thai}{\end{thailang}}
+      - \renewcommand{\baselinestretch}{1.0}
+      - \usepackage{polyglossia}
+      - \setdefaultlanguage{english}      
+      - \setotherlanguages{thai}
+      - \AtBeginDocument\captionsthai
 
 editor: visual
 

@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./summary.html" rel="next">
+<link href="./basicR.html" rel="next">
 <link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -126,8 +126,14 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./basicR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">พื้นฐาน R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -146,9 +152,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#การดาวนโหลดและการตดตง-r" id="toc-การดาวนโหลดและการตดตง-r" class="nav-link active" data-scroll-target="#การดาวนโหลดและการตดตง-r"><span class="header-section-number">1.1</span> การดาวน์โหลดและการติดตั้ง R</a></li>
-  <li><a href="#rstudio-ide" id="toc-rstudio-ide" class="nav-link" data-scroll-target="#rstudio-ide"><span class="header-section-number">1.2</span> RStudio IDE</a></li>
-  <li><a href="#positron-ide" id="toc-positron-ide" class="nav-link" data-scroll-target="#positron-ide"><span class="header-section-number">1.3</span> Positron IDE</a></li>
+  <li><a href="#r-คออะไร" id="toc-r-คออะไร" class="nav-link active" data-scroll-target="#r-คออะไร"><span class="header-section-number">1.1</span> R คืออะไร?</a></li>
+  <li><a href="#การดาวนโหลดและการตดตง-r" id="toc-การดาวนโหลดและการตดตง-r" class="nav-link" data-scroll-target="#การดาวนโหลดและการตดตง-r"><span class="header-section-number">1.2</span> การดาวน์โหลดและการติดตั้ง R</a></li>
+  <li><a href="#rstudio-ide" id="toc-rstudio-ide" class="nav-link" data-scroll-target="#rstudio-ide"><span class="header-section-number">1.3</span> RStudio IDE</a></li>
+  <li><a href="#positron-ide" id="toc-positron-ide" class="nav-link" data-scroll-target="#positron-ide"><span class="header-section-number">1.4</span> Positron IDE</a></li>
+  <li><a href="#ควรใช-rstudio-หรอ-positron" id="toc-ควรใช-rstudio-หรอ-positron" class="nav-link" data-scroll-target="#ควรใช-rstudio-หรอ-positron"><span class="header-section-number">1.5</span> ควรใช้ RStudio หรือ Positron</a></li>
   </ul>
 </nav>
     </div>
@@ -174,6 +182,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>เนื้อหาภายในบทเรียนนี้เหมาะสำหรับผู้ที่ยังไม่เคยมีพื้นฐานเกี่ยวกับโปรแกรม R มาก่อน โดยจะแนะนำภาพรวมของภาษา R เริ่มตั้งแต่การดาวน์โหลดและติดตั้งโปรแกรม สภาพแวดล้อมของโปรแกรม และแนะนำ IDE ที่เหมาะสำหรับการใช้ร่วมกับโปรแกรม R รายละเอียดมีดังนี้</p>
+<section id="r-คออะไร" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="r-คออะไร"><span class="header-section-number">1.1</span> R คืออะไร?</h2>
 <p>R เป็นภาษาคอมพิวเตอร์ยุคใหม่ที่ถูกพัฒนาขึ้นให้มีความสามารถอย่างหลากหลาย มีประสิทธิภาพสูง และดีมากสำหรับใช้ในการทำงานทางด้านสถิติและวิทยาการข้อมูล โปรแกรม R ได้รับการริเริ่มพัฒนาขึ้นโดยผู้พัฒนาที่เป็นนักสถิติสองท่าน ได้แก่ Ross Inhaka และ Robert Gentleman จาก University of Auckland ประเทศนิวซีแลนด์ โดยพัฒนา ต่อยอดมาจากภาษา S และ S+ และได้ทำการเผยแพร่ให้บุคคลทั่วไปได้ใช้งานตั้งแต่ปี ค.ศ. 1993 ภายใต้สัญญาอนุญาตสาธารณะทั่วไปของกนู (GNU General Public License) โปรแกรม R จัดเป็นโปรแกรมประเภท open source ซึ่งมีลักษณะเป็นโปรแกรมที่เผยแพร่ให้บุคคลทั่วไปมีสิทธิใน การเข้าใช้งาน และพัฒนาโปรแกรมอย่างอิสระตามความต้องการโดยไม่เสียค่าใช้จ่ายไม่ว่าจะ เป็นการใช้งานทั่วไป การแก้ไขปรับปรุง หรือพัฒนาต่อยอดโปรแกรม (Maindonale and Bruan, 2010; Field, Mild and Field, 2012; Schumacker, 2012; Brundon and Comber, 2013)</p>
 <p>โปรแกรม R สามารถทำงานได้บนแพลตฟอร์มที่หลากหลาย (multiple platform) โดยสามารถติดตั้งและทำงานบนระบบปฏิบัติการที่สำคัญได้ทุกระบบ ได้แก่ Windows, Mac OS, Linux, Unix รวมทั้ง Chrome OS จุดเด่นนี้ทำให้โปรแกรม R สามารถเข้าถึงผู้ใช้งานได้อย่างทั่วถึง</p>
 <p>การที่ R เป็นโปรแกรม open source ยังเป็นปัจจัยสนับสนุนที่ทำให้เกิดชุมชนนักพัฒนาที่กว้างขวางและมี library จำนวนมากที่ถูกพัฒนาขึ้นอย่างรวดเร็ว ต่อเนื่อง ทำให้ R มีส่วนต่อขยายที่ครอบคลุมการดำเนินการทางด้านสถิติและวิทยาการข้อมูล รวมทั้งการวิจัยแทบทุกด้าน สามารถตอบสนองต่อความต้องการและมีการพัฒนาที่ทันต่อการเปลี่ยนแปลงอย่างรวดเร็วในวงการวิทยาการข้อมูล ทำให้ปัจจุบัน R เป็นเครื่องมือหลักตัวหนึ่งสำหรับนักสถิติ นักวิทยาการข้อมูล และนักวิจัยจากทั่วโลก สำหรับการทำงานวิจัยและการวิเคราะห์ข้อมูลสมัยใหม่</p>
@@ -186,8 +197,9 @@ ul.task-list li input[type="checkbox"] {
 <li><p>มีความประสิทธิภาพสูงมากสำหรับการทำงานด้านกราฟิกหรือการสร้างทัศนภาพข้อมูล (data visualization) โดยเป็นโปรแกรมที่มี pacakage หลายตัวที่ถูกพัฒนาขึ้นสำหรับสร้าง ทัศนภาพข้อมูลโดยเฉพาะ เช่น graphics, ggplot2, lattice, boken, rmarkdown, flexdashboard และ shiny ซึ่งช่วยให้ผู้ใช้สามารถสร้างทัศนภาพข้อมูลได้อย่างหลากหลาย ทั้งในรูปแบบทัศนภาพข้อมูลเชิงสถิต (static data visualization) ทัศนภาพข้อมูลเชิงพลวัต (dynamic data visualization) และทัศนภาพข้อมูลเชิงปฏิสัมพันธ์ (interactive data visualization)</p></li>
 <li><p>เป็นโปรแกรมภาษาที่ง่ายต่อการเรียนรู้และใช้งาน นอกจากนี้ยังมีชุมชนผู้ใช้โปรแกรม R และ แหล่งการเรียนรู้ออนไลน์ที่สามารถให้คำตอบแก่ผู้ใช้ได้อย่างกว้างขวางและตรงประเด็น ดัง นั้นผู้ใช้โปรแกรม R หรือผู้ที่ต้องการศึกษา R ที่ไม่ได้มีพื้นฐานการเขียนโปรแกรมมาก่อนจึง สามารถเรียนรู้ภาษา R เป็นภาษาแรกได้โดยง่าย</p></li>
 </ol>
-<section id="การดาวนโหลดและการตดตง-r" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="การดาวนโหลดและการตดตง-r"><span class="header-section-number">1.1</span> การดาวน์โหลดและการติดตั้ง R</h2>
+</section>
+<section id="การดาวนโหลดและการตดตง-r" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="การดาวนโหลดและการตดตง-r"><span class="header-section-number">1.2</span> การดาวน์โหลดและการติดตั้ง R</h2>
 <p>R เป็นโปรแกรมที่ได้รับการพัฒนาและได้รับการปรับปรุงอย่างต่อเนื่อง ในหนังสือเล่มนี้ใช้โปรแกรม R version 4.4.1 (Race of Your Life) สำหรับผู้อ่านที่ยังไม่มี โปรแกรมสามารถดาวน์โหลดโปรแกรมได้จาก <a href="http://www/r-project.org/">http://www/r-project.org/</a> โดยเมื่อเข้าสู่ website ให้คลิ้กที่คำว่า “download R” เพื่อดาวน์โหลดซอฟต์แวร์จาก CRAN (Comprehensive R Archive Network) โดยให้ดาวน์โหลดตัว base distribution ที่เหมาะสมกับระบบปฏิบัติการของ ตนเองแล้วดำเนินการติดตั้งโปรแกรมตามขั้นตอนที่ตัวช่วยการติดตั้งแนะนำ</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -206,18 +218,41 @@ ul.task-list li input[type="checkbox"] {
 <p>หน้าต่าง Editor นี้ไม่ได้ปรากฏให้ผู้ใช้ใช้งานได้ทันทีเมื่อเปิดโปรแกรม ผู้ใช้จำเป็นต้อง เรียกเปิดหน้าต่างดังกล่าวขึ้นมาใช้งานโดยคลิกเลือกที่เมนู File บนแถบเมนูด้านบน จากนั้นเลือก New Script (สำหรับระบบปฏิบัติการ Windows) หรือเลือก New Document (สำหรับระบบ ปฏิบัติการ Mac OS) โดยหากต้องการให้ R ประมวลคำสั่งในบรรทัดใด ให้ผู้ใช้คลิกเลือกคำสั่งหรือ ทำ highlight คลุมบรรทัดของคำสั่งที่ต้องการประมวลผล จากนั้นกดปุ่ม Clt+R (สำหรับระบบ ปฏิบัติการ Windows) หรือกดปุ่ม ⌘+Enter (สำหรับระบบปฏิบัติการ Mac OS)</p>
 <p>หน้าต่างสุดท้ายเรียกว่าหน้าต่าง Graphics (สำหรับระบบปฏิบัติการ Mac OS เรียก หน้าต่างนี้ว่า Quartz) เป็นหน้าต่างสำหรับแสดงผลลัพธ์เชิงกราฟิกที่ประมวลผลได้จากโปรแกรม ผู้ใช้จะพบกับหน้าต่างนี้เมื่อมีการเรียกใช้คำสั่งที่ให้ผลลัพธ์เชิงกราฟิก ดังตัวอย่างในรูป 1.2 ที่แสดง การสร้าง histogram เพื่อสำรวจการแจกแจงของข้อมูลจำลองจากเลขสุ่มที่มีการแจกแจงแบบปกติ มาตรฐานจำนวน 1000 ค่าโดยใช้ฟังก์ชัน <code>hist()</code></p>
 </section>
-<section id="rstudio-ide" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="rstudio-ide"><span class="header-section-number">1.2</span> RStudio IDE</h2>
+<section id="rstudio-ide" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="rstudio-ide"><span class="header-section-number">1.3</span> RStudio IDE</h2>
 <p>ปัจจุบันการทำงานในโครงการหรืองานวิจัยที่มีการใช้สถิติและวิทยาการข้อมูล ผู้วิเคราะห์จะต้องเกี่ยวข้องกับการใช้เครื่องมือและเทคนิคจำนวนมากและหลากหลาย ทำให้การทำงานภายใต้สภาพแวดล้องของ R โดยตรงอาจทำได้ยากโดยเฉพาะในกลุ่มผู้ใช้ที่ไม่ได้เชี่ยวชาญการเขียนโปรแกรม นอกจากนี้ยังอาจมีความยากในการบริหารจัดการไฟล์ข้อมูลและไฟล์ที่เกี่ยวข้องกับการดำเนินงาน</p>
-<p>จากความจำเป็นดังกล่าวจึงมีการพัฒนาโปรแกรมประเภท IDE (Integrated Development Environment) ขึ้นเพื่อให้ผู้ใช้ R มีเครื่องมือหรือตัวช่วยในการเขียนคำสั่งหรือพัฒนาโปรแกรมการวิเคราะห์ข้อมูลได้ง่ายและมีประสิทธิภาพมากขึ้น โดยปกติ IDE จะมีเครื่องมือที่อำนวยความสะดวกในการทำงานได้แก่</p>
+<p>จากความจำเป็นดังกล่าวจึงมีการพัฒนาโปรแกรมประเภท IDE (Integrated Development Environment) ขึ้นเพื่อให้ผู้ใช้ R มีเครื่องมือหรือตัวช่วยในการเขียนคำสั่งหรือพัฒนาโปรแกรมการวิเคราะห์ข้อมูลได้ง่ายและมีประสิทธิภาพมากขึ้น โดย Rstudio มีคุณสมบัติที่เป็นจุดเด่นดังนี้</p>
 <ol type="1">
-<li>ตัวแก้ไขคำสั่ง (Editor) ที่ใช้สำหรับเขียนและแก้ไขคำสั่ง</li>
+<li><p>RStudio มีสภาพแวดล้อมที่เป็นมิตรกับผู้ใช้มากขึ้น โดยมีการออกแบบส่วนตอบสนองกับผู้ใช้ที่มีการวางเครื่องมืออำนวยความสะดวกในการสั่งการทำงานของโปรแกรม R ทำให้การดำเนินการหลายส่วนสามารถทำได้โดยไม่จำเป็นต้องเขียนชุดคำสั่ง ซึ่งช่วยลดระยะเวลาการทำงานและทำให้ใช้งานภาษา R ได้ง่ายมากขึ้น เช่น การติดตั้งและเรียกใช้ library ต่าง ๆ การค้นหาไฟล์ข้อมูล การนำเข้าไฟล์ข้อมูล และ เรียกดูข้อมูลของตัวแปร</p></li>
+<li><p>มีตัวแก้ไขคำสั่ง (Script Editor) ที่มีประสิทธิภาพสูงขึ้น โดยมีจุดเด่นที่เหนือกว่าการใช้ R Editor หลายประการ เช่น การเน้นสีของไวยกรณ์ภาษาทำให้การตรวจสอบแก้ไขคำสั่งสามารถทำได้ง่ายมากขึ้น การแนะนำคำสั่งที่เป็นไปได้ การแแจ้งเตือนและตรวจสอบข้อผิดพลาด นอกจากนี้ Editor ของ Rstudio ยังสามารถทำงานร่วมกับ Github Copilot ที่เป็น AI ที่ถูกฝึกสอนมาให้มีความสามารถในการช่วยสร้างคำสั่งซึ่งทำให้การทำงานด้านวิทยาการข้อมูลมีความสะดวกสบาย และมีประสิทธิภาพขึ้นอย่างมาก</p></li>
+<li><p>การจัดการ workspace และไฟล์ที่เกี่ยวข้อง RStudio จะจัดการ workspace และไฟล์ทั้งหมดที่เกี่ยวข้องกับโปรเจคในโฟลเดอร์เดียว ทำให้การจัดการไฟล์มีความเป็นระบบ และลดความสับสนเมื่อทำงานกับหลายโปรเจค</p></li>
+<li><p>การจัดการเวอร์ชัน (version control) RStudio รองรับการใช้งานร่วมกับ Git ภายในโปรเจค ทำให้สามารถควบคุมเวอร์ชันของโค้ดได้อย่างมีประสิทธิภาพ เช่น การ commit, push, pull, และดูประวัติการเปลี่ยนแปลงของโค้ดได้จากภายใน RStudio โดยตรง</p></li>
+<li><p>RStudio รองรับการใช้งาน R Markdown และ Quarto ซึ่งเป็นเครื่องมือที่ช่วยให้ผู้ใช้สามารถสร้างเอกสารที่รวมโค้ด, ข้อความ, และผลลัพธ์ไว้ในไฟล์เดียวกัน สามารถสร้างรายงานแบบทำซ้ำได้ (reproducible report) ในรูปแบบต่าง ๆ เช่น เอกสารรายงาน/บทความ หนังสือ สไลด์นำเสนองาน และ เว็ปไซด์</p></li>
 </ol>
-<p>มีความจำเป็นจะต้องเกี่ยวข้องกับเทคนิค และเครื่องมือที่หลากหลายจำนวนมาก</p>
-<p>dfskdfjlskdjflks</p>
+<p>เมื่อเปิด RStudio ขึ้นมาผู้ใช้จะพบกับหน้าต่างหรือสภาพแวดล้อมดังรูป 1.3 ที่แบ่งออกเป็น 4 ส่วน ได้แก่ <strong>(1) Source</strong> เป็นส่วนสำหรับใช้เขียนคำสั่ง (scripts) เขียน markdown หรือเอกสาร quarto ซึ่งทำให้ผู้ใช้สามารถจัดการกับโค้ดได้อย่างเป็นระบบสามารถสั่งรันโค้ดบางส่วนหรือทั้งไฟล์ได้อย่างสะดวก ในทำนองเดียวกับ R Editor หากต้องการให้ R ประมวลคำสั่งในบรรทัดใด ให้ผู้ใช้คลิกเลือกคำสั่งหรือ ทำ highlight คลุมบรรทัดของคำสั่งที่ต้องการประมวลผล จากนั้นกดปุ่ม Clt+R (สำหรับระบบปฏิบัติการ Windows) หรือกดปุ่ม ⌘+Enter (สำหรับระบบปฏิบัติการ Mac OS) <strong>(2) Console</strong> เป็นส่วนที่แสดงผลลัพธ์จากการรันโค้ดหรือคำสั่งต่างๆ โดยผู้ใช้สามารถพิมพ์คำสั่งโดยตรงเพื่อให้รันทันทีได้ที่นี่ <strong>(3) Environment/History</strong> ในส่วนนี้จะแสดงข้อมูลของตัวแปรต่างๆ ที่ถูกสร้างขึ้นใน session ของการทำงาน รวมถึงประวัติของคำสั่งที่ถูกใช้ไปก่อนหน้านี้ ช่วยให้ผู้ใช้สามารถย้อนดูหรือเรียกใช้คำสั่งเดิมได้ง่าย และ <strong>(4) Files/Plots/Packages/Help/Viewer</strong> เป็นส่วนสำหรับการจัดการไฟล์ การดูกราฟหรือแผนภาพที่สร้างขึ้น การจัดการ package/library ที่ติดตั้ง การค้นหาความช่วยเหลือใน R และการแสดงผลข้อมูลที่เกี่ยวข้อง เช่น ไฟล์ HTML หรือไฟล์ภาพที่ถูกสร้างขึ้น</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/01Rstudio.png" class="img-fluid figure-img"></p>
+<figcaption>รูป 1.3 สภาพแวดล้อมของ RStudio</figcaption>
+</figure>
+</div>
+<p>ผู้ใช้สามารถเข้าไปดาวน์โหลด RStudio ได้ที่ <a href="https://posit.co/download/rstudio-desktop/">https://posit.co/download/rstudio-desktop/</a> ทั้งนี้ก่อนการติดตั้ง RStudio ผู้ใช้จำเป็นจะต้องมีโปรแกรม R ตัวพื้นฐานติดตั้งอยู่ในเครื่องก่อนแล้ว</p>
 </section>
-<section id="positron-ide" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="positron-ide"><span class="header-section-number">1.3</span> Positron IDE</h2>
+<section id="positron-ide" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="positron-ide"><span class="header-section-number">1.4</span> Positron IDE</h2>
+<p>Positron ได้การนิยามตัวเองว่าเป็น IDE สำหรับวงการวิทยาการข้อมูลที่รองรับการเขียนโปรแกรมหลากหลายภาษา ออกแบบมาเพื่อผู้ใช้ VS Code หรือ JupyterLab ที่ทำงานด้านวิทยาการข้อมูลด้วยภาษา Python หรือ R แต่ยังรู้สึกไม่พอใจกับฟีเจอร์หรือความสามารถในการปรับแต่งที่มีอยู่เดิม Positron เน้นการใช้งานหลักในภาษา Python และ R พร้อมความสามารถในการเพิ่มภาษาอื่น ๆ ผ่านส่วนขยาย (รองรับส่วนขยายของ VS Code) โครงการ Positron นี้พัฒนาในรูปแบบโอเพนซอร์สบน GitHub และยังคงพัฒนาโดยบริษัท Posit ควบคู่ไปกับ RStudio โดยไม่ได้ทิ้งซอฟต์แวร์เดิมเพื่อพัฒนาใหม่ทั้งหมด ขณะนี้ Positron อยู่ในช่วงเริ่มต้นของการพัฒนา โดยมีลักษณะการใช้งานคล้ายกับ VS Code ที่รองรับ Python และ R โดยไม่ต้องติดตั้งส่วนขยายเพิ่มเติม Posit มีแผนที่จะเพิ่มฟีเจอร์สำหรับงานวิทยาการข้อมูลเพิ่มเติมในอนาคต</p>
+<p>สภาพแวดล้อมใน Positron มีโครงสร้างคล้ายกับ Rstudio และมีหน้าต่างย่อยสำหรับทำงานที่คล้ายคลึงกันรูป 1.4 แสดงสภาพแวดล้อมของ Positron</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/01Positron.png" class="img-fluid figure-img"></p>
+<figcaption>รูป 1.4 สภาพแวดล้อมของ Positron</figcaption>
+</figure>
+</div>
+<p>ผู้ใช้สามารถดาวน์โหลด Positrion ได้ที่ <a href="https://github.com/posit-dev/positron/releases">https://github.com/posit-dev/positron/releases</a> และสามารถติดต่อข่าวสารและรายละเอียดเกี่ยวกับ Positron ได้ที่ <a href="https://github.com/posit-dev/positron?tab=readme-ov-file">https://github.com/posit-dev/positron?tab=readme-ov-file</a></p>
+</section>
+<section id="ควรใช-rstudio-หรอ-positron" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="ควรใช-rstudio-หรอ-positron"><span class="header-section-number">1.5</span> ควรใช้ RStudio หรือ Positron</h2>
+<p>…</p>
 
 
 </section>
@@ -650,8 +685,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./summary.html" class="pagination-link" aria-label="Summary">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./basicR.html" class="pagination-link" aria-label="พื้นฐาน R">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">พื้นฐาน R</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
