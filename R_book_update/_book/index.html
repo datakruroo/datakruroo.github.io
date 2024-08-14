@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -156,7 +190,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#คำนำ" id="toc-คำนำ" class="nav-link active" data-scroll-target="#คำนำ">คำนำ</a>
   <ul class="collapse">
   <li><a href="#ความรเบองตนทจำเปนสำหรบผอาน" id="toc-ความรเบองตนทจำเปนสำหรบผอาน" class="nav-link" data-scroll-target="#ความรเบองตนทจำเปนสำหรบผอาน">ความรู้เบื้องต้นที่จำเป็นสำหรับผู้อ่าน</a></li>
-  <li><a href="#ไฟลขอมลทใชเปนตวอยางในหนงสอ" id="toc-ไฟลขอมลทใชเปนตวอยางในหนงสอ" class="nav-link" data-scroll-target="#ไฟลขอมลทใชเปนตวอยางในหนงสอ">ไฟล์ข้อมูลที่ใช้เป็นตัวอย่างในหนังสือ</a></li>
+  <li><a href="#ตวอยางคำสงและชดขอมลทใชเปนตวอยางในหนงสอ" id="toc-ตวอยางคำสงและชดขอมลทใชเปนตวอยางในหนงสอ" class="nav-link" data-scroll-target="#ตวอยางคำสงและชดขอมลทใชเปนตวอยางในหนงสอ">ตัวอย่างคำสั่งและชุดข้อมูลที่ใช้เป็นตัวอย่างในหนังสือ</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -211,8 +245,42 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="ความรเบองตนทจำเปนสำหรบผอาน">ความรู้เบื้องต้นที่จำเป็นสำหรับผู้อ่าน</h2>
 <p>ผู้อ่านไม่จำเป็นต้องมีความรู้พื้นฐานเกี่ยวกับโปรแกรม R มาก่อน แต่ควรมีพื้นฐานความรู้ เกี่ยวกับสถิติพื้นฐานหรือเคยเรียนรายวิชาสถิติพื้นฐานในระดับปริญญาบัณฑิตมาอย่างน้อย 1 รายวิชา นอกจากนี้การมีพื้นฐานทางคณิตศาสตร์ในระดับมัธยมศึกษาตอนปลายจะช่วยให้สามารถ ทำความเข้าใจเนื้อหาบางส่วนของหนังสือเล่มนี้ได้ดีมากยิ่งขึ้น</p>
 </section>
-<section id="ไฟลขอมลทใชเปนตวอยางในหนงสอ" class="level2">
-<h2 class="anchored" data-anchor-id="ไฟลขอมลทใชเปนตวอยางในหนงสอ">ไฟล์ข้อมูลที่ใช้เป็นตัวอย่างในหนังสือ</h2>
+<section id="ตวอยางคำสงและชดขอมลทใชเปนตวอยางในหนงสอ" class="level2">
+<h2 class="anchored" data-anchor-id="ตวอยางคำสงและชดขอมลทใชเปนตวอยางในหนงสอ">ตัวอย่างคำสั่งและชุดข้อมูลที่ใช้เป็นตัวอย่างในหนังสือ</h2>
+<p>ภายในหนังสือมีการแสดงตัวอย่างคำสั่งที่ใช้สำหรับดำเนินการต่าง ๆ ในโปรแกรม R โดย ตัวอย่างคำสั่งที่ใช้ในหนังสือเล่มอีกอาจจำแนกเป็น 2 ประเภท ได้แก่ คำสั่งที่ไม่มีการแสดงผล และ คำสั่งที่มีการแสดงผล คำสั่งที่ไม่ได้มีการแสดงผลลัพธ์จะแสดงในลักษณะดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gender<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"Male"</span>,<span class="st">"Female"</span>,<span class="st">"Male"</span>,<span class="st">"Male"</span>,<span class="st">"Female"</span>,<span class="st">"Male"</span>,<span class="st">"Male"</span>,<span class="st">"Female"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>age<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">2</span>,<span class="dv">9</span>,<span class="dv">4</span>,<span class="dv">10</span>,<span class="dv">14</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>weight<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">59</span>,<span class="dv">35</span>,<span class="dv">75</span>,<span class="dv">20</span>,<span class="dv">63</span>,<span class="dv">23</span>,<span class="dv">47</span>,<span class="dv">59</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>height<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">142</span>,<span class="dv">135</span>,<span class="dv">150</span>,<span class="dv">95</span>,<span class="dv">141</span>,<span class="dv">108</span>,<span class="dv">142</span>,<span class="dv">155</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">data.frame</span>(gender, age, weight, height)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ส่วนคำสั่งที่มีการนำเสนอผลลัพธ์ที่ได้จากการประมวลผล จะมีการแสดงผลลัพธ์ต่อจากการเรียก คำสั่งดังกล่าว โดยที่ส่วนที่เป็นผลลัพธ์จะขึ้นต่อท้ายจากคำสั่ง เช่น การเรียกดูชุดข้อมูล <code>data</code> จากคำสั่งด้านบน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  gender age weight height
+1   Male  10     59    142
+2 Female  10     35    135
+3   Male  11     75    150
+4   Male   2     20     95
+5 Female   9     63    141
+6   Male   4     23    108
+7   Male  10     47    142
+8 Female  14     59    155</code></pre>
+</div>
+</div>
+<p>หรือการหาผลลัพธ์จากการคำนวณทางคณิตศาสตร์ เช่น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(<span class="at">x=</span><span class="dv">10</span>, <span class="at">base=</span><span class="fu">exp</span>(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.302585</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">^</span><span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 32</code></pre>
+</div>
+</div>
 <p>ไฟล์ข้อมูลทั้งหมดที่ใช้เป็นตัวอย่างในหนังสือสามารถดาวน์โหลดได้จาก …</p>
 
 
