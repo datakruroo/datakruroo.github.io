@@ -1,0 +1,102 @@
+/*-- scss:defaults --*/
+/// https://quarto.org/docs/presentations/revealjs/themes.html
+// fonts
+@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Noto+Sans+Thai:wght@100..900&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+$font-family-sans-serif: "Sarabun", sans-serif;
+$presentation-heading-color: #C5705D;
+$presentation-title-slide-text-align: "left";
+$presentation-subtitle-slide-text-align: "left";
+$code-block-font-size: 0.6em;
+$code-color: #5f5f5f;
+$presentation-h2-font-size: 1.4em;
+$link-color: #D0B8A8;
+$link-color-hover: #8D493A;
+$selection-color: #508C9B;
+
+
+/*-- scss:rules --*/
+
+.reveal .custom-title {
+  position: absolute;
+  color: #C5705D;
+  font-size: 3em;
+  text-align: right;
+  right: 20px;
+  top: -200px;
+}
+
+
+
+.reveal .slide-logo {
+    height: 100px !important;
+    width: 130px !important;
+    max-width: unset !important;
+    max-height: unset !important;
+  }
+
+.reveal .custom-author {
+  position: absolute;
+  font-size: 1.4em;
+  text-align: right;
+  right: 20px;
+  top: 300px;
+}
+
+.reveal .custom-twitter a {
+  position: absolute;
+  color: #C5705D;
+  font-size: 1.3em;
+  text-align: right;
+  right: 20px;
+  top: 470px;
+}
+
+.reveal .custom-url a {
+  position: absolute;
+  color: #C5705D;
+  font-size: 1.5em;
+  text-align: right;
+  right: 20px;
+  top: 570px;
+}
+
+details>summary {
+  font-size: 0.75em;
+}
+
+
+.medium {
+  font-size: 0.85em;
+}
+
+.small {
+  font-size: 0.75em;
+}
+
+.reveal .slide .in-out {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 1em;
+  background: #C5705D;
+  font-family: $font-family-monospace;
+  font-size: 0.6em;
+}
+
+
+.reveal .slide .goal {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 1em;
+  background: grey;
+}
+
+.reveal .footer {
+font-size: 10pt;
+}
+
+
+

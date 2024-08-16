@@ -1,0 +1,26 @@
+/* custom.css */
+
+
+.reveal .caption {
+  text-align: center;
+  color: #C5705D;
+  font-size: 0.3em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: -0.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+}
+
+.reveal .caption2 {
+  text-align: right;
+  color: #C5705D;
+  font-size: 0.8em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: 1em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  margin-right: 2em;
+}
+
+.reveal .caption3 {
+    text-align: right;
+    color: #C5705D;
+    font-size: 0.4em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+    margin-top: -0.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+    margin-left: 3em;
+  }
+

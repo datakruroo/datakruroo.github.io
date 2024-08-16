@@ -1,0 +1,539 @@
+---
+title: "Week 2: Grammar of Graphic and ggplot2"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-08-17
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 2: 2758686 Data Visualization <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/datavis.png
+      data-background-opacity: 20%
+      data-background-size: contain
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+
+---
+
+## Outline
+
+
+- Grammar of draphics
+
+- Map data to aesthetics
+
+- What are layer components?
+
+- My First Plot
+
+# The Grammar of Graphics
+
+- What's Graphics?
+
+- How to create good statistical graphics?
+
+## The Grammar of Graphics {.smaller}
+
+> "The fundamental principles or rules of an art or science."
+
+  - reveal composition of complicated graphics.
+
+  - provides a strong foundation for understanding a diverse range of graphics.
+
+  - guide us on what a well-formed or correct graphic looks like.
+
+- Good grammar is just the first step; there will still be many grammatically correct but nonsensical graphics.
+
+<div class="caption2">Wickham, H. (2010)</div>
+
+## The Grammar of Graphics: Component 
+
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+1. Data
+
+2. Aesthetics
+
+3. Scales
+
+4. Geometric objects
+
+5. Statistical Transformation
+
+6. Facets
+
+7. Coordinate system
+
+:::
+
+::: {.column width=50%}
+
+```{r echo = F, fig.height = 6, fig.width = 5}
+library(tidyverse)
+library(gapminder)
+gapminder |> 
+  filter(year %in% c(1952, 1982, 2007)) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp, col = continent))+
+  geom_point()+
+  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
+  theme_light()+
+  xlab("\n gdpPercap")+
+  facet_wrap(~year, nrow = 3)
+
+```
+
+:::
+
+::::
+
+
+
+
+## `{ggplot2}`
+
+:::: {.columns}
+
+::: {.column width="10%"}
+
+![](img/ggplot2_logo.png){width="100%"}
+
+:::
+
+::: {.column width="90%"}
+
+![](img/ggplot2_example1.png)
+
+:::
+
+::::
+
+## `{ggplot2}`
+
+:::: {.columns}
+
+::: {.column width="10%"}
+
+![](img/ggplot2_logo.png){width="100%"}
+
+:::
+
+::: {.column width="90%"}
+
+![](img/ggplot2_example2.png)
+
+:::
+
+::::
+
+
+
+## Necessary components of the plot {.smaller}
+
+- Data and Aesthetic Mapping
+
+- Geometric objects and/or Statistical Transformation
+
+- Scales
+
+- Coordinate System
+
+```{r echo = F, fig.height = 3, fig.width = 10}
+library(patchwork)
+p1<-gapminder |> 
+  ggplot(aes(x=continent))+
+  geom_bar()+
+  xlab("\n continent")
+
+p2<-gapminder |> 
+  filter(year %in% c(2007)) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
+  theme_light()+
+  xlab("\n gdpPercap")
+
+p3<-gapminder |> 
+  filter(year %in% c(2007)) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp, col=continent))+
+  geom_point()+
+  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
+  theme_light()+
+  xlab("\n gdpPercap")
+
+p1+p2+p3
+
+```
+
+
+## เป้าหมายในวันนี้
+
+```{r echo = F}
+library(gapminder)
+library(ggrepel)
+gapminder |>
+  filter(year == "2007") |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp, size = pop, col = continent))+
+  geom_point(alpha = 0.7)+
+  geom_text_repel(aes(label = country), col = "black", alpha = 0.8,
+                  show.legend = F)+
+  scale_x_log10(name = "\n Income (GDP per capita, $ per year)",
+                labels = scales::number_format(scale = 1, big.mark = ","))+
+  scale_y_continuous(name = "\n Life Expectancy (years) \n")+
+  scale_size(name = "Population Size",
+             range = c(1,10),
+             breaks = c(10^6, 10^7, 10^8, 10^9),
+             labels = paste(c(1, 10, 100, 1000),c("","","","Million")))+
+  scale_color_discrete(name = "Continent")+
+  theme_light()+
+  ggtitle("Gapminder 2007")
+```
+
+
+# Data, Aesthetic Mapping and Geometries
+
+## Data? {.smaller}
+
+- ข้อมูลและหน่วยข้อมูลที่ต้องการนำเสนอคืออะไร ?
+
+- การใส่ data layer ใน `ggplot2` สามารถกำหนดผ่านอาร์กิวเมนท์ `data` ซึ่งผู้วิเคราะห์เลือกกำหนดให้เป็น data layer สำหรับทั้งแผนภาพ (`ggplot(data = my_dataframe)`) หรือจะกำหนดให้เป็น data layer เฉพาะ object 
+
+- `data` สามารถเป็น `data.frame` หรือ `tibble` ก็ได้ แต่จะต้องอยู่ในรูปแบบ tidy data
+
+  - แต่ละคอลัมน์คือตัวแปร
+  - แต่ละแถวคือหน่วยข้อมูล
+  - แต่ละเซลล์มีข้อมูลได้ค่าเดียวเท่านั้น
+
+
+## Data: gapminder
+
+```{r}
+## install.packages("gapminder")
+library(gapminder)
+head(gapminder)
+```
+
+## Aesthetics {.smaller}
+
+- ใน {ggplot2} aesthetics คือการกำหนดว่าข้อมูลใดใน data ที่จะถูกนำเสนอบนแผนภาพด้วยคุณลักษณะ (attributes) แบบใด
+
+  - `x`: กำหนดข้อมูลที่จะถูกแสดงบนแกน X
+  -	`y`: กำหนดข้อมูลที่จะถูกแสดงบนแกน Y
+  -	`col`: กำหนดสีเส้นขององค์ประกอบในแผนภาพตามข้อมูล
+  -	`size`: กำหนดขนาดของจุดตามข้อมูล
+  -	`shape`: กำหนดรูปร่างของจุดตามข้อมูล
+  -	`fill`: กำหนดสีพื้นขององค์ประกอบ เช่น บาร์ในกราฟแท่ง
+
+
+## Data {auto-animate=true .smaller}
+
+```{r}
+head(gapminder)
+```
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+
+```{r eval = F}
+ggplot(data = gapminder)
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F}
+ggplot(data = gapminder)
+```
+
+:::
+
+::::
+
+
+
+## Data & Aesthetics Mapping {auto-animate=true .smaller}
+
+
+```{r}
+head(gapminder)
+```
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r eval = F}
+#| code-line-numbers: "2-3"
+ggplot(data = gapminder,
+      aes(x = gdpPercap, 
+          y = lifeExp))
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F}
+ggplot(data = gapminder,
+      aes(x = gdpPercap, 
+          y = lifeExp))+
+ggtitle("\n แผนภาพที่ได้มีอะไรเปลี่ยนแปลงไปจากเดิม?")+
+theme(text = element_text(family = "ChulaCharasNew"),
+title = element_text(size = 16))
+```
+
+:::
+
+::::
+
+
+
+
+## Data & Aesthetics Mapping & Geometry {auto-animate=true .smaller}
+
+
+```{r}
+head(gapminder)
+```
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r eval = F}
+#| code-line-numbers: "4"
+ggplot(data = gapminder,
+      aes(x = gdpPercap, 
+          y = lifeExp))+
+geom_point()
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F}
+ggplot(data = gapminder,
+      aes(x = gdpPercap, 
+          y = lifeExp))+
+geom_point()+
+ggtitle("\n ผลลัพธ์ที่ได้จากกิจกรรมนี้ ผู้เรียนคิดว่าต้องปรับปรุงแผนภาพอย่างไรบ้าง")+
+theme(text = element_text(family = "ChulaCharasNew"),
+title = element_text(size = 16))
+```
+
+:::
+
+::::
+
+## กิจกรรม 1
+
+ขอให้นิสิตสร้าง scatter plot ที่มีลักษณะดังรูป
+
+```{r echo = F}
+
+gapminder |> 
+  filter(year == 2007) |> 
+ggplot(aes(x = gdpPercap, 
+          y = lifeExp))+
+geom_point()
+
+```
+
+
+# More Aesthetics {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- `color`
+
+- `fill`
+
+- `alpha`
+
+- `size`
+
+- `shape`
+
+:::
+
+::: {.column width="50%"}
+
+- `label`
+
+- `linewidth`
+
+- `linetype`
+
+- `group`
+
+:::
+
+::::
+
+## Various aesthetic mappings {.smaller}
+
+<br>
+
+แผนภาพทั้ง 4 ด้านล่างมีการกำหนด aesthetic ที่แตกต่างกันอย่างไร?
+
+
+```{r echo = F}
+
+p1 <- gapminder |> 
+  filter(year == 2007) |> 
+ggplot(
+      aes(x = gdpPercap, 
+          y = lifeExp,
+          col = continent))+
+geom_point()
+
+p2 <- gapminder |> 
+  filter(year == 2007) |> 
+ggplot(
+      aes(x = gdpPercap, 
+          y = lifeExp,
+          shape = continent))+
+geom_point()
+
+
+p3 <- gapminder |> 
+  filter(year == 2007) |> 
+ggplot(
+      aes(x = gdpPercap, 
+          y = lifeExp,
+          size = pop))+
+geom_point()
+
+
+p4 <- gapminder |> 
+  mutate(country = as.character(country)) |> 
+ggplot(
+      aes(x = year, 
+          y = lifeExp, 
+          group = country,
+          col = lifeExp > 50)) + geom_line()
+
+
+(p1+p2)/(p3+p4)
+
+```
+
+
+## กิจกรรม 2 {.smaller}
+
+<br>
+
+- ขอให้นิสิตลองสร้าง scatter plot ที่มีการกำหนด aesthetic mapping `col = continent` เพิ่มเติม ผลลัพธ์ที่ได้เป็นอย่างไร
+
+- ลองพิจารณาการกำหนด `data` และ `aes()` ต่อไปนี้ มีความแตกต่างกันอย่างไร? 
+
+```{r eval = F}
+## Global aesthetic mapping
+ggplot(data, aes(x,y,col))+
+  geom_point()
+```
+
+<br>
+
+```{r eval = F}
+## Local aesthetic mapping
+ggplot()+
+  geom_point(data, aes(x,y,col))
+```
+
+<br>
+
+```{r eval = F}
+ggplot(data)+
+  geom_point(aes(x,y,col))
+```
+
+## กิจกรรม 3 {.smaller}
+
+ลองเปรียบเทียบ aesthetic mapping ดังนี้
+
+- `shape = continent`
+
+- `size = continent`
+
+ผลลัพธ์ที่ได้มีความแตกต่างกันอย่างไร?
+
+
+## กิจกรรม 4 {.smaller}
+
+ลองเปรียบเทียบการกำหนด aesthetic mapping ดังนี้
+
+- `col = continent`
+
+- `col = pop` 
+
+ผลลัพธ์ที่ได้มีความแตกต่างกันอย่างไร ?
+
+
+## 
+
+```{r}
+ggplot(data = gapminder |> filter(year == 2007))+
+  geom_point(aes(x = gdpPercap, 
+                 y = lifeExp , 
+                 col = continent))
+```
+
+
+## Color
+
+
+
+
+```{r echo = F, fig.height = 3, fig.width = 10}
+library(patchwork)
+p1<-gapminder |> 
+  ggplot(aes(x=continent))+
+  geom_bar()+
+  xlab("\n continent")
+
+p2<-gapminder |> 
+  filter(year %in% c(2007)) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
+  theme_light()+
+  xlab("\n gdpPercap")
+
+p3<-gapminder |> 
+  filter(year %in% c(2007)) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp, col=continent))+
+  geom_point()+
+  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
+  theme_light()+
+  xlab("\n gdpPercap")
+
+p1+p2+p3
+
+```
