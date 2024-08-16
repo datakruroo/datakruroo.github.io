@@ -245,7 +245,13 @@ head(gapminder)
 head(gapminder)
 ```
 
-<br>
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[Data]
+
+```
 
 :::: {.columns}
 
@@ -277,7 +283,12 @@ ggplot(data = gapminder)
 head(gapminder)
 ```
 
-<br>
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[(Data)] --mapping--> B[Aesthetic \n x, y]
+```
 
 :::: {.columns}
 
@@ -308,8 +319,6 @@ title = element_text(size = 16))
 ::::
 
 
-
-
 ## Data & Aesthetics Mapping & Geometry {auto-animate=true .smaller}
 
 
@@ -317,7 +326,14 @@ title = element_text(size = 16))
 head(gapminder)
 ```
 
-<br>
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[(Data)] --mapping--> B[Aesthetic \n x, y]
+B --> C[Marks \n point]
+
+```
 
 :::: {.columns}
 
@@ -348,6 +364,51 @@ title = element_text(size = 16))
 :::
 
 ::::
+
+## Data & Aesthetics Mapping & Geometry {auto-animate=true .smaller}
+
+
+```{r}
+head(gapminder)
+```
+
+
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[(Data)] --mapping--> B[Aesthetic \n x]
+B --transformation--> C[Marks \n bar]
+
+```
+
+
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r eval = F}
+#| code-line-numbers: "4"
+ggplot(data = gapminder,
+      aes(x = continent))+
+geom_bar()
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F}
+ggplot(data = gapminder,
+      aes(x = continent))+
+geom_bar()
+```
+
+:::
+
+::::
+
 
 ## กิจกรรม 1
 
@@ -498,11 +559,37 @@ ggplot(data)+
 
 ## 
 
-```{r}
+```{r eval = F}
 ggplot(data = gapminder |> filter(year == 2007))+
   geom_point(aes(x = gdpPercap, 
                  y = lifeExp , 
                  col = continent))
+```
+
+```{r echo = F, fig.width = 16, fig.height = 6}
+p1 <- gapminder |>
+  filter(year == "2007") |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp, size = pop, col = continent))+
+  geom_point(alpha = 0.7)+
+  geom_text_repel(aes(label = country), col = "black", alpha = 0.8,
+                  show.legend = F)+
+  scale_x_log10(name = "\n Income (GDP per capita, $ per year)",
+                labels = scales::number_format(scale = 1, big.mark = ","))+
+  scale_y_continuous(name = "\n Life Expectancy (years) \n")+
+  scale_size(name = "Population Size",
+             range = c(1,10),
+             breaks = c(10^6, 10^7, 10^8, 10^9),
+             labels = paste(c(1, 10, 100, 1000),c("","","","Million")))+
+  scale_color_discrete(name = "Continent")+
+  theme_light()+
+  ggtitle("Gapminder 2007")
+
+p2 <- ggplot(data = gapminder |> filter(year == 2007))+
+  geom_point(aes(x = gdpPercap, 
+                 y = lifeExp , 
+                 col = continent))
+
+p1+p2
 ```
 
 

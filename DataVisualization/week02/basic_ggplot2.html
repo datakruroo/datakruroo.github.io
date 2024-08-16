@@ -388,6 +388,7 @@
       margin-right: 0; 
     }
   </style>
+<script src="basic_ggplot2_files/libs/quarto-diagram/mermaid.min.js"></script><script src="basic_ggplot2_files/libs/quarto-diagram/mermaid-init.js"></script><link href="basic_ggplot2_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -541,7 +542,20 @@ Wickham, H. (2010)
 6 Afghanistan Asia       1977    38.4 14880372      786.</code></pre>
 </div>
 </div>
-<p><br></p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+A[Data]
+
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
@@ -551,7 +565,7 @@ Wickham, H. (2010)
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
+<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -572,7 +586,19 @@ Wickham, H. (2010)
 6 Afghanistan Asia       1977    38.4 14880372      786.</code></pre>
 </div>
 </div>
-<p><br></p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+A[(Data)] --mapping--&gt; B[Aesthetic \n x, y]
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
@@ -584,7 +610,7 @@ Wickham, H. (2010)
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -605,7 +631,21 @@ Wickham, H. (2010)
 6 Afghanistan Asia       1977    38.4 14880372      786.</code></pre>
 </div>
 </div>
-<p><br></p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+A[(Data)] --mapping--&gt; B[Aesthetic \n x, y]
+B --&gt; C[Marks \n point]
+
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
@@ -618,7 +658,54 @@ Wickham, H. (2010)
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section><section id="data-aesthetics-mapping-geometry-1" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data &amp; Aesthetics Mapping &amp; Geometry</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">head</span>(gapminder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+  country     continent  year lifeExp      pop gdpPercap
+  &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+1 Afghanistan Asia       1952    28.8  8425333      779.
+2 Afghanistan Asia       1957    30.3  9240934      821.
+3 Afghanistan Asia       1962    32.0 10267083      853.
+4 Afghanistan Asia       1967    34.0 11537966      836.
+5 Afghanistan Asia       1972    36.1 13079460      740.
+6 Afghanistan Asia       1977    38.4 14880372      786.</code></pre>
+</div>
+</div>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+A[(Data)] --mapping--&gt; B[Aesthetic \n x]
+B --transformation--&gt; C[Marks \n bar]
+
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder,</span>
+<span id="cb14-2"><a href=""></a>      <span class="fu">aes</span>(<span class="at">x =</span> continent))<span class="sc">+</span></span>
+<span id="cb14-3"><a href=""></a><span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -627,7 +714,7 @@ Wickham, H. (2010)
 </section><section id="กจกรรม-1" class="slide level2"><h2>กิจกรรม 1</h2>
 <p>ขอให้นิสิตสร้าง scatter plot ที่มีลักษณะดังรูป</p>
 
-<img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"></section></section><section><section id="more-aesthetics" class="title-slide slide level1 smaller center"><h1>More Aesthetics</h1>
+<img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section></section><section><section id="more-aesthetics" class="title-slide slide level1 smaller center"><h1>More Aesthetics</h1>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
@@ -649,27 +736,27 @@ Wickham, H. (2010)
 <p><br></p>
 <p>แผนภาพทั้ง 4 ด้านล่างมีการกำหนด aesthetic ที่แตกต่างกันอย่างไร?</p>
 
-<img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch"></section><section id="กจกรรม-2" class="slide level2 smaller"><h2>กิจกรรม 2</h2>
+<img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch"></section><section id="กจกรรม-2" class="slide level2 smaller"><h2>กิจกรรม 2</h2>
 <p><br></p>
 <ul>
 <li><p>ขอให้นิสิตลองสร้าง scatter plot ที่มีการกำหนด aesthetic mapping <code>col = continent</code> เพิ่มเติม ผลลัพธ์ที่ได้เป็นอย่างไร</p></li>
 <li><p>ลองพิจารณาการกำหนด <code>data</code> และ <code>aes()</code> ต่อไปนี้ มีความแตกต่างกันอย่างไร?</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="do">## Global aesthetic mapping</span></span>
-<span id="cb12-2"><a href=""></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(x,y,col))<span class="sc">+</span></span>
-<span id="cb12-3"><a href=""></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="do">## Global aesthetic mapping</span></span>
+<span id="cb15-2"><a href=""></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(x,y,col))<span class="sc">+</span></span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="do">## Local aesthetic mapping</span></span>
-<span id="cb13-2"><a href=""></a><span class="fu">ggplot</span>()<span class="sc">+</span></span>
-<span id="cb13-3"><a href=""></a>  <span class="fu">geom_point</span>(data, <span class="fu">aes</span>(x,y,col))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="do">## Local aesthetic mapping</span></span>
+<span id="cb16-2"><a href=""></a><span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">geom_point</span>(data, <span class="fu">aes</span>(x,y,col))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">ggplot</span>(data)<span class="sc">+</span></span>
-<span id="cb14-2"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(x,y,col))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">ggplot</span>(data)<span class="sc">+</span></span>
+<span id="cb17-2"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(x,y,col))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="กจกรรม-3" class="slide level2 smaller"><h2>กิจกรรม 3</h2>
 <p>ลองเปรียบเทียบ aesthetic mapping ดังนี้</p>
@@ -687,17 +774,17 @@ Wickham, H. (2010)
 <p>ผลลัพธ์ที่ได้มีความแตกต่างกันอย่างไร ?</p>
 </section><section id="section" class="slide level2"><h2></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>))<span class="sc">+</span></span>
-<span id="cb15-2"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, </span>
-<span id="cb15-3"><a href=""></a>                 <span class="at">y =</span> lifeExp , </span>
-<span id="cb15-4"><a href=""></a>                 <span class="at">col =</span> continent))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>))<span class="sc">+</span></span>
+<span id="cb18-2"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, </span>
+<span id="cb18-3"><a href=""></a>                 <span class="at">y =</span> lifeExp , </span>
+<span id="cb18-4"><a href=""></a>                 <span class="at">col =</span> continent))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"></section><section id="color" class="slide level2"><h2>Color</h2>
+
+<img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-27-1.png" width="1536" class="r-stretch"></section><section id="color" class="slide level2"><h2>Color</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+<figure><p><img data-src="basic_ggplot2_files/figure-revealjs/unnamed-chunk-28-1.png" width="960"></p>
 </figure>
 </div>
 </div>
