@@ -249,7 +249,7 @@ head(gapminder)
 %%| echo: false
 
 graph LR
-A[Data]
+A[(Data)]
 
 ```
 
@@ -287,7 +287,7 @@ head(gapminder)
 %%| echo: false
 
 graph LR
-A[(Data)] --mapping--> B[Aesthetic \n x, y]
+A[(Data)] --mapping--> B["Aesthetic \n aes(x,y)"]
 ```
 
 :::: {.columns}
@@ -330,8 +330,8 @@ head(gapminder)
 %%| echo: false
 
 graph LR
-A[(Data)] --mapping--> B[Aesthetic \n x, y]
-B --> C[Marks \n point]
+A[(Data)] --mapping--> B["Aesthetic \n aes(x,y)"]
+B --> C["Marks \n geom_point()"]
 
 ```
 
@@ -377,8 +377,8 @@ head(gapminder)
 %%| echo: false
 
 graph LR
-A[(Data)] --mapping--> B[Aesthetic \n x]
-B --transformation--> C[Marks \n bar]
+A[(Data)] --mapping-->  B["Aesthetic \n aes(x,y)"]
+B --transformation--> C["Marks \n geom_bar()"]
 
 ```
 
