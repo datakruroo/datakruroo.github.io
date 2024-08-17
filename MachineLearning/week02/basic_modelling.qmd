@@ -336,6 +336,54 @@ test_data_strata |>
 
 ::::
 
+# Tuning hyperparameters
+
+## Cross-validation
+
+![](img/image-1150746472.png)
+
+## Grid Search
+
+![](img/image-1368790715.png)
+
+## tuning-hypeparameters
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![](img/tune.png)
+
+:::
+
+::: {.column width="80%"}
+
+
+```{r eval = F}
+glmnet_spec <- linear_reg(penalty = tune(),
+                          mixture = 1) |> 
+            set_engine("glmnet") |> 
+            set_mode("regression")
+
+glmnet_rec <- recipe(research_score ~. ,data = train_data_strata)
+
+glmnet_tune <- tune_grid(
+  glmnet_spec,
+  glmnet_rec,
+  resamples = vfold_cv(train_data_strata, v = 5),
+  grid = 10
+)
+```
+
+
+:::
+
+
+::::
+
+
 
 # Classification Tasks
 

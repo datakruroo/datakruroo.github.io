@@ -589,9 +589,9 @@ https://rpubs.com/chenx/tidymodels_tutorial
 <pre><code># A tibble: 3 × 5
   term           estimate std.error statistic  p.value
   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)      53.8      1.66       32.5  2.34e-94
-2 choose_method     0.122    0.0290      4.21 3.56e- 5
-3 interpretation    0.297    0.0307      9.67 3.82e-19</code></pre>
+1 (Intercept)     54.8       1.65       33.1  3.00e-96
+2 choose_method    0.0941    0.0304      3.10 2.15e- 3
+3 interpretation   0.304     0.0317      9.61 6.09e-19</code></pre>
 </div>
 </div>
 </section><section id="predict-test-data" class="slide level2 smaller"><h2>Predict Test data</h2>
@@ -608,16 +608,16 @@ https://rpubs.com/chenx/tidymodels_tutorial
 <pre><code># A tibble: 117 × 12
    choose_method concepts interpretation research_score submit_time
            &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;       &lt;dbl&gt;
- 1            40     42.9           50               71        141.
- 2            60     42.9           56.2             73        109.
- 3            20     57.1           37.5             76        125.
- 4            30     50             18.8             73        157.
- 5            40     35.7           25               73        132.
- 6            30     64.3           56.2             76        139.
- 7            20     35.7           31.2             68        149.
- 8            50     78.6           68.8             92        147.
- 9            60     64.3           68.8             82        152.
-10            40     35.7           37.5             75        134.
+ 1            60     57.1           56.2             72       156. 
+ 2            40     57.1           31.2             72       145. 
+ 3            40     42.9           50               71       141. 
+ 4            10     21.4           50               62       129. 
+ 5            20     64.3           56.2             82       130. 
+ 6            40     57.1           50               76        88.6
+ 7            50     64.3           62.5             85       130. 
+ 8            40     50             56.2             83        99.0
+ 9            30     85.7           56.2             74       115. 
+10            10     57.1           53.3             76       128. 
 # ℹ 107 more rows
 # ℹ 7 more variables: percent_submit &lt;dbl&gt;, gender &lt;chr&gt;, department &lt;chr&gt;,
 #   learning_performance &lt;dbl&gt;, cheat_index &lt;dbl&gt;, pred_lm &lt;dbl&gt;,
@@ -640,7 +640,7 @@ https://rpubs.com/chenx/tidymodels_tutorial
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 rmse    standard        7.72</code></pre>
+1 rmse    standard        7.25</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>test_data_strata <span class="sc">|&gt;</span> </span>
 <span id="cb26-2"><a href=""></a>  <span class="fu">bind_cols</span>(pred_lm, pred_knn) <span class="sc">|&gt;</span> </span>
@@ -651,11 +651,39 @@ https://rpubs.com/chenx/tidymodels_tutorial
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-1 rmse    standard        8.73</code></pre>
+1 rmse    standard        7.70</code></pre>
 </div>
 </div>
 <div class="caption">
 <a href="https://yardstick.tidymodels.org/articles/metric-types.html">https://yardstick.tidymodels.org/articles/metric-types.html</a>
+</div>
+</div></div>
+</section></section><section><section id="tuning-hyperparameters" class="title-slide slide level1 center"><h1>Tuning hyperparameters</h1>
+
+</section><section id="cross-validation" class="slide level2"><h2>Cross-validation</h2>
+
+<img data-src="img/image-1150746472.png" class="r-stretch"></section><section id="grid-search" class="slide level2"><h2>Grid Search</h2>
+
+<img data-src="img/image-1368790715.png" class="r-stretch"></section><section id="tuning-hypeparameters" class="slide level2"><h2>tuning-hypeparameters</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:20%;">
+<p><img data-src="img/tune.png"></p>
+</div><div class="column" style="width:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>glmnet_spec <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(),</span>
+<span id="cb28-2"><a href=""></a>                          <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href=""></a>            <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb28-4"><a href=""></a>            <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb28-5"><a href=""></a></span>
+<span id="cb28-6"><a href=""></a>glmnet_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(research_score <span class="sc">~</span>. ,<span class="at">data =</span> train_data_strata)</span>
+<span id="cb28-7"><a href=""></a></span>
+<span id="cb28-8"><a href=""></a>glmnet_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb28-9"><a href=""></a>  glmnet_spec,</span>
+<span id="cb28-10"><a href=""></a>  glmnet_rec,</span>
+<span id="cb28-11"><a href=""></a>  <span class="at">resamples =</span> <span class="fu">vfold_cv</span>(train_data_strata, <span class="at">v =</span> <span class="dv">5</span>),</span>
+<span id="cb28-12"><a href=""></a>  <span class="at">grid =</span> <span class="dv">10</span></span>
+<span id="cb28-13"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 </section></section><section><section id="classification-tasks" class="title-slide slide level1 center"><h1>Classification Tasks</h1>
