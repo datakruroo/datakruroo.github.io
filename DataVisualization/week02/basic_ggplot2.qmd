@@ -32,11 +32,16 @@ execute:
 
 - Grammar of draphics
 
-- Map data to aesthetics
+- Data, Aesthetic Mapping and (some) Geometries
 
-- What are layer components?
+- More Aesthetics
 
-- My First Plot
+- Full Specification with `layer()`
+
+- Statistical Transformation
+
+- Position
+
 
 # The Grammar of Graphics
 
@@ -245,6 +250,11 @@ head(gapminder)
 head(gapminder)
 ```
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
 ```{mermaid}
 %%| echo: false
 
@@ -253,18 +263,13 @@ A[(Data)]
 
 ```
 
-:::: {.columns}
-
-::: {.column width="40%"}
-
-
 ```{r eval = F}
 ggplot(data = gapminder)
 ```
 
 :::
 
-::: {.column width="60%"}
+::: {.column width="50%"}
 
 ```{r echo = F}
 ggplot(data = gapminder)
@@ -283,16 +288,17 @@ ggplot(data = gapminder)
 head(gapminder)
 ```
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
 ```{mermaid}
 %%| echo: false
 
 graph LR
 A[(Data)] --mapping--> B["Aesthetic \n aes(x,y)"]
 ```
-
-:::: {.columns}
-
-::: {.column width="40%"}
 
 ```{r eval = F}
 #| code-line-numbers: "2-3"
@@ -303,7 +309,7 @@ ggplot(data = gapminder,
 
 :::
 
-::: {.column width="60%"}
+::: {.column width="50%"}
 
 ```{r echo = F}
 ggplot(data = gapminder,
@@ -326,6 +332,11 @@ title = element_text(size = 16))
 head(gapminder)
 ```
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
 ```{mermaid}
 %%| echo: false
 
@@ -334,10 +345,6 @@ A[(Data)] --mapping--> B["Aesthetic \n aes(x,y)"]
 B --> C["Marks \n geom_point()"]
 
 ```
-
-:::: {.columns}
-
-::: {.column width="40%"}
 
 ```{r eval = F}
 #| code-line-numbers: "4"
@@ -349,7 +356,7 @@ geom_point()
 
 :::
 
-::: {.column width="60%"}
+::: {.column width="50%"}
 
 ```{r echo = F}
 ggplot(data = gapminder,
@@ -365,6 +372,7 @@ title = element_text(size = 16))
 
 ::::
 
+
 ## Data & Aesthetics Mapping & Geometry {auto-animate=true .smaller}
 
 
@@ -372,6 +380,61 @@ title = element_text(size = 16))
 head(gapminder)
 ```
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[(Data)] --transformation--> B["Frequency Table"]
+B--mapping-->  C["Aesthetic \n aes(x,y)"]
+C --> D["Marks \n geom_col()"]
+
+```
+
+```{r eval = F}
+#| code-line-numbers: "1-2|3-4"
+gapminder |> 
+  count(continent) |> 
+ggplot(aes(x = continent, y = n))+
+geom_col()
+```
+
+<div style="font-size: 70%;">
+**Note**: `geom_col()` $\equiv$ `geom_bar(stat = "identity")`
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+```{r echo = F}
+#| code-line-numbers: "1-2|3-4"
+gapminder |> 
+  count(continent) |> 
+ggplot(aes(x = continent, y = n))+
+geom_col()
+```
+
+:::
+
+::::
+
+## Data & Aesthetics Mapping & Geometry {auto-animate=true .smaller}
+
+
+```{r}
+head(gapminder)
+```
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 ```{mermaid}
 %%| echo: false
@@ -382,14 +445,8 @@ B --transformation--> C["Marks \n geom_bar()"]
 
 ```
 
-
-
-:::: {.columns}
-
-::: {.column width="40%"}
-
 ```{r eval = F}
-#| code-line-numbers: "4"
+#| code-line-numbers: "1-2|3"
 ggplot(data = gapminder,
       aes(x = continent))+
 geom_bar()
@@ -397,7 +454,7 @@ geom_bar()
 
 :::
 
-::: {.column width="60%"}
+::: {.column width="50%"}
 
 ```{r echo = F}
 ggplot(data = gapminder,
@@ -412,7 +469,7 @@ geom_bar()
 
 ## กิจกรรม 1
 
-ขอให้นิสิตสร้าง scatter plot ที่มีลักษณะดังรูป
+ขอให้นิสิตสร้าง scatter plot ที่มีลักษณะดังรูป (ใช้ข้อมูลปี 2007)
 
 ```{r echo = F}
 
@@ -506,11 +563,11 @@ ggplot(
 ```
 
 
-## กิจกรรม 2 {.smaller}
-
-<br>
+## กิจกรรม 2: ควรกำหนด aesthetics ตรงไหนดี {.smaller}
 
 - ขอให้นิสิตลองสร้าง scatter plot ที่มีการกำหนด aesthetic mapping `col = continent` เพิ่มเติม ผลลัพธ์ที่ได้เป็นอย่างไร
+
+- การกำหนด data layer และ aesthetics สามารถกำหนดได้ทั้งใน `ggplot()` และ `geom_xxx()` 
 
 - ลองพิจารณาการกำหนด `data` และ `aes()` ต่อไปนี้ มีความแตกต่างกันอย่างไร? 
 
@@ -535,6 +592,13 @@ ggplot(data)+
   geom_point(aes(x,y,col))
 ```
 
+## Various Shapes in `geom_point()`
+
+
+![](img/shape.png)
+
+
+
 ## กิจกรรม 3 {.smaller}
 
 ลองเปรียบเทียบ aesthetic mapping ดังนี้
@@ -557,7 +621,12 @@ ggplot(data)+
 ผลลัพธ์ที่ได้มีความแตกต่างกันอย่างไร ?
 
 
-## 
+## กิจกรรม 5 {auto-animate=true .smaller}
+
+
+- จาก scatter plot ในกิจกรรม 1 กำหนด aesthetic `size = pop` เพิ่มเติม
+ 
+- ผลลัพธ์ที่ได้ใกล้ความจริงรึยัง?
 
 ```{r eval = F}
 ggplot(data = gapminder |> filter(year == 2007))+
@@ -587,40 +656,337 @@ p1 <- gapminder |>
 p2 <- ggplot(data = gapminder |> filter(year == 2007))+
   geom_point(aes(x = gdpPercap, 
                  y = lifeExp , 
-                 col = continent))
+                 col = continent,
+                 size = pop))
 
 p1+p2
 ```
 
 
-## Color
+# More Geom Layers
+
+ผู้วิเคราะห์สามารถนำเสนอข้อมูลหลายมิติบนแผนภาพเดียวผ่านการกำหนด aesthetics และ/หรือ geometries หลายตัว
+
+## `geom_smooth()` {.smaller}
 
 
-
-
-```{r echo = F, fig.height = 3, fig.width = 10}
-library(patchwork)
-p1<-gapminder |> 
-  ggplot(aes(x=continent))+
-  geom_bar()+
-  xlab("\n continent")
-
-p2<-gapminder |> 
-  filter(year %in% c(2007)) |> 
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
   ggplot(aes(x=gdpPercap, y=lifeExp))+
   geom_point()+
-  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
-  theme_light()+
-  xlab("\n gdpPercap")
+  geom_smooth(method = "loess", se = T)
+```
 
-p3<-gapminder |> 
-  filter(year %in% c(2007)) |> 
-  ggplot(aes(x=gdpPercap, y=lifeExp, col=continent))+
+
+## `geom_smooth()` {.smaller}
+
+
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
   geom_point()+
-  scale_x_log10(labels = scales::number_format(accuracy = 2, big.mark = ",", suffix = "$"))+
-  theme_light()+
-  xlab("\n gdpPercap")
+  geom_smooth(method = "lm", se = F)
+```
 
-p1+p2+p3
+## `geom_smooth()` {.smaller}
+
+
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x=gdpPercap, y=lifeExp,
+            col = continent))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)
+```
+
+
+
+
+## `geom_text()` {.smaller}
+
+- กำหนด `geom_text(aes(label))` เพิ่มเติมเพื่อใส่ label ให้กับข้อมูลในแผนภาพ
+
+- ฟังก์ชัน `geom_text()` มีอาร์กิวเมนท์ดังนี้
+
+```{r eval = F}
+geom_text(data = NULL,
+             mapping = aes(...),
+             nudge_x = 0, nudge_y = 0,
+             check_overlap = FALSE,
+             show.legend = NA,
+             family,
+             angle)
+```
+
+- ลองสร้าง scatter plot ที่มีการเพิ่ม `geom_text()` เพื่อ label ชื่อประเทศ ผลลัพธ์ที่ได้เป็นอย่างไร
+
+## `geom_text_repel()`  {.smaller}
+
+```{r eval = F}
+## install.package("ggrepel")
+library(ggrepel)
+geom_text_repel(data = NULL,
+                   mapping = aes(...),
+                   nudge_x = 0, nudge_y = 0,
+                   label.r,
+                   label.size,
+                   min.segment.length = 0.5,
+                   max.overlaps = 10,
+                   show.legend = NA,
+                   seed = NA )
+```
+
+ผลลัพธ์ที่ได้จาก `geom_text()` กับ `geom_text_repel()` มีความเหมือนหรือแตกต่างกันอย่างไร
+
+
+
+
+## เกี่ยวกับ `layer()` {.smaller}
+
+- `layer()` เป็นฟังก์ชันพื้นฐานสำหรับสร้าง visualization ด้วย ggplot2 
+  - `data`
+  - `mapping`
+  - `stat`
+  - `geom`
+  - `position`
+
+
+```{r eval = F}
+## Short way
+ggplot(data = gapminder |> filter(year == 2007))+
+  geom_point(aes(x = gdpPercap, y = lifeExp))
+```
+
+<br>
+
+```{r eval = F}
+## Long way
+ggplot() +
+  layer(data = gapminder |> filter(year == "2007"),
+        mapping = aes(x = gdpPercap, y = lifeExp),
+        stat = "identity",
+        geom = "point",
+        position = "identity")
+```
+
+## Creating scatter plot by `layer()` {.smaller}
+
+```{r}
+ggplot() +
+  layer(data = gapminder |> filter(year == "2007"),
+        mapping = aes(x = gdpPercap, y = lifeExp, 
+                      col = lifeExp>70),
+        stat = "identity",
+        geom = "point",
+        position = "identity")
+```
+
+## Creating barplot by `layer()` {.smaller}
+
+```{r}
+ggplot() +
+  layer(data = gapminder |> filter(year == "2007"),
+        mapping = aes(x = continent, fill = lifeExp>70),
+        stat = "count",
+        geom = "bar",
+        position = "identity")
+```
+
+
+# Statistical Transformation
+
+"Stats determine what is displayed, not how it is displayed."
+
+## `geom_xxx()` vs `stat_xxx()` {.smaller}
+
+> “Every geom has a default statistic, and every statistic has a default geom.” - Wickham (2010)
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<center>
+![`geom_xxx()`](img/geom_.png)
+
+![`stat_xxx()`](img/stat_layer.png)
+</center>
+
+:::
+
+::: {.column width="50%"}
+
+<div style="font-size: 80%;">
+
+<br>
+
+- `geom_bar()` **vs** `stat_count()`
+
+- `geom_histogram()` **vs** `stat_bin()`
+
+- `geom_density()` **vs** `stat_density()`
+
+- `geom_boxplot()` **vs** `stat_boxplot()`
+
+- `geom_smooth()` **vs** `stat_smooth()`
+
+</div>
+
+:::
+
+::::
+
+
+## `geom_bar()` vs `stat_count()` {.smaller}
+
+::: {.panel-tabset}
+
+
+### `geom_bar()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = continent))+
+  geom_bar(stat = "count") #default
+```
+
+
+### `stat_count()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = continent))+
+  stat_count(geom = "bar") #default
+```
+
+### `count()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  count(continent) |> 
+  ggplot(aes(x = continent, y = n))+
+  geom_bar(stat = "identity")
+```
+
+
+:::
+
+
+## `geom_histogram()` vs `stat_bin()` {.smaller}
+
+::: {.panel-tabset}
+
+### `geom_histogram()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = lifeExp))+
+  geom_histogram(stat = "bin") #default
+```
+
+### `stat_bin()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = lifeExp))+
+  stat_bin(geom = "bar") #default
+```
+
+
+### `cut()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  mutate(lifeExp = cut(lifeExp, breaks = 30)) |> 
+  count(lifeExp) |> 
+  ggplot(aes(x=lifeExp, y=n))+
+  geom_bar(stat = "identity")
+```
+
+:::
+
+
+## `geom_boxplot()` vs `stat_boxplot()` {.smaller}
+
+::: {.panel-tabset}
+
+### `geom_boxplot()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = continent, y = lifeExp, fill = continent))+
+  geom_boxplot(stat = "boxplot") #default
+```
+
+### `stat_boxplot()`
+
+```{r fig.height = 4}
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = continent, y = lifeExp, fill = continent))+
+  stat_boxplot(geom = "boxplot") #default
+```
+
+
+:::
+
+## สรุป {.smaller}
+
+การสร้างแผนภาพใด ๆ สามารถดำเนินการได้สองลักษณะ
+
+<left>
+
+**visualize raw data directly**
+
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[(Data)] --mapping--> B["Aesthetic \n aes(x,y)"]
+B --> C["Marks \n geom_point()"]
 
 ```
+
+**visualize transformed data**
+
+```{mermaid}
+%%| echo: false
+
+graph LR
+A[(Data)] --transformation--> B["Frequency Table"]
+B--mapping-->  C["Aesthetic \n aes(x,y)"]
+C --> D["Marks \n geom_col()"]
+
+```
+
+</left>
+
+- `geom_xxx()`
+
+- manual transform, and then `geom_xxx()`
+
+- `stat_xxx()`
+
+## Excercise {.smaller}
+
+จากชุดข้อมูล `gapminder`
+
+1. สร้าง barchart แสดงการเปรียบเทียบจำนวนประเทศในปี 2007 ที่ประชากรมีอายุขัยโดยเฉลี่ยสูงกว่า 65 ปี กับที่เหลือ
+
+2. สร้าง barchart แสดงค่าเฉลี่ยของ `gdpPercap` จำแนกตามทวีป
+
+3. สร้าง barchart แสดงแนวโน้ม `gdpPercap` ของประเทศไทยในช่วงปีที่เก็บรวบรวมข้อมูล
+
+4. สร้าง boxplot เปรียบเทียบการแจกแจงของ `lifeExp` ระหว่างประเทศที่มี `gdpPercap` สูงกว่าค่าเฉลี่ยของโลกในปี 2007 กับที่เหลือ
+
+
