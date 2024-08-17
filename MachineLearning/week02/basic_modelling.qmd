@@ -1,0 +1,356 @@
+---
+title: "Week 2: Modelling Process"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 2: 2758623 Machine Learning Principles and Application<br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+
+
+# 1. Modelling Process
+
+## Underfit, Good fit, and Overfit models {.smaller}
+
+![](img/fittingmodel.png)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Underfitted Model** -- โมเดลง่ายเกินไป/ข้อมูลไม่เพียงพอ ไม่สามารถจับแนวโน้มความสัมพันธ์หลักในข้อมูลได้
+
+- ปรับพารามิเตอร์/ปรับโมเดลให้ซับซ้อนมากขึ้น
+
+- เพิ่มตัวแปรทำนาย (features) หรือหน่วยข้อมูล
+
+- เลือกอัลกอริทึมการเรียนรู้ที่เรียนรู้ความสัมพันธ์ได้ซับซ้อนมากขึ้น
+
+:::
+
+::: {.column width="50%"}
+
+**Overfitted Model** -- โมเดลซับซ้อนเกินไปหรือเรียนรู้ความสัมพันธ์ในข้อมูลดีเกินไป
+
+- ทำ Cross-validation เพื่อช่วยเลือกโมเดลหรือปรับแต่งพารามิเตอร์ในโมเดล
+
+- ใช้เทคนิค regularization
+
+- ลดความซับซ้อนของโมเดลหรือเลือกอัลกอริทึมที่เรียนรู้ได้ซับซ้อนน้อยลง
+
+- เพิ่ม training data ให้มากขึ้น
+
+
+:::
+::::
+
+
+## กรอบการสร้าง Supervised Learning
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1728379488.png)
+
+
+
+
+## Tidymodels {.smaller}
+
+<br>
+
+```{r eval = F}
+install.packages("tidymodels")
+library(tidymodels)
+```
+
+![](img/tidymodels.jpeg)
+
+<div class="caption">https://rpubs.com/chenx/tidymodels_tutorial</div>
+
+## {.smaller}
+
+<center>
+![](img/tidymodel_functions.png){width="70%"}
+</center>
+
+
+<div class="caption">https://rpubs.com/chenx/tidymodels_tutorial</div>
+
+## Today Objectives
+
+จากชุดข้อมูล `learning_data2.csv`
+
+1. สร้างโมเดลทำนายคะแนนผลสัมฤทธิ์ทางการเรียนของนักเรียน (regression task)
+
+2. สร้างโมเดลทำนายความสำเร็จ (classification task) โดยที่ความสำเร็จคือ `research_score > 80` 
+
+# Regression Task
+
+- `rsample`: how to create training and test datasets
+
+- `recipe`: how to preprocess data
+
+- `parsnip`: how to fit linear regression model
+
+- `yardstick`: how to evaluate model performance
+
+
+## 1. data spliting with `rsample` {.smaller}
+
+
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![](img/rsample.png)
+
+:::
+
+::: {.column width="80%"}
+
+<br>
+
+ในทางปฏิบัติผู้วิเคราะห์มักใช้การแบ่งส่วนข้อมูลโดยใช้วิธีการสุ่มตัวอย่าง (random sampling) เพื่อสร้าง training และ test datasets รูปด้านล่างแสดงลักษณะการแบ่งส่วนข้อมูล
+
+#### learning_data.csv
+```{r}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week02/learning_data2.csv")
+head(data)
+```
+
+:::
+
+::::
+
+## simple random sampling {.smaller}
+
+- หน่วยข้อมูลทุกหน่อยในชุดข้อมูลต้นฉบับมีโอกาสที่จะถูกสุ่มขึ้นมาเท่ากัน
+
+```{r}
+learning_split <- initial_split(data = data, prop = 0.7)
+learning_split
+```
+
+<br>
+
+```{r}
+train_data <- training(learning_split)
+test_data <- testing(learning_split)
+```
+
+<br>
+
+```{r}
+dim(train_data)
+dim(test_data)
+```
+
+
+## stratified random sampling {.smaller}
+
+- หน่วยข้อมูลมีโอกาสการถูกเลือกขึ้นอยู่กับสัดส่วนของประเภทหน่วยข้อมูลนั้น
+
+```{r}
+learning_split_strata <- initial_split(data = data, prop = 0.7, 
+                                       strata = research_score)
+learning_split_strata
+```
+
+<br>
+
+```{r}
+train_data_strata <- training(learning_split_strata)
+test_data_strata <- testing(learning_split_strata)
+```
+
+<br>
+
+```{r}
+dim(train_data_strata)
+dim(test_data_strata)
+```
+
+## เปรียบเทียบการสุ่มตัวอย่างทั้งสองแบบ
+
+```{r echo = F, fig.height = 6}
+library(patchwork)
+p1 <- ggplot(data = data, aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white", bins=15)+
+  ggtitle("overall dataset")
+
+p2 <- ggplot(data = train_data, aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white", bins=15)+
+  ggtitle("training dataset (SRS)")
+
+p3 <- ggplot(data = test_data, aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white", bins=15)+
+  ggtitle("testing dataset (SRS)")
+
+p4 <- ggplot(data = train_data_strata, aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white", bins=15)+
+  ggtitle("training dataset (STR)")
+
+p5 <- ggplot(data = test_data_strata, aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white", bins=15)+
+  ggtitle("testing dataset (STR)")
+
+
+
+p1/(p2+p4)/(p3+p5)
+
+
+```
+
+
+## 2. Fitting {.smaller}
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![](img/parsnip.png)
+
+:::
+
+::: {.column width="80%"}
+
+<br>
+
+#### Specify the models 
+
+ส่วนประกอบจำเป็นที่จะต้องระบุได้แก่
+
+- model type หรืออัลกอริทึมการเรียนรู้ของเครื่องที่ผู้วิเคราะห์จะใช้ในการทำงาน
+
+- engine หรือ package ของ R ที่จะใช้สำหรับประมวลผล model type ที่เลือก
+
+- mode สำหรับกำหนดว่าปัญหาที่ทำงานด้วยอยู่นี้เป็น regression หรือ classification
+
+นอกจากนี้หลายอัลกอริทึมจะมี hyperparameters หากปรับแต่งดี ๆ จะช่วยเพิ่มประสิทธิภาพของโมเดลได้ (จะกล่าวภายหลัง)
+
+```{r}
+lm_spec <- linear_reg() |> 
+  set_engine("lm") |> 
+  set_mode("regression")
+
+knn_spec <- nearest_neighbor() |> 
+  set_engine("kknn") |> 
+  set_mode("regression")
+```
+
+:::
+
+::::
+
+
+<div class="caption">[https://www.tidymodels.org/find/parsnip/](https://www.tidymodels.org/find/parsnip/)</div>
+
+
+## Fit the model with data {.smaller}
+
+#### fitting
+```{r}
+lm_fit <- lm_spec |> 
+  fit(research_score ~ choose_method + interpretation, 
+      data = train_data_strata)
+
+knn_fit <- knn_spec |> 
+  fit(research_score ~ choose_method + interpretation, 
+      data = train_data_strata)
+```
+
+
+#### extract model results
+```{r}
+lm_fit |> tidy()
+```
+
+
+## Predict Test data {.smaller}
+
+เมื่อ train model แล้วเราสามารถนำโมเดลที่ train ได้ไปทำนายตัวแปรตามใน test data ได้ดังนี้
+
+```{r}
+pred_lm <- predict(lm_fit, new_data = test_data_strata)
+pred_knn <- predict(knn_fit, new_data = test_data_strata)
+
+test_data_strata |> 
+  bind_cols(pred_lm, pred_knn) |> 
+  rename(pred_lm = 11,
+         pred_knn = 12)
+```
+
+
+
+## Model Evaluation {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![](img/yardstick.png)
+
+:::
+
+::: {.column width="80%"}
+
+การคำนวณค่าประสิทธิภาพของโมเดลทำนายแบบ regression ภายใต้ tidymodels framework สามารถทำได้ง่าย ๆ โดยใช้ฟังก์ชันจาก package yardstick ได้แก่ `rmse()` และ `rsq()`
+
+```{r}
+test_data_strata |> 
+  bind_cols(pred_lm, pred_knn) |> 
+  rename(pred_lm = 11,
+         pred_knn = 12) |> 
+  rmse(truth = research_score, estimate = pred_lm)
+
+test_data_strata |> 
+  bind_cols(pred_lm, pred_knn) |> 
+  rename(pred_lm = 11,
+         pred_knn = 12) |> 
+  rmse(truth = research_score, estimate = pred_knn)
+```
+
+
+<div class="caption">[https://yardstick.tidymodels.org/articles/metric-types.html](https://yardstick.tidymodels.org/articles/metric-types.html)</div>
+:::
+
+::::
+
+
+# Classification Tasks
+
+
+
+
+
+## 
+<br>
+<br>
+<br>
+
+
+<center>
+
+![](https://media.giphy.com/media/TgF6xfH8V0mZcUyneP/giphy.gif?cid=ecf05e474f9o45pevyyvhdf9m6m8ppfbrjjgfizgtpg3lf9s&ep=v1_gifs_related&rid=giphy.gif&ct=g)
+
+</center>
