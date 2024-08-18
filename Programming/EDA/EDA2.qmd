@@ -396,6 +396,23 @@ clustering_data |>
 ```
 
 
+## Kmeans Results for 5 clusters
+
+```{r echo=T, fig.width=12}
+kmeans_result5 <- kmeans(x=clustering_data, centers = 5)
+
+clustering_data |> 
+  bind_cols(cluster = kmeans_result5$cluster) |> 
+  group_by(cluster) |> 
+  summarise_all(mean) |> 
+  pivot_longer(cols = -cluster) |> 
+  ggplot(aes(x=value, y=name))+
+  geom_col(aes(fill = value>0))+
+  facet_wrap(~cluster)+
+  ggtitle("4 clusters result")
+
+```
+
 ## new generation `for loop`
 
 :::: {.columns}
