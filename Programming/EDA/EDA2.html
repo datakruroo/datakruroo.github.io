@@ -407,9 +407,13 @@
 </div>
 
 </section>
-<section class="slide level2">
-
-<p>เนื้อหาส่วนนี้ใช้ชุดข้อมูล <code>learning_data.csv</code></p>
+<section id="section" class="slide level2">
+<h2></h2>
+<p><br> <br></p>
+<h4 id="learning_data.csv"><code>learning_data.csv</code></h4>
+<ul>
+<li>นักเรียนในชั้นเรียนมีพฤติกรรมการเรียนรู้เป็นอย่างไร สามารถจำแนกได้เป็นกี่กลุ่ม</li>
+</ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 385
@@ -430,12 +434,14 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.593489…</code></pre>
 <section id="clustering" class="slide level2 smaller">
 <h2>Clustering</h2>
 <ul>
-<li><p>ชุดของวิธีการหรืออัลกอริธึมที่ใช้ในการค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด</p></li>
-<li><p>การจัดกลุ่ม (Clustering) มีประโยชน์มากในการสำรวจข้อมูลเบื้องต้น (Exploratory Data Analysis: EDA) โดยเฉพาะอย่างยิ่งเมื่อผู้วิเคราะห์ต้องการทราบลักษณะหรือรูปแบบของหน่วยข้อมูลในชุดข้อมูลที่มีตัวแปรจำนวนมาก หรือในกรณีที่ชุดข้อมูลนั้นมีหน่วยข้อมูลจำนวนมาก</p></li>
+<li><p>Unsupervised Learning ที่ใช้ ค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด</p></li>
+<li><p>เรามักใช้ technique ประเภทนี้ในกรณีที่เราไม่มี label data หรืออยากทำความเข้าใจสภาพของหน่วยข้อมูลตามคุณลักษณะหรือตัวแปรที่กำหนด</p>
+<ul>
 <li><p>K-Means</p></li>
 <li><p>Hierarchical Clustering</p></li>
 <li><p>DBSCAN</p></li>
 <li><p>Gaussian Mixture Models</p></li>
+</ul></li>
 </ul>
 </section>
 <section id="k-means-clustering" class="slide level2 smaller scrollable">
@@ -446,12 +452,14 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.593489…</code></pre>
 <li><p>สุ่มเลือกหน่วยข้อมูลจากแต่ละกลุ่มใน 1. มาเป็นจุดศูนย์กลางเริ่มต้น (centroids) สำหรับแต่ละกลุ่ม</p></li>
 <li><p>จัดหน่วยข้อมูลลงกลุ่มใหม่ระยะห่างที่ใกล้ที่สุดจาก centroid ใน 2.</p></li>
 </ol>
-<p>– Euclidean distance</p>
-<p>– Manhattan distance</p>
-<p>– Cosine Similarity</p>
-<p>– Hamming distance</p>
-<p>– Mahalonoblis distance</p>
-<p>note : หน่วยของตัวแปรที่แตกต่างกันอาจเป็นปัจจัยแทรกซ้อนที่ทำให้การคำนวณระยะทางมีความคลาดเคลื่อนดังนั้นก่อนการจัดกลุ่มควรจะต้องมีการ standardized ค่าสังเกตของตัวแปรที่จะนำมาจัดกลุ่มก่อน</p>
+<ul>
+<li><p>Euclidean distance</p></li>
+<li><p>Manhattan distance</p></li>
+<li><p>Cosine Similarity</p></li>
+<li><p>Hamming distance</p></li>
+<li><p>Mahalonoblis distance</p></li>
+</ul>
+<p><strong>Note :</strong> หน่วยของตัวแปรที่แตกต่างกันอาจเป็นปัจจัยแทรกซ้อนที่ทำให้การคำนวณระยะทางมีความคลาดเคลื่อนดังนั้นก่อนการจัดกลุ่มควรจะต้องมีการ standardized ค่าสังเกตของตัวแปรที่จะนำมาจัดกลุ่มก่อน</p>
 <ol start="4" type="1">
 <li><p>คำนวณจุดศูนย์กลางใหม่จากการจัดกลุ่มใน 3.โดยหาค่าเฉลี่ยของจุดข้อมูลทั้งหมดในกลุ่มนั้น ๆ และใช้เป็นจุดศูนย์กลางใหม่</p></li>
 <li><p>จัดกลุ่มข้อมูลใหม่อีกครั้งตามจุดศูนย์กลางที่คำนวณในขั้นตอนที่ 4</p></li>
@@ -464,16 +472,81 @@ Reference: https://www.analyticsvidhya.com/blog/2020/02/4-types-of-distance-metr
 </div>
 </div>
 </section>
+<section id="k-means-clustering-1" class="slide level2">
+<h2>K-Means Clustering</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/1-600x575.png" style="width:80.0%"></p>
+<p><img data-src="img/3-600x575.png" style="width:80.0%"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/2-600x575.png" style="width:80.0%"></p>
+<p><img data-src="img/4_600x575.png" style="width:80.0%"></p>
+</div></div>
+</section>
 <section id="standardized-and-normalized-score" class="slide level2 smaller">
 <h2>Standardized and Normalized Score</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
-<li><p>Standardized score <span class="math display">\[
+<li>Standardized score <span class="math display">\[
 Z = \frac{X - \overline{x}}{SD_x}
-\]</span></p></li>
-<li><p>Normalized Score <span class="math display">\[
-X_{\text{normalized}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
-\]</span></p></li>
+\]</span></li>
 </ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>Normalized Score <span class="math display">\[
+X_{\text{normalized}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
+\]</span></li>
+</ul>
+</div></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="do">## create standardized function</span></span>
+<span id="cb2-2"><a href=""></a>z_function <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb2-3"><a href=""></a>  {</span>
+<span id="cb2-4"><a href=""></a>    z <span class="ot">&lt;-</span> (x<span class="sc">-</span><span class="fu">mean</span>(x,<span class="at">na.rm=</span>T))<span class="sc">/</span><span class="fu">sd</span>(x,<span class="at">na.rm=</span>T)</span>
+<span id="cb2-5"><a href=""></a>    <span class="fu">return</span>(z)</span>
+<span id="cb2-6"><a href=""></a>  }</span>
+<span id="cb2-7"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb2-8"><a href=""></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb2-9"><a href=""></a>  <span class="fu">mutate_all</span>(z_function) <span class="sc">|&gt;</span> </span>
+<span id="cb2-10"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb2-11"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb2-12"><a href=""></a>  <span class="fu">geom_histogram</span>()<span class="sc">+</span></span>
+<span id="cb2-13"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA2_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="do">## create standardized function</span></span>
+<span id="cb3-2"><a href=""></a>n_function <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb3-3"><a href=""></a>  {</span>
+<span id="cb3-4"><a href=""></a>    n<span class="ot">&lt;-</span> (x<span class="sc">-</span><span class="fu">min</span>(x,<span class="at">na.rm=</span>T))<span class="sc">/</span><span class="fu">diff</span>(<span class="fu">range</span>(x,<span class="at">na.rm=</span>T))</span>
+<span id="cb3-5"><a href=""></a>    <span class="fu">return</span>(n)</span>
+<span id="cb3-6"><a href=""></a>  }</span>
+<span id="cb3-7"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb3-8"><a href=""></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href=""></a>  <span class="fu">mutate_all</span>(n_function) <span class="sc">|&gt;</span> </span>
+<span id="cb3-10"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb3-11"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb3-12"><a href=""></a>  <span class="fu">geom_histogram</span>()<span class="sc">+</span></span>
+<span id="cb3-13"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="EDA2_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 </section>
 <section id="k-means-clustering-using-r" class="slide level2 smaller scrollable">
 <h2>K-Means clustering using R</h2>
@@ -491,13 +564,92 @@ X_{\text{normalized}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}
 </center>
 <p>โดยที่ <code>x</code> คือ matrix หรือ data.frame ของข้อมูลที่จะใช้ในการจัดกลุ่ม ข้อมูลที่ใช้จะต้องเป็นเชิงปริมาณเท่านั้น และ <code>centers</code> คือจำนวนกลุ่มที่ต้องการให้อัลกอริทึมจัดข้อมูล (ค่า k)</p>
 </section>
+<section id="code-example" class="slide level2 smaller">
+<h2>Code Example</h2>
+<p><strong>1. เตรียมข้อมูล</strong></p>
+<div class="cell" data-result="true">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="do">## preparing data</span></span>
+<span id="cb4-2"><a href=""></a>clustering_data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href=""></a>              <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>research_score) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href=""></a>              <span class="fu">mutate_all</span>(z_function)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>2. ลองทำ kmeans clustering (k=3)</strong></p>
+<div class="cell" data-result="true">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="do">### 2. กำหนด k และทำการจัดกลุ่ม</span></span>
+<span id="cb5-2"><a href=""></a>kmeans_result3 <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(<span class="at">x=</span>clustering_data, <span class="at">centers =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>3. Output ที่สำคัญ</strong></p>
+<div class="cell" data-result="true">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="do">### within Sum Squares</span></span>
+<span id="cb6-2"><a href=""></a>kmeans_result3<span class="sc">$</span>withinss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 755.7937 652.9429 492.0576</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="do">### clustering results</span></span>
+<span id="cb8-2"><a href=""></a><span class="do">## ผลการจัดกลุ่มของแต่ละหน่วยข้อมูล</span></span>
+<span id="cb8-3"><a href=""></a>cluster3_result <span class="ot">&lt;-</span> <span class="fu">fitted</span>(kmeans_result3, <span class="at">method =</span> <span class="st">"classes"</span>)</span>
+<span id="cb8-4"><a href=""></a>cluster3_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 1 1 2 2 2 2 1 1 1 1 2 1 2 1 2 2 1 1 2 2 1 2 2 1 2 2 1 1 3 1 1 1 2 1 3 2 1
+ [38] 1 2 2 1 2 2 1 1 2 1 1 3 2 2 2 1 2 1 2 1 1 1 2 1 1 1 3 2 1 1 1 1 1 2 2 2 1
+ [75] 2 2 1 1 2 1 1 1 2 3 1 1 3 2 1 1 1 1 1 2 1 2 1 1 1 2 2 2 3 3 1 2 3 2 3 2 3
+[112] 3 2 2 3 2 3 2 1 3 2 2 2 2 3 3 3 3 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 2
+[149] 2 3 1 3 3 3 2 2 2 2 2 2 3 2 3 2 2 3 2 1 2 2 1 2 2 2 2 3 2 1 2 2 2 2 3 2 1
+[186] 2 2 2 2 2 3 1 3 2 2 1 2 2 2 2 1 1 1 1 2 2 2 1 2 3 2 2 2 1 1 3 2 1 1 2 2 2
+[223] 1 2 1 1 2 2 2 1 2 1 1 3 3 3 1 1 2 2 1 1 1 1 2 2 3 1 2 1 2 1 1 1 2 1 1 1 1
+[260] 2 3 2 2 2 1 1 2 1 2 2 2 1 1 2 3 1 3 1 1 2 2 1 2 1 2 1 2 1 2 1 2 3 2 2 2 3
+[297] 3 3 1 3 3 2 2 2 3 3 2 2 2 2 2 2 3 1 1 3 3 2 2 2 1 1 3 1 2 3 1 2 3 2 2 2 2
+[334] 1 3 3 1 2 2 2 2 3 3 2 3 3 2 1 1 2 2 1 3 1 2 1 3 2 1 2 3 1 1 2 1 1 2 2 1 2
+[371] 1 1 2 2 1 1 2 1 2 2 2 2 2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>cluster3_result <span class="sc">|&gt;</span> <span class="fu">table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>cluster3_result
+  1   2   3 
+132 178  73 </code></pre>
+</div>
+</div>
+</section>
+<section id="code-example-1" class="slide level2 smaller">
+<h2>Code Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>clustering_data <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">bind_cols</span>(cluster3_result) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href=""></a>  <span class="fu">rename</span>(<span class="at">cluster =</span> <span class="dv">8</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a href=""></a>  <span class="fu">group_by</span>(cluster, name) <span class="sc">|&gt;</span> </span>
+<span id="cb12-6"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value)) <span class="sc">|&gt;</span> </span>
+<span id="cb12-7"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>mean, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb12-8"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> mean<span class="sc">&gt;</span><span class="dv">0</span>))<span class="sc">+</span></span>
+<span id="cb12-9"><a href=""></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb12-10"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="EDA2_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<section id="code-example-2" class="slide level2 smaller">
+<h2>Code Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>clustering_data <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">bind_cols</span>(cluster3_result) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href=""></a>  <span class="fu">rename</span>(<span class="at">cluster =</span> <span class="dv">8</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb13-6"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb13-7"><a href=""></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.15</span>, <span class="fu">aes</span>(<span class="at">col =</span> value), <span class="at">alpha =</span> <span class="fl">0.3</span>)<span class="sc">+</span></span>
+<span id="cb13-8"><a href=""></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb13-9"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="EDA2_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
 <section id="how-to-choose-k-value" class="slide level2 smaller">
 <h2>How to choose <code>k</code> value?</h2>
 <p>มีหลายวิธีในการกำหนดจำนวน k ที่เหมาะสม</p>
 <ul>
 <li><p>theory/prior knowledge</p></li>
-<li><p>rule of thumb เช่น <span class="math inline">\(k=\sqrt{2}\)</span></p></li>
+<li><p>rule of thumb เช่น <span class="math inline">\(k=\sqrt{n/2}\)</span></p></li>
 <li><p>Statistical method เช่น Elbow method</p></li>
+<li><p>Cross-validation</p></li>
 </ul>
 <p><br></p>
 <h4 id="elbow-method">Elbow Method</h4>
@@ -511,15 +663,15 @@ Total_{withinSS} = \sum_{j=1}^k WWS_j
 <h2><code>for</code> Loop</h2>
 <p>for loop เป็นโครงสร้างการวนซ้ำ (iteration) ที่ใช้ในอัลกอริธึมเพื่อทำซ้ำชุดคำสั่งในโปรแกรมเป็นจำนวนครั้งที่กำหนดไว้ล่วงหน้า หรือสำหรับการทำงานกับทุกองค์ประกอบในชุดข้อมูล</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="cf">for</span> (variable <span class="cf">in</span> sequence) {</span>
-<span id="cb2-2"><a href=""></a>  <span class="co"># คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ</span></span>
-<span id="cb2-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="cf">for</span> (variable <span class="cf">in</span> sequence) {</span>
+<span id="cb14-2"><a href=""></a>  <span class="co"># คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ</span></span>
+<span id="cb14-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ตัวอย่างการวนซ้ำ</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">print</span>(i)</span>
-<span id="cb3-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">print</span>(i)</span>
+<span id="cb15-3"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1
 [1] 2
@@ -530,17 +682,84 @@ Total_{withinSS} = \sum_{j=1}^k WWS_j
 </div>
 <p>เราสามารถใช้การวนซ้ำแบบ for นี้มาช่วยให้การทำงานด้าน data science ทำได้ง่ายมากขึ้น</p>
 </section>
-<section id="elbow-method-revisted" class="slide level2">
-<h2>Elbow Method (Revisted)</h2>
+<section id="elbow-method-1" class="slide level2">
+<h2>Elbow Method</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb17-2"><a href=""></a>max_k <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb17-3"><a href=""></a>wss <span class="ot">&lt;-</span> <span class="fu">numeric</span>(max_k)</span>
+<span id="cb17-4"><a href=""></a></span>
+<span id="cb17-5"><a href=""></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_k)</span>
+<span id="cb17-6"><a href=""></a>  {</span>
+<span id="cb17-7"><a href=""></a>    results <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(clustering_data, <span class="at">centers =</span> i)</span>
+<span id="cb17-8"><a href=""></a>    wss[i] <span class="ot">&lt;-</span> results<span class="sc">$</span>tot.withinss </span>
+<span id="cb17-9"><a href=""></a>  }</span>
+<span id="cb17-10"><a href=""></a></span>
+<span id="cb17-11"><a href=""></a><span class="fu">head</span>(wss)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2674.000 2179.845 1900.664 1734.800 1655.042 1507.605</code></pre>
+</div>
+</div>
 
-<img data-src="EDA2_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<img data-src="EDA2_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
 <section id="kmeans-results-for-3-clusters" class="slide level2">
 <h2>Kmeans Results for 3 clusters</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>clustering_data <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href=""></a>  <span class="fu">bind_cols</span>(<span class="at">cluster =</span> kmeans_result3<span class="sc">$</span>cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href=""></a>  <span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb19-4"><a href=""></a>  <span class="fu">summarise_all</span>(mean) <span class="sc">|&gt;</span> </span>
+<span id="cb19-5"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb19-6"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb19-7"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value<span class="sc">&gt;</span><span class="dv">0</span>))<span class="sc">+</span></span>
+<span id="cb19-8"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster)<span class="sc">+</span></span>
+<span id="cb19-9"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"3 clusters result"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="EDA2_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
+<section id="kmeans-results-for-4-clusters" class="slide level2">
+<h2>Kmeans Results for 4 clusters</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>kmeans_result4 <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(<span class="at">x=</span>clustering_data, <span class="at">centers =</span> <span class="dv">4</span>)</span>
+<span id="cb20-2"><a href=""></a></span>
+<span id="cb20-3"><a href=""></a>clustering_data <span class="sc">|&gt;</span> </span>
+<span id="cb20-4"><a href=""></a>  <span class="fu">bind_cols</span>(<span class="at">cluster =</span> kmeans_result4<span class="sc">$</span>cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb20-5"><a href=""></a>  <span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb20-6"><a href=""></a>  <span class="fu">summarise_all</span>(mean) <span class="sc">|&gt;</span> </span>
+<span id="cb20-7"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb20-8"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb20-9"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value<span class="sc">&gt;</span><span class="dv">0</span>))<span class="sc">+</span></span>
+<span id="cb20-10"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster, <span class="at">ncol=</span><span class="dv">4</span>)<span class="sc">+</span></span>
+<span id="cb20-11"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"4 clusters result"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="EDA2_files/figure-revealjs/unnamed-chunk-14-1.png" width="1152" class="r-stretch"></section>
+<section id="new-generation-for-loop" class="slide level2">
+<h2>new generation <code>for loop</code></h2>
+<div class="columns">
+<div class="column" style="width:20%;">
+<p><img data-src="img/logo.png" style="width:100.0%"></p>
+</div><div class="column" style="width:80%;">
+<p><br></p>
+<pre><code>map(.x, .f)</code></pre>
+</div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>wss_cal <span class="ot">&lt;-</span> <span class="cf">function</span>(data,k) {</span>
+<span id="cb22-2"><a href=""></a>  <span class="fu">kmeans</span>(data , <span class="at">centers =</span> k, <span class="at">nstart =</span> <span class="dv">10</span>)<span class="sc">$</span>tot.withinss</span>
+<span id="cb22-3"><a href=""></a>}</span>
+<span id="cb22-4"><a href=""></a></span>
+<span id="cb22-5"><a href=""></a>k<span class="ot">&lt;-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb22-6"><a href=""></a>wss_results <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="at">.x =</span> k, <span class="at">.f =</span> <span class="sc">~</span><span class="fu">wss_cal</span>(clustering_data, .x))</span>
+<span id="cb22-7"><a href=""></a>wss_results <span class="sc">|&gt;</span> <span class="fu">unlist</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2674.000 2179.507 1900.664 1734.800 1607.805 1500.973</code></pre>
+</div>
+</div>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="EDA2_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+<p><img data-src="EDA2_files/figure-revealjs/unnamed-chunk-16-1.png" width="960"></p>
 </figure>
 </div>
 </div>

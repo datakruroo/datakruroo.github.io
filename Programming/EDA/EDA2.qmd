@@ -17,29 +17,42 @@ format:
 editor: visual
 ---
 
-เนื้อหาส่วนนี้ใช้ชุดข้อมูล `learning_data.csv`
+## 
+
+<br>
+<br>
+
+#### `learning_data.csv`
+
+- นักเรียนในชั้นเรียนมีพฤติกรรมการเรียนรู้เป็นอย่างไร สามารถจำแนกได้เป็นกี่กลุ่ม
+
 
 ```{r}
 library(tidyverse)
 ## importing data
-data <- read_csv("learning_data.csv")
+data <- read_csv("learning_data2.csv")
 ## print some of data
-glimpse(data |> select(-student_id) , 50)
+glimpse(data , 50)
 ```
+
+
+
+
 
 ## Clustering {.smaller}
 
-- ชุดของวิธีการหรืออัลกอริธึมที่ใช้ในการค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด
+- Unsupervised Learning ที่ใช้ ค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด
 
-- การจัดกลุ่ม (Clustering) มีประโยชน์มากในการสำรวจข้อมูลเบื้องต้น (Exploratory Data Analysis: EDA) โดยเฉพาะอย่างยิ่งเมื่อผู้วิเคราะห์ต้องการทราบลักษณะหรือรูปแบบของหน่วยข้อมูลในชุดข้อมูลที่มีตัวแปรจำนวนมาก หรือในกรณีที่ชุดข้อมูลนั้นมีหน่วยข้อมูลจำนวนมาก
+- เรามักใช้ technique ประเภทนี้ในกรณีที่เราไม่มี label data หรืออยากทำความเข้าใจสภาพของหน่วยข้อมูลตามคุณลักษณะหรือตัวแปรที่กำหนด
 
-- K-Means
 
-- Hierarchical Clustering
+  - K-Means
 
-- DBSCAN
+  - Hierarchical Clustering
 
-- Gaussian Mixture Models
+  - DBSCAN
+
+  - Gaussian Mixture Models
 
 
 ## K-Means Clustering {.smaller}
@@ -52,17 +65,17 @@ glimpse(data |> select(-student_id) , 50)
 
 3. จัดหน่วยข้อมูลลงกลุ่มใหม่ระยะห่างที่ใกล้ที่สุดจาก centroid ใน 2.
 
-  -- Euclidean distance
+  - Euclidean distance 
 
-  -- Manhattan distance
+  - Manhattan distance
 
-  -- Cosine Similarity
+  - Cosine Similarity
 
-  -- Hamming distance
+  - Hamming distance
 
-  -- Mahalonoblis distance
+  - Mahalonoblis distance
 
-note : หน่วยของตัวแปรที่แตกต่างกันอาจเป็นปัจจัยแทรกซ้อนที่ทำให้การคำนวณระยะทางมีความคลาดเคลื่อนดังนั้นก่อนการจัดกลุ่มควรจะต้องมีการ standardized ค่าสังเกตของตัวแปรที่จะนำมาจัดกลุ่มก่อน
+**Note :** หน่วยของตัวแปรที่แตกต่างกันอาจเป็นปัจจัยแทรกซ้อนที่ทำให้การคำนวณระยะทางมีความคลาดเคลื่อนดังนั้นก่อนการจัดกลุ่มควรจะต้องมีการ standardized ค่าสังเกตของตัวแปรที่จะนำมาจัดกลุ่มก่อน
 
 4. คำนวณจุดศูนย์กลางใหม่จากการจัดกลุ่มใน 3.โดยหาค่าเฉลี่ยของจุดข้อมูลทั้งหมดในกลุ่มนั้น ๆ และใช้เป็นจุดศูนย์กลางใหม่
 
@@ -78,20 +91,100 @@ note : หน่วยของตัวแปรที่แตกต่าง�
 
 :::
 
+
+## K-Means Clustering
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/1-600x575.png){width="80%"}
+
+![](img/3-600x575.png){width="80%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](img/2-600x575.png){width="80%"}
+
+![](img/4_600x575.png){width="80%"}
+
+:::
+
+::::
+
+
 ## Standardized and Normalized Score {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 - Standardized score
 $$
 Z = \frac{X - \overline{x}}{SD_x}
 $$
 
+:::
+
+::: {.column width="50%"}
 
 - Normalized Score
 $$
 X_{\text{normalized}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
 $$
 
+:::
+::::
 
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r echo=T}
+## create standardized function
+z_function <- function(x)
+  {
+    z <- (x-mean(x,na.rm=T))/sd(x,na.rm=T)
+    return(z)
+  }
+data |> 
+  select_if(is.numeric) |> 
+  mutate_all(z_function) |> 
+  pivot_longer(cols = everything()) |> 
+  ggplot(aes(x=value))+
+  geom_histogram()+
+  facet_wrap(~name)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r echo=T}
+## create standardized function
+n_function <- function(x)
+  {
+    n<- (x-min(x,na.rm=T))/diff(range(x,na.rm=T))
+    return(n)
+  }
+data |> 
+  select_if(is.numeric) |> 
+  mutate_all(n_function) |> 
+  pivot_longer(cols = everything()) |> 
+  ggplot(aes(x=value))+
+  geom_histogram()+
+  facet_wrap(~name)
+```
+
+:::
+
+::::
 
 
 ## K-Means clustering using R {.smaller}
@@ -118,46 +211,67 @@ $$
 
 โดยที่ `x` คือ matrix หรือ data.frame ของข้อมูลที่จะใช้ในการจัดกลุ่ม ข้อมูลที่ใช้จะต้องเป็นเชิงปริมาณเท่านั้น และ `centers` คือจำนวนกลุ่มที่ต้องการให้อัลกอริทึมจัดข้อมูล (ค่า k)
 
+## Code Example {.smaller}
 
-```{r result = F, eval = T}
-
-### 1. เลือกตัวแปรและ standardized
-z_function <- function(x)
-{
-  z<-(x-mean(x, na.rm = T))/sd(x, na.rm = T)
-  return(z)
-}
-
-clustering_data <- data |> select(choose_method, interpretation,concepts,
-              submit_time, percent_submit, 
-              cheat_index) |> 
-              drop_na() |> 
+**1. เตรียมข้อมูล**
+```{r result = T, eval = T, echo = T}
+## preparing data
+clustering_data <- data |> drop_na() |> 
+              select_if(is.numeric) |> 
+              select(-research_score) |> 
               mutate_all(z_function)
-
 ```
 
-
-```{r result = F, eval = T}
+**2. ลองทำ kmeans clustering (k=3)**
+```{r result = T, eval = T, echo = T}
 ### 2. กำหนด k และทำการจัดกลุ่ม
-kmeans_result3 <- kmeans(x=clustering_data |> 
-                          drop_na(),
-                        centers = 3)
+kmeans_result3 <- kmeans(x=clustering_data, centers = 3)
 ```
 
-```{r result = F, eval = F}
-
+**3. Output ที่สำคัญ**
+```{r result = T, eval = T, echo = T}
+### within Sum Squares
 kmeans_result3$withinss
 
+### clustering results
+## ผลการจัดกลุ่มของแต่ละหน่วยข้อมูล
+cluster3_result <- fitted(kmeans_result3, method = "classes")
+cluster3_result
+cluster3_result |> table()
+```
+
+## Code Example {.smaller}
+
+```{r echo = T}
 clustering_data |> 
-  bind_cols(cluster = kmeans_result3$cluster) |> 
-  group_by(cluster) |> 
-  summarise_all(mean) |> 
+  bind_cols(cluster3_result) |> 
+  rename(cluster = 8) |> 
+  pivot_longer(cols = -cluster) |> 
+  group_by(cluster, name) |> 
+  summarise(mean = mean(value)) |> 
+  ggplot(aes(x=mean, y=name))+
+  geom_col(aes(fill = mean>0))+
+  geom_vline(xintercept = 0, linetype = 2)+
+  facet_wrap(~cluster)
+```
+
+
+
+## Code Example {.smaller}
+
+```{r echo = T}
+clustering_data |> 
+  bind_cols(cluster3_result) |> 
+  rename(cluster = 8) |> 
   pivot_longer(cols = -cluster) |> 
   ggplot(aes(x=value, y=name))+
-  geom_col(aes(fill = value>0))+
+  geom_boxplot(width = 0.6)+
+  geom_jitter(height = 0.15, aes(col = value), alpha = 0.3)+
+  geom_vline(xintercept = 0, linetype = 2)+
   facet_wrap(~cluster)
-
 ```
+
+
 
 ## How to choose `k` value? {.smaller}
 
@@ -165,9 +279,11 @@ clustering_data |>
 
 - theory/prior knowledge
 
-- rule of thumb เช่น $k=\sqrt{2}$ 
+- rule of thumb เช่น $k=\sqrt{n/2}$ 
 
 - Statistical method เช่น Elbow method 
+
+- Cross-validation
 
 <br>
 
@@ -205,9 +321,10 @@ for (i in 1:5) {
 เราสามารถใช้การวนซ้ำแบบ for นี้มาช่วยให้การทำงานด้าน data science ทำได้ง่ายมากขึ้น
 
 
-## Elbow Method (Revisted)
+## Elbow Method
 
-```{r}
+```{r echo=T}
+set.seed(123)
 max_k <- 10
 wss <- numeric(max_k)
 
@@ -216,10 +333,12 @@ for(i in 1:max_k)
     results <- kmeans(clustering_data, centers = i)
     wss[i] <- results$tot.withinss 
   }
+
+head(wss)
 ```
 
 
-```{r}
+```{r echo=F}
 library(patchwork)
 p1 <- data.frame(k = 1:max_k, wss = wss) |> 
   ggplot(aes(x=k, y=wss))+
@@ -245,7 +364,7 @@ p1/p2
 ## Kmeans Results for 3 clusters
 
 
-```{r}
+```{r echo=T}
 
 clustering_data |> 
   bind_cols(cluster = kmeans_result3$cluster) |> 
@@ -254,6 +373,61 @@ clustering_data |>
   pivot_longer(cols = -cluster) |> 
   ggplot(aes(x=value, y=name))+
   geom_col(aes(fill = value>0))+
-  facet_wrap(~cluster)
+  facet_wrap(~cluster)+
+  ggtitle("3 clusters result")
 
+```
+
+## Kmeans Results for 4 clusters
+
+```{r echo=T, fig.width=12}
+kmeans_result4 <- kmeans(x=clustering_data, centers = 4)
+
+clustering_data |> 
+  bind_cols(cluster = kmeans_result4$cluster) |> 
+  group_by(cluster) |> 
+  summarise_all(mean) |> 
+  pivot_longer(cols = -cluster) |> 
+  ggplot(aes(x=value, y=name))+
+  geom_col(aes(fill = value>0))+
+  facet_wrap(~cluster, ncol=4)+
+  ggtitle("4 clusters result")
+
+```
+
+
+## new generation `for loop`
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![](img/logo.png){width="100%"}
+
+:::
+
+::: {.column width="80%"}
+
+<br>
+
+```
+map(.x, .f)
+```
+:::
+
+::::
+
+```{r echo=T}
+wss_cal <- function(data,k) {
+  kmeans(data , centers = k, nstart = 10)$tot.withinss
+}
+
+k<-1:10
+wss_results <- map(.x = k, .f = ~wss_cal(clustering_data, .x))
+wss_results |> unlist() |> head()
+```
+
+
+```{r}
+plot(wss_results |> unlist(), type = "b")
 ```
