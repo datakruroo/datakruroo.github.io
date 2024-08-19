@@ -1,0 +1,275 @@
+---
+title: " สถิติสำหรับการเรียนรู้ของนักเรียนระดับมัธยมศึกษา"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-08-17
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/datavis.png
+      data-background-opacity: 20%
+      data-background-size: contain
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+
+---
+
+## Outline {.smaller}
+
+- ความสำคัญของสถิติในชีวิตประจำวันและอาชีพ
+
+
+- เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา
+
+
+- วิธีการสอนสถิติระดับมัธยมศึกษา
+
+
+# 1. ความสำคัญของสถิติ <br> ในชีวิตประจำวันและอาชีพ
+
+
+
+## Many Use of Data (1) {.smaller}
+
+- ทราบข้อเท็จจริง
+
+- เปรียบเทียบความเหมือน ความแตกต่าง จุดเด่น ข้อจำกัด
+
+- หา insights จากข้อมูลเพื่อนำไปสู่การตัดสินใจ/ดำเนินการที่เหมาะสม
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![https://positioningmag.com/1168182](img/1_%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%9B%E0%B8%A5%E0%B8%B2.png)
+
+
+![](img/pm25.jpg){width="30%"}
+![](img/pm25_2.jpg){width="30%"}
+![](img/apple_watch.jpg){width="30%"}
+
+![](img/weather.png)
+
+
+:::
+
+::: {.column width="50%"}
+
+[![](img/blood.png)](https://medium.com/neodocs/how-to-understand-my-blood-report-when-values-are-abnormal-and-bold-56d09af5f076)
+
+![https://www.kasikornasset.com/th/mutual-fund/fund-template/Pages/K-CASH.aspx](img/fund.png)
+
+![](img/macbook.gif)
+
+:::
+
+::::
+
+
+## Insights {.smaller}
+
+ความรู้ที่มีความหมายและมีประโยชน์แก่ผู้เกี่ยวข้องในการทำความเข้าใจ ตัดสินใจ หรือนำไปสู่การดำเนินการเพื่อพัฒนาหรือแก้ปัญหาต่าง ๆ 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<br>
+<br>
+<br>
+
+![](img/decision.png)
+
+<div class="caption">Dykes (2020)</div>
+
+
+
+:::
+
+::: {.column width="50%"}
+
+![](img/insights.png){width="90%"}
+
+<div class="caption3">[Insight Literacy: Why We Need To Clarify What Insights Really Are](https://www.forbes.com/sites/brentdykes/2022/03/08/insight-literacy-why-we-need-to-clarify-what-insights-really-are/?sh=1fe3bfc83fc3)</div>
+:::
+
+::::
+
+![](img/education.png)
+
+
+
+
+## Data is Plentiful {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![https://www.youtube.com/watch?v=YzdxbWqtiYg](img/many_data.png)
+
+
+![https://medium.com/@tanzilo/data-analysis-coffee-shop-sales-f487996c070a](img/cafe_data.png)
+:::
+
+::: {.column width="50%"}
+
+![https://www.statista.com/statistics/871513/worldwide-data-created/](img/growth_of_data.png){width="80%"}
+
+![https://www.semanticscholar.org/paper/Teachers-using-classroom-data-well%3A-Identifying-key-Renshaw-Baroutsis/c0e0dfa27600938517a5466196c426c03887c7b2](img/classroom_data.png)
+
+:::
+
+::::
+
+## สถิติและวิทยาการข้อมูล {.smaller}
+
+::: {.r-stack}
+
+
+![](img/datascience.png){.fragment width="50%" fig-align="center"}
+
+
+
+![](img/typeofanalytic.png){.fragment}
+
+:::
+
+<br>
+
+<div class="caption">[https://clevertap.com/blog/data-science/](https://clevertap.com/blog/data-science/)  </div>
+
+
+
+
+## Use Cases: Business {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+![](https://assets.grab.com/wp-content/uploads/sites/8/2021/12/02175715/MY21GTPDT2GTPASS2021_How-To_GIF_800x800.gif){width=50%} ![https://www.iplandigital.co.th/ecommerce/temu-ecommerce-success-secrets/](img/temu.png){width="30%"}
+
+<div class="caption3">https://www.iplandigital.co.th/ecommerce/temu-ecommerce-success-secrets/</div>
+
+[![](img/เต่าบิน-2.jpg){width=80%}](https://thestandard.co/tao-bin-a-robotic-barista-suscess/)
+
+:::
+
+::: {.column width="50%"}
+
+
+[![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png){width=100%}](https://medium.com/swlh/netflix-and-the-recommendation-system-e806f062ba74)
+
+::: {style="font-size: 70%;"}
+
+
+- Marketing Analysis
+
+- Pricing
+
+- Demand/Supply Analysis and Sales Forecasting
+
+- Churn Prediction
+
+- Loyalty Analysis
+
+- Social Listening
+
+- HR Analytics
+
+- Process Optimization
+
+- Recommendation System
+
+:::
+
+
+:::
+
+
+::::
+
+## Use Cases: Medical {.smaller}
+
+
+:::: {.columns}
+
+
+::: {.column width="60%"}
+
+::: {style="font-size: 75%;"}
+
+- Reduce failures in treatments
+
+- Drug/Vaccine development
+
+- Predictive Medical
+
+- Disease tracking and prevention
+
+- Patient health monitoring and maintenance
+
+- Virtual assistance for patients and customer support
+
+- Medical image analysis
+
+- Predictive medicine: prognosis and diagnostic accuracy
+
+:::
+
+[![](img/Apple_WatchSeries6-ECG-alerts-heartrate-atrialfibrillation-longlook_050121_inline.jpg.large.jpg){width=35%}](https://www.youtube.com/watch?v=LAO43KDClDM&t=23s)[![](https://cdsassets.apple.com/live/7WUAS350/images/health/watchos-10-series-8-fall-detection-notification.png){width=30%}](https://support.apple.com/th-th/108896)
+
+
+:::
+
+::: {.column width="40%"}
+
+![https://www.youper.ai/how-it-works](img/vitual_healthcare.png)
+
+
+[![](https://activewizards.com/content/blog/Top%207%20Data%20Science%20Use%20Cases%20in%20Healthcare/ai-brain-cancer-neurosciencenews.jpg){width=70% fig-align="left"}](https://activewizards.com/blog/top-7-data-science-use-cases-in-healthcare/)
+
+<div class="caption2">https://activewizards.com/blog/top-7-data-science-use-cases-in-healthcare</div>
+
+
+
+
+:::
+::::
+
+<br>
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+
+
+![https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9279074/](img/ai_drug_development.png)
+
+:::
+
+::: {.column width="50%"}
+![https://www.sciencedirect.com/science/article/pii/S2666990024000156](img/ai_diagnostic_disease.png)
+
+:::
+
+::::
