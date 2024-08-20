@@ -3,7 +3,7 @@
 
 .reveal .caption {
   text-align: center;
-  color: #C5705D;
+  color: grey;
   font-size: 0.6em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
   margin-top: -1.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
 }
@@ -12,14 +12,31 @@
   text-align:left;
   color: #C5705D;
   font-size: 0.4em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
-  margin-top: -1.8em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  margin-top: 0em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
   margin-right: 2em;
 }
 
 .reveal .caption3 {
     text-align:left;
-    color: #C5705D;
+    color: grey;
     font-size: 0.6em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
     margin-top: -0.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
-    margin-left: 3em;
+    margin-left: 10em;
+  }
+
+  .reveal .caption4 {
+    text-align:right;
+    color: grey;
+    font-size: 0.6em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+    margin-top: -2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+    margin-left: 0em;
+  }
+
+
+  .reveal .caption5 {
+    text-align:left;
+    color: grey;
+    font-size: 0.6em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+    margin-top: -2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+    margin-left: 37em;
   }

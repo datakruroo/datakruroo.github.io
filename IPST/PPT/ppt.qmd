@@ -28,7 +28,7 @@ execute:
 
 ## Outline {.smaller}
 
-- ความสำคัญของสถิติในชีวิตประจำวันและอาชีพ
+- ความสำคัญของสถิติ
 
 
 - เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา
@@ -37,8 +37,9 @@ execute:
 - วิธีการสอนสถิติระดับมัธยมศึกษา
 
 
-# 1. ความสำคัญของสถิติ <br> ในชีวิตประจำวันและอาชีพ
+# 1. ความสำคัญของสถิติ
 
+- บทบาทของสถิติในชีวิตประจำวันและอาชีพ
 
 
 ## Many Use of Data (1) {.smaller}
@@ -142,7 +143,7 @@ execute:
 ::: {.r-stack}
 
 
-![](img/datascience.png){.fragment width="50%" fig-align="center"}
+![](img/datascience.png){width="50%" fig-align="center"}
 
 
 
@@ -158,6 +159,8 @@ execute:
 
 
 ## Use Cases: Business {.smaller}
+
+::: {.r-stack}
 
 :::: {.columns}
 
@@ -177,7 +180,7 @@ execute:
 
 [![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png){width=100%}](https://medium.com/swlh/netflix-and-the-recommendation-system-e806f062ba74)
 
-::: {style="font-size: 70%;"}
+::: {style="font-size: 65%;"}
 
 
 - Marketing Analysis
@@ -198,14 +201,19 @@ execute:
 
 - Recommendation System
 
-:::
-
 
 :::
 
 
+:::
+
+<div class="caption4">https://www.rib-software.com/en/blogs/data-driven-decision-making-in-businesses</div>
 ::::
 
+![](img/data-driven-decision-making-importance.webp){.fragment}
+
+
+:::
 
 ## Use Cases: Finance {.smaller}
 
@@ -310,3 +318,368 @@ execute:
 :::
 
 ::::
+
+
+## Use Cases: Education (1) {.smaller}
+
+> Data will help solve 
+the big problems of tomorrow.
+Prepare your students today. <br> - DataClassroom Inc. (2022)
+
+
+:::: {.columns}
+::: {.column width="55%"}
+::: {style="font-size: 70%;"}
+
+เก็บรวบรวมและวิเคราะห์ข้อมูลเกี่ยวกับผลการเรียนและพฤติกรรมการเรียนรู้ของนักเรียน เช่น การเข้าเรียน การทำการบ้าน การทบทวนบทเรียน และผลการทดสอบ ช่วยให้ครู (รวมทั้งนักเรียนและผู้เกี่ยวข้อง) ...
+
+- ทราบจุดเด่น ความต้องการในการพัฒนาหรือปัญหาในการเรียนรู้ของนักเรียน 
+
+- วิเคราะห์ปัจจัยที่มีความสัมพันธ์หรือมีผลต่อการเรียนรู้ของนักเรียน
+
+- ออกแบบการจัดประสบการณ์เรียนรู้เฉพาะบุคคล (personalized learning)
+
+- ทำนายแนวโน้มความสำเร็จในการเรียนของผู้เรียน หรือแนวโน้มความเสี่ยงของผู้เรียนแต่ละบุคคล 
+
+- ปรับเปลี่ยน/ออกแบบการจัดการเรียนรู้ของรายวิชา
+
+- ปรับปรุง/พัฒนาหลักสูตร
+
+- Automation
+
+:::
+:::
+
+::: {.column width="45%"}
+![](img/datadriven.png)
+
+<div class="caption">Bolz & Madhavan (2023)</div>
+
+:::
+::::
+
+
+## Use Cases: Education (2) {.smaller}
+
+
+:::: {.columns}
+::: {.column width="35%"}
+<br>
+![](img/ach.png){width="80%"}
+![](img/effect_ach.png){width="100%"}
+
+:::
+::: {.column width="65%"}
+<br>
+![](img/predict.png)
+
+:::
+::::
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/speech.png){width="100%"}
+
+:::
+
+::: {.column width="60%"}
+
+![](img/clustering.png)
+
+<div class="caption">สิวะโชติ ศรีสุทธิยากร (2567)</div>
+
+:::
+
+::::
+
+![](img/AES.png){width="90%"}
+
+
+:::: {.columns}
+::: {.column width="50%"}
+![](img/itemanalysis.png)
+:::
+::: {.column width="50%"}
+![](img/itemanalysis2.png)
+:::
+::::
+
+<div class="caption">สิวะโชติ ศรีสุทธิยากร และคณะ (2567)</div>
+
+
+## Use Cases: Education (3) {.smaller}
+
+
+
+![](img/education2.png)
+
+<left>
+<div class="caption3">วรรณี แกมเกตุ และคณะ (2566)</div>
+</left>
+
+<left>
+<div class="caption5">ธวัชชัย ขวัญเมือง และสิวะโชติ ศรีสุทธิยากร (2567)</div>
+</left>
+
+- กำกับติดตาม/ประเมินผลการดำเนินงานทางการศึกษา
+
+- สนับสนุนการตัดสินใจเชิงนโยบาย/สร้างข้อเสนอแนะสำหรับการดำเนินงานทางการศึกษา
+
+- บริหารจัดการ/จัดสรรทรัพยากรทางการศึกษา
+
+
+## Use Cases: Sport
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/sportanalytic.png){width="80%"}
+
+![](img/football.png){width="40%"} ![](img/NFL_book.png){width="39%"}
+
+![](img/NFL.png){width="80%"}
+:::
+
+::: {.column width="60%"}
+
+![](img/football2.png)
+
+![](img/football_heatmap.png)
+
+![](img/manutd.png)
+
+
+:::
+::::
+
+<div class="caption3">https://github.com/harshkrishna17/Football-Data-Visualizations</div>
+
+
+<div class="caption3">
+https://www.linkedin.com/pulse/choosing-right-data-analytics-tools-football-success-qp93e/</div>
+
+
+# 2. เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา
+
+- ความสำคัญของการจัดการเรียนรู้สถิติในระดับมัธยมศึกษา
+
+- Learning Outcomes ที่คาดหวัง/เนื้อหา
+
+- การจัดการเรียนรู้ระหว่างนักเรียนแผนวิทย์กับศิลป์
+
+
+## Do we need to teach Statistics/Data Science in K-12? {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {style="font-size: 70%;"}
+
+
+> "ในโลกปัจจุบันที่ขับเคลื่อนด้วยข้อมูลมากขึ้น การเข้าใจบทบาทของข้อมูลและเทคโนโลยีและอัลกอริทึมที่สร้างขึ้นรอบๆ ข้อมูลกำลังกลายเป็นการรู้เท่าทันที่สำคัญ" (Bargagliotti et al., 2020)
+
+
+> “Data literacy has become important, for almost everyone. Companies need more people with the ability to interpret data, to draw insights, and to ask the right questions in the first place. These are skills that anyone can develop, and there are now many ways for individuals to upskill themselves and for companies to support them, lift capabilities, and drive change. Indeed, the data itself is clear on this: Data-driven decision-making markedly improves business performance.” Josh Bersin and Marc Zao-Sanders in [Harvard Business Review](https://hbr.org/2020/02/boost-your-teams-data-literacy)
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+
+
+::: {style="font-size: 70%;"}
+
+
+> "สาขาวิชาต่าง ๆ อาจมีแนวคิดเกี่ยวกับข้อมูลที่แตกต่างกัน (มีบริบทที่แตกต่างกัน)และมีเทคนิคการวิเคราะห์ที่พัฒนาขึ้นเพื่อตอบสนองความต้องการเฉพาะของแต่ละสาขาวิชา อย่างไรก็ตาม วิธีการในการแก้ไขปัญหาและตอบคำถามด้วยข้อมูลใช้ logic เดียวกันมีความสอดคล้องกันในแนวปฏิบัติที่ใช้ในทุกสาขาวิชา" (Reynante et al., 2020; National Academies of Sciences, Engineering, and Medicine, 2023)
+
+- มีความรู้และทักษะพื้นฐานที่จำเป็นสำหรับโลกปัจจุบันที่ขับเคลื่อนด้วยข้อมูล
+
+- พัฒนาทักษะการคิดเชิงวิเคราะห์ของผู้เรียน
+
+- พัฒนาทักษะในการตัดสินใจโดยใช้ข้อมูลเป็นฐาน
+
+- เตรียมความพร้อมสำหรับการศึกษาต่อและการทำงาน
+
+- ทักษะการแสวงหาความรู้ด้วยตนเอง
+
+- สนับสนุนการเรียนรู้และการบูรณากากรความรู้ข้ามสาขาวิชา
+
+
+:::
+
+:::
+
+::::
+
+
+
+
+## Do we need to teach Statistics/Data Science in K-12? {.smaller}
+
+
+::: panel-tabset
+
+### Statistics/Data Science in K-12?
+
+::: {.r-stack}
+
+![](img/need_DS.png){width="60%" .absolute top=200 left=0}
+
+![](img/teach_Stat.png){.fragment width="60%" .absolute bottom=0 right=50}
+
+![](img/teach_ds3.png){.fragment width="50%" .absolute bottom=0 right=400}
+
+![](img/teach_ds.png){.fragment width="40%" .absolute bottom=0 right=200}
+
+
+![](img/teach_ds6.png){.fragment width="50%" .absolute bottom=20 right=30}
+
+
+![](img/teach_ds5.png){.fragment width="50%" .absolute bottom=20 right=400}
+
+![](img/teach_ds4.png){.fragment width="50%" .absolute bottom=30 left=300}
+
+:::
+
+### Reference
+
+
+- [We Need to Teach Data Science in Grades K-12](https://csteachers.org/we-need-to-teach-data-science-in-grades-k-12/)
+
+- [Pre-K–12 Guidelines for Assessment and Instruction
+in <br>Statistics Education II (GAISE II)](https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf)
+
+- [Statistics or Data Science for K-12 Education?](https://www.niss.org/news/statistics-or-data-science-k-12-education)
+
+- [Statistics education at a time of global disruption and crises: <br>
+a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_Article_167.pdf)
+
+
+- [Opinion: Modern high school math should be about data science — not Algebra 2](https://www.latimes.com/opinion/story/2019-10-23/math-high-school-algebra-data-statistics)
+
+- [Should High Schools Teach Data Science? If So, Alum Says ‘Why Not Me?’](https://news.virginia.edu/content/should-high-schools-teach-data-science-if-so-alum-says-why-not-me)
+
+
+- [MOBILIZE: A DATA SCIENCE CURRICULUM FOR 16-YEAR-OLD STUDENTS](papers/Gould-ICOTS-2018_07.03.18.pdf)
+
+
+
+
+:::
+
+
+
+
+## Framework {.smaller}
+
+- ข้อมูลถูกสร้าง เก็บรวบรวม และใช้ประโยชน์อย่างไร 
+
+- ผลกระทบและผลลัพธ์ของการใช้ข้อมูลต่อบุคคล กลุ่มคน และสังคม 
+
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+![](img/What-is-data-literacy.png){width="80%" fig-align="center"}
+
+![](img/data_ethic.png){width="80%" fig-align="center"}
+
+:::
+
+
+
+::: {.column width="65%"}
+
+
+![](img/datascience_process.png)
+
+<div class ="caption">[Goldstein (2017)](https://medium.com/the-mission/deconstructing-data-science-breaking-the-complex-craft-into-its-simplest-parts-15b15420df21)</div>
+
+
+:::
+
+::::
+
+<div class="caption2">https://digicromeacademy.medium.com/ethics-of-data-science-c1f567fb34d1</div>
+
+
+<div class="caption2">https://www.datacamp.com/blog/introduction-to-data-ethics</div>
+
+
+## ASA Framework 
+
+![](img/ASA_framwork1.png)
+
+
+<div class="caption4">[https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf](https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf)</div>
+
+
+## ASA Framework {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/formulate.png)
+
+![](img/analysis.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/collect_data.png)
+
+![](img/interpret.png)
+
+:::
+
+::::
+
+<div class="caption4">[https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf](https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf)</div>
+
+
+
+## ASA Framework {.smaller}
+
+
+
+
+##
+
+```{r eval = F}
+#install.packages("networkD3")
+# Load package
+library(networkD3)
+ 
+# Load energy projection data
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata/energy.json")
+Energy <- jsonlite::fromJSON(URL)
+
+sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             units = "TWh", fontSize = 12, nodeWidth = 30)
+```
+
+
+
+
+##
+
+![https://dl.acm.org/doi/10.1145/3478431.3499311](img/HS_DS.png)
+
+
+
+##
+
+
