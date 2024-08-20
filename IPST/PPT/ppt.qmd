@@ -37,7 +37,7 @@ execute:
 - วิธีการสอนสถิติระดับมัธยมศึกษา
 
 
-# 1. ความสำคัญของสถิติ
+# 1. ความสำคัญของสถิติ {background-color="#B4D6CD"}
 
 - บทบาทของสถิติในชีวิตประจำวันและอาชีพ
 
@@ -462,7 +462,7 @@ Prepare your students today. <br> - DataClassroom Inc. (2022)
 https://www.linkedin.com/pulse/choosing-right-data-analytics-tools-football-success-qp93e/</div>
 
 
-# 2. เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา
+# 2. เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา {background-color="#B4D6CD"}
 
 - ความสำคัญของการจัดการเรียนรู้สถิติในระดับมัธยมศึกษา
 
@@ -649,28 +649,54 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 
 
-## ASA Framework {.smaller}
+## หลักสูตรแกนกลาง 2560 {.smaller}
 
 
+:::: {.columns}
+
+::: {.column width="30%"}
+
+![](img/core_thai.png)
 
 
-##
+<br>
+<br>
 
-```{r eval = F}
-#install.packages("networkD3")
-# Load package
-library(networkD3)
- 
-# Load energy projection data
-URL <- paste0(
-        "https://cdn.rawgit.com/christophergandrud/networkD3/",
-        "master/JSONdata/energy.json")
-Energy <- jsonlite::fromJSON(URL)
+<div class="caption2">http://academic.obec.go.th/images/document/1580786328_d_1.pdf</div>
 
-sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
-             Target = "target", Value = "value", NodeID = "name",
-             units = "TWh", fontSize = 12, nodeWidth = 30)
-```
+:::
+
+::: {.column width="70%"}
+
+::: {style="font-size: 70%;"}
+
+**ระดับชั้น ป.6**
+
+นำเสนอข้อมูลในรูปแผนภูมิแท่ง ใช้ข้อมูลจากแผนภูมิแท่ง แผนภูมิรูปวงกลม ตารางสองทาง และกราฟเส้น ในการอธิบายเหตุการณ์ต่าง ๆ และตัดสินใจ
+
+**ระดับชั้น ม.3**
+
+มีความรู้ความเข้าใจทางสถิติในการนำเสนอข้อมูล วิเคราะห์ข้อมูล และแปลความหมายข้อมูล ที่เกี่ยวข้องกับแผนภาพจุด แผนภาพต้นใบ ฮิสโทแกรม ค่ากลางของข้อมูล และ แผนภาพกล่อง และ ใช้ความรู้ความเข้าใจนี้ รวมทั้งนำสถิติไปใช้ในชีวิตจริงโดยใช้เทคโนโลยีที่เหมาะสม
+
+
+**ระดับชั้น ม.6**
+
+เข้าใจและใช้ความรู้ทางสถิติในการวิเคราะห์ข้อมูล นำเสนอข้อมูล และแปลความหมายข้อมูลเพื่อประกอบการตัดสินใจ
+
+- มโนทัศน์เกี่ยวกับข้อมูล ประเภทข้อมูล แหล่งข้อมูล (ปฐมภูมิ ทุติยภูมิ)
+
+- ตำแหน่งที่ของข้อมูล/ค่ากลาง/ค่าการกระจาย
+
+- การนำเสนอข้อมูลเชิงคุณภาพและเชิงปริมาณ
+
+- การแปลความหมายของค่าสถิติ
+
+:::
+
+
+:::
+
+::::
 
 
 
@@ -681,6 +707,5 @@ sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
 
 
 
-##
 
 
