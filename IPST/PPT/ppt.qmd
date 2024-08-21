@@ -2,11 +2,11 @@
 title: " สถิติสำหรับการเรียนรู้ของนักเรียนระดับมัธยมศึกษา"
 author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
 institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
-date: 2024-08-17
+date: 2024-08-22
 format:
   revealjs:
     slide-number: c/t
-    footer: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    footer: "กิจกรรมการพัฒนากรอบแนวคิดรวบยอดและสมรรถนะด้านคณิตศาสตร์ <br> สถาบันส่งเสริมการสอนวิทยาศาสตร์และเทคโนโลยี (สสวท.)"
     logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
     theme: theme.scss
     css: my_css.css
@@ -40,6 +40,9 @@ execute:
 # 1. ความสำคัญของสถิติ {background-color="#B4D6CD"}
 
 - บทบาทของสถิติในชีวิตประจำวันและอาชีพ
+
+- การจัดการเรียนรู้สถิติยังจำเป็นในระดับมัธยมศึกษาหรือไม่
+
 
 
 ## Many Use of Data (1) {.smaller}
@@ -462,13 +465,48 @@ Prepare your students today. <br> - DataClassroom Inc. (2022)
 https://www.linkedin.com/pulse/choosing-right-data-analytics-tools-football-success-qp93e/</div>
 
 
-# 2. เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา {background-color="#B4D6CD"}
+## Use Cases: Music and Creativity Industry
 
-- ความสำคัญของการจัดการเรียนรู้สถิติในระดับมัธยมศึกษา
+:::: {.columns}
 
-- Learning Outcomes ที่คาดหวัง/เนื้อหา
+::: {.column width="50%"}
 
-- การจัดการเรียนรู้ระหว่างนักเรียนแผนวิทย์กับศิลป์
+![](img/art_music.png)
+
+<div class="caption2">https://uniathena.com/art-music-how-data-science-is-changing-everything</div>
+
+![](img/art.png)
+
+<div class="caption2">https://www.arts.ac.uk/subjects/creative-computing/postgraduate/msc-data-science-and-ai-for-the-creative-industries#student-work</div>
+
+:::
+
+::: {.column width="50%"}
+
+![](img/artist_ana.png)
+
+<div class="caption2">https://towardsdatascience.com/advanced-music-analytics-using-machine-learning-f344e4795bbc</div>
+
+
+
+::: {style="font-size: 60%;"}
+
+- "monitor music patterns and listeners' preferences to project the next big music trend or hit."
+
+- Machine Learning, is used to examine music, and lyrics to identify the complex patterns involved in notes and rhythms.
+   - identify musical styles 
+   - generate base tracks for new artists through Data Analysis
+   - tuning-music before release
+   - releasing to the target audience
+
+:::
+
+:::
+
+::::
+
+
+
 
 
 ## Do we need to teach Statistics/Data Science in K-12? {.smaller}
@@ -549,6 +587,8 @@ https://www.linkedin.com/pulse/choosing-right-data-analytics-tools-football-succ
 
 ![](img/teach_ds4.png){.fragment width="50%" .absolute bottom=30 left=300}
 
+![](img/importance_DS.png){.fragment width="50%" .absolute bottom=10 left=100}
+
 :::
 
 ### Reference
@@ -573,10 +613,20 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 - [MOBILIZE: A DATA SCIENCE CURRICULUM FOR 16-YEAR-OLD STUDENTS](papers/Gould-ICOTS-2018_07.03.18.pdf)
 
 
-
+- [The importance and emergence of K-12 data science](https://journals.sagepub.com/doi/10.1177/00317217211043627)
 
 :::
 
+
+
+
+
+# 2. เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา {background-color="#B4D6CD"}
+
+
+- Framework: Learning Outcomes ที่คาดหวัง/เนื้อหา
+
+- การจัดการเรียนรู้ระหว่างนักเรียนแผนวิทย์กับศิลป์
 
 
 
@@ -584,7 +634,7 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 - แหล่งข้อมูลอยู่ที่ไหน เราสามารถเข้าถึง/เก็บรวบรวม และใช้ประโยชน์จากข้อมูลได้อย่างไร
 
-- ผลกระทบและผลลัพธ์ของการใช้ข้อมูลต่อบุคคล กลุ่มคน และสังคม 
+- ผลลัพธ์และผลกระทบของการใช้ข้อมูลต่อบุคคล กลุ่มคน และสังคม 
 
 
 :::: {.columns}
@@ -702,6 +752,28 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 ::::
 
+## Science and Arts Student
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/What-is-data-literacy.png){width="80%" fig-align="center"}
+
+:::
+
+
+::: {.column width="60%"}
+
+![](https://media.springernature.com/full/springer-static/image/art%3A10.1007%2Fs41060-020-00240-2/MediaObjects/41060_2020_240_Fig1_HTML.png?as=webp)
+
+<div class="caption2">https://media.springernature.com/full/springer-static/image/art%3A10.1007%2Fs41060-020-00240-2/MediaObjects/41060_2020_240_Fig1_HTML.png?as=webp</div>
+
+:::
+
+::::
+
+
 # 3. วิธีการสอนสถิติระดับมัธยมศึกษา {background-color="#B4D6CD"}
 
 
@@ -714,6 +786,9 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 ## 3.2 Principles of Data Sciences Education {.smaller}
 
 
+
+::: {style="font-size: 80%;"}
+
 1. Data science is **contextual and interdisciplinary**.
 
 2. Data science is an **investigative process**.
@@ -722,14 +797,33 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 4. Data science educators must develop and practice **ethical uses of data**.
 
+:::
+
+:::: {.columns}
+
+::: {.column width="60%"}
 
 <div class="caption2">https://csteachers.org/we-need-to-teach-data-science-in-grades-k-12/</div>
 
 
-> “สาขาวิชาต่าง ๆ อาจมีแนวคิดเกี่ยวกับข้อมูลที่แตกต่างกัน (มีบริบทที่แตกต่างกัน)และมีเทคนิคการวิเคราะห์ที่พัฒนาขึ้นเพื่อตอบสนองความต้องการเฉพาะของแต่ละสาขาวิชา อย่างไรก็ตาม วิธีการในการแก้ไขปัญหาและตอบคำถามด้วยข้อมูลใช้ logic เดียวกันมีความสอดคล้องกันในแนวปฏิบัติที่ใช้ในทุกสาขาวิชา” (Reynante et al., 2020; National Academies of Sciences, Engineering, and Medicine, 2023)
+![](https://media.springernature.com/full/springer-static/image/art%3A10.1007%2Fs42979-021-00765-8/MediaObjects/42979_2021_765_Fig2_HTML.png){width="90%"}
+
+<div class="caption2">https://link.springer.com/article/10.1007/s42979-021-00765-8/figures/2</div>
+
+:::
+
+::: {.column width="40%"}
+
+![](img/stat_investigation.png){width="90%"}
+
+<div class="caption2">https://nap.nationalacademies.org/catalog/26852/foundations-of-data-science-for-students-in-grades-k-12</div>
 
 
-## 3.3 แนวทางการจัดการเรียนรู้ {.smaller}
+:::
+
+::::
+
+## 3.3 แนวทางการจัดการเรียนรู้ (1) {.smaller}
 
 :::: {.columns}
 
@@ -770,12 +864,27 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 <div class="caption2">Bargagliotti et al. (2020)</div>
 
+
+![](img/codeHS.png)
+
+<div class="caption2">https://codehs.com/course/data_science/overview</div>
+
+![](img/IDS_cur.png)
+
+<div class="caption2">https://www.idsucla.org/introduction-to-data-science-curriculum</div>
+
 ::: 
 
 
 :::
 
 ::: {.column width="50%"}
+
+::: {style="font-size: 70%;"}
+
+> “สาขาวิชาต่าง ๆ อาจมีแนวคิดเกี่ยวกับข้อมูลที่แตกต่างกัน (มีบริบทที่แตกต่างกัน)และมีเทคนิคการวิเคราะห์ที่พัฒนาขึ้นเพื่อตอบสนองความต้องการเฉพาะของแต่ละสาขาวิชา อย่างไรก็ตาม วิธีการในการแก้ไขปัญหาและตอบคำถามด้วยข้อมูลใช้ logic เดียวกันมีความสอดคล้องกันในแนวปฏิบัติที่ใช้ในทุกสาขาวิชา” (Reynante et al., 2020; National Academies of Sciences, Engineering, and Medicine, 2023)
+
+:::
 
 ![](img/HS_DS.png)
 
@@ -791,10 +900,95 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 ::::
 
-##
+## 3.3 แนวทางการจัดการเรียนรู้ (2) {.smaller}
+
+::: panel-tabset
+
+### Datasets
+
+![](img/dataset.png){width="60%"}
+
+<div class="caption2">https://hdsr.mitpress.mit.edu/pub/89bpbwa6/release/2</div>
 
 
 
 
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+
+::: {style="font-size: 80%;"}
+
+
+- ชุดข้อมูลที่มีความทันสมัย สอดคล้องกับบริบท/สถานการณ์ในปัจจุบันได้รับความสนใจจากผู้เรียนมากกว่า
+
+- ชุดข้อมูลที่ตรงกับความสนใจกับผู้เรียนช่วยเพิ่ม learning engagement ของผู้เรียนได้
+
+  - ในห้องเรียนมีแนวโน้มที่จะมีผู้เรียนหลากหลาย ซึ่งอาจมีความสนใจที่แตกต่างกัน การกำหนดชุดข้อมูลโดยครูผู้สอนก็อาจทำให้เกิดความเหลื่อมล้ำในการเรียนรู้ --> **ควรให้ผู้เรียนเลือกชุดข้อมูลในการเรียนรู้/ทำงานเองหรือไม่ ?**
+
+  - นักเรียนมีแนวโน้มที่จะมี**ประสบการณ์/ความรู้จำกัด เป็นปัจจัยให้การเลือกชุดข้อมูลของผู้เรียนมีขอบเขตจำกัดไปด้วย** ปัจจัยนี้อาจเป็น barrier ที่ขัดขวางการเรียนรู้ของผู้เรียน
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {style="font-size: 80%;"}
+
+- การ update ชุดข้อมูลระหว่างหลักสูตรดำเนินการอาจลำบาก และมีผลกระทบต่อกิจกรรม/ใบงานต่าง ๆ 
+
+  - อาจใช้แหล่งข้อมูลเปิด (open data) ต่าง ๆ ซึ่งทำให้มีความยืดหยุ่นในการจัดการเรียนรู้
+
+  - บางกิจกรรมอาจเปิดโอกาสให้ผู้เรียนสร้างชุดข้อมูลของตนเอง ตามความสนใจ
+
+
+
+- ชุดข้อมูลที่แตกต่างกันมีผลต่อการเรียนรู้ และให้ผลลัพธ์การเรียนรู้ที่แตกต่างกัน
+
+  - การทำงานกับชุดข้อมูลที่เป็นของจริง
+
+  - ชุดข้อมูลที่มีการจัดเตรียมไว้เรียบร้อยแล้ว
+
+
+:::
+
+:::
+
+::::
+
+### แหล่งข้อมูล
+
+- [https://www.kaggle.com/](https://www.kaggle.com/)
+
+- [https://data.world/datasets/open-data](https://data.world/datasets/open-data)
+
+- [https://ourworldindata.org/charts](https://ourworldindata.org/charts)
+
+- [https://data.un.org/](https://data.un.org/)
+
+- [https://data.worldbank.org/](https://data.worldbank.org/)
+
+- [https://gdcatalog.go.th/fi/](https://gdcatalog.go.th/fi/)
+
+:::
+
+
+
+## 3.4 Techology
+
+![](img/DS_tools.png){width="60%"}
+
+<div class="caption2">https://dev.to/minchulkim87/my-data-science-tech-stack-2020-1poa</div>
+
+
+
+## Questions?
+
+<iframe src="https://giphy.com/embed/kDfGTmnbS9Ljm9hnwq" width="480" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/theblacklist-season-6-nbc-the-blacklist-kDfGTmnbS9Ljm9hnwq"></a></p>
 
 
