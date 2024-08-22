@@ -15,9 +15,9 @@ format:
     background-transition: fade
     highlight-style: github
     title-slide-attributes:
-      data-background-image: img/datavis.png
-      data-background-opacity: 20%
-      data-background-size: contain
+      data-background-image: img/bg.png
+      data-background-opacity: 15%
+      data-background-size: full
 code-link: true
 execute:
   echo: true
@@ -30,11 +30,26 @@ execute:
 
 - ความสำคัญของสถิติ
 
+  - บทบาทของสถิติในชีวิตประจำวันและอาชีพ
+
+  - การจัดการเรียนรู้สถิติยังจำเป็นในระดับมัธยมศึกษาหรือไม่
+
 
 - เนื้อหาสถิติที่ควรสอนในระดับมัธยมศึกษา
 
+  - Framework: Learning Outcomes ที่คาดหวัง/เนื้อหา
+
+  - การจัดการเรียนรู้ระหว่างนักเรียนแผนวิทย์กับศิลป์
+
+
 
 - วิธีการสอนสถิติระดับมัธยมศึกษา
+
+  - ธรรมชาติของศาสตร์ด้านสถิติและวิทยาการข้อมูล
+
+  - แนวทางการจัดการเรียนรู้
+
+  - Technology
 
 
 # 1. ความสำคัญของสถิติ {background-color="#B4D6CD"}
@@ -106,14 +121,18 @@ execute:
 
 ::: {.column width="50%"}
 
-![](img/insights.png){width="90%"}
+
+![](img/insights.png){width="90%" fig-align="center"}
 
 <div class="caption3">[Insight Literacy: Why We Need To Clarify What Insights Really Are](https://www.forbes.com/sites/brentdykes/2022/03/08/insight-literacy-why-we-need-to-clarify-what-insights-really-are/?sh=1fe3bfc83fc3)</div>
+
 :::
 
 ::::
 
-![](img/education.png)
+<br>
+
+![](img/education.png){width="80%" fig-align="center"}
 
 
 
@@ -125,17 +144,17 @@ execute:
 
 ::: {.column width="50%"}
 
-![https://www.youtube.com/watch?v=YzdxbWqtiYg](img/many_data.png)
+![https://www.youtube.com/watch?v=YzdxbWqtiYg](img/many_data.png){width="90%"}
 
 
-![https://medium.com/@tanzilo/data-analysis-coffee-shop-sales-f487996c070a](img/cafe_data.png)
+![https://medium.com/@tanzilo/data-analysis-coffee-shop-sales-f487996c070a](img/cafe_data.png){width="90%"}
 :::
 
 ::: {.column width="50%"}
 
 ![https://www.statista.com/statistics/871513/worldwide-data-created/](img/growth_of_data.png){width="80%"}
 
-![https://www.semanticscholar.org/paper/Teachers-using-classroom-data-well%3A-Identifying-key-Renshaw-Baroutsis/c0e0dfa27600938517a5466196c426c03887c7b2](img/classroom_data.png)
+![https://www.semanticscholar.org/paper/Teachers-using-classroom-data-well%3A-Identifying-key-Renshaw-Baroutsis/c0e0dfa27600938517a5466196c426c03887c7b2](img/classroom_data.png){width="90%"}
 
 :::
 
@@ -776,6 +795,11 @@ a growing challenge for the curriculum, classroom and beyond](papers/41297_2022_
 
 # 3. วิธีการสอนสถิติระดับมัธยมศึกษา {background-color="#B4D6CD"}
 
+- ธรรมชาติของศาสตร์ด้านสถิติและวิทยาการข้อมูล
+
+- แนวทางการจัดการเรียนรู้
+
+- Technology
 
 ## 3.1 Statistics (& Data Science) is not Math {.smaller}
 
