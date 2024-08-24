@@ -1,0 +1,1052 @@
+---
+title: "Week 3: Data Representation"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-08-24
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 3: 2758686 Data Visualization <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/datavis.png
+      data-background-opacity: 20%
+      data-background-size: contain
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+
+---
+
+```{r echo = F}
+library(tidyverse)
+library(tidymodels)
+##install.packages("textrecipes")
+##devtools::install_github("datakruroo/thaitextrecipe")
+library(thaitextrecipe)
+library(readxl)
+library(plotly)
+library(grid)
+library(patchwork)
+```
+
+## Outline {.smaller}
+
+
+วันนี้จะกล่าวถึงแผนภาพพื้นฐาน (common charts) รวมทั้งแผนภาพที่เกี่ยวข้อง แผนภาพหลักที่จะกล่าวถึง ได้แก่
+
+- **Bar Charts** -- amount
+
+- **Pie Charts** -- composition
+
+- **Line Charts** -- trend
+
+- **Scatter plot** -- relationship
+
+- **Histogram** -- distribution
+
+
+
+# Bar Charts 
+
+แสดง/เปรียบเทียบจำนวนข้อมูล/ปริมาณ
+
+## Bar Charts {.smaller}
+
+- เป็น common charts ที่ใช้อย่างแพร่หลายมีวัตถุประสงค์การใช้สองลักษณะ ได้แก่ 
+  - การแสดงปริมาณข้อมูล (อาจมองว่าเป็นการแสดงการแจกแจงของตัวแปรจัดประเภท)
+  - การเปรียบเทียบข้อมูลระหว่างกลุ่มย่อย/เวลา
+  - bar chart บางประเภทยังสามารถนำเสนอและเปรียบเทียบสัดส่วนของข้อมูลได้ด้วย
+
+```{r fig.height=4, echo = F}
+data <- read_excel("data_AJ suchada.xlsx")
+### อ.สุชาดา เป็น advisor ให้กับวิทยานิพนธ์กี่เล่มในแต่ละปี
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year) |> 
+  count() |> 
+  mutate(text = paste0("จำนวน ", n, " เล่ม")) |> 
+ggplot(aes(x=year, y=n))+
+geom_bar(stat = "identity", fill ="#021526", aes(text = text))+
+theme_classic()+
+theme(panel.grid.major.y = element_line(color = "grey90", linetype = 2),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.title = element_text(size = 15, face = "bold"),
+      text = element_text(family = "ChulaCharasNew")) +
+ylab("จำนวน (เล่ม) \n ")+
+xlab("")+
+ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")->p
+
+ggplotly(p,  tooltip = "text",
+         width = 1000, height = 400) |> 
+        layout(dragmode = FALSE) |> 
+        config(displayModeBar = FALSE)
+```
+
+
+## Types of Bar Chart {.smaller}
+
+- **Simple bar chart** - แสดงปริมาณข้อมูลหรือแสดงแสดงการแจกแจงของตัวแปรจัดประเภท
+
+- **Grouped bar chart** - เปรียบเทียบหรือแสดงแนวโน้มของข้อมูลระหว่างกลุ่มย่อย/เวลา
+
+- **Stacked bar chart** - แสดง/เปรียบเทียบสัดส่วนของข้อมูล
+
+```{r fig.height = 4, echo = F, fig.width = 5}
+theme_set(theme_light()+
+  theme(
+      panel.border = element_blank(),
+      axis.line = element_line(color = "grey50",
+                              linewidth = 0.4,
+                              lineend = "butt"),
+      plot.margin = margin(0.15, 0, 0.1, 0.01, "npc"),
+      panel.grid = element_blank(),
+      panel.grid.major = element_line(color = "grey90", linetype = 2),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.title = element_text(size = 18, face = "bold"),
+      text = element_text(family = "ChulaCharasNew")))
+```
+
+::: {.r-stack}
+
+```{r echo=F}
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(depart) |> 
+  count() |> 
+  mutate(text = paste0("จำนวน ", n, " เล่ม")) |> 
+ggplot(aes(x=n, y=depart))+
+geom_bar(stat = "identity", fill ="#021526", aes(text = text))+
+ylab("")+
+xlab("\n จำนวน (เล่ม)")
+
+grid.text("Simple Bar Chart",0.05, 0.89,
+just = c("left", "bottom"),
+  gp = gpar(
+    fontsize = 18,
+    fontface = "bold",
+    fontfamily = "ChulaCharasNew"
+  ))
+
+```
+
+
+
+
+::: {.fragment}
+
+```{r echo = F}
+data |> 
+    filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  group_by(depart, edu) |> 
+  count() |> 
+  ggplot(aes(y = depart, x = n)) +
+  geom_col(aes(fill = factor(edu)),position = "dodge")+
+ylab("")+
+xlab("\n จำนวน (เล่ม)")+
+labs(fill = "ระดับ")+
+scale_fill_manual(values = c("#E88D67","#005C78"))
+
+grid.text("Grouped Bar Chart (แผนภูมิแท่งเปรียบเทียบ)",0.05, 0.89,
+just = c("left", "bottom"),
+  gp = gpar(
+    fontsize = 18,
+    fontface = "bold",
+    fontfamily = "ChulaCharasNew"
+  ))
+
+
+```
+
+:::
+
+::: {.fragment}
+
+
+```{r echo = F}
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  group_by(depart, edu) |> 
+  count() |> 
+  ggplot(aes(y = depart, x = n)) +
+  geom_col(aes(fill = factor(edu)),position = "stack")+
+  ylab("")+
+  labs(fill = "ระดับ")+
+xlab("\n จำนวน (เล่ม)")+
+scale_fill_manual(values = c("#E88D67","#005C78"))
+
+grid.text("Stacked Bar Chart (แผนภูมิแท่งเชิงซ้อน/เชิงประกอบ)",0.05, 0.89,
+just = c("left", "bottom"),
+  gp = gpar(
+    fontsize = 18,
+    fontface = "bold",
+    fontfamily = "ChulaCharasNew"
+  ))
+
+
+```
+
+:::
+
+:::
+
+## Creating Simple Bar Chart {.smaller}
+
+::: panel-sidebar
+
+::: {style="font-size: 220%;"}
+**`geom_bar()`**
+
+:::
+
+เป็น geometry หลักสำหรับสร้าง bar chart โดยมี argument สำคัญได้แก่
+
+- `data`
+
+- `stat = count` หรือ `identity`
+
+- `position = stack` หรือ `fill` หรือ `dodge`
+
+- `width`
+
+- `orientation`
+
+:::
+
+::: panel-fill
+
+```{r echo = F}
+theme_set(theme_grey())
+```
+
+```{r fig.height = 4}
+#| code-line-numbers: "2-3|5-6|8-11"
+## เตรียมข้อมูล
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+## data representation
+  ggplot(aes(y=depart))+
+  geom_bar(fill = "steelblue") +
+## minor fine-tune plot
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ggtitle("\n Simple Bar Chart")
+```
+
+:::
+
+
+## Creating Grouped Bar Chart {.smaller}
+
+
+::: panel-sidebar
+
+::: {style="font-size: 220%;"}
+**`geom_bar()`**
+
+:::
+
+เป็น geometry หลักสำหรับสร้าง bar chart โดยมี argument สำคัญได้แก่
+
+- `data`
+
+- `stat = count` หรือ `identity`
+
+- `position = stack` หรือ `fill` หรือ `dodge`
+
+- `width`
+
+- `orientation`
+
+:::
+
+::: panel-fill
+
+```{r echo = F}
+theme_set(theme_grey())
+```
+
+```{r fig.height = 4}
+#| code-line-numbers: "4,7"
+## เตรียมข้อมูล
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+## data representation
+  ggplot(aes(y=depart, fill = edu))+
+  geom_bar(position = "dodge") +
+## minor fine-tune plot
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ggtitle("\n Grouped Bar Chart")
+```
+
+:::
+
+
+## Creating Stacked Bar Chart {.smaller}
+
+
+::: panel-sidebar
+
+::: {style="font-size: 220%;"}
+**`geom_bar()`**
+
+:::
+
+เป็น geometry หลักสำหรับสร้าง bar chart โดยมี argument สำคัญได้แก่
+
+- `data`
+
+- `stat = count` หรือ `identity`
+
+- `position = stack` หรือ `fill` หรือ `dodge`
+
+- `width`
+
+- `orientation`
+
+:::
+
+::: panel-fill
+
+```{r echo = F}
+theme_set(theme_grey())
+```
+
+```{r fig.height=4}
+#| code-line-numbers: "4,7"
+## เตรียมข้อมูล
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+## data representation
+  ggplot(aes(y=depart, fill = edu))+
+  geom_bar(position = "stack") +
+## minor fine-tune plot
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ggtitle("\n Stacked Bar Chart")
+```
+
+:::
+
+## Bar Charts: Order is Matter {.smaller}
+
+
+::: {.r-stack}
+
+```{r}
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  count(depart) |> 
+  ggplot(aes(y = depart, x = n))+
+  geom_bar(fill = "steelblue", stat = "identity") +
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 15))+
+  ggtitle("\n Simple Bar Chart")
+```
+
+
+
+
+
+::: {.fragment}
+
+
+```{r}
+#| code-line-numbers: "4"
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  count(depart) |> 
+  ggplot(aes(y= reorder(depart,n), x= n))+
+  geom_bar(fill = "steelblue", stat = "identity") +
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 15))+
+  ggtitle("\n Simple Bar Chart")
+```
+
+:::
+
+::: {.fragment}
+
+
+```{r}
+#| code-line-numbers: "4"
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  count(depart) |> 
+  ggplot(aes(y= reorder(depart,-n), x= n))+
+  geom_bar(fill = "steelblue", stat = "identity") +
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 18))+
+  ggtitle("\n Simple Bar Chart")
+```
+
+:::
+
+:::
+
+## แผนภาพไหนเหมาะสมมากกว่ากัน
+
+
+```{r echo= F, fig.width = 16, fig.height = 6}
+library(rcartocolor)
+p1 <- data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  mutate(period = cut(year, breaks = 5)) |>
+  group_by(period, edu) |> 
+  count() |> 
+  ggplot(aes(x = period, y = n, fill = edu))+
+  geom_bar(stat = "identity", position = "dodge", col = "white")+
+  ylab("จำนวน \n") +
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 18))+
+  scale_fill_manual(values = c("#E88D67","#005C78"))
+
+
+p2 <- data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  mutate(period = cut(year, breaks = 5)) |> 
+  group_by(period, edu) |> 
+  count() |> 
+  ggplot(aes(x = edu, y = n, fill = period))+
+  geom_bar(stat = "identity", position = "dodge",col = "white")+
+  ylab("จำนวน \n") +
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 15))+
+  scale_fill_carto_d(type = "quantitative", palette = 2)
+
+p1+p2
+```
+
+
+## แผนภาพไหนเหมาะสมมากกว่ากัน
+
+```{r fig.width = 16, fig.height = 6, echo = F}
+p1<-data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  mutate(period = cut(year, breaks = 5)) |>
+  group_by(period, edu) |> 
+  count() |> 
+  ggplot(aes(x = period, y = n, fill = edu))+
+  geom_bar(stat = "identity", position = "stack", col = "white")+
+  ylab("จำนวน \n") +
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 18))+
+  scale_fill_manual(values = c("#E88D67","#005C78"))
+
+
+p2<-data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, levels=c(2,1), labels=c("ป.เอก","ป.โท"))) |> 
+  mutate(period = cut(year, breaks = 5)) |>
+  group_by(period, edu) |> 
+  count() |> 
+  ggplot(aes(x = period, y = n, fill = edu))+
+  geom_bar(stat = "identity", position = "stack", col = "white")+
+  ylab("จำนวน \n") +
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 18))+
+  scale_fill_manual(values = rev(c("#E88D67","#005C78")))
+
+p1+p2
+
+```
+
+
+::: {.incremental}
+
+<span style="color: white;">
+สําหรับ stacked bar plot การเปรียบเทียบความแตกต่างระหว่าง category ที่ไม่ได้เริ่มจากเส้น y=0 ทําได้ยาก...
+</span>
+
+:::
+
+## ระวัง {.smaller}
+
+อย่าลืมว่า attribute สำคัญของ bar chart คือ **ความยาว (length)**
+
+![](img/barplot1.png){width="85%"}
+
+## ระวัง {.smaller}
+
+อย่าลืมว่า attribute สำคัญของ bar chart คือ **ความยาว (length)**
+
+
+![](img/barplot2.png){width="85%"}
+
+
+## ระวัง {.smaller}
+
+อย่าสร้างภาระให้กับผู้อ่าน
+
+::: {.columns}
+
+:::: {.column width="80%"}
+
+![](img/barplot4.png){width="90%"}
+
+::::
+
+:::: {.column width="20%"}
+
+<iframe src="https://giphy.com/embed/Ys9SXSEczO5nW" width="475" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+
+::::
+
+:::
+
+## Related Charts: Visualize Amount
+
+มีแผนภาพที่อยู่ในกลุ่มเดียวกับ bar chart หลายตัว
+
+![](img/amount.png)
+
+
+## Dot plot
+
+เหมือน barplot แต่เปลี่ยนจากการใช้ความยาวของแท่งสี่เหลี่ยมแทนข้อมูล เป็นการใช้จุดแทน
+
+```{r echo = F}
+library(tidytext)
+library(stringr)
+data |>
+  filter(str_detect(advisor, "สุชาดา")) |> 
+  select(year, software1, software2, software3) |>
+  mutate(across(starts_with("software"), str_trim, "both")) |> 
+  mutate(across(starts_with("software"), ~str_replace_all(., pattern = "LISREL \\d+\\.\\d+", replace = "LISREL"))) |> 
+  mutate(software1 = str_replace_all(software1, "MATLAB \\d+\\.\\d+", "MATLAB")) |> 
+  mutate(software1 = str_replace(software1, "Fortran .*", "Fortran")) |> 
+  mutate(software1 = str_replace(software1, "Microsoft .*", "VisualBasic")) |> 
+  mutate(software2 = str_replace(software2, "GENOVA .*", "GENOVA")) |> 
+  mutate(software2 = str_replace(software2, "Microsoft .*", "Access")) |> 
+  mutate(software2 = str_replace(software2, "Lisrel", "LISREL")) |> 
+  unite("software", software1:software3, sep = " ") |> 
+  mutate(software = str_replace_all(software, "NA", ""),
+  software = str_trim(software)) |> 
+  filter(software != "เชิงคุณภาพ") |> 
+  unnest_tokens(output = "software", input = "software", to_lower = F) |> 
+  mutate(period = cut(year, breaks = 5)) |> 
+  group_by(software) |>
+  count() |> 
+  ggplot(aes(x = reorder(software,n), y=n))+
+  geom_point(aes(size = n), col = "steelblue")+
+  geom_segment(aes(x = software, xend = software, y = 0, yend = n), col = "steelblue",
+               linetype = 2)+
+  coord_flip()+
+  xlab("")+
+  ylab("\n จำนวนเล่ม")+
+  labs(size = "จำนวนวิทยานิพนธ์") +
+  theme_light()+
+  theme(panel.border = element_blank(),
+        panel.grid = element_blank(),
+        panel.grid.major.x = element_line(color ="grey"),
+        text = element_text(family = "ChulaCharasNew", size = 14),
+  legend.position = "right")+
+  ggtitle("Software Used in Theses")
+```
+
+
+## Dot plot {.smaller}
+
+
+```{r eval = F}
+#| code-line-numbers: "1-2|3-18|19|22-25|26"
+library(tidytext)
+library(stringr)
+data |>
+  filter(str_detect(advisor, "สุชาดา")) |> 
+  select(year, software1, software2, software3) |>
+  mutate(across(starts_with("software"), str_trim, "both")) |> 
+  mutate(across(starts_with("software"), 
+        ~str_replace_all(., pattern = "LISREL \\d+\\.\\d+", replace = "LISREL"))) |> 
+  mutate(software1 = str_replace_all(software1, "MATLAB \\d+\\.\\d+", "MATLAB")) |> 
+  mutate(software1 = str_replace(software1, "Fortran .*", "Fortran")) |> 
+  mutate(software1 = str_replace(software1, "Microsoft .*", "VisualBasic")) |> 
+  mutate(software2 = str_replace(software2, "GENOVA .*", "GENOVA")) |> 
+  mutate(software2 = str_replace(software2, "Microsoft .*", "Access")) |> 
+  mutate(software2 = str_replace(software2, "Lisrel", "LISREL")) |> 
+  unite("software", software1:software3, sep = " ") |> 
+  mutate(software = str_replace_all(software, "NA", ""),
+  software = str_trim(software)) |> 
+  filter(software != "เชิงคุณภาพ") |> 
+  unnest_tokens(output = "software", input = "software", to_lower = F) |> 
+  group_by(software) |>
+  count() |> 
+  ggplot(aes(x = reorder(software,n), y=n))+
+  geom_point(aes(size = n), col = "steelblue")+
+  geom_segment(aes(x = software, xend = software, y = 0, yend = n), col = "steelblue",
+               linetype = 2)+
+  coord_flip()+
+  xlab("")+
+  ylab("\n จำนวนเล่ม")+
+  labs(size = "จำนวนวิทยานิพนธ์") +
+  theme_light()+
+  theme(panel.border = element_blank(),
+        panel.grid = element_blank(),
+        panel.grid.major.x = element_line(color ="grey"),
+        text = element_text(family = "ChulaCharasNew", size = 14),
+  legend.position = "right")+
+  ggtitle("Software Used in Theses")
+```
+
+
+## Heatmap {.smaller}
+
+- เหมือนกับตารางข้อมูล ที่มีการใช้สีแทนปริมาณข้อมูล สามารถใช้ได้กับทั้งข้อมูล cross-sectional data และ time-series data
+
+- บางครั้ง heatmap สามารถนำเสนอข้อมูลที่มีปริมาณมากได้ดีกว่า bar chart และ dot plot
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r eval = F}
+#| code-line-numbers: "4-6"
+library(gapminder)
+gapminder |> 
+  filter(continent == "Asia") |> 
+  ggplot(aes(x = year, 
+             y = reorder(country, lifeExp)))+
+  geom_tile(aes(fill = lifeExp))+
+  theme_classic()+
+  ylab("")+
+  xlab("")
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r echo = F, fig.height = 8}
+library(gapminder)
+gapminder |> 
+  filter(continent == "Asia") |> 
+  ggplot(aes(x = year, 
+             y = reorder(country, lifeExp)))+
+  geom_tile(aes(fill = lifeExp))+
+  theme_classic()+
+  theme(text = element_text(size = 14))+
+  ylab("")+
+  xlab("")
+```
+:::
+
+::::
+
+## Heatmap {.smaller}
+
+
+
+
+![](img/heatmap.png)
+
+
+
+
+
+
+# Pie Chart
+
+แสดง/เปรียบเทียบสัดส่วนของข้อมูล
+
+
+## Pie Chart
+
+
+```{r echo=F}
+
+library(gt)
+
+
+obj <- c("เปรียบเทียบส่วนย่อยที่สนใจกับทั้งหมด",
+        "นำเสนอส่วนย่อยในรูปสัดส่วนอย่างง่าย เช่น 1/2, 1/3, 1/4 ",
+        "เปรียบเทียบปริมาณระหว่างส่วนย่อยหลายส่วน",
+        "เปรียบเทียบสัดส่วนหลายชุดตามเวลา")
+
+
+pie <- c("yes","yes","no","no")
+stack <- c("yes","no","no","yes")
+group <- c("no","no","yes","no")
+
+data.frame(obj, pie,stack,group) |> 
+  gt() |> 
+  cols_label(
+    obj = "Objective",
+    pie = "Pie Chart",
+    stack = "Stacked Chart",
+    group = "Grouped Chart"
+            )  |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels(everything())
+          ) |> 
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = cells_body(columns = c(pie, stack, group))
+            )
+
+
+```
+
+
+![](img/piechart1.png){fig-align="center"}
+
+
+## Creating Pie Chart {.smaller}
+
+การสร้าง pie chart ใน ggplot2 คือการสร้าง bar chart บนพิกัดเชิงขั้ว
+
+**ขั้นแรก** : สร้าง stack bar chart ก่อน หากต้องการ label ชิ้นของ pie ให้ทำในขั้นตอนนี้
+
+```{r}
+#| code-line-numbers: "1-4|5-6|7-10|9"
+bar <- data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  count(edu) |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  ggplot(aes(x = 2, y= n, fill = edu))+
+  geom_bar(stat = "identity") +
+  geom_text(aes(
+      label = paste0(edu,"\n",n,"เล่ม")), 
+      position = position_stack(vjust = 0.5),
+      family = "ChulaCharasNew", size = 9) + 
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 17))
+bar
+```
+
+
+## Creating Pie Chart {.smaller}
+
+**ขั้นที่สอง** : ปรับพิกัดจาก cartesian ให้เป็น polar coordinate ด้วยฟังก์ชัน `coord_polar()` หากความถี่หรือสัดส่วนที่ต้องการนำไปสร้างขนาดชิ้น pie อยู่บนแกน y ให้กำหนดอาร์กิวเมนท์​ `theta = y`
+
+```{r}
+bar + coord_polar(theta = "y")+
+  theme_void()+
+  theme(legend.position = "none")
+```
+
+
+## Donut Chart {.smaller}
+
+
+```{r}
+bar + coord_polar(theta = "y")+
+  xlim(c(0.8, 2.5)) +  # เพิ่ม xlim เพื่อทำให้เกิดช่องว่างตรงกลาง
+  theme_void()+
+  theme(legend.position = "none")
+```
+
+## ระวัง {.smaller}
+
+![](img/piechart2.png)
+
+
+## ระวัง {.smaller}
+
+
+หลายกรณี pie chart ไม่สามารถนำเสนอความแตกต่างระหว่างสัดส่วนย่อยต่าง ๆ ได้อย่างมีประสิทธิภาพ
+
+![](img/piechart3.png)
+
+## ระวัง {.smaller}
+
+ระวังการใช้ pie chart กับสัดส่วนย่อยจำนวนมากเกินไป และการใช้ pie chart ผิดประเภท
+
+![](img/piechart4.png)
+
+
+## ระวัง {.smaller}
+
+![](img/piechart5.png)
+
+## Related Charts: Visualize Composition/Proportion
+
+![](img/proportion.png)
+
+
+## 100% Stacked Bar Charts {.smaller}
+
+
+
+```{r}
+
+data |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  ggplot(aes(x=year, fill = edu))+
+  geom_bar(position = "fill")+
+  ylab("Proportion") +
+  theme(text = element_text(family = "ChulaCharasNew"))
+
+```
+
+
+## Treemap: Visualizing Nested Proportion
+
+แผนภาพ Treemap เป็น visualization ตัวหนึ่งที่มีประสิทธิภาพในการนําเสนอการแจกแจงความถี่หลายทาง
+
+```{r eval = F}
+install.packages("devtools")
+library(devtools)
+install_github("wilkox/treemapify")
+library(treemapify)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/treemap1.png)
+:::
+
+::: {.column width="50%"}
+![](img/treemap2.png)
+
+:::
+
+
+::::
+
+<div class="caption">
+[https://cran.r-project.org/web/packages/treemapify/vignettes/introduction-to-treemapify.html](https://cran.r-project.org/web/packages/treemapify/vignettes/introduction-to-treemapify.html)</div>
+
+
+
+## Creating Treemap {.smaller}
+
+```{r echo=F}
+library(treemapify)
+```
+
+```{r}
+
+data |> 
+  group_by(depart) |> 
+  count() |> 
+  ggplot(aes(area = n, 
+             fill = depart)) +
+  geom_treemap()+
+  geom_treemap_text(aes(label = depart), 
+            padding.y = grid::unit(3, "mm"),
+            col = "black", family = "ChulaCharasNew")+
+  theme(legend.position = "none")
+```
+
+
+## Creating Treemap (nested proportion) {.smaller}
+
+```{r}
+data |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  group_by(depart, edu) |> 
+  count() |> 
+  ggplot(aes(area = n, 
+             fill = depart,
+             subgroup = edu)) +
+  geom_treemap()+
+  geom_treemap_text(aes(label = depart), 
+            padding.y = grid::unit(3, "mm"),
+            col = "black", family = "ChulaCharasNew")+
+  geom_treemap_subgroup_border(col = "black")+ 
+  geom_treemap_subgroup_text(family = "ChulaCharasNew",
+            padding.y = grid::unit(5.5, "cm"),
+            col = "white",
+            size = 80, alpha = 0.6)+
+  theme(legend.position = "none")
+```
+
+
+# Line Charts
+
+แสดงแนวโน้มตามเวลา
+
+## Line Charts  {.smaller}
+
+
+
+::: panel-tabset
+
+
+### จำนวนวิทยานิพนธ์ของ อ.สุชาดา ตามเวลา
+
+```{r echo = F}
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year) |> 
+  count() |> 
+ggplot(aes(x=year, y=n, group = 1))+
+geom_line(stat = "identity", fill ="#021526")+
+geom_point()+
+theme_classic()+
+theme(panel.grid.major.y = element_line(color = "grey90", linetype = 2),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.title = element_text(size = 15, face = "bold"),
+      text = element_text(family = "ChulaCharasNew")) +
+ylab("\n จำนวน (เล่ม) \n ")+
+xlab("")+
+ylim(0,7)+
+ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
+```
+
+### Syntax
+
+
+```{r eval = F}
+data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year) |> 
+  count() |> 
+ggplot(aes(x=year, y=n, group = 1))+
+geom_line(stat = "identity", fill ="#021526")+
+geom_point()+
+theme_classic()+
+theme(panel.grid.major.y = element_line(color = "grey90", linetype = 2),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.title = element_text(size = 15, face = "bold"),
+      text = element_text(family = "ChulaCharasNew")) +
+ylab("\n จำนวน (เล่ม) \n ")+
+xlab("")+
+ylim(0,7)+
+ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
+```
+
+:::
+
+## Multiple Line Charts
+
+![](img/linechart.png)
+
+
+## Multiple Line Charts {.smaller}
+
+แผนภาพด้านล่างมีข้อสังเกตอะไรหรือไม่
+
+
+::: panel-tabset
+
+
+### จำนวนวิทยานิพนธ์ของ อ.สุชาดา ตามเวลาและระดับชั้น
+
+
+```{r echo=F}
+data |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year, edu) |> 
+  count()  |> 
+ggplot(aes(x=year, y=n, col = edu))+
+geom_line(stat = "identity")+
+geom_point()+
+theme_classic()+
+theme(panel.grid.major.y = element_line(color = "grey90", linetype = 2),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.title = element_text(size = 15, face = "bold"),
+      text = element_text(family = "ChulaCharasNew")) +
+ylab("\n จำนวน (เล่ม) \n ")+
+xlab("")+
+ylim(0,7)+
+ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
+```
+
+
+### Syntax
+
+```{r eval=F}
+data |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year, edu) |> 
+  count()  |> 
+ggplot(aes(x=year, y=n, col = edu))+
+geom_line(stat = "identity")+
+geom_point()+
+theme_classic()+
+theme(panel.grid.major.y = element_line(color = "grey90", linetype = 2),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.title = element_text(size = 15, face = "bold"),
+      text = element_text(family = "ChulaCharasNew")) +
+ylab("\n จำนวน (เล่ม) \n ")+
+xlab("")+
+ylim(0,7)+
+ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
+```
+
+:::
+
+## Multiple Line Charts & Heatmaps {.smaller}
+
+ในกรณีที่มีหน่วยข้อมูลจำนวนมาก การใช้ heatmap อาจมีประสิทธิภาพในการสื่อสารมากกว่า line chart
+
+
+```{r fig.height = 8, echo = F, fig.width=20}
+p1 <- gapminder |> 
+  filter(continent == "Asia") |> 
+  ggplot(aes(x = year, y= lifeExp, group = country))+
+  geom_line(col = "steelblue")
+
+
+p2 <- gapminder |> 
+  filter(continent == "Asia") |> 
+  ggplot(aes(x = year, y = reorder(country, lifeExp)))+
+  geom_tile(aes(fill = lifeExp))+
+  geom_text(aes(label = round(lifeExp,0)), size = 2, col = "white")+
+  ylab("")
+
+p1+p2
+```
+
+
+
+## Related Charts: Trends
+
+- Dot plots
+
+- Slope plots
+
+## Dot Plot
+
+dotplot สามารถใช้แสดงพัฒนาการ หรือการเปลี่ยนแปลงของตัวแปรระหว่างจุดเวลาสองจุดได้
+
+![](img/dotploy.png)
+
+
+## 
+
+<center>
+![](img/dotplot3.png)
+</center>
+
+## Slope Plot
+
+![](img/slopeplot.png){width="90%"}
