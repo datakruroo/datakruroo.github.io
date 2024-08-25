@@ -1,0 +1,113 @@
+---
+title: "Untitled"
+format: html
+---
+
+## 1. Importing data
+
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/dimensionality_reduction/Country-data.csv")
+head(data)
+
+```
+
+เราจะใช้ PCA เพื่อลดมิติ (ตัวชี้วัด 9 ตัว) ลงเหลือองค์ประกอบหลักที่มีจำนวนน้อยกว่า เพื่อให้เราสามารถบรรยาย/ทำความเข้าใจสภาพ XXX ของประเทศกลุ่มนี้ได้ง่ายและมีประสิทธิภาพมากขึ้น
+
+## 2. PCA
+
+ฟังก์ชันสำหรับวิเคราะห์ PCA ใน R มีหลายตัว ในบทเรียนนี้จะแนะนำฟังก์ชันพื้นฐานในการวิเคราะห์ PCA ซึ่งก็คือ `princomp()`
+
+
+```{r}
+data |> 
+    column_to_rownames("country") |> 
+    ## standardized xs
+    mutate_all(~as.numeric(scale(.))) |>
+    princomp()->pca_fit
+
+pca_fit |> glimpse()
+
+```
+
+## 3. ประเมินความสำคัญขององค์ประกอบหลัก
+
+เพื่อใช้คัดเลือกองค์ประกอบหลักที่จะนำไปใช้งานการประเมินดังกล่าวจะใช้ค่าสถิติที่เรียกว่า eigenvalues เป็นหลัก
+
+
+```{r}
+## standard deviaion of components
+pca_fit$sdev
+
+## calculate eigenvalues
+pca_fit$sdev^2
+```
+
+
+```{r}
+summary(pca_fit)->summary
+```
+
+### Scree plot (elbow method)
+
+กราฟเส้นที่พล็อตระหว่างแกน y คือ eigenvalue และแกน x คือองค์ประกอบ
+
+```{r}
+eigen <- pca_fit$sdev^2
+prop_eigen <- eigen/sum(eigen)
+cumu_prop_eigen <- cumsum(eigen)/sum(eigen)
+comp <- 1:9
+data.frame(comp, eigen, prop_eigen,cumu_prop_eigen) |> 
+    ggplot(aes(x=comp, y=eigen))+
+    geom_line()+
+    geom_point()+
+    geom_hline(aes(yintercept = eigen), linetype = 2, col ="grey60") +
+    ggtitle("Scree Plot")+
+    theme_light()+
+    theme(panel.grid = element_blank())
+
+
+data.frame(comp, eigen, prop_eigen,cumu_prop_eigen) |> 
+    ggplot(aes(x=comp))+
+    geom_line(aes(y = prop_eigen), col = "black")+
+    geom_line(aes(y = cumu_prop_eigen) , col = "steelblue", linetype = 2)+
+    geom_point(aes(y = prop_eigen))+
+    geom_point(aes(y = cumu_prop_eigen))+
+    ggtitle("Scree Plot")+
+    theme_light()+
+    theme(panel.grid = element_blank(),
+          panel.grid.major.x = element_line(color = "grey", linetype =3))+
+    scale_x_continuous(breaks=1:9)
+```
+
+
+## 4. พิจารณาความหมายขององค์ประกอบหลัก
+
+สถิติที่ใช้ในการพิจารณาความหมายขององค์ประกอบหลักคือ loadings
+
+```{r}
+pca_fit$loadings[1:9, ]
+```
+
+
+## 5. ลองนำคะแนนองค์ประกอบมาใช้
+
+
+```{r}
+library(ggrepel)
+pca_fit$scores  |> 
+    data.frame() |> 
+    select(1:3) |> 
+    rownames_to_column("country") |> 
+    ggplot(aes(x=Comp.1, y=Comp.2, size = Comp.3))+
+    geom_point(alpha = 0.5)+
+    geom_text_repel(aes(label = country))
+```
+
+
+
+```{r}
+data |>
+    filter(str_detect(country, "Nigeria"))
+```
