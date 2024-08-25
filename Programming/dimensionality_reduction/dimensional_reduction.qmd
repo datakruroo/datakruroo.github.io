@@ -1,0 +1,254 @@
+---
+title: "Week 9: Dimensionality Reduction"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-08-24
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 9: 2758615 Essential Competencies for Programming in Educational Data Analysis <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/datavis.png
+      data-background-opacity: 20%
+      data-background-size: contain
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+
+---
+
+```{r echo = F}
+library(tidyverse)
+library(stringr)
+```
+
+# Outline
+
+- What is dimensionality reduction?
+
+- Why reduce?
+
+- Some dimensionality reduction:
+  - PCA
+  - tSNE
+  - UMAP
+
+# What is dimensionality reduction? {.smaller}
+
+- Transformation techniques
+
+- Projection techniques
+
+## What is dimensionality reduction? (1) {.smaller}
+
+
+ชุดข้อมูลนี้มีกี่ตัวแปร มีกี่หน่วยข้อมูล
+
+::: {.fragment}
+
+<span style="color: #5E8A99;">
+ประเทศต่าง ๆ มีความแตกต่างกันในด้านฐานะทางเศรษฐกิจ การศึกษา และสุขภาพอย่างไร
+</span>
+
+:::
+
+```{r}
+data <- read_csv("Country-data.csv")
+data
+```
+
+
+<div style="font-size: 16px;">
+
+**คำอธิบายข้อมูล**
+
+`country` -- ชื่อประเทศ
+
+`child_mort` -- อัตราการตายของเด็กอายุต่ำกว่า 5 ปี (ต่อเด็ก 1,000 คน)
+
+`exports` -- การส่งออกสินค้า (% ของ GDP)
+
+`health` -- ค่าใช้จ่ายด้านสุขภาพของประชากร (% ของ GDP)
+
+`imports` -- การนำเข้าสินค้า (% ของ GDP)
+
+`inflation` -- อัตราเงินเฟ้อ (​%)
+
+`life_expec` -- อายุขัยเฉลี่ยของประชากรในประเทศ (ปี)
+
+`total_fer` -- อัตราการเจริญพันธ์ุ (จำนวนบุตรที่รอดใน 1 ปีต่อสตรีวัยเจริญพันธุ์ 1,000 คน)
+
+`gdpp` -- GDP per capita (รายได้ประชาชาติต่อหัว)
+
+
+
+</div>
+
+<div class="caption">[https://www.kaggle.com/datasets/vipulgohel/clustering-pca-assignment](https://www.kaggle.com/datasets/vipulgohel/clustering-pca-assignment)</div>
+
+
+## What is dimensionality reduction? (2) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r fig.height = 12}
+p1 <- data |> 
+  mutate_at(vars(-country), 
+            ~as.numeric(scale(.))) |> 
+  pivot_longer(cols = -country) |> 
+  ggplot(aes(x = name, y= country))+
+  geom_tile(aes(fill = value))+
+  ggtitle("Heatmap")
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+```{r}
+p2 <- data |> 
+  mutate_at(vars(-country), 
+            ~as.numeric(scale(.))) |> 
+  pivot_longer(cols = -country) |> 
+  ggplot(aes(x=value, y=name))+
+  geom_boxplot(width = 0.5, outlier.alpha = 0)+
+  geom_jitter(height = 0.1, aes(col = value))+
+  ggtitle("Boxplot")
+```
+
+
+:::
+
+::::
+
+```{r echo=F, fig.width=16}
+library(patchwork)
+p1+p2
+```
+
+
+## What is dimensionality reduction? (3) {.smaller}
+
+```{r}
+data |> select(country, child_mort) |> head()
+```
+
+![](img/concept2.png)
+
+```{r echo=F, eval=F}
+library(ggrepel)
+data |> 
+  select(country, child_mort) |> 
+  ggplot(aes(x = child_mort, y=0))+
+  geom_jitter(height=0.0001)+
+  geom_text(aes(label = country), 
+                  nudge_y = 0.0005,
+                  check_overlap = TRUE,
+                  size = 2.5, col = "grey")+
+  geom_hline(yintercept = 0)+
+  ylim(-0.001,0.01)+
+  theme_light()+
+  theme(panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())+
+  ylab("")+
+  xlab("\n child_mort")
+```
+
+
+## What is dimensionality reduction? (4) {.smaller}
+
+```{r}
+data |> select(country, 1:5) |> head()
+```
+
+
+```{r echo = F}
+library(ggrepel)
+data |> 
+  select(country, 1:5) |> 
+  ggplot(aes(x = imports, y=exports, size = health, col = child_mort))+
+  geom_point(alpha = 0.8)+
+  geom_text_repel(aes(label = country), 
+                  nudge_y = 0.03,
+                  size = 2, col = "grey30")+
+  theme_light()+
+  scale_color_gradient(low = "steelblue", high = "orange")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 14))
+
+```
+
+
+## What is dimensionality reduction? (4) {.smaller}
+
+- กระบวนการลดจำนวนมิติ (features หรือ variables) ในชุดข้อมูล โดยยังคงข้อมูลที่สำคัญที่สุดไว้เพื่อให้โมเดลยังสามารถทำงานได้อย่างมีประสิทธิภาพมากขึ้น
+
+  - ทำความเข้าใจโครงสร้างของข้อมูล
+
+  - บรรยาย/แสดงผลลักษณะของหน่วยข้อมูล
+
+  - ตรวจสอบความผิดปกติ (anomaly detection)
+
+  - preprocessing data ประเภทหนึ่งสำหรับการสร้าง regression/classification models
+
+
+## Dimensionality reduction techniques {.smaller}
+
+- **Principal Component Analysis**
+
+- t-SNE
+
+- UMAP
+
+- Multidimensional Scaling (MDS)
+
+- Autoencoders
+
+- ...
+
+
+## Principal Component Analysis (PCA) {.smaller}
+
+เทคนิคหนึ่งในกลุ่ม dimensionality reduction โดยมีเป้าหมายเพื่อลดจำนวนตัวแปร (features) จำนวนมากในชุดข้อมูลให้มีจำนวนน้อยลง
+
+- PCA ใช้การแปลง (transformation) ข้อมูลของตัวแปรต้นฉบับให้เป็น**องค์ประกอบหลัก (principal components: PC)** ที่มีจำนวนน้อยกว่าแต่สามารถอธิบายความแปรปรวนของข้อมูลได้ในปริมาณที่มากเพียงพอที่จะไม่สูญเสียสาระสำคัญไป
+
+- PC เป็นตัวแปรใหม่ที่อยู่ในรูปผลรวมเชิงเส้นของตัวแปรต้นฉบับ สมการด้านล่างเป็นองค์ประกอบหลักตัวหนึ่งในกรณีที่มีตัวแปรต้นฉบับ 2 ตัว
+
+$$
+PC_j = \lambda_1jX_1+\lambda_2jX_2
+$$
+
+- สมมุติว่ามีตัวแปรต้นฉบับจำนวน p ตัว องค์ประกอบหลักที่สกัดได้จากเทคนิค PCA จะมีจำนวนเท่ากับ p ตัวเช่นเดียวกัน แต่มีการจัดสรรความแปรปรวนขององค์ประกอบให้แต่ละองค์ประกอบสามารถอธิบายความแปรปรวนของตัวแปรต้นฉบับได้มากที่สุด ทำให้
+
+  - องค์ประกอบหลักแรก หรือ PC1 จะมีความแปรปรวนของตัวแปรต้นฉบับมากที่สุด
+
+  - PC2, PC3, ... PCp จะมีความแปรปรวนของตัวแปรต้นฉบับที่ลดหลั่นกันลงมา
+
+การจัดสรรความแปรปรวนใหม่นี้ทำให้ผู้วิเคราะห์สามารถเลือก PC ในจำนวนที่น้อยกว่า p เพื่อใช้อธิบายข้อมูลได้
+
+
+
+## Principal Component Analysis (PCA) {.smaller}
+
+{{< pdf PCA.pdf width="80%" height=600 >}}
+
+
+## ​Syntax Example
+
+... 

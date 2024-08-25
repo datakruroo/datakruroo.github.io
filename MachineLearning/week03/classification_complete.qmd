@@ -1,0 +1,363 @@
+---
+title: "Basic Classification"
+format: html
+editor: visual
+---
+
+บทเรียนนี้จะกล่าวถึงการสร้างโมเดลทำนายประเภท classification model ชุดข้อมูลตัวอย่างคือ `learningdata.csv` สามารถดาวน์โหลดได้จาก [ชุดข้อมูล `learningdata.csv`](https://www.kaggle.com/datasets/siwachoat/studentl-learning) รายละเอียดของตัวแปรต่าง ๆ ในชุดข้อมูลสามารถดูได้จากใน kaggle
+
+```{r}
+library(readr)
+library(dplyr) # library สำหรับ manipulate ข้อมูล
+## importing data
+data <- read_csv("learningdata.csv")
+head(data)
+glimpse(data)
+```
+
+ผู้วิเคราะห์มีการจัดการข้อมูลเหมือนกับในเนื้อหาการสร้างโมเดล regression ในสัปดาห์ก่อน ดังนี้
+
+tidy data format
+
+- ในแต่ละคอลัมน์ต้องเป็นตัวแปรเดียวกัน
+
+- ในแต่ละ row ต้องเป็นหน่วยข้อมูลเดียวกัน
+
+- ดังนั้นภายในแต่ละ cell ก็จะต้องเป็นข้อมูลที่ intersect กันระหว่าง col กับ row ซึ่งจะมีเพียง 1 ค่าเท่านั้น ไม่ต้องใส่หน่วยหรืออะไรใด ๆ ที่ไม่เกี่ยวข้องกับปริมาณหรือค่าของข้อมูล
+
+
+```{r}
+## tbl == tibble == data.frame (gen2) == ชุดข้อมูลที่เป็น spreadsheet ใน R
+## convert character data to factor
+data <- data %>% 
+  mutate_if(is.character, as.factor)
+
+## calculate score of anxiety, teacher support, and learning environment
+dat_preproc <- data |> 
+  mutate(acad.anxiety = rowMeans(across(acad.axiety1:acad.axiety5)),
+         teacher.support = rowMeans(across(teach.sup1:teach.sup5)),
+         lrn.env = rowMeans(across(lrn.environ1:lrn.environ5))) |> 
+  select(-contains("axiety"), -contains("teach.sup"), -contains("lrn.environ"))
+
+glimpse(dat_preproc)
+```
+
+## วัตถุประสงค์
+
+$$
+y  \approx  \hat{y} = f(x) = \beta_0 + \beta_1x_1 + \beta_2x_2 + \cdots + \beta_px_p
+$$
+
+วัตถุประสงค์ของการวิเคราะห์นี้คือ เพื่อสร้างโมเดลสำหรับทำนายความสำเร็จในการเรียนของนักเรียน (สำเร็จ/ล้มเหลว) โดยใช้ข้อมูลจากตัวแปรต่าง ๆ ในชุดข้อมูล `learningdata.csv` เป็นตัวแปรทำนาย
+
+
+โมเดลจำแนก (classification model) คือโมเดลทำนายประเภทหนึ่งที่ตัวแปรตามเป็นตัวแปรแบบจัดประเภท ส่วนตัวแปรอิสระเป็นอะไรก็ได้ โมเดลจำแนกสามารถแบ่งออกเป็น 3 ประเภทใหญ่
+
+- binary classification
+
+- multi-class classification
+
+- multi-label classification
+
+
+## ความสำเร็จในการเรียน
+
+โครงการวิเคราะห์นี้มีการนิยามความสำเร็จในการเรียนของนักเรียนไว้ว่า คือ การที่นักเรียนมีคะแนนผลสัมฤทธิ์ทางการเรียนอยู่ในระดับที่ผ่านเกณฑ์ขั้นต่ำที่กำหนดไว้เท่ากับ 65 คะแนน จากนิยามดังกล่าวทำให้ผู้วิเคราะห์สามารถสร้างตัวแปรตามความสำเร็จในการเรียนของนักเรียนได้ดังนี้
+
+```{r}
+library(ggplot2)
+## visualization approach
+dat_preproc |> 
+  mutate(success = ifelse(ach>=65, 1,0)) |> 
+  select(ach, success) |> 
+  ggplot(aes(x= factor(success), y=ach))+
+  geom_boxplot()+
+  geom_hline(yintercept = 65)
+
+## statistic approach
+dat_preproc |> 
+  mutate(success = ifelse(ach>=65, 1,0)) |> 
+  group_by(success) |> 
+  summarise(min = min(ach), max=max(ach))
+
+dat_preproc_success <- dat_preproc |> 
+  mutate(success = ifelse(ach>=65, 1,0)) |> 
+  select(-ach)
+```
+
+ลองสำรวจการแจกแจงของตัวแปรตามความสำเร็จในการเรียนของนักเรียน
+
+```{r}
+## tidyverse approach
+dat_preproc_success |> 
+  group_by(success) |> 
+  summarise(n = n())
+
+## traditional approach
+table(dat_preproc_success$success) |> prop.table()
+
+dat_preproc_success |>  glimpse()
+```
+
+ข้อสังเกตก่อน train model
+
+-   ผลการสำรวจข้างต้นแสดงให้เห็นว่ามีหน่วยข้อมูลนักเรียนที่ประสบความสำเร็จในการเรียนค่อนข้างน้อย สะท้อนว่าการสร้างโมเดลทำนายในเคสนี้อาจจะมีปัญหาที่เรียกว่า ข้อมูลไม่สมดุล (imbalance class) ข้อสังเกตนี้อาจเป็นปัจจัยหนึ่งที่ทำให้โมเดลทำนายความสำเร็จในการเรียนของนักเรียนไม่แม่นยำ
+
+- อย่าลืมตัด `student.id` ออกจากการวิเคราะห์
+
+- `time.manage1,2` อาจทำให้เกิดปัญหา multicollinearity ในการวิเคราะห์ logistic regression 
+
+- มีตัวแปรหลายตัวที่บันทึกเป็นตัวเลข แต่จริง ๆ มันเป็นตัวแปรจัดประเภท ดังนั้นผู้วิเคราะห์ควรปรับสถานะของตัวแปรดังกล่าวให้เป็น factor ก่อนนำไปวิเคราะห์
+
+ตัวแปรที่จะต้องแปลงได้แก่ 
+
+satisfac
+sch.belong_ordinal
+par.involv_ordinal
+motiv_ordinal
+success
+
+
+```{r}
+dat_preproc_success |> 
+  mutate(satisfac = factor(satisfac),
+         sch.belong_ordinal = factor(sch.belong_ordinal),
+         par.involv_ordinal = factor(par.involv_ordinal),
+         ...
+  )
+```
+
+วิธีการที่มีประสิทธิภาพมากกว่าในการแปลงคือการใช้ mutate_at()
+
+```{r}
+dat_preproc_success <- dat_preproc_success |> 
+  mutate_at(vars("satisfac", "sch.belong_ordinal", "par.involv_ordinal","motiv_ordinal", "success"),
+            factor)
+glimpse(dat_preproc_success)
+```
+
+## การสร้างโมเดล : logistic regression
+
+การสร้างโมเดลทำนายแบบ logistic regression ใน R สามารถทำได้หลายวิธีการ ในตัวอย่างนี้จะแสดงการสร้างโมเดลด้วยวิธีการแบบดั้งเดิมก่อน ดังนี้
+
+สัดส่วนในการแบ่งชุดข้อมูลเป็น train กับ test data 
+
+- 90:10
+
+- 80:20
+
+- 70:30
+
+- 60:40
+
+- 50:50
+
+- 30:70
+
+
+```{r}
+library(rsample)
+## split data into train and test dataset
+set.seed(123)
+split <- initial_split(data = dat_preproc_success,
+                       prop = 0.7,
+                       strata = "success"
+                       )
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
+```{r}
+library(tidymodels)
+tidymodels_prefer()
+```
+
+
+```{r}
+logis_reg <- logistic_reg(penalty = tune(), mixture = 1) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+
+library(themis)
+
+logis_recipe <- recipe(success ~. ,data = train_data) |> 
+  update_role(student.id, new_role = "ID") |> 
+  step_dummy(all_nominal_predictors()) |> 
+  step_interact(terms = ~ all_numeric_predictors():all_numeric_predictors()) |> 
+  step_smote(success)
+
+logis_recipe |> prep() |> juice()
+folds <- vfold_cv(train_data, v=5, repeats = 3, strata = success)
+
+penalty_grid <- grid_regular(penalty(range = c(-10,0)), levels = 50)
+
+
+library(future)
+# ตั้งค่าให้ใช้การประมวลผลแบบขนานโดยใช้ multisession
+plan(multisession, workers = parallel::detectCores() - 1)
+
+
+
+
+tune_result_logis <- tune_grid(
+  object = logis_reg,
+  preprocessor = logis_recipe,
+  resamples = folds,
+  grid = penalty_grid,
+  metrics = metric_set(roc_auc, f_meas, sens, spec, accuracy),
+  control = control_grid(save_pred = TRUE)
+)
+
+plan(sequential)
+
+tune_result_logis |> collect_metrics() |> 
+  ggplot(aes(x=penalty, y=mean))+
+  geom_point()+
+  geom_errorbar(aes(ymin = mean - std_err, ymax = mean + std_err))+
+  geom_line()+
+  facet_wrap(~.metric)
+
+show_best(tune_result_logis, metric = "f_meas", n = 20)
+
+### final model
+
+logis_final <- logistic_reg(penalty = 0.2442053, mixture = 1) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+
+
+last_fit <- logis_final |> 
+  last_fit(
+          preprocessor = logis_recipe,
+          split,
+          metrics = metric_set(sens, spec, f_meas))
+
+
+last_fit |> 
+  collect_metrics()
+
+
+tune_result_logis |> collect_metrics() |> 
+  filter(abs(penalty-0.25)<10^-2)
+
+
+best_model <- tune_result_logis |> collect_metrics() |> 
+  filter(.config == "Preprocessor1_Model47")
+
+
+
+tune_result_logis |> collect_predictions() |> 
+  filter(abs(penalty - 0.0000518) < 1e-6) |> 
+  group_by(id) |> 
+  roc_curve(truth = success, .pred_0) |> 
+  ggplot(aes(x = 1 - specificity, y=sensitivity, col = id))+
+  geom_line()
+
+select_best(tune_result_logis, metric = "roc_auc")
+
+penalty <- best_model |> slice(1) |> pull(penalty)
+.config <- "Preprocessor1_Model47"
+
+best_tib<-data.frame(penalty, .config)
+ 
+ 
+ finalize_model(
+
+
+```
+
+
+
+```{r}
+
+cat("training set")
+table(train_data$success) |> prop.table()
+cat("testing set")
+table(test_data$success) |> prop.table()
+```
+
+โมเดลที่จะใช้ในตัวอย่างเป็น logistic regression
+
+#### logit model
+
+$$
+\log \left( \frac{p}{1-p} \right) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k
+$$
+
+#### prob model
+
+$$
+p = \frac{1}{1 + e^{-\left( \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k \right)}}
+$$
+
+```{r}
+glimpse(train_data)
+```
+
+
+```{r}
+## train model using glm() function
+logistic_fit <- glm(formula = success ~ ., ## all-in
+                    family = binomial(link = "logit"),
+                    data = train_data[,-1])
+summary(logistic_fit)
+```               
+
+## การประเมินประสิทธิภาพของโมเดลทำนาย
+
+สำหรับโมเดลทำนาประเภท classfication การประเมินประสิทธิภาพการทำนายของโมเดลสามารถทำได้ง่าย ๆ โดยการเปรียบเทียบความแตกต่างระหว่างค่าทำนายกับค่าจริง ซึ่งผลการเปรียบเทียบดังกล่าวสามารถนำเสนอให้รูปของเมทริกซ์ที่เรียกว่า confusion matrix ดังนี้
+
+```{r}
+## calculate probability of success
+prob_success <- predict(object = logistic_fit, ## our trained model
+                newdata = test_data, ## predict on test data
+                type = "response") ## calculate probability of success
+hist(prob_success)
+```
+
+
+ค่าความน่าจะเป็นของความสำเร็จ (prob_success) ยังไม่ใช่ค่าทำนายที่จะนำไปใช้ เพราะว่ายังไม่ได้ให้ข้อสรุปว่าหน่วยข้อมูลไหนควรถูกจำแนกให้อยู่ในกลุ่มสำเร็จหรือล้มเหลว
+
+```{r}
+pred_success <- ifelse(prob_success >=0.5, 1,0)
+pred_success |>  table()
+```
+
+dat_preproc_success
+train_data
+test_data
+
+
+ขั้นตอนต่อไปจะเป็นการวิเคราะห์ประสิทธิภาพการทำนายของโมเดลที่สร้างขึ้นบน test_data
+
+```{r}
+#install.packages("caret")
+library(caret)
+test_data <- test_data |> 
+  bind_cols(pred = pred_success) |> 
+  mutate(pred = factor(pred))
+head(test_data)
+
+?confusionMatrix()
+
+confusionMatrix(data = test_data$pred,
+                reference = test_data$success,
+                positive = "1")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

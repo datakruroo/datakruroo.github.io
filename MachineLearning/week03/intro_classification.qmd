@@ -1,0 +1,298 @@
+---
+title: "Untitled"
+format: html
+---
+
+บทเรียนนี้จะแนะนำการสร้าง classification model ด้วย tidymodels framework ชุดข้อมูลที่ใช้ในบทเรียนนี้จะมี 3 ตัวได้แก่
+
+- learning_data2.csv ที่ใช้ใน regression task เมื่อสัปดาห์ก่อน
+
+- TeacherSalaryData.csv
+
+- [ชุดข้อมูล `learningdata.csv`](https://www.kaggle.com/datasets/siwachoat/studentl-learning) รายละเอียดของตัวแปรต่าง ๆ ในชุดข้อมูลสามารถดูได้จากใน kaggle
+
+
+
+## 1. importing data
+
+บรรยายข้อมูลใด ๆ 
+
+```{r message = F, results = T, echo = F}
+library(tidyverse)
+library(tidymodels)
+library(readxl)
+data <- read_csv("/Users/choat/Desktop/learning_data2.csv")
+head(data)
+```
+
+- งานนี้เป็น classification task ดังนั้นเราจะต้องสร้างตัวแปรตามที่เป็นตัวแปรจัดประเภทก่อน จะสร้างจาก `research_score` 
+
+- เราจะสร้างโมเดลทำนายความสำเร็จในการเรียนวิจัย โดยที่ความสำเร็จคือได้ B ขึ้นไป (>= 80 คะแนน)
+
+- เราเรียกการจำแนกที่มี 2 ค่า ว่า binary classification
+
+```{r}
+data <- data |> 
+    mutate(success = ifelse(research_score>=80, 1,0)) |> 
+    mutate(success = factor(success, levels=c(1,0),labels=c("success", "fail"))) |> 
+    select(-research_score)
+```
+
+
+เมื่อพิจารณา distribution ของตัวแปรตาม `success` พบว่ามีความแตกต่างกันค่อนข้างมากระหว่างกลุ่มที่สำเร็จกับไม่สำเร็จ ดังนั้นอาจจะเกิดปัญหาในการเรียนรู้ของโมเดล เพราะว่าโมเดลอาจจะมีข้อมูลตัวอย่างที่สำเร็จน้อยไปหน่อย และโดนข้อมูลที่ไม่สำเร็จมา dominate ---> ปัญหา Imbalance class
+
+```{r}
+data |>
+    count(success)
+
+```
+
+
+
+## 2. exploring and manipulating data
+
+```{r}
+data <- data |> 
+    select(-gender, -department)
+## ตัด missing value ออก
+data <- data |> 
+    drop_na()
+### สำรวจการแจกแจงของข้อมูลตัวแปรอิสระ
+data |> 
+  select(-success) |> 
+  pivot_longer(cols=everything()) |> 
+  ### names_to = "variable", values_to = "value")
+  ggplot(aes(x=value))+
+    geom_density()+
+    facet_wrap(~name, scales = c("free"))
+
+```
+
+## 3. data spliting
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.7, strata  = success)
+train_data <- training(split)
+test_data <- testing(split)
+
+train_data  |> 
+    count(success)
+```
+
+
+## 4. specifying supervised learning model
+
+เราจะสร้าง classification model จาก 2 อัลกอริทึม ได้แก่
+
+- logistic regression
+
+- K-nearest neigbhor
+
+```{r}
+## parsnip model
+logistic_mod <- logistic_reg(penalty = tune(), 
+                             mixture = 1) |>  ### -- lasso reg
+    set_engine("glmnet") |>
+    set_mode("classification")	
+
+knn_mod <- nearest_neighbor(neighbors = tune()) |> 
+    set_engine("kknn") |> 
+    set_mode("classification")
+
+```
+
+
+## 5. preprocessing model
+
+- การกำหนด preprocessing model เป็นชิ้นส่วนสำคัญภายใน tidymodels ควรจะต้องกำหนดชิ้นส่วนนี้ทุกครั้งถึงแม้ว่าเราจะยังไม่ได้ preprocess ข้อมูลใด ๆ ก็ตาม
+
+- ใน tidymodels จะมี library-recipe ที่รองรับการ preprocess data 
+
+- ปัจจุบัน recipe มองเป็น base library สำหรับการทำ preprocess แต่ว่ามันมีตัว extension อีกมากมายที่สามารถนำมาเสริมประสิทธิภาพในการ preprocess data ได้
+
+- themis
+
+- textrecipe
+
+- thaitextrecipe
+
+ปัญหา imbalance class ที่เกิดขึ้นสามารถแก้ไขได้โดยอาจจะใช้วิธีการที่จะเรียกว่าการสร้างตัวอย่างสังเคราะห์ (synthetic samples)
+
+--> SMOTE --> อยู่ภายใต้ library-themis
+
+
+```{r}
+library(themis)
+## preprocessor
+base_recipe <- recipe(success ~ . , data = train_data)
+   
+base_recipe |> 
+    prep() |> ## training
+    juice()
+
+## preprocessor + smote
+smote_recipe <- base_recipe |> 
+    step_normalize(all_numeric_predictors()) |> 
+    step_smote(success)
+
+smote_recipe |> 
+    prep() |> 
+    juice() |> 
+    count(success)
+
+## preprocessor knn
+knn_recipe <- base_recipe |> 
+        step_normalize(all_numeric_predictors())
+
+base_recipe |> 
+        step_normalize(all_numeric_predictors()) |> 
+        prep() |> 
+        juice() |> summary()
+```
+
+## 6. tuning-hyperparameters
+
+sensitivity = (true positive)/(all positive)
+
+
+```{r}
+tidymodels_prefer()
+
+## resamples
+set.seed(123)
+folds <- vfold_cv(train_data, v=5, repeats =3)
+
+## creat regular grid
+### สมาชิกใน grid จะต้องเป็น hyperparameters
+logistic_grid <- grid_regular(penalty(range = c(-10,0)),## (10^(-20), 1)
+             levels = 20) 
+
+knn_grid <- grid_regular(neighbors(range=c(1,10)))
+
+logistic_tune_results <- tune_grid(
+    object = logistic_mod,
+    resamples = folds,
+    preprocessor = smote_recipe,
+    grid = logistic_grid,
+    metrics = metric_set(sens, spec, roc_auc, precision,
+                         f_meas, accuracy),
+    control = control_grid(save_pred = T)
+)
+
+knn_tune_results <- tune_grid(
+    object = knn_mod,
+    resamples = folds,
+    preprocessor = smote_recipe,
+    grid = knn_grid,
+    metrics = metric_set(sens, spec, roc_auc, precision,
+                         f_meas, accuracy),
+    control = control_grid(save_pred = T)
+)
+
+
+
+```
+
+
+
+## 7. exploring the results
+
+ใน classification task มี metrics สำหรับประเมินประสิทธิภาพการทำนายของโมเดลหลายตัว เช่น
+
+- confusion matrix
+
+- accuracy
+
+- sensitivity
+
+- specificity
+
+- precision
+
+- roc_auc
+
+- f measures
+
+```{r}
+logistic_tune_results |> collect_metrics() |> 
+    pull(penalty) |> summary()
+
+
+logistic_tune_results |> collect_metrics() |> 
+    ggplot(aes(x = penalty, y=mean))+
+    geom_line()+
+    geom_point()+
+    facet_wrap(~.metric)
+
+###-- select best model
+
+logistic_tune_results |> 
+    show_best(metric = "f_meas", n=5)
+
+logistic_tune_results |> 
+    show_best(metric = "sens", n=5)
+
+logistic_tune_results |> 
+    show_best(metric = "accuracy", n=5)
+
+logistic_tune_results |> 
+    select_best(metric = "f_meas")
+
+
+logistic_tune_results |> collect_predictions() |> 
+    filter(.config == "Preprocessor1_Model16") |> 
+    conf_mat(truth = success, estimate =.pred_class)
+
+
+logistic_tune_results |> collect_predictions() |> 
+    filter(.config == "Preprocessor1_Model16") |> 
+    group_by(id) |> 
+    roc_curve(truth = success, .pred_success) |> 
+    ggplot(aes(x = 1-specificity, y=sensitivity, col = id))+
+    geom_line()+
+    geom_abline(slope = 1, intercept =0, linetype = 2)+
+    ggtitle("ROC Curve")
+
+
+
+logistic_tune_results |> collect_predictions() |> 
+    filter(.config == "Preprocessor1_Model16")  |> 
+    roc_auc(truth = success, .pred_success)
+
+
+```
+
+
+KNN results
+
+```{r}
+
+knn_tune_results |> collect_metrics() |> 
+    ggplot(aes(x = neighbors, y=mean))+
+    geom_line()+
+    geom_point()+
+    facet_wrap(~.metric)
+
+
+```
+
+## 8. finalize model
+
+
+```{r}
+final_mod <- logistic_reg(penalty = 0.00785, mixture = 1) |> 
+    set_engine("glmnet")
+
+final_logistic_result <- final_mod |> 
+    last_fit(
+        preprocessor = smote_recipe,
+        split = split,
+        metrics = metric_set(sens, spec, roc_auc, precision,
+                         f_meas, accuracy)
+    )
+
+## test data
+final_logistic_result |> collect_metrics()
+
+```
