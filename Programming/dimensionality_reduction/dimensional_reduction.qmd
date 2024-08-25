@@ -269,6 +269,35 @@ $$
 
 
 
-## ​Syntax Example
+## ​Syntax Example {.smaller}
 
-... 
+👉🏻 👉 👉🏾 [syntax_PCA.qmd](syntax_PCA.qmd)
+
+```{r echo = F, fig.height = 6}
+data |> 
+    column_to_rownames("country") |> 
+    ## standardized xs
+    mutate_all(~as.numeric(scale(.))) |>
+    princomp()->pca_fit
+
+library(ggrepel)
+pca_fit$scores  |> 
+    data.frame() |> 
+    select(1:3) |> 
+    rownames_to_column("country") |> 
+    ggplot(aes(x=Comp.1, y=Comp.2))+
+    geom_point(aes(col = Comp.3), alpha = 0.5, size = 5)+
+    geom_text_repel(aes(label = country), show.legend = F, col = "grey50")+
+    geom_vline(xintercept = 0, linetype = 2)+
+    geom_hline(yintercept = 0, linetype = 2)+
+    geom_text(x = 4.3, y= 0.2, label = "ประเทศด้อยพัฒนา", 
+    family= "ChulaCharasNew", col = "grey20", fontface = "italic")+
+    geom_text(x = -6.3, y= 0.2, label = "ประเทศพัฒนาแล้ว", 
+    family= "ChulaCharasNew", col = "grey20", fontface = "italic")+
+    geom_text(x=0,y=6.9,label = "ประเทศเศรษฐกิจแบบเปิด",
+    family= "ChulaCharasNew", col = "grey20", fontface = "italic")+
+    geom_text(x=0,y=-3.2,label = "ประเทศเศรษฐกิจแบบปิด",
+    family= "ChulaCharasNew", col = "grey20", fontface = "italic")+
+    theme_light()+
+    scale_color_gradient(low = "maroon", high = "steelblue")
+```
