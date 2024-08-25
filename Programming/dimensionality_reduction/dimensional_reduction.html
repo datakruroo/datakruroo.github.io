@@ -407,22 +407,11 @@
 </div>
 
   <p class="date">2024-08-24</p>
-</section><section id="outline" class="title-slide slide level1 center"><h1>Outline</h1>
+</section><section><section id="outline" class="title-slide slide level1 center"><h1>Outline</h1>
 <ul>
 <li><p>What is dimensionality reduction?</p></li>
 <li><p>Why reduce?</p></li>
-<li>
-<p>Some dimensionality reduction:</p>
-<ul>
-<li>PCA</li>
-<li>tSNE</li>
-<li>UMAP</li>
-</ul>
-</li>
-</ul></section><section><section id="what-is-dimensionality-reduction" class="title-slide slide level1 smaller center"><h1>What is dimensionality reduction?</h1>
-<ul>
-<li><p>Transformation techniques</p></li>
-<li><p>Projection techniques</p></li>
+<li><p>PCA</p></li>
 </ul></section><section id="what-is-dimensionality-reduction-1" class="slide level2 smaller"><h2>What is dimensionality reduction? (1)</h2>
 <p>ชุดข้อมูลนี้มีกี่ตัวแปร มีกี่หน่วยข้อมูล</p>
 <div class="fragment">
@@ -524,7 +513,7 @@
 <img data-src="dimensional_reduction_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"></section><section id="what-is-dimensionality-reduction-4-1" class="slide level2 smaller"><h2>What is dimensionality reduction? (4)</h2>
 <ul>
 <li>
-<p>กระบวนการลดจำนวนมิติ (features หรือ variables) ในชุดข้อมูล โดยยังคงข้อมูลที่สำคัญที่สุดไว้เพื่อให้โมเดลยังสามารถทำงานได้อย่างมีประสิทธิภาพมากขึ้น</p>
+<p>กระบวนการลดจำนวนมิติ (features หรือ variables) ในชุดข้อมูลมีขนาดใหญ่ ให้เหลือจำนวนตัวแปรที่น้อยลง แต่ยังสามารถคงสาระสำคัญในข้อมูลต้นฉบับเอาไว้ได้อย่างเพียงพอ</p>
 <ul>
 <li><p>ทำความเข้าใจโครงสร้างของข้อมูล</p></li>
 <li><p>บรรยาย/แสดงผลลักษณะของหน่วยข้อมูล</p></li>
@@ -534,12 +523,21 @@
 </li>
 </ul></section><section id="dimensionality-reduction-techniques" class="slide level2 smaller"><h2>Dimensionality reduction techniques</h2>
 <ul>
+<li>
+<p>Transformation techniques</p>
+<ul>
 <li><p><strong>Principal Component Analysis</strong></p></li>
+<li><p>Autoencoders</p></li>
+</ul>
+</li>
+<li>
+<p>Projection techniques</p>
+<ul>
 <li><p>t-SNE</p></li>
 <li><p>UMAP</p></li>
 <li><p>Multidimensional Scaling (MDS)</p></li>
-<li><p>Autoencoders</p></li>
-<li><p>…</p></li>
+</ul>
+</li>
 </ul></section><section id="principal-component-analysis-pca" class="slide level2 smaller"><h2>Principal Component Analysis (PCA)</h2>
 <p>เทคนิคหนึ่งในกลุ่ม dimensionality reduction โดยมีเป้าหมายเพื่อลดจำนวนตัวแปร (features) จำนวนมากในชุดข้อมูลให้มีจำนวนน้อยลง</p>
 <ul>

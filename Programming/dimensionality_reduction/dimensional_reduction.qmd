@@ -38,16 +38,8 @@ library(stringr)
 
 - Why reduce?
 
-- Some dimensionality reduction:
-  - PCA
-  - tSNE
-  - UMAP
+- PCA
 
-# What is dimensionality reduction? {.smaller}
-
-- Transformation techniques
-
-- Projection techniques
 
 ## What is dimensionality reduction? (1) {.smaller}
 
@@ -196,7 +188,7 @@ data |>
 
 ## What is dimensionality reduction? (4) {.smaller}
 
-- กระบวนการลดจำนวนมิติ (features หรือ variables) ในชุดข้อมูล โดยยังคงข้อมูลที่สำคัญที่สุดไว้เพื่อให้โมเดลยังสามารถทำงานได้อย่างมีประสิทธิภาพมากขึ้น
+- กระบวนการลดจำนวนมิติ (features หรือ variables) ในชุดข้อมูลมีขนาดใหญ่ ให้เหลือจำนวนตัวแปรที่น้อยลง แต่ยังสามารถคงสาระสำคัญในข้อมูลต้นฉบับเอาไว้ได้อย่างเพียงพอ
 
   - ทำความเข้าใจโครงสร้างของข้อมูล
 
@@ -209,17 +201,20 @@ data |>
 
 ## Dimensionality reduction techniques {.smaller}
 
-- **Principal Component Analysis**
+- Transformation techniques
 
-- t-SNE
+  - **Principal Component Analysis**
 
-- UMAP
+  - Autoencoders
 
-- Multidimensional Scaling (MDS)
+- Projection techniques
 
-- Autoencoders
+  - t-SNE
 
-- ...
+  - UMAP
+
+  - Multidimensional Scaling (MDS)
+
 
 
 ## Principal Component Analysis (PCA) {.smaller}
