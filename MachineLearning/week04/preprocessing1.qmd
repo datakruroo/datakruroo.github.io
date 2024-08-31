@@ -1,0 +1,315 @@
+---
+title: "Week 4: Workflow and Feature Engineering"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 4: 2758623 Machine Learning Principles and Application<br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: atom-one
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+```{r echo = F}
+library(tidymodels)
+library(tidyverse)
+tidymodels_prefer()
+```
+
+## `learningdata.csv` {.smaller}
+
+```{r}
+data <- read_csv("learningdata.csv")
+glimpse(data, 60)
+```
+
+
+# Feature Engineering {background-color="#FFD7C4"}
+
+> Reformatting predictor values to make them easier for a model to use effectively.
+
+- Encodings
+
+- Transformations
+
+
+## Encoding Categorical Data into Numerical Format {.smaller}
+
+```{mermaid}
+%%| echo: false
+flowchart LR
+A[factor]-->B[numeric]
+C[character]-->B
+```
+
+
+<div style="font-size:80%;">
+
+
+- `step_unknow()` -- กำหนด missing value ในตัวแปรแบบ factor ให้เป็น  "unknown".
+
+- `step_novel()` -- กำหนดค่า factor level ที่ไม่เคยเห็นมาก่อนให้เป็น "new".
+
+- `step_other(threshold)` -- รวม catergories ที่มีจำนวนความถี่น้อยให้เป็นกลุ่มเดียวกันเรียกว่า "other"
+
+- `step_dummy(one_hot)`
+
+</div>
+
+
+## Interaction Terms (1) {.smaller}
+
+อิทธิพลปฏิสัมพันธ์ (interaction effects) เกิดขึ้นเมื่อความสัมพันธ์/อิทธิพลของตัวแปรอิสระตัวหนึ่งที่มีต่อ y มีค่าที่แตกต่างกันไปคามค่าหรือระดับของตัวแปรอิสระอย่างน้อยอีกตัวหนึ่ง
+
+```{r fig.height=5}
+data |> 
+  ggplot(aes(x=study.hr, y=ach))+
+  geom_point(alpha = 0.5, shape = 1)+
+  geom_smooth(method = "lm", se = F, aes(col = self.esteem > 16))+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(size = 15))
+
+
+data |> 
+  mutate(
+         acad_axiety = rowMeans(across(starts_with("acad.axiety")),na.rm=T),
+         teach_sup = rowMeans(across(starts_with("teach")),na.rm=T),
+         lrn_environ = rowMeans(across(starts_with("lrn.environ")), na.rm=T)
+  ) |> 
+  ggplot(aes(x=study.hr, y=ach))+
+  geom_point(alpha = 0.5, shape = 1)+
+  geom_smooth(method = "lm", se = F)+
+  facet_wrap(~par.involv_ordinal)
+
+```
+
+
+## Interaction Terms (2) {.smaller}
+
+ตัวอย่างการเขียน recipe สำหรับ interaction terms
+
+```{r eval = F}
+recipe(y ~ x1+x2+x3+x4+x5 , data = train_data) |> 
+  step_interact(terms = ~ x1:x2) 
+
+recipe(y ~ x1+x2+x3+x4+x5 , data = train_data) |> 
+  step_interact(terms = ~ x1:starts_with("x")) 
+```
+
+
+## Interaction Terms (3) {.smaller}
+
+- **Literature Review/Expert Knowledge** (Neter et al., 2004)
+
+- **Principle of Interaction Search** (Wu and Hamada, 2011)
+
+  - First Principle: Interaction Hierarchy -- higher order interaction มักมีความสัมพันธ์หรือมีผลกระทบต่อค่าทำนายน้อยกว่า lower order interaction และ main effects
+
+  - Second Principle: Effect Sparsity -- มีเพียงส่วนหนึ่งของผลกระทบที่เป็นไปได้ทั้งหมดเท่านั้นที่สามารถอธิบายความแปรปรวน/ทำนายตัวแปรตามได้อย่างมีนัยสำคัญ
+
+  - Third Principle: Effect Heredity -- ปฏิสัมพันธ์ของตัวแปรต่างๆ อาจพิจารณาได้ก็ต่อเมื่อผลกระทบของตัวแปรที่เกิดก่อนปฏิสัมพันธ์นั้นมีประสิทธิภาพในการอธิบายความแปรปรวน/ทำนายตัวแปรตาม
+
+
+
+![](https://bookdown.org/max/FES/figures/interaction-effect-sparsity.png){fig-align="center"}
+
+<div class="caption">figure1: Effect Sparsity</div>
+
+<br>
+
+
+
+
+![](https://bookdown.org/max/FES/figures/interaction-effect-heredity.png){fig-align="center"}
+
+<div class="caption">figure2: Effect Heredity</div>
+
+
+<div class="caption3">M. Kuhn and Johnson (2020)</div>
+
+## Interaction Terms (4) {.smaller}
+
+- **Simple Screening** -- ใช้การเปรียบเทียบโมเดลระหว่างโมเดลอย่างง่าย และโมเดลซับซ้อนด้วยค่าสถิติวัดความสอดคล้องเชิงประจักษ์ (fit indices) 
+
+  - $R^2, adj-R^2$
+  - Deviance-test
+  - Partial F-test
+  - AIC, BIC
+
+การเปรียบเทียบความสอดคล้องของโมเดลบน training data มีแนวโน้มที่ผู้วิเคราะห์จะพบกับปัญหา overfitting วิธีการแก้ปัญหาหนึ่งคือใช้การทำ cross-validation
+
+
+![](img/algo-model-compare.png)
+
+
+
+
+
+- **Regularized/Penalized Regression**
+
+  - lasso regression
+
+  - ridge regression
+
+  - elastic-net regression
+
+<div class="caption3">M. Kuhn and Johnson (2020)</div>
+
+
+## Feature Extraction {.smaller}
+
+- create new features from the predictors that capture the information in the broader set as a whole.
+
+  - Principal Component Regression (PCR)
+
+  - Partial Least Squares Regression (PLS)
+
+  - Kernel PCA (KPCA)
+
+  - Isometric Mapping (ISOMAP)
+
+  - uniform manifold approximation and projection (UMAP)
+
+
+## Feature Extraction: PCR & PLS {.smaller}
+
+  ![](img/PCR.png){width="90%"}
+
+  ![](img/PLS.png){width="90%"}
+
+  <div class="caption3">Boehmke, & Greenwell, 2020</div>
+
+
+## Feature Extraction: Kernal PCA {.smaller}
+
+1. แปลงข้อมูล: ใช้ kernel function เพื่อแปลงข้อมูลจากพื้นที่เดิมที่อาจมีความซับซ้อนไปสู่พื้นที่มิติสูงกว่า
+
+2. ลดมิติและจำแนกข้อมูล: ดำเนินการ PCA ในพื้นที่ใหม่ที่แปลงแล้วเพื่อหาตัวแปรใหม่ (principal components) ที่สามารถอธิบายความแปรปรวนและจำแนกข้อมูลได้อย่างมีประสิทธิภาพ
+
+![](img/1_mCwnu5kXot6buL7jeIafqQ.webp){fig-align="center"}
+
+
+![](img/1_vqQK50YMY2kfPVvnS-3Iow.webp)
+
+<div class="caption3">https://medium.com/@avicsebooks/part17-unsupervised-machine-learning-kernel-principal-component-analysis-and-multidimensional-5c9eec755bd3</div>
+
+
+<div class="caption3">https://medium.com/@zxr.nju/what-is-the-kernel-trick-why-is-it-important-98a98db0961d</div>
+
+
+![](img/0_pJ5MMOJIxuzCoCsQ.png){fig-align="center"}
+
+<div class="caption3">https://medium.com/@zxr.nju/what-is-the-kernel-trick-why-is-it-important-98a98db0961d</div>
+
+
+
+## Subsampling for Imbalance Class Problem {.smaller}
+
+- ในปัญหา classification ปัญหาหนึ่งที่ผู้วิเคราะห์มักพบคือ imbalance class ซึ่งจะเกิดขึ้นเมื่อสัดส่วนของ category ในตัวแปรตามมีความแตกต่างกันอย่างมาก
+
+- ปัญหาดังกล่าวจะทำให้อัลกอริทึมการเรียนรู้ มีต้นแบบการเรียนรู้จากกลุ่มที่เป็น majority มากเกินไปจนผลการเรียนรู้ที่ได้มีความลำเอียง
+
+การแก้ปัญหาดังกล่าวสามารถทำได้ โดย
+
+- **Downsampling** -- สุ่มข้อมูลออกจา majority class จนกระทั่งสมดุลกับ minority class
+
+  - Random majority under-sampling with replacement	: `step_downsample()`
+
+  - NearMiss-1: `step_nearmiss()`
+
+  - Extraction of majority-minority Tomek links: `step_tomek()`
+
+
+- **Upsampling** -- สร้างข้อมูลสังเคราะห์ (synthetic data) สำหรับ minority class เพื่อให้มีจำนวนข้อมูลมากขึ้นจนสมดุลกับ majority class
+
+  - Random minority over-sampling with replacement: `step_upsample()`
+
+  - Synthetic Minority Over-sampling Technique (SMOTE): `step_smote()`
+
+  - Borderline SMOTE (B-SMOTE): `step_bsmote()`
+
+  - Adaptive synthetic sampling approach for imbalanced learning (ADASYN): `step_adasyn()`
+
+  - Generation of synthetic data by Randomly Over Sampling Examples (ROSE): `step_rose()`
+
+
+- **Hybrid sampling** -- downsampling ใน majority class และ upsampling ใน minority class
+
+  - SMOTE + Tomek
+
+  - B-SMOTE + Tomek
+
+  - ROSE + downsample
+
+<div class="caption3">https://github.com/tidymodels/themis</div>
+
+
+## SMOTE
+
+![](img/the-basic-principle-of-the-synthetic-minority-oversample-technique-smote-algorithm-5452514.png.webp){fig-align="center"}
+
+<div class="caption2">SMOTE Concept: https://rikunert.com/smote_explained></div>
+
+
+![](img/Specific-groups-of-imbalanced-data-in-the-Borderline-SMOTE.png){fig-align="center"}
+
+<div class="caption2">BSMOTE Concept: https://www.researchgate.net/figure/Specific-groups-of-imbalanced-data-in-the-Borderline-SMOTE_fig2_365584195</div>
+
+## Tomek link {.smaller}
+
+ลบ majority class ที่อยู่ใกล้กับ minority class มากที่สุดออก
+
+1. ค้นหาคู่ข้อมูลที่เป็น tomek link
+
+2. ลบข้อมูล
+
+3. ประเมินผล
+
+
+![](img/download.png){fig-align="center"}
+
+<div class="caption2">https://www.kaggle.com/code/marcinrutecki/smote-and-tomek-links-for-imbalanced-data</div>
+
+
+
+## Variable Transformation {.smaller}
+
+ใน library-recipe มี `step_mutate()` ที่ทำงานเหมือนกับ `mutate()` ใน dplyr
+
+**original**
+
+```{r eval = F, echo = T}
+data |> 
+  mutate(
+         acad_axiety = rowMeans(across(starts_with("acad.axiety")),na.rm=T),
+         teach_sup = rowMeans(across(starts_with("teach")),na.rm=T),
+         lrn_environ = rowMeans(across(starts_with("lrn.environ")), na.rm=T)
+  )
+```
+
+
+**recipe**
+
+```{r eval= F}
+recipe(ach ~ . , data = data) |> 
+step_mutate(
+        acad_axiety = rowMeans(across(starts_with("acad.axiety")),na.rm=T),
+         teach_sup = rowMeans(across(starts_with("teach")),na.rm=T),
+         lrn_environ = rowMeans(across(starts_with("lrn.environ")), na.rm=T)
+)
+```
