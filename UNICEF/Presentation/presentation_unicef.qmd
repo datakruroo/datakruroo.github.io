@@ -1,0 +1,1098 @@
+---
+title: "Education data - Climate Change Risk Mapping Thailand"
+author: "Associate Prof. Dr. Siwachoat Srisuttiyakorn et al."
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: 2024-09-06
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Associate Prof. Dr. Siwachoat Srisuttiyakorn et al. <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/70542874007-climatechangetopper.webp
+      data-background-opacity: 15%
+      data-background-size: full
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color:  #C5705D;
+      }
+      </style>
+
+---
+
+```{r echo = F}
+library(tidyverse)
+library(gt)
+load("/Users/choat/Documents/GitHub/unicef/risk_data.RData")
+```
+
+# 1. Outline {auto-animate=true .smaller background-color="#BEC6A0" background-image="img/water.png" background-opacity=0.1}
+
+::: {.incremental}
+
+- **Research Objectives**
+
+  - 🎯 **Objective 1:** Explore and develop a methodological note to **identify relevant education metrics** to highlight the actual or potential, direct or indirect, adverse effects of climate change and environmental degradation on children’s education participation and learning.
+
+
+  - 🎯 **Objective 2: **Identify characteristics of schools/provinces/areas and children** where education is exposed to considerable risks of climate hazards inter alia by region, urban/rural, socio-economic status, disability, gender, age, school hardship location, etc.
+
+
+- **Research Design**
+
+- **Research Progress and Some Analysis Results**
+
+:::
+
+
+
+# 2. Research Design {background-color="#BEC6A0" background-image="img/water2.png" background-opacity=0.1}
+
+- Variables and Data Sources
+
+- Analysis Design
+
+
+
+## 2.1 Variables and Data Sources {auto-animate=true .smaller}
+
+The data used in the research are divided into two main categories:
+
+
+## 2.1 Variables and Data Sources {auto-animate=true .smaller}
+
+The data used in the research are divided into two main categories:
+
+```{mermaid}
+flowchart TD
+A[Data]--climate data-->B[Extreme Precipitation and Temperature]
+```
+
+## 2.1 Variables and Data Sources {auto-animate=true .smaller}
+
+The data used in the research are divided into two main categories:
+
+```{mermaid}
+flowchart TD
+A[Data]--climate data-->B[Extreme Precipitation and Temperature]
+```
+
+
+
+<div style="font-size:90%;">
+
+
+</div>
+
+
+::: {.panel-tabset}
+
+## Extreme Climate Data
+
+:::: {.columns}
+
+<div style="font-size:80%;">
+
+::: {.column width="40%"}
+
+**Data (1970-2021)**
+
+- Extreme precipitation (7 indices)
+
+- Extreme temperature (11 indices)
+
+  - Intensity
+  
+  - Frequency
+
+  - Duration
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+
+<p style="margin-top: 20px;">
+
+Ramkhamhaeng University Center Of Regional climate change and Renewable Energy (RU-CORE) 
+
+- Emsemble Models
+
+- RCP 4.5 & RCP 8.5 conditions
+
+- The data units are grids of 25x25 square kilometers, with a total of 2,073 grids.
+
+</p>
+
+:::
+
+</div>
+
+::::
+
+<br>
+
+
+## Detail
+
+<div style="font-size:80%;">
+
+The table below provides details of the extreme climate data.
+</div>
+
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+<div style="font-size:75%;">
+
+**Precipitation**
+
+</div>
+
+```{r echo = F}
+data <- data.frame(
+  Index = c("Rx1day", "Rx5day", "R95p", "R99p"),
+  Definition = c("Maximum 1-day precipitation total", 
+                 "Maximum 5-day precipitation total", 
+                 "Annual sum of daily precipitation > 95th percentile", 
+                 "Annual sum of daily precipitation > 99th percentile"),
+  Unit = rep("mm", 4)
+)
+gt_table <- data %>%
+  gt()
+gt_table |> 
+  tab_caption("Precipitation: Intensity")
+```
+
+
+```{r echo = F}
+# สร้างข้อมูลสำหรับตาราง
+data <- tibble::tibble(
+  Index = c("R10mm", "R20mm"),
+  Definition = c("Annual number of days when precipitation ≥ 10 mm", "Annual number of days when precipitation ≥ 20 mm "),
+  Unit = c("days", "days")
+)
+gt_table <- data %>%
+  gt() %>%
+  tab_caption("Precipitation: Frequency") %>%
+  cols_width(
+    Definition ~ px(10)  # กำหนดความกว้างของคอลัมน์ Definition เพื่อบังคับให้ข้อความ wrap
+  ) %>%
+  fmt_markdown(
+    columns = c(Definition)  # จัดรูปแบบข้อความในคอลัมน์ Definition ให้รองรับ Markdown เช่นการใช้ \n หรือ <br>
+  )
+# สร้างตารางด้วย gt พร้อมกับการจัดรูปแบบเพิ่มเติม
+gt_table 
+```
+
+
+```{r echo = F}
+data <- data.frame(
+  Index = c("CWD"),
+  Definition = c("Maximum annual number of consecutive wet days <br> (i.e., when precipitation ≥ 1 mm)"), 
+  Unit = rep("days", 1)
+)
+gt_table <- data %>%
+  gt() %>%
+  tab_caption("Precipitation: Duration") %>%
+  cols_width(
+    Definition ~ px(10)  # กำหนดความกว้างของคอลัมน์ Definition เพื่อบังคับให้ข้อความ wrap
+  ) %>%
+  fmt_markdown(
+    columns = c(Definition)  # จัดรูปแบบข้อความในคอลัมน์ Definition ให้รองรับ Markdown เช่นการใช้ \n หรือ <br>
+  )
+gt_table
+```
+
+
+:::
+
+
+
+::: {.column width="50%"}
+
+<div style="font-size:75%;">
+
+**Temperature**
+
+</div>
+
+```{r echo = F, fig.align="left"}
+# สร้างข้อมูลสำหรับตาราง
+data <- tibble::tibble(
+  Index = c("TXx", "TNx", "TXn", "TNn", "DTR"),
+  Definition = c("Monthly Maximum value of daily max temperature",
+                 "Monthly Maximum value of daily min temperature",
+                 "Monthly Minimum value of daily max temperature",
+                 "Monthly Minimum value of daily min temperature",
+                 "Monthly mean difference between TX and TN"),
+  Unit = rep("°C", 5)
+)
+
+# สร้างตารางด้วย gt
+gt_table <- data %>%
+  gt()
+gt_table |> 
+  tab_caption("Temperature: Intensity")
+```
+
+
+```{r echo = F}
+data <- tibble::tibble(
+  Index = c("TX10p", "TN10p", "TX90p", "TN90p"),
+  Definition = c("Share of days when Tmax < 10th percentile",
+                 "Share of days when Tmin < 10th percentile",
+                 "Share of days when Tmax > 90th percentile",
+                 "Share of days when Tmin > 90th percentile"),
+  Unit = rep("% of days", 4)
+)
+# สร้างตารางด้วย gt
+gt_table <- data %>%
+  gt()
+gt_table |> 
+  tab_caption("Temperature: Frequency")
+```
+
+
+
+```{r echo = F}
+# สร้างข้อมูลสำหรับตาราง
+data <- tibble::tibble(
+  Index = c("CSD", "WSD"),
+  Definition = c("Annual number of days with at least <br> 6 consecutive days when Tmin < 10th percentile", "Annual number of days with at least <br> 6 consecutive days when Tmax > 90th percentile "),
+  Unit = c("days", "days")
+)
+gt_table <- data %>%
+  gt() %>%
+  tab_caption("Temperature: Duration") %>%
+  cols_width(
+    Definition ~ px(10)  # กำหนดความกว้างของคอลัมน์ Definition เพื่อบังคับให้ข้อความ wrap
+  ) %>%
+  fmt_markdown(
+    columns = c(Definition)  # จัดรูปแบบข้อความในคอลัมน์ Definition ให้รองรับ Markdown เช่นการใช้ \n หรือ <br>
+  )
+# สร้างตารางด้วย gt พร้อมกับการจัดรูปแบบเพิ่มเติม
+gt_table 
+```
+
+:::
+
+::::
+
+## Grid Data
+
+<center>
+
+![](img/climate_grid.jpg)
+
+</center>
+
+:::
+
+
+
+## 2.1 Variables and Data Sources {auto-animate=true .smaller}
+
+The data used in the research are divided into two main categories:
+
+```{mermaid}
+flowchart TD
+A[Data]--climate data-->B[Extreme Precipitation and Temperature]
+A[Data]--non-climate-->C[School & Student Characteristic]
+```
+
+
+
+
+
+## 2.1 Variables and Data Sources {auto-animate=true .smaller}
+
+The data used in the research are divided into two main categories:
+
+```{mermaid}
+flowchart TD
+A[Data]--climate data-->B[Extreme Precipitation and Temperature]
+A[Data]--non-climate-->C[School & Student Characteristic]
+```
+
+
+:::: {.columns}
+
+<div style="font-size:80%;">
+
+
+::: {.column width="40%"}
+
+#### **Non-Climate Data**
+
+- Name &  Affiliation
+
+- ONET Scores (average by school)
+
+- Location (province, amphor, coordinates)
+
+- Distance from District (km.)
+
+- Hardship Location (type & level)
+
+- School size & Enrollment data
+
+- Infrastructure and Connectivity (electricity, water, internet)
+
+- Teacher Allocation 
+  - Teacher-Room Ratio
+  - Pupil-Teacher Ratio
+
+- Students’ Mode of Transportation to School ❓
+
+- Parental Income ❓
+
+- Student Disability ❓
+
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="50%"}
+
+
+
+#### **Source**
+
+
+- OBEC (DMC60/1, DMC65/1), NIETS (2560-2564)
+
+- NIETS (2560-2564)
+
+- OBEC (DMC60/1) & google map API
+
+- OBEC (DMC60/1) & google map API
+
+- OBEC (2565)
+
+- OBEC (DMC60/1, DMC65/1), NIETS (2560-2564)
+
+- [Scraping from OBEC Asset Data (2566)](https://asset.bopp-obec.info/)
+
+
+<p style="line-height: 2.2;">
+
+</p>
+
+- Office of Policy and Planing OBEC (2560-2564)
+
+
+
+:::
+
+
+
+</div>
+
+
+
+::::
+
+
+
+## 2.2 Analysis Design: Objective 1 {.smaller}
+
+```{mermaid}
+flowchart LR
+
+A("Extreme Climate Data
+- Intensity
+- Duration
+- Frequency")-->C[PCA]
+B("Non-Climate Data
+O-NET Score")-->C[PCA]
+C[PCA]-->D((("Risk Index")))
+```
+
+
+Principal Component Analysis (PCA) was employed to construct a (school) risk index scale by integrating key variables related to climate extreams namely
+
+- `intensity`
+
+- `duration`
+
+- `frequency`
+
+with educational outcome (`O-NET Score`)
+
+PCA method enables the reduction of dimensionality while preserving the most significant variation within the data, thereby creating a composite index that reflects the combined impact of these factors on educational performance.
+
+<br>
+
+
+## 2.2 Analysis Design: Objective 2 {.smaller}
+
+
+```{mermaid}
+flowchart LR
+A["Non-Climate Data:
+ School Characteristics"]-->B(((Risk Index)))
+```
+
+**Models**
+
+- Supervised Learning Techniques such as:
+  - Regularized Regression
+  - Support Vector Machines
+  - Ensemble learnners
+  - Neural Networks
+
+**Model Development**
+
+  - Cross-validation: ensure model performance and generaliability
+  - Fine-tuning: Optimize model parameters for best results
+
+**Analysis**
+
+Identify and gain insights into the relationship between key factor and educational risk.
+
+  - Variable Importance
+  - Partial Dependence Plots
+  - SHAP plots
+
+**Expected Outcomes**
+
+Comprehensive Understanding: how various school characteristics relates to educational risk.
+
+
+<br>
+
+
+# 3. Research Progress and Some Analysis Results {background-color="#BEC6A0" background-image="img/mountain.png" background-opacity=0.1}
+
+  - Data Preprocessing
+  
+  - Analysis Results
+
+
+
+## 3.1 Data Preprocessing and Analysis Steps {.smaller}
+
+<style>
+  .mermaid {
+    font-size: 12px;
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+</style>
+
+```{mermaid}
+stateDiagram-v2
+    Objective1 --> NamedComposite1
+    NamedComposite1: Climate Data (Precipitation & Temperature datasets)
+    Objective1: Data Preprocessing for \n Research Objective 1
+    state NamedComposite1 {
+        [*] --> A
+        A --> B
+        B --> C
+        C --> D
+        D --> E
+        D --> F
+        E --> G
+        F --> G
+        A: Tidying data
+        A: Reshaped, Filtered, & Aligned
+        B: Normalized data
+        C: Calculate composite indices
+        C: Intensity \n Duration \n Frequency
+        D: Split Data
+        E: <center>Baseline \n (1970-2005)</center>
+        F: <center>Study \n (2017-2021)</center>
+        G: Anomaly Score dataset
+        G: Anomaly Score \n Grid ID \n Grid Longitude \n Grid Latitude
+    }
+    Objective1 --> NamedComposite2
+    NamedComposite2: Non-Climate Data (DMC & O-NET datasets)
+    state NamedComposite2 {
+        [*] --> DMC
+        [*] --> ONET
+        DMC --> step1A
+        ONET --> step1B
+        step1A --> step2
+        step1B --> step2
+        step2 --> step3
+        step2 --> google
+        google -->step5
+        step3 --> step4
+        step4 --> step5
+        step5 --> step6
+        step1A: Tidying data
+        step1A: Reshaped, Filtered, & Aligned \n - School Profile \n - School Address
+        step1B: Tidying data
+        step1B: Reshaped, Filtered, & Aligned \n - School Profile \n - O-NET score
+        step2: Merged
+        step2: DMC and O-NET datasets
+        google: Using School Address to retrieve \n school latitude and longitude data \n from the Google Maps API.
+        step3: Normalized O-NET Score
+        step3: Math \n Science \n Thai \n Eng
+        step4: Calculate composite index
+        step4: Achievement Score (Ach Score)
+        step5: Merged
+        step5: Completed Achievement Dataset \n - School Profile \n - School Longitude \n - School Latitude \n - Ach Score
+        step6: Mapping School into Climate Grid
+        step6: 1. Calculate the distance \n between the school and grid coordinates \n using the Haversine distance. \n 2. Map each school to a grid cell based on \n the shortest distance criterion.
+    }
+    G --> final
+    G --> subset
+    subset --> step6
+    step6 --> final
+    final --> PCA
+    PCA --> [*]
+    subset: Grid Location
+    subset: Grid ID \n Grid Longitude \n Grid Latitude
+    final: Merged Climate \n and Non-Climate Data \n
+    PCA: Principal Component Analysis
+    PCA: Risk Index Dataset
+```
+
+<br>
+
+## 3.2 Some Descriptive Results {.smaller}
+
+<br>
+
+#### Climate Anomaly Score
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = F, fig.height = 10}
+library(viridis)
+library(patchwork)
+prep <- precipitation_anomaly_wide |> 
+  pivot_longer(cols =contains("rcp45"))
+
+p1 <- prep |> 
+  filter(name == "intensity_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Precipiration: Intensity Anomaly")
+
+p2 <- prep |> 
+  filter(name == "duration_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Precipiration: Duration Anomaly")
+
+p3 <- prep |> 
+  filter(name == "frequency_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Precipiration: Frequency Anomaly")
+
+p1/p2/p3
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r echo = F, fig.height = 10}
+temper <- temperature_anomaly_wide |> 
+  pivot_longer(cols =contains("rcp45"))
+
+p4 <- temper |> 
+  filter(name == "intensity_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Temperature: Intensity Anomaly")
+
+p5 <- temper |> 
+  filter(name == "duration_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Temperature: Duration Anomaly")
+
+p6 <- temper |> 
+  filter(name == "frequency_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Temperature: Frequency Anomaly")
+
+p4/p5/p6
+```
+
+:::
+
+::::
+
+
+
+
+## 2.2 Objective 1: Data Preparation {.smaller}
+
+
+
+## 2.2 Objective 1: Data Preparation {.smaller}
+
+<br>
+
+#### **School/Student Data**
+
+- Reshaped, Filtered and aligned the DMC and ONET datasets to merge them into one dataset.
+
+- Using school addresses to retrieve school latitude and longitude data from the Google Maps API.
+
+
+```{r echo = F}
+data1 <- sch_data_onetp6_joined |> 
+  select(school_name, school_code, province, amphor, tambon,
+         affiliation, school_size, location, year, ach_score) |> 
+  mutate(student_level = "p6")
+
+data2 <- sch_data_onetm3_joined |> 
+  select(school_name, school_code, province, amphor, tambon,
+         affiliation, school_size, location, year, ach_score) |> 
+  mutate(year = as.numeric(year)) |> 
+  mutate(student_level = "m3")
+        
+data3 <- sch_data_onetm6_joined |> 
+  select(school_name, school_code, province, amphor, tambon,
+         affiliation, school_size, location, year, ach_score) |> 
+  mutate(school_code = as.numeric(school_code),
+        year = as.numeric(year)) |> 
+  mutate(student_level = "m6")
+
+p1<-data1 |>bind_rows(data2) |> bind_rows(data3) |> 
+  group_by(year, student_level) |> 
+  count() |> 
+  ungroup() |> 
+  mutate(student_level = fct_relevel(student_level, "m6","m3","p6")) |> 
+  ggplot(aes(x = year, y = n, fill = student_level))+
+  geom_bar(stat = "identity")+
+  geom_text(aes(label = n), position = position_stack(vjust = 0.5),
+            family = "ChulaCharasNew", col = "white", size = 6) +
+  ylab("number of school \n ")+
+  xlab("")+
+  scale_fill_manual(values = c("#4158A6","#179BAE","#FF8343"))+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        panel.border = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 20))+
+  ggtitle("The number of schools categorized by year and student level.")
+
+
+
+p2 <- data1 |>bind_rows(data2) |> bind_rows(data3) |> 
+  mutate(student_level = factor(student_level, levels=c("p6","m3","m6"))) |> 
+  mutate(school_size = factor(school_size, levels=c("S","M","L","XL"))) |> 
+  ggplot(aes(x=school_size, y=ach_score))+
+  geom_boxplot(aes(fill = school_size))+
+  facet_grid(student_level ~ year)
+```
+
+<center>
+
+```{r echo = F, fig.height = 8, fig.width = 25}
+p1+p2
+```
+
+</center>
+
+```{r fig.width=16, fig.height=10, echo = F}
+library(rnaturalearth)
+library(sf)
+thailand_map <- ne_states(country = "Thailand", returnclass = "sf")
+
+school_sf <- sch_data_onetp6_joined |> 
+  select(school_lon, school_lat, school_size) |> drop_na() |> 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+p1 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry), color = "#FF8343", alpha = 0.5,  size = 0.03) +
+  theme_minimal() +
+  ggtitle("p6 level")
+
+school_sf <- sch_data_onetm3_joined |> 
+  select(school_lon, school_lat, school_size) |> drop_na() |> 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+p2 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry), color ="#179BAE", alpha = 0.5,  size = 0.03) +
+  theme_minimal() +
+  ggtitle("m3 level")
+
+school_sf <- sch_data_onetm6_joined |> 
+  select(school_lon, school_lat, school_size) |> drop_na() |> 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+
+p3 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry), color = "#4158A6", alpha = 0.5,  size = 0.03) +
+  theme_minimal() +
+  ggtitle("m6 level")
+
+p1+p2+p3
+```
+
+
+<br>
+
+#### **Mapping School to Climate Grid**
+
+- Calculate the distance between the coordinates of each school and the coordinates of each grid cell using the Haversine distance.
+
+- Map each school to a grid cell based on the shortest distance criterion.
+
+**Haversine distance**
+
+$$
+d = 2r \cdot \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)}\right)
+$$
+
+-  $d$  : Distance between two points
+-  $r$  : Radius of the Rarth ($\approx$ 6,371 km.)
+-  $\phi_1, \phi_2$  : Latitude of point  1 and 2 (in radians)
+-  $\lambda_1, \lambda_2$  : Longitude of point  1 and 2 (in radians)
+-  $\Delta\phi = \phi_2 - \phi_1$  : Difference in Latitudes
+-  $\Delta\lambda = \lambda_2 - \lambda_1$  : Difference in Longitudes
+
+
+## 2.2 Objective 1: Merged Dataset (Example) {.smaller}
+
+
+<center>
+
+![](img/example_grid.png)
+
+```{r echo = F, eval = F, fig.height = 10, fig.width=16}
+library(ggrepel)
+
+cm <- thailand_map |> 
+  filter(name %in% c("Chiang Mai","Mae Hong Son","Chiang Rai","Lamphun"))
+
+bkk <- thailand_map |>
+  filter(name %in% c("Bangkok Metropolis", "Samut Prakan", "Nonthaburi","Pathum Thani","Phra Nakhon Si Ayutthaya"))
+
+school_sf <- sch_data_onetp6_joined |> 
+   filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size) |> drop_na() 
+
+school_sf2 <- sch_data_onetp6_joined |> 
+   filter(province %in% c("กรุงเทพมหานคร","สมุทรปราการ","นนทบุรี","ปทุมธานี","พระนครศรีอยุธยา")) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size) |> drop_na() 
+
+
+grid_sf <-  p6_precipitaion_data |> 
+   filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+   filter(year == 2019) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, intensity_rcp45) |> drop_na()
+
+grid_sf2 <-  p6_precipitaion_data |> 
+   filter(province %in% c("กรุงเทพมหานคร","สมุทรปราการ","นนทบุรี","ปทุมธานี","พระนครศรีอยุธยา")) |> 
+   filter(year == 2019) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, intensity_rcp45) |> drop_na()
+
+
+
+exam_grid1 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_point(data = school_sf, aes(x = school_lon, y = school_lat), col = "orange", alpha = 1,
+             shape = 1 )+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+
+exam_grid2 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_tile(data = grid_sf, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0.3, 
+            col = "black", linetype = 3)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+
+
+exam_grid3 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_point(data = school_sf, aes(x = school_lon, y = school_lat), col = "orange", alpha = 1,
+             shape = 1 )+
+  geom_tile(data = grid_sf, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0.05, 
+            col = "black", linetype = 3)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+p <- exam_grid1+ exam_grid2+exam_grid3
+
+ggsave(plot = p, file = "example_grid.png", width = 20, height = 10)
+
+
+exam_grid4 <- ggplot(data = bkk)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_tile(data = grid_sf2, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0, 
+            col = "black", linetype = 3)+
+  geom_point(data = school_sf2, aes(x = school_lon, y = school_lat), col = "#FF8343", alpha = 0.1)+
+  geom_text_repel(data = bkk, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+```
+
+</center>
+
+
+```{r echo = F}
+precipitaion_risk_data |> 
+  filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+  select(year, student_level, grid_id, grid_lon, grid_lat,
+        intensity_rcp45, duration_rcp45, frequency_rcp45,
+        intensity_rcp85, duration_rcp85, frequency_rcp85,
+        school_lon, school_lat,
+        school_code, province, amphor, tambon, affiliation, school_size,
+        location, ach_score) |> 
+  glimpse(60)
+```
+
+
+
+## 2.2 Objective 1: Data Analysis {.smaller}
+
+Principal Component Analysis (PCA) was employed to construct a (school) risk index scale by integrating key variables related to climate extreams namely
+
+- `intensity`
+
+- `duration`
+
+- `frequency`
+
+with educational outcome `ach_score`
+
+PCA method enables the reduction of dimensionality while preserving the most significant variation within the data, thereby creating a composite index that reflects the combined impact of these factors on educational performance.
+
+
+## 2.3 Objective 2: Data Analysis {.smaller}
+  
+<br>
+
+####  Data
+
+- Risk Index derived from PCA on climate and educational outcomes.
+
+- School characteristics data such as:
+  - Affiliation
+  - Location (province, amphor, coordimates, in-bound vs out-bound)
+  - Distance from District (km.)
+  - Hardship location (type and level)
+  - School size
+  - Infrastructure (eletricity, water, internet)
+  - Teacher Allocation
+
+#### Models
+
+- Supervised Learning Techniques such as:
+  - Regularized Regression
+  - Support Vector Machines
+  - Ensemble learnners
+  - Neural Networks
+
+- Model Development:
+  - Cross-validation: ensure model performance and generaliability
+  - Fine-tuning: Optimize model parameters for best results
+
+#### Analysis
+
+Identify and gain insights into the relationship between key factor and educational risk.
+
+  - Variable Importance
+  - Partial Dependence Plots
+  - SHAP plots
+
+####  Outcomes
+
+Comprehensive Understanding: how various school characteristics relates to educational risk.
+
+
+  
+
+
+
+
+# 3. Results {background-color="#FFD7C4" .smaller}
+
+-  ✅ Explore and develop a methodological note to identify relevant education metrics to highlight the actual or potential, direct or indirect, adverse effects of climate change and environmental degradation on children’s education participation and learning.
+
+- [ ] Identify characteristics of schools/provinces/areas and children where education is exposed to considerable risks of climate hazards inter alia by region, urban/rural, socio-economic status, disability, gender, age, school hardship location, etc.
+
+## 3.1 Results: Objective 1
+
+
+
+## 2.2 Objective 1: Data 
+
+
+
+
+
+## Research Process & Methodologies  {.smaller}
+
+
+1. Developing an Educational Risk Index Due to Climate Change
+
+:::: {.columns}
+
+<div style="font-size:75%;">
+
+
+::: {.column width="40%"}
+
+1.1 Preprocessing Data
+
+For Climate Data
+
+
+
+1. Split the climate data into two parts: the baseline period from 1970 to 2005 and the study period from 2017 to 2021.
+
+2. Standardize the extreme weather indicators within each time period.
+
+3. Calculate Anomaly
+
+
+
+
+:::
+
+::: {.column width="60%"}
+
+
+
+
+
+
+
+:::
+
+</div>
+
+::::
+
+## {.smaller}
+
+
+```{r echo = F}
+library(tidyverse)
+library(tidymodels)
+##install.packages("textrecipes")
+##devtools::install_github("datakruroo/thaitextrecipe")
+library(thaitextrecipe)
+library(readxl)
+library(plotly)
+library(grid)
+library(patchwork)
+```
+
+```{r echo =F, fig.width=4}
+library(ggforce)
+
+# สร้างข้อมูลของโหนด
+nodes <- data.frame(
+  name = c("Intensity", "Duration", "Frequency", "ONET Scores", "Educational\nRisk Index"),
+  x = c(1, 1, 1, 1, 3),  # ตำแหน่ง x ของแต่ละโหนด
+  y = c(4, 3, 2, 1, 2.5) # ตำแหน่ง y ของแต่ละโหนด
+)
+
+# สร้างข้อมูลของเส้นเชื่อมต่อ (edges)
+edges <- data.frame(
+  x = rep(1, 4),
+  xend = rep(3, 4),
+  y = c(4, 3, 2, 1),
+  yend = rep(2.5, 4)
+)
+
+# วาดกราฟ
+p <- ggplot() +
+  geom_segment(data = edges, aes(x = x, y = y, xend = xend, yend = yend),
+               arrow = arrow(length = unit(1, "cm")), size = 1, color = "gray") +
+  geom_circle(data = nodes[5,], aes(x0 = x, y0 = y, r = 0.4), fill = "#C5705D", color = "white") +
+  geom_rect(data = nodes[1:4,], aes(xmin = x - 0.4, xmax = x + 0.4, ymin = y - 0.2, ymax = y + 0.2), 
+            fill = "white", color = "black") +
+  geom_text(data = nodes, aes(x = x, y = y, label = name), size = 5,
+            family = "ChulaCharasNew") +
+  theme_void() +
+  coord_fixed()
+
+p
+
+```
+
+
+## test
+
