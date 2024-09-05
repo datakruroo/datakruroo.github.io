@@ -21,6 +21,7 @@ format:
       data-background-image: img/70542874007-climatechangetopper.webp
       data-background-opacity: 15%
       data-background-size: full
+    embed-resources: true
 code-link: true
 execute:
   echo: false
@@ -37,11 +38,7 @@ include-in-header:
 
 ---
 
-```{css}
-.panel-tabset {
-  font-size: 25px;  /* ปรับขนาดฟอนต์ตามที่ต้องการ */
-}
-```
+
 
 ```{r echo = F}
 library(tidyverse)
@@ -1227,7 +1224,7 @@ precipitaion_risk_data %>%
 
 ::: {.panel-tabset}
 
-## School Size
+## Sch Size
 
 ```{r fig.width=8, fig.height = 4}
 p1 <- precipitaion_risk_data %>% 
@@ -1276,7 +1273,7 @@ p2
 ```
 
 
-## Level & School Size
+## Level & Sch Size
 
 ```{r}
 p3 <- precipitaion_risk_data %>% 
@@ -1298,6 +1295,30 @@ p3 <- precipitaion_risk_data %>%
   theme(text = element_text(family = "ChulaCharasNew", size = 16),
         panel.grid.minor = element_blank())
 p3
+```
+
+## Location & Sch Size
+
+```{r}
+p4 <- precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,distance, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+            robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x = risk_index, col = school_size))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  facet_wrap(~hard_to_reach)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by Student Level & School Size")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())
+p4
 ```
 
 ## Level & Location
@@ -1323,6 +1344,7 @@ p4 <- precipitaion_risk_data %>%
         panel.grid.minor = element_blank())
 p4
 ```
+
 
 :::
 
@@ -1745,3 +1767,9 @@ exam_grid4 <- ggplot(data = bkk)+
 
 </center>
 
+
+```{css}
+.panel-tabset {
+  font-size: 25px;  /* ปรับขนาดฟอนต์ตามที่ต้องการ */
+}
+```
