@@ -157,7 +157,7 @@ recipe(y ~ x1+x2+x3+x4+x5 , data = train_data) |>
 ![](img/algo-model-compare.png)
 
 
-
+## Interaction Terms (5) {.smaller}
 
 
 - **Regularized/Penalized Regression**
@@ -170,6 +170,65 @@ recipe(y ~ x1+x2+x3+x4+x5 , data = train_data) |>
 
 <div class="caption3">M. Kuhn and Johnson (2020)</div>
 
+
+## Workflow (1) {.smaller}
+
+![](https://www.tmwr.org/premade/proper-workflow.svg){width="70%"}
+
+
+## Workflow (2) {.smaller}
+
+- รวมขั้นตอนการ preprocessing กับ การสร้างโมเดลไว้ในที่เดียว
+
+- ช่วยให้การสร้างโมเดลสามารถทำซ้ำได้ง่ายขึ้น
+
+```{r eval = F}
+library(tidymodels)
+
+# Model specification
+model_spec <- logistic_reg() %>% 
+  set_engine("glm")
+
+# Recipe
+recipe_spec <- recipe(Class ~ ., data = training_data) %>%
+  step_normalize(all_numeric_predictors())
+
+# สร้าง workflow
+workflow <- workflow() %>%
+  add_recipe(recipe_spec) %>%
+  add_model(model_spec)
+
+## model tuning
+tuned_results <- workflow %>%
+  tune_grid(
+    resamples = vfold_cv(training_data, v = 5),
+    grid = 10
+  )
+
+## show best
+tuned_results %>%
+  show_best(metric = "accuracy", n = 5)
+
+## select best
+best_params <- tuned_results %>%
+  select_best(metric = "accuracy")
+
+## finalizing
+final_wf <- workflow %>%
+  finalize_workflow(best_params)
+
+## fitting the final model
+final_fit <- final_wf %>%
+  fit(data = training_data)
+
+final_fit <- final_wf %>%
+  last_fit(split)
+```
+
+
+## กิจกรรม
+
+สร้าง workflow เพื่อ train regression model จากชุดข้อมูล `learningdata.csv`
 
 ## Feature Extraction {.smaller}
 
@@ -215,6 +274,8 @@ recipe(y ~ x1+x2+x3+x4+x5 , data = train_data) |>
 ![](img/0_pJ5MMOJIxuzCoCsQ.png){fig-align="center"}
 
 <div class="caption3">https://medium.com/@zxr.nju/what-is-the-kernel-trick-why-is-it-important-98a98db0961d</div>
+
+
 
 
 
