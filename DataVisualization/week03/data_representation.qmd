@@ -24,7 +24,6 @@ execute:
   echo: true
   freeze: auto
   progress: true
-
 ---
 
 ```{r echo = F}
@@ -41,31 +40,28 @@ library(patchwork)
 
 ## Outline {.smaller}
 
-
 วันนี้จะกล่าวถึงแผนภาพพื้นฐาน (common charts) รวมทั้งแผนภาพที่เกี่ยวข้อง แผนภาพหลักที่จะกล่าวถึง ได้แก่
 
-- **Bar Charts** -- amount
+-   **Bar Charts** -- amount
 
-- **Pie Charts** -- composition
+-   **Pie Charts** -- composition
 
-- **Line Charts** -- trend
+-   **Line Charts** -- trend
 
+-   [**Scatter plot** -- relationship]{style="color: grey;"}
 
-- <span style="color: grey;">**Scatter plot** -- relationship</span>
+-   [**Histogram** -- distribution]{style="color: grey;"}
 
-- <span style="color: grey;">**Histogram** -- distribution</span>
-
-
-# Bar Charts 
+# Bar Charts
 
 แสดง/เปรียบเทียบจำนวนข้อมูล/ปริมาณ
 
 ## Bar Charts {.smaller}
 
-- เป็น common charts ที่ใช้อย่างแพร่หลายมีวัตถุประสงค์การใช้สองลักษณะ ได้แก่ 
-  - การแสดงปริมาณข้อมูล (อาจมองว่าเป็นการแสดงการแจกแจงของตัวแปรจัดประเภท)
-  - การเปรียบเทียบข้อมูลระหว่างกลุ่มย่อย/เวลา
-  - bar chart บางประเภทยังสามารถนำเสนอและเปรียบเทียบสัดส่วนของข้อมูลได้ด้วย
+-   เป็น common charts ที่ใช้อย่างแพร่หลายมีวัตถุประสงค์การใช้สองลักษณะ ได้แก่
+    -   การแสดงปริมาณข้อมูล (อาจมองว่าเป็นการแสดงการแจกแจงของตัวแปรจัดประเภท)
+    -   การเปรียบเทียบข้อมูลระหว่างกลุ่มย่อย/เวลา
+    -   bar chart บางประเภทยังสามารถนำเสนอและเปรียบเทียบสัดส่วนของข้อมูลได้ด้วย
 
 ```{r fig.height=4, echo = F}
 data <- read_excel("data_AJ suchada.xlsx")
@@ -93,14 +89,13 @@ ggplotly(p,  tooltip = "text",
         config(displayModeBar = FALSE)
 ```
 
-
 ## Types of Bar Chart {.smaller}
 
-- **Simple bar chart** - แสดงปริมาณข้อมูลหรือแสดงแสดงการแจกแจงของตัวแปรจัดประเภท
+-   **Simple bar chart** - แสดงปริมาณข้อมูลหรือแสดงแสดงการแจกแจงของตัวแปรจัดประเภท
 
-- **Grouped bar chart** - เปรียบเทียบหรือแสดงแนวโน้มของข้อมูลระหว่างกลุ่มย่อย/เวลา
+-   **Grouped bar chart** - เปรียบเทียบหรือแสดงแนวโน้มของข้อมูลระหว่างกลุ่มย่อย/เวลา
 
-- **Stacked bar chart** - แสดง/เปรียบเทียบสัดส่วนของข้อมูล
+-   **Stacked bar chart** - แสดง/เปรียบเทียบสัดส่วนของข้อมูล
 
 ```{r fig.height = 4, echo = F, fig.width = 5}
 theme_set(theme_light()+
@@ -118,8 +113,7 @@ theme_set(theme_light()+
       text = element_text(family = "ChulaCharasNew")))
 ```
 
-::: {.r-stack}
-
+::::: r-stack
 ```{r echo=F}
 data |> 
   filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
@@ -141,11 +135,7 @@ just = c("left", "bottom"),
 
 ```
 
-
-
-
-::: {.fragment}
-
+::: fragment
 ```{r echo = F}
 data |> 
     filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
@@ -169,12 +159,9 @@ just = c("left", "bottom"),
 
 
 ```
-
 :::
 
-::: {.fragment}
-
-
+::: fragment
 ```{r echo = F}
 data |> 
   filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
@@ -198,36 +185,30 @@ just = c("left", "bottom"),
 
 
 ```
-
 :::
-
-:::
+:::::
 
 ## Creating Simple Bar Chart {.smaller}
 
-::: panel-sidebar
-
+:::: panel-sidebar
 ::: {style="font-size: 220%;"}
 **`geom_bar()`**
-
 :::
 
 เป็น geometry หลักสำหรับสร้าง bar chart โดยมี argument สำคัญได้แก่
 
-- `data`
+-   `data`
 
-- `stat = count` หรือ `identity`
+-   `stat = count` หรือ `identity`
 
-- `position = stack` หรือ `fill` หรือ `dodge`
+-   `position = stack` หรือ `fill` หรือ `dodge`
 
-- `width`
+-   `width`
 
-- `orientation`
-
-:::
+-   `orientation`
+::::
 
 ::: panel-fill
-
 ```{r echo = F}
 theme_set(theme_grey())
 ```
@@ -246,36 +227,29 @@ data |>
   theme(text = element_text(family = "ChulaCharasNew"))+
   ggtitle("\n Simple Bar Chart")
 ```
-
 :::
-
 
 ## Creating Grouped Bar Chart {.smaller}
 
-
-::: panel-sidebar
-
+:::: panel-sidebar
 ::: {style="font-size: 220%;"}
 **`geom_bar()`**
-
 :::
 
 เป็น geometry หลักสำหรับสร้าง bar chart โดยมี argument สำคัญได้แก่
 
-- `data`
+-   `data`
 
-- `stat = count` หรือ `identity`
+-   `stat = count` หรือ `identity`
 
-- `position = stack` หรือ `fill` หรือ `dodge`
+-   `position = stack` หรือ `fill` หรือ `dodge`
 
-- `width`
+-   `width`
 
-- `orientation`
-
-:::
+-   `orientation`
+::::
 
 ::: panel-fill
-
 ```{r echo = F}
 theme_set(theme_grey())
 ```
@@ -295,36 +269,29 @@ data |>
   theme(text = element_text(family = "ChulaCharasNew"))+
   ggtitle("\n Grouped Bar Chart")
 ```
-
 :::
-
 
 ## Creating Stacked Bar Chart {.smaller}
 
-
-::: panel-sidebar
-
+:::: panel-sidebar
 ::: {style="font-size: 220%;"}
 **`geom_bar()`**
-
 :::
 
 เป็น geometry หลักสำหรับสร้าง bar chart โดยมี argument สำคัญได้แก่
 
-- `data`
+-   `data`
 
-- `stat = count` หรือ `identity`
+-   `stat = count` หรือ `identity`
 
-- `position = stack` หรือ `fill` หรือ `dodge`
+-   `position = stack` หรือ `fill` หรือ `dodge`
 
-- `width`
+-   `width`
 
-- `orientation`
-
-:::
+-   `orientation`
+::::
 
 ::: panel-fill
-
 ```{r echo = F}
 theme_set(theme_grey())
 ```
@@ -344,14 +311,11 @@ data |>
   theme(text = element_text(family = "ChulaCharasNew"))+
   ggtitle("\n Stacked Bar Chart")
 ```
-
 :::
 
 ## Bar Charts: Order is Matter {.smaller}
 
-
-::: {.r-stack}
-
+::::: r-stack
 ```{r}
 data |> 
   filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
@@ -364,13 +328,7 @@ data |>
   ggtitle("\n Simple Bar Chart")
 ```
 
-
-
-
-
-::: {.fragment}
-
-
+::: fragment
 ```{r}
 #| code-line-numbers: "4"
 data |> 
@@ -383,12 +341,9 @@ data |>
   theme(text = element_text(family = "ChulaCharasNew", size = 15))+
   ggtitle("\n Simple Bar Chart")
 ```
-
 :::
 
-::: {.fragment}
-
-
+::: fragment
 ```{r}
 #| code-line-numbers: "4"
 data |> 
@@ -401,13 +356,10 @@ data |>
   theme(text = element_text(family = "ChulaCharasNew", size = 18))+
   ggtitle("\n Simple Bar Chart")
 ```
-
 :::
-
-:::
+:::::
 
 ## แผนภาพไหนเหมาะสมมากกว่ากัน
-
 
 ```{r echo= F, fig.width = 16, fig.height = 6}
 library(rcartocolor)
@@ -440,7 +392,6 @@ p2 <- data |>
 
 p1+p2
 ```
-
 
 ## แผนภาพไหนเหมาะสมมากกว่ากัน
 
@@ -476,13 +427,8 @@ p1+p2
 
 ```
 
-
-::: {.incremental}
-
-<span style="color: white;">
-สําหรับ stacked bar plot การเปรียบเทียบความแตกต่างระหว่าง category ที่ไม่ได้เริ่มจากเส้น y=0 ทําได้ยาก...
-</span>
-
+::: incremental
+[ สําหรับ stacked bar plot การเปรียบเทียบความแตกต่างระหว่าง category ที่ไม่ได้เริ่มจากเส้น y=0 ทําได้ยาก... ]{style="color: white;"}
 :::
 
 ## ระวัง {.smaller}
@@ -495,36 +441,29 @@ p1+p2
 
 อย่าลืมว่า attribute สำคัญของ bar chart คือ **ความยาว (length)**
 
-
 ![](img/barplot2.png){width="85%"}
-
 
 ## ระวัง {.smaller}
 
 อย่าสร้างภาระให้กับผู้อ่าน
 
-::: {.columns}
-
-:::: {.column width="80%"}
-
+::::: columns
+::: {.column width="80%"}
 ![](img/barplot4.png){width="90%"}
-
-::::
-
-:::: {.column width="20%"}
-
-<iframe src="https://giphy.com/embed/Ys9SXSEczO5nW" width="475" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-
-::::
-
 :::
+
+::: {.column width="20%"}
+<iframe src="https://giphy.com/embed/Ys9SXSEczO5nW" width="475" height="480" style frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+:::
+:::::
 
 ## Related Charts: Visualize Amount
 
 มีแผนภาพที่อยู่ในกลุ่มเดียวกับ bar chart หลายตัว
 
 ![](img/amount.png)
-
 
 ## Dot plot
 
@@ -569,9 +508,7 @@ data |>
   ggtitle("Software Used in Theses")
 ```
 
-
 ## Dot plot {.smaller}
-
 
 ```{r eval = F}
 #| code-line-numbers: "1-2|3-18|19|22-25|26"
@@ -613,18 +550,14 @@ data |>
   ggtitle("Software Used in Theses")
 ```
 
-
 ## Heatmap {.smaller}
 
-- เหมือนกับตารางข้อมูล ที่มีการใช้สีแทนปริมาณข้อมูล สามารถใช้ได้กับทั้งข้อมูล cross-sectional data และ time-series data
+-   เหมือนกับตารางข้อมูล ที่มีการใช้สีแทนปริมาณข้อมูล สามารถใช้ได้กับทั้งข้อมูล cross-sectional data และ time-series data
 
-- บางครั้ง heatmap สามารถนำเสนอข้อมูลที่มีปริมาณมากได้ดีกว่า bar chart และ dot plot
+-   บางครั้ง heatmap สามารถนำเสนอข้อมูลที่มีปริมาณมากได้ดีกว่า bar chart และ dot plot
 
-:::: {.columns}
-
+::::: columns
 ::: {.column width="50%"}
-
-
 ```{r eval = F}
 #| code-line-numbers: "4-6"
 library(gapminder)
@@ -637,12 +570,9 @@ gapminder |>
   ylab("")+
   xlab("")
 ```
-
-
 :::
 
 ::: {.column width="50%"}
-
 ```{r echo = F, fig.height = 8}
 library(gapminder)
 gapminder |> 
@@ -656,28 +586,17 @@ gapminder |>
   xlab("")
 ```
 :::
-
-::::
+:::::
 
 ## Heatmap {.smaller}
 
-
-
-
 ![](img/heatmap.png)
-
-
-
-
-
 
 # Pie Chart
 
 แสดง/เปรียบเทียบสัดส่วนของข้อมูล
 
-
 ## Pie Chart
-
 
 ```{r echo=F}
 
@@ -714,9 +633,7 @@ data.frame(obj, pie,stack,group) |>
 
 ```
 
-
 ![](img/piechart1.png){fig-align="center"}
-
 
 ## Creating Pie Chart {.smaller}
 
@@ -742,7 +659,6 @@ bar <- data |>
 bar
 ```
 
-
 ## Creating Pie Chart {.smaller}
 
 **ขั้นที่สอง** : ปรับพิกัดจาก cartesian ให้เป็น polar coordinate ด้วยฟังก์ชัน `coord_polar()` หากความถี่หรือสัดส่วนที่ต้องการนำไปสร้างขนาดชิ้น pie อยู่บนแกน y ให้กำหนดอาร์กิวเมนท์​ `theta = y`
@@ -753,9 +669,7 @@ bar + coord_polar(theta = "y")+
   theme(legend.position = "none")
 ```
 
-
 ## Donut Chart {.smaller}
-
 
 ```{r}
 bar + coord_polar(theta = "y")+
@@ -768,9 +682,7 @@ bar + coord_polar(theta = "y")+
 
 ![](img/piechart2.png)
 
-
 ## ระวัง {.smaller}
-
 
 หลายกรณี pie chart ไม่สามารถนำเสนอความแตกต่างระหว่างสัดส่วนย่อยต่าง ๆ ได้อย่างมีประสิทธิภาพ
 
@@ -782,7 +694,6 @@ bar + coord_polar(theta = "y")+
 
 ![](img/piechart4.png)
 
-
 ## ระวัง {.smaller}
 
 ![](img/piechart5.png)
@@ -791,10 +702,7 @@ bar + coord_polar(theta = "y")+
 
 ![](img/proportion.png)
 
-
 ## 100% Stacked Bar Charts {.smaller}
-
-
 
 ```{r}
 
@@ -807,7 +715,6 @@ data |>
 
 ```
 
-
 ## Treemap: Visualizing Nested Proportion
 
 แผนภาพ Treemap เป็น visualization ตัวหนึ่งที่มีประสิทธิภาพในการนําเสนอการแจกแจงความถี่หลายทาง
@@ -819,25 +726,19 @@ install_github("wilkox/treemapify")
 library(treemapify)
 ```
 
-:::: {.columns}
-
+::::: columns
 ::: {.column width="50%"}
-
 ![](img/treemap1.png)
 :::
 
 ::: {.column width="50%"}
 ![](img/treemap2.png)
-
 :::
+:::::
 
-
-::::
-
-<div class="caption">
-[https://cran.r-project.org/web/packages/treemapify/vignettes/introduction-to-treemapify.html](https://cran.r-project.org/web/packages/treemapify/vignettes/introduction-to-treemapify.html)</div>
-
-
+::: caption
+<https://cran.r-project.org/web/packages/treemapify/vignettes/introduction-to-treemapify.html>
+:::
 
 ## Creating Treemap {.smaller}
 
@@ -858,7 +759,6 @@ data |>
             col = "black", family = "ChulaCharasNew")+
   theme(legend.position = "none")
 ```
-
 
 ## Creating Treemap (nested proportion) {.smaller}
 
@@ -882,18 +782,13 @@ data |>
   theme(legend.position = "none")
 ```
 
-
 # Line Charts
 
 แสดงแนวโน้มตามเวลา
 
-## Line Charts  {.smaller}
-
-
+## Line Charts {.smaller}
 
 ::: panel-tabset
-
-
 ### จำนวนวิทยานิพนธ์ของ อ.สุชาดา ตามเวลา
 
 ```{r echo = F}
@@ -918,7 +813,6 @@ ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุ
 
 ### Syntax
 
-
 ```{r eval = F}
 data |> 
   filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
@@ -938,24 +832,18 @@ xlab("")+
 ylim(0,7)+
 ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
 ```
-
 :::
 
 ## Multiple Line Charts
 
 ![](img/linechart.png)
 
-
 ## Multiple Line Charts {.smaller}
 
 แผนภาพด้านล่างมีข้อสังเกตอะไรหรือไม่
 
-
 ::: panel-tabset
-
-
 ### จำนวนวิทยานิพนธ์ของ อ.สุชาดา ตามเวลาและระดับชั้น
-
 
 ```{r echo=F}
 data |> 
@@ -977,7 +865,6 @@ xlab("")+
 ylim(0,7)+
 ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
 ```
-
 
 ### Syntax
 
@@ -1001,13 +888,11 @@ xlab("")+
 ylim(0,7)+
 ggtitle("\n จำนวนวิทยานิพนธ์ที่ อ.สุชาดา เป็นที่ปรึกษาหลัก")
 ```
-
 :::
 
 ## Multiple Line Charts & Heatmaps {.smaller}
 
 ในกรณีที่มีหน่วยข้อมูลจำนวนมาก การใช้ heatmap อาจมีประสิทธิภาพในการสื่อสารมากกว่า line chart
-
 
 ```{r fig.height = 8, echo = F, fig.width=20}
 p1 <- gapminder |> 
@@ -1026,13 +911,11 @@ p2 <- gapminder |>
 p1+p2
 ```
 
-
-
 ## Related Charts: Trends
 
-- Dot plots
+-   Dot plots
 
-- Slope plots
+-   Slope plots
 
 ## Dot Plot
 
@@ -1040,13 +923,11 @@ dotplot สามารถใช้แสดงพัฒนาการ หร�
 
 ![](img/dotploy.png)
 
-
 ## 
 
-<center>
-![](img/dotplot3.png)
-</center>
+<center>![](img/dotplot3.png)</center>
 
 ## Slope Plot
 
 ![](img/slopeplot.png){width="90%"}
+

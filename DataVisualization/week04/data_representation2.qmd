@@ -1,0 +1,367 @@
+---
+title: "Week 4: Data Representation II"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-08-24
+format:
+  revealjs:
+    code-fold: true
+    slide-number: c/t
+    footer: "week 3: 2758686 Data Visualization <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/datavis.png
+      data-background-opacity: 20%
+      data-background-size: contain
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+---
+
+```{r echo = F}
+library(tidyverse)
+library(tidymodels)
+##install.packages("textrecipes")
+##devtools::install_github("datakruroo/thaitextrecipe")
+library(thaitextrecipe)
+library(readxl)
+library(plotly)
+library(grid)
+library(patchwork)
+
+data <- read_csv("learningdata.csv")
+```
+
+## Outline {.smaller}
+
+วันนี้จะกล่าวถึงแผนภาพพื้นฐาน (common charts) รวมทั้งแผนภาพที่เกี่ยวข้อง แผนภาพหลักที่จะกล่าวถึง ได้แก่
+
+-  [**Bar Charts** -- amount]{style="color: grey;"}
+
+-  [**Pie Charts** -- composition]{style="color: grey;"}
+
+-  [**Line Charts** -- trend]{style="color: grey;"}
+
+-   **Scatter plot** -- relationship
+
+-   **Histogram** -- distribution
+
+
+# Scatter plot
+
+- แสดงความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ
+
+
+## Scatter plot {.smaller}
+
+```{r echo = F}
+data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+  
+```
+
+```{r eval = F}
+data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+  
+```
+
+## Scatter plot {.smaller}
+
+- แผนภาพการกระจาย ถูกออกแบบมาเพื่อใช้แสดงความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ 2 ตัว บนพิกัด cartesian แบบ 2 มิติ
+
+- ในทางปฏิบัติมีการประยุกต์ใช้ scatter plot ในหลากหลายวัตถุประสงค์
+
+  - วิเคราะห์ความสัมพันธ์ระหว่างตัวแปร (รูปแบบ ทิศทาง และขนาดความสัมพันธ์)
+
+  - บรรยายสภาพ จัดกลุ่มหน่วยข้อมูลจากตัวแปรหรือคุณลักษณะที่กำหนด
+
+  - ตรวจสอบหน่วยข้อมูลที่มีความผิดปกติ (outlier or anomaly data)
+
+- ข้อควรระวัง : scatter plot มีวัตถุประสงค์หลักเพื่อแสดงความสัมพันธ์ระหว่างตัวแปร แต่ไม่สามารถใช้บอกความสัมพันธ์เชิงสาเหตุ (causal relationship) ได้
+
+  - correlation
+
+  - order
+
+  - no confounding variables
+
+  - theory explanation
+
+
+
+## Example of Scatter plot
+
+![](img/education.png)
+
+
+## Related Charts: Visualizing Relations
+
+- Scatter plots
+
+- Regression/Smoothing Line
+
+- Bubble chart
+
+- 2D Bins
+
+- Hex Bins
+
+- ...
+
+
+## Regression/Smoothing Lines {.smaller}
+
+
+```{r fig.width = 12, echo = F}
+p1 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  geom_smooth(method = "lm", se = T, col = "maroon")+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Regression Line")
+
+
+p2 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  geom_smooth(method = "loess", se = T, col = "maroon")+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("LOESS Smoothing Line")
+
+p1+p2
+```
+
+
+```{r eval = F}
+p1 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  geom_smooth(method = "lm", se = T, col = "maroon")+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Regression Line")
+
+
+p2 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  geom_smooth(method = "loess", se = T, col = "maroon")+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("LOESS Smoothing Line")
+
+p1+p2
+```
+
+## Bubble Chart {.smaller}
+
+เหมือน scatter plot แต่มีการ mapping attributes ได้แก่ size และ/หรือ color กับข้อมูลเพิ่มเติม ดังตัวอย่างด้านล่าง
+
+```{r echo  = F, fig.width = 12}
+library(patchwork)
+
+p1 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+
+p2 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(aes(size = sch.absent > 10, col = sch.absent > 10), alpha = 0.5)+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+
+p1+p2
+```
+
+
+
+```{r eval  = F, fig.width = 12}
+library(patchwork)
+
+p1 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(col = "#33372C", alpha = 0.6, size = 3)+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+
+p2 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_point(aes(size = sch.absent > 10, col = sch.absent > 10), alpha = 0.5)+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+
+p1+p2
+```
+
+
+## 2D Bins & Hex Bins plot {.smaller}
+
+- เป็นทั้งสองเทคนิคที่ใช้ในการแสดงการกระจายของข้อมูลในสองมิติ (2D) โดยการแบ่งพื้นที่ออกเป็น bins ทำให้สามารถแสดงความสัมพันธ์ระหว่างตัวแปรควบคู่ไปกับจำนวนหรือความหนาแน่นของข้อมูล ซึ่งช่วยลด noise ที่รบกวน signal ในแผนภาพได้
+
+```{r echo = F, fig.width = 12}
+p1 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_bin_2d()+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("2D Bins Chart")
+
+
+ p2<- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_hex()+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Hex Bins Chart")
+
+
+p1+p2
+```
+
+
+```{r eval = F}
+p1 <- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_bin_2d()+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("2D Bins Chart")
+
+
+ p2<- data |> 
+  ggplot(aes(x = study.hr, y=ach))+
+  geom_hex()+
+  xlab("\n จำนวนชั่วโมงทบทวนบทเรียนต่อสัปดาห์")+
+  ylab("\n คะแนนผลสัมฤทธิ์ทางการเรียน\n")+
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  ggtitle("Hex Bins Chart")
+
+
+p1+p2
+```
+
+
+
+# Histogram
+
+- แสดงการแจกแจงของข้อมูล
+
+
+## Histogram {.smaller}
+
+สร้างจากการแจกแจงความถี่แบบมีอันตรภาคชั้น จำนวนอันตรภาคชั้น (bins) หรือความกว้างของอันตรภาคชั้น (binwidth) เป็นพารามิเตอร์ของ histogram
+
+
+```{r echo = F, fig.width = 16, fig.height = 8}
+hist <- function(data, bins){
+  ggplot(data = data, aes(x=ach))+
+  geom_histogram(col = "white", fill = "steelblue", bins = bins)+
+  ggtitle(paste("Bins =", bins))+
+  theme(text = element_text(size = 14))
+}
+plots <- map(.x = bins <- c(5,10,20,50), .f = ~hist(data, bins = .x))
+wrap_plots(plots)
+```
+
+
+```{r eval = F}
+ ggplot(data = data, aes(x=ach))+
+  geom_histogram(col = "white", fill = "steelblue", bins = 20)+
+  ggtitle("Bins = 20")
+```
+
+## Related charts : Visualizing Density
+
+- Pyramid Chart
+
+- Density plot
+
+- Boxplot/ Violin plot/ Jitter plot
+
+- Correlation Heatmap
+
+
+
+
+## Pyramid Charts
+
+
+```{r echo = F}
+data |> 
+  filter(ach > 0)  |> 
+  mutate(interval_ach = cut(ach, breaks = 8)) |> 
+  group_by(sch.absent>10, interval_ach) |> 
+  count() |> 
+  rename(absent = 1) |> 
+  ggplot(aes(y = interval_ach, x = ifelse(absent == "TRUE",n,-n)))+
+  geom_bar(stat = "identity", aes(fill = absent))+
+  labs(fill = "Absent > 10 days")+
+  xlab("\n Frequency") +
+  ylab("Achievement Score \n ")+
+  theme_light() +
+  theme(text = element_text(family="ChulaCharasNew", size = 16))
+```
+
+
+
