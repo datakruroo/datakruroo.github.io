@@ -226,9 +226,24 @@ final_fit <- final_wf %>%
 ```
 
 
-## กิจกรรม
+## กิจกรรม {.smaller}
 
 สร้าง workflow เพื่อ train regression model จากชุดข้อมูล `learningdata.csv`
+
+```{r eval = F}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("/Users/choat/Downloads/learningdata.csv")
+glimpse(data)
+
+data <- data |> 
+  mutate(
+         acad_axiety = rowMeans(across(starts_with("acad.axiety")),na.rm=T),
+         teach_sup = rowMeans(across(starts_with("teach")),na.rm=T),
+         lrn_environ = rowMeans(across(starts_with("lrn.environ")), na.rm=T)
+  ) |> 
+select(-starts_with("acad.axiety"), -starts_with("teach.sup"), -starts_with("lrn.environ")) 
+```
 
 ## Feature Extraction {.smaller}
 

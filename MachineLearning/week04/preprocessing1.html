@@ -628,6 +628,22 @@ M. Kuhn and Johnson (2020)
 <span id="cb6-39"><a href=""></a>final_fit <span class="ot">&lt;-</span> final_wf <span class="sc">%&gt;%</span></span>
 <span id="cb6-40"><a href=""></a>  <span class="fu">last_fit</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section><section id="กจกรรม" class="slide level2 smaller"><h2>กิจกรรม</h2>
+<p>สร้าง workflow เพื่อ train regression model จากชุดข้อมูล <code>learningdata.csv</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb7-2"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb7-3"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/learningdata.csv"</span>)</span>
+<span id="cb7-4"><a href=""></a><span class="fu">glimpse</span>(data)</span>
+<span id="cb7-5"><a href=""></a></span>
+<span id="cb7-6"><a href=""></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb7-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-8"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb7-9"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb7-10"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb7-11"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb7-12"><a href=""></a><span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"teach.sup"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section><section id="feature-extraction" class="slide level2 smaller"><h2>Feature Extraction</h2>
 <ul>
 <li>
@@ -736,21 +752,21 @@ https://www.kaggle.com/code/marcinrutecki/smote-and-tomek-links-for-imbalanced-d
 <p>ใน library-recipe มี <code>step_mutate()</code> ที่ทำงานเหมือนกับ <code>mutate()</code> ใน dplyr</p>
 <p><strong>original</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-3"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb7-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb7-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
-<span id="cb7-6"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb8-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb8-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb8-6"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>recipe</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">recipe</span>(ach <span class="sc">~</span> . , <span class="at">data =</span> data) <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href=""></a><span class="fu">step_mutate</span>(</span>
-<span id="cb8-3"><a href=""></a>        <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb8-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb8-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
-<span id="cb8-6"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">recipe</span>(ach <span class="sc">~</span> . , <span class="at">data =</span> data) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href=""></a><span class="fu">step_mutate</span>(</span>
+<span id="cb9-3"><a href=""></a>        <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb9-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb9-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb9-6"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
