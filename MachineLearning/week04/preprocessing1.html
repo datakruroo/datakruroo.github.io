@@ -634,15 +634,219 @@ M. Kuhn and Johnson (2020)
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb7-2"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
 <span id="cb7-3"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/learningdata.csv"</span>)</span>
-<span id="cb7-4"><a href=""></a><span class="fu">glimpse</span>(data)</span>
-<span id="cb7-5"><a href=""></a></span>
-<span id="cb7-6"><a href=""></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
-<span id="cb7-7"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-8"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb7-9"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb7-10"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
-<span id="cb7-11"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb7-12"><a href=""></a><span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"teach.sup"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-4"><a href=""></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,840
+Columns: 34
+$ student.id         &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, …
+$ school.type        &lt;chr&gt; "Public", "Private", "Public", "Private", "Private"…
+$ gender             &lt;chr&gt; "หญิง", "ชาย", "ชาย", "ชาย", "หญิง", "หญิง", "หญิง", "ห…
+$ location           &lt;chr&gt; "ภาคใต้", "ภาคกลาง", "ภาคตะวันออกเฉียงเหนือ", "ภาคกลาง"…
+$ ach                &lt;dbl&gt; 56.71339, 56.78130, 41.52452, 28.66393, 75.28483, 4…
+$ learn.style        &lt;chr&gt; "เรียนผ่านการอ่าน-เขียน", "เรียนผ่านการลงมือทำ", "เรียนผ่านก…
+$ study.hr           &lt;dbl&gt; 8.8, 6.8, 7.6, 3.1, 8.9, 8.7, 5.7, 7.9, 5.8, 2.1, 0…
+$ extra.act          &lt;chr&gt; "ชมรมวิชาการ", "กีฬา", "กีฬา", "ชมรมวิชาการ", "ชมรมวิชาก…
+$ extra.act.hr       &lt;dbl&gt; 1.5, 2.2, 3.2, 4.0, 2.3, 1.3, 0.9, 1.5, 2.2, 3.7, 3…
+$ self.esteem        &lt;dbl&gt; 4.6, 5.9, 8.6, 8.3, 14.0, 4.9, 6.1, 11.0, 5.6, 2.5,…
+$ social.skill       &lt;dbl&gt; 8.0, 11.8, 8.1, 7.0, 16.0, 8.8, 2.1, 6.3, 6.6, 5.0,…
+$ satisfac           &lt;dbl&gt; 2, 5, 2, 3, 4, 2, 1, 2, 2, 1, 5, 4, 2, 1, 2, 1, 3, …
+$ sch.belong_ordinal &lt;dbl&gt; 3, 1, 5, 3, 5, 3, 1, 3, 3, 1, 5, 3, 1, 3, 1, 1, 1, …
+$ sch.absent         &lt;dbl&gt; 13, 12, 10, 10, 5, 11, 14, 15, 11, 11, 12, 12, 16, …
+$ par.involv_ordinal &lt;dbl&gt; 3, 4, 3, 1, 5, 3, 1, 1, 3, 1, 2, 3, 3, 3, 3, 1, 3, …
+$ motiv_ordinal      &lt;dbl&gt; 3, 3, 2, 3, 5, 3, 1, 1, 1, 1, 4, 3, 1, 1, 1, 1, 3, …
+$ acad.goal          &lt;chr&gt; "เพื่อศึกษาต่อในประเทศ", "เพื่อศึกษาต่อในประเทศ", "เพื่อศึกษาต่…
+$ time.manage1       &lt;dbl&gt; 11.0, 10.4, 11.4, 8.3, 12.7, 12.0, 8.3, 12.5, 12.5,…
+$ time.manage2       &lt;dbl&gt; 6.7, 9.0, 8.2, 3.2, 19.5, 9.6, 0.3, 1.6, 7.7, 1.6, …
+$ acad.axiety1       &lt;dbl&gt; 3, 3, 2, 3, 4, 2, 2, 3, 2, 2, 5, 3, 3, 1, 3, 2, 3, …
+$ acad.axiety2       &lt;dbl&gt; 3, 5, 2, 3, 4, 3, 1, 3, 1, 2, 5, 3, 3, 1, 1, 1, 3, …
+$ acad.axiety3       &lt;dbl&gt; 3, 4, 3, 3, 3, 3, 1, 2, 1, 2, 4, 3, 3, 1, 3, 1, 3, …
+$ acad.axiety4       &lt;dbl&gt; 1, 3, 2, 3, 3, 1, 2, 1, 2, 3, 5, 3, 2, 1, 3, 1, 3, …
+$ acad.axiety5       &lt;dbl&gt; 3, 4, 2, 2, 3, 2, 1, 3, 3, 2, 5, 3, 3, 2, 2, 2, 3, …
+$ teach.sup1         &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 5, 3, 1, 3, 3, 3, 3, 3, 2, 3, …
+$ teach.sup2         &lt;dbl&gt; 3, 3, 3, 3, 3, 5, 3, 3, 3, 1, 3, 3, 3, 3, 2, 2, 3, …
+$ teach.sup3         &lt;dbl&gt; 3, 3, 2, 3, 3, 3, 3, 3, 1, 1, 3, 3, 3, 2, 1, 3, 3, …
+$ teach.sup4         &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 2, 3, 3, 1, 3, 3, 3, 3, 3, 2, 2, …
+$ teach.sup5         &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 1, 3, 3, …
+$ lrn.environ1       &lt;dbl&gt; 2, 3, 1, 3, 3, 2, 1, 1, 1, 1, 3, 3, 3, 1, 3, 1, 2, …
+$ lrn.environ2       &lt;dbl&gt; 2, 5, 1, 3, 3, 2, 1, 2, 3, 1, 5, 3, 3, 1, 2, 1, 3, …
+$ lrn.environ3       &lt;dbl&gt; 3, 3, 2, 3, 4, 3, 1, 2, 1, 2, 4, 3, 3, 1, 3, 1, 3, …
+$ lrn.environ4       &lt;dbl&gt; 1, 4, 1, 3, 4, 3, 1, 2, 1, 1, 4, 3, 3, 1, 3, 1, 2, …
+$ lrn.environ5       &lt;dbl&gt; 1, 4, 3, 3, 3, 1, 1, 2, 2, 1, 3, 3, 3, 2, 1, 1, 3, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="do">## รวมคะแนนตัวแปร</span></span>
+<span id="cb9-2"><a href=""></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-4"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb9-5"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb9-6"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb9-7"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-8"><a href=""></a><span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"teach.sup"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>วัตถุประสงค์ของกิจกรรมคือ train linear regression เพื่อทำนาย ach ของนักเรียน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb10-2"><a href=""></a><span class="do">## 1. แบ่งชุดข้อมูลออกเป็น train กับ test set</span></span>
+<span id="cb10-3"><a href=""></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> <span class="st">"ach"</span>, <span class="at">breaks =</span> <span class="dv">5</span>)</span>
+<span id="cb10-4"><a href=""></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb10-5"><a href=""></a>test_data <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<center>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="do">## ตรวจสอบว่า dsitribution ของตัวแปรตามเหมือนกันมั้ยใน train กับ test</span></span>
+<span id="cb11-2"><a href=""></a>train_data <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">dataset =</span> <span class="st">"train_data"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a href=""></a>    <span class="fu">bind_rows</span>(test_data <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">dataset =</span> <span class="st">"test_data"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb11-5"><a href=""></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ach, <span class="at">col =</span> dataset))<span class="sc">+</span></span>
+<span id="cb11-6"><a href=""></a>    <span class="fu">geom_density</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-9-1.png" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</center>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="do">## 2. กำหนด algorithm ที่จะใช้ในการ train regression model</span></span>
+<span id="cb12-2"><a href=""></a>lm_mod <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href=""></a>    <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href=""></a>    <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb12-5"><a href=""></a></span>
+<span id="cb12-6"><a href=""></a>glmnet_mod <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(), <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-7"><a href=""></a>    <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-8"><a href=""></a>    <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb12-9"><a href=""></a></span>
+<span id="cb12-10"><a href=""></a><span class="do">## 3. preprocessing model</span></span>
+<span id="cb12-11"><a href=""></a>lm_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">|&gt;</span> </span>
+<span id="cb12-12"><a href=""></a>    <span class="fu">update_role</span>(student.id, <span class="at">new_role =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-13"><a href=""></a>    <span class="fu">step_mutate</span>(</span>
+<span id="cb12-14"><a href=""></a>        <span class="fu">across</span>(<span class="fu">c</span>(<span class="fu">ends_with</span>(<span class="st">"ordinal"</span>), <span class="st">"satisfac"</span>), <span class="sc">~</span><span class="fu">factor</span>(.))</span>
+<span id="cb12-15"><a href=""></a>        )</span>
+<span id="cb12-16"><a href=""></a></span>
+<span id="cb12-17"><a href=""></a></span>
+<span id="cb12-18"><a href=""></a>glmnet_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">|&gt;</span> </span>
+<span id="cb12-19"><a href=""></a>    <span class="fu">update_role</span>(student.id, <span class="at">new_role =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-20"><a href=""></a>    <span class="fu">step_mutate</span>(</span>
+<span id="cb12-21"><a href=""></a>        <span class="fu">across</span>(<span class="fu">c</span>(<span class="fu">ends_with</span>(<span class="st">"ordinal"</span>), <span class="st">"satisfac"</span>), <span class="sc">~</span><span class="fu">factor</span>(.))</span>
+<span id="cb12-22"><a href=""></a>        ) <span class="sc">|&gt;</span> </span>
+<span id="cb12-23"><a href=""></a>    <span class="fu">step_interact</span>(<span class="at">terms =</span> <span class="sc">~</span> <span class="fu">all_predictors</span>()<span class="sc">:</span><span class="fu">all_predictors</span>())  <span class="sc">|&gt;</span> </span>
+<span id="cb12-24"><a href=""></a>    <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="do">## 4. สร้าง workflow จำนวน 2 ตัว</span></span>
+<span id="cb13-2"><a href=""></a>lm_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href=""></a>    <span class="fu">add_recipe</span>(lm_rec) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href=""></a>    <span class="fu">add_model</span>(lm_mod)</span>
+<span id="cb13-5"><a href=""></a></span>
+<span id="cb13-6"><a href=""></a>glmnet_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-7"><a href=""></a>    <span class="fu">add_recipe</span>(glmnet_rec) <span class="sc">|&gt;</span> </span>
+<span id="cb13-8"><a href=""></a>    <span class="fu">add_model</span>(glmnet_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="do">## 5. Train model</span></span>
+<span id="cb14-2"><a href=""></a><span class="do">### --- 1. Train linear reg (lm)</span></span>
+<span id="cb14-3"><a href=""></a>lm_fit <span class="ot">&lt;-</span> lm_wf <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a href=""></a>            <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span>
+<span id="cb14-5"><a href=""></a></span>
+<span id="cb14-6"><a href=""></a><span class="do">### --- 2. Train glmnet</span></span>
+<span id="cb14-7"><a href=""></a><span class="do">## cv dataset</span></span>
+<span id="cb14-8"><a href=""></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(<span class="at">data =</span> train_data, <span class="at">v=</span><span class="dv">5</span>, <span class="at">repeats =</span><span class="dv">3</span>)</span>
+<span id="cb14-9"><a href=""></a><span class="do">## เลือกช่วงชอง penalty เป็น default ก่อน ใช้ grid แบบ regular จำนวน 50 grids</span></span>
+<span id="cb14-10"><a href=""></a></span>
+<span id="cb14-11"><a href=""></a><span class="do">###-- ส่วนนี้เตรียมทำ parallel computing</span></span>
+<span id="cb14-12"><a href=""></a><span class="fu">library</span>(future)</span>
+<span id="cb14-13"><a href=""></a><span class="do">## ใช้ 10 cores เพื่อประมวลผลแบบ parallel </span></span>
+<span id="cb14-14"><a href=""></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> <span class="dv">10</span>) <span class="do">### -- ถ้าจำไม่ผิด windows จะต้องใช้ multicores </span></span>
+<span id="cb14-15"><a href=""></a>penalty_grid <span class="ot">=</span> <span class="fu">grid_regular</span>(<span class="fu">penalty</span>(), <span class="at">levels=</span><span class="dv">50</span>)</span>
+<span id="cb14-16"><a href=""></a><span class="do">### tune glmnet</span></span>
+<span id="cb14-17"><a href=""></a>glmnet_tuned_results <span class="ot">&lt;-</span> glmnet_wf <span class="sc">|&gt;</span> </span>
+<span id="cb14-18"><a href=""></a>    <span class="fu">tune_grid</span>(</span>
+<span id="cb14-19"><a href=""></a>        <span class="at">resamples =</span> folds,</span>
+<span id="cb14-20"><a href=""></a>        <span class="at">grid =</span> penalty_grid,</span>
+<span id="cb14-21"><a href=""></a>        <span class="at">control =</span> <span class="fu">control_grid</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-22"><a href=""></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb15-2"><a href=""></a><span class="do">## 6. ประเมินประสิทธิภาพของโมเดลเพื่อกำหนด hyperparaeter ที่ดีที่สุด</span></span>
+<span id="cb15-3"><a href=""></a><span class="do">### เราดูเฉพาะ glmnet เพราะเป็นโมเดลเดียวที่มีการ tune hyperparameter</span></span>
+<span id="cb15-4"><a href=""></a>p1<span class="ot">&lt;-</span> glmnet_tuned_results <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href=""></a>    <span class="fu">collect_metrics</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb15-6"><a href=""></a>    <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"rmse"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-7"><a href=""></a>    <span class="fu">arrange</span>(mean) <span class="sc">|&gt;</span> </span>
+<span id="cb15-8"><a href=""></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> penalty , <span class="at">y=</span> mean))<span class="sc">+</span></span>
+<span id="cb15-9"><a href=""></a>    <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb15-10"><a href=""></a>    <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb15-11"><a href=""></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean<span class="fl">-1.96</span><span class="sc">*</span>std_err, <span class="at">ymax =</span> mean<span class="fl">+1.96</span><span class="sc">*</span>std_err))<span class="sc">+</span></span>
+<span id="cb15-12"><a href=""></a>    <span class="fu">ylab</span>(<span class="st">"RMSE"</span>)</span>
+<span id="cb15-13"><a href=""></a></span>
+<span id="cb15-14"><a href=""></a>p2<span class="ot">&lt;-</span>glmnet_tuned_results <span class="sc">|&gt;</span> </span>
+<span id="cb15-15"><a href=""></a>    <span class="fu">collect_metrics</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb15-16"><a href=""></a>    <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"rsq"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-17"><a href=""></a>    <span class="fu">arrange</span>(mean) <span class="sc">|&gt;</span> </span>
+<span id="cb15-18"><a href=""></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> penalty , <span class="at">y=</span> mean))<span class="sc">+</span></span>
+<span id="cb15-19"><a href=""></a>    <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb15-20"><a href=""></a>    <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb15-21"><a href=""></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean<span class="fl">-1.96</span><span class="sc">*</span>std_err, <span class="at">ymax =</span> mean<span class="fl">+1.96</span><span class="sc">*</span>std_err))<span class="sc">+</span></span>
+<span id="cb15-22"><a href=""></a>    <span class="fu">ylab</span>(<span class="st">"R-square"</span>)</span>
+<span id="cb15-23"><a href=""></a></span>
+<span id="cb15-24"><a href=""></a>p1<span class="sc">/</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>ผลการ tune hyperparameter พบว่าเราน่าจะได้โมเดลที่ดีที่สุด ณ penalty ประมาณเกือบ 0.25 โดยมีค่า RMSE และ R2 ประมาณ 8 กับ 70% ตามลำดับ</p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="do">#### --- เลือก best ของ glmnet</span></span>
+<span id="cb16-2"><a href=""></a>best_glmnet <span class="ot">&lt;-</span> glmnet_tuned_results <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a href=""></a>    <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb16-4"><a href=""></a><span class="do">### finalized workflow</span></span>
+<span id="cb16-5"><a href=""></a><span class="do">##### -- เอา training data ทั้งหมดมา train แต่ละโมเดลใหม่ และเปรียบเทียบประสิทธิภาพบน test_data ทั้งหมดนี่สามารถทำได้พร้อมกันผ่าน `last_fit()`</span></span>
+<span id="cb16-6"><a href=""></a><span class="do">### --- lastfit lm</span></span>
+<span id="cb16-7"><a href=""></a>last_lm <span class="ot">&lt;-</span> lm_wf <span class="sc">|&gt;</span> </span>
+<span id="cb16-8"><a href=""></a>    <span class="fu">last_fit</span>(split)</span>
+<span id="cb16-9"><a href=""></a><span class="do">### ----- lastfit glmnet</span></span>
+<span id="cb16-10"><a href=""></a>lm_perform <span class="ot">&lt;-</span> last_lm <span class="sc">|&gt;</span> <span class="fu">collect_metrics</span>()</span>
+<span id="cb16-11"><a href=""></a>last_glmnet <span class="ot">&lt;-</span> glmnet_wf <span class="sc">|&gt;</span> </span>
+<span id="cb16-12"><a href=""></a>   <span class="fu">finalize_workflow</span>(best_glmnet) <span class="sc">|&gt;</span> </span>
+<span id="cb16-13"><a href=""></a>   <span class="fu">last_fit</span>(split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="do">## performance in test data</span></span>
+<span id="cb17-2"><a href=""></a>glmnet_perform <span class="ot">&lt;-</span> last_glmnet <span class="sc">|&gt;</span> <span class="fu">collect_metrics</span>()</span>
+<span id="cb17-3"><a href=""></a>last_glmnet <span class="sc">|&gt;</span> <span class="fu">collect_predictions</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-4"><a href=""></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span> ach, <span class="at">y=</span>.pred))<span class="sc">+</span></span>
+<span id="cb17-5"><a href=""></a>    <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>lm_perform <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href=""></a>    <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"lm"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href=""></a>    <span class="fu">bind_rows</span>(glmnet_perform <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"glmnet"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb18-4"><a href=""></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>model, <span class="at">y=</span>.estimate))<span class="sc">+</span></span>
+<span id="cb18-5"><a href=""></a>    <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> model))<span class="sc">+</span></span>
+<span id="cb18-6"><a href=""></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(.estimate,<span class="dv">4</span>)), <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">vjust =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb18-7"><a href=""></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>.metric ,<span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>)<span class="sc">+</span></span>
+<span id="cb18-8"><a href=""></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb18-9"><a href=""></a>    <span class="fu">ylab</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> Estimated Performance </span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-15-2.png" width="960"></p>
+</figure>
+</div>
+</div>
 </div>
 </section><section id="feature-extraction" class="slide level2 smaller"><h2>Feature Extraction</h2>
 <ul>
@@ -662,6 +866,147 @@ M. Kuhn and Johnson (2020)
 <div class="caption3">
 Boehmke, &amp; Greenwell, 2020
 </div>
+</section><section id="step_pca-ใน-tidymodels" class="slide level2 smaller"><h2>
+<code>step_pca()</code> ใน tidymodels</h2>
+<p><code>step_pca()</code> รวมทั้ง technique อื่น ๆ ในกลุ่มนี้สามารถใช้ได้ทั้งในงานแบบ supervised และ unsupervied learning</p>
+<p><strong>Unsupervised Task</strong></p>
+<p>ลองทำ unsupervised เพื่อทำความเข้าใจตัวแปรในชุดข้อมูล <code>learningdata_csv</code> โดยจะใช้ training data จากกิจกรรมก่อนหน้า</p>
+<div style="font-size: 80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">glimpse</span>(train_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,270
+Columns: 22
+$ student.id         &lt;dbl&gt; 7, 10, 16, 23, 25, 42, 44, 60, 63, 69, 70, 71, 81, …
+$ school.type        &lt;chr&gt; "Public", "Public", "Public", "Public", "Public", "…
+$ gender             &lt;chr&gt; "หญิง", "ชาย", "ชาย", "หญิง", "ชาย", "หญิง", "ชาย", "ช…
+$ location           &lt;chr&gt; "ภาคเหนือ", "ภาคกลาง", "ภาคเหนือ", "ภาคตะวันออกเฉียงเหนื…
+$ ach                &lt;dbl&gt; 14.793349, 30.388422, 14.081515, 30.045526, 31.7101…
+$ learn.style        &lt;chr&gt; "เรียนผ่านการอ่าน-เขียน", "เรียนผ่านการลงมือทำ", "เรียนผ่านก…
+$ study.hr           &lt;dbl&gt; 5.7, 2.1, 4.1, 9.7, 6.6, 0.8, 6.3, 1.3, 5.3, 6.1, 4…
+$ extra.act          &lt;chr&gt; "กีฬา", "ชมรมวิชาการ", "กีฬา", "กีฬา", "ศิลปะ", "ชมรมวิชา…
+$ extra.act.hr       &lt;dbl&gt; 0.9, 3.7, 0.2, 1.4, 0.9, 1.6, 2.6, 1.6, 0.9, 2.7, 1…
+$ self.esteem        &lt;dbl&gt; 6.1, 2.5, 3.9, 2.7, 11.7, 5.8, 0.1, 6.6, 6.5, 4.3, …
+$ social.skill       &lt;dbl&gt; 2.1, 5.0, 4.3, 5.4, 9.9, 10.4, 5.3, 7.0, 4.8, 8.1, …
+$ satisfac           &lt;dbl&gt; 1, 1, 1, 2, 3, 4, 3, 3, 2, 4, 2, 2, 2, 2, 2, 1, 1, …
+$ sch.belong_ordinal &lt;dbl&gt; 1, 1, 1, 2, 3, 5, 3, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, …
+$ sch.absent         &lt;dbl&gt; 14, 11, 17, 10, 6, 11, 12, 19, 13, 14, 17, 20, 8, 2…
+$ par.involv_ordinal &lt;dbl&gt; 1, 1, 1, 2, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ motiv_ordinal      &lt;dbl&gt; 1, 1, 1, 1, 3, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ acad.goal          &lt;chr&gt; "ยังไม่มีเป้าหมายชัดเจน", "เพื่อสำเร็จการศึกษาขั้นพื้นฐาน", "เพื่อ…
+$ time.manage1       &lt;dbl&gt; 8.3, 9.1, 10.4, 10.0, 12.4, 5.6, 11.6, 7.0, 11.8, 9…
+$ time.manage2       &lt;dbl&gt; 0.3, 1.6, 0.3, 7.9, 11.4, 1.6, 4.1, 0.4, 4.5, 2.2, …
+$ acad_axiety        &lt;dbl&gt; 1.4, 2.2, 1.4, 2.8, 3.0, 3.6, 2.6, 2.8, 2.6, 4.0, 2…
+$ teach_sup          &lt;dbl&gt; 2.8, 1.0, 2.4, 2.8, 3.2, 3.6, 2.2, 2.6, 3.0, 2.8, 1…
+$ lrn_environ        &lt;dbl&gt; 1.0, 1.2, 1.0, 3.0, 2.8, 4.0, 1.8, 3.0, 1.8, 4.0, 2…</code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>pca_trained <span class="ot">&lt;-</span> <span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href=""></a>  <span class="fu">update_role</span>(student.id, <span class="at">new_role =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">step_mutate</span>(</span>
+<span id="cb21-4"><a href=""></a>        <span class="fu">across</span>(<span class="fu">c</span>(<span class="fu">ends_with</span>(<span class="st">"ordinal"</span>), <span class="st">"satisfac"</span>), <span class="sc">~</span><span class="fu">factor</span>(.))</span>
+<span id="cb21-5"><a href=""></a>        ) <span class="sc">|&gt;</span> </span>
+<span id="cb21-6"><a href=""></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb21-7"><a href=""></a>  <span class="fu">step_pca</span>(<span class="fu">all_numeric_predictors</span>(), <span class="at">threshold =</span> <span class="fl">0.7</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-8"><a href=""></a>  <span class="fu">prep</span>()</span>
+<span id="cb21-9"><a href=""></a></span>
+<span id="cb21-10"><a href=""></a><span class="do">## create scree plot to determine PCA</span></span>
+<span id="cb21-11"><a href=""></a>pca_trained <span class="sc">|&gt;</span> </span>
+<span id="cb21-12"><a href=""></a>  <span class="fu">tidy</span>(<span class="dv">3</span>, <span class="at">type =</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-13"><a href=""></a>  <span class="fu">filter</span>(terms <span class="sc">==</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-14"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>component, <span class="at">y=</span>value))<span class="sc">+</span></span>
+<span id="cb21-15"><a href=""></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb21-16"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"scree plot"</span>)<span class="sc">+</span></span>
+<span id="cb21-17"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="do">## create scree plot with cumulative percent variance</span></span>
+<span id="cb22-2"><a href=""></a>pca_trained <span class="sc">|&gt;</span> </span>
+<span id="cb22-3"><a href=""></a>  <span class="fu">tidy</span>(<span class="dv">3</span>, <span class="at">type =</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-4"><a href=""></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(terms, <span class="st">"percent"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb22-5"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>component, <span class="at">y=</span>value,<span class="at">col =</span> terms))<span class="sc">+</span></span>
+<span id="cb22-6"><a href=""></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb22-7"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb22-8"><a href=""></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">70</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span> <span class="do">## สมมุติกำหนด cut-off (threshold) เท่ากับ 70%</span></span>
+<span id="cb22-9"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb22-10"><a href=""></a>  <span class="fu">labs</span>(<span class="at">col =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb22-11"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-17-2.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>จาก cut-off ที่กำหนดแสดงว่าควรมีองค์ประกอบหลัก 4 องค์ประกอบ เราสามารถตีความความหมายขององค์ประกอบหลักได้จาก loading ระหว่างตัวแปรต้นฉบับกับองค์ประกอบหลักของแต่ละองค์ประกอบ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="do">## create loading plot</span></span>
+<span id="cb23-2"><a href=""></a>pca_trained <span class="sc">|&gt;</span> </span>
+<span id="cb23-3"><a href=""></a>  <span class="fu">tidy</span>(<span class="dv">3</span>, <span class="at">type =</span> <span class="st">"coef"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href=""></a>  <span class="fu">filter</span>(component <span class="sc">%in%</span> <span class="fu">paste0</span>(<span class="st">"PC"</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-5"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>terms))<span class="sc">+</span></span>
+<span id="cb23-6"><a href=""></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value))<span class="sc">+</span></span>
+<span id="cb23-7"><a href=""></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.3</span>,<span class="fl">0.3</span>), <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb23-8"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>component) <span class="sc">+</span></span>
+<span id="cb23-9"><a href=""></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"maroon"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>องค์ประกอบทั้ง 4 ควรมีความหมายว่าอย่างไร?</p>
+<p>หากเราพอใจความหมายขององค์ประกอบทั้ง 4 แล้ว เราสามารถสร้างคะแนนองค์ประกอบได้ง่าย ๆ โดยใช้ <code>juice()</code> หรือ <code>bake()</code> ขึ้นอยู่กับว่าเราจะสร้างคะแนนบน train หรือชุดข้อมูลอื่น ๆ</p>
+<p>ลองพิจารณาชุดข้อมูลด้านล่างจะเห็นว่าเมื่อ <code>juice()</code> หรือ <code>bake()</code> ตัวแปรเชิงปริมาณที่นำไปสร้าง scale องค์ประกอบจะหายไปหมด แทนที่ด้วยคะแนนองค์ประกอบ 4 ตัวที่เราเลือกมาแทน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>pca_trained <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-3"><a href=""></a>  <span class="fu">glimpse</span>(<span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,270
+Columns: 16
+$ student.id         &lt;dbl&gt; 7, 10, 16, 23, 25, 42, 44, 60, …
+$ school.type        &lt;fct&gt; Public, Public, Public, Public,…
+$ gender             &lt;fct&gt; หญิง, ชาย, ชาย, หญิง, ชาย, หญิง, ช…
+$ location           &lt;fct&gt; ภาคเหนือ, ภาคกลาง, ภาคเหนือ, ภาคต…
+$ learn.style        &lt;fct&gt; เรียนผ่านการอ่าน-เขียน, เรียนผ่านการล…
+$ extra.act          &lt;fct&gt; กีฬา, ชมรมวิชาการ, กีฬา, กีฬา, ศิลปะ…
+$ satisfac           &lt;fct&gt; 1, 1, 1, 2, 3, 4, 3, 3, 2, 4, 2…
+$ sch.belong_ordinal &lt;fct&gt; 1, 1, 1, 2, 3, 5, 3, 2, 1, 1, 1…
+$ par.involv_ordinal &lt;fct&gt; 1, 1, 1, 2, 3, 1, 2, 1, 1, 1, 1…
+$ motiv_ordinal      &lt;fct&gt; 1, 1, 1, 1, 3, 4, 1, 1, 1, 1, 1…
+$ acad.goal          &lt;fct&gt; ยังไม่มีเป้าหมายชัดเจน, เพื่อสำเร็จการศึ…
+$ ach                &lt;dbl&gt; 14.793349, 30.388422, 14.081515…
+$ PC1                &lt;dbl&gt; -3.59205790, -4.04056117, -3.77…
+$ PC2                &lt;dbl&gt; 2.72013725, 0.60791136, 2.58886…
+$ PC3                &lt;dbl&gt; -0.6565458, 1.1164666, -0.10549…
+$ PC4                &lt;dbl&gt; -0.65312628, 0.78128625, 0.1450…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>pca_trained <span class="sc">|&gt;</span> </span>
+<span id="cb26-2"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>PC1, <span class="at">y=</span>PC2)) <span class="sc">+</span></span>
+<span id="cb26-4"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> ach),<span class="at">alpha =</span> <span class="fl">0.9</span>)<span class="sc">+</span></span>
+<span id="cb26-5"><a href=""></a>  <span class="fu">scale_color_gradient2</span>(<span class="at">low =</span> <span class="st">"maroon"</span>,<span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb26-6"><a href=""></a>                        <span class="at">midpoint =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="preprocessing1_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Supervised Task</strong></p>
+<p>ใช้ syntax ที่ส่งให้ในคาบ</p>
 </section><section id="feature-extraction-kernal-pca" class="slide level2 smaller scrollable"><h2>Feature Extraction: Kernal PCA</h2>
 <ol type="1">
 <li><p>แปลงข้อมูล: ใช้ kernel function เพื่อแปลงข้อมูลจากพื้นที่เดิมที่อาจมีความซับซ้อนไปสู่พื้นที่มิติสูงกว่า</p></li>
@@ -752,21 +1097,21 @@ https://www.kaggle.com/code/marcinrutecki/smote-and-tomek-links-for-imbalanced-d
 <p>ใน library-recipe มี <code>step_mutate()</code> ที่ทำงานเหมือนกับ <code>mutate()</code> ใน dplyr</p>
 <p><strong>original</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-3"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb8-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb8-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
-<span id="cb8-6"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-3"><a href=""></a>         <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb27-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb27-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb27-6"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>recipe</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">recipe</span>(ach <span class="sc">~</span> . , <span class="at">data =</span> data) <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href=""></a><span class="fu">step_mutate</span>(</span>
-<span id="cb9-3"><a href=""></a>        <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb9-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
-<span id="cb9-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
-<span id="cb9-6"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">recipe</span>(ach <span class="sc">~</span> . , <span class="at">data =</span> data) <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href=""></a><span class="fu">step_mutate</span>(</span>
+<span id="cb28-3"><a href=""></a>        <span class="at">acad_axiety =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"acad.axiety"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb28-4"><a href=""></a>         <span class="at">teach_sup =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"teach"</span>)),<span class="at">na.rm=</span>T),</span>
+<span id="cb28-5"><a href=""></a>         <span class="at">lrn_environ =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"lrn.environ"</span>)), <span class="at">na.rm=</span>T)</span>
+<span id="cb28-6"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>

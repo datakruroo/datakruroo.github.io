@@ -1,0 +1,313 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("/Users/choat/Downloads/learningdata.csv")
+glimpse(data)
+```
+
+
+```{r}
+data <- data |> 
+  mutate(
+         acad_axiety = rowMeans(across(starts_with("acad.axiety")),na.rm=T),
+         teach_sup = rowMeans(across(starts_with("teach")),na.rm=T),
+         lrn_environ = rowMeans(across(starts_with("lrn.environ")), na.rm=T)
+  ) |> 
+select(-starts_with("acad.axiety"), -starts_with("teach.sup"), -starts_with("lrn.environ")) 
+```
+
+เราจะ train linear regression เพื่อทำนาย ach ของนักเรียน
+
+
+```{r}
+set.seed(123)
+## 1. แบ่งชุดข้อมูลออกเป็น train กับ test set
+split <- initial_split(data, prop = 0.8, strata = "ach", breaks = 5)
+train_data <- training(split)
+test_data <- testing(split)
+
+## พิสูจน์ว่า dsitribution ของตัวแปรตามเหมือนกันมั้ยใน train กับ test
+train_data |> 
+    mutate(dataset = "train_data") |> 
+    bind_rows(test_data |> mutate(dataset = "test_data")) |> 
+    ggplot(aes(x = ach, col = dataset))+
+    geom_density()
+```
+
+
+
+```{r}
+## 2. กำหนด algorithm ที่จะใช้ในการ train regression model
+lm_mod <- linear_reg() |> 
+    set_engine("lm") |> 
+    set_mode("regression")
+
+glmnet_mod <- linear_reg(penalty = tune(), mixture = 1) |> 
+    set_engine("glmnet") |> 
+    set_mode("regression")
+```
+
+
+
+```{r}
+## 3. preprocessing model
+lm_rec <- recipe(ach ~ ., data = train_data) |> 
+    update_role(student.id, new_role = "id") |> 
+    step_mutate(
+        across(c(ends_with("ordinal"), "satisfac"), ~factor(.))
+        )
+
+
+glmnet_rec <- recipe(ach ~ ., data = train_data) |> 
+    update_role(student.id, new_role = "id") |> 
+    step_mutate(
+        across(c(ends_with("ordinal"), "satisfac"), ~factor(.))
+        ) |> 
+    step_interact(terms = ~ all_predictors():all_predictors())  |> 
+    step_dummy(all_nominal_predictors())
+```
+
+
+
+```{r}
+## 4. สร้าง workflow จำนวน 2 ตัว
+lm_wf <- workflow() |> 
+    add_recipe(lm_rec) |> 
+    add_model(lm_mod)
+
+glmnet_wf <- workflow() |> 
+    add_recipe(glmnet_rec) |> 
+    add_model(glmnet_mod)
+```
+
+
+
+```{r}
+## 5. Train model
+### --- 1. Train linear reg (lm)
+lm_fit <- lm_wf |> 
+            fit(data = train_data)
+
+### --- 2. Train glmnet
+## cv dataset
+folds <- vfold_cv(data = train_data, v=5, repeats =3)
+penalty_grid = grid_regular(penalty(), levels=50)
+### tune glmnet
+glmnet_tuned_results <- glmnet_wf |> 
+    tune_grid(
+        resamples = folds,
+        grid = penalty_grid,
+        control = control_grid(save_pred = TRUE)
+    )
+```
+
+
+
+```{r}
+library(patchwork)
+## 6. ประเมินประสิทธิภาพของโมเดลเพื่อกำหนด hyperparaeter ที่ดีที่สุด
+
+### 6.1 ประสิทธิภาพใน lm
+lm_fit |> 
+     tidy()
+
+### 6.2 ประสิทธิภาพใน glmnet
+p1<- glmnet_tuned_results |> 
+    collect_metrics() |> 
+    filter(.metric == "rmse") |> 
+    arrange(mean) |> 
+    ggplot(aes(x = penalty , y= mean))+
+    geom_line()+
+    geom_point()+
+    geom_errorbar(aes(ymin = mean-1.96*std_err, ymax = mean+1.96*std_err))+
+    ylab("RMSE")
+
+p2<-glmnet_tuned_results |> 
+    collect_metrics() |> 
+    filter(.metric == "rsq") |> 
+    arrange(mean) |> 
+    ggplot(aes(x = penalty , y= mean))+
+    geom_line()+
+    geom_point()+
+    geom_errorbar(aes(ymin = mean-1.96*std_err, ymax = mean+1.96*std_err))+
+    ylab("R-square")
+
+p1/p2
+```
+
+
+
+```{r}
+best_glmnet <- glmnet_tuned_results |> 
+    select_best(metric = "rmse")
+
+### finalized workflow
+last_lm <- lm_wf |> 
+    last_fit(split)
+lm_perform <- last_lm |> collect_metrics()
+
+last_glmnet <- glmnet_wf |> 
+   finalize_workflow(best_glmnet) |> 
+   last_fit(split)
+## performance in test data
+glmnet_perform <- last_glmnet |> collect_metrics()
+last_glmnet |> collect_predictions() |> 
+    ggplot(aes(x= ach, y=.pred))+
+    geom_point()
+
+lm_perform |> 
+    mutate(model = "lm") |> 
+    bind_rows(glmnet_perform |> mutate(model = "glmnet")) |> 
+    ggplot(aes(x=model, y=.estimate))+
+    geom_col()+
+    geom_text(aes(label = round(.estimate,4)), col = "white", vjust = 2)+
+    facet_wrap(~.metric ,nrow = 2, scales = "free_y")
+```
+
+
+
+
+
+```{r}
+### finalized workflow
+fit_glmnet <- glmnet_wf |> 
+   finalize_workflow(best_glmnet) |> 
+   fit(data = train_data)
+## performance in test data
+fit_glmnet |> 
+    predict(new_data =test_data) |> 
+    bind_cols(test_data) |> 
+    select(.pred, ach) 
+    rsq(truth = ach, estimate = .pred)
+```
+
+
+
+## PCR: Principal Component Regression
+
+
+```{r}
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/homework.csv")
+
+data <- data |> 
+    rename(id = 1) |> 
+    mutate(success = factor(ifelse(y>45, "success", "fail"))) |> 
+    mutate(success = fct_relevel(success, "success","fail")) |> 
+    select(-y)
+
+## 0. initial split
+set.seed(123)
+data_split <- initial_split(data, prop = 0.8, strata = "success")
+train_data <- training(data_split)
+test_data <- testing(data_split)
+
+p1 <- ggplot()+
+    geom_bar(data = train_data, aes(x = success), fill = "maroon")
+
+p2 <- ggplot()+
+    geom_bar(data = test_data, aes(x = success), fill = "steelblue")
+
+p1/p2
+```
+
+
+### 2. model spec
+
+
+```{r}
+#### --- model spec
+glmnet_logistic <- logistic_reg(penalty= tune(), mixture = 1) |> 
+    set_engine("glmnet") |> 
+    set_mode("classification")
+
+glm_logistic <- logistic_reg() |> 
+    set_engine("glm") |> 
+    set_mode("classification")
+
+knn_mod <- nearest_neighbor(neighbors = tune, dist_power = 2) |> 
+    set_engine("kknn") |> 
+    set_mode("classification")
+```
+
+
+```{r}
+#### --- preprocess model
+recipe(success ~. , data=train_data) |> 
+    update_role(id, new_role = "id") |> 
+    step_normalize(all_predictors()) |>  ## หน่วยข้อมูลมีผลต่อ PCA
+    step_pca(all_predictors()) |> 
+    prep() |> tidy(2, type = "variance") |> 
+    filter(terms == "variance") |> 
+    slice(1:10) |> 
+    ggplot(aes(x=component, y=value))+
+    geom_col()+
+    ggtitle("Scree Plot")+
+    scale_x_continuous(breaks = 1:10)
+
+
+recipe(success ~. , data=train_data) |> 
+    update_role(id, new_role = "id") |> 
+    step_normalize(all_predictors()) |>  ## หน่วยข้อมูลมีผลต่อ PCA
+    step_pca(all_predictors()) |> 
+    prep() |> tidy(2, type = "coef") |> 
+    filter(component %in% paste0("PC",1:4)) |> 
+    ggplot(aes(x=value, y=terms))+
+    geom_col(aes(fill = value>0))+
+    facet_wrap(~component)
+
+library(themis)
+
+pca_recipe <- recipe(success ~. , data=train_data) |> 
+    update_role(id, new_role = "id") |> 
+    step_normalize(all_predictors()) |>  ## หน่วยข้อมูลมีผลต่อ PCA
+    step_smote(success) 
+    #step_interact(terms = ~ all_predictors():all_predictors())
+    #step_pca(all_predictors(), num_comp = tune())
+
+
+```
+
+
+### 3. สร้าง workflow
+
+
+```{r}
+glm_wf <- workflow() |> 
+    add_recipe(pca_recipe) |> 
+    add_model(glmnet_logistic)
+
+folds <- vfold_cv(train_data, v=5, repeats = 3, strata = "success")
+
+library(future)
+plan(multisession, workers = 10)
+
+
+glm_tuned_results <- glm_wf |> 
+    tune_grid(
+        resamples = folds,
+        grid = 30,
+        metrics = metric_set(sensitivity, specificity, precision, f_meas),
+        control = control_grid(save_pred = TRUE)
+    )
+
+glm_tuned_results |> collect_metrics() |> 
+   # filter(.metric == "f_meas") |> 
+    filter(.metric == "precision") |> 
+    ggplot(aes(x= penalty, y= mean))+
+    geom_line()+
+    geom_point()
+
+glm_wf |> 
+    finalize_workflow(glm_tuned_results |> 
+    select_best(metric = "f_meas")) |> 
+    last_fit(data_split)->last_fit_glm
+
+last_fit_glm |> collect_predictions() |> 
+    conf_mat(truth = success, estimate = .pred_class)
+```

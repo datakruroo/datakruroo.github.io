@@ -21,7 +21,6 @@ format:
 code-link: true
 execute:
   echo: true
-  freeze: auto
 ---
 
 ```{r echo = F}
@@ -230,12 +229,13 @@ final_fit <- final_wf %>%
 
 สร้าง workflow เพื่อ train regression model จากชุดข้อมูล `learningdata.csv`
 
-```{r eval = F}
+```{r eval = T}
 library(tidyverse)
 library(tidymodels)
 data <- read_csv("/Users/choat/Downloads/learningdata.csv")
 glimpse(data)
 
+## รวมคะแนนตัวแปร
 data <- data |> 
   mutate(
          acad_axiety = rowMeans(across(starts_with("acad.axiety")),na.rm=T),
@@ -244,6 +244,171 @@ data <- data |>
   ) |> 
 select(-starts_with("acad.axiety"), -starts_with("teach.sup"), -starts_with("lrn.environ")) 
 ```
+
+
+วัตถุประสงค์ของกิจกรรมคือ train linear regression เพื่อทำนาย ach ของนักเรียน
+
+
+```{r results = TRUE}
+set.seed(123)
+## 1. แบ่งชุดข้อมูลออกเป็น train กับ test set
+split <- initial_split(data, prop = 0.8, strata = "ach", breaks = 5)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+<br>
+
+<center>
+
+```{r fig.width = 8, fig.height = 4}
+## ตรวจสอบว่า dsitribution ของตัวแปรตามเหมือนกันมั้ยใน train กับ test
+train_data |> 
+    mutate(dataset = "train_data") |> 
+    bind_rows(test_data |> mutate(dataset = "test_data")) |> 
+    ggplot(aes(x = ach, col = dataset))+
+    geom_density()
+```
+
+</center>
+
+<br>
+
+```{r}
+## 2. กำหนด algorithm ที่จะใช้ในการ train regression model
+lm_mod <- linear_reg() |> 
+    set_engine("lm") |> 
+    set_mode("regression")
+
+glmnet_mod <- linear_reg(penalty = tune(), mixture = 1) |> 
+    set_engine("glmnet") |> 
+    set_mode("regression")
+
+## 3. preprocessing model
+lm_rec <- recipe(ach ~ ., data = train_data) |> 
+    update_role(student.id, new_role = "id") |> 
+    step_mutate(
+        across(c(ends_with("ordinal"), "satisfac"), ~factor(.))
+        )
+
+
+glmnet_rec <- recipe(ach ~ ., data = train_data) |> 
+    update_role(student.id, new_role = "id") |> 
+    step_mutate(
+        across(c(ends_with("ordinal"), "satisfac"), ~factor(.))
+        ) |> 
+    step_interact(terms = ~ all_predictors():all_predictors())  |> 
+    step_dummy(all_nominal_predictors())
+```
+
+<br>
+
+```{r}
+## 4. สร้าง workflow จำนวน 2 ตัว
+lm_wf <- workflow() |> 
+    add_recipe(lm_rec) |> 
+    add_model(lm_mod)
+
+glmnet_wf <- workflow() |> 
+    add_recipe(glmnet_rec) |> 
+    add_model(glmnet_mod)
+```
+
+
+<br>
+
+```{r}
+## 5. Train model
+### --- 1. Train linear reg (lm)
+lm_fit <- lm_wf |> 
+            fit(data = train_data)
+
+### --- 2. Train glmnet
+## cv dataset
+folds <- vfold_cv(data = train_data, v=5, repeats =3)
+## เลือกช่วงชอง penalty เป็น default ก่อน ใช้ grid แบบ regular จำนวน 50 grids
+
+###-- ส่วนนี้เตรียมทำ parallel computing
+library(future)
+## ใช้ 10 cores เพื่อประมวลผลแบบ parallel 
+plan(multisession, workers = 10) ### -- ถ้าจำไม่ผิด windows จะต้องใช้ multicores 
+penalty_grid = grid_regular(penalty(), levels=50)
+### tune glmnet
+glmnet_tuned_results <- glmnet_wf |> 
+    tune_grid(
+        resamples = folds,
+        grid = penalty_grid,
+        control = control_grid(save_pred = TRUE)
+    )
+```
+
+
+<br>
+
+```{r}
+library(patchwork)
+## 6. ประเมินประสิทธิภาพของโมเดลเพื่อกำหนด hyperparaeter ที่ดีที่สุด
+### เราดูเฉพาะ glmnet เพราะเป็นโมเดลเดียวที่มีการ tune hyperparameter
+p1<- glmnet_tuned_results |> 
+    collect_metrics() |> 
+    filter(.metric == "rmse") |> 
+    arrange(mean) |> 
+    ggplot(aes(x = penalty , y= mean))+
+    geom_line()+
+    geom_point()+
+    geom_errorbar(aes(ymin = mean-1.96*std_err, ymax = mean+1.96*std_err))+
+    ylab("RMSE")
+
+p2<-glmnet_tuned_results |> 
+    collect_metrics() |> 
+    filter(.metric == "rsq") |> 
+    arrange(mean) |> 
+    ggplot(aes(x = penalty , y= mean))+
+    geom_line()+
+    geom_point()+
+    geom_errorbar(aes(ymin = mean-1.96*std_err, ymax = mean+1.96*std_err))+
+    ylab("R-square")
+
+p1/p2
+```
+
+ผลการ tune hyperparameter พบว่าเราน่าจะได้โมเดลที่ดีที่สุด ณ penalty ประมาณเกือบ 0.25 โดยมีค่า RMSE และ R2 ประมาณ 8 กับ 70% ตามลำดับ
+
+<br>
+
+```{r}
+#### --- เลือก best ของ glmnet
+best_glmnet <- glmnet_tuned_results |> 
+    select_best(metric = "rmse")
+### finalized workflow
+##### -- เอา training data ทั้งหมดมา train แต่ละโมเดลใหม่ และเปรียบเทียบประสิทธิภาพบน test_data ทั้งหมดนี่สามารถทำได้พร้อมกันผ่าน `last_fit()`
+### --- lastfit lm
+last_lm <- lm_wf |> 
+    last_fit(split)
+### ----- lastfit glmnet
+lm_perform <- last_lm |> collect_metrics()
+last_glmnet <- glmnet_wf |> 
+   finalize_workflow(best_glmnet) |> 
+   last_fit(split)
+```
+
+```{r}
+## performance in test data
+glmnet_perform <- last_glmnet |> collect_metrics()
+last_glmnet |> collect_predictions() |> 
+    ggplot(aes(x= ach, y=.pred))+
+    geom_point()
+lm_perform |> 
+    mutate(model = "lm") |> 
+    bind_rows(glmnet_perform |> mutate(model = "glmnet")) |> 
+    ggplot(aes(x=model, y=.estimate))+
+    geom_col(aes(fill = model))+
+    geom_text(aes(label = round(.estimate,4)), col = "white", vjust = 2)+
+    facet_wrap(~.metric ,nrow = 2, scales = "free_y")+
+    scale_fill_manual(values = c("steelblue","maroon"))+
+    ylab("\n Estimated Performance \n")
+```
+
 
 ## Feature Extraction {.smaller}
 
@@ -267,6 +432,99 @@ select(-starts_with("acad.axiety"), -starts_with("teach.sup"), -starts_with("lrn
   ![](img/PLS.png){width="90%"}
 
   <div class="caption3">Boehmke, & Greenwell, 2020</div>
+
+
+## `step_pca()` ใน tidymodels {.smaller}
+
+`step_pca()` รวมทั้ง technique อื่น ๆ ในกลุ่มนี้สามารถใช้ได้ทั้งในงานแบบ supervised และ unsupervied learning 
+
+**Unsupervised Task**
+
+ลองทำ unsupervised เพื่อทำความเข้าใจตัวแปรในชุดข้อมูล `learningdata_csv`  โดยจะใช้ training data จากกิจกรรมก่อนหน้า
+
+<div style="font-size: 80%;">
+
+
+```{r}
+glimpse(train_data)
+```
+
+<br>
+
+```{r}
+pca_trained <- recipe(ach ~ ., data = train_data) |> 
+  update_role(student.id, new_role = "id") |> 
+  step_mutate(
+        across(c(ends_with("ordinal"), "satisfac"), ~factor(.))
+        ) |> 
+  step_normalize(all_numeric_predictors()) |> 
+  step_pca(all_numeric_predictors(), threshold = 0.7) |> 
+  prep()
+
+## create scree plot to determine PCA
+pca_trained |> 
+  tidy(3, type = "variance") |> 
+  filter(terms == "variance") |> 
+  ggplot(aes(x=component, y=value))+
+  geom_col()+
+  ggtitle("scree plot")+
+  scale_x_continuous(breaks = 1:10)
+## create scree plot with cumulative percent variance
+pca_trained |> 
+  tidy(3, type = "variance") |> 
+  filter(str_detect(terms, "percent")) |> 
+  ggplot(aes(x=component, y=value,col = terms))+
+  geom_line()+
+  geom_point()+
+  geom_hline(yintercept = 70, linetype = 2)+ ## สมมุติกำหนด cut-off (threshold) เท่ากับ 70%
+  theme(legend.position = "top")+
+  labs(col = "")+
+  scale_x_continuous(breaks = 1:10)
+```
+
+จาก cut-off ที่กำหนดแสดงว่าควรมีองค์ประกอบหลัก 4 องค์ประกอบ เราสามารถตีความความหมายขององค์ประกอบหลักได้จาก loading ระหว่างตัวแปรต้นฉบับกับองค์ประกอบหลักของแต่ละองค์ประกอบ
+
+```{r}
+## create loading plot
+pca_trained |> 
+  tidy(3, type = "coef") |>
+  filter(component %in% paste0("PC",1:4)) |> 
+  ggplot(aes(x=value, y=terms))+
+  geom_col(aes(fill = value))+
+  geom_vline(xintercept = c(-0.3,0.3), linetype = 2)+
+  facet_wrap(~component) +
+  scale_fill_gradient2(low = "maroon", mid = "white", high = "steelblue")
+```
+
+องค์ประกอบทั้ง 4 ควรมีความหมายว่าอย่างไร?
+
+หากเราพอใจความหมายขององค์ประกอบทั้ง 4 แล้ว เราสามารถสร้างคะแนนองค์ประกอบได้ง่าย ๆ โดยใช้ `juice()` หรือ `bake()` ขึ้นอยู่กับว่าเราจะสร้างคะแนนบน train หรือชุดข้อมูลอื่น ๆ 
+
+ลองพิจารณาชุดข้อมูลด้านล่างจะเห็นว่าเมื่อ `juice()` หรือ `bake()` ตัวแปรเชิงปริมาณที่นำไปสร้าง scale องค์ประกอบจะหายไปหมด แทนที่ด้วยคะแนนองค์ประกอบ 4 ตัวที่เราเลือกมาแทน
+
+```{r}
+pca_trained |> 
+  juice() |> 
+  glimpse(60)
+```
+
+
+```{r}
+pca_trained |> 
+  juice() |> 
+  ggplot(aes(x=PC1, y=PC2)) +
+  geom_point(aes(col = ach),alpha = 0.9)+
+  scale_color_gradient2(low = "maroon",mid = "white", high = "steelblue",
+                        midpoint = 50)
+```
+
+</div>
+
+**Supervised Task**
+
+ใช้ syntax ที่ส่งให้ในคาบ
+
+
 
 
 ## Feature Extraction: Kernal PCA {.smaller}
