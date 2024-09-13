@@ -1,0 +1,188 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+## 0. importing data
+
+```{r}
+library(tidyverse)
+library(readxl)
+data <-read_excel("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week03/data_AJ suchada.xlsx")
+```
+
+
+## 1. Visualizing Trends
+
+```{r}
+library(patchwork)
+p1<-data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year) |> 
+  count() |> 
+  ggplot(aes(x=year, y=n))+
+  geom_line()+
+  geom_point()
+
+p2<-data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  group_by(year) |> 
+  count() |> 
+  ggplot(aes(x=year, y=n))+
+  geom_bar(stat = "identity") 
+
+p1/p2
+```
+
+
+```{r}
+library(gapminder)
+p1<-gapminder |> 
+    filter(country == "Thailand") |>
+    ggplot(aes(x = year , y=gdpPercap))+
+    geom_line()
+
+p2<- gapminder |> 
+    filter(country %in% c("Thailand","Singapore")) |>
+    ggplot(aes(x = year , y=gdpPercap, col = country))+
+    geom_line()
+
+p1+p2
+
+gapminder |> 
+    ggplot(aes(x=year, y=gdpPercap))+
+    geom_line(aes(group = country))
+
+gapminder |> 
+    filter(continent == "Asia") |> 
+    ggplot(aes(x=year, y = reorder(country, lifeExp)))+
+    geom_tile(aes(fill = lifeExp))+
+    geom_text(aes(label = round(lifeExp,1)), col = "white", 
+              size = 2)
+```
+
+
+
+```{r}
+library(gapminder)
+gapminder |> 
+  filter(year %in% c(1952, 2007)) |> 
+  filter(continent == "Asia") |> 
+  select(country, year, gdpPercap) |> 
+  pivot_wider(names_from = year, values_from = gdpPercap, names_prefix = "year_")  |> 
+  ggplot(aes(y = reorder(country, year_2007))) +  # ใช้ reorder เพื่อเรียงประเทศตาม gdpPercap
+  geom_segment(aes(x = year_1952, xend = year_2007, 
+                y = reorder(country, year_2007), yend = country), color = "grey", linetype=2) +
+  geom_point(aes(x = year_1952, y=reorder(country, year_2007)), color = "steelblue", size = 3) +
+  geom_point(aes(x = year_2007, y=reorder(country, year_2007)), color = "maroon", size = 3) +
+  scale_x_log10() +  # ใช้สเกล log สำหรับ gdpPercap
+  labs(x = "GDP per Capita (log scale)", y = "Country",
+       title = "GDP per Capita Development in Asia (1952 vs 2007)") +
+  theme_classic() +
+  theme(text = element_text(size = 14))
+```
+
+
+
+```{r}
+data <- read_csv("learningdata.csv")
+
+data |> 
+    ggplot(aes(x = study.hr, y= ach))+
+    geom_point()
+
+data |> 
+    select(ach, study.hr) |> cor()
+
+x <- rnorm(100,0,1)
+y<-2*x+rnorm(100,0,5)
+plot(x,y)
+
+
+data |> 
+    mutate(study.hr = cut(study.hr, breaks = 5)) |> ## สร้างอันตรภาคชั้นของ hour
+    select(study.hr, ach) |> 
+    arrange(study.hr) |> 
+    ggplot(aes(x = study.hr, y=ach))+
+    geom_jitter()
+
+
+data |> 
+    ggplot(aes(x=study.hr , y= ach))+
+    geom_bin2d()
+
+data |> 
+    ggplot(aes(x=study.hr , y= ach))+
+    geom_hex()
+
+
+## par.involv_ordinal <-- ระดับการมีส่วนร่วมดูแลลูกของผู้ปกครอง
+
+data |> 
+    ggplot(aes(x= par.involv_ordinal, y=location))+
+    geom_point()+
+    theme(text = element_text(family = "ChulaCharasNew"))
+
+
+data |> 
+    ggplot(aes(x=gender))+
+    geom_bar()
+
+data |> 
+    ggplot(aes(x=ach))+
+    geom_histogram(col = "white")
+
+
+
+data |> 
+    filter(ach>0) |> ## ตัด outlier คนที่ ach < 0 ออก
+    mutate(interval_ach = cut(ach, breaks = 8)) |> 
+    group_by(sch.absent>10, interval_ach) |> 
+    count() |> 
+    rename(absent = 1) |> 
+     ggplot(aes(y=interval_ach, x =  ifelse(absent == TRUE,n,-n )) )+
+    geom_bar(stat = "identity", aes(fill =absent))+
+    xlab("Frequency")+
+    labs(fill = "absent>10")
+
+
+
+
+
+
+```
+
+
+
+ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับจัดประเภท
+
+
+```{r}
+data |> 
+    ggplot(aes(x=sch.absent>10, y=ach))+
+    #geom_point()+
+     geom_violin(aes(fill = sch.absent>10))+
+    geom_boxplot(width = 0.2)+
+    geom_jitter(data = . %>% slice_sample(n = 200) , width = 0.1, alpha = 0.6)
+
+data |> 
+    ggplot(aes(x = sch.absent>10, y=gender))+
+    geom_jitter()
+
+
+data |> 
+    ggplot(aes(x = ach, fill = sch.absent >10))+
+    geom_histogram(alpha = 0.5 , col = "white")
+
+data |> 
+    ggplot(aes(x = ach, fill = sch.absent >10))+
+    geom_density(alpha = 0.5)+
+    geom_rug()
+
+
+data |> 
+    ggplot(aes(x = study.hr , y= ach))+
+    geom_point()+
+    geom_rug(aes(col = sch.absent > 10))
+```

@@ -1,0 +1,1172 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+
+## 3.1 Objective 1: Research Process {.smaller}
+
+:::::: panel-tabset
+## Research Process
+
+<style>
+  .mermaid {
+    font-size: 12px;
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+</style>
+
+```{mermaid}
+stateDiagram-v2
+    Objective1 --> NamedComposite1
+    NamedComposite1: Climate Data (Precipitation & Temperature datasets) \n
+    Objective1: Data Preprocessing for \n Research Objective 1
+    state NamedComposite1 {
+        [*] --> A
+        A --> B
+        B --> C
+        C --> D
+        D --> E
+        D --> F
+        E --> G
+        F --> G
+        A: Tidying data
+        A: Reshaped, Filtered, & Aligned
+        B: Normalized data
+        C: Calculate composite indices
+        C: Intensity \n Duration \n Frequency
+        D: Split Data
+        E: <center>Baseline \n (1970-2005)</center>
+        F: <center>Study \n (2017-2021)</center>
+        G: Anomaly Score dataset
+        G: Anomaly Score \n Grid ID \n Grid Longitude \n Grid Latitude
+    }
+    Objective1 --> NamedComposite2
+    NamedComposite2: Non-Climate Data (DMC & O-NET datasets)
+    state NamedComposite2 {
+        [*] --> DMC
+        [*] --> ONET
+        DMC --> step1A
+        ONET --> step1B
+        step1A --> step2
+        step1B --> step2
+        step2 --> step3
+        step2 --> schlocation
+        schlocation --> google
+        google -->step5
+        step3 --> step4
+        step4 --> step5
+        step5 --> step6
+        step1A: Tidying data
+        step1A: Reshaped, Filtered, & Aligned \n - School Profile \n - School Address
+        step1B: Tidying data
+        step1B: Reshaped, Filtered, & Aligned \n - School Profile \n - O-NET score
+        step2: Merging
+        step2: DMC and O-NET datasets
+        schlocation: School Address
+        schlocation: School name \n Address \n Tambon \n Amphor \n Province \n Postal Code
+        google: Retriving School Coordinates
+        google: Using School Address to retrieve \n school latitude and longitude data \n via Google Maps API.
+        step3: Normalized O-NET Score
+        step3: Math \n Science \n Thai \n Eng
+        step4: Calculate composite index
+        step4: Achievement Score (Ach Score)
+        step5: Merging Data
+        step5: Completed Achievement Dataset \n - School Profile \n - School Longitude \n - School Latitude \n - Ach Score
+        step6: Mapping School into Climate Grid
+        step6: 1. Calculate the distance \n between the school and grid coordinates \n using the Haversine distance. \n 2. Map each school to a grid cell based on \n the shortest distance criterion.
+    }
+    G --> final
+    G --> subset
+    subset --> step6
+    step6 --> final
+    final --> PCA
+    PCA --> [*]
+    subset: Grid Location
+    subset: Grid ID \n Grid Longitude \n Grid Latitude
+    final: Merging Climate \n and Non-Climate Data \n
+    PCA: Principal Component Analysis
+    PCA: Risk Index [0,1]
+```
+
+<br>
+
+## Anomaly Score
+
+::::: columns
+::: {.column width="50%"}
+```{r echo = F, fig.height = 10}
+library(viridis)
+library(patchwork)
+prep <- precipitation_anomaly_wide |> 
+  pivot_longer(cols =contains("rcp45"))
+
+p1 <- prep |> 
+  filter(name == "intensity_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Precipiration: Intensity Anomaly")
+
+p2 <- prep |> 
+  filter(name == "duration_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Precipiration: Duration Anomaly")
+
+p3 <- prep |> 
+  filter(name == "frequency_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Precipiration: Frequency Anomaly")
+
+p1/p2/p3
+```
+:::
+
+::: {.column width="50%"}
+```{r echo = F, fig.height = 10}
+temper <- temperature_anomaly_wide |> 
+  pivot_longer(cols =contains("rcp45"))
+
+p4 <- temper |> 
+  filter(name == "intensity_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Temperature: Intensity Anomaly")
+
+p5 <- temper |> 
+  filter(name == "duration_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Temperature: Duration Anomaly")
+
+p6 <- temper |> 
+  filter(name == "frequency_rcp45") |> 
+  ggplot(aes(x=lon, y=lat))+
+  geom_tile(aes(fill = value), col = "black")+
+  scale_fill_viridis_c(option = "B")+
+  facet_wrap(~year, nrow = 1)+
+  ggtitle("Temperature: Frequency Anomaly")
+
+p4/p5/p6
+```
+:::
+:::::
+
+## Merged Data (Example)
+
+**Haversine distance**
+
+$$
+d = 2r \cdot \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)}\right)
+$$
+
+-   $d$ : Distance between two points
+-   $r$ : Radius of the Earth ($\approx$ 6,371 km.)
+-   $\phi_1, \phi_2$ : Latitude of point 1 and 2 (in radians)
+-   $\lambda_1, \lambda_2$ : Longitude of point 1 and 2 (in radians)
+-   $\Delta\phi = \phi_2 - \phi_1$ : Difference in Latitudes
+-   $\Delta\lambda = \lambda_2 - \lambda_1$ : Difference in Longitudes
+
+<center>
+
+![](img/example_grid.png)
+
+```{r echo = F, eval = F, fig.height = 10, fig.width=16}
+library(ggrepel)
+
+cm <- thailand_map |> 
+  filter(name %in% c("Chiang Mai","Mae Hong Son","Chiang Rai","Lamphun"))
+
+bkk <- thailand_map |>
+  filter(name %in% c("Bangkok Metropolis", "Samut Prakan", "Nonthaburi","Pathum Thani","Phra Nakhon Si Ayutthaya"))
+
+school_sf <- sch_data_onetp6_joined |> 
+   filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size) |> drop_na() 
+
+school_sf2 <- sch_data_onetp6_joined |> 
+   filter(province %in% c("กรุงเทพมหานคร","สมุทรปราการ","นนทบุรี","ปทุมธานี","พระนครศรีอยุธยา")) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size) |> drop_na() 
+
+
+grid_sf <-  p6_precipitaion_data |> 
+   filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+   filter(year == 2019) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, intensity_rcp45) |> drop_na()
+
+grid_sf2 <-  p6_precipitaion_data |> 
+   filter(province %in% c("กรุงเทพมหานคร","สมุทรปราการ","นนทบุรี","ปทุมธานี","พระนครศรีอยุธยา")) |> 
+   filter(year == 2019) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, intensity_rcp45) |> drop_na()
+
+
+
+exam_grid1 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_point(data = school_sf, aes(x = school_lon, y = school_lat), col = "orange", alpha = 1,
+             shape = 1 )+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+
+exam_grid2 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_tile(data = grid_sf, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0.3, 
+            col = "black", linetype = 3)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+
+
+exam_grid3 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_point(data = school_sf, aes(x = school_lon, y = school_lat), col = "orange", alpha = 1,
+             shape = 1 )+
+  geom_tile(data = grid_sf, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0.05, 
+            col = "black", linetype = 3)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+p <- exam_grid1+ exam_grid2+exam_grid3
+
+ggsave(plot = p, file = "example_grid.png", width = 20, height = 10)
+
+
+exam_grid4 <- ggplot(data = bkk)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_tile(data = grid_sf2, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0, 
+            col = "black", linetype = 3)+
+  geom_point(data = school_sf2, aes(x = school_lon, y = school_lat), col = "#FF8343", alpha = 0.1)+
+  geom_text_repel(data = bkk, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+```
+
+</center>
+::::::
+
+## 3.2 PCA Results: Loadings {.smaller}
+
+::: panel-tabset
+## Extreme Precipitation
+
+```{r}
+library(tidymodels)
+overall_precipitaion_data |> 
+  group_by(student_level) |> 
+  nest() |> 
+  mutate(loadings = map(data, 
+                  ~{
+                   recipe(~ ach_score + intensity_rcp45 + frequency_rcp45 + duration_rcp45, data=.x)  |> 
+                    step_naomit(all_predictors()) |> 
+                    step_normalize(all_predictors()) |> 
+                    step_pca(all_predictors(), num_comp = 4) |> 
+                    prep() |> 
+                    tidy(3)
+                  })) |> 
+  unnest(loadings) |> 
+  mutate(student_level = factor(student_level, levels=c("p6","m3","m6"))) |> 
+  ggplot(aes(x=value, y=terms))+
+  geom_col(aes(fill = value))+
+  geom_vline(xintercept = c(-0.3,0.3), linetype = 2, col = "grey20")+
+  facet_grid(student_level ~ component)+
+  theme_light()+
+  xlim(-1,1)+
+  scale_x_continuous(breaks = seq(-1,1,0.2))+
+  theme(panel.grid = element_blank())+
+  ggtitle("Precipitation: loadings between indicators and principal components")
+```
+
+## Extreme Temperature
+
+```{r}
+overall_temperature_data |> 
+  group_by(student_level) |> 
+  nest() |> 
+  mutate(loadings = map(data, 
+                  ~{
+                   recipe(~ ach_score + intensity_rcp45 + frequency_rcp45 + duration_rcp45, data=.x)  |> 
+                    step_naomit(all_predictors()) |> 
+                    step_normalize(all_predictors()) |> 
+                    step_pca(all_predictors(), num_comp = 4) |> 
+                    prep() |> 
+                    tidy(3)
+                  })) |> 
+  unnest(loadings) |> 
+  mutate(student_level = factor(student_level, levels=c("p6","m3","m6"))) |> 
+  ggplot(aes(x=value, y=terms))+
+  geom_col(aes(fill = value))+
+  geom_vline(xintercept = c(-0.3,0.3), linetype = 2, col = "grey20")+
+  facet_grid(student_level ~ component)+
+  theme_light()+
+  theme(panel.grid = element_blank())+
+  ggtitle("Temperature: loadings between indicators and principal components")
+```
+:::
+
+## 3.3 PCA Results: Risk Score {.smaller}
+
+<center>
+
+```{r fig.height=20, fig.width = 16}
+library(tidymodels)
+library(rcartocolor)
+library(patchwork)
+precipitaion_risk_data <- overall_precipitaion_data |> drop_na() |> 
+  group_by(student_level) |> 
+  nest() |> 
+  mutate(score = map(data, 
+                  ~{
+                   recipe(~ ach_score + intensity_rcp45 + frequency_rcp45 + duration_rcp45, data=.x)  |> 
+                    step_naomit(all_predictors()) |> 
+                    step_normalize(all_predictors()) |> 
+                    step_pca(all_predictors(), num_comp = 4) |> 
+                    prep() |> 
+                    juice()
+                  })) |> 
+  unnest(c(data, score)) |> 
+  select(-PC1, -PC4)
+
+precipitaion_risk_data <- precipitaion_risk_data |> 
+  mutate(risk_index = pt(PC3, df = 5))
+         #robust_index = pt(-PC2, df = 1))
+
+#write_excel_csv(precipitaion_risk_data %>% 
+#                  filter(str_detect(province,
+#                                    "กรุงเทพมหานคร|ยะลา|อุดรธานี|กาญจนบุรี|#นครสวรรค์")),
+#                file = "precipitaion_risk_data.csv")
+
+p_hist <- precipitaion_risk_data %>% 
+  group_by(student_level, school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+            #robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  ggplot(aes(x = risk_index))+
+  xlim(0,1)+
+  xlab("\n Risk Score")+
+  geom_histogram(aes(y = after_stat(density)),bins = 20, fill = "#0C1844", col = "white")+
+  geom_boxplot(y = 0, width = 0.1, outlier.alpha = 0)+
+  facet_wrap(~student_level)+
+  theme_minimal()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 20),
+        panel.grid = element_blank(),
+        strip.text = element_text(size = 20))
+
+
+
+p2 <- precipitaion_risk_data |> 
+  group_by(student_level, school_name) %>%
+  summarise(risk_index = mean(risk_index),
+            ach_score = mean(ach_score),
+            duration_anomaly = mean(duration_rcp45)) %>%
+  mutate(risk_index = cut(risk_index, breaks = c(0,0.2,0.4,0.6,0.8,1.0))) |>
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) |> 
+  ggplot(aes(x=risk_index, y=duration_anomaly))+
+  geom_boxplot(outlier.alpha = 0, aes(fill = risk_index), show.legend = F)+
+  geom_hline(yintercept = 0, linetype = 2)+
+  ylab("Duration Anomaly")+
+  facet_wrap(~student_level, scale ="free_x")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 20))+
+    xlab("\n Risk Score")+
+  scale_fill_carto_d(type = "quantitative", palette =3)
+
+
+
+p3 <- precipitaion_risk_data |> 
+  group_by(student_level, school_name) %>%
+  summarise(risk_index = mean(risk_index),
+            ach_score = mean(ach_score),
+            duration_anomaly = mean(duration_rcp45)) %>%
+  mutate(risk_index = cut(risk_index, breaks = c(0,0.2,0.4,0.6,0.8,1.0))) |>
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) |> 
+  ggplot(aes(x=risk_index, y=ach_score))+
+  geom_boxplot(outlier.alpha = 0, aes(fill = risk_index), show.legend = F)+
+  geom_hline(yintercept = 0, linetype = 2)+
+  ylab("Achievement Score")+
+  facet_wrap(~student_level, scale ="free_x")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 20))+
+  xlab("\n Risk Score")+
+  scale_fill_carto_d(type = "quantitative", palette =3)
+
+p_hist /p2/p3 
+```
+
+</center>
+
+## 3.4 PCA Results: Spatial Risk Mapping {.smaller}
+
+```{r}
+library(rnaturalearth)
+library(sf)
+library(ggrepel)
+thailand_map <- ne_states(country = "Thailand", returnclass = "sf")
+
+school_sf <- precipitaion_risk_data |> 
+  group_by(student_level, school_lon, school_lat,school_size, type_of_hard, hard_to_reach, location, school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+            #robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach, school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  filter(risk_index>=0.6 & risk_index<0.8) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+p1 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry, shape = type_of_hard, col = hard_to_reach),
+          alpha = 0.3,  size = 0.8) +
+  theme_minimal() +
+  xlab("")+ylab("")+
+  facet_wrap(~student_level)+
+  theme(legend.position = "left",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_color_manual(values=c("orange","#D8A25E","#A04747","#821131"))+
+  ggtitle("0.6 <= Risk Score < 0.8")
+
+
+school_sf <- precipitaion_risk_data |> 
+  group_by(student_level, school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach,school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  filter(risk_index>=0.80) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+p2 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry, shape = type_of_hard, col = hard_to_reach) ,
+          alpha = 0.3,  size = 2) +
+  geom_text_repel(aes(label = name, geometry = geometry), min.segment.length = 10,
+                  stat = "sf_coordinates", size =1.5, col = "grey40")+
+  theme_minimal() +
+  xlab("")+ylab("")+
+  facet_wrap(~student_level)+
+  ggtitle("Risk Score >=0.8")+
+  theme(legend.position = "left",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_color_manual(values=c("orange","#D8A25E","#A04747","#821131"))
+
+p1
+
+p2
+```
+
+## 3.5 PCA Results: Affiliation Comparison {.smaller}
+
+```{r}
+
+precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  filter(str_detect(affiliation, "สพป.")) %>% 
+  filter(student_level == "p6") %>% 
+  filter(str_detect(affiliation, "ยะลา|นราธิวาส|แม่ฮ่องสอน|นครสวรรค์|อุดรธานี")) %>%
+  ggplot(aes(x = risk_index, y = reorder(affiliation, risk_index, FUN = median))) +  # แก้ตรงนี้
+  geom_boxplot(fill = "steelblue")+
+  theme_minimal()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))+
+  ylab("")+
+  xlab("\n Risk Score")+
+  ggtitle("Risk Score by School Affiliation (P6)")+
+  xlim(0.3,1)
+
+
+precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  filter(student_level == "m3") %>% 
+  filter(str_detect(affiliation, "ยะลา|นราธิวาส|นครพนม|พระนครศรีอยุธยา|ปทุมธานี|นครสวรรค์|อุดรธานี")) %>%
+  ggplot(aes(x = risk_index, y = reorder(affiliation, risk_index, FUN = median))) +  # แก้ตรงนี้
+  geom_boxplot(fill = "steelblue")+
+  theme_minimal()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))+
+  ylab("")+
+  xlab("\n Risk Score")+
+  ggtitle("Risk Score by School Affiliation (M3)")+
+  xlim(0.3,1)
+
+
+precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  filter(str_detect(affiliation, "สพม.")) %>% 
+  filter(student_level == "m6") %>% 
+  filter(str_detect(affiliation, "12|20|33|21|5|11|24|17|42|28")) %>%
+  ggplot(aes(x = risk_index, y = reorder(affiliation, risk_index, FUN = median))) +  # แก้ตรงนี้
+  geom_boxplot(fill = "steelblue")+
+  theme_minimal()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))+
+  ylab("")+
+  xlab("\n Risk Score")+
+  ggtitle("Risk Score by School Affiliation (M6)")+
+  xlim(0.3,1)
+
+```
+
+## 3.6 PCA Results: Group Comparison {.smaller}
+
+::: panel-tabset
+## Sch Size
+
+```{r fig.width=8, fig.height = 4}
+p1 <- precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,distance, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x = risk_index, col = school_size))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  #facet_wrap(~student_level)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by School Size")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())
+p1
+```
+
+## Location
+
+```{r fig.width = 10, fig.height = 4}
+p2 <- precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,distance, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+          #  robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x = risk_index, col = hard_to_reach))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  facet_wrap(~type_of_hard)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by Location")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())
+p2
+```
+
+## Level & Sch Size
+
+```{r}
+p3 <- precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,distance, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x = risk_index, col = student_level))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  facet_wrap(~school_size)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by Student Level & School Size")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())
+p3
+```
+
+## Location & Sch Size
+
+```{r}
+p4 <- precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,distance, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x = risk_index, col = school_size))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  facet_wrap(~hard_to_reach)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by Student Level & School Size")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())
+p4
+```
+
+## Level & Location
+
+```{r}
+p4 <- precipitaion_risk_data %>% 
+   group_by(student_level,affiliation ,distance, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x = risk_index, col = student_level))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  facet_wrap(~hard_to_reach)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by Student Level & Location")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())
+p4
+```
+
+## province & some factors
+
+```{r}
+precipitaion_risk_data %>% 
+   group_by(student_level,province, affiliation ,distance_from_district
+, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>%
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>%
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  #filter(student_level =="p6") %>% 
+  filter(str_detect(province, "ลำพูน|นครสวรรค์|เชียงใหม่|กรุงเทพมหานคร")) %>% 
+ggplot(aes(x = risk_index, col = hard_to_reach,
+           linetype = student_level))+
+  stat_ecdf(geom = "line", linewidth = 1)+
+  geom_vline(xintercept = c(0.6,0.8), linetype = 2)+
+  facet_wrap(~affiliation)+
+  xlab("Risk Score")+
+  ylab("Cumulative Probability")+
+  ggtitle("Risk Score by Student Level & Location")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        panel.grid.minor = element_blank())+
+  scale_x_continuous(breaks = seq(0,1,0.2))
+```
+
+:::
+
+```{r}
+precipitaion_risk_data %>% 
+   group_by(student_level,province, affiliation ,distance_from_district
+, electric , school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  group_by(distance_from_district) %>% 
+  summarise(risk_index = mean(risk_index),
+            sd_risk = sd(risk_index)) %>% 
+  ggplot(aes(x = distance_from_district, y = risk_index))+
+  geom_smooth(span = 0.7)
+```
+
+# 4. Q & A {background-color="#BEC6A0" background-image="img/mountain2.png" background-opacity="0.1"}
+
+<iframe src="https://giphy.com/embed/3ohzdGpyTDGrOpiK7m" width="480" height="346" style frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+
+##  {.hidden}
+
+```{r}
+ precipitaion_risk_data |> 
+  group_by(student_level, school_lon, school_lat,school_size, type_of_hard, hard_to_reach, location, school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach, school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  filter(risk_index>=0.6 & risk_index<0.8) %>% 
+  group_by(hard_to_reach) %>% count() %>% 
+  ungroup() %>% 
+  mutate(total = c(35557, 393	, 529	, 519	)) %>% 
+  mutate(risk = n/total*100) %>% 
+  mutate(not_risk = 100 - risk) %>% 
+  pivot_longer(cols = c(risk, not_risk), names_to = "risk", values_to = "percent") %>% 
+  mutate(hard_to_reach = factor(hard_to_reach, labels = c("Not difficult", "Difficult", "Very difficult", "Extremely difficult"))) %>% 
+  ggplot(aes(x= hard_to_reach, y = percent, fill = risk))+
+   geom_bar(stat = "identity")+
+   geom_text(aes(label = paste0(round(percent,1),"%")), position = position_stack(vjust = 0.5), size = 5, col = "white")+
+   xlab("")+
+  theme(legend.position = "right",
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+   scale_fill_manual(values = c("steelblue","maroon"))+
+  ggtitle("Difficulty in Accessing the School")
+
+
+```
+
+```{r eval = F}
+precipitaion_risk_data <- precipitaion_risk_data |> 
+  mutate(risk_index = pt(PC3, df = 1),
+         robust_index = pt(-PC2, df = 1))
+
+
+robust_school <- precipitaion_risk_data %>% 
+  filter(robust_index > 0.7) %>% 
+  arrange(desc(robust_index)) %>% 
+  select(school_name, school_size, risk_index, robust_index, ach_score)
+
+
+risk_school <- precipitaion_risk_data %>% 
+  filter(risk_index > 0.9) %>% 
+  arrange(desc(risk_index)) %>% 
+  select(school_code, school_size, risk_index, robust_index, ach_score)
+
+
+precipitaion_risk_data %>% 
+  filter(school_code == "1043012003") %>% 
+  ggplot(aes(x=year,y=ach_score))+
+  geom_line()+
+  geom_line(aes(y=duration_rcp45), col ="maroon")+
+  geom_line(aes(y=risk_index), col = "steelblue")+
+  facet_wrap(~student_level)
+
+precipitaion_risk_data %>% 
+  group_by(student_level,school_size, location, school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+            duration = mean(duration_rcp45),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  mutate(school_size = fct_relevel(school_size, "S","M","L","XL")) %>% 
+  ggplot()+
+  stat_ecdf(aes(x=risk_index, col = school_size),geom = "line", linewidth = 2)+
+  facet_grid(~student_level)
+
+```
+
+```{r fig.height = 12}
+
+p1 <- precipitaion_risk_data %>% 
+  ggplot(aes(x=risk_index))+
+  geom_histogram(col = "white", fill = "maroon", bins = 20)+
+  theme(text = element_text(family = "ChulaCharasNew", size = 20))
+
+
+p2 <- precipitaion_risk_data |> 
+  group_by(student_level, school_name) %>%
+  summarise(risk_index = mean(risk_index),
+            ach_score = mean(ach_score),
+            duration_anomaly = mean(duration_rcp45)) %>%
+  mutate(risk_index = cut(risk_index, breaks = c(0,0.2,0.4,0.5,0.8,1.0))) |>
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) |> 
+  ggplot(aes(x=risk_index, y=duration_anomaly))+
+  geom_boxplot(outlier.alpha = 0, aes(fill = risk_index), show.legend = F)+
+  geom_hline(yintercept = 0, linetype = 2)+
+  ylab("Duration Anomaly")+
+  facet_wrap(~student_level, scale ="free_x")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 20))
+
+
+p3 <- precipitaion_risk_data |> 
+  group_by(student_level, school_name) %>%
+  summarise(risk_index = mean(risk_index),
+            ach_score = mean(ach_score),
+            duration_anomaly = mean(duration_rcp45)) %>%
+  mutate(risk_index = cut(risk_index, breaks = c(0,0.2,0.4,0.5,0.8,1.0))) |>
+  ungroup() %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) |> 
+  ggplot(aes(x=risk_index, y=ach_score))+
+  geom_boxplot(outlier.alpha = 0, aes(fill = risk_index), show.legend = F)+
+  geom_hline(yintercept = 0, linetype = 2)+
+  ylab("Achievement Score")+
+  facet_wrap(~student_level, scale ="free_x")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 20))
+  
+
+      
+p1/p2/p3 
+```
+
+<br>
+
+## Yala {.hidden}
+
+```{r}
+
+library(rnaturalearth)
+library(sf)
+library(ggrepel)
+thailand_map <- ne_states(country = "Thailand", returnclass = "sf")
+south <- thailand_map %>% 
+  filter(name %in% c("Yala", "Narathiwat"))
+
+school_sf2 <- precipitaion_risk_data |> 
+   filter(province %in% c("ยะลา","นราธิวาส")) %>% 
+   filter(student_level == "p6") %>% 
+   group_by(grid_id, grid_lon, grid_lat, student_level, school_lon, school_lat,school_size, type_of_hard, hard_to_reach, location, school_name) %>% 
+   summarise(risk_index = mean(risk_index),
+             duration_anomaly = mean(duration_rcp45)) %>% 
+  ungroup() %>% 
+  mutate(student_level = factor(student_level, levels=c("p6","m3","m6"))) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+
+yala_p6_1 <- ggplot(data = south)+
+  geom_sf()+
+  geom_sf(data = school_sf2, aes(geometry = geometry, col = risk_index > 0.8) ,
+          alpha = 0.6,  size = 2, shape = 1) +
+  geom_text_repel(data = south, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_minimal() +
+  xlab("")+ylab("")+
+  theme(legend.position = "none",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_color_manual(values = c("steelblue","maroon"))
+
+
+yala_p6_2 <- ggplot(data = south)+
+  geom_sf()+
+ # geom_sf(data = school_sf2, aes(geometry = geometry, col = risk_index > 0.6) ,
+#          alpha = 0.6,  size = 2, shape = 1) +
+  geom_tile(data = school_sf2, aes(x = grid_lon, y = grid_lat, fill = duration_anomaly),
+            linetype = 2, alpha = 0.05)+
+ geom_sf(data = school_sf2, aes(geometry = geometry, col = risk_index > 0.8) ,
+          alpha = 0.6,  size = 2, shape = 1) +
+geom_text_repel(data = south, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_minimal() +
+  xlab("")+
+  ylab("")+
+  theme(legend.position = "right",
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_fill_gradient2(low = "#96CEB4", mid = "#FFAD60", high = "#A02334")+
+  scale_color_manual(values = c("steelblue","maroon"))
+
+
+
+
+school_sf2 <- precipitaion_risk_data |> 
+   filter(province %in% c("ยะลา","นราธิวาส")) %>% 
+   filter(student_level == "m3") %>% 
+   group_by(grid_id, grid_lon, grid_lat, student_level, school_lon, school_lat,school_size, type_of_hard, hard_to_reach, location, school_name) %>% 
+   summarise(risk_index = mean(risk_index),
+             duration_anomaly = mean(duration_rcp45)) %>% 
+  ungroup() %>% 
+  mutate(student_level = factor(student_level, levels=c("p6","m3","m6"))) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+
+yala_m3_1 <- ggplot(data = south)+
+  geom_sf()+
+  geom_sf(data = school_sf2, aes(geometry = geometry, col = risk_index > 0.8) ,
+          alpha = 0.6,  size = 2, shape = 1) +
+  geom_text_repel(data = south, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_minimal() +
+  xlab("")+ylab("")+
+  theme(legend.position = "none",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_color_manual(values = c("steelblue","maroon"))
+
+
+yala_m3_2 <- ggplot(data = south)+
+  geom_sf()+
+ # geom_sf(data = school_sf2, aes(geometry = geometry, col = risk_index > 0.6) ,
+#          alpha = 0.6,  size = 2, shape = 1) +
+  geom_tile(data = school_sf2, aes(x = grid_lon, y = grid_lat, fill = duration_anomaly),
+            linetype = 2, alpha = 0.2)+
+ geom_sf(data = school_sf2, aes(geometry = geometry, col = risk_index > 0.8) ,
+          alpha = 0.6,  size = 2, shape = 1, show.legend = F) +
+geom_text_repel(data = south, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_minimal() +
+  xlab("")+
+  ylab("")+
+  theme(legend.position = "right",
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_fill_gradient2(low = "#96CEB4", mid = "#FFAD60", high = "#A02334")+
+  scale_color_manual(values = c("steelblue","maroon"))
+
+p1<-yala_p6_1 + yala_p6_2 +
+  ggtitle("P6")
+
+p2<-yala_m3_1 + yala_m3_2 +
+  ggtitle("M3")
+
+p1/p2
+```
+
+## Mae hong son {.hidden}
+
+```{r}
+mae <- thailand_map %>% 
+  filter(name %in% c("Mae Hong Son","Tak","Chiang Mai"))
+
+school_sf2 <- precipitaion_risk_data |> 
+   filter(province %in% c("แม่ฮ่องสอน","ตาก","เชียงใหม่")) %>% 
+   filter(student_level == "p6") %>% 
+   group_by(grid_id, grid_lon, grid_lat, student_level, school_lon, school_lat,school_size, type_of_hard, hard_to_reach, location, school_name) %>% 
+   summarise(risk_index = mean(risk_index),
+             duration_anomaly = mean(duration_rcp45)) %>% 
+  ungroup() %>% 
+  filter(risk_index >0.8) %>% 
+  mutate(student_level = factor(student_level, levels=c("p6","m3","m6"))) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+
+mae_p6_1 <- ggplot(data = mae)+
+  geom_sf()+
+  geom_sf(data = school_sf2, aes(geometry = geometry, shape = type_of_hard),
+          alpha = 0.5,  size = 2, col = "maroon") +
+  geom_text_repel(aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_minimal() +
+  xlab("")+ylab("")+
+  theme(legend.position = "none",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))
+
+
+mae_p6_2 <- ggplot(data = mae)+
+  geom_sf()+
+  geom_tile(data = school_sf2, aes(x = grid_lon, y = grid_lat, fill = duration_anomaly),
+            linetype = 2, alpha = 0.2)+
+  geom_sf(data = school_sf2, aes(geometry = geometry, shape = type_of_hard),
+          alpha = 0.5,  size = 2, col = "maroon") +
+  geom_text_repel(aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_minimal() +
+  xlab("")+ylab("")+
+  theme(legend.position = "right",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+    scale_fill_gradient2(low = "#96CEB4", mid = "#FFAD60", high = "#A02334")
+
+
+
+p3<-mae_p6_1 + mae_p6_2+
+  ggtitle("P6")
+
+p3/p1 +plot_layout(heights = c(2,1))
+```
+
+## 2.2 Objective 1: Merged Dataset (Example) {.hidden}
+
+<center>
+
+![](img/example_grid.png)
+
+```{r echo = F, eval = F, fig.height = 10, fig.width=16}
+library(ggrepel)
+
+cm <- thailand_map |> 
+  filter(name %in% c("Chiang Mai","Mae Hong Son","Chiang Rai","Lamphun"))
+
+bkk <- thailand_map |>
+  filter(name %in% c("Bangkok Metropolis", "Samut Prakan", "Nonthaburi","Pathum Thani","Phra Nakhon Si Ayutthaya"))
+
+school_sf <- precipitaion_risk_data |> 
+   filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+   ungroup() %>% 
+   filter(student_level == "p6") %>% 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, ach_score) |> drop_na() 
+
+school_sf2 <- precipitaion_risk_data |> 
+   filter(province %in% c("กรุงเทพมหานคร","สมุทรปราการ","นนทบุรี","ปทุมธานี","พระนครศรีอยุธยา")) |> 
+   filter(student_level == "p6") %>% 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, ach_score) |> drop_na() 
+
+
+grid_sf <-  p6_precipitaion_data |> 
+   filter(province %in% c("เชียงใหม่","แม่ฮ่องสอน","เชียงราย","ลำพูน")) |> 
+   filter(year == 2019) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, duration_rcp45) |> drop_na()
+
+grid_sf2 <-  p6_precipitaion_data |> 
+   filter(province %in% c("กรุงเทพมหานคร","สมุทรปราการ","นนทบุรี","ปทุมธานี","พระนครศรีอยุธยา")) |> 
+   filter(year == 2019) |> 
+   select(grid_id, grid_lon, grid_lat, school_lon, school_lat, school_size, duration_rcp45) |> drop_na()
+
+
+
+exam_grid1 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_point(data = school_sf, aes(x = school_lon, y = school_lat, col = ach_score), alpha = 1,
+             shape = 16)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_color_viridis_c(option = "A", breaks = 0, labels = "Avg.")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+
+exam_grid2 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_tile(data = grid_sf, aes(x = grid_lon, y = grid_lat,
+                                fill = duration_rcp45), alpha = 0.3, 
+            col = "black", linetype = 3)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+
+
+exam_grid3 <- ggplot(data = cm)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+   geom_point(data = school_sf, aes(x = school_lon, y = school_lat, col = ach_score), alpha = 1,
+             shape = 16)+
+  geom_tile(data = grid_sf, aes(x = grid_lon, y = grid_lat,
+                                fill = duration_rcp45), alpha = 0.05, 
+            col = "black", linetype = 3)+
+  geom_text_repel(data = cm, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  scale_fill_viridis_c(option = "E")+
+  scale_color_viridis_c(option = "A", breaks = 0, labels = "Avg.")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+
+p <- exam_grid1+ exam_grid2+exam_grid3
+
+ggsave(plot = p, file = "example_grid.png", width = 20, height = 10)
+
+
+exam_grid4 <- ggplot(data = bkk)+
+  geom_sf(col = "black", linewidth = 1.2)+
+  coord_sf(expand = F) +
+  geom_tile(data = grid_sf2, aes(x = grid_lon, y = grid_lat,
+                                fill = intensity_rcp45), alpha = 0, 
+            col = "black", linetype = 3)+
+  geom_point(data = school_sf2, aes(x = school_lon, y = school_lat), col = "#FF8343", alpha = 0.1)+
+  geom_text_repel(data = bkk, aes(label = name, geometry = geometry), 
+                  stat = "sf_coordinates")+
+  theme_classic()+
+  theme(panel.grid = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = unit(c(0,0,0,0),"cm"))
+```
+
+</center>
+
+```{css}
+.panel-tabset {
+  font-size: 25px;  /* ปรับขนาดฟอนต์ตามที่ต้องการ */
+}
+```
+
+
+
+**Models**
+
+-   Supervised Learning Techniques such as:
+    -   Regularized Regression
+    -   Support Vector Machines
+    -   Ensemble learnners
+    -   Neural Networks
+
+**Model Development**
+
+-   Cross-validation: ensure model performance and generaliability
+-   Fine-tuning: Optimize model parameters for best results
+
+**Analysis**
+
+Identify and gain insights into the relationship between key factor and educational risk.
+
+-   Variable Importance
+-   Partial Dependence Plots
+-   SHAP plots
+
+**Expected Outcomes**

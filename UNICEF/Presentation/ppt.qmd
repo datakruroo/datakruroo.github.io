@@ -1,0 +1,50 @@
+---
+title: "Education data - Climate Change Risk Mapping Thailand"
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn et al."
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: 2024-09-05
+format:
+  revealjs:
+    parallax-background-image: img/mountain.png
+    parallax-background-size: "2100px 900px"
+    parallax-background-horizontal: 200
+    parallax-background-vertical: 50
+    parallax-background-opacity: 0.2
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn et al. <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/70542874007-climatechangetopper.webp
+      data-background-opacity: 15%
+      data-background-size: full
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color:  white;
+      }
+      
+      </style>
+---
+
+
+## test
+
+
+## test2
