@@ -40,7 +40,7 @@ include-in-header:
 ```{r echo = F}
 library(tidyverse)
 library(gt)
-load("/Users/choat/Documents/GitHub/unicef/risk_data.RData")
+load("/Users/choat/Documents/GitHub/unicef/effect_data.Rdata")
 ```
 
 # 1. Outline {.smaller auto-animate="true" background-color="#BEC6A0" background-image="img/water.png" background-opacity="0.1"}
@@ -967,7 +967,6 @@ p2
 
 <div style="font-size: 75%;">
 
-
 - The following map shows schools with high CMER risk levels over the 22 river basins as defined by the Royal Decree on River Basin Designation, B.E. 2565, issued by [the Office of the National Water Resources](http://www.onwr.go.th/?page_id=9893).
 
 - The contour in the map (left figure) illustrates the density of schools with high CMER risk in each of Thailand’s major river basins. The analysis revealed that the highest density of high-risk schools is found in the central and northeastern regions, particularly in the Northest Khong, Chi, Pasak, and Chao Phraya river basins. This is followed by the southern region, in the Peninsula Lower East Coast basin, and the northern region, in the Salawin, Ping, and North Khong river basins.
@@ -1248,11 +1247,16 @@ CMER Index categorized by
 
 ## 3.2.1 Overall Results: Geographical & Spatial Barriers {.smaller}
 
+<div style="font-size: 75%;">
+
+
 - The analysis below presents a cumulative distribution function (CDF) plot that shows the distribution of the CMER Index. This plot can be used to compare risk levels across different groups.
 
 - The plot can be interpreted based on the horizontal position of the curves: a curve positioned to the left indicates that the group has a lower risk, while a curve positioned to the right suggests that the group has a higher risk. Additionally, the slope of the curve reflects the distribution of risk within the group. A steeper slope indicates that a large number of schools have similar risk levels, whereas a more gradual slope suggests a wider distribution of risk levels within the group.
 
 - The analysis found that schools that are harder to access tend to have higher risks. Additionally, the distance between the school and the district center may be another factor contributing to the increased risk for schools in hard-to-reach areas.​
+
+</div>
 
 ```{r}
 precipitaion_risk_data_cleaned_aggregated %>% 
@@ -1368,7 +1372,6 @@ precipitaion_risk_data_cleaned_aggregated  %>%
 
 - The analysis found that small and medium-sized schools tend to have higher risks compared to large and extra-large schools. This trend is consistent across all student grade levels.
 
-
 ```{r}
 p1 <- precipitaion_risk_data_cleaned_aggregated  %>% 
    group_by(student_level,affiliation ,school_size, school_name) %>% 
@@ -1421,9 +1424,14 @@ p2
 
 ## 3.2.1 Overall Results: Student SES {.smaller}
 
+<div style="font-size: 75%;">
+
+
 - Overall, no significant difference in risk was found between schools with a majority of students from low-income families and those without. 
 
 - However, when categorized by school size, a difference in risk was found between large and extra-large schools with a majority of low-income students and those without. Schools with a majority of low-income students tend to have higher risks.
+
+</div>
 
 ```{r}
 precipitaion_risk_data_cleaned_aggregated  %>% 
@@ -1465,14 +1473,270 @@ precipitaion_risk_data_cleaned_aggregated  %>%
   facet_wrap(~school_size)
 ```
 
-## 3.2.2 Insight Results {.smaller}
+
+## 3.2.2 Insight Results: Importance Variables {.smaller}
+
+<div style="font-size: 75%;">
+
+
+- The researchers analyzed the relationship between non-climate factors and the CMER Index, categorized by educational service areas, using regularized regression. The analysis revealed that each area has different non-climate factors associated with the CMER Index, indicating varying contexts between regions. Initially, the researchers selected the most significant factor for each area for further analysis.
+
+- The bar chart below illustrates the factors most strongly associated with the CMER Index in each educational service area. This helps us identify trends regarding which factors are the primary contributors to risk in different regions. From the figure, the numbers in the bar chart represent the number of educational service areas where each factor is identified as the most important factor. Focusing on the PESA areas, we find that the top three significant factors are School Size, School Distance, and Student Level. Focusing on the PESA areas, most SESA areas identify School Size as the most significant factor.
+
+</div>
+
+<center>
+
+```{r eval = T}
+library(rcartocolor)
+library(treemapify)
+
+
+collapsed_data <- tidy_results |> 
+  unnest(c(data)) |> 
+  select(province, amphor,affiliation, term, vip,r_squared ) |> 
+  mutate(percent_vip = vip*100/max(vip)) |> 
+  mutate(term = ifelse(str_detect(term, "^school_size_"), "School Size", term)) |> 
+  mutate(term = ifelse(str_detect(term, "^student_level_"), "Student Level", term)) %>%  # ยุบชื่อ school_size_XXX ให้เป็น school_size
+  mutate(term = ifelse(str_detect(term,"hard_to_reach"),
+                       "Hard to Reach", term)) |> 
+  mutate(term = ifelse(str_detect(term,"infra"),
+                       "Infrastructure & Connectivity", term)) |> 
+  mutate(term = ifelse(str_detect(term,"distance"),
+                       "School Distance", term)) |> 
+  mutate(term = ifelse(str_detect(term,"poor"),
+                       "Poor Family", term)) |> 
+  group_by(province, amphor, affiliation, term) %>%
+  summarise(
+    vip = sum(vip),  # รวมค่า vip
+    percent_vip = max(percent_vip),  # รวมค่า percent_vip
+    r_squared = max(r_squared)  # เก็บค่า r_squared ที่มากที่สุด
+  ) %>%
+  ungroup()
+# write_excel_csv(collapsed_data, file = "Effect_collapsed_data.csv")
+```
 
 ```{r}
-tidy_results |> 
-    ungroup() |> 
-    mutate(percent_vip = vip*100/max(vip)) |> 
-    select(affiliation,term, vip, percent_vip, r_squared) |> 
-    #mutate(rel_index = percent_vip*r_squared/100) |> 
-    filter(str_detect(term, "hard")) |> 
-    arrange(desc(percent_vip))
+
+counts_PESA <- collapsed_data |> 
+  mutate(area = ifelse(str_detect(affiliation, "สพป."), "PESA","SESA")) |> 
+  group_by(area, affiliation) |> 
+  slice_max(percent_vip) |> 
+  group_by(area,affiliation, term) |> 
+  summarise(n = n_distinct(term)) |> 
+  group_by(area,term) |> 
+  count() |> 
+  ungroup() |> 
+  filter(area == "PESA") 
+
+terms_ordered <- counts_PESA %>%
+  arrange(n) %>%
+  pull(term)
+
+# เตรียมข้อมูลสำหรับการพล็อตกราฟ
+plot_data <-  collapsed_data |> 
+  mutate(area = ifelse(str_detect(affiliation, "สพป."), "PESA","SESA")) |> 
+  group_by(area, affiliation) |> 
+  slice_max(percent_vip) |> 
+  group_by(area,affiliation, term) |> 
+  summarise(n = n_distinct(term)) |> 
+  group_by(area,term) |> 
+  count() |> 
+  ungroup()
+
+# กำหนดระดับของ term ตามลำดับที่จัดเรียง
+plot_data$term <- factor(plot_data$term, levels = terms_ordered)
+
+ggplot(plot_data, aes(x = term, y = n, fill = area)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("steelblue", "maroon")) +
+  xlab("\n Non-Climate Factor") +
+  ylab("Number of Educational Service Area") +
+  theme(
+    legend.position = "right",
+    text = element_text(family = "ChulaCharasNew")
+  ) +
+  labs(fill = "") +
+  coord_flip() +
+  ggtitle("The Most Important Variable Associated with CMER Index")
 ```
+
+</center>
+
+
+
+## 3.2.2 Insight Results: Importance Variables {.smaller}
+
+
+<div style="font-size: 75%;">
+
+The maps below show the most important non-climate factors for each area, divided into two images: the left image represents PESA areas, and the right image represents SESA areas.
+
+</div>
+
+<center>
+
+```{r fig.height = 14, fig.width = 16}
+library(sf)
+library(rnaturalearth)
+
+thailand_map <- ne_states(country = "Thailand", returnclass = "sf")
+
+shapefile_data <- st_read("/Users/choat/Downloads/ocha-roap-d24bdc45-eb4c-4e3d-8b16-44db02667c27/tha_adm_rtsd_itos_20190221_SHP_PART_1/tha_admbnda_adm2_rtsd_20190221.shp",
+quiet = TRUE) 
+# รวมข้อมูล precipitation และ Shapefile
+school_sf <-  collapsed_data |> 
+  filter(str_detect(affiliation, "สพป.")) |> 
+  group_by(affiliation) |> 
+  slice_max(percent_vip) |> 
+  inner_join(shapefile_data, by = c("amphor" = "ADM2_TH"))  # เปลี่ยน join_by เป็น c()
+school_sf_label <- school_sf |> 
+  filter(r_squared > 10)
+# รวมขอบเขตตาม affiliation
+affiliation_boundaries <- school_sf %>%
+  group_by(affiliation) %>%
+  summarise(geometry = st_union(geometry))  # รวมขอบเขตตาม affiliation
+# พล็อตแผนที่
+PESA_p <- ggplot(data = thailand_map) +
+  geom_sf() +
+  geom_sf(data = school_sf, aes(geometry = geometry, fill = term),
+          alpha = 0.5, size = 0.8, color = NA) +  
+  geom_sf(data = affiliation_boundaries, aes(geometry = geometry), 
+          color = "black", fill = NA, size = 1, show.legend = FALSE) +  # ตีเส้นขอบตาม affiliation
+  geom_sf_text(data = school_sf_label, aes(geometry = geometry, label = affiliation), size = 2, color = "grey20", check_overlap = TRUE,
+  family = "ChulaCharasNew")+
+  theme_minimal() +
+  labs(fill = "Non-Climate Factor")+
+  xlab("") + ylab("") +
+  theme(legend.position = "right",
+        text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_blank(),
+        panel.grid = element_blank()) +
+    scale_fill_manual(values = c(
+    "Infrastructure & Connectivity" = "#1f78b4",
+    "Poor Family" = "#33a02c",
+    "School Distance" = "#e31a1c",
+    "School Size" = "#ff7f00",
+    "Student Level" = "#6a3d9a",
+    "Hard to Reach" = "#b15928"
+  ))+
+  ggtitle("The most importance factor associated \n with the CMER Index of each PESA.")
+
+### --- สพม.
+
+shapefile_data <- st_read("/Users/choat/Downloads/ocha-roap-d24bdc45-eb4c-4e3d-8b16-44db02667c27/tha_adm_rtsd_itos_20190221_SHP_PART_1/tha_admbnda_adm1_rtsd_20190221.shp",
+quiet = TRUE) 
+
+# รวมข้อมูล precipitation และ Shapefile
+school_sf <- collapsed_data |> 
+  filter(str_detect(affiliation, "สพม.")) |> 
+  group_by(province, affiliation) |> 
+  slice_max(percent_vip) |> 
+  inner_join(shapefile_data, by = c("province" = "ADM1_TH"))  # เปลี่ยน join_by 
+
+
+
+school_sf_label <- school_sf |> 
+  filter(r_squared > 10)
+
+# รวมขอบเขตตาม affiliation
+#affiliation_boundaries <- school_sf %>%
+#  group_by(affiliation) %>%
+#  summarise(geometry = st_union(geometry))  # รวมขอบเขตตาม affiliation
+
+# พล็อตแผนที่
+sesa_p <- ggplot(data = thailand_map) +
+  geom_sf() +
+  geom_sf(data = school_sf, aes(geometry = geometry, fill = term),
+          alpha = 0.5, size = 0.8, color = NA) +  
+  geom_sf(data = affiliation_boundaries, aes(geometry = geometry), 
+          color = "black", fill = NA, size = 1, show.legend = FALSE) +  # ตีเส้นขอบตาม affiliation
+  geom_sf_text(data = school_sf_label, aes(geometry = geometry, label = affiliation), size = 2, color = "grey20", check_overlap = TRUE,
+  family = "ChulaCharasNew")+
+  theme_minimal() +
+  labs(fill = "Non-Climate Factor")+
+  xlab("") + ylab("") +
+  theme(legend.position = "right",
+        text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_blank(),
+        panel.grid = element_blank()) +
+   scale_fill_manual(values = c(
+    "Infrastructure & Connectivity" = "#1f78b4",
+    "Poor Family" = "#33a02c",
+    "School Distance" = "#e31a1c",
+    "School Size" = "#ff7f00",
+    "Student Level" = "#6a3d9a",
+    "Hard to Reach" = "#b15928"
+  ))+
+  ggtitle("The most importance factor associated \n with the CMER Index of each SESA.")
+
+PESA_p + sesa_p
+```
+
+</center>
+
+## 3.2.2 Insight Results {.smaller}
+
+<div style="font-size: 75%;">
+
+The figure below is called a variable importance plot. Readers can select and view the factors associated with the CMER Index for each educational service area.
+
+</div>
+
+```{ojs}
+// Import necessary libraries
+import { Inputs } from "@observablehq/inputs";
+import { Plot } from "@observablehq/plot";
+
+// Load data from file attachment with type parsing
+collapsed_data = await d3.csv("https://raw.githubusercontent.com/datakruroo/unicef/main/Effect_collapsed_data.csv", d3.autoType);
+
+
+// Create a dropdown for selecting 'affiliation'
+viewof selected_affiliation = Inputs.select(
+  Array.from(new Set(collapsed_data.map(d => d.affiliation))).sort(),
+  { label: "Select an Affiliation" }
+);
+
+// Filter data according to selected affiliation
+filtered_data = collapsed_data.filter(d => d.affiliation === selected_affiliation);
+
+// Plot the chart
+chart = {
+  if (filtered_data.length > 0) {
+
+    // จัดเรียงข้อมูล filtered_data จากมากไปน้อยตาม percent_vip
+    const sorted_data = filtered_data.slice().sort((a, b) => b.percent_vip - a.percent_vip);
+
+    // ดึงค่าของ term ที่จัดเรียงแล้วเพื่อใช้เป็น domain ในแกน y
+    const sorted_terms = sorted_data.map(d => d.term);
+
+    return Plot.plot({
+      marginLeft: 200,
+      color: { legend: true },
+      marks: [
+        Plot.barX(
+          sorted_data,
+          {
+            y: "term",
+            x: "percent_vip",
+            fill: "term",
+            title: d => `${d.term}: ${d.percent_vip.toFixed(2)}%`
+          }
+        )
+      ],
+      x: { label: "Percent VIP (%)" },
+      y: { label: "Non-Climate Factor \n \n \n", domain: sorted_terms },  // กำหนดลำดับของแกน y ตาม terms ที่จัดเรียงแล้ว
+      height: 500,
+      width: 700,
+      style: { background: "white" }
+    });
+  } else {
+    return md`No data available for the selected affiliation.`;
+  }
+}
+```
+
+<br>
+<br>
+
