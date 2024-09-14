@@ -882,7 +882,6 @@ The following figure presents a spatial risk map showing schools in Thailand wit
 
 </div>
 
-<center>
 
 ```{r fig.width = 14, fig.height = 10}
 library(rnaturalearth)
@@ -954,13 +953,42 @@ p2 <- ggplot(data = thailand_map)+
          shape = guide_legend(override.aes = list(size = 4)))+  # ปรับขนาด
   labs(shape = "Geographic \n characteristics",
         col = "Difficulty level \n in accessing the school")
+```
+
+
+::: {.panel-tabset}
+
+## Moderate Risk School Map
+
+<center>
+
+```{r}
 p1
+```
+
+
+</center>
+
+<div class="caption">fig 3.5: Spatial Risk Map (Moderate Risk) categorized by Student Level</div>
+
+
+## High Risk School Map
+
+<center>
+
+```{r}
 p2
 ```
 
 </center>
 
-<div class="caption">fig 3.5: Spatial Risk Map categorized by risk level</div>
+<div class="caption">fig 3.6: Spatial Risk Map (High Risk) categorized by Student Level</div>
+
+
+:::
+
+
+
 
 ## 3.1.2 Descriptive results of the Risk Index (4) {.smaller}
 
@@ -1473,24 +1501,62 @@ precipitaion_risk_data_cleaned_aggregated  %>%
   facet_wrap(~school_size)
 ```
 
+## 3.2.2 Insight Results: Regularized Regression {.smaller}
 
-## 3.2.2 Insight Results: Importance Variables {.smaller}
 
 <div style="font-size: 75%;">
 
+- In this analysis, the researchers employed regularized regression to examine the relationship between non-climate factors and the CMER Index. Based on the hypothesis that these relationships may vary across different regions due to diverse contexts, the predictive models were constructed separately for PESA and SESA educational service areas. This means that each educational service area has its own predictive model to explain the relationship between non-climate factors and the CMER Index.
 
-- The researchers analyzed the relationship between non-climate factors and the CMER Index, categorized by educational service areas, using regularized regression. The analysis revealed that each area has different non-climate factors associated with the CMER Index, indicating varying contexts between regions. Initially, the researchers selected the most significant factor for each area for further analysis.
+The non-climate factors used to build the risk prediction model consist of six variables, categorized into four dimensions:
 
-- The bar chart below illustrates the factors most strongly associated with the CMER Index in each educational service area. This helps us identify trends regarding which factors are the primary contributors to risk in different regions. From the figure, the numbers in the bar chart represent the number of educational service areas where each factor is identified as the most important factor. Focusing on the PESA areas, we find that the top three significant factors are School Size, School Distance, and Student Level. Focusing on the PESA areas, most SESA areas identify School Size as the most significant factor.
+- Geographical & Spatial Barriers (2 variables):
+
+  - School Distance: The distance from the school to the district center.
+ 
+  - Hard to Reach: The level of difficulty in accessing the school.
+
+- School Infrastructure & Connectivity (1 variable):
+
+  - Infrastructure Readiness Score: This variable is derived from data on the availability of electricity, water supply, and internet at the school. The readiness score ranges from 0 to 1, where schools with higher infrastructure readiness have scores closer to 1.00.
+  
+- School Characteristics (2 variables):
+
+  - School Size: Categorized into four sizes—small, medium, large, and extra-large. The size of a school is a significant factor that can reflect the resources and budget allocated for educational management.
+  
+  - Student Level: Based on the highest grade offered at the school, divided into three levels—Grade 6 (Primary School), Grade 9 (Middle School), and Grade 12 (High School).
+
+- Student Socioeconomic Status (1 variable):
+
+  - Percentage of Low-Income Students: This factor is available only for schools under the Office of the Basic Education Commission (OBEC). Before analysis, the researchers converted this variable into a categorical variable with two levels:
+  
+  - Schools where the majority of students are from low-income families (percent > 50%).
+  
+  - Schools where low-income students are a minority.
+This conversion was made to ensure that the analysis results are clearly interpretable and communicable.​
+
+Before processing, the researchers prepared the data for analysis by cleaning it and imputing missing values using the bagging trees algorithm.
+
 
 </div>
 
-<center>
+
+## 3.2.2 Insight Results: R-Squared {.smaller}
+
+
+<div style="font-size: 75%;">
+
+- The research aims to perform diagnostic analytics by using regression analysis to explain educational risks from non-climate factors. The analysis results in the figure below show that the R-squared values in the group of SESA educational service areas tend to be higher than those in PESA. Most predictive models for SESA areas have R-squared values above 30%, with the highest being approximately 80%. In contrast, most PESA areas have R-squared values around 10%, and the highest R-squared value is about 68%
+
+- The disparity in R-squared values between SESA and PESA highlights that the factors influencing educational risk differ by region. Non-climate factors have a stronger explanatory power in SESA areas compared to PESA areas.
+
+- The results of this analysis are consistent with the hypothesis previously set by the researchers, showing that the relationship between non-climate factors and the CMER Index varies across different educational service areas. This indicates that policymakers and educators might need to consider different strategies when addressing educational risks in PESA and SESA areas. Since non-climate factors play a larger role in SESA, interventions targeting these factors could be more effective there.
+
+</div>
 
 ```{r eval = T}
 library(rcartocolor)
 library(treemapify)
-
 
 collapsed_data <- tidy_results |> 
   unnest(c(data)) |> 
@@ -1515,6 +1581,37 @@ collapsed_data <- tidy_results |>
   ungroup()
 # write_excel_csv(collapsed_data, file = "Effect_collapsed_data.csv")
 ```
+
+```{r}
+collapsed_data |> 
+  group_by(affiliation) |> 
+  summarise(r_squared = mean(r_squared)) |> 
+  ungroup() |> 
+  mutate(area = ifelse(str_detect(affiliation,"สพป."),"PESA", "SESA")) |> 
+  ggplot(aes(x=r_squared, y=area,fill = area))+
+  geom_violin()+
+  geom_boxplot(outlier.alpha = 0, width = 0.2, fill = "white")+
+  geom_jitter(height = 0.05, alpha = 0.4)+
+  ylab("Educational Service Area\n")+
+  xlab("\n R Squared")+
+  theme_light()+
+  ggtitle("R-squared for the models of each educational service area.”")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 15),
+        legend.position = "none")
+```
+
+
+## 3.2.2 Insight Results: Importance Factors {.smaller}
+
+<div style="font-size: 75%;">
+
+- The bar chart below illustrates the factors most strongly associated with the CMER Index in each educational service area. This helps us identify trends regarding which factors are the primary contributors to risk in different regions. From the figure, the numbers in the bar chart represent the number of educational service areas where each factor is identified as the most important factor. Focusing on the PESA areas, we find that the top three significant factors are School Size, School Distance, and Student Level. Focusing on the PESA areas, most SESA areas identify School Size as the most significant factor.
+
+</div>
+
+<center>
+
+
 
 ```{r}
 
@@ -1565,7 +1662,7 @@ ggplot(plot_data, aes(x = term, y = n, fill = area)) +
 
 
 
-## 3.2.2 Insight Results: Importance Variables {.smaller}
+## 3.2.2 Insight Results: Importance Factors {.smaller}
 
 
 <div style="font-size: 75%;">
