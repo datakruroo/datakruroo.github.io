@@ -42,23 +42,44 @@ $$
 
 2.  Independence:
 
-3.  Homoscedasticity:
+3.  Homoscedasticity: ความแปรปรวนของ random error มีค่าเท่าเทียมกันในแต่ละระดับของตัวแปรอิสระ
 
-4.  Normality:
+4.  Normality: ความคลาดเคลื่อนสุ่มในโมเดล (residual: e) มีการแจกแจงใกล้เคียงแบบปกติ
 
-5.  No multicollinearity:
+5.  No multicollinearity: ตัวแปรอิสระในโมเดลจะต้องไม่สัมพันธ์กันเชิงเส้นสูงมากเกินไป
 
 6.  No Influential Outliers:
 
 ### 1.3 Model Interpretation
 
-1.  Intercept
+1.  Intercept: ค่าของ y เมื่อ x เป็น 0
 
-2.  Slope
+2.  Slope: อัตราการเปลี่ยนแปลงของ y เมื่อเทียบกับ x
+
+
+## Linear Probability Model
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/เอกสารประกอบการสอน/2758615/EDA using R/learning_data.csv")
+glimpse(data)
+
+new_data <- data |> 
+  mutate(research_score = ifelse(research_score>70, 1,0))
+## research_score_hat = -0.096 + 0.014*concepts
+
+new_data |> 
+  ggplot(aes(x= concepts, y=research_score))+
+  geom_point()+
+  geom_abline(intercept = -0.096, slope = 0.014)
+```
+
 
 ## 2. Binary Logistic Regression
 
 Logistic regression is a statistical model that in its basic form uses a logistic function to model a binary dependent variable.
+
+
 
 ### 2.1 Model
 
@@ -66,7 +87,9 @@ Logistic regression is a statistical model that in its basic form uses a logisti
 
 $$
 P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_n X_n)}}
-$$ **Logit Function**
+$$ 
+
+**Logit Function**
 
 ลอจิตเป็นการแปลงความน่าจะเป็นให้อยู่ในรูปของลอการิทึมของอัตราส่วนความน่าจะเป็น (Odds)
 
@@ -93,6 +116,210 @@ $$
 ## 3. Multinomial Logistic Regression
 
 Multinomial logistic regression is used to model nominal outcome variables, in which the log odds of the outcomes are modeled as a linear combination of the predictor variables.
+
+```{r}
+data |> 
+  ggplot(aes(x=research_score))+
+  geom_histogram()
+
+data |> 
+  mutate(class_res_score = case_when(
+    research_score >=80 ~ "high level",
+    research_score < 60 ~ "low level",
+    research_score >= 60 & research_score <80 ~"moderate level"
+  )) |> 
+    count(class_res_score)
+```
+
+
+```{r}
+multinom_data <-  data |> 
+  mutate(class_res_score = case_when(
+    research_score >=80 ~ "high level",
+    research_score < 60 ~ "low level",
+    research_score >= 60 & research_score <80 ~"moderate level"
+  ))
+```
+
+
+แบ่งชุดข้อมูล
+
+```{r}
+library(tidymodels)
+tidymodels_prefer()
+set.seed(123)
+split <- initial_split(multinom_data, prop = 0.8, strata = class_res_score)
+train_data <- training(split)
+test_data <- testing(split)
+
+train_data |> 
+  select(-research_score,-gender, -department) |> 
+  drop_na()
+```
+
+
+กำหนด model spec
+
+```{r}
+multinom_spec <- multinom_reg(penalty = tune(), mixture = tune()) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+
+
+multinom_spec_nnet <- multinom_reg(penalty = tune()) |> 
+  set_engine("nnet") |> 
+  set_mode("classification")
+h2o.init()
+
+multinom_spec_h2o <- multinom_reg(penalty = tune()) |> 
+  set_engine("h2o") |> 
+  set_mode("classification")
+```
+
+
+กำหนด preprocess model
+
+```{r}
+library(themis)
+base_recipe <- recipe(class_res_score ~ . , data =train_data) |> 
+  update_role(student_id, new_role = "id") |> 
+  step_rm(research_score, gender, department) |> 
+  step_naomit(cheat_index)
+
+smote_recipe <- recipe(class_res_score ~ . , data =train_data) |> 
+  update_role(student_id, new_role = "id") |> 
+  step_rm(research_score, gender, department) |> 
+  step_naomit(cheat_index) |> 
+  step_smote(class_res_score)
+
+smote_recipe |> prep() |> 
+  juice() |> 
+  count(class_res_score)
+```
+
+สร้าง workflow
+
+```{r}
+library(h2o)
+library(agua)
+multinom_wf <- workflow() |> 
+  add_recipe(base_recipe) |> 
+  add_model(multinom_spec)
+
+multinom_wf_nnet <- workflow() |> 
+  add_recipe(base_recipe) |> 
+  add_model(multinom_spec_nnet)
+
+
+multinom_glmnet_smote_wf <- workflow() |> 
+  add_recipe(smote_recipe) |> 
+  add_model(multinom_spec)
+
+multinom_glmnet_h2o_wf <- workflow() |> 
+  add_recipe(smote_recipe) |> 
+  add_model(multinom_spec_h2o)
+
+```
+
+
+tune hyperparameters
+
+```{r}
+set.seed(123)
+folds <- vfold_cv(train_data,  v = 5 ,repeats = 3, strata = "class_res_score")
+library(future)
+plan(multisession, workers = 10)
+```
+
+
+```{r}
+multinom_tuned_results <- multinom_wf |> 
+  tune_grid(
+    resamples = folds,
+    grid = 50, ## grid_latin_hypercube
+    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+  )
+
+
+multinom_nnet_tuned_results <- multinom_wf_nnet |> 
+   tune_grid(
+    resamples = folds,
+    grid = 50, ## grid_latin_hypercube
+    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+  )
+
+multinom_smote_tuned_results <- multinom_glmnet_smote_wf |> 
+  tune_grid(
+    resamples = folds,
+    grid = 50, ## grid_latin_hypercube
+    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+  )
+h2o.init(strict_version_check=FALSE)
+multinom_h2o_tuned_results  <- multinom_glmnet_h2o_wf  |> 
+  tune_grid(
+    resamples = folds,
+    grid = 50, ## grid_latin_hypercube
+    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+    control = control_grid(save_pred = TRUE,
+    allow_par = FALSE)
+
+  )
+
+
+ multinom_tuned_results |> collect_metrics() |> 
+  mutate(model = "glmnet") 
+   multinom_tuned_results |> autoplot()
+
+multinom_nnet_tuned_results |> collect_metrics() |> 
+  mutate(model = "nnet")
+  
+
+multinom_smote_tuned_results |> collect_metrics() 
+
+show_best(multinom_tuned_results, metric = "precision", n = 5)
+show_best(multinom_nnet_tuned_results, metric = "precision", n = 5)
+show_best(multinom_smote_tuned_results, metric = "precision", n = 5)
+```
+
+
+```{r}
+multinom_tuned_results |> 
+  collect_predictions() |> 
+  filter(abs(penalty- 0.0785)< 0.0001) |> 
+  conf_mat(truth = class_res_score, estimate = .pred_class)
+
+multinom_nnet_tuned_results |> 
+  collect_predictions() |> 
+  filter(abs(penalty-0.172)< 0.001) |> 
+  conf_mat(truth = class_res_score, estimate = .pred_class)
+
+
+multinom_smote_tuned_results |> 
+  collect_predictions() |> 
+  filter(.config == "Preprocessor1_Model41") |> 
+    conf_mat(truth = class_res_score, estimate = .pred_class)
+```
+
+เลือก hyperparameter ที่ดีที่สุดไปใช้
+
+```{r}
+best_glmnet <- select_best(multinom_smote_tuned_results, metric = "f_meas")
+
+final_glmnet <- multinom_glmnet_smote_wf |> 
+  finalize_workflow(best_glmnet) |> 
+  last_fit(split, metrics=metric_set(roc_auc, f_meas, sens, spec, precision))
+final_glmnet |> collect_metrics()
+
+final_glmnet |> collect_predictions() |> 
+  conf_mat(truth = class_res_score, estimate = .pred_class)
+```
+
+
+
+
 
 ### 3.1 Model
 
