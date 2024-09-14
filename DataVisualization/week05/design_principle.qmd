@@ -1,0 +1,366 @@
+---
+title: "Week 5: Design Principle"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-09-07
+format:
+  revealjs:
+    code-fold: false
+    slide-number: c/t
+    footer: "week 5: 2758686 Data Visualization <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: https://wpaisle.com/wp-content/uploads/2024/01/1-Tips-for-Collecting-Actionable-Insights.jpg
+      data-background-opacity: 20%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+---
+
+```{r echo = F}
+library(tidyverse)
+```
+
+# Outline
+
+- Good Visualization
+
+- Design Principle
+
+
+# Good Visualization
+
+
+## {background-color="white" background-image="img/dieter_ram.png" background-size="contain"}
+
+
+## {background-color="white" background-image="img/dieter_ram2.png" background-size="contain"}
+
+
+## Core Pillars of Data Visualization {.smaller}
+
+- Trustworthy
+
+- Actionable Insight
+
+- User Accessibility
+
+- Aesthetic
+
+## Trustworthy {.smaller}
+
+  - ความถูกต้อง โปร่งใส และความสมบูรณ์ของข้อมูล 
+
+  - การนำเสนอข้อมูลที่ถูกต้อง โปร่งใส ไม่บิดเบือน
+
+
+
+```{mermaid}
+%%| echo: false
+flowchart TD
+
+A[Data Source]-->E[Avaliable Data]
+E[Avaliable Data]-->B[Data Preprocessing]
+B["Preprocessing/Analysis"]-->D[Data Representation]
+A[Data Source]-->C[Trustworthy]
+D[Data Representation]-->C[Trustworthy]
+B["Preprocessing/Analysis"]-->C(((Trustworthy)))
+```
+
+
+
+## Trustworthy: Data Quality {.smaller}
+
+
+![](https://www.analyticspartners.com/wp-content/uploads/2020/10/data_quality_dimensions.jpg){width="60%"}
+
+
+## Trustworthy: Data Representation {.smaller}
+
+![](https://datakruroo.github.io/DataVisualization/week01/img/typesDV.png)
+
+![Mislead Data Visualization](img/mislead_datvis.png)
+
+![Mislead Data Visualization](img/mislead_datvis2.png)
+
+![Mislead Data Visualization](img/mislead_datvis3.png){width="60%" fig-align="left"}
+
+![Bad representation](img/mis_representaion.png)
+
+![Aesthetic associated with Trustworthiness](img/aes_trustworthy.png)
+
+## Trustworthy: Creater Bias {.smaller}
+
+
+## Actionable Insight: {.smaller}
+
+  - วัตถุประสงค์ของการนำเสนอต้องชัดเจน
+
+  - เลือกข้อมูล จัดกระทำข้อมูล และวิเคราะห์ข้อมูลที่ตอบวัตถุประสงค์ได้ชัดเจนตรงประเด็น
+
+  - เลือกสารสนเทศที่สำคัญและเกี่ยวข้องจากผลการวิเคราะห์
+
+  - จัดลำดับความสำคัญของข้อมูลสารสนเทศ และเน้นสารสนเทศ/สาระสำคัญ
+
+  - สารสนเทศที่นำเสนอควรต้องพร้อมใช้ให้มากที่สุด ไม่ควรต้องให้ผู้อ่านตีความมากเกินไป
+
+  - เพิ่มบริบท (context)
+
+## Actionable Insight:    
+
+![](img/Screenshot%202567-09-14%20at%2012.32.19.png)
+
+
+## Actionable Insight: Context (1) {.smaller}
+
+![](img/Screenshot%202567-09-14%20at%2012.34.35.png)
+
+
+## Actionable Insight: Context (2) {.smaller}
+
+
+![https://www.effectivedatastorytelling.com/post/contextualized-insights-six-ways-to-put-your-numbers-in-context](https://cdn.prod.website-files.com/5dcc6210881da483dfe6cda8/634ebd3bfb9c7381f2f87492_context_map2.png)
+
+
+![Comparative](img/Screenshot%202567-09-14%20at%2011.54.10.png){width="70%" fig-align="left"}
+
+![Comparative + Historical + Equivalent](img/Screenshot%202567-09-14%20at%2012.05.31.png){width="70%" fig-align="left"}
+
+![Scale Up/Down + Historical](img/Screenshot%202567-09-14%20at%2012.06.40.png){width="40%" fig-align="left"}
+
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+<div style="font-size: 80%">
+
+**CMER Map (2017-2021)**
+
+</div>
+
+![สิวะโชติ ศรีสุทธิยากร และคณะ (2567)](img/no_context.png)
+
+:::
+
+::: {.column width="70%"}
+
+<div style="font-size: 80%">
+
+**Thailand Flood Disaster Map (2017-2019)**
+
+</div>
+
+
+![Comparative + Historical + Information + Confirmative](img/floodmap.png)
+
+:::
+
+::::
+
+
+## User Accessibility: {.smaller}
+
+
+  - เลือกแผนภาพที่เหมาะกับลักษณะข้อมูล/สารสนเทศ
+
+  - ออกแบบ visualization ที่สอดคล้องกับความรู้ ความเคยชิน หรือความคุ้นเคยของกลุ่มเป้าหมาย
+
+  - พิจารณาข้อจำกัดของกลุ่มเป้าหมาย เช่น ด้านความต้องการพิเศษ หรือการเข้าถึงเทคโนโลยี
+
+
+![](img/Screenshot%202567-09-14%20at%2012.24.20.png){width="50%"}
+
+
+![สิวะโชติ ศรีสุทธิยากร และคณะ 2567](img/Screenshot%202567-09-14%20at%2012.25.54.png){width="70%" fig-align="left"}
+
+
+![Color Blind Test](img/Screenshot%202567-09-14%20at%2012.28.09.png)
+
+## Aesthetic: {.smaller}
+
+<br>
+
+> "Do not make something unless it is both nescessary and useful; but if it is both, do not hesitate to make it beautiful." (Shaker design philosophy)
+
+
+![https://wornandwound.com/art-time-dieter-rams-ten-principles-good-design/](https://wornandwound.com/library/uploads/2016/09/DieterRams-4.jpg)
+
+- Simplicity
+
+- Functionality
+
+- Craftsmanship and Quality
+
+- Beauty through Proportion
+
+- Form Follows Function
+
+## Aesthetic: {.smaller}
+
+![](img/Screenshot%202567-09-14%20at%2012.46.32.png)
+
+
+![https://climateadaptationservices.com/en/visualizing-data-dare-to-go-beyond-your-own-imagination/](img/Screenshot%202567-09-14%20at%2012.57.54.png)
+
+
+![https://climateadaptationservices.com/en/visualizing-data-dare-to-go-beyond-your-own-imagination/](https://climateadaptationservices.com/wp-content/uploads/2023/08/Burning-Tree-afbeelding-Daniel.png)
+
+
+
+## `scale_color_XXX()` & scale_fill_XXX()` {.smaller}
+
+แผนภาพ Gapminder เดิม
+
+```{r eval = F}
+gapminder %>% filter(year == "2007") %>%
+  ggplot(aes(x = gdpPercap,
+                y = lifeExp))+
+      geom_point()
+```
+
+- `scale_color_manual(name, values)`
+
+- `scale_color_gradient(name, low, hight)`
+
+- `scale_color_gradient2(name, low, mid, hight)`
+
+## ตัวอย่าง {.smaller}
+
+```{r}
+iris %>% ggplot(aes(x = Sepal.Length,
+                    y = Sepal.Width,
+                    col = Species))+
+  geom_point()+
+  scale_color_manual(values = c("steelblue",
+                                "orange",
+                                "maroon"))
+```
+
+## แหล่งอ้างอิงสี {.smaller}
+ 
+```{r}
+colors() %>% length()
+colors() %>% head(12)
+```
+
+- https://colorhunt.co/
+
+- https://coolors.co/
+
+- https://www.canva.com/colors/color-palettes/
+
+- https://color.adobe.com/create/color-wheel
+
+## กิจกรรม
+
+จาก `gapminder` ข้างต้น ขอให้ใช้ `scale_color_xxx()` ตัวใดก็ได้กำหนดสีให้กับ mark ในแผนภาพ เอาตามที่เหมาะสม ผลที่ได้เป็นอย่างไร
+
+
+# Color is Matter
+
+## {background-color="white" background-image="img/color_matter.png" background-size="contain"}
+
+## {background-color="white" background-image="img/color_matter2.png" background-size="contain"}
+
+
+## Color is Matter: Distinguish tools
+
+![](img/Screenshot%202567-09-14%20at%2013.12.29.png)
+
+![สิวะโชติ ศรีสุทธิยากร และคณะ (2567)](img/Unknown.png)
+
+
+## Color is Matter: Distinguish tools
+
+<br>
+
+**qualitative palette**
+
+```{r echo = F}
+library(RColorBrewer)
+display.brewer.all(type = "qual")
+```
+
+
+<div class="caption">[https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/)</div>
+
+## Color is Matter: Represent Data Values
+
+
+![](img/Screenshot%202567-09-14%20at%2013.55.05.png)
+
+
+## Color is Matter: Represent Data Values
+
+
+![สิวะโชติ ศรีสุทธิยากร และคณะ (2567)](img/Screenshot%202567-09-14%20at%2013.13.56.png){width="70%" fig-align="left"}
+
+![](img/Screenshot%202567-09-14%20at%2013.19.32.png)
+
+
+## Color is Matter: Represent Data Values
+
+<br>
+
+**Sequential palette**
+
+```{r echo = F, fig.height = 6}
+library(RColorBrewer)
+display.brewer.all(type = "seq")
+```
+
+<div class="caption">[https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/)</div>
+
+## Color is Matter: Represent Data Values
+
+<br>
+
+**Diverging palette**
+```{r echo = F}
+library(RColorBrewer)
+display.brewer.all(type = "div")
+```
+
+
+![](img/Screenshot%202567-09-14%20at%2014.16.53.png)
+
+
+## Some R Color Palette
+
+```{r eval = F, echo = T}
+library(RColorBrewer)
+display.brewer.all(type = "div")
+brewer.pal(n = 8,name = "RdBu")
+brewer.pal(n = 5, name = "Dark2")
+```
+
+
+```{r echo = T, eval = F}
+#install.packages("viridis")
+library(viridis)
+```
+
+![](img/Screenshot%202567-09-14%20at%2014.07.21.png)
+
+
+
+
+## Color is Matter: Color as Highlight Tools
+
+![](img/Screenshot%202567-09-14%20at%2014.18.12.png)
+
+
+## Color is Matter: Color as Highlight Tools
+
+![](img/Screenshot%202567-09-14%20at%2014.18.59.png)
