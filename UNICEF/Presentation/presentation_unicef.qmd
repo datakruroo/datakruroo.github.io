@@ -973,7 +973,7 @@ river_contour_p
 ```
 
 
-<div class="caption">fig 3.6: Schools with high CMER levels over the 22 river basins map.</div>
+<div class="caption">fig 3.6: Schools with high CMER levels over the 22 river basins map (2017-2021).</div>
 
 :::
 
@@ -1972,10 +1972,9 @@ PESA_p + sesa_p
 
 </center>
 
-## Risk-Importance matrix
+## Risk-Importance matrix {.smaller}
 
 <div style="font-size: 75%;">
-
 
 - The researcher developed the Risk-Importance Matrix (RIM) to assess climate-mapped educational risk and classify educational service areas into subgroups for more effective planning and policy-making. Specifically, the RIM helps identify priority areas for intervention by considering the CMER Index alongside the relative importance of contributing factors in each district.
 
@@ -1985,9 +1984,9 @@ PESA_p + sesa_p
 
 **Matrix Key Elements and Interpretation:**
 
-1. Y-axis: Displays the CMER Index, representing educational risk derived from academic achievement and extreme rainfall conditions. Higher values indicate greater risk levels that demand attention.
+- Y-axis: Displays the CMER Index, representing educational risk derived from academic achievement and extreme rainfall conditions. Higher values indicate greater risk levels that demand attention.
 
-2. X-axis: Represents the Relative Importance of six factors affecting educational risk, calculated using variable importance (VIP). This axis shows how significantly each factor contributes to the overall risk in each district.
+- X-axis: Represents the Relative Importance of six factors affecting educational risk, calculated using variable importance (VIP). This axis shows how significantly each factor contributes to the overall risk in each district.
 
 - Points higher on the Y-axis indicate districts with higher risk, requiring more urgent intervention.
 
@@ -1999,20 +1998,20 @@ PESA_p + sesa_p
 
 **Key Groups in the Matrix:**
 
-1.	Strategic Focus: Areas with high risk and high importance of contributing factors. These areas require immediate policy attention and intervention.
+- Strategic Focus: Areas with high risk and high importance of contributing factors. These areas require immediate policy attention and intervention.
 
-2.	Development Priority: Areas with high risk but lower factor importance, where development efforts can help mitigate risks.
+- Development Priority: Areas with high risk but lower factor importance, where development efforts can help mitigate risks.
 
-3.	Monitoring: Areas with lower risk but higher factor importance, which should be monitored to ensure risks do not escalate.
+- Monitoring: Areas with lower risk but higher factor importance, which should be monitored to ensure risks do not escalate.
 
-4.	Low-risk Group: Areas with both low risk and low factor importance, which may require minimal intervention but regular monitoring.
+- Low-risk Group: Areas with both low risk and low factor importance, which may require minimal intervention but regular monitoring.
 
 </div>
 
 
-## Risk-Importance matrix (RIM): PESA
+## Risk-Importance matrix (RIM): PESA {.smaller}
 
-
+<center>
 
 ```{r}
  data_for_performance <- collapsed_data |> 
@@ -2037,8 +2036,8 @@ PESA_p + sesa_p
 
 ```{r fig.width = 15, fig.height=10}
 # กำหนดจุดที่ต้องการให้เส้นผ่าน
-x_points <- c(-1, 50, 105)
-y_points <- c(max(data_for_performance$CMER), 0.6, 0.6)
+x_points <- c(0, 50, 105)
+y_points <- c(0.7, 0.6, 0.6)
 spline_curve <- spline(x_points, y_points, n = 100)
 spline_curve <- data.frame(x= spline_curve$x, y= spline_curve$y)
 
@@ -2110,11 +2109,13 @@ risk_matrix_data <- data_for_performance %>%
 
 <div class="caption">fig 3.17: Risk-Importance matrix for PESA.</div>
 
+</center>
 
-## Risk-Importance matrix (RIM): SESA
+## Risk-Importance matrix (RIM): SESA {.smaller}
+
+<center>
 
 ```{r fig.width = 15, fig.height=10}
-
 # สมมุติว่า data_for_performance มีคอลัมน์ x (percent_vip) และ y (CMER)
 data_for_performance2 <- data_for_performance %>%
   filter(str_detect(affiliation, "สพม.")) |> 
@@ -2171,7 +2172,9 @@ geom_text_repel(data = data_for_performance2 %>%
 
 <div class="caption">fig 3.18: Risk-Importance matrix for SESA.</div>
 
+</center>
 
+## 
 <!--
 
 ## 3.2.2 Insight Results: Importance Factors {.smaller}
