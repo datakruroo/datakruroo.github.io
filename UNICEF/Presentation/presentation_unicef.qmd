@@ -616,7 +616,7 @@ D["Student SES"]-->E(((Risk Index)))
 
 <div style="font-size: 85%;">
 
-- To address this research objective, the analyst employed a supervised learning model to assess the impact of factors such as geographical and spatial barriers, infrastructure and connectivity, school characteristics, and student socioeconomic status on the educational risk index developed from the findings in Research Objective 1.
+- To address this research objective, the analyst employed a supervised learning model, a machine learning approach where the model is trained using labeled data—data with known outcomes. This method helps the model understand patterns and relationships between various factors, allowing it to make predictions about unseen data. In this case, the model was used to assess how factors such as geographical barriers, infrastructure, school characteristics, and student socioeconomic status affect the educational risk index. Supervised learning helps the model ‘learn’ from the known outcomes (i.e., the risk index values) and apply this knowledge to predict future risks or better understand the impact of each factor.
 
 - The results of the analysis provide a comprehensive understanding of how various school characteristics, such as size, resources, and location, relate to educational risk. This deeper insight enables the identification of specific school-level factors that may exacerbate or mitigate the effects of climate change on student performance, contributing to targeted interventions and policy recommendations.
 
@@ -650,16 +650,37 @@ The analysis results are divided into two parts:
 
 - The following analysis presents a bar chart displaying the component loadings of the extreme climate index (precipitation and temperature) and student academic performance (O-NET scores) for each of the four principal components. The loadings represent the weights or the strength of the relationship between each variable and the extracted components in the PCA analysis. High loadings indicate that the variable plays a significant role in explaining the variance of the corresponding component.
 
-- The pattern of relationships represented by the loadings provides meaning to the component scales constructed through PCA. Specifically, high loadings in a particular component indicate that those variables have a significant influence on defining the characteristics of that component. Therefore, the components derived from PCA reflect the factors linking various variables. 
+- The charts in Fig 3.1, and Fig 3.2 below displays the component loadings between precipitation indicators (like intensity, frequency, duration) and O-NET scores against all possible Principal Components (PC1 to PC4). The purpose of this chart is to show how each indicator relates to the different principal components, which represent underlying patterns in the data.
 
-- When considering Fig 3.1, which displays the component loadings of extreme precipitation and O-NET scores, the analysis enables the creation of a risk scale that reflects the educational risks associated with prolonged extreme rainfall. This scale highlights the vulnerability of schools in areas where extended periods of heavy rainfall may negatively impact student academic performance, allowing for targeted interventions and policy planning to mitigate these risks.
+**Chart Key Elements:**
 
-- When considering Fig 3.2, no clear pattern of relationships was found between the variables that could be combined into a risk scale. In conclusion, no components in the variance and covariance between extreme temperature factors and O-NET scores were identified that reflect educational risk.
+1. Y-Axis: Shows the indicators used for the analysis
+
+2. X-Axis (Horizontal Axis): Shows the loading values for each indicator, which explain how strongly each variable contributes to each Principal Component (PC). Values closer to -1 or 1 indicate stronger correlations, while values close to 0 suggest weak or no correlation.
+
+3. Each Block (PC1 - PC4): Represents the different Principal Components. For each component, reader can see how each variable is related to it. 
+
+4. Color of the Bars: Represents the direction of the correlation, red color for negative correlation (values below 0), and blue color for positive correlation (value above 0). A positive value (blue) indicates that as the indicator increases, the Principal Component increases. A negative value (red) means that as the indicator increases, the Principal Component decreases.
+
+
 
 </div>
 
 ::: panel-tabset
 ## Extreme Precipitation
+
+<div style="font-size: 75%;">
+
+- When considering Fig 3.1, particularly in PC3, we can observe an inverse relationship between Precipitation Duration and ach_score (O-NET score):
+
+  - Precipitation Duration has a positive loading in PC3, meaning that as the duration of rainfall increases, it is positively associated with PC3. This suggests that longer extreme rainfall durations are linked to higher values in PC3, which in this context represents increased climate risk.
+
+  - Conversely, ach_score has a negative loading in PC3, implying that higher O-NET scores are inversely related to the extreme climate risk. In other words, in areas where PC3 (educational risk) is high, ach_score tends to be lower, indicating greater risk of poorer academic performance.
+
+
+- **Thus, PC3 serves as a measure of educational risk, where prolonged rainfall duration tends to increase risk, while better academic performance (higher O-NET scores) correlates with lower risk. Therefore, as rainfall duration extends, we can expect a higher educational risk (PC3), which, in turn, is associated with lower academic achievement. This relationship supports the use of PC3 as an index for the Climate-Map Education Risk Index (CMER).**
+
+</div>
 
 ```{r}
 library(tidymodels)
@@ -705,6 +726,12 @@ overall_precipitaion_data |>
 
 ## Extreme Temperature
 
+<div style="font-size: 75%;">
+
+- When considering Fig 3.2, no clear pattern of relationships was found between the variables to combine them into a risk scale. No components in the variance and covariance between extreme temperature factors and O-NET scores reflect educational risk.
+
+</div>
+
 ```{r}
 overall_temperature_data |> 
   group_by(student_level) |> 
@@ -749,15 +776,17 @@ overall_temperature_data |>
 :::
 
 
-## 3.1.2 Descriptive results of the Risk Index (1) {.smaller}
+## 3.1.2 Climate-Mapped Educational Risk Index (CMER) {.smaller}
 
-- The researcher used the scale constructed from PC3 as the educational risk index for this study, naming it the **Climate-Mapped Educational Risk Index (CMER)**.
+<div style="font-size: 75%;">
 
-- The index scores derived from PC3 using PCA are standard scores with a possible range from -infinity to infinity, which may make it difficult to interpret the risk levels. To address this, the researcher transformed the risk index scores into a [0,1] range using a cumulative distribution function (CDF) based on the t-distribution, making the interpretation of risk levels more intuitive. The histogram below shows the distribution of the risk index scores, categorized by student grade level.
+- The **Climate-Mapped Educational Risk Index (CMER)** scores derived from PC3 using PCA are standard scores with a possible range from -infinity to infinity, which may make it difficult to interpret the risk levels. To address this, the researcher transformed the risk index scores into a [0,1] range using a cumulative distribution function (CDF) based on the t-distribution, making the interpretation of risk levels more intuitive. The histogram below shows the distribution of the risk index scores, categorized by student grade level.
+
+</div>
 
 <center>
 
-```{r}
+```{r fig.width = 16, fig.height = 4.5}
 library(tidymodels)
 library(rcartocolor)
 library(patchwork)
@@ -785,6 +814,7 @@ precipitaion_risk_data <- precipitaion_risk_data |>
 #                                    "กรุงเทพมหานคร|ยะลา|อุดรธานี|กาญจนบุรี|#นครสวรรค์")),
 #                file = "precipitaion_risk_data.csv")
 
+
 p_hist <- precipitaion_risk_data %>% 
   group_by(student_level, school_name) %>% 
   summarise(risk_index = mean(risk_index),
@@ -811,7 +841,7 @@ p_hist
 </center>
 
 
-## 3.1.2 Descriptive results of the Risk Index (2) {.smaller}
+## 3.1.2 Descriptive results of the CMER Index (1) {.smaller}
 
 <div style="font-size: 75%;">
 
@@ -874,16 +904,105 @@ p1/p2
 <br>
 <br>
 
-## 3.1.2 Descriptive results of the Risk Index (3) {.smaller}
+
+## 3.1.2 Descriptive results of the CMER Index (3) {.smaller}
+
 
 <div style="font-size: 75%;">
 
-The following figure presents a spatial risk map showing schools in Thailand with risk scores in the moderate range (0.6, 0.8] and high-risk levels (0.8, 1.0], categorized by student grade levels. Additionally, the researcher has included spatial barriers data, such as special geographic characteristics of schools (island, highland in remote areas) and the level of difficulty in accessing the school (no difficulty, hard, harder, hardest), plotted on the map as well.
+- The following map shows schools with high CMER risk levels over the 22 river basins as defined by the Royal Decree on River Basin Designation, B.E. 2565, issued by [the Office of the National Water Resources](http://www.onwr.go.th/?page_id=9893).
+
+- The contour in the map below illustrates the density of schools with high CMER risk in each of Thailand’s major river basins. The analysis revealed that the highest density of high-risk schools is found in the central and northeastern regions, particularly in the Northest Khong, Chi, Pasak, and Chao Phraya river basins. This is followed by the southern region, in the Peninsula Lower East Coast basin, and the northern region, in the Salawin, Ping, and North Khong river basins.
+
+- When compared contour maps with the flood-prone area maps from the Department of Disaster Prevention and Mitigation (DDPM) during 2012-2018, and the repeated flood areas map of Thailand from 2000-2016, schools with high CMER Index scores tend to be located in the same areas as shown on both maps. **This analysis suggests that the CMER Index is correlates with natural disaster risks, especially flooding, and can serve as an effective indicator for assessing educational risks associated with climate change.**
 
 </div>
 
 
-```{r fig.width = 14, fig.height = 10}
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r fig.height = 9, fig.width = 6}
+library(rnaturalearth)
+library(sf)
+library(ggrepel)
+
+rivermap <- st_read("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/งานวิจัย/unicef/data/ข้อมูลแผนที่/MainBasin_ONWR_Law_WGS84/MainBasin_ONWR_Law_WGS84.shp", options = "ENCODING=UTF-8", quiet = TRUE) 
+
+
+school_sf <- precipitaion_risk_data |> 
+  group_by( student_level, school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach,school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(type_of_hard = factor(type_of_hard, labels=c("None","Highland in Remote Area","Island"))) |> 
+ mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
+  filter(risk_index>=0.80) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+river_contour_p <- rivermap |> 
+  ggplot() +
+  stat_density_2d(data = school_sf, aes(x = st_coordinates(geometry)[,1], 
+                                        y = st_coordinates(geometry)[,2], 
+                                        fill = after_stat(level)),  # ใช้ after_stat(level) แทน ..level..
+                  geom = "polygon", alpha = 0.08, color = "white", fill = "maroon",
+                  bins = 8, contour_var = "ndensity") +
+  geom_sf(alpha = 0.3) +
+  geom_sf_text(aes(label = MBASIN_E), check_overlap = TRUE,
+              size = 2, color = "grey30", alpha = 0.8) +
+  theme_minimal() +
+  xlab("")+
+  ylab("")+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = "right") +  # เปลี่ยนตำแหน่งของ legend
+  ggtitle("Contour Map for \n High Risk School (CMER Index)",
+          subtitle = "22 river basins map") +
+  guides(color = guide_legend(override.aes = list(size = 4)),
+         shape = guide_legend(override.aes = list(size = 4))) +
+  labs(shape = "Geographic \n characteristics",
+       col = "Difficulty level \n in accessing the school")
+
+river_contour_p
+```
+
+
+<div class="caption">fig 3.6: Schools with high CMER levels over the 22 river basins map.</div>
+
+:::
+
+::: {.column width="30%"}
+
+<center>
+
+![](img/4.5.jpg)
+
+</center>
+
+:::
+
+::: {.column width="30%"}
+
+<center>
+
+![](img/4.4.jpg)
+
+</center>
+
+:::
+
+
+::::
+
+
+
+```{r create_map, echo = F}
 library(rnaturalearth)
 library(sf)
 library(ggrepel)
@@ -901,113 +1020,7 @@ school_sf <- precipitaion_risk_data |>
   mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
   filter(risk_index>=0.6 & risk_index<0.8) %>% 
   st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
-
-p1 <- ggplot(data = thailand_map)+
-  geom_sf()+
-  geom_sf(data = school_sf, aes(geometry = geometry, shape = type_of_hard, col = hard_to_reach),
-          alpha = 0.3,  size = 0.8) +
-  theme_minimal() +
-  xlab("")+ylab("")+
-  facet_wrap(~student_level)+
-  theme(legend.position = "left",
-        axis.text = element_blank(),
-        panel.grid = element_blank(),
-        text = element_text(family = "ChulaCharasNew", size = 16))+
-  scale_color_manual(values=c("orange","#D8A25E","#A04747","#821131"))+
-  ggtitle("Moderate Risk")+
-  guides(color = guide_legend(override.aes = list(size = 4)),  # ปรับขนาดสัญลักษณ์สี
-         shape = guide_legend(override.aes = list(size = 4)))+  # ปรับขนาด
-  labs(shape = "Geographic \n characteristics",
-        col = "Difficulty level \n in accessing the school")
-
-school_sf <- precipitaion_risk_data |> 
-  group_by(student_level, school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
-  summarise(risk_index = mean(risk_index),
-           # robust_index = mean(robust_index),
-            ach_score =mean(ach_score)) %>% 
-  ungroup() %>% 
-  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach,school_size, ach_score, risk_index) |> drop_na() |> 
-  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
-  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
-  mutate(type_of_hard = factor(type_of_hard, labels=c("None","Highland in Remote Area","Island"))) |> 
- mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
-  filter(risk_index>=0.80) %>% 
-  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
-
-p2 <- ggplot(data = thailand_map)+
-  geom_sf()+
-  geom_sf(data = school_sf, aes(geometry = geometry, shape = type_of_hard, col = hard_to_reach) ,
-          alpha = 0.3,  size = 2) +
-  geom_text_repel(aes(label = name, geometry = geometry), min.segment.length = 10,
-                  stat = "sf_coordinates", size =1.5, col = "grey40")+
-  theme_minimal() +
-  xlab("")+ylab("")+
-  facet_wrap(~student_level)+
-  ggtitle("High Risk")+
-  theme(legend.position = "left",
-        axis.text = element_blank(),
-        panel.grid = element_blank(),
-        text = element_text(family = "ChulaCharasNew", size = 16))+
-  scale_color_manual(values=c("orange","#D8A25E","#A04747","#821131"))+
-  guides(color = guide_legend(override.aes = list(size = 4)),  # ปรับขนาดสัญลักษณ์สี
-         shape = guide_legend(override.aes = list(size = 4)))+  # ปรับขนาด
-  labs(shape = "Geographic \n characteristics",
-        col = "Difficulty level \n in accessing the school")
 ```
-
-
-::: {.panel-tabset}
-
-## Moderate Risk School Map
-
-<center>
-
-```{r}
-p1
-```
-
-
-</center>
-
-<div class="caption">fig 3.5: Spatial Risk Map (Moderate Risk) categorized by Student Level</div>
-
-<br>
-<br>
-
-## High Risk School Map
-
-<center>
-
-```{r}
-p2
-```
-
-</center>
-
-<div class="caption">fig 3.6: Spatial Risk Map (High Risk) categorized by Student Level</div>
-
-<br>
-<br>
-
-
-:::
-
-
-
-
-## 3.1.2 Descriptive results of the Risk Index (4) {.smaller}
-
-
-<div style="font-size: 75%;">
-
-- The following map shows schools with high CMER risk levels over the 22 river basins as defined by the Royal Decree on River Basin Designation, B.E. 2565, issued by [the Office of the National Water Resources](http://www.onwr.go.th/?page_id=9893).
-
-- The contour in the map (left figure) illustrates the density of schools with high CMER risk in each of Thailand’s major river basins. The analysis revealed that the highest density of high-risk schools is found in the central and northeastern regions, particularly in the Northest Khong, Chi, Pasak, and Chao Phraya river basins. This is followed by the southern region, in the Peninsula Lower East Coast basin, and the northern region, in the Salawin, Ping, and North Khong river basins.
-
-- The two images on the right show the risk levels categorized by primary and secondary educational service areas.
-
-</div>
-
 
 ```{r megeing_data_for_map, echo = F}
 precipitaion_risk_data_cleaned_aggregated <- precipitaion_risk_data_cleaned |> 
@@ -1085,11 +1098,7 @@ precipitaion_risk_data_cleaned_aggregated <- precipitaion_risk_data_cleaned_aggr
     ))
 ```
 
-
-<center>
-
-```{r message  = F, warning = F, echo = F, fig.height = 14, fig.width = 16}
-rivermap <- st_read("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/งานวิจัย/unicef/data/ข้อมูลแผนที่/MainBasin_ONWR_Law_WGS84/MainBasin_ONWR_Law_WGS84.shp", options = "ENCODING=UTF-8", quiet = TRUE) 
+```{r river_map_point, eval = F}
 
 river_p <- rivermap |> ggplot()+
   geom_sf(aes(fill = MBASIN_E), alpha=0.3)+
@@ -1108,7 +1117,8 @@ river_p <- rivermap |> ggplot()+
   labs(shape = "Geographic \n characteristics",
         col = "Difficulty level \n in accessing the school")
 
-river_contour_p <-rivermap |> 
+
+ <-rivermap |> 
   ggplot() +
   stat_density_2d(data = school_sf, aes(x = st_coordinates(geometry)[,1], 
                                         y = st_coordinates(geometry)[,2], 
@@ -1132,8 +1142,75 @@ river_contour_p <-rivermap |>
   labs(shape = "Geographic \n characteristics",
        col = "Difficulty level \n in accessing the school")
 
+```
 
 
+<br>
+
+```{r message  = F, warning = F, echo = F, fig.height = 16, fig.width = 14}
+
+school_sf <- precipitaion_risk_data |> 
+  group_by(year, student_level, school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(year, student_level, school_lon, school_lat, type_of_hard, hard_to_reach,school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(type_of_hard = factor(type_of_hard, labels=c("None","Highland in Remote Area","Island"))) |> 
+ mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
+  filter(risk_index>=0.80) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+
+river_contour_p <- rivermap |> 
+  ggplot() +
+  stat_density_2d(data = school_sf, aes(x = st_coordinates(geometry)[,1], 
+                                        y = st_coordinates(geometry)[,2], 
+                                        fill = after_stat(level)),  # ใช้ after_stat(level) แทน ..level..
+                  geom = "polygon", alpha = 0.08, color = "white", fill = "maroon",
+                  bins = 8, contour_var = "ndensity") +
+  geom_sf(alpha = 0.3) +
+  geom_sf_text(aes(label = MBASIN_E), check_overlap = TRUE,
+              size = 2, color = "grey30", alpha = 0.8) +
+  theme_minimal() +
+  xlab("")+
+  ylab("")+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        strip.text = element_text(size = 20),
+        title = element_text(size = 22),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = "right") +  # เปลี่ยนตำแหน่งของ legend
+  ggtitle("Contour Map for \n High Risk School (CMER Index)",
+          subtitle = "22 river basins map") +
+  guides(color = guide_legend(override.aes = list(size = 4)),
+         shape = guide_legend(override.aes = list(size = 4))) +
+  labs(shape = "Geographic \n characteristics",
+       col = "Difficulty level \n in accessing the school")+
+        facet_wrap(~year)
+
+river_contour_p
+```
+
+
+<div class="caption">fig 3.7: Schools with high CMER levels over the 22 river basins map categorized by year.</div>
+
+
+
+## 3.1.2 Descriptive results of the CMER Index (4) {.smaller}
+
+<div style="font-size: 75%;">
+
+
+- The two maps below show the CMER Index levels categorized by primary and secondary educational service areas. Educational service areas shaded in varying intensities of red indicate that the median CMER Index in those areas is higher than 0.6, corresponding to a moderate to high risk level. **From the map, it was found that schools under PESA tend to have a moderate to high level of risk more frequently than school SESA.**
+
+</div>
+
+<center>
+
+```{r}
 shapefile_data <- st_read("/Users/choat/Downloads/ocha-roap-d24bdc45-eb4c-4e3d-8b16-44db02667c27/tha_adm_rtsd_itos_20190221_SHP_PART_1/tha_admbnda_adm2_rtsd_20190221.shp",
 quiet = TRUE) 
 
@@ -1168,7 +1245,7 @@ PESA_p <- ggplot(data = thailand_map) +
         axis.text = element_blank(),
         panel.grid = element_blank()) +
   scale_fill_gradient2(low = "steelblue", mid = "white", high = "maroon", midpoint = 0.6) +
-  ggtitle("(b) CMER Index",
+  ggtitle("(a) CMER Index",
           subtitle = "Categorized by PESA")
 
 
@@ -1207,13 +1284,53 @@ sesa <- ggplot(data = thailand_map) +
         axis.text = element_blank(),
         panel.grid = element_blank()) +
   scale_fill_gradient2(low = "steelblue", mid = "white", high = "maroon", midpoint = 0.6) +
-  ggtitle("(c) CMER Index",
+  ggtitle("(b) CMER Index",
           subtitle = "Categorized by SESA")
-river_contour_p+PESA_p+sesa
 ```
 
 
-<div class="caption">fig 3.6: CMER Index on Various Maps</div>
+</center>
+
+<div style="font-size: 75%;">
+
+- The bar chart below shows the Primary educational service areas where the median CMER Index is higher than 0.6 (moderate to high risk), revealing that there are 37 such areas.
+
+</div>
+
+```{r}
+pesa_risk <- precipitaion_risk_data_cleaned_aggregated |> 
+  filter(str_detect(affiliation, "สพป.")) |> 
+  group_by(affiliation) |> 
+  summarise(median = median(risk_index_df5)) |> 
+  filter(median > 0.6) |> 
+  ggplot(aes(x = median, y=reorder(affiliation, median)))+
+  geom_col(aes(fill = median))+
+  xlab("CMER Index")+
+  ylab("")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  scale_fill_gradient(low = "orange",high = "maroon")+
+  ggtitle("Primary education areas with \n moderate to high CMER levels.")
+
+```
+
+
+
+<center>
+
+```{r fig.height = 10, fig.width = 14}
+library(patchwork)
+PESA_p + sesa
+```
+
+<div class="caption">fig 3.8: CMER Index on Educational Service Area Map</div>
+
+
+```{r}
+pesa_risk
+```
+
+<div class="caption">fig 3.9: Primary Educational Service Areas with Median CMER Index Above 0.6: Moderate to High Risk Levels </div>
 
 </center>
 
@@ -1339,11 +1456,18 @@ precipitaion_risk_data_cleaned_aggregated %>%
 ```
 
 
-<div class="caption">fig 3.7: ECDF plot of CMER Index categorized by Geographical & Spatial Barriers.</div>
+<div class="caption">fig 3.10: ECDF plot of CMER Index categorized by Geographical & Spatial Barriers.</div>
 
 
 ## 3.2.1 Overall Results: School Infrastructure& Connectivity {.smaller}
 
+<div style="font-size: 75%;">
+
+- School Infrastructure& Connectivity is derived from data on the availability of electricity, water supply, and internet at the school. The `infra_readiness_score` in the plot categorized in to three level: Fully Ready, Partial, and Not Ready
+
+- The analysis found that **schools lacking readiness in infrastructure and connectivity tend to have higher risks compared to schools that are fully or partially ready. This difference is particularly evident in schools located in remote areas.“​**
+
+</div>
 
 ```{r}
 precipitaion_risk_data_cleaned_aggregated  %>% 
@@ -1374,9 +1498,7 @@ precipitaion_risk_data_cleaned_aggregated  %>%
 
 ```
 
-- School Infrastructure& Connectivity is derived from data on the availability of electricity, water supply, and internet at the school. The `infra_readiness_score` in the plot categorized in to three level: Fully Ready, Partial, and Not Ready
 
-- The analysis found that schools lacking readiness in infrastructure and connectivity tend to have higher risks compared to schools that are fully or partially ready. This difference is particularly evident in schools located in remote areas.“​
 
 ```{r fig.width = 16}
 precipitaion_risk_data_cleaned_aggregated  %>% 
@@ -1410,7 +1532,7 @@ precipitaion_risk_data_cleaned_aggregated  %>%
 ```
 
 
-<div class="caption">fig 3.8: ECDF plot of CMER Index categorized by School Infrastructure& Connectivity.</div>
+<div class="caption">fig 3.11: ECDF plot of CMER Index categorized by School Infrastructure& Connectivity.</div>
 
 <br>
 <br>
@@ -1418,8 +1540,11 @@ precipitaion_risk_data_cleaned_aggregated  %>%
 
 ## 3.2.1 Overall Results: School Characteristic {.smaller}
 
+<div style="font-size: 75%;">
 
 - The analysis found that small and medium-sized schools tend to have higher risks compared to large and extra-large schools. This trend is consistent across all student grade levels.
+
+</div>
 
 ```{r}
 p1 <- precipitaion_risk_data_cleaned_aggregated  %>% 
@@ -1471,7 +1596,7 @@ p2
 ```
 
 
-<div class="caption">fig 3.9: ECDF plot of CMER Index categorized by School Characteristics.</div>
+<div class="caption">fig 3.12: ECDF plot of CMER Index categorized by School Characteristics.</div>
 
 <br>
 <br>
@@ -1528,17 +1653,17 @@ precipitaion_risk_data_cleaned_aggregated  %>%
 ```
 
 
-<div class="caption">fig 3.10: ECDF plot of CMER Index categorized by Student SES.</div>
+<div class="caption">fig 3.13: ECDF plot of CMER Index categorized by Student SES.</div>
 
 <br>
 <br>
 
-## 3.2.2 Insight Results: Regularized Regression {.smaller}
+## 3.2.2 Insight Results: CMER Modelling {.smaller}
 
 
 <div style="font-size: 75%;">
 
-- In this analysis, the researchers employed regularized regression to examine the relationship between non-climate factors and the CMER Index. Based on the hypothesis that these relationships may vary across different regions due to diverse contexts, the predictive models were constructed separately for PESA and SESA educational service areas. This means that each educational service area has its own predictive model to explain the relationship between non-climate factors and the CMER Index.
+- In this analysis, the researchers employed regression analysis to examine the relationship between non-climate factors and the CMER Index. Based on the hypothesis that these relationships may vary across different regions due to diverse contexts, the predictive models were constructed separately for PESA and SESA educational service areas. This means that each educational service area has its own predictive model to explain the relationship between non-climate factors and the CMER Index.
 
 The non-climate factors used to build the risk prediction model consist of six variables, categorized into four dimensions:
 
@@ -1567,7 +1692,7 @@ Before processing, the researchers prepared the data for analysis by cleaning da
 
 </div>
 
-
+<!--
 ## 3.2.2 Insight Results: R-Squared {.smaller}
 
 
@@ -1631,10 +1756,12 @@ collapsed_data |>
         legend.position = "none")
 ```
 
-<div class="caption">fig 3.11: R-squared values of the predictive models in each educational service area</div>
+<div class="caption">fig 3.14: R-squared values of the predictive models in each educational service area</div>
 
 
 </center>
+
+-->
 
 ## 3.2.2 Insight Results: Importance Factors {.smaller}
 
@@ -1646,10 +1773,31 @@ collapsed_data |>
 
 <center>
 
-
+```{r collapsed_data_creating}
+collapsed_data <- tidy_results |> 
+  unnest(c(data)) |> 
+  select(province, amphor,affiliation, term, vip,r_squared ) |> 
+  mutate(percent_vip = vip*100/max(vip)) |> 
+  mutate(term = ifelse(str_detect(term, "^school_size_"), "School Size", term)) |> 
+  mutate(term = ifelse(str_detect(term, "^student_level_"), "Student Level", term)) %>%  # ยุบชื่อ school_size_XXX ให้เป็น school_size
+  mutate(term = ifelse(str_detect(term,"hard_to_reach"),
+                       "Hard to Reach", term)) |> 
+  mutate(term = ifelse(str_detect(term,"infra"),
+                       "Infrastructure & Connectivity", term)) |> 
+  mutate(term = ifelse(str_detect(term,"distance"),
+                       "School Distance", term)) |> 
+  mutate(term = ifelse(str_detect(term,"poor"),
+                       "Poor Family", term)) |> 
+  group_by(province, amphor, affiliation, term) %>%
+  summarise(
+    vip = sum(vip),  # รวมค่า vip
+    percent_vip = max(percent_vip),  # รวมค่า percent_vip
+    r_squared = max(r_squared)  # เก็บค่า r_squared ที่มากที่สุด
+  ) %>%
+  ungroup()
+```
 
 ```{r}
-
 counts_PESA <- collapsed_data |> 
   mutate(area = ifelse(str_detect(affiliation, "สพป."), "PESA","SESA")) |> 
   group_by(area, affiliation) |> 
@@ -1694,7 +1842,7 @@ ggplot(plot_data, aes(x = term, y = n, fill = area)) +
 ```
 
 
-<div class="caption">fig 3.12: the non-climate factors most strongly associated with the CMER Index in each educational service area</div>
+<div class="caption">fig 3.15: the non-climate factors most strongly associated with the CMER Index in each educational service area</div>
 
 </center>
 
@@ -1726,16 +1874,20 @@ school_sf <-  collapsed_data |>
   slice_max(percent_vip) |> 
   inner_join(shapefile_data, by = c("amphor" = "ADM2_TH"))  # เปลี่ยน join_by เป็น c()
 school_sf_label <- school_sf |> 
-  filter(r_squared > 10)
+  filter(r_squared > 10) |> 
+  group_by(province, affiliation) |> 
+  slice(1) |> 
+  ungroup()
+
 # รวมขอบเขตตาม affiliation
 affiliation_boundaries <- school_sf %>%
   group_by(affiliation) %>%
   summarise(geometry = st_union(geometry))  # รวมขอบเขตตาม affiliation
 # พล็อตแผนที่
 PESA_p <- ggplot(data = thailand_map) +
-  geom_sf() +
-  geom_sf(data = school_sf, aes(geometry = geometry, fill = term),
-          alpha = 0.5, size = 0.8, color = NA) +  
+  geom_sf(col = "white") +
+  geom_sf(data = school_sf, aes(geometry = geometry, fill = term), alpha = 0.7,
+          size = 0.8, color = NA) +  
   geom_sf(data = affiliation_boundaries, aes(geometry = geometry), 
           color = "black", fill = NA, size = 1, show.legend = FALSE) +  # ตีเส้นขอบตาม affiliation
   geom_sf_text(data = school_sf_label, aes(geometry = geometry, label = affiliation), size = 2, color = "grey20", check_overlap = TRUE,
@@ -1755,6 +1907,9 @@ PESA_p <- ggplot(data = thailand_map) +
     "Student Level" = "#6a3d9a",
     "Hard to Reach" = "#b15928"
   ))+
+  #scale_alpha_continuous(breaks=c(0,8,20), range=c(0.01,1),
+  #                      guide = "none")+
+  labs(alpha = "R-Squared level")+
   ggtitle("The most importance factor associated \n with the CMER Index of each PESA.")
 
 ### --- สพม.
@@ -1772,7 +1927,10 @@ school_sf <- collapsed_data |>
 
 
 school_sf_label <- school_sf |> 
-  filter(r_squared > 10)
+  filter(r_squared > 40) |> 
+  group_by(province, affiliation) |> 
+  slice(1) |> 
+  ungroup()
 
 # รวมขอบเขตตาม affiliation
 #affiliation_boundaries <- school_sf %>%
@@ -1781,9 +1939,9 @@ school_sf_label <- school_sf |>
 
 # พล็อตแผนที่
 sesa_p <- ggplot(data = thailand_map) +
-  geom_sf(alpha = 0.5) +
-  geom_sf(data = school_sf, aes(geometry = geometry, fill = term),
-          alpha = 0.5, size = 0.8, color = NA) +  
+  #geom_sf(alpha = 0.5) +
+  geom_sf(data = school_sf, aes(geometry = geometry, fill = term, alpha = r_squared), alpha = 0.7,
+          size = 0.8, color = NA) +  
   geom_sf(data = affiliation_boundaries, aes(geometry = geometry), 
           color = "black", fill = NA, size = 1, show.legend = FALSE) +  # ตีเส้นขอบตาม affiliation
   geom_sf_text(data = school_sf_label, aes(geometry = geometry, label = affiliation), size = 2.5, color = "grey20", check_overlap = TRUE,
@@ -1809,10 +1967,212 @@ PESA_p + sesa_p
 ```
 
 
-<div class="caption">fig 3.13: The most importance non-climate factors map.</div>
+<div class="caption">fig 3.16: The most importance non-climate factors map.</div>
 
 
 </center>
+
+## Risk-Importance matrix
+
+<div style="font-size: 75%;">
+
+
+- The researcher developed the Risk-Importance Matrix (RIM) to assess climate-mapped educational risk and classify educational service areas into subgroups for more effective planning and policy-making. Specifically, the RIM helps identify priority areas for intervention by considering the CMER Index alongside the relative importance of contributing factors in each district.
+
+</div>
+
+<div style="font-size: 75%;">
+
+**Matrix Key Elements and Interpretation:**
+
+1. Y-axis: Displays the CMER Index, representing educational risk derived from academic achievement and extreme rainfall conditions. Higher values indicate greater risk levels that demand attention.
+
+2. X-axis: Represents the Relative Importance of six factors affecting educational risk, calculated using variable importance (VIP). This axis shows how significantly each factor contributes to the overall risk in each district.
+
+- Points higher on the Y-axis indicate districts with higher risk, requiring more urgent intervention.
+
+- Points further to the right on the X-axis indicate factors that play a more significant role in driving risk.
+
+</div>
+
+<div style="font-size: 75%;">
+
+**Key Groups in the Matrix:**
+
+1.	Strategic Focus: Areas with high risk and high importance of contributing factors. These areas require immediate policy attention and intervention.
+
+2.	Development Priority: Areas with high risk but lower factor importance, where development efforts can help mitigate risks.
+
+3.	Monitoring: Areas with lower risk but higher factor importance, which should be monitored to ensure risks do not escalate.
+
+4.	Low-risk Group: Areas with both low risk and low factor importance, which may require minimal intervention but regular monitoring.
+
+</div>
+
+
+## Risk-Importance matrix (RIM): PESA
+
+
+
+```{r}
+ data_for_performance <- collapsed_data |> 
+  mutate(group = case_when(
+    str_detect(affiliation, "สพป.") ~ "PESA",
+    str_detect(affiliation, "สพม.") ~ "SESA"
+  )) |> 
+  inner_join(
+  precipitaion_risk_data_cleaned_aggregated |> 
+    group_by(affiliation) |> 
+    summarise(CMER = median(risk_index_df5)), by = "affiliation") |> 
+  ungroup() |> 
+  group_by(group, affiliation, term) |> 
+  summarise(vip = mean(vip),
+            CMER = mean(CMER),
+            r_squared = mean(r_squared)) |> 
+  ungroup() |> 
+  group_by(group, term) |> 
+  mutate(percent_vip = vip*100/max(vip))
+```
+
+
+```{r fig.width = 15, fig.height=10}
+# กำหนดจุดที่ต้องการให้เส้นผ่าน
+x_points <- c(-1, 50, 105)
+y_points <- c(max(data_for_performance$CMER), 0.6, 0.6)
+spline_curve <- spline(x_points, y_points, n = 100)
+spline_curve <- data.frame(x= spline_curve$x, y= spline_curve$y)
+
+x_points2 <- c(0, 25, 50)
+y_points2 <- c(0.2, 0.15, 0)
+spline_curve2 <- spline(x_points2, y_points2, n = 100)
+spline_curve2 <- data.frame(x= spline_curve2$x, y= spline_curve2$y)
+
+# สมมุติว่า data_for_performance มีคอลัมน์ x (percent_vip) และ y (CMER)
+data_for_performance2 <- data_for_performance %>%
+  filter(str_detect(affiliation, "สพป.")) |> 
+  mutate(spline_y = approx(spline_curve$x, spline_curve$y, xout = percent_vip)$y) |> 
+  mutate(y_segment = 0.4 - (0.2/100)*percent_vip) 
+
+
+# กรองเฉพาะข้อมูลที่ CMER สูงกว่าเส้น spline
+data_above_spline <- data_for_performance2 %>%
+  filter(CMER > spline_y)
+
+data_for_performance |> 
+  filter(str_detect(affiliation, "สพป.")) |> 
+  #filter(term == "Hard to Reach") |> 
+  ggplot(aes(x = percent_vip, y = CMER))+
+  geom_point(size = 3, shape = 16, alpha =0.3)+
+  geom_line(data = spline_curve,
+    aes(x = x, y = y), linetype = 3) +
+  geom_line(data = spline_curve2,
+    aes(x = x, y = y), linetype = 3) +
+   geom_segment(aes(x = 0, y = 0.4, xend = 100, yend = 0.2), linetype = 3) +  
+ # geom_hline(yintercept = 0.6, linetype = 3)+
+ # geom_vline(xintercept = 50, linetype = 3)+
+  geom_point(data = data_above_spline, aes(x = percent_vip, y = CMER), size = 3, col = "maroon", alpha = 0.7)+
+  geom_text_repel(data = data_above_spline, aes(label = affiliation), 
+  col = "maroon", family = "ChulaCharasNew", size = 2.5) +
+geom_text_repel(data = data_for_performance2 %>%
+    filter(CMER < y_segment), aes(label = affiliation), col = "grey20",
+    family = "ChulaCharasNew", size = 2,
+    min.segment.length = 10) +
+geom_text_repel(data = data_for_performance2 %>%
+    filter(CMER < spline_y & percent_vip >60), aes(label = affiliation), col = "grey20",
+    family = "ChulaCharasNew", size = 2, nudge_y = -0.01,
+    min.segment.length = 10)+
+  geom_label(x=80, y=0.77, label = "Strategic Focus",
+  family = "ChulaCharasNew", col = "maroon")+
+  geom_label(x=80, y=0.28, label = "Development Priority",
+  angle = -12,
+  family = "ChulaCharasNew")+
+  geom_label(x=60, y=0.15, label = "Monitoring",
+  family = "ChulaCharasNew")+
+  geom_label(x=12, y=0.05, label = "Low-risk",
+  family = "ChulaCharasNew")+
+    ylim(0,0.8)+
+    xlim(0,100)+
+    theme_light()+
+    theme(panel.grid = element_blank(),
+    strip.text = element_text(color = "grey20"))+
+    facet_wrap(~term)
+
+risk_matrix_data <- data_for_performance %>%
+  filter(str_detect(affiliation, "สพป.")) |> 
+  mutate(spline_y = approx(spline_curve$x, spline_curve$y, xout = percent_vip)$y) |> 
+  mutate(y_segment = 0.4 - (0.2/100)*percent_vip) |> 
+  mutate(strategic_focus = CMER > spline_y) |> 
+  arrange(desc(strategic_focus)) |> 
+  select(affiliation, CMER,term,strategic_focus) |> 
+  filter(strategic_focus == TRUE)
+```
+
+
+<div class="caption">fig 3.17: Risk-Importance matrix for PESA.</div>
+
+
+## Risk-Importance matrix (RIM): SESA
+
+```{r fig.width = 15, fig.height=10}
+
+# สมมุติว่า data_for_performance มีคอลัมน์ x (percent_vip) และ y (CMER)
+data_for_performance2 <- data_for_performance %>%
+  filter(str_detect(affiliation, "สพม.")) |> 
+  mutate(spline_y = approx(spline_curve$x, spline_curve$y, xout = percent_vip)$y) |> 
+  mutate(y_segment = 0.4 - (0.2/100)*percent_vip) 
+
+
+# กรองเฉพาะข้อมูลที่ CMER สูงกว่าเส้น spline
+data_above_spline <- data_for_performance2 %>%
+  filter(CMER > spline_y)
+
+
+
+data_for_performance |> 
+  filter(str_detect(affiliation, "สพม.")) |> 
+  #filter(term == "Hard to Reach") |> 
+  ggplot(aes(x = percent_vip, y = CMER))+
+  geom_point(size = 3, shape = 16, alpha =0.3)+
+  geom_line(data = spline_curve,
+    aes(x = x, y = y), linetype = 3) +
+  geom_line(data = spline_curve2,
+    aes(x = x, y = y), linetype = 3) +
+   geom_segment(aes(x = 0, y = 0.4, xend = 100, yend = 0.2), linetype = 3) +  
+ # geom_hline(yintercept = 0.6, linetype = 3)+
+ # geom_vline(xintercept = 50, linetype = 3)+
+  geom_point(data = data_above_spline, aes(x = percent_vip, y = CMER), size = 3, col = "maroon", alpha = 0.7)+
+  geom_text_repel(data = data_above_spline, aes(label = affiliation), 
+  col = "maroon", family = "ChulaCharasNew", size = 2.5) +
+geom_text_repel(data = data_for_performance2 %>%
+    filter(CMER < y_segment), aes(label = affiliation), col = "grey20",
+    family = "ChulaCharasNew", size = 2,
+    min.segment.length = 10) +
+geom_text_repel(data = data_for_performance2 %>%
+    filter(CMER < spline_y & percent_vip >60), aes(label = affiliation), col = "grey20",
+    family = "ChulaCharasNew", size = 2, nudge_y = -0.01,
+    min.segment.length = 10)+
+  geom_label(x=80, y=0.77, label = "Strategic Focus",
+  family = "ChulaCharasNew", col = "maroon")+
+  geom_label(x=80, y=0.28, label = "Development Priority",
+  angle = -12,
+  family = "ChulaCharasNew")+
+  geom_label(x=60, y=0.15, label = "Monitoring",
+  family = "ChulaCharasNew")+
+  geom_label(x=12, y=0.05, label = "Low-risk",
+  family = "ChulaCharasNew")+
+    ylim(0,0.8)+
+    xlim(0,100)+
+    theme_light()+
+    theme(panel.grid = element_blank(),
+    strip.text = element_text(color = "grey20"))+
+    facet_wrap(~term)
+```
+
+
+<div class="caption">fig 3.18: Risk-Importance matrix for SESA.</div>
+
+
+<!--
 
 ## 3.2.2 Insight Results: Importance Factors {.smaller}
 
@@ -1888,8 +2248,129 @@ chart = {
 
 <br>
 
-<div class="caption">fig 3.14: VIP plot for each educational service area.</div>
+<div class="caption">fig 3.17: VIP plot for each educational service area.</div>
 
 <br>
 <br>
 
+
+
+
+## 3.1.2 Descriptive results of the CMER Index (2) {.smaller .hidden}
+
+<div style="font-size: 75%;">
+
+The following figure presents a spatial risk map showing schools in Thailand with risk scores in the moderate range (0.6, 0.8] and high-risk levels (0.8, 1.0], categorized by student grade levels. Additionally, the researcher has included spatial barriers data, such as special geographic characteristics of schools (island, highland in remote areas) and the level of difficulty in accessing the school (no difficulty, hard, harder, hardest), plotted on the map as well.
+
+</div>
+
+
+```{r fig.width = 14, fig.height = 10, eval = F}
+library(rnaturalearth)
+library(sf)
+library(ggrepel)
+thailand_map <- ne_states(country = "Thailand", returnclass = "sf")
+
+school_sf <- precipitaion_risk_data |> 
+  group_by(student_level, school_lon, school_lat,school_size, type_of_hard, hard_to_reach, location, school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+            #robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach, school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(type_of_hard = factor(type_of_hard, labels=c("None","Highland in Remote Area","Island"))) |> 
+  mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
+  filter(risk_index>=0.6 & risk_index<0.8) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+p1 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry, shape = type_of_hard, col = hard_to_reach),
+          alpha = 0.3,  size = 0.8) +
+  theme_minimal() +
+  xlab("")+ylab("")+
+  facet_wrap(~student_level)+
+  theme(legend.position = "left",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_color_manual(values=c("orange","#D8A25E","#A04747","#821131"))+
+  ggtitle("Moderate Risk")+
+  guides(color = guide_legend(override.aes = list(size = 4)),  # ปรับขนาดสัญลักษณ์สี
+         shape = guide_legend(override.aes = list(size = 4)))+  # ปรับขนาด
+  labs(shape = "Geographic \n characteristics",
+        col = "Difficulty level \n in accessing the school")
+
+school_sf <- precipitaion_risk_data |> 
+  group_by(year, student_level, school_lon, school_lat,school_size, location, type_of_hard, hard_to_reach,school_name) %>% 
+  summarise(risk_index = mean(risk_index),
+           # robust_index = mean(robust_index),
+            ach_score =mean(ach_score)) %>% 
+  ungroup() %>% 
+  select(student_level, school_lon, school_lat, type_of_hard, hard_to_reach,school_size, ach_score, risk_index) |> drop_na() |> 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(student_level = fct_relevel(student_level, "p6","m3","m6")) %>% 
+  mutate(type_of_hard = factor(type_of_hard, labels=c("None","Highland in Remote Area","Island"))) |> 
+ mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
+  filter(risk_index>=0.80) %>% 
+  st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+p2 <- ggplot(data = thailand_map)+
+  geom_sf()+
+  geom_sf(data = school_sf, aes(geometry = geometry, shape = type_of_hard, col = hard_to_reach) ,
+          alpha = 0.3,  size = 2) +
+  geom_text_repel(aes(label = name, geometry = geometry), min.segment.length = 10,
+                  stat = "sf_coordinates", size =1.5, col = "grey40")+
+  theme_minimal() +
+  xlab("")+ylab("")+
+  facet_wrap(~student_level)+
+  ggtitle("High Risk")+
+  theme(legend.position = "left",
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew", size = 16))+
+  scale_color_manual(values=c("orange","#D8A25E","#A04747","#821131"))+
+  guides(color = guide_legend(override.aes = list(size = 4)),  # ปรับขนาดสัญลักษณ์สี
+         shape = guide_legend(override.aes = list(size = 4)))+  # ปรับขนาด
+  labs(shape = "Geographic \n characteristics",
+        col = "Difficulty level \n in accessing the school")
+```
+
+
+::: {.panel-tabset}
+
+## Moderate Risk School Map
+
+<center>
+
+```{r eval = F}
+p1
+```
+
+
+</center>
+
+<div class="caption">fig 3.5: Spatial Risk Map (Moderate Risk) categorized by Student Level</div>
+
+<br>
+<br>
+
+## High Risk School Map
+
+<center>
+
+```{r eval = F}
+p2
+```
+
+</center>
+
+<div class="caption">fig 3.6: Spatial Risk Map (High Risk) categorized by Student Level</div>
+
+<br>
+<br>
+
+
+:::
+-->
