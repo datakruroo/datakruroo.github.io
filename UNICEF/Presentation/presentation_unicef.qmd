@@ -2066,7 +2066,7 @@ data_for_performance |>
     aes(x = x, y = y), linetype = 3) +
   geom_line(data = spline_curve2,
     aes(x = x, y = y), linetype = 3) +
-   geom_segment(aes(x = 0, y = 0.4, xend = 100, yend = 0.2), linetype = 3) +  
+   geom_segment(aes(x = 0, y = 0.6, xend = 100, yend = 0.2), linetype = 3) +  
  # geom_hline(yintercept = 0.6, linetype = 3)+
  # geom_vline(xintercept = 50, linetype = 3)+
   geom_point(data = data_above_spline, aes(x = percent_vip, y = CMER), size = 3, col = "maroon", alpha = 0.7)+
@@ -2082,8 +2082,10 @@ geom_text_repel(data = data_for_performance2 %>%
     min.segment.length = 10)+
   geom_label(x=80, y=0.77, label = "Strategic Focus",
   family = "ChulaCharasNew", col = "maroon")+
-  geom_label(x=80, y=0.28, label = "Development Priority",
-  angle = -12,
+ geom_label(x=80, y=0.77, label = "Strategic Focus",
+  family = "ChulaCharasNew", col = "maroon")+
+  geom_label(x=87, y=0.28, label = "Development Priority",
+  angle = -25,
   family = "ChulaCharasNew")+
   geom_label(x=60, y=0.15, label = "Monitoring",
   family = "ChulaCharasNew")+
@@ -2141,7 +2143,7 @@ data_for_performance |>
     aes(x = x, y = y), linetype = 3) +
   geom_line(data = spline_curve2,
     aes(x = x, y = y), linetype = 3) +
-   geom_segment(aes(x = 0, y = 0.4, xend = 100, yend = 0.2), linetype = 3) +  
+   geom_segment(aes(x = 0, y = 0.6, xend = 100, yend = 0.2), linetype = 3) +  
  # geom_hline(yintercept = 0.6, linetype = 3)+
  # geom_vline(xintercept = 50, linetype = 3)+
   geom_point(data = data_above_spline, aes(x = percent_vip, y = CMER), size = 3, col = "maroon", alpha = 0.7)+
@@ -2157,8 +2159,8 @@ geom_text_repel(data = data_for_performance2 %>%
     min.segment.length = 10)+
   geom_label(x=80, y=0.77, label = "Strategic Focus",
   family = "ChulaCharasNew", col = "maroon")+
-  geom_label(x=80, y=0.28, label = "Development Priority",
-  angle = -12,
+  geom_label(x=87, y=0.28, label = "Development Priority",
+  angle = -25,
   family = "ChulaCharasNew")+
   geom_label(x=60, y=0.15, label = "Monitoring",
   family = "ChulaCharasNew")+
