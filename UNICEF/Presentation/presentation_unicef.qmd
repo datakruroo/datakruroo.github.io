@@ -654,13 +654,13 @@ The analysis results are divided into two parts:
 
 **Chart Key Elements:**
 
-1. Y-Axis: Shows the indicators used for the analysis
+- Y-Axis: Shows the indicators used for the analysis
 
-2. X-Axis (Horizontal Axis): Shows the loading values for each indicator, which explain how strongly each variable contributes to each Principal Component (PC). Values closer to -1 or 1 indicate stronger correlations, while values close to 0 suggest weak or no correlation.
+- X-Axis (Horizontal Axis): Shows the loading values for each indicator, which explain how strongly each variable contributes to each Principal Component (PC). Values closer to -1 or 1 indicate stronger correlations, while values close to 0 suggest weak or no correlation.
 
-3. Each Block (PC1 - PC4): Represents the different Principal Components. For each component, reader can see how each variable is related to it. 
+- Each Block (PC1 - PC4): Represents the different Principal Components. For each component, reader can see how each variable is related to it. 
 
-4. Color of the Bars: Represents the direction of the correlation, red color for negative correlation (values below 0), and blue color for positive correlation (value above 0). A positive value (blue) indicates that as the indicator increases, the Principal Component increases. A negative value (red) means that as the indicator increases, the Principal Component decreases.
+- Color of the Bars: Represents the direction of the correlation, red color for negative correlation (values below 0), and blue color for positive correlation (value above 0). A positive value (blue) indicates that as the indicator increases, the Principal Component increases. A negative value (red) means that as the indicator increases, the Principal Component decreases.
 
 
 
@@ -2034,10 +2034,10 @@ PESA_p + sesa_p
 ```
 
 
-```{r fig.width = 15, fig.height=10}
+```{r fig.width = 16, fig.height=10}
 # กำหนดจุดที่ต้องการให้เส้นผ่าน
-x_points <- c(0, 50, 105)
-y_points <- c(0.7, 0.6, 0.6)
+x_points <- c(10, 50, 105)
+y_points <- c(0.75, 0.6, 0.58)
 spline_curve <- spline(x_points, y_points, n = 100)
 spline_curve <- data.frame(x= spline_curve$x, y= spline_curve$y)
 
@@ -2062,7 +2062,7 @@ data_for_performance |>
   #filter(term == "Hard to Reach") |> 
   ggplot(aes(x = percent_vip, y = CMER))+
   geom_point(size = 3, shape = 16, alpha =0.3)+
-  geom_line(data = spline_curve,
+  geom_line(data = spline_curve, col = "maroon",
     aes(x = x, y = y), linetype = 3) +
   geom_line(data = spline_curve2,
     aes(x = x, y = y), linetype = 3) +
@@ -2093,7 +2093,7 @@ geom_text_repel(data = data_for_performance2 %>%
   family = "ChulaCharasNew")+
     ylim(0,0.8)+
     xlim(0,100)+
-    xlab("\n Relative Importance") +
+    xlab("\n Relative Importance (%)") +
     ylab("\n Climate-Map Educational Risk (CMER) \n")+
     theme_light()+
     theme(panel.grid = element_blank(),
@@ -2120,7 +2120,7 @@ risk_matrix_data <- data_for_performance %>%
 
 <center>
 
-```{r fig.width = 15, fig.height=10}
+```{r fig.width = 16, fig.height=10}
 # สมมุติว่า data_for_performance มีคอลัมน์ x (percent_vip) และ y (CMER)
 data_for_performance2 <- data_for_performance %>%
   filter(str_detect(affiliation, "สพม.")) |> 
@@ -2139,7 +2139,7 @@ data_for_performance |>
   #filter(term == "Hard to Reach") |> 
   ggplot(aes(x = percent_vip, y = CMER))+
   geom_point(size = 3, shape = 16, alpha =0.3)+
-  geom_line(data = spline_curve,
+  geom_line(data = spline_curve, col = "maroon",
     aes(x = x, y = y), linetype = 3) +
   geom_line(data = spline_curve2,
     aes(x = x, y = y), linetype = 3) +
@@ -2168,7 +2168,7 @@ geom_text_repel(data = data_for_performance2 %>%
   family = "ChulaCharasNew")+
     ylim(0,0.8)+
     xlim(0,100)+
-    xlab("\n Relative Importance") +
+    xlab("\n Relative Importance (%)") +
     ylab("\n Climate-Map Educational Risk (CMER) \n")+
     theme_light()+
     theme(panel.grid = element_blank(),
