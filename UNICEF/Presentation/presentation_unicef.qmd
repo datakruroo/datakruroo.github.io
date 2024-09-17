@@ -1799,7 +1799,7 @@ collapsed_data <- tidy_results |>
   ungroup()
 ```
 
-```{r , eval = F}
+```{r}
 counts_PESA <- collapsed_data |> 
   mutate(area = ifelse(str_detect(affiliation, "สพป."), "PESA","SESA")) |> 
   group_by(area, affiliation) |> 
@@ -1888,17 +1888,19 @@ plot(st_geometry(school_sf_cartogram))
 ```
 
 ```{r fig.height = 14, fig.width = 20}
-school_sf_label <- school_sf |> ungroup() |> group_by(term) |> 
+school_sf_label_carto <- school_sf_cartogram |> ungroup() |> 
+  filter(str_detect(affiliation, "สพป.")) |> 
+  group_by(term) |> 
   mutate(relative = vip*100/(max(vip))) |> 
   ungroup() |> 
-  filter(relative > 40) |> 
+  filter(relative > 50) |> 
   group_by(province, affiliation) |> 
   slice(1) |> 
   ungroup()
 
 cartogram <- ggplot(school_sf_cartogram) +
   geom_sf(aes(fill = term), linewidth = 0, alpha = 0.9) +
-  geom_sf_text(data = school_sf_label, aes(geometry = geometry, label = affiliation), size = 2, color = "grey20", check_overlap = TRUE,
+  geom_sf_text(data = school_sf_label_carto, aes(geometry = geometry, label = affiliation), size = 2, color = "grey20", check_overlap = TRUE,
   family = "ChulaCharasNew")+
   theme_minimal() +
   labs(fill = "Non-Climate Factor")+
@@ -1921,7 +1923,15 @@ cartogram <- ggplot(school_sf_cartogram) +
           subtitle = "Cartogram Representation")
 
 
-
+school_sf_label <- school_sf |> ungroup() |> 
+  filter(str_detect(affiliation, "สพป.")) |> 
+  group_by(term) |> 
+  mutate(relative = vip*100/(max(vip))) |> 
+  ungroup() |> 
+  filter(relative > 50) |> 
+  group_by(province, affiliation) |> 
+  slice(1) |> 
+  ungroup()
 
 # รวมขอบเขตตาม affiliation
 affiliation_boundaries <- school_sf %>%
