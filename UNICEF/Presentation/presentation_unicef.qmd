@@ -40,7 +40,7 @@ include-in-header:
 ```{r echo = F}
 library(tidyverse)
 library(gt)
-load("/Users/choat/Documents/GitHub/unicef/effect_data.Rdata")
+load("/Users/choat/Documents/GitHub/unicef/Presentation/cartogram.RData")
 ```
 
 # 1. Outline {.smaller auto-animate="true" background-color="#BEC6A0" background-image="img/water.png" background-opacity="0.1"}
@@ -923,10 +923,14 @@ p1/p2
 
 ::: {.column width="40%"}
 
-```{r fig.height = 9, fig.width = 6}
+```{r}
 library(rnaturalearth)
 library(sf)
 library(ggrepel)
+```
+
+```{r fig.height = 9, fig.width = 6}
+
 
 rivermap <- st_read("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/งานวิจัย/unicef/data/ข้อมูลแผนที่/MainBasin_ONWR_Law_WGS84/MainBasin_ONWR_Law_WGS84.shp", options = "ENCODING=UTF-8", quiet = TRUE) 
 
@@ -944,6 +948,8 @@ school_sf <- precipitaion_risk_data |>
  mutate(hard_to_reach = factor(hard_to_reach, labels=c("None","Hard","Harder","Hardest"))) |> 
   filter(risk_index>=0.80) %>% 
   st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
+
+
 
 river_contour_p <- rivermap |> 
   ggplot() +
@@ -971,7 +977,6 @@ river_contour_p <- rivermap |>
 
 river_contour_p
 ```
-
 
 <div class="caption">fig 3.6: Schools with high CMER levels over the 22 river basins map (2017-2021).</div>
 
@@ -1002,10 +1007,7 @@ river_contour_p
 
 
 
-```{r create_map, echo = F}
-library(rnaturalearth)
-library(sf)
-library(ggrepel)
+```{r create_map, echo = F, eval = F}
 thailand_map <- ne_states(country = "Thailand", returnclass = "sf")
 
 school_sf <- precipitaion_risk_data |> 
@@ -1022,7 +1024,7 @@ school_sf <- precipitaion_risk_data |>
   st_as_sf(coords = c("school_lon", "school_lat"), crs = 4326)
 ```
 
-```{r megeing_data_for_map, echo = F}
+```{r megeing_data_for_map, echo = F, eval = F}
 precipitaion_risk_data_cleaned_aggregated <- precipitaion_risk_data_cleaned |> 
     group_by(student_level,
              grid_id, grid_lon, grid_lat,
@@ -1191,9 +1193,9 @@ river_contour_p <- rivermap |>
        col = "Difficulty level \n in accessing the school")+
         facet_wrap(~year)
 
+
 river_contour_p
 ```
-
 
 <div class="caption">fig 3.7: Schools with high CMER levels over the 22 river basins map categorized by year.</div>
 
@@ -1336,7 +1338,7 @@ pesa_risk
 
 
 
-```{r eval = F}
+```{r}
 pesa_data_risk <- precipitaion_risk_data_cleaned_aggregated |> 
   filter(str_detect(affiliation, "สพป."))
 pesa_data_risk <- pesa_data_risk |> 
@@ -1773,7 +1775,7 @@ collapsed_data |>
 
 <center>
 
-```{r collapsed_data_creating}
+```{r collapsed_data_creating, eval = F}
 collapsed_data <- tidy_results |> 
   unnest(c(data)) |> 
   select(province, amphor,affiliation, term, vip,r_squared ) |> 
@@ -1797,7 +1799,7 @@ collapsed_data <- tidy_results |>
   ungroup()
 ```
 
-```{r}
+```{r , eval = F}
 counts_PESA <- collapsed_data |> 
   mutate(area = ifelse(str_detect(affiliation, "สพป."), "PESA","SESA")) |> 
   group_by(area, affiliation) |> 
@@ -1826,7 +1828,9 @@ plot_data <-  collapsed_data |>
 
 # กำหนดระดับของ term ตามลำดับที่จัดเรียง
 plot_data$term <- factor(plot_data$term, levels = terms_ordered)
+```
 
+```{r}
 ggplot(plot_data, aes(x = term, y = n, fill = area)) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_fill_manual(values = c("steelblue", "maroon")) +
@@ -1873,11 +1877,51 @@ school_sf <-  collapsed_data |>
   group_by(affiliation) |> 
   slice_max(percent_vip) |> 
   inner_join(shapefile_data, by = c("amphor" = "ADM2_TH"))  # เปลี่ยน join_by เป็น c()
-school_sf_label <- school_sf |> 
-  filter(r_squared > 10) |> 
+```
+
+```{r generate_cartogram, eval = F}
+school_sf_merc <- st_transform(school_sf |> st_as_sf() , 3857)
+school_sf_merc_cartogram <- cartogram_cont(school_sf_merc, "vip", itermax = 5)
+
+school_sf_cartogram <- st_transform(school_sf_merc_cartogram, st_crs(school_sf |> st_as_sf()))
+plot(st_geometry(school_sf_cartogram))
+```
+
+```{r fig.height = 14, fig.width = 20}
+school_sf_label <- school_sf |> ungroup() |> group_by(term) |> 
+  mutate(relative = vip*100/(max(vip))) |> 
+  ungroup() |> 
+  filter(relative > 40) |> 
   group_by(province, affiliation) |> 
   slice(1) |> 
   ungroup()
+
+cartogram <- ggplot(school_sf_cartogram) +
+  geom_sf(aes(fill = term), linewidth = 0, alpha = 0.9) +
+  geom_sf_text(data = school_sf_label, aes(geometry = geometry, label = affiliation), size = 2, color = "grey20", check_overlap = TRUE,
+  family = "ChulaCharasNew")+
+  theme_minimal() +
+  labs(fill = "Non-Climate Factor")+
+  xlab("") + ylab("") +
+  theme(legend.position = "right",
+        text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_blank(),
+        panel.grid = element_blank()) +
+    scale_fill_manual(values = c(
+    "Infrastructure & Connectivity" = "#1f78b4",
+    "Poor Family" = "#33a02c",
+    "School Distance" = "#e31a1c",
+    "School Size" = "#ff7f00",
+    "Student Level" = "#6a3d9a",
+    "Hard to Reach" = "#b15928"
+  ))+
+  #scale_alpha_continuous(breaks=c(0,8,20), range=c(0.01,1),
+  #                      guide = "none")+
+  ggtitle("The most importance factor associated \n with the CMER Index in each PESA.",
+          subtitle = "Cartogram Representation")
+
+
+
 
 # รวมขอบเขตตาม affiliation
 affiliation_boundaries <- school_sf %>%
@@ -1910,7 +1954,7 @@ PESA_p <- ggplot(data = thailand_map) +
   #scale_alpha_continuous(breaks=c(0,8,20), range=c(0.01,1),
   #                      guide = "none")+
   labs(alpha = "R-Squared level")+
-  ggtitle("The most importance factor associated \n with the CMER Index of each PESA.")
+  ggtitle("The most importance factor associated \n with the CMER Index in each PESA.")
 
 ### --- สพม.
 
@@ -1961,9 +2005,9 @@ sesa_p <- ggplot(data = thailand_map) +
     "Student Level" = "#6a3d9a",
     "Hard to Reach" = "#b15928"
   ))+
-  ggtitle("The most importance factor associated \n with the CMER Index of each SESA.")
+  ggtitle("The most importance factor associated \n with the CMER Index in each SESA.")
 
-PESA_p + sesa_p
+PESA_p + cartogram + sesa_p
 ```
 
 
