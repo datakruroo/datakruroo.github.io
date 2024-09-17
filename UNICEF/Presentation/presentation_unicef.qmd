@@ -1998,13 +1998,13 @@ PESA_p + sesa_p
 
 **Key Groups in the Matrix:**
 
-- Strategic Focus: Areas with high risk and high importance of contributing factors. These areas require immediate policy attention and intervention.
+- **Strategic Focus:** Areas with high risk and high importance of contributing factors. These areas require immediate policy attention and intervention.
 
-- Development Priority: Areas with high risk but lower factor importance, where development efforts can help mitigate risks.
+- **Development Priority:** Areas with moderate to high risk but where factors have lower importance or influence on the overall risk, yet targeted development efforts can effectively reduce potential negative impacts and improve overall resilience.
 
-- Monitoring: Areas with lower risk but higher factor importance, which should be monitored to ensure risks do not escalate.
+- **Monitoring:** Areas with lower risk but higher factor importance, which should be monitored to ensure risks do not escalate.
 
-- Low-risk Group: Areas with both low risk and low factor importance, which may require minimal intervention but regular monitoring.
+- **Low-risk Group:** Areas with both low risk and low factor importance, which may require minimal intervention but regular monitoring.
 
 </div>
 
@@ -2037,8 +2037,8 @@ PESA_p + sesa_p
 ```{r fig.width = 16, fig.height=10}
 # กำหนดจุดที่ต้องการให้เส้นผ่าน
 x_points <- c(10, 50, 105)
-y_points <- c(0.75, 0.6, 0.58)
-spline_curve <- spline(x_points, y_points, n = 100)
+y_points <- c(0.70, 0.6, 0.48)
+spline_curve <- spline(x_points, y_points, n = 200)
 spline_curve <- data.frame(x= spline_curve$x, y= spline_curve$y)
 
 x_points2 <- c(0, 25, 50)
