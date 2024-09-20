@@ -56,7 +56,6 @@ $$
 
 2.  Slope: อัตราการเปลี่ยนแปลงของ y เมื่อเทียบกับ x
 
-
 ## Linear Probability Model
 
 ```{r}
@@ -64,8 +63,9 @@ library(tidyverse)
 data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/เอกสารประกอบการสอน/2758615/EDA using R/learning_data.csv")
 glimpse(data)
 
+
 new_data <- data |> 
-  mutate(research_score = ifelse(research_score>70, 1,0))
+  mutate(research_score = ifelse(research_score<55, 1,0))
 ## research_score_hat = -0.096 + 0.014*concepts
 
 new_data |> 
@@ -74,12 +74,9 @@ new_data |>
   geom_abline(intercept = -0.096, slope = 0.014)
 ```
 
-
 ## 2. Binary Logistic Regression
 
 Logistic regression is a statistical model that in its basic form uses a logistic function to model a binary dependent variable.
-
-
 
 ### 2.1 Model
 
@@ -87,7 +84,7 @@ Logistic regression is a statistical model that in its basic form uses a logisti
 
 $$
 P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_n X_n)}}
-$$ 
+$$
 
 **Logit Function**
 
@@ -131,7 +128,6 @@ data |>
     count(class_res_score)
 ```
 
-
 ```{r}
 multinom_data <-  data |> 
   mutate(class_res_score = case_when(
@@ -140,7 +136,6 @@ multinom_data <-  data |>
     research_score >= 60 & research_score <80 ~"moderate level"
   ))
 ```
-
 
 แบ่งชุดข้อมูล
 
@@ -156,7 +151,6 @@ train_data |>
   select(-research_score,-gender, -department) |> 
   drop_na()
 ```
-
 
 กำหนด model spec
 
@@ -175,7 +169,6 @@ multinom_spec_h2o <- multinom_reg(penalty = tune()) |>
   set_engine("h2o") |> 
   set_mode("classification")
 ```
-
 
 กำหนด preprocess model
 
@@ -196,128 +189,6 @@ smote_recipe |> prep() |>
   juice() |> 
   count(class_res_score)
 ```
-
-สร้าง workflow
-
-```{r}
-library(h2o)
-library(agua)
-multinom_wf <- workflow() |> 
-  add_recipe(base_recipe) |> 
-  add_model(multinom_spec)
-
-multinom_wf_nnet <- workflow() |> 
-  add_recipe(base_recipe) |> 
-  add_model(multinom_spec_nnet)
-
-
-multinom_glmnet_smote_wf <- workflow() |> 
-  add_recipe(smote_recipe) |> 
-  add_model(multinom_spec)
-
-multinom_glmnet_h2o_wf <- workflow() |> 
-  add_recipe(smote_recipe) |> 
-  add_model(multinom_spec_h2o)
-
-```
-
-
-tune hyperparameters
-
-```{r}
-set.seed(123)
-folds <- vfold_cv(train_data,  v = 5 ,repeats = 3, strata = "class_res_score")
-library(future)
-plan(multisession, workers = 10)
-```
-
-
-```{r}
-multinom_tuned_results <- multinom_wf |> 
-  tune_grid(
-    resamples = folds,
-    grid = 50, ## grid_latin_hypercube
-    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
-    control = control_grid(save_pred = TRUE)
-  )
-
-
-multinom_nnet_tuned_results <- multinom_wf_nnet |> 
-   tune_grid(
-    resamples = folds,
-    grid = 50, ## grid_latin_hypercube
-    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
-    control = control_grid(save_pred = TRUE)
-  )
-
-multinom_smote_tuned_results <- multinom_glmnet_smote_wf |> 
-  tune_grid(
-    resamples = folds,
-    grid = 50, ## grid_latin_hypercube
-    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
-    control = control_grid(save_pred = TRUE)
-  )
-h2o.init(strict_version_check=FALSE)
-multinom_h2o_tuned_results  <- multinom_glmnet_h2o_wf  |> 
-  tune_grid(
-    resamples = folds,
-    grid = 50, ## grid_latin_hypercube
-    metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
-    control = control_grid(save_pred = TRUE,
-    allow_par = FALSE)
-
-  )
-
-
- multinom_tuned_results |> collect_metrics() |> 
-  mutate(model = "glmnet") 
-   multinom_tuned_results |> autoplot()
-
-multinom_nnet_tuned_results |> collect_metrics() |> 
-  mutate(model = "nnet")
-  
-
-multinom_smote_tuned_results |> collect_metrics() 
-
-show_best(multinom_tuned_results, metric = "precision", n = 5)
-show_best(multinom_nnet_tuned_results, metric = "precision", n = 5)
-show_best(multinom_smote_tuned_results, metric = "precision", n = 5)
-```
-
-
-```{r}
-multinom_tuned_results |> 
-  collect_predictions() |> 
-  filter(abs(penalty- 0.0785)< 0.0001) |> 
-  conf_mat(truth = class_res_score, estimate = .pred_class)
-
-multinom_nnet_tuned_results |> 
-  collect_predictions() |> 
-  filter(abs(penalty-0.172)< 0.001) |> 
-  conf_mat(truth = class_res_score, estimate = .pred_class)
-
-
-multinom_smote_tuned_results |> 
-  collect_predictions() |> 
-  filter(.config == "Preprocessor1_Model41") |> 
-    conf_mat(truth = class_res_score, estimate = .pred_class)
-```
-
-เลือก hyperparameter ที่ดีที่สุดไปใช้
-
-```{r}
-best_glmnet <- select_best(multinom_smote_tuned_results, metric = "f_meas")
-
-final_glmnet <- multinom_glmnet_smote_wf |> 
-  finalize_workflow(best_glmnet) |> 
-  last_fit(split, metrics=metric_set(roc_auc, f_meas, sens, spec, precision))
-final_glmnet |> collect_metrics()
-
-final_glmnet |> collect_predictions() |> 
-  conf_mat(truth = class_res_score, estimate = .pred_class)
-```
-
-
 
 
 
@@ -343,7 +214,6 @@ $$
 
 4.  Linearity between log Odds and predictors:
 
-
 ## 4. Regularized Regression
 
 เป็นเทคนิคที่ใช้ในการลด overfitting โดยการเพิ่มค่า penalty ในการคำนวณค่าของพารามิเตอร์ในโมเดล โดยที่มีสองวิธีการหลัก ๆ คือ L1 และ L2 regularization สามารถนำไปใช้ได้ทั้งใน linear regression และ logistic regression
@@ -362,15 +232,13 @@ $$
 
 อัลกริทึมสำหรับสร้างต้นไม้มีหลายตัว หัวข้อนี้จะกล่าวถึง CART ซึ่งเป็นอัลกอริทึมทั่วไปที่ใช้ในการสร้าง decision tree ที่ใช้ในการทำนายทั้ง regression และ classification
 
-
 ### 5.2 Classification and Regression Trees (CART)
 
 CART เป็นการสร้างพื้นที่ปิดล้อมรูปสี่เหลี่ยมที่ไม่ทับซ้อนกันเพื่อแบ่งส่วนของข้อมูลภายใน feature space ออกเป็นส่วนย่อย ๆ โดยการแบ่งแต่ละครั้งจะทำให้เกิดส่วนย่อยใหม่ขึ้น 2 ส่วน และดำเนินการแบ่งพื้นที่ดังกล่าวทวนซ้ำไปเรื่อย ๆ จนกว่าจะถึงจุดที่หยุดกระบวนการ เรียกกระบวนการแบ่งส่วนของพื้นที่ดังกล่าวว่า binary recursive partitioning
 
-
 #### 5.2.1 Classification Tree with CART
 
-decision tree จะเลือกแบ่งพื้นที่ภายใน feature space ที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำสุด 
+decision tree จะเลือกแบ่งพื้นที่ภายใน feature space ที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำสุด
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-2146096965.png){width="70%"}
 
@@ -378,8 +246,7 @@ Impurity ที่มักใช้ในการคำนวณคือ Gini
 
 $$
 \text{Gini Impurity} = \sum_{i=1}^{k}p_i(1-p_i)  = 1 - \sum_{i=1}^{k} p_i^2
-$$
-$$
+$$ $$
 \text{Entropy} = -\sum_{i=1}^{k}p_i\log_2(p_i)
 $$
 
@@ -393,18 +260,13 @@ $$
 
 decision tree จะเลือกตัวแปรและจุดแบ่งที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำที่สุด เพราะนั่นจะหมายถึงตัวแปรและจุดแบ่งดังกล่าวจะทำให้ decision tree สามารถทำนายค่าของตัวแปรตามได้ดีที่สุด จากรูปด้านล่างแสดงการเปรียบเทียบค่า total impurity จากการแบ่ง 3 แบบคือ การแบ่งด้วย Default, Housing และ Loan ซึ่งจะเห็นว่าการแบ่งด้วย Housing ให้ค่า impurity ต่ำที่สุด ดังนั้นการแบ่ง Housing ดังในรูปจึงถูกเลือกเป็น partition ตัวแรกของอัลกอริทึม และจะเรียก Housing ว่า Root node
 
-
-
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1755337911.png){width="70%"}
 
-
 จากการคำนวณ impurity ด้วย Gini index ข้างต้นจะเห็นว่า Housing เป็นตัวแปรอิสระที่ทำให้ impurity โดยรวมของการแบ่งส่วนย่อยทั้งสองส่วนมีค่าต่ำที่สุด จากเงื่อนไขในตัวอย่างที่กำหนดข้างต้น Housing จึงจะเป็นตัวแปรอิสระที่ถูกเลือกเป็น root node ก่อน ขั้นตอนถัดมาของอัลกอริทึมคือการพิจารณาหา internal nodes ที่จะแบ่งส่วนข้อมูลภายใต้เงื่อนไขของ root node แบ่งไว้ข้างต้น กล่าวง่าย ๆ คือ หาตัวแปรอิสระตัวอื่นมาแบ่งข้อมูลในแต่ละกิ่งของ root node ต่อ
-
 
 รูปด้านล่างแสดงการเปรียบเทียบ impurity ของตัวแปรตาม (deposit) ที่เกิดขึ้นจากการแบ่งส่วนข้อมูลภายใต้เงื่อนไขที่ Housing = Yes จากรูปจะเห็นว่าเมื่อใช้ Default เป็นตัวแบ่งจะได้ค่า impurity เท่ากับ 0.9731 แต่ถ้าใช้ Loan เป็นตัวแบ่งจะได้ค่า impurity เป็น 0.1420 ระหว่างตัวแปรอิสระสองตัวนี้ผู้อ่านคิดว่าควรเลือกตัวแปรอิสระใดมาเป็น internal node ในตำแหน่งดังกล่าว
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1494665973.png)
-
 
 #### 5.2.2 Regression Tree with CART
 
@@ -412,9 +274,7 @@ decision tree จะเลือกตัวแปรและจุดแบ่
 
 $$
 \text{SSE} = \sum_{i=1}^{n}(y_i - \hat{y})^2
-$$
-![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
-
+$$ ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
 
 เป้าหมายของอัลกอริทึม decision tree คือการจุดตัดที่ทำให้ค่า Total SSE ดังกล่าวมีค่าต่ำที่สุด ซึ่งจะหมายความว่าการแบ่งส่วนย่อยนั้นสามารถสร้าง decision tree ที่ทำนายค่าของตัวแปรตามได้ใกล้เคียงค่าจริงมากที่สุดเท่าที่จะเป็นไปได้
 
@@ -424,9 +284,7 @@ $$
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-1.png)
 
-
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-2.png)
-
 
 จากนั้นทำการหาจุดแบ่งต่อจำแนกตามฝั่งซ้ายและฝั่งขวาของจุดตัดแรก
 
@@ -436,23 +294,122 @@ $$
 
 การดำเนินการตามอัลกอริทึมข้างต้นจะดำเนินการทวนซ้ำไปเรื่อย ๆ จนกระทั่งค่า information gain ที่ได้จะมีค่าน้อยลู่เข้าสู่ 0 ซึ่งหมายความว่าโมเดลไม่สามารถเรียนรู้สารสนเทศใด ๆ จากข้อมูลได้เพิ่มเติมแล้ว รูปด้านล่างแสดงโมเดลทำนายภายหลังจากอัลกอริทึมดังกล่าวหยุดการดำเนินการทวนซ้ำแล้ว จะเห็นว่าการแบ่งส่วนย่อยตามอัลกอริทึม recursive binary partitioning ดังกล่าวทำให้ได้โมเดลทำนายที่สามารถเรียนรู้ความสัมพันธ์เชิงเส้นโค้งที่พบในข้อมูลได้อย่างมีประสิทธิภาพ
 
-
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-6-1.png)
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-6-2.png)
 
-
 ### 5.3 Hyperparameters สำหรับ decision tree
 
-1. `tree_depth`: จำนวนระดับของ decision tree นับตั้งแต่ root note ถึง leaf node
+1.  `tree_depth`: จำนวนระดับของ decision tree นับตั้งแต่ root note ถึง leaf node
 
-2. `min_n`: จำนวนตัวอย่างขั้นต่ำที่ต้องมีใน terminal node
+2.  `min_n`: จำนวนตัวอย่างขั้นต่ำที่ต้องมีใน terminal node
 
-3. `cost_complexity`: ค่า penalty ที่ใช้ชดเชย impurity หรือ Total SSE ของ decision tree การทำ penaty ใน tree จะช่วยลดความเสี่ยงที่จะเกิด overfitting
+3.  `cost_complexity`: ค่า penalty ที่ใช้ชดเชย impurity หรือ Total SSE ของ decision tree การทำ penaty ใน tree จะช่วยลดความเสี่ยงที่จะเกิด overfitting
 
 $$
 Regularized \ Error = \text{Impurity} + \alpha \times \text{Tree Depth}
 $$
+
+### 5.4 Decision tree (CART) using tidymodels
+
+```{r}
+data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/เอกสารประกอบการสอน/2758615/EDA using R/learning_data.csv")
+glimpse(data)
+
+new_data <- data |> 
+  mutate(research_score = ifelse(research_score > 80, 1,0)) %>%  ## ทำนายความสำเร็จ
+  mutate(research_score = factor(research_score, levels=c(1,0), labels=c("success","not_success")))
+new_data %>% count(research_score)
+```
+
+```{r}
+split <- initial_split(new_data, prop = 0.8, strata = research_score)
+train_data <- training(split)
+test_data <- testing(split)
+glimpse(train_data)
+summary(train_data)
+```
+
+```{r}
+library(themis)
+library(future)
+tidymodels_prefer()
+plan(multisession, workers = 10)
+
+## model speucification
+dt_spec <- decision_tree(tree_depth = tune(),
+                         min_n = tune(),
+                         cost_complexity = tune()) |> 
+  set_engine("rpart") |> 
+  set_mode("classification")
+
+## preprocessing model
+dt_rec <- recipe(research_score ~ ., data = train_data) |> 
+  update_role(student_id, new_role = "id") %>% 
+  step_rm(department, gender) %>% 
+  step_impute_median(cheat_index) %>% 
+  step_adasyn(research_score)
+
+dt_rec %>% prep() %>% juice() %>% count(research_score)
+
+## workflow
+dt_wf <- workflow() %>% 
+  add_recipe(dt_rec) %>% 
+  add_model(dt_spec)
+
+set.seed(123)
+folds <- vfold_cv(train_data , v=5, repeats = 3, strata = "research_score")
+
+dt_tuned_results<- dt_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = 50,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+    )
+
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") %>% pull(.config)
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") 
+
+## confusion matrix
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config == best_models[2]) %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+
+## roc curve
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config %in% best_models) %>% 
+  group_by(.config) %>% 
+  roc_curve(truth = research_score, .pred_success) %>% 
+  ggplot(aes(x = 1-specificity, y = sensitivity, color = .config))+
+  geom_line()+
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed")
+
+## finalized model
+dt_final <- dt_wf %>% 
+  finalize_workflow(best_models[1,]) %>% 
+  last_fit(split,
+          metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+## performance in training set
+dt_tuned_results %>% collect_metrics() %>% 
+  filter(.config == best_models[1]) %>% 
+  select(.metric, mean)
+
+## performance in test set
+dt_final %>% collect_metrics()
+```
+
+
+
+
+
+
+
+
+
+
+
 
 ```{r message = F, warning = F}
 library(tidyverse)
@@ -478,19 +435,396 @@ fit2$fit %>% rpart.plot(main = "min_n=10, cost_complexity = 10^-3")
 fit3$fit %>% rpart.plot(main = "min_n=10, cost_complexity = 10^-2")
 ```
 
+
+### 5.5 rpart plots
+
+decision tree เป็นอัลกอริทึมที่มีจุดเด่นนอกจากด้านความยืดหยุ่นแล้วยังแปลและนำเสนอผลได้ง่ายด้วย ผลลัพธ์ของ decision tree จะอยู่ในรูปแบบต้นไม้ที่แสดงเงื่อนไขหรือการแบ่งข้อมูลในตัวแปรอิสระ ที่สัมพันธ์กับผลลัพธ์หรือค่าสังเกตของตัวแปรตามที่สนใจ
+
+reference: http://www.milbo.org/rpart-plot/prp.pdf
+
+```{r}
+install.packages("rpart.plot")
+library(rpart.plot)
+dt_final %>% 
+  extract_fit_engine() %>%
+  rpart.plot()
+```
+
+```{r}
+dt_spec2 <- decision_tree(tree_depth = 10,
+                         min_n = 5) |> 
+  set_engine("rpart") |> 
+  set_mode("classification")
+
+
+dt_wf2 <- workflow() %>%
+  add_model(dt_spec2) %>%
+  add_recipe(dt_rec)
+
+dt_wf2 %>% 
+  fit(data = train_data)->fit2
+fit2 %>% extract_fit_engine() %>% 
+  rpart.plot(type = 2, extra = 0, under = T,
+              clip.right.labs = FALSE, branch = .3)
+```
+
+
+```{r}
+
+final_tree %>% extract_fit_engine() %>% 
+  rpart.plot(type = 2, extra = 0, under = T,
+              clip.right.labs = FALSE, branch = .3)
+```
+
+
+### 5.5 Conditional Inference Trees
+
+Conditional Inference Trees หรือ ctree เป็นอัลกอริทึมที่ใช้การทำนายค่าของตัวแปรตามโดยการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกัน โดยการแบ่งข้อมูลในแต่ละระดับของ decision tree จะใช้การทำสถิติเพื่อคำนวณค่า p-value ของการแบ่งข้อมูลในแต่ละระดับ โดยที่ p-value ที่มีค่าน้อยกว่าค่าที่กำหนดจะถูกเลือกให้เป็นจุดแบ่งข้อมูลในระดับนั้น
+
+ลักษณะสำคัญของ Ctree
+
+- การเลือกตัวแปรที่ใช้แบ่งข้อมูล จะเลือกตัวแปรอิสระที่มีความสัมพันธ์อย่างมีนัยสำคัญทางสถิติกับตัวแปรตาม ทั้งนี้การทดสอบนัยสำคัญระหว่างจะใช้วิธีการแบบ non-parametric ที่เรียกว่า permutation tests หลักการของ permutation test จะกล่าวภายหลัง ผลลัพธ์ที่ได้จากขั้นตอนนี้จะทำให้ได้ p-value ที่แสดงนัยสำคัญของตัวแปรอิสระแต่ละตัว ตัวแปรอิสระไหนที่มี p-value ต่ำสุดจะถูกเลือกมาเป็น node ของ decision tree 
+
+
+**permutation test**
+
+สมมุติว่ามี Xs เป็น categorical variable แบบสองกลุ่ม และมี y เป็นค่าต่อเนื่อง
+
+- แบ่ง y ออกตามกลุ่มจริงของ x จากนั้นหาค่าเฉลี่ยของ y ในแต่ละกลุ่ม เรียกค่าเฉลี่ยนี้ว่า true difference = 0
+
+- ผสม y เข้าด้วยกัน จากนั้นสุ่ม y ออกมาจำนวนหนึ่งแล้วแบ่งเป็น 2 กลุ่มอย่างสุ่ม โดยใช้การสุ่มแบบไม่คืน
+
+- หาค่าเฉลี่ยของ y ที่สุ่มมาในแต่ละกลุ่ม หาผลต่างระหว่างค่าเฉลี่ยของแต่ละกลุ่ม และเก็บค่านี้ไว้เรียกว่า permuted difference
+
+
+- เมื่อคัดเลือกตัวแปรอิสระเสร็จ หากตัวแปรอิสระเป็นแบบต่อเนื่อง เช่น ชั่วโมงการทบทวนบทเรียน คะแนนการส่งการบ้าน หรืออื่น ๆ อัลกอริทึมจะต้องคำนวณจุดแบ่งที่จะช่วยลดความแปรปรวนในตัวแปรตามได้มากที่สุด
+
+- ใช้ permutation test เพื่อทดสอบนัยสำคัญของการแบ่งข้อมูล หากพบนัยสำคัญจะแบ่งข้อมูลตาม cut-off ดังกล่าว หากไม่พบนัยสำคัญก็จะไม่แบ่งข้อมูลและ node ดังกล่าวจะกลายเป็น leaf node ของต้นไม้
+
+- ทวนซ้ำอัลกอริทึมดังกล่าวจนกระทั่งไม่มีการแบ่งเกิดขึ้น
+
+```{r}
+### -- do CTrees
+install.packages("partykit", dependencies = TRUE)
+library(partykit)
+
+## model specification
+ct_spec <- decision_tree(tree_depth = 10,
+                         min_n = tune()) |> 
+  set_engine("partykit") |> 
+  set_mode("classification")
+
+## preprocessing model
+ct_rec <- recipe(research_score ~ ., data = train_data) |> 
+  update_role(student_id, new_role = "id") %>% 
+  step_rm(department, gender) %>% 
+  step_impute_median(cheat_index) %>% 
+  step_adasyn(research_score)
+
+ct_wf <- workflow() %>% 
+  add_model(ct_spec) %>% 
+  add_recipe(ct_rec)
+
+ct_tuned_results<- ct_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = 50,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+    )
+
+ct_tuned_results %>% collect_metrics() %>% 
+  filter(.metric == "precision") %>%
+  arrange(desc(mean))
+
+best_models <- ct_tuned_results %>% select_best(metric = "roc_auc")
+
+ct_final <- ct_wf %>% 
+  finalize_workflow(best_models) %>% 
+  last_fit(split,
+          metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+ct_final %>% collect_metrics()
+
+
+ct_final %>% 
+  extract_fit_engine() %>% 
+  ggparty()
+```
+
+
+## multi-class classification
+
+```{r}
+data <- read_csv("/Users/choat/Documents/student-por.csv")
+glimpse(data)
+```
+
+สำรวจการเรียนรู้ของนักเรียนในแต่ละสัปดาห์
+
+```{r}
+data %>% 
+  select(G1,G2,G3) %>% 
+  summary()
+
+data %>% 
+  select(G1,G2,G3) %>% 
+  pivot_longer(cols = everything()) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(fill = "steelblue", col = "white", bins = 20)+
+  geom_vline(xintercept = 10, linetype = 2)+
+  facet_wrap(~name, scales = "free")
+```
+
+ลองสร้าง multiclass classification โดยใช้ decision tree
+
+```{r}
+data %>% 
+  mutate(outcome = (G2+G3)/2) %>% 
+  mutate(outcome = case_when(
+    outcome >=15 ~ "safe_student",
+    outcome >=10 & outcome < 15 ~ "mornitoring",
+    outcome >=5 & outcome < 10 ~ "risk_student",
+    outcome < 5 ~ "danger_student"
+  )) %>% 
+  select(-G2,-G3)->new_data
+
+new_data <- new_data %>% 
+  mutate(outcome = fct_relevel(outcome, "safe_student", "mornitoring", "risk_student", "danger_student"))
+```
+
+
+```{r}
+library(naniar)
+set.seed(123)
+split <- initial_split(new_data, prop = 0.8, strata = outcome)
+train_data <- training(split)
+test_data <- testing(split)
+
+train_data  %>% 
+  count(outcome)
+```
+
+
+```{r}
+## model speucification
+dt_spec <- decision_tree(tree_depth = tune(),
+                         min_n = tune(),
+                         cost_complexity = tune()) |> 
+  set_engine("rpart") |> 
+  set_mode("classification")
+
+## preprocessing model
+dt_rec <- recipe(outcome ~ ., data = train_data) |> 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_smote(outcome)
+
+dt_rec %>% prep() %>% juice() %>% count(outcome)
+```
+
+
+```{r}
+## workflow
+dt_wf <- workflow() %>% 
+  add_recipe(dt_rec) %>% 
+  add_model(dt_spec)
+```
+
+
+```{r}
+set.seed(123)
+folds <- vfold_cv(train_data , v=5, repeats = 3, strata = "outcome")
+
+```
+
+
 # 6. Grid Search
 
 Grid Search เป็นวิธีการปรับจูนค่าพารามิเตอร์ของโมเดล (Hyperparameter Tuning) โดยการสร้างชุดของค่าพารามิเตอร์ที่เป็นไปได้ในรูปแบบตารางหรือกริด และทดลองฝึกโมเดลด้วยค่าพารามิเตอร์ทุกชุดในกริดนั้น จากนั้นประเมินประสิทธิภาพของโมเดลแต่ละชุดเพื่อหาค่าที่ให้ผลลัพธ์ดีที่สุด
 
 การปรับจูนพารามิเตอร์มีความสำคัญเพราะพารามิเตอร์เหล่านี้ส่งผลต่อประสิทธิภาพและความสามารถของโมเดลในการทำนายผลลัพธ์ การใช้ Grid Search ช่วยให้เราสามารถค้นหาค่าพารามิเตอร์ที่เหมาะสมที่สุดสำหรับปัญหาของเรา
 
-- `grid_regular()`: สร้างกริดของค่าพารามิเตอร์แบบทุกค่าที่เป็นไปได้
+-   สร้าง grid แบบ manual --> regular grid
 
-- `grid_random()` : สร้างกริดของค่าพารามิเตอร์แบบสุ่ม
+-   `grid_regular()`: สร้างกริดของค่าพารามิเตอร์แบบทุกค่าที่เป็นไปได้
 
-- `grid_max_entropy()`
+-   `grid_random()` : สร้างกริดของค่าพารามิเตอร์แบบสุ่ม<-- simple random sampling
 
-- `grid_latin_hypercube()`
+-   `grid_max_entropy()`
+
+-   `grid_latin_hypercube()`
+
+## manual grid
+
+- เราจะกำหนดค่าของ hyperparameter ที่ต้องการวิเคราะห์เอง
+
+- ตอนสร้าง grid เราจะสร้าง space ของ grid โดย cross ทุกค่าที่เป็นไปได้เข้าด้วยกัน
+
+```{r}
+tree_depth = 2:10
+min_n = c(10,20,50)
+cost_complexity = c(0, 0.001, seq(0.01,0.1,0.02), 0.1)
+my_grid <- expand_grid(tree_depth, min_n, cost_complexity)
+
+my_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(alpha = 0.3,height = 0.5)
+```
+## grid_regular()
+
+```{r}
+?grid_regular()
+p <- parameters(tree_depth(range = c(2, 10)), 
+                min_n(range = c(10, 40)),
+                cost_complexity())
+my_regular_grid <- grid_regular(x = p, levels = 5)
+p1<-my_regular_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+  theme(legend.position = "none")
+```
+
+## grid_random()
+
+
+```{r}
+p <- parameters(tree_depth(range = c(2, 10)), 
+                min_n(range = c(10, 40)),
+                cost_complexity())
+my_random_grid <- grid_random(p, size =50)
+
+set.seed(123)
+p2<-my_random_grid %>% 
+   ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+    theme(legend.position = "none")
+
+
+library(patchwork)
+p1+p2
+```
+
+## grid_max_entropy()
+
+```{r}
+my_max_entropy_grid <- grid_space_filling(p, size = 50, type = "max_entropy")
+
+set.seed(123)
+p3 <- my_max_entropy_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+  theme(legend.position = "none")
+
+
+p1+p2+p3
+```
+
+## grid_latin_hypercube()
+
+```{r}
+my_latin_hypercube_grid <- grid_space_filling(p, size = 50, type = "latin_hypercube")
+p4 <- my_latin_hypercube_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+  theme(legend.position = "none")
+
+
+(p1+p2)/(p3+p4)
+```
+
+
+
+
+```{r}
+start <- Sys.time()
+dt_tuned_results <- dt_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = my_grid,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+    )
+elapsed_time_regulargrid <- Sys.time() - start
+
+
+start <- Sys.time()
+dt_tuned_results_latin <- dt_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = my_latin_hypercube_grid,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+  )
+elapsed_time_latin <- Sys.time() - start
+
+
+dt_tuned_results_latin %>% collect_metrics() %>% 
+  filter(.metric == "f_meas") %>%
+  arrange(desc(mean)) 
+
+dt_tuned_results_latin %>% collect_metrics() %>% 
+  filter(.metric == "sens") %>%
+  arrange(desc(mean)) 
+
+dt_tuned_results_latin %>% collect_metrics()  %>% 
+  filter(cost_complexity > 0.075)
+```
+
+
+## 7. การประเมินประสิทธิภาพราย class สำหรับ multi-class classification
+
+โมเดลที่ดีที่สุดในมุมของ sensitivity จะทำนายแต่ละ class ได้ดีมากน้อยแค่ไหน
+
+```{r}
+temp_sens <- dt_tuned_results_latin %>% collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model07") %>% 
+  group_by(cost_complexity, tree_depth, min_n,.config,outcome) %>% 
+  sens(truth = outcome, estimate = .pred_class) 
+
+temp_f <- dt_tuned_results_latin %>% collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model07") %>% 
+  group_by(cost_complexity, tree_depth, min_n,.config,outcome) %>% 
+  f_meas(truth = outcome, estimate = .pred_class) 
+
+
+temp_sens %>% 
+  ggplot(aes(x= cost_complexity, y=.estimate))+
+  geom_line(aes(col = outcome))+
+  ylab("sensitivity")
+
+temp_sens %>% 
+  ggplot(aes(x=outcome, y= .estimate))+
+  geom_hline(yintercept = 0.5)+
+  geom_col()
+```
+
+```{r}
+best <- select_best(dt_tuned_results_latin, metric = "f_meas")
+```
+
+
+```{r}
+my_select_model <- dt_tuned_results_latin %>% collect_metrics() %>% 
+                filter(.config == "Preprocessor1_Model07") %>% 
+                select(cost_complexity, tree_depth, min_n, .config) %>% 
+                slice(1)
+```
+
+```{r}
+final_dt_multiclass <- dt_wf %>% 
+  finalize_workflow(my_select_model) %>%
+  last_fit(split, metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+final_dt_multiclass %>% collect_metrics()
+
+final_dt_multiclass %>% 
+  extract_fit_engine() %>%
+  rpart.plot()
+```
+
 
 
 
@@ -505,7 +839,45 @@ regular_grid %>%
 ```
 
 
-# 7. Workflow Set
+
+
+```{r}
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") %>% pull(.config)
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") 
+
+## confusion matrix
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config == best_models[2]) %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+
+## roc curve
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config %in% best_models) %>% 
+  group_by(.config) %>% 
+  roc_curve(truth = research_score, .pred_success) %>% 
+  ggplot(aes(x = 1-specificity, y = sensitivity, color = .config))+
+  geom_line()+
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed")
+
+## finalized model
+dt_final <- dt_wf %>% 
+  finalize_workflow(best_models[1,]) %>% 
+  last_fit(split,
+          metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+## performance in training set
+dt_tuned_results %>% collect_metrics() %>% 
+  filter(.config == best_models[1]) %>% 
+  select(.metric, mean)
+
+## performance in test set
+dt_final %>% collect_metrics()
+```
+
+
+
+
+# 8. Workflow Set
 
 ในทางปฏิบัติเรามักจะมีโมเดลคู่แข่งขันหลายตัวที่จะนำมาพัฒนาควบคู่กัน ภายใต้ tidymodel framework ผู้วิเคราะห์สามารถสร้าง workflow set เพื่อ fine tune hyperparameter และเปรียบเทียบโมเดลหลาย ๆ ตัวไปพร้อม ๆ กันในการประมวลผลรอบเดียวได้
 
@@ -572,7 +944,6 @@ eval_metrics <- metric_set(accuracy,roc_auc, sens, spec)
 folds <- vfold_cv(data = train, v = 5, repeats = 3)
 ```
 
-
 ```{r}
 library(future)
 plan(multisession, workers = 10)
@@ -587,8 +958,3 @@ all_tuned_result %>% collect_metrics()
 ## plot result
 all_tuned_result %>% autoplot(metric = "roc_auc")
 ```
-
-
-
-
-

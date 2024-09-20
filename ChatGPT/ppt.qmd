@@ -1,0 +1,318 @@
+---
+title: "การใช้ Generative AI <br>
+เพื่อวิเคราะห์และคัดกรองปัญหาที่เกิดขึ้นของนักเรียน"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร <br> ผศ.ดร.กนิษฐ์ ศรีเคลือบ"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-09-21
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "หลักสูตรการพัฒนาสมรรถนะครูในฐานะนักเสริมสร้างความอยู่ดีมีสุขให้กับนักเรียน รุ่นที่ 2"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/generative_ai.png
+      data-background-opacity: 8%
+      data-background-size: full
+    mermaid: 
+      theme: default
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+  progress: true
+
+---
+
+
+## {background-image="img/generative_ai.png"}
+
+
+## Artificial Intelligence {.smaller} 
+
+- ปัญญาประดิษฐ์ (artificial intelligence) เป็นสาขาวิชาหนึ่งของวิทยาการคอมพิวเตอร์ (computer
+science) ที่เกี่ยวข้องกับการศึกษาและพัฒนาระบบ/โปรแกรมคอมพิวเตอร์ที่มีความสามารถทำงานได้เองใน
+กิจกรรมที่ต้องการความฉลาดของมนุษย์ได้ 
+
+- กล่าวง่าย ๆ คือการสร้างระบบ/เครื่องจักรที่มีความสามารถในการคิดและแสดงออกได้เหมือนกับมนุษย์
+
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](https://bucket.mlcdn.com/a/2190/2190865/images/01280aa975f1c5dea4ed3b8df0bd0d158a81f700.png/8b7645886e1dd3efebe1a60c95c6b0e70b4b7995.png){width=65%}
+
+::::
+
+:::: {.column width="50%"}
+
+::: {.fragment}
+
+
+- การเรียนรู้
+
+:::
+
+::: {.fragment}
+
+- การเข้าใจภาษา
+
+:::
+
+::: {.fragment}
+
+- การรับรู้
+
+:::
+
+::: {.fragment}
+
+- การวิเคราะห์ข้อมูล
+
+:::
+
+::: {.fragment}
+- การตัดสินใจ
+
+
+:::
+
+::::
+
+:::
+
+
+## Generative AI {.smaller}
+
+Gen AI คือปัญญาประดิษฐ์ประเภทหนึ่งที่มีความสามารถหลักในการสร้างเนื้อหา (content) ที่หลากหลาย
+
+- ข้อความ (text)
+
+- รูปภาพ (image)
+
+- เสียง (audio)
+
+- ข้อมูลสังเคราะห์ (synthetic data)
+
+![](img/generativeai.png)
+
+## Generative AI {.smaller}
+<br>
+<br>
+<br>
+
+![](img/Screenshot%202567-09-20%20at%2019.29.02.png)
+
+## Generative AI {.smaller}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](img/cat1.png)
+
+::::
+
+:::: {.column width="50%"}
+
+![](img/cat2.png)
+
+::::
+
+:::
+
+## Hallucinations {.smaller}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+<div style="font-size: 70%;">
+
+- สถานการณ์ที่ AI สร้างข้อมูลหรือผลลัพธ์ที่ไม่มีพื้นฐานจากข้อมูลที่ถูกต้องหรือเป็นจริง ซึ่งอาจเป็นข้อมูลที่เข้าใจผิดหรือไม่เกี่ยวข้องกับคำถามหรือข้อมูลนำเข้าที่ได้รับ
+
+- บางสถานการณ์​ AI อาจให้คำตอบที่ดูเหมือนจะถูก/สมเหตุสมผล หรืออาจจะถูกจริง ๆ แต่ไม่ตรงกับสิ่งที่ผู้ใช้ต้องการ ลักษณะนี้ก็เรียกว่า Hallucinations
+
+</div>
+
+![](img/Screenshot%202567-09-20%20at%2019.42.40.png)
+
+::::
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2019.38.39.png){width="65%"}
+
+::::
+
+:::
+
+## Hallucinations {.smaller}
+
+- โมเดลมี training data ไม่เพียงพอ
+
+- Training data ที่โมเดลใช้ฝึกหัดเป็นข้อมูลที่มีคุณภาพไม่เหมาะสม
+
+- Prompt ที่กำหนดให้กับโมเดลยังมีข้อมูลหรือบริบทไม่เพียงพอ
+
+- Prompt ที่กำหนดให้กับโมเดลมีความกว้างไม่เฉพาะเจาะจงทำให้ความเป็นไปได้ของคำตอบมีมากเกินไป
+
+
+## Prompt Design {.smaller}
+
+
+- โดยทั่วไป Generative AI เช่น ChatGPT ถูกฝึกสอนจากฐานข้อมูลขนาดใหญ่มากอยู่แล้ว ดังนั้นในแต่ละ prompt ที่ป้อนเข้าไปจึงมีความเป็นไปได้จำนวนมากของคำตอบ
+
+- Prompt Design คือกระบวนการสร้างคำสั่ง/ข้อมูลนำเข้าสำหรับ Generative AI ที่นำไปสู่การสร้างผลลัพธ์ที่มีความถูกต้อง/สมเหตุสมผล/ตรงกับความต้องการ
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+flowchart LR
+subgraph  
+B["Task"]-->A(("Prompt"))
+C["Context"]-->A(("Prompt"))
+end
+D["Fine-Tuning"]-.->B
+D["Fine-Tuning"]-.->C
+```
+
+
+- **Task** คืองานที่ต้องการให้ Chat GPT ทำ ซึ่งอาจอยู่ในรูปของประโยคคำถาม คำ
+สั่ง หรือข้อความที่ไม่สมบูรณ์เพื่อให้โมเดลเขียนต่อ
+
+- **Context** คือบริบทหรือข้อมูลเพิ่มเติมสำหรับประกอบการสร้างผลลัพธ์ของโมเดล
+
+- **Fine-Tuning** คือการปรับปรุงคำตอบของโมเดลเพื่อให้มีความแม่นยำ สอดคล้องกับบริบทและเหมาะสมกับความต้องการของผู้ใช้มากขึ้น ผ่านการพิมพ์โต้ตอบกับผู้ใช้
+
+<br>
+
+
+## Prompt Design: Tasks {.smaller background-color="black"}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+- Describe, Explain
+
+- Classify
+
+- Summarize, Group
+
+- List, Suggest
+
+- Write, Rewrite, Generate
+
+- Design
+
+- Creat
+
+- Ideate
+
+::::
+
+
+:::: {.column width="50%"}
+
+- Give
+
+- Prepare
+
+- Compare
+
+- Translation
+
+- Correct
+
+- Break down
+
+- What?
+
+- How?
+
+::::
+
+
+:::
+
+
+
+
+## Prompt Design: Task with Context {.smaller background-color="black"}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+**Task Only**
+![](img/Screenshot%202567-09-20%20at%2020.00.11.png){width=80%}
+
+::::
+
+:::: {.column width="50%"}
+
+**Task with Context**
+![](img/Screenshot%202567-09-20%20at%2020.01.39.png){width=80%}
+
+
+::::
+
+:::
+
+## Prompt Design: Fine-Tuning Prompt {.smaller background-color="black"}
+
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2020.15.21.png)
+::::
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2020.15.27.png)
+
+
+::::
+
+:::
+
+## ตัวอย่างการใช้ Generative AI เพื่อวิเคราะห์และคัดกรองปัญหาที่เกิดขึ้นของนักเรียน {background-color="black"}
+
+![](img/Screenshot%202567-09-20%20at%2020.23.24.png)
+
+
+## ตัวอย่างการใช้ Generative AI เพื่อวิเคราะห์และคัดกรองปัญหาที่เกิดขึ้นของนักเรียน {background-color="black"}
+
+
+
+![](img/Screenshot%202567-09-20%20at%2020.25.01.png)
+
+
+## ตัวอย่างการใช้ Generative AI เพื่อวิเคราะห์และคัดกรองปัญหาที่เกิดขึ้นของนักเรียน {background-color="black"}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2020.26.14.png)
+::::
+
+:::: {.column width="50%"}
+![](img/Screenshot%202567-09-20%20at%2020.27.53.png)
+::::
+
+:::
+
+## Final Output {background-color="black"}
+
+![](img/Screenshot%202567-09-20%20at%2020.34.27.png)
+
