@@ -177,6 +177,8 @@ Gen AI คือปัญญาประดิษฐ์ประเภทหน�
 ```{mermaid}
 %%| echo: false
 %%| fig-align: "center"
+
+
 flowchart LR
 subgraph  
 B["Task"]-->A(("Prompt"))
