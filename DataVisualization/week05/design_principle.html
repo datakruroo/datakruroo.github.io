@@ -555,51 +555,31 @@ B["Preprocessing/Analysis"]--&gt;C(((Trustworthy)))
 <figure><p><img data-src="https://climateadaptationservices.com/wp-content/uploads/2023/08/Burning-Tree-afbeelding-Daniel.png"></p>
 <figcaption>https://climateadaptationservices.com/en/visualizing-data-dare-to-go-beyond-your-own-imagination/</figcaption></figure>
 </div>
-</section><section id="scale_color_xxx-scale_fill_xxx" class="slide level2 smaller"><h2>
-<code>scale_color_XXX()</code> &amp; scale_fill_XXX()`</h2>
-<p>แผนภาพ Gapminder เดิม</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>gapminder <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="st">"2007"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> gdpPercap,</span>
-<span id="cb1-3"><a href=""></a>                <span class="at">y =</span> lifeExp))<span class="sc">+</span></span>
-<span id="cb1-4"><a href=""></a>      <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+</section><section id="pre-attentive-attributes" class="slide level2 smaller"><h2>Pre-Attentive Attributes</h2>
 <ul>
-<li><p><code>scale_color_manual(name, values)</code></p></li>
-<li><p><code>scale_color_gradient(name, low, hight)</code></p></li>
-<li><p><code>scale_color_gradient2(name, low, mid, hight)</code></p></li>
-</ul></section><section id="ตวอยาง" class="slide level2 smaller"><h2>ตัวอย่าง</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>iris <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sepal.Length,</span>
-<span id="cb2-2"><a href=""></a>                    <span class="at">y =</span> Sepal.Width,</span>
-<span id="cb2-3"><a href=""></a>                    <span class="at">col =</span> Species))<span class="sc">+</span></span>
-<span id="cb2-4"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
-<span id="cb2-5"><a href=""></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>,</span>
-<span id="cb2-6"><a href=""></a>                                <span class="st">"orange"</span>,</span>
-<span id="cb2-7"><a href=""></a>                                <span class="st">"maroon"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section><section id="แหลงอางองส" class="slide level2 smaller"><h2>แหล่งอ้างอิงสี</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">colors</span>() <span class="sc">%&gt;%</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 657</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">colors</span>() <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "white"         "aliceblue"     "antiquewhite"  "antiquewhite1"
- [5] "antiquewhite2" "antiquewhite3" "antiquewhite4" "aquamarine"   
- [9] "aquamarine1"   "aquamarine2"   "aquamarine3"   "aquamarine4"  </code></pre>
-</div>
-</div>
+<li>
+<p>คือ Visual Element ที่มนุษย์รับรู้ มีความคุ้นเคย และสามารถตีความหมายได้อย่างรวดเร็ว เป็นธรรมชาติ โดยไม่ต้องใช้ความพยายามในการทำความเข้าใจมาก</p>
 <ul>
-<li><p>https://colorhunt.co/</p></li>
-<li><p>https://coolors.co/</p></li>
-<li><p>https://www.canva.com/colors/color-palettes/</p></li>
-<li><p>https://color.adobe.com/create/color-wheel</p></li>
-</ul></section><section id="กจกรรม" class="slide level2"><h2>กิจกรรม</h2>
-<p>จาก <code>gapminder</code> ข้างต้น ขอให้ใช้ <code>scale_color_xxx()</code> ตัวใดก็ได้กำหนดสีให้กับ mark ในแผนภาพ เอาตามที่เหมาะสม ผลที่ได้เป็นอย่างไร</p>
-</section></section><section><section id="color-is-matter" class="title-slide slide level1 center"><h1>Color is Matter</h1>
+<li><p>Position</p></li>
+<li><p>Color</p></li>
+<li><p>Size</p></li>
+<li><p>Shape</p></li>
+</ul>
+</li>
+<li><p>ใน ggplot2 การสร้าง pre-attentive attributes ทำได้ผ่าน <code>aes()</code></p></li>
+<li><p>เมื่อจับคู่ข้อมูลกับ attribute ของแผนภาพแล้ว ผลลัพธ์ที่ได้จะเรียกว่า <strong>scale</strong> หรือมาตรของข้อมูลดังกล่าวบนแผนภาพ</p></li>
+</ul></section><section id="scales-layer" class="slide level2 smaller"><h2>Scales Layer</h2>
+<ul>
+<li>
+<p>ใน ggplot2 มีฟังก์ชันที่ทำหน้าที่กำหนด/ปรับแต่งมาตรของข้อมูลบนแผนภาพ ซึ่งช่วยให้การแสดงผลข้อมูลผ่านมาตรต่าง ๆ เป็นไปได้อย่างเหมาะสมมากขึ้นและมีประสิทธิภาพในการสื่อสาร</p>
+<ul>
+<li><p><code>scale_x_continuous()</code>, <code>scale_y_continuous()</code></p></li>
+<li><p><code>scale_x_discrete()</code>, <code>scale_y_discrete()</code></p></li>
+<li><p><code>scale_color_xxx()</code>, <code>scale_fill_xxx()</code></p></li>
+<li><p><code>scale_size_xxx()</code>, <code>scale_shape_xxx()</code></p></li>
+</ul>
+</li>
+</ul></section></section><section><section id="color-is-matter" class="title-slide slide level1 center"><h1>Color is Matter</h1>
 
 </section><section id="section-2" class="slide level2" data-background-color="white" data-background-image="img/color_matter.png" data-background-size="contain"><h2></h2>
 </section><section id="section-3" class="slide level2" data-background-color="white" data-background-image="img/color_matter2.png" data-background-size="contain"><h2></h2>
@@ -613,10 +593,44 @@ B["Preprocessing/Analysis"]--&gt;C(((Trustworthy)))
 <p><br></p>
 <p><strong>qualitative palette</strong></p>
 
-<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="caption">
+<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"><div class="caption">
 <a href="https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/">https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/</a>
 </div>
-</section><section id="color-is-matter-represent-data-values" class="slide level2"><h2>Color is Matter: Represent Data Values</h2>
+</section><section id="example" class="slide level2 smaller"><h2>Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href=""></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href=""></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-4"><a href=""></a><span class="fu">library</span>(rcartocolor)</span>
+<span id="cb1-5"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week03/data_AJ suchada.xlsx"</span>)</span>
+<span id="cb1-6"><a href=""></a></span>
+<span id="cb1-7"><a href=""></a>p1 <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb1-8"><a href=""></a>  <span class="fu">filter</span>(advisor <span class="sc">==</span> <span class="st">"สุชาดา บวรกิติวงศ์"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-9"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">edu =</span> <span class="fu">factor</span>(edu, <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"ป.โท"</span>,<span class="st">"ป.เอก"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb1-10"><a href=""></a><span class="do">## data representation</span></span>
+<span id="cb1-11"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y=</span>depart, <span class="at">fill =</span> edu))<span class="sc">+</span></span>
+<span id="cb1-12"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb1-13"><a href=""></a><span class="do">## minor fine-tune plot</span></span>
+<span id="cb1-14"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">" "</span>)<span class="sc">+</span></span>
+<span id="cb1-15"><a href=""></a>  <span class="fu">xlab</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> จำนวน (เล่ม)"</span>)<span class="sc">+</span></span>
+<span id="cb1-16"><a href=""></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))<span class="sc">+</span></span>
+<span id="cb1-17"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> 100% Stacked Bar Chart"</span>)</span>
+<span id="cb1-18"><a href=""></a></span>
+<span id="cb1-19"><a href=""></a>p2 <span class="ot">&lt;-</span> p1 <span class="sc">+</span> </span>
+<span id="cb1-20"><a href=""></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">name =</span> <span class="st">"ระดับชั้น"</span>, <span class="at">type =</span> <span class="st">"qual"</span>, <span class="at">palette =</span> <span class="dv">7</span>)</span>
+<span id="cb1-21"><a href=""></a></span>
+<span id="cb1-22"><a href=""></a>p3 <span class="ot">&lt;-</span> p1 <span class="sc">+</span></span>
+<span id="cb1-23"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">name =</span> <span class="st">"ระดับชั้น"</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">"steelblue"</span>,<span class="st">"orange"</span>))</span>
+<span id="cb1-24"><a href=""></a></span>
+<span id="cb1-25"><a href=""></a>p4 <span class="ot">&lt;-</span> p1 <span class="sc">+</span></span>
+<span id="cb1-26"><a href=""></a>  <span class="fu">scale_fill_carto_d</span>(<span class="at">name =</span> <span class="st">"ระดับชั้น"</span>, <span class="at">type =</span> <span class="st">"qualitative"</span>, <span class="at">palette =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="section-4" class="slide level2 smaller"><h2></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>(p1<span class="sc">+</span>p2)<span class="sc">/</span>(p3<span class="sc">+</span>p4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section><section id="color-is-matter-represent-data-values" class="slide level2"><h2>Color is Matter: Represent Data Values</h2>
 
 <img data-src="img/Screenshot%202567-09-14%20at%2013.55.05.png" class="r-stretch"></section><section id="color-is-matter-represent-data-values-1" class="slide level2"><h2>Color is Matter: Represent Data Values</h2>
 <div class="quarto-figure quarto-figure-left">
@@ -628,7 +642,7 @@ B["Preprocessing/Analysis"]--&gt;C(((Trustworthy)))
 <p><br></p>
 <p><strong>Sequential palette</strong></p>
 
-<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><div class="caption">
+<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="caption">
 <a href="https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/">https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/</a>
 </div>
 </section><section id="color-is-matter-represent-data-values-3" class="slide level2"><h2>Color is Matter: Represent Data Values</h2>
@@ -637,7 +651,7 @@ B["Preprocessing/Analysis"]--&gt;C(((Trustworthy)))
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="design_principle_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+<figure><p><img data-src="design_principle_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -645,20 +659,65 @@ B["Preprocessing/Analysis"]--&gt;C(((Trustworthy)))
 <p><img data-src="img/Screenshot%202567-09-14%20at%2014.16.53.png"></p>
 </section><section id="some-r-color-palette" class="slide level2"><h2>Some R Color Palette</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(RColorBrewer)</span>
-<span id="cb7-2"><a href=""></a><span class="fu">display.brewer.all</span>(<span class="at">type =</span> <span class="st">"div"</span>)</span>
-<span id="cb7-3"><a href=""></a><span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">8</span>,<span class="at">name =</span> <span class="st">"RdBu"</span>)</span>
-<span id="cb7-4"><a href=""></a><span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">5</span>, <span class="at">name =</span> <span class="st">"Dark2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb3-2"><a href=""></a><span class="fu">display.brewer.all</span>(<span class="at">type =</span> <span class="st">"div"</span>)</span>
+<span id="cb3-3"><a href=""></a><span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">8</span>,<span class="at">name =</span> <span class="st">"RdBu"</span>)</span>
+<span id="cb3-4"><a href=""></a><span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">5</span>, <span class="at">name =</span> <span class="st">"Dark2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co">#install.packages("viridis")</span></span>
-<span id="cb8-2"><a href=""></a><span class="fu">library</span>(viridis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co">#install.packages("viridis")</span></span>
+<span id="cb4-2"><a href=""></a><span class="fu">library</span>(viridis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="img/Screenshot%202567-09-14%20at%2014.07.21.png" class="r-stretch"></section><section id="color-is-matter-color-as-highlight-tools" class="slide level2"><h2>Color is Matter: Color as Highlight Tools</h2>
 
 <img data-src="img/Screenshot%202567-09-14%20at%2014.18.12.png" class="r-stretch"></section><section id="color-is-matter-color-as-highlight-tools-1" class="slide level2"><h2>Color is Matter: Color as Highlight Tools</h2>
-<p><img data-src="img/Screenshot%202567-09-14%20at%2014.18.59.png"></p>
+
+<img data-src="img/Screenshot%202567-09-14%20at%2014.18.59.png" class="r-stretch"></section><section id="scale_color_xxx-scale_fill_xxx" class="slide level2 smaller"><h2>
+<code>scale_color_XXX()</code> &amp; <code>scale_fill_XXX()</code>
+</h2>
+<p>แผนภาพ Gapminder เดิม</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>gapminder <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="st">"2007"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> gdpPercap,</span>
+<span id="cb5-3"><a href=""></a>                <span class="at">y =</span> lifeExp))<span class="sc">+</span></span>
+<span id="cb5-4"><a href=""></a>      <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><code>scale_color_manual(name, values)</code></p></li>
+<li><p><code>scale_color_gradient(name, low, hight)</code></p></li>
+<li><p><code>scale_color_gradient2(name, low, mid, hight)</code></p></li>
+</ul></section><section id="ตวอยาง" class="slide level2 smaller"><h2>ตัวอย่าง</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>iris <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sepal.Length,</span>
+<span id="cb6-2"><a href=""></a>                    <span class="at">y =</span> Sepal.Width,</span>
+<span id="cb6-3"><a href=""></a>                    <span class="at">col =</span> Species))<span class="sc">+</span></span>
+<span id="cb6-4"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb6-5"><a href=""></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>,</span>
+<span id="cb6-6"><a href=""></a>                                <span class="st">"orange"</span>,</span>
+<span id="cb6-7"><a href=""></a>                                <span class="st">"maroon"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="design_principle_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section><section id="แหลงอางองส" class="slide level2 smaller"><h2>แหล่งอ้างอิงสี</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">colors</span>() <span class="sc">%&gt;%</span> <span class="fu">length</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 657</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">colors</span>() <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "white"         "aliceblue"     "antiquewhite"  "antiquewhite1"
+ [5] "antiquewhite2" "antiquewhite3" "antiquewhite4" "aquamarine"   
+ [9] "aquamarine1"   "aquamarine2"   "aquamarine3"   "aquamarine4"  </code></pre>
+</div>
+</div>
+<ul>
+<li><p>https://colorhunt.co/</p></li>
+<li><p>https://coolors.co/</p></li>
+<li><p>https://www.canva.com/colors/color-palettes/</p></li>
+<li><p>https://color.adobe.com/create/color-wheel</p></li>
+</ul></section><section id="กจกรรม" class="slide level2"><h2>กิจกรรม</h2>
+<p>จาก <code>gapminder</code> ข้างต้น ขอให้ใช้ <code>scale_color_xxx()</code> ตัวใดก็ได้กำหนดสีให้กับ mark ในแผนภาพ เอาตามที่เหมาะสม ผลที่ได้เป็นอย่างไร</p>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">

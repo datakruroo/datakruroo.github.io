@@ -217,54 +217,34 @@ B["Preprocessing/Analysis"]-->C(((Trustworthy)))
 ![https://climateadaptationservices.com/en/visualizing-data-dare-to-go-beyond-your-own-imagination/](https://climateadaptationservices.com/wp-content/uploads/2023/08/Burning-Tree-afbeelding-Daniel.png)
 
 
+## Pre-Attentive Attributes {.smaller}
 
-## `scale_color_XXX()` & scale_fill_XXX()` {.smaller}
+- คือ Visual Element ที่มนุษย์รับรู้ มีความคุ้นเคย และสามารถตีความหมายได้อย่างรวดเร็ว เป็นธรรมชาติ โดยไม่ต้องใช้ความพยายามในการทำความเข้าใจมาก
 
-แผนภาพ Gapminder เดิม
+  - Position
 
-```{r eval = F}
-gapminder %>% filter(year == "2007") %>%
-  ggplot(aes(x = gdpPercap,
-                y = lifeExp))+
-      geom_point()
-```
+  - Color
 
-- `scale_color_manual(name, values)`
+  - Size
 
-- `scale_color_gradient(name, low, hight)`
+  - Shape
 
-- `scale_color_gradient2(name, low, mid, hight)`
+- ใน ggplot2 การสร้าง pre-attentive attributes ทำได้ผ่าน `aes()`
 
-## ตัวอย่าง {.smaller}
+- เมื่อจับคู่ข้อมูลกับ attribute ของแผนภาพแล้ว ผลลัพธ์ที่ได้จะเรียกว่า **scale** หรือมาตรของข้อมูลดังกล่าวบนแผนภาพ 
 
-```{r}
-iris %>% ggplot(aes(x = Sepal.Length,
-                    y = Sepal.Width,
-                    col = Species))+
-  geom_point()+
-  scale_color_manual(values = c("steelblue",
-                                "orange",
-                                "maroon"))
-```
+## Scales Layer {.smaller}
 
-## แหล่งอ้างอิงสี {.smaller}
- 
-```{r}
-colors() %>% length()
-colors() %>% head(12)
-```
+- ใน ggplot2 มีฟังก์ชันที่ทำหน้าที่กำหนด/ปรับแต่งมาตรของข้อมูลบนแผนภาพ ซึ่งช่วยให้การแสดงผลข้อมูลผ่านมาตรต่าง ๆ เป็นไปได้อย่างเหมาะสมมากขึ้นและมีประสิทธิภาพในการสื่อสาร
 
-- https://colorhunt.co/
+  - `scale_x_continuous()`, `scale_y_continuous()`
 
-- https://coolors.co/
+  - `scale_x_discrete()`, `scale_y_discrete()`
 
-- https://www.canva.com/colors/color-palettes/
+  - `scale_color_xxx()`, `scale_fill_xxx()`
 
-- https://color.adobe.com/create/color-wheel
+  - `scale_size_xxx()`, `scale_shape_xxx()`
 
-## กิจกรรม
-
-จาก `gapminder` ข้างต้น ขอให้ใช้ `scale_color_xxx()` ตัวใดก็ได้กำหนดสีให้กับ mark ในแผนภาพ เอาตามที่เหมาะสม ผลที่ได้เป็นอย่างไร
 
 
 # Color is Matter
@@ -294,6 +274,45 @@ display.brewer.all(type = "qual")
 
 
 <div class="caption">[https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/](https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/)</div>
+
+
+## Example {.smaller}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(patchwork)
+library(rcartocolor)
+data <- read_excel("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week03/data_AJ suchada.xlsx")
+
+p1 <- data |> 
+  filter(advisor == "สุชาดา บวรกิติวงศ์") |> 
+  mutate(edu = factor(edu, labels=c("ป.โท","ป.เอก"))) |> 
+## data representation
+  ggplot(aes(y=depart, fill = edu))+
+  geom_bar(position = "fill") +
+## minor fine-tune plot
+  ylab(" ")+
+  xlab("\n จำนวน (เล่ม)")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ggtitle("\n 100% Stacked Bar Chart")
+
+p2 <- p1 + 
+  scale_fill_brewer(name = "ระดับชั้น", type = "qual", palette = 7)
+
+p3 <- p1 +
+  scale_fill_manual(name = "ระดับชั้น", values=c("steelblue","orange"))
+
+p4 <- p1 +
+  scale_fill_carto_d(name = "ระดับชั้น", type = "qualitative", palette = 5)
+```
+
+## {.smaller}
+
+```{r echo = F}
+(p1+p2)/(p3+p4)
+```
+
 
 ## Color is Matter: Represent Data Values
 
@@ -364,3 +383,57 @@ library(viridis)
 ## Color is Matter: Color as Highlight Tools
 
 ![](img/Screenshot%202567-09-14%20at%2014.18.59.png)
+
+
+
+
+
+
+## `scale_color_XXX()` & `scale_fill_XXX()` {.smaller}
+
+แผนภาพ Gapminder เดิม
+
+```{r eval = F}
+gapminder %>% filter(year == "2007") %>%
+  ggplot(aes(x = gdpPercap,
+                y = lifeExp))+
+      geom_point()
+```
+
+- `scale_color_manual(name, values)`
+
+- `scale_color_gradient(name, low, hight)`
+
+- `scale_color_gradient2(name, low, mid, hight)`
+
+## ตัวอย่าง {.smaller}
+
+```{r}
+iris %>% ggplot(aes(x = Sepal.Length,
+                    y = Sepal.Width,
+                    col = Species))+
+  geom_point()+
+  scale_color_manual(values = c("steelblue",
+                                "orange",
+                                "maroon"))
+```
+
+## แหล่งอ้างอิงสี {.smaller}
+ 
+```{r}
+colors() %>% length()
+colors() %>% head(12)
+```
+
+- https://colorhunt.co/
+
+- https://coolors.co/
+
+- https://www.canva.com/colors/color-palettes/
+
+- https://color.adobe.com/create/color-wheel
+
+## กิจกรรม
+
+จาก `gapminder` ข้างต้น ขอให้ใช้ `scale_color_xxx()` ตัวใดก็ได้กำหนดสีให้กับ mark ในแผนภาพ เอาตามที่เหมาะสม ผลที่ได้เป็นอย่างไร
+
