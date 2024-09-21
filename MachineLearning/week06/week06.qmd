@@ -1,0 +1,86 @@
+---
+title: "Single Learning (cont.)"
+format: html
+editor: visual
+---
+
+
+# Linear Discriminant Analysis (LDA)
+
+- เป็นหนึ่งในเทคนิคการจำแนกประเภทที่ใช้ในการวิเคราะห์ข้อมูลที่มีลักษณะเป็นเชิงเส้น โดยมีจุดประสงค์เพื่อแยกแยะกลุ่มหรือคลาสของข้อมูลตามคุณลักษณะของข้อมูล (features)
+
+- หลักพื้นฐานของ LDA คือพยายามหาเส้นแบ่งข้อมูล ที่ทำให้ความแตกต่างของกลุ่มข้อมูลมากที่สุด ภายใต้ข้อตกลงเบื้องต้นว่าข้อมูลในแต่ละ class มีการแจกแจงแบบปกติที่มีคุณสมบัติ homogeneity of covariance matrices
+
+- การหาเส้นแบ่งข้อมูลด้วย LDA จะใช้หลักการลดมิติข้อมูล (เหมือน PCA) แต่แตกต่างกันตรงที่พยายามสกัดองค์ประกอบที่ทำให้ distribution  ของข้อมูลแตกต่างกันมากที่สุด (maximize the ratio of between-class variance to within-class variance) เรียกสเกลองค์ประกอบที่สร้างขึ้นนี้ว่า discrimination function
+
+- จากนัั้นจะสร้างจุดแบ่ง class จาก discrimination function ที่ได้ โดยจุดแบ่งนี้จะเป็นเส้นตรงที่ทำให้ค่าเฉลี่ยของ discrimination score ระหว่างสองกลุ่มมีค่าสูงสุด
+
+![https://sebastianraschka.com/images/blog/2014/linear-discriminant-analysis/lda_1.png](https://sebastianraschka.com/images/blog/2014/linear-discriminant-analysis/lda_1.png){width="90%"}
+
+# Quadratic Discriminant Analysis (QDA)
+
+- Quadratic Discriminant Analysis (QDA) เป็นรูปแบบหนึ่งของ Discriminant Analysis ที่คล้ายกับ LDA แต่ ไม่สมมติว่าข้อมูลในแต่ละคลาสมี covariance matrix ที่เหมือนกัน ดังนั้น QDA จะสร้างเส้นแบ่งที่มีลักษณะเป็น quadratic (ไม่เชิงเส้น) เพื่อจำแนกข้อมูลระหว่างกลุ่มต่าง ๆ
+
+
+- QDA ยังสมมุติการแจกแจงแบบปกติของข้อมูลในแต่ละ class อยู่ แต่ไม่สมมุติว่า covariance matrix ของข้อมูลในแต่ละ class เหมือนกันแล้ว
+
+- เมื่อการแจกแจงมีการกระจายที่แตกต่างกันเส้นแบ่งระหว่าง class จึงมีลักษณะเป็นเส้นโค้ง
+
+![https://mathformachines.com/images/quadratic-linear.png](https://mathformachines.com/images/quadratic-linear.png)
+
+
+- QDA จะคำนวณ discriminant score สำหรับข้อมูลใหม่ในแต่ละคลาส โดยพิจารณาจาก covariance matrix และค่าเฉลี่ยของข้อมูลในแต่ละคลาส
+
+- เส้นแบ่งจะเกิดขึ้นเมื่อ discriminant score ของสองคลาสมีค่าเท่ากัน ซึ่งหมายถึงข้อมูลมีโอกาสที่จะอยู่ในทั้งสองคลาสเท่ากัน
+	
+	
+
+# SVM
+
+การจำแนกข้อมูลแบบ SVM ใช้หลักการสร้าง เส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นสองกลุ่มได้อย่างเหมาะสมมากที่สุด
+
+การสร้างเส้นแบ่งดังกล่าวเป็นสิ่งที่โมเดลการเรียนรู้ต่าง ๆ ก็ทำเหมือนกัน ดังรูปด้านขวา จะเห็นเส้นแบ่งที่ดีที่สุดจากแต่ละอัลกอริทึม
+
+
+![](img/HMC.png)
+
+support vector machine มีหลักการเบื้องต้นคล้ายกับ classifier แบบ linear อย่างไรก็ตามการหาเส้นแบ่งของ SVM จะพิจารณาจาก support vector ที่เป็นข้อมูลที่อยู่ใกล้ขอบเขตการจำแนกข้อมูลมากที่สุดด้วย (มี contraint เพิ่มเติม) กล่าวคือ SVM จะพยายามหาเส้นแบ่งที่ทำให้ระยะห่างระหว่าง support vector กับเส้นแบ่งมีค่ามากที่สุด ดังรูป
+
+![](img/SVM1.png){width="60%"}
+
+
+การจำแนกข้อมูลด้วยอัลกอริทึมตามหลักข้างต้นจะเรียกว่า hard margin classification อย่างไรก็ตามอัลกอริทึมประเภทนี้มีข้อจำกัดในบางกรณี เช่น
+
+- มีค่าผิดปกติในข้อมูล
+
+![](img/outlier.png){width="60%"}
+
+การแก้ปัญหาดังกล่าวคือการปรับให้โมเดลมีความยืดหยุ่นมากขึ้น โดยใช้ soft margin classification ซึ่งจะให้ความผิดพลาดได้มากขึ้น แต่ก็จะลดความเสี่ยงที่เกิดจากข้อมูลผิดปกติ แนวคิดดังกล่าวคือการเพิ่ม hyperparameter อีกตัวหนึ่งขึ้นมาเขียนแทนด้วย C (penalty term) ที่ใช้ควบคุมระยะห่างระหว่าง hyperplan กับข้อมูลที่ใกล้ที่สุดจากทั้งสองกลุ่ม (support vector)
+
+ลองพิจารณารูปด้านล่างจะเห็นว่าการปรับค่า C ที่เพิ่มมากขึ้นส่งผลอย่างไรต่อ classifier ของเรา
+
+![](img/SMC.png)
+
+
+- ขอบเขตจำแนกที่ไม่ใช่เส้นตรง
+
+หลายกรณีความสัมพันธ์ระหว่างตัวแปรอาจมีความซับซ้อนทำให้เส้นแบ่งที่เป็นเส้นตรงไม่สามารถจำแนกข้อมูลได้ดี กรณีเช่นนี้ linear classifier ทั้งหลายอาจจะให้ประสิทธิภาพที่ต่ำ
+
+SVM แก้ปัญหานี้ด้วยการใช้ kernel trick ซึ่งเป็นการแปลงข้อมูลเป็นมิติสูงขึ้นเพื่อที่จะสามารถใช้เส้นตรง (hyperplane) แบ่งข้อมูลในมิติสูงอย่างมีประสิทธิภาพ
+
+![](img/nonlinearSVM.png)
+
+- Linear Kernel
+
+- Polynomial Kernel
+
+- Radial Basis Function (RBF) Kernel (Gaussian Kernel)
+
+- Sigmoid Kernel
+
+[parsnip](https://www.tidymodels.org/find/parsnip/)
+
+
+
+
+
