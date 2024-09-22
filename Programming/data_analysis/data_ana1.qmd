@@ -1,0 +1,523 @@
+---
+title: "Data Analysis I: Compare Means"
+output: html
+toc: true
+message: false
+warning: false
+---
+
+## Outline
+
+- indenpendent-sample t-test
+
+- One-way ANOVA
+
+- Three-Way ANOVA
+
+- Three-Way ANOVA with Interaction
+
+
+## 1. Independent-sample t-test
+
+
+ชุดข้อมูลที่ใช้ประกอบตัวอย่างคือ [TeacherSalaryData](TeacherSalaryData.csv)
+
+```{r}
+library(tidyverse)
+data <- read_csv("TeacherSalaryData.csv")
+data <- data %>% 
+  rename(teacher_id = 1) %>% 
+  mutate(discipline = factor(discipline, 
+                             levels=c("A","B"),
+                             labels=c("Pure","Applied")))
+glimpse(data)
+```
+
+
+### 1.1 วัตถุประสงค์การวิเคราะห์
+
+เพื่อเปรียบเทียบเงินเดือนอาจารย์มหาวิทยาลัยระหว่างสาขาวิชา applied science และ pure science
+
+ปกติก่อนการวิเคราะห์นัยสำคัญผู้วิเคราะห์ควรจะต้องสำรวจข้อมูลเบื้องต้นเพื่อทำความเข้าใจสภาพของข้อมูลก่อน
+
+- สถิติพื้นฐาน
+
+```{r}
+## สถิติพื้นฐาน
+data %>% 
+  group_by(discipline) %>% 
+  summarise(n = n(),
+            mean = mean(salary),
+            sd = sd(salary),
+            min = min(salary),
+            max = max(salary))
+```
+
+- visualization
+
+```{r}
+data %>% 
+  ggplot(aes(x = salary, y=discipline))+ 
+  geom_boxplot(aes(fill = discipline), show.legend = F)
+```
+
+### 1.2.ขั้นตอนปกติของการวิเคราะห์ Independent-sample t-test
+
+![](img/t_test1.png){width="60%"}
+
+- อย่างไรก็ตามผลการวิจัยปัจจุบันพบว่า การทำ Welch's t-test มีประสิทธิภาพเทียบเท่า t-test แบบดั้งเดิมในกรณี homogeneity of variances และมีแนวโน้มดีกว่าในกรณี heterogeneity of variances 
+
+- ดังนั้นแนะนำใช้ Welch's t-test ได้ในทุกกรณีโดยไม่ต้องตรวจสอบ homogeneity of variances
+
+
+### 1.3 สมมุติฐานการทดสอบ
+
+จากผลการสำรวจพบว่าสาขา Applied มีแนวโน้มทีจะมีเงินเดือนสูงกว่า ดังนั้นสมมุติฐานการทดสอบจึงกำหนดดังนี้
+
+$H_0: \ \mu_{applied} \leq \mu_{pure}$
+
+$H_1: \ \mu_{applied} > \mu_{pure}$
+
+
+syntax สำหรับการวิเคราะห์ t-test ใน R
+
+```{r eval = F}
+# two-sided test (default)
+t.test(salary ~ discipline ,data=dat, 
+       var.equal = FALSE) ## <-- Welch's t-test
+# one-sided test
+t.test(salary ~ discipline, data=dat, 
+       var.equal = FALSE,
+       alternative = "greater") ## <-- one-sided test
+```
+
+### 1.4 การวิเคราะห์
+
+
+```{r}
+## สลับ factor level
+data <- data %>% 
+  mutate(discipline = fct_relevel(discipline, "Applied","Pure"))
+## วิเคราะห์
+t.test(salary ~ discipline, 
+       data=data,
+       var.equal = FALSE,
+       alternative = "greater")
+```
+### 1.5 ข้อตกลงเบื้องต้นของ t-test
+
+- Independence
+
+- Normality
+
+- Homogeneity of variances
+
+#### Normality Checks
+
+```{r}
+library(patchwork)
+p1 <- data %>% 
+  ggplot(aes(sample = salary))+
+  geom_qq()+
+  geom_qq_line(linetype = 2)+
+  theme_light()+
+  facet_wrap(~discipline)
+
+p2 <- data %>% 
+  ggplot(aes(x = salary))+
+  geom_histogram()+
+  theme_light()+
+  facet_wrap(~discipline)
+
+p1/p2
+```
+
+```{r}
+shapiro.test(data$salary[data$discipline == "Applied"])
+shapiro.test(data$salary[data$discipline == "Pure"])
+```
+
+#### Homogeneity of variances
+
+- ให้ไว้เผื่ออยากใช้
+
+เราสามารถตรวจสอบได้หลายวิธี ทั้งการใช้สถิติพื้นฐาน visualization และ การทดสอบนัยสำคัญ เช่น Levene's test
+
+$$
+H_0: \ \sigma^2_{applied} = \sigma^2_{pure}
+\\
+H_1: \ \sigma^2_{applied} \neq \sigma^2_{pure}
+$$
+
+```{r}
+library(car)
+leveneTest(salary ~ discipline, data = data)
+```
+
+ผลการทดสอบไม่ปฏิเสธ H0 
+
+## 2. Paired-Sample t-test
+
+การวิเคราะห์นี้ใช้เปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่างที่มีความสัมพันธ์กัน ในเชิงทฤษฎีการทดสอบนี้คือ one-sample t-test ที่ใช้ผลต่างรายคู่ของคะแนนไปดำเนินการทดสอบ
+
+ชุดข้อมูลตัวอย่างสำหรับกรณีนี้จะใช้ gapminder 
+
+```{r}
+library(gapminder)
+glimpse(gapminder)
+```
+### 2.1 วัตถุประสงค์การวิเคราะห์
+
+เพื่อเปรียบเทียบ gdpPercap ของประเทศระหว่างปี 1952 กับ 1957 
+
+```{r}
+filtered_data <- gapminder %>% 
+  filter(year %in% c(1952,1957))
+```
+
+### 2.2 สมมุติฐานการทดสอบ
+
+$$
+H_0: \ \mu_{1957} \leq \mu_{1952}
+
+\\
+
+H_1: \ \mu_{1957}  >  \mu_{1952}
+$$
+### 2.3 การวิเคราะห์
+
+ส่วนแรกเป็นการวิเคราะห์ด้วยสถิติพื้นฐาน
+
+```{r}
+use_data <- filtered_data %>% 
+  select(-pop, -lifeExp) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_") %>% 
+  mutate(gdp_change = gdp_year_1957 - gdp_year_1952)
+use_data
+```
+
+```{r}
+use_data %>% 
+  summarise(mean_change = mean(gdp_change),
+            sd_change = sd(gdp_change))
+```
+
+ผลการวิเคราะห์ด้านล่างแสดงให้เห็นว่ามี 10 ประเทศที่มี gdp ลดลง
+
+```{r}
+use_data %>% 
+  mutate(gdp_change = ifelse(gdp_change > 0, 1, 0)) %>%
+  count(gdp_change)
+```
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = gdp_change))+
+  geom_histogram(fill = "steelblue", col = "white")+
+  theme_light()
+```
+
+#### one-sample t-test approach
+
+```{r}
+use_data %>% 
+  with(t.test(gdp_change, mu = 0, alternative = "greater"))
+```
+
+
+#### paired-sample t-test approach
+
+`t.test()` มีอัลกอริทึมสำเร็จรูปสำหรับทำ paired-sample t-test โดยใช้ argument `paired = TRUE` ดังนั้นผู้วิเคราะห์ไม่ต้องจัดกระทำข้อมูลเองทั้งหมด
+
+```{r}
+filtered_data %>% 
+  select(-pop, -lifeExp) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_") %>% 
+  with(t.test(x = gdp_year_1957,
+              y = gdp_year_1952,
+              paired = TRUE,
+              alternative = "greater"))
+```
+
+### 2.4 ข้อตกลงเบื้องต้นของ t-test
+
+paired t-test มีข้อตกลงเบื้องต้นเหมือน one-sample t-test
+
+- Independence
+
+- Normality
+
+## 3. One-Way ANOVA
+
+![](img/anova.png){width="50%"}
+
+```{r}
+data %>% 
+  mutate(rank = fct_relevel(rank, "AsstProf","AssocProf","Prof")) %>% 
+  group_by(rank) %>% 
+  summarise(n = n(),
+            mean = mean(salary),
+            sd = sd(salary),
+            min = min(salary),
+            max = max(salary))
+
+data %>% 
+  mutate(rank = fct_relevel(rank, "AsstProf","AssocProf","Prof")) %>% 
+  ggplot(aes(x=rank, y=salary))+
+  geom_violin(aes(fill = rank), show.legend = F)+
+  geom_boxplot(width = 0.1)+
+  theme_light()
+```
+
+### 3.1 ANOVA and F-test
+
+$$
+H_0: \ \mu_{AsstProf} = \mu_{AssocProf} = \mu_{Prof}
+\\
+H_1: \text{At least one of the means is different}
+$$
+![](img/anova2.png)
+
+
+```{r}
+### calculate traditional ANOVA
+fit_anova <- aov(salary ~ rank, data = data)
+summary(fit_anova)
+```
+
+```{r}
+### calculaate Welch's F-test
+fit_anova_welch<- oneway.test(salary ~ rank, data = data)
+```
+### 3.2 Multiple Comparison
+
+- `TukeyHSD()`
+
+- `pairwise.t.test()`
+
+- `ScheffeTest()`
+
+#### `TukeyHSD()`
+
+ใช้ทดสอบ multiple comparison ด้วยการทดสอบ Tukey's Honestly Significant Difference (HSD)
+
+- pairwise comparison 
+
+- ควบคุม family-wise error rate คำนวณค่า p-value และ confidence interval จากการแจกแจง studentized range distribution
+
+- ใช้ได้กับทั้ง balance และ unbalance design
+
+- ทนทานต่อการ violate assumption normality และ homogeneity of variances
+
+```{r}
+TukeyHSD(fit_anova)
+```
+#### `pairwise.t.test()`
+
+ฟังก์ชันนี้สามารถเลือกวิธีการปรับค่า p-value ได้หลายวิธีการ
+
+- Bonferroni (ควบคุม family-wise error rate)
+
+- Holm (ควบคุม family-wise error rate)
+
+- Benjamini-Hochberg (ควบคุม false discovery rate)
+
+$$
+FDR = \frac{V}{R}
+$$
+โดยที่ $V$ คือจำนวนการทดสอบที่เป็น false positive และ $R$ คือจำนวนการทดสอบทั้งหมดที่พบนัยสำคัญทางสถิติ
+
+
+```{r}
+pairwise.t.test(data$salary, data$rank, p.adjust.method = "bonferroni")
+```
+
+```{r}
+pairwise.t.test(data$salary, data$rank, p.adjust.method = "holm")
+```
+
+```{r}
+pairwise.t.test(data$salary, data$rank, p.adjust.method = "BH")
+```
+
+
+#### `Scheffe's test`
+
+```{r}
+#install.packages("DescTools")
+library(DescTools)
+ScheffeTest(fit_anova)
+```
+
+### 3.3 ข้อตกลงเบื้องต้น
+
+- Independence
+
+- Normality
+
+- Homogeneity of variances
+
+```{r fig.height = 8}
+
+temp_data  <- data %>% 
+  bind_cols(resid = residuals(fit_anova),
+            predict = predict(fit_anova)) 
+
+p1 <- temp_data %>% 
+  ggplot(aes(x = resid))+
+  geom_histogram()
+
+p2 <- temp_data %>% 
+  ggplot(aes(sample = resid))+
+  geom_qq()+
+  geom_qq_line()
+
+p3 <- temp_data %>%
+  ggplot(aes(x=predict, y=scale(resid)))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype = 2)+
+  geom_smooth(se = F)
+
+p1/p2/p3
+```
+
+
+## 4. Multi-Way ANOVA
+
+```{r}
+fit_3way_anova  <- data %>% 
+  with(aov(salary ~ rank + discipline + sex))
+summary(fit_3way_anova)
+```
+## 4.2 Effect Size
+
+Eta squared
+
+$$
+\eta^2 = \frac{SS_{effect}}{SS_{total}}
+$$
+Partial Eta squared
+
+$$
+\eta^2 = \frac{SS_{effect}}{SS_{effect} + SS_{error}}
+$$
+Omega squared
+
+$$
+\omega^2 = \frac{SS_{effect} - (df_{effect} \times MS_{error})}{SS_{total} + MS_{error}}
+$$
+
+
+
+```{r}
+# install.packages("effectsize")
+library(effectsize)
+eta_squared(fit_3way_anova)
+omega_squared(fit_3way_anova)
+```
+
+## 4.3 Exploring Interaction Effect
+
+Interaction Effect คือสถานการณ์ที่อิทธิพลหรือผลกระทบของปัจจัยหนึ่งที่มีต่อตัวแปรตามไม่คงที่ แต่มีการเปลี่ยนแปลงหรือแปรผันไปตามค่าของปัจจัยหรือตัวแปรอิสระตัวอื่น
+
+
+![](img/interaction.png)
+
+
+
+การกำหนด interaction effect ใน model ทั้ง ANOVA และ regression มีแนวทางในการกำหนดหลายวิธีการ
+
+- Literature Review
+
+- Principle of Interaction Search (Wu and Hamada, 2011)
+
+- Machine Learning Approach
+
+#### 4.3.1  Principle of Interaction Search 
+
+  - First Principle: Interaction Hierarchy – higher order interaction มักมีความสัมพันธ์หรือมีผลกระทบต่อค่าทำนายน้อยกว่า lower order interaction และ main effects
+  
+  - Second Principle: Effect Sparsity – มีเพียงส่วนหนึ่งของผลกระทบที่เป็นไปได้ทั้งหมดเท่านั้นที่สามารถอธิบายความแปรปรวน/ทำนายตัวแปรตามได้อย่างมีนัยสำคัญ
+
+  - Third Principle: Effect Heredity – ปฏิสัมพันธ์ของตัวแปรต่างๆ อาจพิจารณาได้ก็ต่อเมื่อผลกระทบของตัวแปรที่เกิดก่อนปฏิสัมพันธ์นั้นมีประสิทธิภาพในการอธิบายความแปรปรวน/ทำนายตัวแปรตาม
+
+![Effect Sparsity](https://bookdown.org/max/FES/figures/interaction-effect-sparsity.png){width="70%"}
+
+![Effect Heredity](https://bookdown.org/max/FES/figures/interaction-effect-heredity.png){width="70%"}
+
+จากผลการวิเคราะห์ main effect ข้างต้น
+
+```{r fig.height= 5}
+interaction.plot(x.factor = data$rank,
+                 trace.factor = data$sex,
+                 response = data$salary,
+                 col = c("steelblue","orange"),
+                 lwd = 2,
+                 trace.label = "discipline",
+                 type = "b",
+                 main = "Interaction plot",
+                 ylim = c(70000,130000))
+
+interaction.plot(x.factor = data$rank,
+                 trace.factor = data$discipline,
+                 response = data$salary,
+                 col = c("steelblue","orange"),
+                 lwd = 2,
+                 trace.label = "discipline",
+                 type = "b",
+                 main = "Interaction plot",
+                 ylim = c(70000,130000))
+
+interaction.plot(x.factor = data$discipline,
+                 trace.factor = data$sex,
+                 response = data$salary,
+                 col = c("steelblue","orange"),
+                 lwd = 2,
+                 trace.label = "discipline",
+                 type = "b",
+                 main = "Interaction plot",
+                 ylim = c(70000,130000))
+
+```
+
+
+```{r}
+fit_interac_3way_anova <- data %>% 
+  with(aov(salary ~ rank + discipline + sex + rank:discipline+ rank:sex + 
+             discipline:sex))
+summary(fit_interac_3way_anova)
+eta_squared(fit_interac_3way_anova)
+```
+
+### 4.3.2 Simple Effect Analysis
+
+หากพบอิทธิพลปฏิสัมพันธ์ในการวิเคราะห์ การเปรียบเทียบความแตกต่างของค่าเฉลี่ยหรือการวิเคราะห์อิทธิพลของตัวแปรอิสระที่มีต่อตัวแปรตามจะต้องทำไปทีละเงื่อนไข เรียกการวิเคราะห์นี้ว่า simple effect analysis
+
+
+ดาวน์โหลดข้อมูลจาก [precipitation_risk_data](precipitaion_risk_data.csv)
+
+```{r}
+precipitaion_risk_data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/data_analysis/precipitaion_risk_data.csv")
+```
+
+
+```{r}
+fit_risk<- precipitaion_risk_data %>% 
+  filter(year == "2017") %>% 
+  with(aov(risk_index ~ school_size+location+hard_to_reach + location:school_size))
+fit_risk %>% summary()
+```
+
+```{r}
+library(emmeans)
+emmeans(fit_risk, pairwise ~ location | school_size)
+emmeans(fit_risk, pairwise ~ school_size | location)
+```
+
+
+
+
+
