@@ -2,6 +2,8 @@
 title: "Single Learning (cont.)"
 format: html
 toc: true
+message: false
+warning: false
 editor: visual
 ---
 
@@ -35,8 +37,197 @@ editor: visual
 - เส้นแบ่งจะเกิดขึ้นเมื่อ discriminant score ของสองคลาสมีค่าเท่ากัน ซึ่งหมายถึงข้อมูลมีโอกาสที่จะอยู่ในทั้งสองคลาสเท่ากัน
 	
 	
+# Example
 
-# SVM
+```{r}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/เอกสารประกอบการสอน/2758615/EDA using R/learning_data.csv")
+glimpse(data)
+```
+
+# Exploring data using PCA and PLS
+
+```{r}
+## compoent loading
+data %>% 
+  recipe(research_score ~.) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_rm(gender, department) %>% 
+  step_impute_knn(cheat_index) %>% 
+  step_pca(all_numeric_predictors()) %>% 
+  prep() %>% tidy(4) %>% 
+  filter(component %in% paste0("PC",1:4)) %>% 
+  ggplot(aes(x=value, y=terms))+
+  geom_col(aes(fill = value))+
+  facet_wrap(~component)
+
+data %>% 
+  recipe(research_score ~.) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_rm(gender, department) %>% 
+  step_impute_knn(cheat_index) %>% 
+  step_pls(outcome = "research_score", all_numeric_predictors()) %>% 
+  prep() %>% juice() %>% 
+  ggplot(aes(x=PLS1, y=PLS2, col=research_score>80))+
+  geom_point()+
+  geom_vline(xintercept = 0,linetype = 2)+
+  xlab("เด็กดีและเก่ง")+
+  ylab("เด็กขี้โกง")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+
+```{r}
+new_data <- data |> 
+  mutate(research_score = ifelse(research_score>80, 1,0)) %>% 
+  mutate(research_score = factor(research_score, levels=c(1,0),
+                                 labels=c("success","fail")))
+```
+
+## Data Spliting
+
+```{r}
+library(tidymodels)
+library(MASS)
+library(discrim)
+set.seed(123)
+split <- initial_split(new_data, prop = 0.8, strata = research_score)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
+## Specifing model
+
+```{r}
+lda_spec_MASS <- discrim_linear() %>%
+  set_engine("MASS") %>%
+  set_mode("classification")
+
+lda_spec_mda <- discrim_linear(penalty = tune()) %>%
+  set_engine("mda") %>%
+  set_mode("classification")
+
+qda_spec_MASS <- discrim_quad() %>%
+  set_engine("MASS") %>%
+  set_mode("classification")
+```
+## Recipe
+
+```{r}
+train_data %>% count(research_score)
+```
+
+
+
+```{r}
+library(themis)
+lda_rec <- recipe(research_score ~. ,data=train_data) %>% 
+  update_role(student_id, new_role = "ID") %>% 
+  step_rm(gender, department) %>% 
+  step_impute_knn(cheat_index) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_smote(research_score)
+
+lda_rec %>% prep() %>% juice() %>% count(research_score)
+```
+
+
+## create workflowset
+
+```{r}
+lda_wfset <- 
+   workflow_set(
+      preproc = list(base_rec_lda = lda_rec), 
+      models = list(lda_MASS = lda_spec_MASS, 
+                    lda_mda = lda_spec_mda, 
+                    qda_MASS = qda_spec_MASS),
+      cross = FALSE
+   )
+
+lda_wfset %>% 
+extract_workflow(id = "base_rec_lda_lda_mda")
+```
+## Tune hyperparameter
+
+```{r}
+library(future)
+plan(multisession, workers = 10)
+tidymodels_prefer()
+
+tuned_results_wfset <- lda_wfset %>% 
+  workflow_map(
+      seed = 123,
+      resamples = vfold_cv(train_data, v = 5, repeats = 3, strata = "research_score"),
+      grid = 50,
+     # metric = metric_set(roc_auc, f_meas, sens, spec, precision),
+      control = control_grid(save_pred = TRUE, parallel_over = "everything")
+    )
+
+## -- explore lda
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_lda_mda") %>% 
+  collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+
+
+  
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_lda_mda") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model01") %>% 
+  sens(truth = research_score, estimate = .pred_class)
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_lda_mda") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model01") %>% 
+  spec(truth = research_score, estimate = .pred_class)
+
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_lda_mda") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model01") %>% 
+  precision(truth = research_score, estimate = .pred_class)
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_lda_mda") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model01") %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+```
+
+
+
+```{r}
+### explore qda
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_qda_MASS") %>% 
+  collect_metrics()
+
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_qda_MASS") %>% 
+  collect_predictions() %>% 
+  sens(truth = research_score, estimate = .pred_class)
+
+tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "base_rec_lda_qda_MASS") %>% 
+  collect_predictions() %>% 
+  spec(truth = research_score, estimate = .pred_class)
+
+
+```
+
+
+# Support Vector Machine (SVM)
 
 การจำแนกข้อมูลแบบ SVM ใช้หลักการสร้าง เส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นสองกลุ่มได้อย่างเหมาะสมมากที่สุด
 
@@ -81,6 +272,148 @@ SVM แก้ปัญหานี้ด้วยการใช้ kernel trick
 
 [parsnip](https://www.tidymodels.org/find/parsnip/)
 
+
+## Example
+
+
+## Specifing model
+
+```{r}
+svm_linear_spec <- svm_linear(cost = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("classification")
+
+svm_poly_spec <- svm_poly(degree = 2, cost = tune(), scale_factor = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("classification")
+
+svm_rbf_spec <- svm_rbf(rbf_sigma = tune(), cost = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("classification")
+```
+## Recipe
+
+
+```{r}
+library(themis)
+svm_rec <- recipe(research_score ~. ,data=train_data) %>% 
+  update_role(student_id, new_role = "ID") %>% 
+  step_rm(gender, department) %>% 
+  step_impute_knn(cheat_index) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_adasyn(research_score)
+
+svm_rec %>% prep() %>% juice() %>% count(research_score)
+```
+
+
+## create workflowset
+
+```{r}
+wfset_all <- 
+   workflow_set(
+      preproc = list(smote_rec = lda_rec , adasyn_rec = svm_rec),
+      models = list(lda_MASS = lda_spec_MASS,
+                    svm_linear = svm_linear_spec, 
+                    svm_poly = svm_poly_spec, 
+                    svm_rbf = svm_rbf_spec),
+      cross = TRUE
+   )
+wfset_all
+```
+
+```{r}
+library(future)
+plan(multisession, workers = 10)
+all_tuned_results_wfset <- wfset_all %>% 
+  workflow_map(
+      seed = 123,
+      resamples = vfold_cv(train_data, v = 5, repeats = 3, strata = "research_score"),
+      grid = 50,
+      metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+      control = control_grid(save_pred = TRUE, parallel_over = "everything")
+    )
+```
+
+```{r}
+## สามารถใช้ collect_metrics() กับ workflowset ได้เลย
+all_tuned_results_wfset %>% collect_metrics() %>% 
+  arrange(.config)
+```
+
+ดังนั้นเราสามารถสร้าง visualization เพื่อเปรียบเทียบประสิทธิภาพได้เลย
+
+```{r}
+all_tuned_results_wfset %>% collect_metrics() %>% 
+  filter(.metric == "f_meas") %>% 
+  filter(str_detect(wflow_id,"svm")) %>% 
+  ggplot(aes(x = reorder(wflow_id, mean), y=mean, col = wflow_id))+
+  geom_point()+
+  geom_errorbar(aes(ymin = mean - std_err, ymax = mean + std_err))+
+  theme_light()+
+  coord_flip()
+```
+
+```{r}
+all_tuned_results_wfset %>% collect_metrics() %>% 
+  filter(.metric == "f_meas") %>% 
+  filter(str_detect(wflow_id,"svm")) %>% 
+  ggplot(aes(x = reorder(wflow_id, mean), y=mean, col = wflow_id))+
+  geom_boxplot()+
+  theme_light()+
+  coord_flip()
+```
+
+
+## Extract workflow results from workflowset
+
+```{r}
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "smote_rec_svm_poly") %>% 
+  collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "adasyn_rec_svm_poly") %>% 
+  collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+
+
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "smote_rec_svm_rbf") %>% 
+  collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+```
+
+```{r}
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "adasyn_rec_svm_poly") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model40") %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+
+
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "adasyn_rec_svm_poly") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model40") %>% 
+  sens(truth = research_score, estimate = .pred_class)
+
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "adasyn_rec_svm_poly") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model40") %>% 
+  precision(truth = research_score, estimate = .pred_class)
+
+all_tuned_results_wfset %>% 
+  extract_workflow_set_result(id = "adasyn_rec_svm_poly") %>% 
+  collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model40") %>% 
+  spec(truth = research_score, estimate = .pred_class)
+```
 
 
 
