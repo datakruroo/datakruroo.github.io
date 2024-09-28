@@ -252,7 +252,73 @@ paired t-test มีข้อตกลงเบื้องต้นเหมื
 
 ## 3. One-Way ANOVA
 
+- โมเดลที่ใช้วิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+- ตัวแปรตามเป็นตัวแปรต่อเนื่อง ตัวแปรอิสระเป็นตัวแปรจัดประเภท
+
+- การวิเคราะห์ความสัมพันธ์ในบริบทข้างต้น จึงเป็นการเปรียบเทียบค่าเฉลี่ยของตัวแปรตามระหว่างค่าที่เป็นไปได้ของตัวแปรอิสระ
+
+- ในกรณีที่ตัวแปรจัดประเภทมีค่าที่เป็นไปได้ 2 ระดับ one-way ANOVA จะให้ผลลัพธ์ที่เทียบเท่ากับ t-test ดังนั้นในกรณีนี้เราเลยใช้ t-test เป็นปกติไป
+
+- ในกรณที่ตัวแปรจัดประเภทมีค่าที่เป็นไปได้มากกว่า 2 ระดับ one-way ANOVA จะเหมาะสมกว่า t-test เหมาะสมกว่าในเชิงของการควบคุมความผิดพลาดของการปฏิเสธ H0 (Type I Error)
+
+
+```{r}
+library(tidyverse)
+data <- read_csv("TeacherSalaryData.csv")
+```
+
 ![](img/anova.png){width="50%"}
+
+วัตถุประสงค์ของงานนี้ คือ การเปรียบเทียบเงินเดือนอาจารย์มหาวิทยาลัยที่มีตำแหน่งวิชาการแตกต่างกัน
+
+
+```{r}
+data %>% 
+  mutate(rank =fct_relevel(rank, "AsstProf","AssocProf","Prof")) %>% 
+  ggplot(aes(x=rank, y=salary))+
+  geom_boxplot()
+```
+$$
+H0: ยารักษาโรคไม่ได้
+\\
+H1: ยารักษาโรคได้
+$$
+
+
+Type I error ความผิดพลาดที่เกิดขึ้นจากการปฏิเสธ H0 โดยที่ H0 มันเป็นของจริง
+
+Type II error ความผิดพลาดที่เกิดขึ้นจากไม่ปฏิเสธ H0 ที่เป็นเท็จ
+
+
+**การเปรียบเทียบเงินเดือนอาจารย์มหาวิทยาลัยที่มีตำแหน่งวิชาการแตกต่างกัน**
+
+
+สมมุติว่าเราจะใช้ t-test เพ่ือเปรียบเทียบเงินเดือนดังกล่าว โดยกำหนดสมมุติฐานการทดสอบดังนี้
+
+- Asst vs Assoc มีการกำหนด alpha = .05 <-- type I error ที่ยอมรับได้ของ 1 การทดสอบ
+
+- Asst vs Prof มีการกำหนด alpha = .05
+
+- Assoc vs Prof มีการกำหนด alpha = .05
+
+ความผิดพลาดประเภทที่หนึ่งของชุดการทดสอบ (Family-wise Type I Error)
+
+P(ที่จะมีการทดสอบอย่างน้อย 1 การทดสอบผิดพลาด) = 1 - (1-alpha)^k
+
+```{r}
+## family-wise type I error
+1-(1-0.05)^3 ##<- inflation of type I error
+```
+
+```{r}
+k<-2:10
+fw_error <- 1-(1-0.05)^k
+plot(k,fw_error, type="b")
+```
+
+
+
 
 ```{r}
 data %>% 
@@ -282,17 +348,117 @@ $$
 ![](img/anova2.png)
 
 
+$$
+F-test = \frac{MSB}{MSW}
+$$
+
+เมื่อไหร่ก็ตามที่ F มีค่ามาก ๆ (p-value < .05) เราจะปฏิเสธ H0 มีความแตกต่างของค่าเฉลี่ยระหว่างกลุ่มอย่างน้อย 1 คู่
+
 ```{r}
-### calculate traditional ANOVA
-fit_anova <- aov(salary ~ rank, data = data)
-summary(fit_anova)
+anova_data <- data %>% 
+  mutate(rank =fct_relevel(rank, "AsstProf","AssocProf","Prof"))
 ```
 
 ```{r}
-### calculaate Welch's F-test
-fit_anova_welch<- oneway.test(salary ~ rank, data = data)
+7.162e+10/5.586e+08
 ```
-### 3.2 Multiple Comparison
+
+```{r}
+### calculate traditional ANOVA
+fit_anova <- aov(salary ~ rank, data = anova_data)
+## ANOVA table and F-test
+summary(fit_anova)
+```
+ผลการวิเคราะห์ข้างต้นพบว่า p-value < .000
+
+ดังนั้นเราจะ reject H0 สรุปได้ว่าค่าเฉลี่ยเงินเดือนอาจารย์มหาวิทยาลัยมีความแตกต่างกันอย่างน้อย 1 คู่<-- รู้ว่ามีความแตกต่างกันของค่าเฉลี่ยเงินเดือนอาจารย์ที่มีตำแหน่งิวชาการต่างกัน แต่ยังสรุปไม่ได้ว่าความแตกต่างดังกล่าวเกิดขึ้นอย่างไรมีลักษณะอย่างไร
+
+
+การตรวจสอบ assumption ของ F-test 
+
+- normality
+
+```{r}
+library(patchwork)
+## ตัวแปรตามมีการแจกแจงแบบปกติในทุกกลุ่ม
+p1<- anova_data %>% 
+  ggplot(aes(x=salary))+
+  geom_histogram(bins=20)+
+  facet_wrap(~rank, scale = "free_x")
+
+p2<- anova_data %>% 
+  ggplot(aes(sample = salary))+
+  geom_qq()+
+  geom_qq_line()+
+  facet_wrap(~rank, scale = "free_x")
+
+p1/p2
+```
+
+```{r}
+library(purrr)
+## shapiro-wilk test
+anova_data %>% 
+  group_by(rank) %>% 
+  nest() %>% 
+  mutate(shapiro_test = map(data, ~shapiro.test(.x$salary))) %>% pull(shapiro_test)
+```
+
+```{r}
+anova_data %>% 
+  group_by(rank) %>% 
+  summarise(mean_salary = mean(salary))
+```
+
+
+```{r}
+## normality == ความคลาดเคลื่อนสุ่มของโมเดลมีการแจกแจงแบบปกติ
+## ความคลาดเคลื่อนสุ่มประมาณได้จาก residual ของโมเดล
+## residual = y - y.hat
+anova_data %>% 
+  bind_cols(resid = residuals(fit_anova)) %>% 
+  ggplot(aes(x=resid))+
+  geom_histogram()
+
+anova_data %>% 
+  bind_cols(resid = residuals(fit_anova)) %>% 
+  ggplot(aes(sample=resid))+
+  geom_qq()+
+  geom_qq_line()
+
+anova_data %>% 
+  bind_cols(resid = residuals(fit_anova)) %>% 
+  with(shapiro.test(.$resid))
+```
+
+- Homogeneity of variances
+
+```{r}
+anova_data %>% 
+  group_by(rank) %>% 
+  summarise(var_salary = var(salary))
+```
+
+Levene's Test
+
+$$
+H_0: \sigma^2_{assit} = \sigma^2_{assoc} = \sigma^2_{prof}
+\\
+H_1: not \ H_0
+$$
+
+
+```{r}
+##install.packages("car")
+library(car)
+leveneTest(salary ~ rank, data = anova_data)
+```
+
+```{r}
+### calculate Welch's F-test (Heterogeneity of variances F-test)
+fit_anova_welch<- oneway.test(salary ~ rank, data = anova_data)
+```
+### 3.2 การเปรียบเทียบรายคู่ภายหลัง (Multiple Comparisons)
 
 - `TukeyHSD()`
 
@@ -300,11 +466,13 @@ fit_anova_welch<- oneway.test(salary ~ rank, data = data)
 
 - `ScheffeTest()`
 
+
+
 #### `TukeyHSD()`
 
 ใช้ทดสอบ multiple comparison ด้วยการทดสอบ Tukey's Honestly Significant Difference (HSD)
 
-- pairwise comparison 
+- pairwise comparisons 
 
 - ควบคุม family-wise error rate คำนวณค่า p-value และ confidence interval จากการแจกแจง studentized range distribution
 
@@ -315,6 +483,8 @@ fit_anova_welch<- oneway.test(salary ~ rank, data = data)
 ```{r}
 TukeyHSD(fit_anova)
 ```
+
+
 #### `pairwise.t.test()`
 
 ฟังก์ชันนี้สามารถเลือกวิธีการปรับค่า p-value ได้หลายวิธีการ
@@ -332,15 +502,21 @@ $$
 
 
 ```{r}
-pairwise.t.test(data$salary, data$rank, p.adjust.method = "bonferroni")
+pairwise.t.test(x = anova_data$salary, 
+                g = anova_data$rank, 
+                p.adjust.method = "bonferroni")
 ```
 
 ```{r}
-pairwise.t.test(data$salary, data$rank, p.adjust.method = "holm")
+pairwise.t.test(x = data$salary, 
+                g = data$rank, 
+                p.adjust.method = "holm")
 ```
 
 ```{r}
-pairwise.t.test(data$salary, data$rank, p.adjust.method = "BH")
+pairwise.t.test(data$salary, 
+                data$rank, 
+                p.adjust.method = "BH")
 ```
 
 
@@ -354,9 +530,22 @@ ScheffeTest(fit_anova)
 
 ### 3.3 ข้อตกลงเบื้องต้น
 
+$$
+y_{ij} = \mu + \alpha_j + \epsilon_{ij}
+\\
+\mu + \alpha_j = \mu_j
+$$
+
+$$
+\epsilon_{ij} \sim N(0,\sigma^2)
+$$
 - Independence
 
 - Normality
+
+  - การแจกแจงของตัวแปรตามในแต่ละกลุ่มมีการแจกแจงแบบปกติ
+  
+  - ความคลาดเคลื่อนสุ่มมีการแจกแจงแบบปกติ <-- ตรวจสอบที่ residual ของโมเดล
 
 - Homogeneity of variances
 
@@ -384,39 +573,62 @@ p3 <- temp_data %>%
 p1/p2/p3
 ```
 
-
 ## 4. Multi-Way ANOVA
 
+
 ```{r}
-fit_3way_anova  <- data %>% 
+fit_3way_anova  <- anova_data %>% 
   with(aov(salary ~ rank + discipline + sex))
+## three-way ANOVA table
 summary(fit_3way_anova)
 ```
+เมื่อควบคุมให้ปัจจัยอื่นคงที่
+
+- ตำแหน่งวิชาการของอาจารย์มีผลกระทบต่อเงินเดือนอาจารย์อย่างมีนัยสำคัญทางสถิติที่ระดับ .05
+
+- เงินเดือนของอาจารย์ระหว่างสาขาวิชา pure กับ applied มีความแตกต่างกันอย่างมีนัยสำคัญทางสถิติที่ระดับ .05
+
+- เงินเดือนของอาจารย์ไม่แตกต่างกันระหว่างเพศชายและหญิง ที่ระดับนัยสำคัญ .05
+
+
 ## 4.2 Effect Size
 
+- effect size เป็นนัยสำคัญอีกประเภทหนึ่งที่เรียกว่า นัยสำคัญเชิงปฏิบัติ (practical significance)
+
+- ดัชนีวัดระดับ/ขนาดของผลกระทบหรือความสัมพันธ์ระหว่างตัวแปรอิสระกับตัวแปรตาม
+
+- โดยมากมันจะเป็นดัชนีที่มีขอบเขต (boundary)
+
+
 Eta squared
+
+สัดส่วนของความผันแปรในตัวแปรตามที่อธิบายได้ด้วยตัวแปรอิสระที่กำหนด
 
 $$
 \eta^2 = \frac{SS_{effect}}{SS_{total}}
 $$
 Partial Eta squared
 
+
 $$
 \eta^2 = \frac{SS_{effect}}{SS_{effect} + SS_{error}}
 $$
+
+
 Omega squared
 
 $$
 \omega^2 = \frac{SS_{effect} - (df_{effect} \times MS_{error})}{SS_{total} + MS_{error}}
 $$
 
-
-
 ```{r}
 # install.packages("effectsize")
 library(effectsize)
-eta_squared(fit_3way_anova)
+eta_squared(fit_3way_anova, partial = F)
 omega_squared(fit_3way_anova)
+```
+```{r}
+eta_squared(fit_3way_anova, partial = T)
 ```
 
 ## 4.3 Exploring Interaction Effect
