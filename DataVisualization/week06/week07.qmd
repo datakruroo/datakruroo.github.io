@@ -29,6 +29,9 @@ execute:
 
 ```{r echo = F}
 library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week06/data_vis_act.csv")
+glimpse(data)
+data %>% count(year)
 ```
 
 ## Objective
