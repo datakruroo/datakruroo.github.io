@@ -44,7 +44,13 @@ data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming
 
 - Introduction to Diagnostic Analytics
 
-- Diagnostics Analytics Techniques
+- Process in Diagnostic Analysis
+
+- Identify the Problem
+
+- Frame the Problem
+
+- Analyze & Validate Causes
 
 # Introduction to Diagnostic Analytics
 
@@ -151,7 +157,7 @@ exam_data %>% select(G1, G2, G3) %>%
 
 ## Process in Diagnostic Analysis {.smaller}
 
-ลักษณะสำคัญของกระบวนการคือเป็นกระบวนการที่มีลักษณะสืบเสาะและทวนซ้ำกัน
+ลักษณะสำคัญคือเป็นกระบวนการที่มีลักษณะสืบเสาะและทวนซ้ำกัน
 
 :::: {.columns}
 
@@ -585,13 +591,54 @@ D["Fine-Tuning"]-.->C
 
 <div style="font-size: 70%;">
 
-[https://chatgpt.com/share/66f9acf3-2bc8-8003-974b-de35e507df7e](https://chatgpt.com/share/66f9acf3-2bc8-8003-974b-de35e507df7e)
+[https://chatgpt.com/share/66fa28eb-52a0-8003-b743-0e3fe3fd0173](https://chatgpt.com/share/66fa28eb-52a0-8003-b743-0e3fe3fd0173)
 
 </div>
 
-## ตัวอย่างการใช้ ChatGPT เพื่อระบุปัญหาโดยใช้ข้อมูลจริงเป็นฐาน
 
-![](img/problem2.png)
+
+
+## Analysis using Gen AI {background-color="black"}
+
+
+![](img/Screenshot%202567-09-20%20at%2020.23.24.png)
+
+
+## Analysis using Gen AI {background-color="black"}
+
+
+
+![](img/Screenshot%202567-09-20%20at%2020.25.01.png)
+
+
+## Analysis using Gen AI {background-color="black"}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2020.26.14.png)
+::::
+
+:::: {.column width="50%"}
+![](img/Screenshot%202567-09-20%20at%2020.27.53.png){width=85%}
+::::
+
+:::
+
+## Analysis using Gen AI: Final Output {background-color="black"}
+
+![](img/Screenshot%202567-09-20%20at%2020.34.27.png)
+
+
+
+
+## จุดเด่นข้อจำกัดของ Gen AI
+
+![](img/pros-and-cons-of-ai-11102022.webp)
+
+
+
 
 
 ## Identify the Problem {.smaller}
@@ -726,7 +773,7 @@ A((Factors?)) --> B[Problems]
 ::::
 
 
-## Original Fishbone Diagram (Ishikawa Diagram) {.smaller}
+## Fishbone Diagram (Ishikawa Diagram) {.smaller}
 
 - เป็นเครื่องมือที่ใช้ในการวิเคราะห์สาเหตุของปัญหา โดยมีลักษณะคล้ายโครงกระดูกปลา จึงเรียกว่า “Fishbone” หรือที่รู้จักอีกชื่อหนึ่งว่า Cause-and-Effect Diagram การวิเคราะห์นี้มีวัตถุประสงค์เพื่อระบุและจัดกลุ่มปัจจัยที่เป็นสาเหตุของปัญหาต่าง ๆ อย่างเป็นระบบ เพื่อให้เห็นภาพรวมของสาเหตุที่อาจก่อให้เกิดปัญหาหรือความไม่พึงประสงค์ที่เกิดขึ้น และช่วยให้สามารถแก้ไขปัญหาได้ตรงจุดมากขึ้น
 
@@ -814,7 +861,7 @@ A((Factors?)) --> B[Problems]
 
 ![](img/fish6.png)
 
-## Analysis Framework
+## Analysis Framework (1)
 
 
 <center>
@@ -826,25 +873,131 @@ A((Factors?)) --> B[Problems]
 
 flowchart LR
 
-A["การเข้าเรียน"]-->B(("แรงจูงใจ"))
-A["การเข้าเรียน"]-->C(("ความขยัน/รับผิดชอบ"))
 
-D["มาสาย"]-->B
-D["มาสาย"]-->C
+B(("แรงจูงใจ"))-->A["การเข้าเรียน"]
 
-E["ผลการเรียน Math ในอดีต"] --> F(("ความรู้พื้นฐาน"))
+C(("ความขยัน/รับผิดชอบ"))--> A
 
-B-->G["เรียนไม่รู้เรื่อง"]
-C-->G
-F-->G
+B-->D["มาสาย"]
+C-->D
+
+
+F(("ความรู้พื้นฐาน"))-->E["ผลการเรียน Math ในอดีต"] 
+
+
+subgraph analysis_framework ["Analysis Framework"]
+A-->G["เรียนไม่รู้เรื่อง"]
+D-->G
+E-->G
+end
+
+
 ```
 
 </center>
 
 
-## Data Collection {.smaller}
+## Analysis Framework (2)
 
 
+<center>
+
+```{mermaid}
+%% | echo: false
+%% | fig-align: "center"
+%% | fig-height: 100
+
+
+
+flowchart LR
+
+B(("แรงจูงใจ"))-->A["การเข้าเรียน"]
+B-->J["ปฏิสัมพันธ์ในชั้นเรียน"]
+C(("ความขยัน/รับผิดชอบ"))--> A
+C-->L["การทำการบ้าน/งานฯ"]
+
+B-->D["มาสาย"]
+C-->D
+
+F(("ความรู้พื้นฐาน"))-->E["ผลการเรียน Math ในอดีต"] 
+
+H(("ปัญหาด้านอารมณ์สังคม")) --> A
+H(("ปัญหาด้านอารมณ์สังคม")) --> D
+H --> I["ไม่มีเพื่อน"]
+H --> M["โดนกลั่นแกล้ง"]
+H --> L
+
+
+
+subgraph analysis_framework ["Analysis Framework"]
+A-->G["เรียนไม่รู้เรื่อง"]
+D-->G
+E-->G
+I-.->G
+J-->G
+L-->G
+M-->G
+
+end
+```
+
+</center>
+
+
+
+## Analysis Framework (3)
+
+
+<center>
+
+```{mermaid}
+%% | echo: false
+%% | fig-align: "center"
+%% | fig-height: 100
+
+
+
+flowchart LR
+
+B(("แรงจูงใจ"))-->A["การเข้าเรียน"]
+B-->J["ปฏิสัมพันธ์ในชั้นเรียน"]
+C(("ความขยัน/รับผิดชอบ"))--> A
+C-->L["การทำการบ้าน/งานฯ"]
+
+B-->D["มาสาย"]
+C-->D
+
+F(("ความรู้พื้นฐาน"))-->E["ผลการเรียน Math ในอดีต"] 
+
+H(("ปัญหาด้านอารมณ์สังคม")) --> A
+H(("ปัญหาด้านอารมณ์สังคม")) --> D
+H --> I["ไม่มีเพื่อน"]
+H --> M["โดนกลั่นแกล้ง"]
+H --> L
+
+
+N(("ปัญหาทางบ้าน"))-->H
+N-->B
+N-->C
+N-->F
+
+subgraph analysis_framework ["Analysis Framework"]
+A-->G["เรียนไม่รู้เรื่อง"]
+D-->G
+E-->G
+I-.->G
+J-->G
+L-->G
+M-->G
+
+end
+```
+
+</center>
+
+
+
+## Data Analysis {.smaller}
 
 <center>
 
@@ -872,8 +1025,10 @@ E --> [*]: Success
 
 </center>
 
+![](img/ASA_framwork1.png)
 
-## Data Collection {.smaller}
+## Data Analysis {.smaller}
+
 
 ก่อนการวิเคราะห์สาเหตุ/ปัจจัยที่สัมพันธ์กับปัญหา คุณครูอาจจำเป็นต้องเก็บรวบรวมข้อมูลเพิ่มเติมตามกรอบแนวคิดที่ได้สร้างไว้
 
@@ -889,7 +1044,8 @@ data %>%
   select(quiz1, quiz2, quiz3, percent_attend, percent_late_inclass,
          percent_goout, percent_answer_inclass, practice, time_do_homework1,
          time_do_homework2, percent_time_start1, percent_time_start2,
-         late_assignment, incomplete_assignment, pre_grade_inmath)
+         late_assignment, incomplete_assignment, pre_grade_inmath) %>% 
+  glimpse()
 ```
 
 ## Data Analysis
@@ -897,6 +1053,8 @@ data %>%
 - Descriptive Analysis
 
 - Pareto Analysis
+
+- Generative AI
 
 - Drill Down Analysis
 
@@ -907,6 +1065,8 @@ data %>%
 - Decision Tree
 
 - Root Cause Analysis (RCA) เช่น five whys
+
+- ...
 
 ## Data Analysis: Descriptive Analysis {.smaller}
 
@@ -922,45 +1082,179 @@ data %>%
   
   - วิเคราะห์ความสัมพันธ์เบื้องต้นระหว่างปัจจัยกับสภาพปัญหา
 
-## Frame the Problem {.smaller}
 
-<br>
-<br>
-<br>
+## Descriptive: สภาพปัจจัยที่คาดว่าน่าจะสัมพันธ์กับปัญหา {.smaller}
 
-<center>
-
-```{mermaid}
-%% | echo: false
-
-stateDiagram-v2
-state Stage1 {
-[*] --> A
-A --> B
-B --> C
-}
-
-state Stage2 {
-D --> F 
-F --> G
-
-}
+ลองคัดกรองเฉพาะผู้เรียนที่มีปัญหาเรียนไม่รู้เรื่อง จากนั้นวิเคราะห์สภาพของปัจจัยที่คาดว่าน่าจะสัมพันธ์กับปัญหา (quiz1 = 0)
 
 
-                            
+```{r echo = F}
+library(patchwork)
+p1<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  filter(quiz1 ==0) %>% 
+  select(percent_attend, percent_late_inclass,
+         percent_goout, percent_answer_inclass, practice,
+         percent_time_start1, percent_time_start2,
+         late_assignment, incomplete_assignment, pre_grade_inmath) %>% 
+  pivot_longer(cols = is.numeric) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(fill = "steelblue")+
+  facet_wrap(~name, scale="free_x")+
+  theme_light()
 
-A: <b>Preliminary Data</b>
-B: <b>Descriptive Analysis</b>
-C: <b>Identify the Problem</b>
-D: <b>Frame the Problem</b> 
-D: อะไรบ้างที่น่าจะเป็นสาเหตุ \n หรือปัจจัยที่สัมพันธ์กับปัญหา
-D: \n - 5 Whys \n - Fishbone Diagram \n - Brainstorming \n - Generative AI
-F: <b>Data Collection for Diagnosis</b>
-F: เก็บข้อมูลเพิ่มเติมตามสมมติฐานที่กำหนด
-G: <b>Analyze & Validate Causes</b>
-G: - Pareto Chart \n - Correlation Analysis \n - Regression Analysis, \n - Decision Tree Analysis \n - Drill Down Analysis
+p2<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  filter(quiz1 ==0) %>% 
+  select(percent_attend, percent_late_inclass,
+         percent_goout, percent_answer_inclass, practice,
+         percent_time_start1, percent_time_start2,
+         late_assignment, incomplete_assignment, pre_grade_inmath) %>% 
+  pivot_longer(cols = is.character) %>% 
+  ggplot(aes(x=value))+
+  geom_bar(fill = "steelblue")+
+  facet_wrap(~name, scale="free_x")+
+  theme_light()
+
+p1
+```
+
+
+## Descriptive: สภาพปัจจัยที่คาดว่าน่าจะสัมพันธ์กับปัญหา {.smaller}
+
+ลองคัดกรองเฉพาะผู้เรียนที่มีปัญหาเรียนไม่รู้เรื่อง จากนั้นวิเคราะห์สภาพของปัจจัยที่คาดว่าน่าจะสัมพันธ์กับปัญหา
+
+```{r echo = F}
+p2
+```
+
+## Descriptive: เปรียบเทียบสภาพปัจจัยระหว่างกลุ่ม {.smaller}
+
+```{r echo = F, fig.width = 12, fig.height = 5}
+
+p1<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, practice, pre_grade_inmath) %>%
+  filter(quiz1 ==0) %>% 
+  ggplot(aes(x = practice))+
+  geom_bar(fill = "maroon")+
+  ggtitle("quiz1= 0")
+
+
+p2<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, practice, pre_grade_inmath) %>%
+  filter(quiz1 >= 5) %>% 
+  ggplot(aes(x = practice))+
+  geom_bar(fill = "steelblue")+
+  ggtitle("quiz1 >= 5")
+
+p1+p2
 
 ```
 
-</center>
+
+## Descriptive: เปรียบเทียบสภาพปัจจัยระหว่างกลุ่ม {.smaller}
+
+
+```{r echo = F}
+p1<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, practice, pre_grade_inmath) %>%
+  filter(quiz1 ==0) %>% 
+  ggplot(aes(x = pre_grade_inmath))+
+  geom_bar(fill = "maroon")+
+  ggtitle("quiz1= 0")
+
+
+p2<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, practice, pre_grade_inmath) %>%
+  filter(quiz1 >= 5) %>% 
+  ggplot(aes(x = pre_grade_inmath))+
+  geom_bar(fill = "steelblue")+
+  ggtitle("quiz1 >= 5")
+
+p1+p2
+
+```
+
+
+## Descriptive: เปรียบเทียบสภาพปัจจัยระหว่างกลุ่ม {.smaller}
+
+
+```{r echo = F, fig.width = 12, fig.height = 5}
+p1<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, practice, pre_grade_inmath) %>%
+  filter(quiz1 ==0) %>% 
+  ggplot(aes(x = practice, fill = pre_grade_inmath))+
+  geom_bar()+
+  ggtitle("quiz1= 0")
+
+p2<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, practice, pre_grade_inmath) %>%
+  filter(quiz1 >=5) %>% 
+  ggplot(aes(x = practice, fill = pre_grade_inmath))+
+  geom_bar()+
+  ggtitle("quiz1 >= 5")
+
+p1+p2
+
+```
+
+## Descriptive: เปรียบเทียบสภาพปัจจัยระหว่างกลุ่ม {.smaller}
+
+```{r echo = F, fig.width = 12, fig.height = 5}
+p1<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz2, practice, pre_grade_inmath) %>%
+  filter(quiz2 ==0) %>% 
+  ggplot(aes(x = practice, fill = pre_grade_inmath))+
+  geom_bar()+
+  ggtitle("quiz2= 0")
+
+p2<-data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz2, practice, pre_grade_inmath) %>%
+  filter(quiz2 >=5) %>% 
+  ggplot(aes(x = practice, fill = pre_grade_inmath))+
+  geom_bar()+
+  ggtitle("quiz2 >= 5")
+
+p1+p2
+
+```
+
+
+## Data Analysis
+
+- Descriptive Analysis
+
+- Pareto Analysis
+
+- Generative AI
+
+- Drill Down Analysis
+
+- Correlation Analysis
+
+- Regression Analysis
+
+- Decision Tree
+
+- Root Cause Analysis (RCA) เช่น five whys
+
+- ...
 
