@@ -3,9 +3,10 @@ title: "Diagnostic Analytics"
 subtitle: "Why did this happen?"
 author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
 institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
-date: 2024-09-23
+date: 2024-09-30
 format:
   revealjs:
+    margin: 0.1 # ตัวอย่างของการตั้งค่า margin เป็น 10%
     code-fold: false
     slide-number: c/t
     footer: "2758501 สถิติและสารสนเทศทางการศึกษา <br>
@@ -17,6 +18,8 @@ format:
     transition: fade
     background-transition: fade
     highlight-style: github
+    mermaid:
+      theme: default
     title-slide-attributes:
       data-background-image: https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20221007084404/ri/1000/src/images/Article_Images/ImageForArticle_23176_16651466437256686.jpg
       data-background-opacity: 20%
@@ -28,105 +31,936 @@ execute:
   progress: true
 ---
 
-## Sample Dataset
+## Type of Data Analytics
 
 ```{r echo = F}
 library(tidyverse)
-data <- read_csv("/Users/choat/Downloads/learning_data2.csv")
-data <- data |> mutate(student_id = 1:dim(data)[1], .before = "choose_method")
-glimpse(data |> select(research_score, everything()), 60)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/dimensionality_reduction/learning_data_secondary.csv")
 ```
 
-
+![](https://datakruroo.github.io/IPST/PPT/img/typeofanalytic.png)
 
 # Outline
 
-- Basic Concept of Diagnostic Analytics
+- Introduction to Diagnostic Analytics
 
 - Diagnostics Analytics Techniques
 
-# Basic Concept
+# Introduction to Diagnostic Analytics
 
 
 ## What's Diagnostic Analysis? {.smaller}
 
-- Diagnostic Analytics is **the process of using data** to determine **the causes of trends and correlations between variables**.
-
-- Logical next step after using descriptive analytics.
+- การวิเคราะห์เชิงวินิจฉัย (Diagnostic Analytics) คือ กระบวนการวิเคราะห์ข้อมูล เพื่อระบุ สาเหตุหรือปัจจัยที่มีความสัมพันธ์กับปัญหาหรือสถานการณ์ที่เกิดขึ้น
 
 
+- เป็นขั้นตอนต่อเนื่องจากการใช้การวิเคราะห์เชิงพรรณนา (Descriptive Analytics)
 
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+![](img/sale_down.jpg)
+
+![](img/images.jpeg)
+:::
+
+::: {.column width=50%}
+
+![](img/health.jpg)
+:::
+
+::::
 
 
 ## Diagnostic Analysis in Classroom {.smaller}
 
-หมายถึงการตรวจสอบเพื่อระบุสาเหตุของปัญหาหรือการเกิดสถานการณ์ต่าง ๆ 
+- การวิเคราะห์ข้อมูลเพื่อระบุสาเหตุหรือปัจจัยที่มีความสัมพันธ์กับปัญหาหรือสถานการณ์ที่เกิดขึ้นในห้องเรียน
 
-- ทางการแพทย์ หมายถึงกระบวนการหรือวิธีการตรวจหาสาเหตุของโรค/สุขภาพ
+- ครูมะเป็นผู้รับผิดชอบสอนรายวิชาสถิติให้กับนักเรียนชั้นมัธยมศึกษา โดยในช่วงแรกของการจัดการเรียนรู้ นักเรียนจะได้รับมอบหมายให้ทำการบ้านเกี่ยวกับหัวข้อที่เรียนไป เมื่อผ่านไป 3 สัปดาห์ครูมะปรางได้เริ่มนำข้อมูลคะแนนการบ้านของนักเรียนมาวิเคราะห์ (คะแนนเต็ม 20 คะแนน) ด้านล่างนี้แสดงผลการวิเคราะห์ของครูมะปราง
 
-- การศึกษา หมายถึงการวิเคราะห์ข้อมูลเพื่อระบุปัญหาหรือสถานะของผู้เรียน
+```{r fig.width = 10, fig.height = 4, echo = F}
+exam_data <- read_csv("student-por.csv")
+exam_data %>% select(G1, G2, G3) %>% 
+  rename(quiz1 = G1, quiz2 = G2, quiz3 = G3) %>%
+  pivot_longer(cols = everything(), names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x = score))+
+  geom_histogram(bins = 20, col = "white")+
+  facet_wrap(~quiz)
+```
+
+
+## Diagnostic Analysis in Classroom {.smaller}
+
+- การประเมินแนวโน้มความสำเร็จหรือล้มเหลวของผู้เรียนในการเรียนรู้
+
+- ระบุตัวนักเรียนที่มีความเสี่ยงในการเรียนรู้
+
+- ออกแบบการสนับสนุนนักเรียนที่มีความเสี่ยงแบบเฉพาะบุคคล
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/paper.png)
+
+:::
+
+::: {.column width="50%"}
+![](img/tree.png)
+:::
+
+::::
+
+
+<div class="caption">https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12470</div>
+
+
+<br>
 
 
 
+## Diagnostic Analysis in Classroom{.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 
-```{r}
-library(patchwork)
-p1 <- data |> 
-  ggplot(aes(x = research_score))+
-  geom_histogram(bins = 15, col ="white", fill = "steelblue")
+![](img/bully.jpg)
 
-p2 <- data |> 
-  mutate(interval_res = cut(research_score, include.lowest = TRUE,
-        right = F, breaks=c(0,55,60,65,70,75,80,85,100),
-        labels = c("F","D","D+","C","C+","B","B+","A"))) |> 
-  ggplot(aes(x = interval_res))+
-  geom_bar(aes(fill = interval_res %in% c("F","D") ))
+:::
 
-p2
+::: {.column width="50%"}
+
+![](img/network1.png)
+
+![](img/network2.png)
+:::
+
+::::
+
+
+## Process in Diagnistic Analysis {.smaller}
+
+![](img/ASA_framwork1.png)
+
+<div class="caption">https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf</div>
+
+## Process in Diagnostic Analysis {.smaller}
+
+ลักษณะสำคัญของกระบวนการคือเป็นกระบวนการที่มีลักษณะสืบเสาะและทวนซ้ำกัน
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+<center>
+
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --> A
+A: Identify \n the Problem
+A --> B
+B: Frame \n the Problem
+B --> C
+C: Analyze & \n Validate Causes
+C --> D
+D: Develop and \n Implement \n Solutions
+D --> E
+E: Monitoring and \n Evaluation
+E --> A: Not Success
+E --> [*]: Success
+```
+
+</center>
+
+:::
+
+::: {.column width="30%"}
+
+![](img/PAOR1.png){width="80%"}
+
+:::
+
+::::
+
+<div style="font-size: 80%;">
+
+- Identify the Problem: ระบุปัญหาหรือสิ่งที่ต้องการวิเคราะห์เพื่อวินิจฉัย
+
+- Frame the Problem: ระบุสาเหตุหรือปัจจัยที่สัมพันธ์กับปัญหา เป็นการสร้างกรอบการวิเคราะห์/ตั้งสมมุติฐานเกี่ยวกับสาเหตุหรือปัจจัยที่เกี่ยวข้องกับปัญหา
+
+- Analysis & Validate Causes: เก็บรวบรวมข้อมูลตามกรอบและวิเคราะห์ข้อมูลเพื่อระบุสาเหตุหรือปัจจัยที่สัมพันธ์กับปัญหา
+
+- Develop and Implement Solutions: ออกแบบวิธีการแก้ปัญหาและนำไปปฏิบัติ
+
+- Monitoring and Evaluation: ติดตามและประเมินผลการปฏิบัติตามวิธีการแก้ปัญหาที่นำไปปฏิบัติ
+
+</div>
+
+<div class="caption">https://www.siteware.co/blog/methodologies/what-is-the-pdca-cycle/</div>
+
+## PAOR
+
+![](img/PAOR2.png)
+
+<div class="caption">https://newprairiepress.org/cgi/viewcontent.cgi?article=1056&context=networks</div>
+
+## Identify the Problem {.smaller}
+
+<br>
+<br>
+<br>
+
+<center>
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --> A
+A: Identify \n the Problem
+A:::yourState --> B
+B: Frame \n the Problem
+B --> C
+C: Analyze & \n Validate Causes
+C --> D
+D: Develop and \n Implement \n Solutions
+D --> E
+E: Monitoring and \n Evaluation
+E --> A: Not Success
+E --> [*]: Success
+```
+
+</center>
+
+## Identify the Problem {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+
+<center>
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+
+[*] --> A
+A --> B
+B --> C
+C --> [*]
+
+
+A: <b>Preliminary Data</b>
+B: <b>Descriptive Analysis</b>
+C: <b>Define Problems</b>
+```
+</center>
+:::
+
+::: {.column width="70%"}
+
+ข้อมูล quiz ของนักเรียนที่เรียนรายวิชาคณิตศาสตร์
+
+```{r echo = F, fig.height = 4}
+p <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  #mutate_at(vars(starts_with("quiz")), scale) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 0.5, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()
+p
+```
+<div style="font-size: 80%;">
+
+```{r echo = F}
+data %>% 
+  select(quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  summary()
+```
+
+</div>
+
+:::
+
+::::
+
+<br>
+
+## Identify the Problem {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+
+<center>
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+
+[*] --> A
+A --> B
+B --> C
+C --> [*]
+
+
+A: <b>Preliminary Data</b>
+B: <b>Descriptive Analysis</b>
+C: <b>Define Problems</b>
+```
+</center>
+:::
+
+::: {.column width="70%"}
+
+ข้อมูล quiz ของนักเรียนที่เรียนรายวิชาคณิตศาสตร์
+
+```{r echo = F, fig.height = 4}
+p <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  #mutate_at(vars(starts_with("quiz")), scale) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 0.5, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()
+p
+```
+
+:::
+
+::::
+
+
+อะไรเป็นปัญหาของผู้เรียนกลุ่มนี้บ้าง ?
+
+<div style="font-size: 70%;">
+
+- มัธยฐานของ quiz ครั้งที่ 1 และ 3 ค่อนข้างต่ำ
+
+- ทุก quiz มีนักเรียนที่สอบได้ 0 คะแนนหรือใกล้เคียงเป็นจำนวนที่ค่อนข้างมาก
+
+- quiz 1 และ 2 เหมือนจะมีการแจกแจงแบบสองฐานนิยม 
+
+- ในขณะที่ quiz 3 มีแนวโน้มจะมีฐานนิยมเดียวแต่มัธยฐานและ quartile ที่ 3 ค่อนข้างต่ำ
+
+</div>
+
+
+## Identify the Problem with Generative AI {.smaller}
+
+- เป็นไปได้ว่าบางกรณีเราสามารถแบ่งผลการวิเคราะห์จาก descriptive statistics ได้แต่ไม่สามารถระบุปัญหาหรือสาเหตุได้ ในกรณีนี้เราสามารถใช้ Generative AI เพื่อช่วยระบุปัญหา (รวมทั้งสาเหตุของปัญหา) ที่อาจเป็นไปได้
+
+- Gen AI คือปัญญาประดิษฐ์ประเภทหนึ่งที่มีความสามารถหลักในการสร้างเนื้อหา (content) ที่หลากหลาย
+
+  - ข้อความ (text)
+
+  - ภาพ (image)
+
+  - วิดีโอ (video)
+
+  - เสียง (audio)
+
+
+## Generative AI {.smaller}
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://datakruroo.github.io/ChatGPT/img/Screenshot%202567-09-20%20at%2019.29.02.png)
+
+![](img/chatgpt1.png){width="90%"}
+
+:::
+
+::: {.column width="50%"}
+
+
+![](img/chatgpt2.png){width="100%"}
+
+
+:::
+
+::::
+
+## Generative AI {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://datakruroo.github.io/ChatGPT/img/cat1.png)
+
+:::
+
+::: {.column width="50%"}
+![](https://datakruroo.github.io/ChatGPT/img/cat2.png)
+:::
+
+::::
+
+## Hallucinations {.smaller}
+
+
+
+![](img/chatgpt3.png){width="40%"}
+
+<div style="font-size: 90%;">
+
+- Gen AI ในปัจจุบันสร้าง content โดย based on โมเดลความน่าจะเป็น (probabilistic model) 
+
+- การกำหนด prompt ที่ไม่เหมาะสมอาจทำให้เกิดปัญหาที่เรียกว่า hallucinations หรือการสร้างเนื้อหาที่ไม่เป็นจริง
+
+  - ผลลัพธ์ที่ไม่มีพื้นฐานจากข้อมูลที่ถูกต้องหรือเป็นจริง ซึ่งอาจเป็นข้อมูลที่เข้าใจผิดหรือไม่เกี่ยวข้องกับคำถามหรือข้อมูลนำเข้าที่ได้รับ
+  
+  - บางสถานการณ์ AI อาจให้คำตอบที่ดูเหมือนจะถูก/สมเหตุสมผล หรืออาจจะถูกจริง ๆ แต่ไม่ตรงกับสิ่งที่ผู้ใช้ต้องการ
+  
+</div>
+
+## Hallucinations {.smaller}
+
+![](img/chatgpt4.png)
+
+
+
+## Prompt Design {.smaller}
+
+<div style="font-size: 70%;">
+
+- โดยทั่วไป Generative AI เช่น ChatGPT ถูกฝึกสอนจากฐานข้อมูลขนาดใหญ่มากอยู่แล้ว ดังนั้นในแต่ละ prompt ที่ป้อนเข้าไปจึงมีความเป็นไปได้จำนวนมากของคำตอบ
+
+- Prompt Design คือกระบวนการสร้างคำสั่ง/ข้อมูลนำเข้าสำหรับ Generative AI ที่นำไปสู่การสร้างผลลัพธ์ที่มีความถูกต้อง/สมเหตุสมผล/ตรงกับความต้องการ
+
+</div>
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+
+flowchart LR
+subgraph  
+B["Task"]-->A(("Prompt"))
+C["Context"]-->A(("Prompt"))
+end
+D["Fine-Tuning"]-.->B
+D["Fine-Tuning"]-.->C
+```
+
+<div style="font-size: 70%;">
+
+
+- **Task** คืองานที่ต้องการให้ Chat GPT ทำ ซึ่งอาจอยู่ในรูปของประโยคคำถาม คำ
+สั่ง หรือข้อความที่ไม่สมบูรณ์เพื่อให้โมเดลเขียนต่อ
+
+- **Context** คือบริบทหรือข้อมูลเพิ่มเติมสำหรับประกอบการสร้างผลลัพธ์ของโมเดล
+
+- **Fine-Tuning** คือการปรับปรุงคำตอบของโมเดลเพื่อให้มีความแม่นยำ สอดคล้องกับบริบทและเหมาะสมกับความต้องการของผู้ใช้มากขึ้น ผ่านการพิมพ์โต้ตอบกับผู้ใช้
+
+</div>
+
+## Prompt Design: Task
+
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+- Describe, Explain
+
+- Classify
+
+- Summarize, Group
+
+- List, Suggest
+
+- Write, Rewrite, Generate
+
+- Design
+
+- Creat
+
+- Ideate
+
+::::
+
+
+:::: {.column width="50%"}
+
+- Give
+
+- Prepare
+
+- Compare
+
+- Translation
+
+- Correct
+
+- Break down
+
+- What?
+
+- How?
+
+::::
+
+
+:::
+
+
+
+## Prompt = Task + Context {.smaller background-color="black"}
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+**Task Only**
+![](img/Screenshot%202567-09-20%20at%2020.00.11.png){width=80%}
+
+::::
+
+:::: {.column width="50%"}
+
+**Task with Context**
+![](img/Screenshot%202567-09-20%20at%2020.01.39.png){width=70%}
+
+
+::::
+
+:::
+
+## Fine-Tuning Prompt {.smaller background-color="black"}
+
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2020.15.21.png)
+::::
+
+:::: {.column width="50%"}
+
+![](img/Screenshot%202567-09-20%20at%2020.15.27.png){width=80%}
+
+
+::::
+
+:::
+
+
+## ตัวอย่างการใช้ ChatGPT เพื่อระบุปัญหาโดยใช้ข้อมูลจริงเป็นฐาน
+
+![](img/problem1.png)
+
+<div style="font-size: 70%;">
+
+[https://chatgpt.com/share/66f9acf3-2bc8-8003-974b-de35e507df7e](https://chatgpt.com/share/66f9acf3-2bc8-8003-974b-de35e507df7e)
+
+</div>
+
+## ตัวอย่างการใช้ ChatGPT เพื่อระบุปัญหาโดยใช้ข้อมูลจริงเป็นฐาน
+
+![](img/problem2.png)
+
+
+## Identify the Problem {.smaller}
+
+เราสามารถ filter ข้อมูลนักเรียนที่ได้ 0 คะแนน ในการ quiz แต่ละครั้งขึ้นมาดูได้
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+
+ได้ quiz1 = 0 (37 คน)
+
+```{r echo = F}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  filter(quiz1 == 0) %>% data.frame() 
+
+
+```
+
+:::
+
+::: {.column width="30%"}
+
+ได้ quiz2 = 0 (17 คน)
+
+
+```{r echo = F}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  filter(quiz2 == 0)  %>% data.frame() 
+```
+
+
+:::
+
+
+::: {.column width="30%"}
+
+ได้ quiz3 = 0 (17 คน)
+
+
+```{r echo = F}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  filter(quiz3 == 0)  %>% data.frame() 
 ```
 
 
 
-```{r}
-data |>   mutate(interval_res = cut(research_score, include.lowest = TRUE,
-        right = F, breaks=c(0,55,60,65,70,75,80,85,100),
-        labels = c("F","D","D+","C","C+","B","B+","A"))) |> 
-          group_by(interval_res %in% c("F","D")) |> 
-          summarise_if(is.numeric, mean, na.rm = T) |> 
-          select(-student_id) |> 
-          pivot_longer(cols = -1) |> 
-          arrange(name)
+:::
 
+
+::::
+
+
+
+## Frame the Problem {.smaller}
+
+<br>
+<br>
+<br>
+
+
+<center>
+
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --> A
+A: Identify the Problem
+A: นักเรียนจำนวนหนึ่งมีปัญหา \n ในการทำความเข้าใจเนื้อหา
+A --> B:::yourState
+B: Frame \n the Problem
+B --> C
+C: Analyze & \n Validate Causes
+C --> D
+D: Develop and \n Implement \n Solutions
+D --> E
+E: Monitoring and \n Evaluation
+E --> A: Not Success
+E --> [*]: Success
+```
+
+</center>
+
+
+
+
+
+## Frame the Problem {.smaller}
+
+```{mermaid}
+%%| echo: false
+flowchart LR
+
+A((Factors?)) --> B[Problems]
 ```
 
 
+<div style="font-size: 70%;">
 
-```{r}
-min_max<- function(x)
-{
-  y<-(x-0)/(max(x,na.rm = T))
-  return(y)
+- ขั้นตอนนี้มีวัตถุประสงค์หลักคือเพื่อกำหนดกรอบในการอธิบายปัญหาหรือสถานการณ์ที่เกิดขึ้น
+
+  - Fishbone Diagram (Ishikawa Diagram)
+
+  - Five Whys Analysis
+  
+</div>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Ishikawa_Fishbone_Diagram.svg/2880px-Ishikawa_Fishbone_Diagram.svg.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](https://www.lean.org/wp-content/uploads/2020/07/5-Why-Funnel-1536x1321.jpg){width="80%"}
+:::
+
+::::
+
+
+## Original Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+- เป็นเครื่องมือที่ใช้ในการวิเคราะห์สาเหตุของปัญหา โดยมีลักษณะคล้ายโครงกระดูกปลา จึงเรียกว่า “Fishbone” หรือที่รู้จักอีกชื่อหนึ่งว่า Cause-and-Effect Diagram การวิเคราะห์นี้มีวัตถุประสงค์เพื่อระบุและจัดกลุ่มปัจจัยที่เป็นสาเหตุของปัญหาต่าง ๆ อย่างเป็นระบบ เพื่อให้เห็นภาพรวมของสาเหตุที่อาจก่อให้เกิดปัญหาหรือความไม่พึงประสงค์ที่เกิดขึ้น และช่วยให้สามารถแก้ไขปัญหาได้ตรงจุดมากขึ้น
+
+- ส่วนประกอบของ Fishbone Diagram 
+
+  - ปัญหาหรือสถานการณ์ที่เกิดขึ้น (Problem)
+  
+  - สาเหตุหลัก (Main Cause)
+  
+  - สาเหตุย่อย (Sub-Cause)
+
+
+
+## 5M model Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+<div style="font-size: 90%;">
+
+<p style="text-indent: 2em;">
+
+- Manpower / Mindpower (physical or knowledge work, includes: kaizens, suggestions)
+
+- Machine (equipment, technology)
+
+- Material (includes raw material, consumables, and information)
+
+- Method (process)
+
+- Measurement / medium (inspection, environment)
+
+</p>
+</div>
+
+<div class="caption">https://en.wikipedia.org/wiki/Ishikawa_diagram</div>
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+
+<div style="font-size: 90%;">
+
+<p style="text-indent: 2em;">
+
+
+- นักเรียน
+
+- ครู
+
+- บ้าน
+
+- เพื่อน
+
+- สภาพแวดล้อม
+
+- ...
+</p>
+
+</div>
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+![](img/fish0.png)
+
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+
+![](img/fish1.png)
+
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+![](img/fish2.png)
+
+
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+![](img/fish3.png)
+
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+![](img/fish4.png)
+
+## Classroom Fishbone Diagram (Ishikawa Diagram) {.smaller}
+
+![](img/fish6.png)
+
+## Analysis Framework
+
+
+<center>
+
+```{mermaid}
+%% | echo: false
+%% | fig-align: "center"
+
+
+flowchart LR
+
+A["การเข้าเรียน"]-->B(("แรงจูงใจ"))
+A["การเข้าเรียน"]-->C(("ความขยัน/รับผิดชอบ"))
+
+D["มาสาย"]-->B
+D["มาสาย"]-->C
+
+E["ผลการเรียน Math ในอดีต"] --> F(("ความรู้พื้นฐาน"))
+
+B-->G["เรียนไม่รู้เรื่อง"]
+C-->G
+F-->G
+```
+
+</center>
+
+
+## Data Collection {.smaller}
+
+
+
+<center>
+
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --> A
+A: Identify the Problem
+A: นักเรียนจำนวนหนึ่งมีปัญหา \n ในการทำความเข้าใจเนื้อหา
+A --> B
+B: Frame \n the Problem
+B --> C:::yourState
+C: Analyze & \n Validate Causes
+C --> D
+D: Develop and \n Implement \n Solutions
+D --> E
+E: Monitoring and \n Evaluation
+E --> A: Not Success
+E --> [*]: Success
+```
+
+</center>
+
+
+## Data Collection {.smaller}
+
+ก่อนการวิเคราะห์สาเหตุ/ปัจจัยที่สัมพันธ์กับปัญหา คุณครูอาจจำเป็นต้องเก็บรวบรวมข้อมูลเพิ่มเติมตามกรอบแนวคิดที่ได้สร้างไว้
+
+```{r echo = F}
+#data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+#  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+#  glimpse()
+
+data %>% 
+  #select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15, pre_grade_inmath = grade) %>% 
+  select(quiz1, quiz2, quiz3, percent_attend, percent_late_inclass,
+         percent_goout, percent_answer_inclass, practice, time_do_homework1,
+         time_do_homework2, percent_time_start1, percent_time_start2,
+         late_assignment, incomplete_assignment, pre_grade_inmath)
+```
+
+## Data Analysis
+
+- Descriptive Analysis
+
+- Pareto Analysis
+
+- Drill Down Analysis
+
+- Correlation Analysis
+
+- Regression Analysis
+
+- Decision Tree
+
+- Root Cause Analysis (RCA) เช่น five whys
+
+## Data Analysis: Descriptive Analysis {.smaller}
+
+- เป็นขั้นตอนเบื้องต้นของการวิเคราะห์ diagnostic
+
+- วัตถุประสงค์คือเพื่อทำความเข้าใจลักษณะเบื้องต้นของความสัมพันธ์ระหว่างปัจจัยกับปัญหา
+
+- การวิเคราะห์ที่อาจดำเนินการได้
+
+  - บรรยายสภาพข้อมูลปัจจัยต่าง ๆ ตามกรอบแนวคิดที่ได้สร้างขึ้น
+  
+  - เปรียบเทียบสภาพของปัจจัยต่าง ๆ ระหว่างกลุ่มนักเรียนที่มีปัญหา/สนใจ กับกลุ่มนักเรียนที่ไม่มีปัญหาหรือไม่ได้สนใจ
+  
+  - วิเคราะห์ความสัมพันธ์เบื้องต้นระหว่างปัจจัยกับสภาพปัญหา
+
+## Frame the Problem {.smaller}
+
+<br>
+<br>
+<br>
+
+<center>
+
+```{mermaid}
+%% | echo: false
+
+stateDiagram-v2
+state Stage1 {
+[*] --> A
+A --> B
+B --> C
+}
+
+state Stage2 {
+D --> F 
+F --> G
+
 }
 
 
-data |> 
- # filter(research_score < 55) |> 
-  select(-student_id, -gender, -department) |> 
-  cor(use = "complete.obs") |> 
-  data.frame() |> select(research_score)  |> 
-  rownames_to_column("name") |> 
-  right_join(
-    data |> select(-research_score, -student_id, -gender, -department) |> 
-      mutate_all(min_max) |> 
-  pivot_longer(cols = everything()) |>
-  group_by(name) |>
-  summarise(median = median(value, na.rm = T)), by = "name" ) |> 
-  ggplot(aes(x = research_score, y=median))+
-  geom_point()+
-  geom_vline(xintercept =c(0, 0.3), linetype = 3)+
-  geom_text(aes(label = name))+
-  xlim(-0.2,1)+
-  ylim(0,1)+
-  xlab("Importance")
+                            
+
+A: <b>Preliminary Data</b>
+B: <b>Descriptive Analysis</b>
+C: <b>Identify the Problem</b>
+D: <b>Frame the Problem</b> 
+D: อะไรบ้างที่น่าจะเป็นสาเหตุ \n หรือปัจจัยที่สัมพันธ์กับปัญหา
+D: \n - 5 Whys \n - Fishbone Diagram \n - Brainstorming \n - Generative AI
+F: <b>Data Collection for Diagnosis</b>
+F: เก็บข้อมูลเพิ่มเติมตามสมมติฐานที่กำหนด
+G: <b>Analyze & Validate Causes</b>
+G: - Pareto Chart \n - Correlation Analysis \n - Regression Analysis, \n - Decision Tree Analysis \n - Drill Down Analysis
+
 ```
+
+</center>
+

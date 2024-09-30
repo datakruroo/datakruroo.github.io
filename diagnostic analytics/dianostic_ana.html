@@ -11,7 +11,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.5.57">
 <meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
-<meta name="dcterms.date" content="2024-09-23">
+<meta name="dcterms.date" content="2024-09-30">
 <title>Diagnostic Analytics</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,71 +30,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-      }
-    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-    div.sourceCode
-      { color: #24292e;  }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #24292e; } /* Normal */
-    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
-    code span.an { color: #6a737d; } /* Annotation */
-    code span.at { color: #d73a49; } /* Attribute */
-    code span.bn { color: #005cc5; } /* BaseN */
-    code span.bu { color: #d73a49; } /* BuiltIn */
-    code span.cf { color: #d73a49; } /* ControlFlow */
-    code span.ch { color: #032f62; } /* Char */
-    code span.cn { color: #005cc5; } /* Constant */
-    code span.co { color: #6a737d; } /* Comment */
-    code span.cv { color: #6a737d; } /* CommentVar */
-    code span.do { color: #6a737d; } /* Documentation */
-    code span.dt { color: #d73a49; } /* DataType */
-    code span.dv { color: #005cc5; } /* DecVal */
-    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
-    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
-    code span.fl { color: #005cc5; } /* Float */
-    code span.fu { color: #6f42c1; } /* Function */
-    code span.im { color: #032f62; } /* Import */
-    code span.in { color: #6a737d; } /* Information */
-    code span.kw { color: #d73a49; } /* Keyword */
-    code span.op { color: #24292e; } /* Operator */
-    code span.ot { color: #6f42c1; } /* Other */
-    code span.pp { color: #d73a49; } /* Preprocessor */
-    code span.re { color: #6a737d; } /* RegionMarker */
-    code span.sc { color: #005cc5; } /* SpecialChar */
-    code span.ss { color: #032f62; } /* SpecialString */
-    code span.st { color: #032f62; } /* String */
-    code span.va { color: #e36209; } /* Variable */
-    code span.vs { color: #032f62; } /* VerbatimString */
-    code span.wa { color: #ff5555; } /* Warning */
   </style>
 <link rel="stylesheet" href="dianostic_ana_files/libs/revealjs/dist/theme/quarto.css">
 <link rel="stylesheet" href="my_css.css">
@@ -388,6 +323,8 @@
       margin-right: 0; 
     }
   </style>
+<meta name="mermaid-theme" content="default">
+<script src="dianostic_ana_files/libs/quarto-diagram/mermaid.min.js"></script><script src="dianostic_ana_files/libs/quarto-diagram/mermaid-init.js"></script><link href="dianostic_ana_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -407,127 +344,723 @@
     </div>
 </div>
 
-  <p class="date">2024-09-23</p>
-</section><section id="sample-dataset" class="slide level2"><h2>Sample Dataset</h2>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 385
-Columns: 11
-$ research_score       &lt;dbl&gt; 72, 72, 71, 72, 62, 75, 82, 7…
-$ student_id           &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10…
-$ choose_method        &lt;dbl&gt; 60, 40, 40, 20, 10, 20, 20, 4…
-$ concepts             &lt;dbl&gt; 57.14286, 57.14286, 42.85714,…
-$ interpretation       &lt;dbl&gt; 56.25000, 31.25000, 50.00000,…
-$ submit_time          &lt;dbl&gt; 156.41160, 145.08406, 141.084…
-$ percent_submit       &lt;dbl&gt; 66.66667, 100.00000, 100.0000…
-$ gender               &lt;chr&gt; "ช", "ช", "ญ", "ญ", "ช", "ญ",…
-$ department           &lt;chr&gt; "ไทยสังคม", "ภาษาอังกฤษ", "ประถ…
-$ learning_performance &lt;dbl&gt; 95.00000, 73.33333, 93.21429,…
-$ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.83940…</code></pre>
-</div>
-</div>
-</section><section id="outline" class="title-slide slide level1 center"><h1>Outline</h1>
+  <p class="date">2024-09-30</p>
+</section><section id="type-of-data-analytics" class="slide level2"><h2>Type of Data Analytics</h2>
+
+<img data-src="https://datakruroo.github.io/IPST/PPT/img/typeofanalytic.png" class="r-stretch"></section><section id="outline" class="title-slide slide level1 center"><h1>Outline</h1>
 <ul>
-<li><p>Basic Concept of Diagnostic Analytics</p></li>
+<li><p>Introduction to Diagnostic Analytics</p></li>
 <li><p>Diagnostics Analytics Techniques</p></li>
-</ul></section><section><section id="basic-concept" class="title-slide slide level1 center"><h1>Basic Concept</h1>
+</ul></section><section><section id="introduction-to-diagnostic-analytics" class="title-slide slide level1 center"><h1>Introduction to Diagnostic Analytics</h1>
 
 </section><section id="whats-diagnostic-analysis" class="slide level2 smaller"><h2>What’s Diagnostic Analysis?</h2>
 <ul>
-<li><p>Diagnostic Analytics is <strong>the process of using data</strong> to determine <strong>the causes of trends and correlations between variables</strong>.</p></li>
-<li><p>Logical next step after using descriptive analytics.</p></li>
-</ul></section><section id="diagnostic-analysis-in-classroom" class="slide level2 smaller"><h2>Diagnostic Analysis in Classroom</h2>
-<p>หมายถึงการตรวจสอบเพื่อระบุสาเหตุของปัญหาหรือการเกิดสถานการณ์ต่าง ๆ</p>
-<ul>
-<li><p>ทางการแพทย์ หมายถึงกระบวนการหรือวิธีการตรวจหาสาเหตุของโรค/สุขภาพ</p></li>
-<li><p>การศึกษา หมายถึงการวิเคราะห์ข้อมูลเพื่อระบุปัญหาหรือสถานะของผู้เรียน</p></li>
+<li><p>การวิเคราะห์เชิงวินิจฉัย (Diagnostic Analytics) คือ กระบวนการวิเคราะห์ข้อมูล เพื่อระบุ สาเหตุหรือปัจจัยที่มีความสัมพันธ์กับปัญหาหรือสถานการณ์ที่เกิดขึ้น</p></li>
+<li><p>เป็นขั้นตอนต่อเนื่องจากการใช้การวิเคราะห์เชิงพรรณนา (Descriptive Analytics)</p></li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb2-2"><a href=""></a>p1 <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> research_score))<span class="sc">+</span></span>
-<span id="cb2-4"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>, <span class="at">col =</span><span class="st">"white"</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>)</span>
-<span id="cb2-5"><a href=""></a></span>
-<span id="cb2-6"><a href=""></a>p2 <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
-<span id="cb2-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">interval_res =</span> <span class="fu">cut</span>(research_score, <span class="at">include.lowest =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-8"><a href=""></a>        <span class="at">right =</span> F, <span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">55</span>,<span class="dv">60</span>,<span class="dv">65</span>,<span class="dv">70</span>,<span class="dv">75</span>,<span class="dv">80</span>,<span class="dv">85</span>,<span class="dv">100</span>),</span>
-<span id="cb2-9"><a href=""></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"F"</span>,<span class="st">"D"</span>,<span class="st">"D+"</span>,<span class="st">"C"</span>,<span class="st">"C+"</span>,<span class="st">"B"</span>,<span class="st">"B+"</span>,<span class="st">"A"</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-10"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> interval_res))<span class="sc">+</span></span>
-<span id="cb2-11"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> interval_res <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"F"</span>,<span class="st">"D"</span>) ))</span>
-<span id="cb2-12"><a href=""></a></span>
-<span id="cb2-13"><a href=""></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/sale_down.jpg"></p>
+<p><img data-src="img/images.jpeg"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/health.jpg"></p>
+</div></div>
+</section><section id="diagnostic-analysis-in-classroom" class="slide level2 smaller"><h2>Diagnostic Analysis in Classroom</h2>
+<ul>
+<li><p>การวิเคราะห์ข้อมูลเพื่อระบุสาเหตุหรือปัจจัยที่มีความสัมพันธ์กับปัญหาหรือสถานการณ์ที่เกิดขึ้นในห้องเรียน</p></li>
+<li><p>ครูมะเป็นผู้รับผิดชอบสอนรายวิชาสถิติให้กับนักเรียนชั้นมัธยมศึกษา โดยในช่วงแรกของการจัดการเรียนรู้ นักเรียนจะได้รับมอบหมายให้ทำการบ้านเกี่ยวกับหัวข้อที่เรียนไป เมื่อผ่านไป 3 สัปดาห์ครูมะปรางได้เริ่มนำข้อมูลคะแนนการบ้านของนักเรียนมาวิเคราะห์ (คะแนนเต็ม 20 คะแนน) ด้านล่างนี้แสดงผลการวิเคราะห์ของครูมะปราง</p></li>
+</ul>
+
+<img data-src="dianostic_ana_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section><section id="diagnostic-analysis-in-classroom-1" class="slide level2 smaller"><h2>Diagnostic Analysis in Classroom</h2>
+<ul>
+<li><p>การประเมินแนวโน้มความสำเร็จหรือล้มเหลวของผู้เรียนในการเรียนรู้</p></li>
+<li><p>ระบุตัวนักเรียนที่มีความเสี่ยงในการเรียนรู้</p></li>
+<li><p>ออกแบบการสนับสนุนนักเรียนที่มีความเสี่ยงแบบเฉพาะบุคคล</p></li>
+</ul>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/paper.png"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/tree.png"></p>
+</div></div>
+<div class="caption">
+https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12470
+</div>
+<p><br></p>
+</section><section id="diagnostic-analysis-in-classroom-2" class="slide level2 smaller"><h2>Diagnostic Analysis in Classroom</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/bully.jpg"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/network1.png"></p>
+<p><img data-src="img/network2.png"></p>
+</div></div>
+</section><section id="process-in-diagnistic-analysis" class="slide level2 smaller"><h2>Process in Diagnistic Analysis</h2>
+
+<img data-src="img/ASA_framwork1.png" class="r-stretch"><div class="caption">
+https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf
+</div>
+</section><section id="process-in-diagnostic-analysis" class="slide level2 smaller"><h2>Process in Diagnostic Analysis</h2>
+<p>ลักษณะสำคัญของกระบวนการคือเป็นกระบวนการที่มีลักษณะสืบเสาะและทวนซ้ำกัน</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="dianostic_ana_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --&gt; A
+A: Identify \n the Problem
+A --&gt; B
+B: Frame \n the Problem
+B --&gt; C
+C: Analyze &amp; \n Validate Causes
+C --&gt; D
+D: Develop and \n Implement \n Solutions
+D --&gt; E
+E: Monitoring and \n Evaluation
+E --&gt; A: Not Success
+E --&gt; [*]: Success
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</div><div class="column" style="width:30%;">
+<p><img data-src="img/PAOR1.png" style="width:80.0%"></p>
+</div></div>
+<div style="font-size: 80%;">
+<ul>
+<li><p>Identify the Problem: ระบุปัญหาหรือสิ่งที่ต้องการวิเคราะห์เพื่อวินิจฉัย</p></li>
+<li><p>Frame the Problem: ระบุสาเหตุหรือปัจจัยที่สัมพันธ์กับปัญหา เป็นการสร้างกรอบการวิเคราะห์/ตั้งสมมุติฐานเกี่ยวกับสาเหตุหรือปัจจัยที่เกี่ยวข้องกับปัญหา</p></li>
+<li><p>Analysis &amp; Validate Causes: เก็บรวบรวมข้อมูลตามกรอบและวิเคราะห์ข้อมูลเพื่อระบุสาเหตุหรือปัจจัยที่สัมพันธ์กับปัญหา</p></li>
+<li><p>Develop and Implement Solutions: ออกแบบวิธีการแก้ปัญหาและนำไปปฏิบัติ</p></li>
+<li><p>Monitoring and Evaluation: ติดตามและประเมินผลการปฏิบัติตามวิธีการแก้ปัญหาที่นำไปปฏิบัติ</p></li>
+</ul>
+</div>
+<div class="caption">
+https://www.siteware.co/blog/methodologies/what-is-the-pdca-cycle/
+</div>
+</section><section id="paor" class="slide level2"><h2>PAOR</h2>
+
+<img data-src="img/PAOR2.png" class="r-stretch"><div class="caption">
+https://newprairiepress.org/cgi/viewcontent.cgi?article=1056&amp;context=networks
+</div>
+</section><section id="identify-the-problem" class="slide level2 smaller"><h2>Identify the Problem</h2>
+<p><br><br><br></p>
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --&gt; A
+A: Identify \n the Problem
+A:::yourState --&gt; B
+B: Frame \n the Problem
+B --&gt; C
+C: Analyze &amp; \n Validate Causes
+C --&gt; D
+D: Develop and \n Implement \n Solutions
+D --&gt; E
+E: Monitoring and \n Evaluation
+E --&gt; A: Not Success
+E --&gt; [*]: Success
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</section><section id="identify-the-problem-1" class="slide level2 smaller"><h2>Identify the Problem</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+
+[*] --&gt; A
+A --&gt; B
+B --&gt; C
+C --&gt; [*]
+
+
+A: &lt;b&gt;Preliminary Data&lt;/b&gt;
+B: &lt;b&gt;Descriptive Analysis&lt;/b&gt;
+C: &lt;b&gt;Define Problems&lt;/b&gt;
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</div><div class="column" style="width:70%;">
+<p>ข้อมูล quiz ของนักเรียนที่เรียนรายวิชาคณิตศาสตร์</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="dianostic_ana_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="font-size: 80%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>data <span class="sc">|&gt;</span>   <span class="fu">mutate</span>(<span class="at">interval_res =</span> <span class="fu">cut</span>(research_score, <span class="at">include.lowest =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-2"><a href=""></a>        <span class="at">right =</span> F, <span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">55</span>,<span class="dv">60</span>,<span class="dv">65</span>,<span class="dv">70</span>,<span class="dv">75</span>,<span class="dv">80</span>,<span class="dv">85</span>,<span class="dv">100</span>),</span>
-<span id="cb3-3"><a href=""></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"F"</span>,<span class="st">"D"</span>,<span class="st">"D+"</span>,<span class="st">"C"</span>,<span class="st">"C+"</span>,<span class="st">"B"</span>,<span class="st">"B+"</span>,<span class="st">"A"</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href=""></a>          <span class="fu">group_by</span>(interval_res <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"F"</span>,<span class="st">"D"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href=""></a>          <span class="fu">summarise_if</span>(is.numeric, mean, <span class="at">na.rm =</span> T) <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a href=""></a>          <span class="fu">select</span>(<span class="sc">-</span>student_id) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a href=""></a>          <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-8"><a href=""></a>          <span class="fu">arrange</span>(name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 16 × 3
-   `interval_res %in% c("F", "D")` name                   value
-   &lt;lgl&gt;                           &lt;chr&gt;                  &lt;dbl&gt;
- 1 FALSE                           cheat_index            0.776
- 2 TRUE                            cheat_index            0.825
- 3 FALSE                           choose_method         38.3  
- 4 TRUE                            choose_method         34.0  
- 5 FALSE                           concepts              47.1  
- 6 TRUE                            concepts              28.8  
- 7 FALSE                           interpretation        45.2  
- 8 TRUE                            interpretation        28.1  
- 9 FALSE                           learning_performance  77.5  
-10 TRUE                            learning_performance  71.3  
-11 FALSE                           percent_submit        93.5  
-12 TRUE                            percent_submit        83.7  
-13 FALSE                           research_score        73.6  
-14 TRUE                            research_score        55.2  
-15 FALSE                           submit_time          138.   
-16 TRUE                            submit_time          150.   </code></pre>
+<pre><code>     quiz1           quiz2           quiz3       
+ Min.   :0.000   Min.   :0.000   Min.   : 0.000  
+ 1st Qu.:0.800   1st Qu.:1.800   1st Qu.: 3.100  
+ Median :3.000   Median :3.900   Median : 6.000  
+ Mean   :3.009   Mean   :3.827   Mean   : 6.127  
+ 3rd Qu.:4.825   3rd Qu.:5.900   3rd Qu.: 8.825  
+ Max.   :7.500   Max.   :7.500   Max.   :14.400  </code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>min_max<span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
-<span id="cb5-2"><a href=""></a>{</span>
-<span id="cb5-3"><a href=""></a>  y<span class="ot">&lt;-</span>(x<span class="dv">-0</span>)<span class="sc">/</span>(<span class="fu">max</span>(x,<span class="at">na.rm =</span> T))</span>
-<span id="cb5-4"><a href=""></a>  <span class="fu">return</span>(y)</span>
-<span id="cb5-5"><a href=""></a>}</span>
-<span id="cb5-6"><a href=""></a></span>
-<span id="cb5-7"><a href=""></a></span>
-<span id="cb5-8"><a href=""></a>data <span class="sc">|&gt;</span> </span>
-<span id="cb5-9"><a href=""></a> <span class="co"># filter(research_score &lt; 55) |&gt; </span></span>
-<span id="cb5-10"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id, <span class="sc">-</span>gender, <span class="sc">-</span>department) <span class="sc">|&gt;</span> </span>
-<span id="cb5-11"><a href=""></a>  <span class="fu">cor</span>(<span class="at">use =</span> <span class="st">"complete.obs"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-12"><a href=""></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span> <span class="fu">select</span>(research_score)  <span class="sc">|&gt;</span> </span>
-<span id="cb5-13"><a href=""></a>  <span class="fu">rownames_to_column</span>(<span class="st">"name"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-14"><a href=""></a>  <span class="fu">right_join</span>(</span>
-<span id="cb5-15"><a href=""></a>    data <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>research_score, <span class="sc">-</span>student_id, <span class="sc">-</span>gender, <span class="sc">-</span>department) <span class="sc">|&gt;</span> </span>
-<span id="cb5-16"><a href=""></a>      <span class="fu">mutate_all</span>(min_max) <span class="sc">|&gt;</span> </span>
-<span id="cb5-17"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb5-18"><a href=""></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span></span>
-<span id="cb5-19"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>(value, <span class="at">na.rm =</span> T)), <span class="at">by =</span> <span class="st">"name"</span> ) <span class="sc">|&gt;</span> </span>
-<span id="cb5-20"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> research_score, <span class="at">y=</span>median))<span class="sc">+</span></span>
-<span id="cb5-21"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
-<span id="cb5-22"><a href=""></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>), <span class="at">linetype =</span> <span class="dv">3</span>)<span class="sc">+</span></span>
-<span id="cb5-23"><a href=""></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name))<span class="sc">+</span></span>
-<span id="cb5-24"><a href=""></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="fl">0.2</span>,<span class="dv">1</span>)<span class="sc">+</span></span>
-<span id="cb5-25"><a href=""></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">+</span></span>
-<span id="cb5-26"><a href=""></a>  <span class="fu">xlab</span>(<span class="st">"Importance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div></div>
+<p><br></p>
+</section><section id="identify-the-problem-2" class="slide level2 smaller"><h2>Identify the Problem</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="dianostic_ana_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+
+[*] --&gt; A
+A --&gt; B
+B --&gt; C
+C --&gt; [*]
+
+
+A: &lt;b&gt;Preliminary Data&lt;/b&gt;
+B: &lt;b&gt;Descriptive Analysis&lt;/b&gt;
+C: &lt;b&gt;Define Problems&lt;/b&gt;
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</div><div class="column" style="width:70%;">
+<p>ข้อมูล quiz ของนักเรียนที่เรียนรายวิชาคณิตศาสตร์</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="dianostic_ana_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+</div></div>
+<p>อะไรเป็นปัญหาของผู้เรียนกลุ่มนี้บ้าง ?</p>
+<div style="font-size: 70%;">
+<ul>
+<li><p>มัธยฐานของ quiz ครั้งที่ 1 และ 3 ค่อนข้างต่ำ</p></li>
+<li><p>ทุก quiz มีนักเรียนที่สอบได้ 0 คะแนนหรือใกล้เคียงเป็นจำนวนที่ค่อนข้างมาก</p></li>
+<li><p>quiz 1 และ 2 เหมือนจะมีการแจกแจงแบบสองฐานนิยม</p></li>
+<li><p>ในขณะที่ quiz 3 มีแนวโน้มจะมีฐานนิยมเดียวแต่มัธยฐานและ quartile ที่ 3 ค่อนข้างต่ำ</p></li>
+</ul>
+</div>
+</section><section id="identify-the-problem-with-generative-ai" class="slide level2 smaller"><h2>Identify the Problem with Generative AI</h2>
+<ul>
+<li><p>เป็นไปได้ว่าบางกรณีเราสามารถแบ่งผลการวิเคราะห์จาก descriptive statistics ได้แต่ไม่สามารถระบุปัญหาหรือสาเหตุได้ ในกรณีนี้เราสามารถใช้ Generative AI เพื่อช่วยระบุปัญหา (รวมทั้งสาเหตุของปัญหา) ที่อาจเป็นไปได้</p></li>
+<li>
+<p>Gen AI คือปัญญาประดิษฐ์ประเภทหนึ่งที่มีความสามารถหลักในการสร้างเนื้อหา (content) ที่หลากหลาย</p>
+<ul>
+<li><p>ข้อความ (text)</p></li>
+<li><p>ภาพ (image)</p></li>
+<li><p>วิดีโอ (video)</p></li>
+<li><p>เสียง (audio)</p></li>
+</ul>
+</li>
+</ul></section><section id="generative-ai" class="slide level2 smaller"><h2>Generative AI</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://datakruroo.github.io/ChatGPT/img/Screenshot%202567-09-20%20at%2019.29.02.png"></p>
+<p><img data-src="img/chatgpt1.png" style="width:90.0%"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/chatgpt2.png" style="width:100.0%"></p>
+</div></div>
+</section><section id="generative-ai-1" class="slide level2 smaller"><h2>Generative AI</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://datakruroo.github.io/ChatGPT/img/cat1.png"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="https://datakruroo.github.io/ChatGPT/img/cat2.png"></p>
+</div></div>
+</section><section id="hallucinations" class="slide level2 smaller"><h2>Hallucinations</h2>
+
+<img data-src="img/chatgpt3.png" style="width:40.0%" class="r-stretch"><div style="font-size: 90%;">
+<ul>
+<li><p>Gen AI ในปัจจุบันสร้าง content โดย based on โมเดลความน่าจะเป็น (probabilistic model)</p></li>
+<li>
+<p>การกำหนด prompt ที่ไม่เหมาะสมอาจทำให้เกิดปัญหาที่เรียกว่า hallucinations หรือการสร้างเนื้อหาที่ไม่เป็นจริง</p>
+<ul>
+<li><p>ผลลัพธ์ที่ไม่มีพื้นฐานจากข้อมูลที่ถูกต้องหรือเป็นจริง ซึ่งอาจเป็นข้อมูลที่เข้าใจผิดหรือไม่เกี่ยวข้องกับคำถามหรือข้อมูลนำเข้าที่ได้รับ</p></li>
+<li><p>บางสถานการณ์ AI อาจให้คำตอบที่ดูเหมือนจะถูก/สมเหตุสมผล หรืออาจจะถูกจริง ๆ แต่ไม่ตรงกับสิ่งที่ผู้ใช้ต้องการ</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</section><section id="hallucinations-1" class="slide level2 smaller"><h2>Hallucinations</h2>
+
+<img data-src="img/chatgpt4.png" class="r-stretch"></section><section id="prompt-design" class="slide level2 smaller"><h2>Prompt Design</h2>
+<div style="font-size: 70%;">
+<ul>
+<li><p>โดยทั่วไป Generative AI เช่น ChatGPT ถูกฝึกสอนจากฐานข้อมูลขนาดใหญ่มากอยู่แล้ว ดังนั้นในแต่ละ prompt ที่ป้อนเข้าไปจึงมีความเป็นไปได้จำนวนมากของคำตอบ</p></li>
+<li><p>Prompt Design คือกระบวนการสร้างคำสั่ง/ข้อมูลนำเข้าสำหรับ Generative AI ที่นำไปสู่การสร้างผลลัพธ์ที่มีความถูกต้อง/สมเหตุสมผล/ตรงกับความต้องการ</p></li>
+</ul>
+</div>
+<div class="cell" data-reveal="true" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">
+flowchart LR
+subgraph  
+B["Task"]--&gt;A(("Prompt"))
+C["Context"]--&gt;A(("Prompt"))
+end
+D["Fine-Tuning"]-.-&gt;B
+D["Fine-Tuning"]-.-&gt;C
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+<div style="font-size: 70%;">
+<ul>
+<li><p><strong>Task</strong> คืองานที่ต้องการให้ Chat GPT ทำ ซึ่งอาจอยู่ในรูปของประโยคคำถาม คำ สั่ง หรือข้อความที่ไม่สมบูรณ์เพื่อให้โมเดลเขียนต่อ</p></li>
+<li><p><strong>Context</strong> คือบริบทหรือข้อมูลเพิ่มเติมสำหรับประกอบการสร้างผลลัพธ์ของโมเดล</p></li>
+<li><p><strong>Fine-Tuning</strong> คือการปรับปรุงคำตอบของโมเดลเพื่อให้มีความแม่นยำ สอดคล้องกับบริบทและเหมาะสมกับความต้องการของผู้ใช้มากขึ้น ผ่านการพิมพ์โต้ตอบกับผู้ใช้</p></li>
+</ul>
+</div>
+</section><section id="prompt-design-task" class="slide level2"><h2>Prompt Design: Task</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li><p>Describe, Explain</p></li>
+<li><p>Classify</p></li>
+<li><p>Summarize, Group</p></li>
+<li><p>List, Suggest</p></li>
+<li><p>Write, Rewrite, Generate</p></li>
+<li><p>Design</p></li>
+<li><p>Creat</p></li>
+<li><p>Ideate</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><p>Give</p></li>
+<li><p>Prepare</p></li>
+<li><p>Compare</p></li>
+<li><p>Translation</p></li>
+<li><p>Correct</p></li>
+<li><p>Break down</p></li>
+<li><p>What?</p></li>
+<li><p>How?</p></li>
+</ul>
+</div></div>
+</section><section id="prompt-task-context" class="slide level2 smaller" data-background-color="black"><h2>Prompt = Task + Context</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Task Only</strong> <img data-src="img/Screenshot%202567-09-20%20at%2020.00.11.png" style="width:80.0%"></p>
+</div><div class="column" style="width:50%;">
+<p><strong>Task with Context</strong> <img data-src="img/Screenshot%202567-09-20%20at%2020.01.39.png" style="width:70.0%"></p>
+</div></div>
+</section><section id="fine-tuning-prompt" class="slide level2 smaller" data-background-color="black"><h2>Fine-Tuning Prompt</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/Screenshot%202567-09-20%20at%2020.15.21.png"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/Screenshot%202567-09-20%20at%2020.15.27.png" style="width:80.0%"></p>
+</div></div>
+</section><section id="ตวอยางการใช-chatgpt-เพอระบปญหาโดยใชขอมลจรงเปนฐาน" class="slide level2"><h2>ตัวอย่างการใช้ ChatGPT เพื่อระบุปัญหาโดยใช้ข้อมูลจริงเป็นฐาน</h2>
+
+<img data-src="img/problem1.png" class="r-stretch"><div style="font-size: 70%;">
+<p><a href="https://chatgpt.com/share/66f9acf3-2bc8-8003-974b-de35e507df7e">https://chatgpt.com/share/66f9acf3-2bc8-8003-974b-de35e507df7e</a></p>
+</div>
+</section><section id="ตวอยางการใช-chatgpt-เพอระบปญหาโดยใชขอมลจรงเปนฐาน-1" class="slide level2"><h2>ตัวอย่างการใช้ ChatGPT เพื่อระบุปัญหาโดยใช้ข้อมูลจริงเป็นฐาน</h2>
+
+<img data-src="img/problem2.png" class="r-stretch"></section><section id="identify-the-problem-3" class="slide level2 smaller"><h2>Identify the Problem</h2>
+<p>เราสามารถ filter ข้อมูลนักเรียนที่ได้ 0 คะแนน ในการ quiz แต่ละครั้งขึ้นมาดูได้</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p>ได้ quiz1 = 0 (37 คน)</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   stu_id quiz1 quiz2 quiz3
+1       5     0   1.5   4.0
+2      11     0   0.6   1.6
+3      14     0   0.0   0.0
+4      34     0   0.0   0.0
+5      35     0   0.0   0.0
+6      37     0   1.0   4.1
+7      67     0   0.0   0.0
+8      70     0   0.6   1.0
+9     121     0   0.3   2.1
+10    142     0   2.0   2.2
+11    191     0   0.0   0.0
+12    201     0   1.4   2.2
+13    218     0   0.0   0.0
+14    225     0   0.0   0.0
+15    263     0   0.6   1.4
+16    264     0   0.3   2.5
+17    273     0   0.4   1.0
+18    277     0   0.1   1.0
+19    279     0   0.6   0.8
+20    289     0   0.4   1.7
+21    290     0   0.4   0.9
+22    293     0   0.0   0.0
+23    294     0   0.0   0.0
+24    300     0   0.0   0.0
+25    317     0   0.0   0.0
+26    325     0   0.3   1.4
+27    326     0   1.6   1.6
+28    335     0   0.0   0.0
+29    340     0   0.4   0.9
+30    361     0   0.0   0.0
+31    367     0   2.6   3.2
+32    383     0   0.4   1.7
+33    384     0   0.4   1.7
+34    388     0   0.0   0.0
+35    397     0   2.9   8.1
+36    399     0   0.6   2.7
+37    401     0   0.8   2.2</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<p>ได้ quiz2 = 0 (17 คน)</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   stu_id quiz1 quiz2 quiz3
+1      14   0.0     0     0
+2      34   0.0     0     0
+3      35   0.0     0     0
+4      67   0.0     0     0
+5      75   2.7     0     0
+6      89   1.5     0     0
+7     191   0.0     0     0
+8     218   0.0     0     0
+9     225   0.0     0     0
+10    239   5.9     0     0
+11    293   0.0     0     0
+12    294   0.0     0     0
+13    300   0.0     0     0
+14    317   0.0     0     0
+15    335   0.0     0     0
+16    361   0.0     0     0
+17    388   0.0     0     0</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<p>ได้ quiz3 = 0 (17 คน)</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   stu_id quiz1 quiz2 quiz3
+1      14   0.0     0     0
+2      34   0.0     0     0
+3      35   0.0     0     0
+4      67   0.0     0     0
+5      75   2.7     0     0
+6      89   1.5     0     0
+7     191   0.0     0     0
+8     218   0.0     0     0
+9     225   0.0     0     0
+10    239   5.9     0     0
+11    293   0.0     0     0
+12    294   0.0     0     0
+13    300   0.0     0     0
+14    317   0.0     0     0
+15    335   0.0     0     0
+16    361   0.0     0     0
+17    388   0.0     0     0</code></pre>
+</div>
+</div>
+</div></div>
+</section><section id="frame-the-problem" class="slide level2 smaller"><h2>Frame the Problem</h2>
+<p><br><br><br></p>
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --&gt; A
+A: Identify the Problem
+A: นักเรียนจำนวนหนึ่งมีปัญหา \n ในการทำความเข้าใจเนื้อหา
+A --&gt; B:::yourState
+B: Frame \n the Problem
+B --&gt; C
+C: Analyze &amp; \n Validate Causes
+C --&gt; D
+D: Develop and \n Implement \n Solutions
+D --&gt; E
+E: Monitoring and \n Evaluation
+E --&gt; A: Not Success
+E --&gt; [*]: Success
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</section><section id="frame-the-problem-1" class="slide level2 smaller"><h2>Frame the Problem</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+
+A((Factors?)) --&gt; B[Problems]
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+<div style="font-size: 70%;">
+<ul>
+<li>
+<p>ขั้นตอนนี้มีวัตถุประสงค์หลักคือเพื่อกำหนดกรอบในการอธิบายปัญหาหรือสถานการณ์ที่เกิดขึ้น</p>
+<ul>
+<li><p>Fishbone Diagram (Ishikawa Diagram)</p></li>
+<li><p>Five Whys Analysis</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Ishikawa_Fishbone_Diagram.svg/2880px-Ishikawa_Fishbone_Diagram.svg.png"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="https://www.lean.org/wp-content/uploads/2020/07/5-Why-Funnel-1536x1321.jpg" style="width:80.0%"></p>
+</div></div>
+</section><section id="original-fishbone-diagram-ishikawa-diagram" class="slide level2 smaller"><h2>Original Fishbone Diagram (Ishikawa Diagram)</h2>
+<ul>
+<li><p>เป็นเครื่องมือที่ใช้ในการวิเคราะห์สาเหตุของปัญหา โดยมีลักษณะคล้ายโครงกระดูกปลา จึงเรียกว่า “Fishbone” หรือที่รู้จักอีกชื่อหนึ่งว่า Cause-and-Effect Diagram การวิเคราะห์นี้มีวัตถุประสงค์เพื่อระบุและจัดกลุ่มปัจจัยที่เป็นสาเหตุของปัญหาต่าง ๆ อย่างเป็นระบบ เพื่อให้เห็นภาพรวมของสาเหตุที่อาจก่อให้เกิดปัญหาหรือความไม่พึงประสงค์ที่เกิดขึ้น และช่วยให้สามารถแก้ไขปัญหาได้ตรงจุดมากขึ้น</p></li>
+<li>
+<p>ส่วนประกอบของ Fishbone Diagram</p>
+<ul>
+<li><p>ปัญหาหรือสถานการณ์ที่เกิดขึ้น (Problem)</p></li>
+<li><p>สาเหตุหลัก (Main Cause)</p></li>
+<li><p>สาเหตุย่อย (Sub-Cause)</p></li>
+</ul>
+</li>
+</ul></section><section id="m-model-fishbone-diagram-ishikawa-diagram" class="slide level2 smaller"><h2>5M model Fishbone Diagram (Ishikawa Diagram)</h2>
+<div style="font-size: 90%;">
+<p style="text-indent: 2em;">
+</p>
+<ul>
+<li><p>Manpower / Mindpower (physical or knowledge work, includes: kaizens, suggestions)</p></li>
+<li><p>Machine (equipment, technology)</p></li>
+<li><p>Material (includes raw material, consumables, and information)</p></li>
+<li><p>Method (process)</p></li>
+<li><p>Measurement / medium (inspection, environment)</p></li>
+</ul>
+</div>
+<div class="caption">
+https://en.wikipedia.org/wiki/Ishikawa_diagram
+</div>
+</section><section id="classroom-fishbone-diagram-ishikawa-diagram" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+<div style="font-size: 90%;">
+<p style="text-indent: 2em;">
+</p>
+<ul>
+<li><p>นักเรียน</p></li>
+<li><p>ครู</p></li>
+<li><p>บ้าน</p></li>
+<li><p>เพื่อน</p></li>
+<li><p>สภาพแวดล้อม</p></li>
+<li><p>…</p></li>
+</ul>
+</div>
+</section><section id="classroom-fishbone-diagram-ishikawa-diagram-1" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+
+<img data-src="img/fish0.png" class="r-stretch"></section><section id="classroom-fishbone-diagram-ishikawa-diagram-2" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+
+<img data-src="img/fish1.png" class="r-stretch"></section><section id="classroom-fishbone-diagram-ishikawa-diagram-3" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+
+<img data-src="img/fish2.png" class="r-stretch"></section><section id="classroom-fishbone-diagram-ishikawa-diagram-4" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+
+<img data-src="img/fish3.png" class="r-stretch"></section><section id="classroom-fishbone-diagram-ishikawa-diagram-5" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+
+<img data-src="img/fish4.png" class="r-stretch"></section><section id="classroom-fishbone-diagram-ishikawa-diagram-6" class="slide level2 smaller"><h2>Classroom Fishbone Diagram (Ishikawa Diagram)</h2>
+
+<img data-src="img/fish6.png" class="r-stretch"></section><section id="analysis-framework" class="slide level2"><h2>Analysis Framework</h2>
+<center>
+<div class="cell" data-reveal="true" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">
+flowchart LR
+
+A["การเข้าเรียน"]--&gt;B(("แรงจูงใจ"))
+A["การเข้าเรียน"]--&gt;C(("ความขยัน/รับผิดชอบ"))
+
+D["มาสาย"]--&gt;B
+D["มาสาย"]--&gt;C
+
+E["ผลการเรียน Math ในอดีต"] --&gt; F(("ความรู้พื้นฐาน"))
+
+B--&gt;G["เรียนไม่รู้เรื่อง"]
+C--&gt;G
+F--&gt;G
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</section><section id="data-collection" class="slide level2 smaller"><h2>Data Collection</h2>
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+    direction LR
+    classDef yourState font-style:italic,font-weight:bold,fill:white
+
+[*] --&gt; A
+A: Identify the Problem
+A: นักเรียนจำนวนหนึ่งมีปัญหา \n ในการทำความเข้าใจเนื้อหา
+A --&gt; B
+B: Frame \n the Problem
+B --&gt; C:::yourState
+C: Analyze &amp; \n Validate Causes
+C --&gt; D
+D: Develop and \n Implement \n Solutions
+D --&gt; E
+E: Monitoring and \n Evaluation
+E --&gt; A: Not Success
+E --&gt; [*]: Success
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
+</section><section id="data-collection-1" class="slide level2 smaller"><h2>Data Collection</h2>
+<p>ก่อนการวิเคราะห์สาเหตุ/ปัจจัยที่สัมพันธ์กับปัญหา คุณครูอาจจำเป็นต้องเก็บรวบรวมข้อมูลเพิ่มเติมตามกรอบแนวคิดที่ได้สร้างไว้</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 404 × 15
+   quiz1 quiz2 quiz3 percent_attend percent_late_inclass percent_goout
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;          &lt;dbl&gt;                &lt;dbl&gt;         &lt;dbl&gt;
+ 1   2     2.3   6.1          1                    0.455        0     
+ 2   0.2   0.6   3.2          1                    0.273        0.182 
+ 3   0.7   2.3   6.6          1                    0            0     
+ 4   3.8   4.7   6.7          1                    0.182        0.0909
+ 5   0     1.5   4            1                    0.273        0     
+ 6   6.9   6.7  12.5          1                    0.364        0     
+ 7   0.4   1.8   4            1                    0.182        0     
+ 8   0.3   2.1   1.6          0.909                0.182        0.0909
+ 9   5.1   5.4   9.8          1                    0.182        0     
+10   3.8   6.1   5            1                    0.455        0     
+# ℹ 394 more rows
+# ℹ 9 more variables: percent_answer_inclass &lt;dbl&gt;, practice &lt;chr&gt;,
+#   time_do_homework1 &lt;dbl&gt;, time_do_homework2 &lt;dbl&gt;,
+#   percent_time_start1 &lt;dbl&gt;, percent_time_start2 &lt;dbl&gt;,
+#   late_assignment &lt;chr&gt;, incomplete_assignment &lt;chr&gt;, pre_grade_inmath &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section><section id="data-analysis" class="slide level2"><h2>Data Analysis</h2>
+<ul>
+<li><p>Descriptive Analysis</p></li>
+<li><p>Pareto Analysis</p></li>
+<li><p>Drill Down Analysis</p></li>
+<li><p>Correlation Analysis</p></li>
+<li><p>Regression Analysis</p></li>
+<li><p>Decision Tree</p></li>
+<li><p>Root Cause Analysis (RCA) เช่น five whys</p></li>
+</ul></section><section id="data-analysis-descriptive-analysis" class="slide level2 smaller"><h2>Data Analysis: Descriptive Analysis</h2>
+<ul>
+<li><p>เป็นขั้นตอนเบื้องต้นของการวิเคราะห์ diagnostic</p></li>
+<li><p>วัตถุประสงค์คือเพื่อทำความเข้าใจลักษณะเบื้องต้นของความสัมพันธ์ระหว่างปัจจัยกับปัญหา</p></li>
+<li>
+<p>การวิเคราะห์ที่อาจดำเนินการได้</p>
+<ul>
+<li><p>บรรยายสภาพข้อมูลปัจจัยต่าง ๆ ตามกรอบแนวคิดที่ได้สร้างขึ้น</p></li>
+<li><p>เปรียบเทียบสภาพของปัจจัยต่าง ๆ ระหว่างกลุ่มนักเรียนที่มีปัญหา/สนใจ กับกลุ่มนักเรียนที่ไม่มีปัญหาหรือไม่ได้สนใจ</p></li>
+<li><p>วิเคราะห์ความสัมพันธ์เบื้องต้นระหว่างปัจจัยกับสภาพปัญหา</p></li>
+</ul>
+</li>
+</ul></section><section id="frame-the-problem-2" class="slide level2 smaller"><h2>Frame the Problem</h2>
+<p><br><br><br></p>
+<center>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">stateDiagram-v2
+state Stage1 {
+[*] --&gt; A
+A --&gt; B
+B --&gt; C
+}
+
+state Stage2 {
+D --&gt; F 
+F --&gt; G
+
+}
+
+                            
+
+A: &lt;b&gt;Preliminary Data&lt;/b&gt;
+B: &lt;b&gt;Descriptive Analysis&lt;/b&gt;
+C: &lt;b&gt;Identify the Problem&lt;/b&gt;
+D: &lt;b&gt;Frame the Problem&lt;/b&gt; 
+D: อะไรบ้างที่น่าจะเป็นสาเหตุ \n หรือปัจจัยที่สัมพันธ์กับปัญหา
+D: \n - 5 Whys \n - Fishbone Diagram \n - Brainstorming \n - Generative AI
+F: &lt;b&gt;Data Collection for Diagnosis&lt;/b&gt;
+F: เก็บข้อมูลเพิ่มเติมตามสมมติฐานที่กำหนด
+G: &lt;b&gt;Analyze &amp; Validate Causes&lt;/b&gt;
+G: - Pareto Chart \n - Correlation Analysis \n - Regression Analysis, \n - Decision Tree Analysis \n - Drill Down Analysis
+
+</pre>
+</div>
+<p></p>
+</div>
+</div>
+</div>
+</center>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">

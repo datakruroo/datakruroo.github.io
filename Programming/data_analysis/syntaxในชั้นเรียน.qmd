@@ -1,0 +1,354 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+### Importing data
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/dimensionality_reduction/learning_data2.csv")
+glimpse(data)
+### เตรียมข้อมูลก่อนการวิเคราะห์
+use_data <- data %>% 
+  mutate(cheat_index = ifelse(is.na(cheat_index)==T, mean(data$cheat_index, na.rm = T), cheat_index)) %>% 
+  mutate(concepts = ifelse(concepts > 50, "good","fail"),
+         submit_time = ifelse(submit_time > 140, "slow","normal"),
+         cheat = ifelse(cheat_index > 0.97, "cheater", "not"),
+         percent_submit  = ifelse(percent_submit > 90, "consistent","not"),
+         learning_performance = case_when(
+           learning_performance < 70 ~ "low",
+           learning_performance >= 70 & learning_performance< 80 ~"moderate",
+           learning_performance >= 80 ~"high"
+         )) %>%
+  select(concepts, submit_time, percent_submit, department, research_score)
+use_data %>% glimpse()
+use_data %>% count(department)
+```
+
+```{r}
+use_data %>% 
+  group_by(concepts, department) %>% 
+  summarise(mean_res = mean(research_score)) %>% 
+  ggplot(aes(x=concepts, y=mean_res, col = department))+
+  geom_point()+
+  geom_line(aes(group = department))+
+  theme(legend.position = "none")
+```
+
+
+```{r}
+my_interaction_plot <- function(my_data,response ,x_var, trace_var)
+{
+  response <- sym(response)
+  x_var <- sym(x_var)
+  trace_var <- sym(trace_var)
+  
+  my_data %>% 
+  group_by(!!x_var, !!trace_var) %>% 
+  summarise(mean = mean(!!response, na.rm = TRUE)) %>% 
+  ggplot(aes(x = !!x_var, y= mean, col = !!trace_var))+
+  geom_line(aes(group = !!trace_var))+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"))
+  
+}
+```
+
+
+```{r}
+my_interaction_plot(use_data,response = "research_score",
+                    x_var = "concepts",
+                    trace_var = "department")
+```
+
+
+```{r fig.width = 16, fig.height = 4}
+## concepts, submit_time, percent_submit, department
+
+trace_vars <- c("percent_submit", "submit_time", "department") # เปลี่ยนเป็นชื่อคอลัมน์ที่ต้องการ
+# ใช้ map เพื่อสร้างกราฟสำหรับแต่ละ trace_var
+plots_concepts <- map(.x = trace_vars, 
+                      .f = ~my_interaction_plot(use_data, 
+                                              response = "research_score", 
+                                              x_var = "concepts", 
+                                              trace_var = .x))
+plots_concepts[[3]]
+reduce(plots_concepts, `+`)
+```
+
+```{r fig.width = 9, fig.height = 4}
+trace_vars <- c("percent_submit", "department") # เปลี่ยนเป็นชื่อคอลัมน์ที่ต้องการ
+# ใช้ map เพื่อสร้างกราฟสำหรับแต่ละ trace_var
+plots_submit_time <- map(.x = trace_vars, 
+                      .f = ~my_interaction_plot(use_data, 
+                                              response = "research_score", 
+                                              x_var = "submit_time", 
+                                              trace_var = .x))
+plots_submit_time %>% reduce(`+`)
+```
+
+
+```{r fig.width = 9, fig.height = 4}
+my_interaction_plot(use_data, 
+                     response = "research_score", 
+                     x_var = "percent_submit", 
+                    trace_var = "department")
+```
+
+## 1. fit full model
+
+full model ของเราคือโมเดลที่มี main effect ทั้งหมด และมี interaction effect ทั้งหมด
+
+```{r}
+full_model <- use_data %>% 
+              with(aov(research_score ~ concepts*submit_time*percent_submit*department
+              )) 
+summary(full_model)
+```
+```{r}
+reduced_model <- use_data %>% 
+              with(aov(research_score ~ concepts + submit_time + percent_submit + department + concepts:department
+              ))
+reduced_model %>% summary()
+coef(reduced_model) %>% data.frame()
+```
+
+Rsq - สัดส่วนของความผันแปรร่วมกันระหว่างตัวแปรตามกับตัวแปรอิสระทั้งหมดในโมเดล <-- โมเดลของเราสามารถอธิบายความผันแปรในตัวแปรตามได้คิดเป็นสัดส่วนเท่าไหร่
+
+```{r}
+use_data %>% summary()
+use_data$research_score %>% sd()
+
+```
+Likelihood function - ดัชนีที่ใช้วัดความสอดคล้องกันระหว่างโมเดลการวิเคราะห์กับข้อมูลจริง <-- ค่านี้สูงแสดงว่าโมเดลของเราสามารถอธิบายข้อมูลได้ดี
+
+Deviance มีค่าเท่ากับ -2log-likehood ถ้าค่า deviance มีค่าน้อย แสดงว่าโมเดลของเราสามารถอธิบายข้อมูลได้ดี
+
+```{r}
+exp(-1269.118)
+```
+
+
+```{r}
+library(broom)
+glance(full_model) %>% 
+  mutate(model = "full_model") %>% 
+  bind_rows(glance(reduced_model) %>% 
+             mutate(model = "reduced_model"))
+```
+
+### Partial F-test
+
+การทดสอบจะใช้สถิติที่ชื่อ F-test คำนวณจาก SSE ของโมเดลลดรูปกับโมเดลเต็มรูป
+
+```{r}
+anova(reduced_model, full_model)
+```
+ไม่มีหลักฐานที่บ่งชี้ว่า error ใน reduced model จะน้อยกว่า full model อย่างมีนัยสำคัญทางสถิติ
+
+### Likelihood ratio test
+
+การทดสอบจะใช้สถิติชื่อ deviance statistics (chi-square) ที่คำนวณจากผลต่างระหว่าง deviance ของโมเดลลดรูปกับโมเดลเต็มรูป
+
+```{r}
+(19429.51 - 16451.74)
+```
+
+
+```{r}
+install.packages("lmtest")
+library(lmtest)
+lrtest(reduced_model, full_model)
+```
+จากผลการดทสอบไม่พบนัยสำคัญ แสดงว่า reduced model ไม่แตกต่างจาก full model
+
+## train-test strategy
+
+```{r}
+use_data %>% summary()
+  ggplot(aes(x=research_score))+
+  geom_histogram()
+```
+
+```{r}
+use_data %>% 
+  ggplot(aes(x=research_score))+
+  geom_histogram()
+```
+
+
+```{r}
+## แบ่งข้อมูลออกเป็นสองส่วน
+##install.packages("rsample")
+library(rsample)
+
+set.seed(123)
+### -- สร้างตัวแบ่งข้อมูลก่อน เรียกว่า spliter
+split <- initial_split(use_data, 
+              prop = 0.8,  ## สัดส่วนของ train data ว่าจะเอาเป็นสัดส่วนเท่าไหร่
+              strata = "research_score",
+              breaks = 8) ## จำนวนกลุ่มของ research_score ที่จะแบ่ง
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
+ลองตรวจสอบการแจกแจงของ research_score ระหว่าง train กับ test หน่อย
+
+```{r}
+train_data %>% summary()
+test_data %>% summary()
+
+p1<-train_data %>% 
+  ggplot(aes(x=research_score))+
+  geom_histogram()
+
+p2<-test_data %>% 
+  ggplot(aes(x=research_score))+
+  geom_histogram()
+
+p1/p2
+```
+
+
+
+
+
+
+```{r}
+### fit model ทั้งสองบน train_data
+#### 2.1 full model
+full_model_train <- train_data %>% 
+  with(aov(research_score ~ concepts*submit_time*percent_submit*department
+  ))
+summary(full_model_train)
+
+### ปรับแต่งโมเดล ---> ลด term ขยะออกไปจากโมเดล
+
+reduced_model1_train <- train_data %>% 
+  with(aov(research_score ~ concepts + submit_time + percent_submit + department + concepts:department
+  ))
+
+reduced_model_train %>% summary()
+
+reduced_model2_train <- train_data %>% 
+  with(aov(research_score ~ concepts + submit_time + percent_submit + department + concepts:department + submit_time:percent_submit:department
+  ))
+
+reduced_model2_train %>% summary()
+
+```
+
+```{r}
+## ดูประสิทธิภาพใน train_data
+glance(full_model_train) %>% 
+  bind_rows(
+glance(reduced_model1_train)) %>% 
+  bind_rows(
+glance(reduced_model2_train))
+```
+
+การตรวจสอบประสิทธิภาพใน test_data
+
+- ค่าทำนายของ full_model บน test_data
+
+- ค่าทำนายของ reduced model บน test_data
+
+- เปรียบเทียบค่าจริงของ research_score บน test_data กับค่าทำนายของ full model และ reduced model บน test_data
+
+
+```{r}
+## install.packages("yardstick")
+library(yardstick) ## <-- มีฟังก์ชันสำหรับคำนวณ performance ของโมเดลตระกูล supervised learning
+pred_full <- predict(full_model_train, newdata = test_data)
+pred_reduced1 <- predict(reduced_model_train, newdata = test_data)
+pred_reduced2 <- predict(reduced_model2_train, newdata = test_data)
+
+test_data %>% 
+  mutate(pred_full = pred_full,
+         pred_reduced1 = pred_reduced1,
+         pred_reduced2 = pred_reduced2) %>% 
+  select(research_score, pred_full, pred_reduced1, pred_reduced2) %>% 
+  rsq(truth = research_score, estimate = pred_full)
+
+test_data %>% 
+  mutate(pred_full = pred_full,
+         pred_reduced1 = pred_reduced1,
+         pred_reduced2 = pred_reduced2) %>% 
+  select(research_score, pred_full, pred_reduced1, pred_reduced2) %>% 
+  rsq(truth = research_score, estimate = pred_reduced1)
+
+test_data %>% 
+  mutate(pred_full = pred_full,
+         pred_reduced1 = pred_reduced1,
+         pred_reduced2 = pred_reduced2) %>% 
+  select(research_score, pred_full, pred_reduced1, pred_reduced2) %>% 
+  rsq(truth = research_score, estimate = pred_reduced2)
+
+```
+
+
+### final fit
+
+```{r}
+final_model <- use_data %>% 
+  with(aov(research_score ~ concepts + submit_time + percent_submit + department + concepts:department
+  )) 
+
+final_model %>% summary()
+glance(final_model)
+```
+
+```{r}
+library(emmeans)
+emmeans <- emmeans(final_model, pairwise ~ concepts | department)
+```
+
+
+
+```{r}
+emmeans$emmeans %>% data.frame() %>% 
+  select(concepts, department, emmean) %>% 
+  pivot_wider(names_from = "concepts", values_from = "emmean") %>% 
+  mutate(diff = good - fail) %>%
+  ggplot(aes(y = reorder(department, diff)))+
+  geom_point(aes(x=fail), col = "maroon", shape = 1)+
+  geom_point(aes(x=good), col = "steelblue", shape = 16)+
+  geom_segment(aes(x=fail, xend = good), linetype = 2, col = "grey")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        panel.grid.minor = element_blank())+
+  xlab("avg. research score")
+
+```
+
+
+
+
+```{r}
+emmeans$contrasts %>% data.frame() %>% 
+  ggplot(aes(x = -estimate, y= reorder(department, -estimate),
+             col = p.value<0.05))+
+  geom_point()+
+  geom_errorbar(aes(xmin = -estimate - SE, xmax = -estimate + SE), width = 0.1)+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        panel.grid.minor = element_blank())+
+  xlab("avg. Difference")+
+  ggtitle("Estimated Effect Size of Concepts on Research Score by Department")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
