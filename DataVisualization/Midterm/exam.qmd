@@ -1,0 +1,141 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Question 1
+
+ครูมะเป็นผู้รับผิดชอบสอนรายวิชาสถิติให้กับนักเรียนชั้นมัธยมศึกษา โดยในช่วงแรกของการจัดการเรียนรู้ นักเรียนจะได้รับมอบหมายให้ทำการบ้านเกี่ยวกับหัวข้อที่เรียนไป เมื่อผ่านไป 3 สัปดาห์ครูมะปรางได้เริ่มนำข้อมูลคะแนนการบ้านของนักเรียนมาวิเคราะห์ โดยที่การบ้านครั้งที่ 1 และ 2 คะแนนเต็ม 7.5 และครั้งที่ 3 คะแนนเต็ม 15
+
+สิ่งที่ครูมะอยากทราบมี 2 ข้อคือ
+
+1. เมื่อผ่านไป 3 สัปดาห์ แนวโน้มการเรียนรู้ของนักเรียนกลุ่มนี้เป็นอย่างไร
+
+2. มีแนวโน้มพบนักเรียนที่มีปัญหาในการเรียนรู้หรือไม่ ปัญหาเป็นอย่างไร
+
+ขอให้นิสิตเขียนรายงานการวิเคราะห์ข้อมูล ที่ใช้ผลการวิเคราะห์จาก data visualization เป็นหลักเพื่อตอบคำถามข้างต้น โดยขอให้นิสิตเขียนรายงานสำหรับคำถามข้อนี้ไม่เกิน 2 หน้า (ถ้าเกินจะไม่ได้รับการตรวจ) ที่มีเนื้อหาครอบคลุม
+
+1. Frame the Problems - อธิบายภาพรวมว่าการวิเคราะห์ข้อมูลเพื่อตอบคำถามทั้งสอง นิสิตต้องใช้สารสนเทศอะไรบ้าง และสารสนเทศดังกล่าวจะถูกนำมาวิเคราะห์หรือนำเสนอบน visualization ประเภทไหนบ้าง
+
+2. Methods - อธิบายขั้นตอนการสร้าง visualization แต่ละรูปแบบที่ใช้ นิสิตมีการเตรียมข้อมูลอย่างไร นำไปใช้กับ visualization ประเภทไหน มีการกำหนด aesthetic mapping ระหว่างข้อมูลกับ attributes ของแผนภาพอย่างไร พร้อมเหตุผลประกอบ
+
+3. Results - เขียนรายงานผลการวิเคราะห์ที่ใช้สารสนเทศนำเสนอผ่าน visualization ที่สร้างขึ้น เพื่อตอบคำถามที่กำหนด 
+
+4. Conclusion & Recommendation - สรุปผลการวิเคราะห์ การเรียนรู้ของนักเรียนในชั้นเรียนของอาจารย์มะเป็นอย่างไร และจากผลการวิเคราะห์ที่ได้นิสิตมีข้อเสนอแนะอะไรให้กับอาจารย์มะบ้าง
+
+Note: กลุ่มเป้าหมายหลักของ visualization นี้คือ อาจารย์มะผู้สอน และอาจจะมีการนำเสนอสารสนเทศนี้ให้กับเพื่อนอาจารย์ท่านอื่นที่รับผิดชอบในรายวิชานี้ด้วย
+
+
+
+## Question 2
+
+จากสภาพปัญหาที่อาจารย์มะพบ นำมาสู่ความพยายามในการวิเคราะห์ปัจจัยที่คาดว่าน่าจะมีความสัมพันธ์กับปัญหาการเรียนรู้ของนักเรียนที่วิเคราะห์และระบุได้จากคำถามข้อที่ 1
+
+จากประสบการณ์ในอดีต ข้อมูลที่ได้ทำความรู้จักผู้เรียนในกลุ่มนี้พอสมควร และ literature review ที่เกี่ยวข้องกับทฤษฎีการเรียนรู้ของนักเรียน พบว่าปัจจัยของปัญหาอาจมีได้หลายด้าน แต่ด้านที่อาจารย์มะคิดว่าน่าจะเป็นไปได้มากที่สุดคือ ปัจจัยด้านตัวนักเรียนเอง ซึ่งมีปัจจัยย่อยที่เป็นไปได้หลายตัว เช่น การขาดแรงจูงใจในการเรียน ขาดความมีวินัย/ความขยัน/ความรับผิดชอบ ขาดทักษะพื้นฐาน หรือมีปัญหาสุขภาพกาย/จิตใจ พฤติกรรมส่วนตัวที่ไม่เหมาะสม
+
+เพื่อตอบคำถามข้างต้นอาจารย์มะ ได้เก็บรวบรวมข้อมูลจากหลายแหล่งในโรงเรียนดังไฟล์แนบ
+
+ขอให้นิสิต
+
+1. ดำเนินการวิเคราะห์เพื่อสำรวจความสัมพันธ์ระหว่างปัจจัยที่สามารถสังเกตได้จากข้อมูลที่มีกับปัญหาที่ระบุไว้ในข้อ 1. เพื่อสร้างสารสนเทศ/สารสนเทศเชิงลึกที่ใช้ทำความเข้าใจสภาพปัญหาดังกล่าว
+
+2. นำสารสนเทศที่ค้นพบมาสร้างเป็น visualization ที่เหมาะสม วัตถุประสงค์การของสร้าง visualization นี้คือเพื่อสื่อสารสารสนเทศที่แสดงสภาพปัญหาของนักเรียน โดยเขียนบรรยายให้ครอบคลุมหัวข้อต่อไปนี้
+
+- Input: อธิบายว่าสารสนเทศที่นำหรือเลือกมาใช้เป็น visualization คืออะไร อะไรเป็น main idea หรือ key message ที่ต้องการสื่อสาร เพราะเหตุใด 
+
+- Tools: ระบุแผนภาพที่เลือกใช้ (อาจเลือกได้มากกว่า 1 แผนภาพ) และอธิบายเหตุผลของการเลือกใช้แผนภาพดังกล่าว
+
+- Design: อธิบายการกำหนด aesthetic mapping ของแผนภาพพร้อมเหตุผล และอธิบายว่านิสิตมีการปรับแต่งแผนภาพอะไรบ้างที่แตกต่างไปจากค่าเริ่มต้น พร้อมเหตุผลประกอบ นิสิตคิดว่าการปรับแต่่งดังกล่าวทำให้การแสดงสารสนเทศดีขึ้นได้อย่างไร
+
+- Interpret: สร้างรายงานที่อธิบายสารสนเทศที่แสดงในแผนภาพ 
+
+
+
+
+
+
+
+
+percent_answer_inclass 
+percent_correct_inclass
+percent_attend
+practice
+percent_time_start
+
+grade
+percent_late_inclass
+
+
+goout
+
+```{r}
+quiz_file <- data %>% 
+  rename(major = major.y.x, 
+        quiz_week1 = quiz1_7.5 , quiz_week2 = quiz2_7.5, quiz_week3 = quiz3_15) %>% 
+  select(stu_id, major, starts_with("quiz"))
+write_excel_csv(quiz_file, "quiz_file.csv")
+```
+
+
+```{r}
+classroom_file <- data %>% 
+  rename(percent_interact_inclass = percent_answer_inclass,
+        percent_correct_inclass = percent_correct_inclass,
+        home_practice = practice) %>% 
+  mutate(percent_interact_inclass = percent_interact_inclass*100,
+         percent_correct_inclass = percent_correct_inclass*100,
+         avg_time_start_hw = (percent_time_start1 + percent_time_start2)/2) %>% 
+  select(stu_id, percent_interact_inclass, percent_correct_inclass, home_practice, avg_time_start_hw)
+classroom_file %>% summary()
+write_excel_csv(classroom_file, "classroom_file.csv")
+```
+
+```{r}
+reg_system <- data %>% 
+  rename(past_grade_inmath = grade,
+         percent_late = percent_late_inclass) %>% 
+  mutate(percent_attend = percent_attend*100,
+         percent_late = percent_late*100) %>% 
+  mutate(past_grade_inmath = case_when(
+    past_grade_inmath == "success" ~ "more than B",
+    past_grade_inmath == "fail" ~ "F",
+    TRUE ~ "D+ to C+"
+  )) %>% 
+  select(stu_id, percent_attend, past_grade_inmath, percent_late)
+write_excel_csv(reg_system, "reg_system.csv")
+```
+
+```{r}
+survey_data <- data %>% 
+  rename(goout = percent_goout) %>% 
+  mutate(time_do_homework = (time_do_homework1+time_do_homework2)/2) %>% 
+  mutate(goout = goout*5) %>% 
+  select(stu_id, goout, time_do_homework)
+write_excel_csv(survey_data, "survey_data.csv")
+```
+
+
+
+
+```{r echo = FALSE}
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/dimensionality_reduction/learning_data_secondary.csv")
+data %>% glimpse()
+data %>% 
+  rename(quiz_week1 = quiz1_7.5 , quiz_week2 = quiz2_7.5, quiz_week3 = quiz3_15) %>% 
+  #select(stu_id, major.y.x, starts_with("quiz")) %>% 
+  rename(major = major.y.x) %>% 
+  #filter(quiz_week2 <1) %>% 
+  ggplot(aes(x= bringbook  , y = quiz_week2))+
+  geom_point()
+
+```
+
+
+```{r}
+data %>% 
+  ggplot(aes(factor(Dalc), G3))+
+  geom_boxplot()
+```
+

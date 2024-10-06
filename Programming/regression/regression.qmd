@@ -1,0 +1,287 @@
+---
+title: "Regression"
+format: html
+toc: true
+message: false
+warning: false
+editor: visual
+---
+
+
+Regression เป็นวิธีการทางสถิติที่ใช้วิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม (Dependent Variable) และตัวแปรอิสระ (Independent Variables) หนึ่งตัวหรือมากกว่า ซึ่งจะช่วยให้เราเข้าใจว่าตัวแปรตามมีการเปลี่ยนแปลงอย่างไรเมื่อมีการเปลี่ยนแปลงในตัวแปรอิสระ
+
+วัตถุประสงค์ของการวิเคราะห์ regression หลัก ๆ มี 2 ข้อ
+
+คือการสร้างโมเดลทางสถิติที่สามารถใช้
+
+1. อธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+2. ทำนายแนวโน้มของตัวแปรตามเมื่อกำหนดตัวแปรอิสระ
+
+
+การวิเคราะห์การถดถอยมีหลายประเภท 
+
+- Simple regression
+
+- Multiple regression
+
+- Polynomial regression
+
+- Logistic regression
+
+...
+
+
+
+
+
+## Simple Linear Regression
+
+เป็นโมเดลพื้นฐานใช้อธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระที่เป็นตัวแปรเดียว ทางสังคมศาสตร์อาจไม่ค่อยใช้โมเดลนี้ในทางปฏิบัติเท่าไหร่ แต่มักใช้เป็นโมเดลแรกในการอธิบาย concept เกี่ยวกับ regression 
+
+อย่างที่บอกว่า regression analysis จะทำการอธิบายและทำนายตัวแปรตามด้วยตัวแปรอิสระ ผ่านโมเดลทางสถิติ สำหรับ simple regression หรือเรียกเต็ม ๆ ว่า simple linear regression จะมีโมเดลเป็นสมการเส้นตรงที่มีส่วนประกอบจำแนกเป็นสองส่วนได้แก่
+
+- ส่วนที่เป็นความสัมพันธ์เชิงฟังก์ชัน
+
+- ส่วน noise หรือ error
+
+$$
+Y_i = \beta_0 + \beta_1X_i + \epsilon_i
+$$
+
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Downloads/exam.csv")
+glimpse(data)
+```
+
+
+```{r}
+fit_simreg <- lm(ach ~ learning_performance, data = data)
+summary(fit_simreg)
+```
+
+## Multiple Regression
+
+```{r}
+fit_mulreg <- lm(ach ~ learning_performance + engage, data = data)
+summary(fit_mulreg)
+```
+
+## Regression with Interaction
+
+อิทธิพลปฏิสัมพันธ์ (interaction effect) คืออิทธิพลรวมกันระหว่างตัวแปรอิสระอย่างน้อย 2 ตัวแปร ที่มีผลต่อตัวแปรตาม ที่เมื่อเกิดอิทธิพลของตัวแปรอิสระดังกล่าวจะมีแนวโน้มเปลี่ยนแปลงไปตามค่าของตัวแปรอิสระอื่น ๆ ที่อยู่ในกลุ่มปฏิสัมพันธ์เดียวกัน
+
+![](https://datakruroo.github.io/Programming/data_analysis/img/interaction.png)
+
+### Two-way interaction effect
+
+- ~~ตัวแปรอิสระทั้งสองเป็นตัวแปรจัดประเภท~~
+
+- ตัวแปรอิสระเป็นตัวแปรจัดประเภทและตัวแปรอิสระเชิงปริมาณ
+
+- ตัวแปรอิสระทั้งสองเป็นตัวแปรเชิงปริมาณ
+
+#### ตัวแปรอิสระเป็นตัวแปรจัดประเภทและตัวแปรอิสระเชิงปริมาณ
+
+ใช้ชุดข้อมูล [teachersalary.csv](TeacherSalaryData.csv)
+
+```{r}
+data <- read_csv("TeacherSalaryData.csv")
+fit_interac1 <- lm(salary~ yrs.service + yrs.service:discipline, data =data)
+summary(fit_interac1)
+```
+
+การวิเคราะห์ simple slope ของ yrs.service จำแนกตาม discipline
+
+```{r}
+library(emmeans)
+simple_slopes <- emtrends(fit_interac1, var = "yrs.service", spec = "discipline")
+## slope ของ yrs.service จำแนกตาม discipline
+simple_slopes 
+## ความแตกต่างของ slope ของ yrs.service ระหว่าง 2 discipline
+contrast(simple_slopes, method = "pairwise")
+```
+
+ลองใช้ `simple_slopes <- emmeans(fit_interac1, pairwise ~ discipline | yrs.service)
+` ผลลัพธ์ที่ได้แตกต่างกันอย่างไร
+
+
+ในทำนองเดียวกับ anova เราสามารถวิเคราะห์ simple effect ของ discipline แต่ในกรณีนี้จะเป็นการจำแนกตามระดับของ yrs.service ซึ่งมีจำนวนได้มากมาย
+
+```{r}
+summary(data)
+emmeans <- emmeans(fit_interac1, pairwise ~ discipline | yrs.service, 
+        at = list(discipline = c("A", "B"), 
+                  yrs.service = c(7, 16,27)))
+emmeans$emmeans %>% data.frame() %>% 
+  ggplot(aes(x=emmean, y=factor(yrs.service), col =discipline ))+
+  geom_point()+
+  geom_errorbar(aes(xmin = lower.CL, xmax = upper.CL), width = 0.1)
+```
+
+
+เราอาจ plot แผนภาพแสดงความสัมพันธ์แบบ interaction ได้ง่าย ๆ ดังนี้
+
+```{r}
+yrs_grid <- seq(min(data$yrs.service), max(data$yrs.service), 2)
+grid_pred <- expand_grid(yrs.service = yrs_grid,
+                      discipline = unique(data$discipline))
+grid_pred %>% 
+  mutate(pred = predict(fit_interac1, newdata = grid_pred)) %>% 
+  ggplot(aes(x = yrs.service, y = pred, color = discipline)) +
+  geom_line()
+```
+
+
+
+#### ตัวแปรอิสระทั้งสองเป็นตัวแปรเชิงปริมาณ
+
+![](img/interaction2.png){width="50%"}
+
+```{r}
+data <- read_csv("eff.csv")
+glimpse(data)
+```
+
+
+
+## Polynomial Regression
+
+```{r}
+library(gapminder)
+library(ggforce)
+
+gapminder %>% 
+  filter(year=="2007") %>% 
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth()
+```
+
+การสร้าง term polynomial อาจทำได้สองวิธีการ วิธีการแรกคือการใช้ฟังก์ชัน identity function (`I()`) และวิธีการที่สองคือการใช้ `poly()` ความแตกต่างระหว่างการสร้างเทอมพหุนามของทั้งสองวิธีการคือ 
+
+- `I()` เป็นวิธีการสร้างพหุนามโดยตรง โดยเราจะใส่ตัวแปรที่ต้องการยกกำลังในฟังก์ชันนี้ ตัวอย่างเช่น I(x^2) หมายถึงการสร้างเทอม x^2 ที่ใช้ในโมเดลการถดถอย ดังนั้นการแปลความหมาย slope ของตัวแปรที่เป็นพหุนามนี้สามารถทำได้อย่างตรงไปตรงมา เพราะตัวแปรต่าง ๆ อยู่ในสเกลต้นฉบับ
+
+- ปัญหาหนึ่งของการใช้ `I()` คือ multicollinearity!!!
+
+- `poly()` จะสร้างเทอมพหุนามที่เรียกว่า orthogonal polynomial ซึ่งจะทำให้เราไม่ต้องกังวลเรื่อง multicollinearity แต่ต้องแลกมาด้วยการแปลความหมายความสัมพันธ์ที่ยาก เพราะตัวแปรที่ถูกแปลงเป็น orthogonal polynomial จะอยู่คนละสเกลกับตัวแปรเดิม การแปลงลักษณะนี้จึงเหมาะกับวัตถุประสงค์ในการทำนายมากกว่าอธิบายความสัมพันธ์ื
+
+
+## Regression Diagnostics
+
+regression เป็นโมเดลทางสถิติแบบ parametric ที่การใช้งานจะต้องอยู่ภายใต้ข้อตกลงเบื้องต้นของโมเดลที่ค่อนข้าง strict (แต่ก็ไม่ได้แปลว่าต้อง strict มาก ๆ )
+
+- Independence
+
+- Linearity
+
+- Normality
+
+- Homoscedasticity
+
+- No Missing Values
+
+- No Influential Outlier
+
+  - Outlier คือ ค่าสังเกตที่ทำนายไม่ได้หรือมีประสิทธิภาพการทำนายด้วย regression ต่ำ (กล่าวคือมีค่าสัมบูรณ์ของ residual ที่มากเกินไป)
+  
+```{r}
+gapminder %>% 
+  filter(year=="2007") %>% 
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth()+
+  geom_ellipse(data = gapminder %>% 
+                        filter(year=="2007") %>% 
+                 filter(lifeExp < 60 & gdpPercap > 8000),
+               aes(x0 = mean(gdpPercap), y0 = mean(lifeExp), 
+                   a = 2*sd(gdpPercap), b = 2*sd(lifeExp), angle = 0),
+               color = 'maroon', linetype = "dashed", fill = NA)
+```
+
+
+
+  - Leverage value คือ combination ของค่าสังเกตของตัวแปรอิสระที่ผิดปกติ กล่าวคือเป็น outlier ใน feature space ค่า leverage ไม่จำเป็นต้องมีผลต่อค่าของเส้นถดถอยเสมอไป มันเพียงแค่บอกว่าจุดนั้นอยู่ห่างไกลและมีศักยภาพที่จะส่งผลกระทบต่อโมเดล
+
+$$
+h_{ii} = x_i^T (X^T X)^{-1} x_i
+$$
+ค่า $h_{ii}$ มีค่าอยู่ในช่วง [0,1] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
+
+  - Influential observation คือค่าสังเกตที่มีอิทธิพลต่อการประมาณค่าพารามิเตอร์ในโมเดลมากกว่าปกติ การประเมินค่าสังเกตประเภทนี้ทำได้ด้วยสถิติ Cook's distance    
+
+$$
+D_i = \frac{(e_i^2)}{p \cdot MSE} \left( \frac{h_{ii}}{(1 - h_{ii})^2} \right)
+$$
+
+```{r fig.height=8}
+library(patchwork)
+p1 <- gapminder %>% 
+  filter(year=="2007") %>% 
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth()
+
+p2 <- gapminder %>% 
+  filter(year=="2007") %>% 
+  filter(gdpPercap < 10000) %>%
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth()
+  
+p1/p2
+```
+
+
+## Regression Remedials
+
+
+1. Linearity
+
+- เพิ่ม polynomial หรือ interaction terms เพื่อเพิ่มความซับซ้อนของโมเดล
+
+- แปลงข้อมูลด้วยการใช้ log, square root, หรือการแปลงเชิงเส้นตรงแบบอื่น ๆ
+
+- ใช้ Multivariate Adaptive Regression Splines (MARs) Generalized Additive Models (GAMs) เพื่อจับความสัมพันธ์ที่ไม่เป็นเชิงเส้น
+
+
+2. Normality
+
+- แปลงข้อมูล (log-transformation, square root, Box-Cox) เพื่อให้ residuals เป็นปกติมากขึ้น
+
+- ใช้ robust regression เพื่อทนทานต่อผลกระทบของ outliers
+
+- เพิ่มตัวแปรอิสระหรือเทอมของตัวแปรอิสระที่อาจหายไปเพื่อปรับปรุงการกระจายของ residuals
+
+
+3. Homoscedasticity
+
+- แปลงค่าตัวแปรตาม (เช่น log, square root) เพื่อลดความแปรปรวน
+
+- ใช้ Weighted Least Squares (WLS) เพื่อปรับน้ำหนักให้กับจุดข้อมูลที่มีความแปรปรวนต่างกัน
+
+- ใช้ heteroscedasticity-robust standard errors เพื่อปรับ standard errors ของโมเดล
+
+4. No Influential Ouliers
+
+- ลบหรือปรับค่าสังเกตที่ถูกระบุว่าเป็น influential outiers
+
+- ใช้ robust regression
+
+
+## Model Selection: Best Subset Regression
+
+วิธีการหนึ่งที่ใช้ค้นหาโมเดลที่ดีที่สุดคือ best subset regression ซึ่งจะทำการสร้างโมเดลทุกโมเดลที่เป็นไปได้จากตัวแปรอิสระที่มี จากนั้นเปรียบเทียบ empirical fit ระหว่างโมเดลดังกล่าว
+
+```{r}
+#install.packages("leaps")
+library(leaps)
+data <- read_csv("TeacherSalaryData.csv")
+
+reg_model <- regsubsets(salary ~ ., data=data %>% select(-1), nbest =2, nvmax = 6)
+summary(reg_model)
+```
+
+
