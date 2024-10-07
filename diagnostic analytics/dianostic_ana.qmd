@@ -1959,7 +1959,7 @@ temp %>%
   mutate(cumsum = cumsum(n)) %>% 
   mutate(percent_cumsum = round(cumsum*100/485,2)) %>% 
   ggplot(aes(x = reorder(factor, desc(n)), y=n)) +
-  geom_col() +
+  geom_col(aes(fill = percent_cumsum > 60)) +
   geom_line(aes(y=percent_cumsum, group = 1), col = "orange", linewidth = 1.5) +
   geom_point(aes(y=percent_cumsum, group = 1), col ="orange", size = 3)+
   ylab("Frequency \n") +
@@ -2586,6 +2586,8 @@ perform_data_temp %>%
          importance_correlatioin = mean(importance)) %>% 
   ungroup() %>% 
   mutate(importance_regression = imp_reg)->perform_mat
+
+perform_mat
 ```
 
 ## Performance-Importance Matrix (Revisited) {.smaller}
