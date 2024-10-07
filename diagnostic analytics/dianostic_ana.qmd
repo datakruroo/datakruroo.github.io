@@ -26,7 +26,8 @@ format:
       data-background-size: full
 code-link: true
 execute:
-  echo: true
+  echo: false
+  message: false
   freeze: auto
   progress: true
 ---
@@ -1252,4 +1253,1367 @@ p1+p2
 - Root Cause Analysis (RCA) เช่น five whys
 
 - ...
+
+## Descriptive Analysis {.smaller}
+
+ผลการวิเคราะห์ด้วยสถิติบรรยายในเบื้องต้นบ่งชี้ว่า
+
+- ความรู้พื้นฐานทางคณิตศาสตร์ น่าจะเป็นปัจจัยหนึ่งที่สัมพันธ์กับปัญหา
+
+- การทบทวนบทเรียน ก็อาจจเป็นปัจจัยหนึ่งแต่ไม่ค่อยชัดเจนนัก
+
+
+# Diagnostic Analysis II
+
+
+
+
+## ทบทวน : ปัญหาที่เกิดขึ้น {.smaller}
+
+
+นักเรียนบางส่วนมีความเข้าใจในเนื้อหาไม่เพียงพอ
+
+- ทุก quiz มีนักเรียนที่สอบได้ 0 คะแนนหรือใกล้เคียงเป็นจำนวนพอสมควร
+
+- ทุก quiz มีนักเรียนที่ได้คะแนนต่ำกว่าครึ่งค่อนข้างมาก
+
+
+```{r echo = F, fig.height = 4}
+p <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  #mutate_at(vars(starts_with("quiz")), scale) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 0.5, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()
+p
+```
+
+
+
+
+
+## Data Analysis
+
+<div style="font-size: 70%;">
+
+- ~~Descriptive Analysis~~
+
+- Pareto Analysis
+
+- Generative AI
+
+- Drill Down Analysis
+
+- Correlation Analysis
+
+- Regression Analysis
+
+- Decision Tree
+
+- Root Cause Analysis (RCA) เช่น five whys
+
+- ...
+
+</div>
+
+## Pareto Chart (0) {.smaller}
+
+![https://www.investopedia.com/terms/p/pareto-analysis.asp](https://www.investopedia.com/thmb/ghkkjkMF_jlsEl269OZu5A_dWME=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/ParetoExample2-e075b949a3af4751a329954498103d1b.JPG)
+
+## Pareto Chart (1) {.smaller}
+
+> "roughly 80% of consequences come from 20% of causes" 
+
+
+![](https://th.hrnote.asia/storage/2021/01/1.18.jpg)
+
+- เป็นแผนภูมิที่ใช้แสดงการแจกแจงของปัจจัยที่คาดว่าจะสัมพันธ์กับปัญหา
+
+- แนวคิดเบื้องหลังมาจาก Pareto Principle 
+
+
+
+<div class="caption3">https://th.hrnote.asia/orgdevelopment/8020rule-paretoprinciple-01182021/</div>
+
+
+## Pareto Chart (2) {.smaller}
+
+วัตถุประสงค์ : ระบุปัจจัยที่สำคัญที่สุดที่คาดว่าจะสัมพันธ์กับปัญหานักเรียนบางส่วนมีความเข้าใจในเนื้อหาไม่เพียงพอ
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart LR
+
+A[Data]-->B["คัดกรองนักเรียนที่เป็นปัญหา"]
+B-->C["สร้าง Pareto Chart"]
+C-->D(("ระบุปัจจัยสำคัญ"))
+
+```
+
+
+
+## Pareto Chart (3) {.smaller}
+
+คัดกรองนักเรียนที่เป็นปัญหา
+
+:::: {.columns}
+
+::: {.column width="50%}
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart TD
+A["Data: \n
+  - quiz1 (7.5)
+  - quiz2 (7.5)
+  - quiz3 (15)"] --> B["Standardized"]
+B --> C["รวมคะแนน quiz เข้าด้วยกัน"]
+C --> D["คัดกรองนักเรียนที่มีปัญหา"]
+
+style A fill:#ffffff, stroke: black, stroke-width: 2px
+```
+
+
+
+:::
+
+::: {.column width="50%}
+
+<div style="font-size: 80%;">
+
+- รวมคะแนนทั้ง 3 quiz เป็นคะแนนรวมของนักเรียนก่อนจากนั้นค่อยเลือกนักเรียนที่มีปัญหาจากคะแนนรวม จะช่วยให้เราคัดกรองนักเรียนได้ง่ายขึ้น
+
+- การรวมคะแนนทำได้หลายวิธี เช่น ใช้ค่าเฉลี่ย หรืออาจใช้มัธยฐาน หรือผลสอบครั้งที่ดีที่สุด การเลือกใช้วิธีการไหนขึ้นอยู่กับความเหมาะสมและบริบท
+
+  - quiz1 เต็ม 7.5 คะแนน
+  
+  - quiz2 เต็ม 7.5 คะแนน
+  
+  - quiz3 เต็ม 15 คะแนน
+  
+
+</div>
+:::
+
+::::
+
+
+## Pareto Chart (4) {.smaller}
+
+คัดกรองนักเรียนที่เป็นปัญหา
+
+
+:::: {.columns}
+
+::: {.column width="50%}
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart TD
+
+A["Data: \n
+  - quiz1 (7.5)
+  - quiz2 (7.5)
+  - quiz3 (15)"] --> B["Standardized"]
+B --> C["รวมคะแนน quiz เข้าด้วยกัน"]
+C --> D["คัดกรองนักเรียนที่มีปัญหา"]
+
+style B fill:#ffffff, stroke: black, stroke-width: 2px
+
+```
+
+
+
+:::
+
+::: {.column width="50%}
+
+<div style="font-size: 80%;">
+
+จะเห็นว่าแต่ละ quiz คะแนนเต็มไม่เท่ากัน ก่อนการรวมคะแนนจึงควรปรับคะแนนให้เท่ากันก่อน
+
+- ทำเป็นคะแนนที่เต็มเท่ากัน เช่น ร้อยละ หรืออื่น ๆ 
+
+- แปลงเป็นคะแนนมาตรฐาน $Z = \frac{x-M}{SD}$ (standardization)
+
+- แปลงเป็นคะแนนมาตรฐาน $d = \frac{x-min}{max-min}$ (normalization)
+
+
+
+</div>
+:::
+
+::::
+
+
+## Pareto Chart (5) {.smaller}
+
+คัดกรองนักเรียนที่เป็นปัญหา
+
+
+```{r}
+
+p1 <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  #mutate_at(vars(starts_with("quiz")), scale) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 0.5, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()+
+  ggtitle("original score")
+
+p2<-data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 5, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()+
+  ggtitle("percentage score")
+
+p1/p2
+
+minmax <- function(x){
+  z <- (x-min(x))/(max(x)-min(x))
+  return(z)
+}
+```
+
+
+## Pareto Chart (6) {.smaller}
+
+คัดกรองนักเรียนที่เป็นปัญหา
+
+<center>
+
+```{r fig.height= 5, fig.width = 10}
+
+p3 <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate_at(vars(starts_with("quiz")), scale) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 0.2, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()+
+  ggtitle("Standardized Score Z")
+
+
+
+p4<-data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate_at(vars(starts_with("quiz")), minmax) %>% 
+  pivot_longer(cols = -stu_id, names_to = "quiz", values_to = "score") %>%
+  ggplot(aes(x=score))+
+  geom_histogram(bins =20, fill = "steelblue", col ="white")+
+  geom_violin(aes(y = 0), bw = 0.1, width = 10, alpha = 0.4)+
+  geom_boxplot(aes(y = 0), vjust = 2, width = 2)+
+  facet_wrap(~quiz, scales = "free_x")+
+  theme_light()+
+  ggtitle("Normalized Score")
+
+p3/p4
+```
+
+</center>
+
+
+## Pareto Chart (7) {.smaller}
+
+คัดกรองนักเรียนที่เป็นปัญหา
+
+:::: {.columns}
+
+::: {.column width="50%}
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart TD
+
+A["Data: \n
+  - quiz1 (7.5)
+  - quiz2 (7.5)
+  - quiz3 (15)"] --> B["Standardized"]
+B --> C["รวมคะแนน quiz เข้าด้วยกัน"]
+C --> D["คัดกรองนักเรียนที่มีปัญหา"]
+
+style C fill:#ffffff, stroke: black, stroke-width: 2px
+
+```
+
+
+
+:::
+
+::: {.column width="50%}
+
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart LR
+A["Percent quiz1"]-->D["total score"]
+B["Percent quiz2"]-->D
+C["Percent quiz3"]-->D
+
+```
+
+
+<div style="font-size: 80%;">
+
+การรวมคะแนน quiz1, quiz2 และ quiz3 เข้าด้วยกันก็สามารถทำได้หลายวิธีการ
+
+- ค่าเฉลี่ย
+
+- มัธยฐาน
+
+- ผลสอบที่ดีที่สุด
+
+- ผลสอบที่แย่ที่สุด
+
+
+</div>
+:::
+
+::::
+
+
+
+## Pareto Chart (8) {.smaller}
+
+คัดกรองนักเรียนที่เป็นปัญหา
+
+:::: {.columns}
+
+::: {.column width="20%}
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart TD
+
+A["Data: \n
+  - quiz1 (7.5)
+  - quiz2 (7.5)
+  - quiz3 (15)"] --> B["Standardized"]
+B --> C["รวมคะแนน quiz เข้าด้วยกัน"]
+C --> D["คัดกรองนักเรียนที่มีปัญหา"]
+
+style C fill:#ffffff, stroke: black, stroke-width: 2px
+
+```
+
+
+:::
+
+::: {.column width="80%}
+
+
+<div style="font-size: 80%;">
+
+การรวมคะแนน quiz1, quiz2 และ quiz3 เข้าด้วยกันก็สามารถทำได้หลายวิธีการ
+
+- ค่าเฉลี่ย
+
+- มัธยฐาน
+
+- ผลสอบที่ดีที่สุด
+
+- ผลสอบที่แย่ที่สุด
+
+</div>
+
+
+
+<div style="font-size: 70%;">
+
+
+```{r}
+library(gt)
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  mutate(avg_score = (quiz1+quiz2+quiz3)/3) %>% 
+  rowwise() %>% 
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>%
+  mutate(max_score = max(c(quiz1, quiz2, quiz3))) %>%
+  head() %>% 
+  gt()
+```
+
+</div>
+
+:::
+
+::::
+
+## Pareto Chart (9) {.smaller}
+
+<div style="font-size: 70%;">
+
+นักเรียนที่เป็นปัญหาคือนักเรียนที่ทำ quiz จำนวน  3 ครั้งแล้ว ...
+
+- ได้คะแนนเฉลี่ยต่ำกว่าร้อยละ 25 
+
+- มีมัธยฐานต่ำกว่าร้อยละ 25
+
+- ได้ค่าสูงต่ำกว่าร้อยละ 25
+
+- ได้ค่าต่ำสุดต่ำกว่าร้อยละ 25
+
+</div>
+
+```{r fig.width=8, fig.height = 4}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  mutate(avg_score = (quiz1+quiz2+quiz3)/3) %>% 
+  rowwise() %>% 
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>%
+  mutate(max_score = max(c(quiz1, quiz2, quiz3))) %>% 
+  mutate(min_score = min(c(quiz1, quiz2, quiz3))) %>%
+  pivot_longer(cols = c(avg_score, med_score, max_score, min_score)) %>%
+  mutate(name = fct_relevel(name, "avg_score", "med_score", "max_score","min_score")) %>%
+  ggplot(aes(x = value))+
+  geom_histogram()+
+  geom_boxplot(y = 0, width = 4)+
+  facet_wrap(~name)
+```
+
+
+
+## Pareto Chart (10) {.smaller}
+
+
+<div style="font-size: 70%;">
+
+นักเรียนที่เป็นปัญหาคือนักเรียนที่ทำ quiz จำนวน  3 ครั้งแล้ว ...
+
+- ~~ได้คะแนนเฉลี่ยต่ำกว่าร้อยละ 25~~ 
+
+- มีมัธยฐานต่ำกว่าร้อยละ 25
+
+- ~~ได้ค่าสูงต่ำกว่าร้อยละ 25~~
+
+- ~~ได้ค่าต่ำสุดต่ำกว่าร้อยละ 25~~
+
+</div>
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+<div style="font-size: 40%;">
+
+```{r}
+library(DT)
+temp <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  filter(med_score < 25) %>% 
+  mutate_at(vars(starts_with("quiz")), round,2)  %>% 
+  mutate(med_score = round(med_score,2))
+
+temp %>% datatable()
+```
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+<div style="font-size: 80%;">
+
+```{r}
+temp %>% select(med_score) %>% summary()
+
+temp %>% 
+  ggplot(aes(x=med_score))+
+  geom_histogram(bins = 10, col = "white", fill = "steelblue")+
+  geom_boxplot()+
+  theme_light()
+```
+
+</div>
+:::
+
+
+::::
+
+## Pareto Chart (11) {.smaller}
+
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart LR
+
+A[Data]-->B["คัดกรองนักเรียนที่เป็นปัญหา"]
+B-->C["สร้าง Pareto Chart"]
+C-->D(("ระบุปัจจัยสำคัญ"))
+
+style C fill:#ffffff, stroke: black, stroke-width: 2px
+```
+
+
+การสร้าง Pareto Chart มีขั้นตอนสำคัญต่อไปนี้
+
+- เก็บรวบรวมข้อมูลของปัจจัยที่คาดว่าจะมีความสัมพันธ์กับปัญหา
+
+- ลักษณะของข้อมูลที่จะนำมาสร้าง Pareto Chart ควรประกอบด้วย
+
+    - ประเภทของปัญหา (category of problem)
+  
+    - ความถี่/ความรุนแรงของปัญหา (frequency/severity of problem)
+
+- จัดเรียงปัจจัยตามความถี่ (ความสำคัญ) จากมากไปน้อย
+
+- คำนวณความถี่ (ร้อยละ) สะสมของปัจจัย
+
+- สร้างแผนภูมิ Pareto 
+
+
+## Pareto Chart (12) {.smaller}
+
+```{r}
+factor_data <- data %>% 
+  rename(pre_grade_inmath = grade) %>% 
+  select(stu_id, percent_attend, percent_late_inclass,
+         percent_goout, percent_answer_inclass, practice,
+         percent_time_start1, percent_time_start2,
+         late_assignment, incomplete_assignment, pre_grade_inmath) %>% 
+  mutate(avg_time_start = (percent_time_start1 + percent_time_start2)/2) %>% 
+  select(-percent_time_start1, -percent_time_start2)
+
+temp %>% inner_join(factor_data, by="stu_id") %>% 
+  select(-quiz1, -quiz2, -quiz3) %>% 
+  glimpse(90)
+
+temp <- temp %>% inner_join(factor_data, by="stu_id") %>% 
+  select(-quiz1, -quiz2, -quiz3)
+
+```
+
+
+## Pareto Chart (13) {.smaller}
+
+<div style="font-size: 70%;">
+
+- `percent_attend` --> จำนวนนักเรียนที่เข้าเรียนน้อยกว่า 80%
+
+- `percent_late_inclass` --> จำนวนนักเรียนที่เข้าเรียนสายมากกว่า 50%
+
+- `percent_goout` --> จำนวนนักเรียนที่ออกไปนอกห้องเรียนมากกว่า 50%
+
+- `percent_answer_inclass` --> จำนวนนักเรียนที่ตอบคำถามในห้องเรียนน้อยกว่า 50%
+
+- `practice` --> จำนวนนักเรียนที่ไม่ทบทวนบทเรียน
+
+- `late_assignment` --> จำนวนนักเรียนที่ส่งงานช้า
+
+- `incomplete_assignment` --> จำนวนนักเรียนที่ส่งงานไม่สมบูรณ์
+
+- `pre_grade_inmath` --> จำนวนนักเรียนที่ความรู้พื้นฐานไม่ดี
+
+- `avg_time_start` --> จำนวนนักเรียนที่เริ่มทำการบ้านช้ากว่าร้อยละ 80% ของเวลาที่กำหนด
+
+</div>
+
+## Pareto Chart (14) {.smaller}
+
+<div style="font-size: 80%;">
+
+Original Data
+
+```{r}
+temp %>% 
+  select(-med_score) %>% 
+  glimpse(90)
+```
+
+Transformed Data
+
+```{r}
+temp %>% 
+  mutate(less_attend = percent_attend < 0.8,
+         late_inclass = percent_late_inclass > 0.5,
+         frequently_goout = percent_goout > 0.5,
+         less_interaction = percent_answer_inclass < 0.5,
+         no_practice = practice == "no_pratice",
+         late_submit_hw = late_assignment == "late",
+         incomplete_assign = incomplete_assignment == "incomplete",
+         less_preknowledge = pre_grade_inmath != "success",
+         late_start_hw = avg_time_start > 0.8) %>% 
+  select(stu_id,12:20) %>% glimpse(90)
+```
+</div>
+
+## Pareto Chart (15) {.smaller}
+
+<br>
+
+<div style="font-size: 80%;">
+
+```{r}
+
+library(kableExtra)
+temp %>% 
+  mutate(less_attend = percent_attend < 0.8,
+         late_inclass = percent_late_inclass > 0.5,
+         frequently_goout = percent_goout > 0.5,
+         less_interaction = percent_answer_inclass < 0.5,
+         no_practice = practice == "no_pratice",
+         late_submit_hw = late_assignment == "late",
+         incomplete_assign = incomplete_assignment == "incomplete",
+         less_preknowledge = pre_grade_inmath != "success",
+         late_start_hw = avg_time_start > 0.8) %>% 
+  select(stu_id,12:20) %>% 
+  pivot_longer(cols = -stu_id, names_to = "factor", values_to = "problem") %>% 
+  group_by(factor, problem) %>% 
+  count() %>% 
+  filter(problem == TRUE) %>% 
+  arrange(desc(n)) %>%
+  ungroup() %>% 
+  mutate(cumsum = cumsum(n)) %>% 
+  mutate(percent_cumsum = round(cumsum*100/485,2)) %>%
+  kbl() %>%
+  kable_classic(full_width = F)
+
+```
+
+</div>
+
+## Pareto Chart (16) {.smaller}
+
+> "roughly 80% of consequences come from 20% of causes" 
+
+<div style="font-size: 80%;">
+
+- Vital Few (20%) ปัจจัยจำนวนน้อยที่มีความสำคัญมากที่สุด
+
+- Useful Many (80%) ปัจจัยจำนวนมากที่มีความสำคัญน้อยกว่า อาจพิจารณาให้ความสำคัญเป็นอันดับรองลงมา
+
+</div>
+
+```{r fig.height=4, fig.width = 8}
+temp %>% 
+  mutate(less_attend = percent_attend < 0.8,
+         late_inclass = percent_late_inclass > 0.5,
+         frequently_goout = percent_goout > 0.5,
+         less_interaction = percent_answer_inclass < 0.5,
+         no_practice = practice == "no_pratice",
+         late_submit_hw = late_assignment == "late",
+         incomplete_assign = incomplete_assignment == "incomplete",
+         less_preknowledge = pre_grade_inmath != "success",
+         late_start_hw = avg_time_start > 0.8) %>% 
+  select(stu_id,12:20) %>% 
+  pivot_longer(cols = -stu_id, names_to = "factor", values_to = "problem") %>% 
+  group_by(factor, problem) %>% 
+  count() %>% 
+  filter(problem == TRUE) %>% 
+  arrange(desc(n)) %>%
+  ungroup() %>% 
+  mutate(cumsum = cumsum(n)) %>% 
+  mutate(percent_cumsum = round(cumsum*100/485,2)) %>% 
+  ggplot(aes(x = reorder(factor, desc(n)), y=n)) +
+  geom_col() +
+  geom_line(aes(y=percent_cumsum, group = 1), col = "orange", linewidth = 1.5) +
+  geom_point(aes(y=percent_cumsum, group = 1), col ="orange", size = 3)+
+  ylab("Frequency \n") +
+  xlab("") +
+  theme_light() +
+  theme(axis.text.x = element_text(angle = 0, size = 6),
+        legend.position = "none") +
+  scale_y_continuous(
+    sec.axis = sec_axis(~. , name = "Cumulative Percentage (%) \n")
+  )
+```
+
+
+## Correlation Analysis (1) {.smaller}
+
+<div style="font-size: 80%;">
+
+- Correlation analysis คือการวิเคราะห์ความสัมพันธ์เชิงเส้น (linear association) ระหว่างตัวแปรสองตัว
+
+  - ตัวแปรทั้งสองมีทิศทางของความสัมพันธ์เป็นอย่างไร
+
+  - ความสัมพันธ์ที่เป็นเชิงเส้นระหว่างตัวแปรทั้งสองมีความชัดเจนมากไปแค่ไหน ---> ขนาดความสัมพันธ์
+
+ดัชนีหรือค่าสถิติที่ใช้สะท้อนสภาพข้างต้นเรียกว่า ค่าสัมประสิทธิ์สหสัมพันธ์ (correlation coefficient) 
+
+</div>
+
+![https://en.wikipedia.org/wiki/Correlation#/media/File:Correlation_examples2.svg](img/correlation_concept.png)
+
+
+## Correlation Analysis (2) {.smaller}
+
+
+โดยทั่วไป Correlation Coefficient จะมีค่าอยู่ในช่วง [-1,1]
+
+![](img/correlation.jpg)
+
+
+  - ถ้าใกล้ 1 --> Strong positive correlation
+  
+  - ถ้าใกล้ -1 --> Strong negative correlation
+  
+  - ถ้าใกล้ 0 --> No correlation หมายความว่ามีความสัมพันธ์ไม่ชัดเจน/ไม่มีความสัมพันธ์/มีความสัมพันธ์แบบไม่ใช่เส้นตรง
+
+## Correlation Analysis (4) {.smaller}
+
+<div style="font-size: 80%;">
+
+
+Correlation มีหลายประเภท แต่ละตัวถูกพัฒนาขึ้นเพื่อใช้กับข้อมูลที่แตกต่างประเภทกัน
+
+- Pearson's Correlation Coefficient ใช้วัดสหสัมพันธ์ระหว่างตัวแปรเชิงปริมาณสองตัว [-1,1]
+
+- Spearman's Rank Correlation Coefficient ใช้วัดสหสัมพันธ์ระหว่างตัวแปรเชิงลำดับ (ranking) สองตัว [-1,1]
+
+- Kendall's Tau ใช้วัดสหสัมพันธ์ระหว่างตัวแปรเชิงลำดับ (ranking) สองตัว [-1,1]
+
+- Point-Biserial Correlation Coefficient ใช้วัดสหสัมพันธ์ระหว่างตัวแปรเชิงปริมาณและตัวแปรจัดประเภทที่มี 2 ประเภท [-1,1]
+
+- Phi Coefficient ใช้วัดสหสัมพันธ์ระหว่างตัวแปรจัดประเภท 2 ตัว โดยที่แต่ละตัวมีค่าที่เป็นไปได้ 2 ระดับ [0,1]
+
+- Cramer's V ใช้วัดสหสัมพันธ์ระหว่างตัวแปรจัดประเภท 2 ตัว [0,1]
+
+...
+
+</div>
+
+
+## Correlation Analysis (5) {.smaller}
+
+ตัวอย่าง Pearson's Correlation
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+exam <- read_csv("exam.csv")
+exam %>% ggplot(aes(learning_performance, ach))+
+  geom_point()+
+  geom_smooth()+
+  ggtitle("ความสัมพันธ์ระหว่าง ach กับ learning performance มีแนวโน้มเป็นเส้นตรง")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+<div style="font-size: 70%;">
+
+เนื่องจากตัวแปร ach กับ learning performance เป็นตัวแปรเชิงปริมาณ สัมประสิทธิ์สหสัมพันธ์ที่เหมาะในกรณีนี้คือ Pearson' correlation
+
+```{r}
+exam %>% 
+  select(learning_performance, ach) %>% 
+  cor()
+```
+
+ach กับ learning performance มีสหสัมพันธ์กันทิศทางบวกในระดับที่สูง แสดงว่าการเปลี่ยนแปลงในตัวแปรทั้งสองมีความสอดคล้องกันค่อนข้างมาก
+
+</div>
+:::
+
+::::
+
+
+
+
+## Correlation Analysis (5) {.smaller}
+
+ตัวอย่าง Spearman's Correlation
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+exam %>%
+  arrange(learning_performance) %>%  # จัดเรียงข้อมูลตามตัวแปรหนึ่งก่อน
+  mutate(
+    rank_learning_performance = row_number(),  # จัดอันดับตามลำดับแถวของข้อมูลที่ถูกจัดเรียง
+    rank_ach = rank(ach)  # ใช้ rank() ตามค่าของ ach
+  ) %>%
+  ggplot(aes(rank_learning_performance, rank_ach)) +
+  geom_point() +
+  geom_smooth() +
+  ggtitle("ความสัมพันธ์ระหว่าง ach กับ learning performance มีแนวโน้มเป็นเส้นตรง (หลังจากแปลงเป็น rank)") +
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+<div style="font-size: 70%;">
+
+กรณีนี้ลองปรับตัวแปรทั้งสองให้เป็นลำดับ
+
+
+```{r}
+exam %>%
+  arrange(learning_performance) %>%  # จัดเรียงข้อมูลตามตัวแปรหนึ่งก่อน
+  mutate(
+    rank_learning_performance = row_number(),  # จัดอันดับตามลำดับแถวของข้อมูลที่ถูกจัดเรียง
+    rank_ach = rank(ach)  # ใช้ rank() ตามค่าของ ach
+  ) %>% 
+  select(rank_learning_performance, rank_ach) %>% 
+  cor(method = "spearman")
+```
+
+ach กับ learning performance มีสหสัมพันธ์กันทิศทางบวกในระดับที่สูง แสดงว่าการเปลี่ยนแปลงในตัวแปรทั้งสองมีความสอดคล้องกันค่อนข้างมาก
+
+</div>
+:::
+
+::::
+
+
+
+
+## Correlation Analysis (6) {.smaller}
+
+ตัวอย่าง Point-Biserial Correlation
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+exam %>% 
+  ggplot(aes(practice,  ach)) +
+  geom_boxplot()+
+  geom_jitter(width = 0.1, alpha = 0.4)+
+  ggtitle("ach กับ practice มีแนวโน้มสัมพันธ์กัน")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+<div style="font-size: 70%;">
+
+- แปลงตัวแปร `practice` โดยให้มีค่าเท่ากับ 1 ถ้าเป็น do practice และมีค่าเท่ากับ 0 ถ้าเป็น do not practice
+
+- นำ practice ที่แปลงแล้วกับ ach มีหาสหสัมพันธ์แบบ Pearson จะเรียกสหสัมพันธ์ตัวนี้ว่า point-biserial correlation
+
+```{r}
+exam %>% 
+  mutate(practice = ifelse(practice == "do practice", 1, 0)) %>% 
+  select(practice, ach) %>% 
+  cor(method = "pearson")
+```
+
+ach กับ learning performance มีสหสัมพันธ์กันทิศทางบวกในระดับที่สูง แสดงว่าการเปลี่ยนแปลงในตัวแปรทั้งสองมีความสอดคล้องกันค่อนข้างมาก
+
+</div>
+:::
+
+::::
+
+
+
+
+## Correlation Analysis (7) {.smaller}
+
+ความสัมพันธ์ระหว่างตัวแปรจัดประเภท
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+exam %>% 
+  ggplot(aes(x = practice,  fill = ach > 50)) +
+  geom_bar(position = "fill")+
+  scale_y_continuous(labels = scales::percent)+
+  scale_fill_discrete(labels=c("Fail", "Pass"))
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+<div style="font-size: 70%;">
+
+- แปลง ach เป็นตัวแปรจัดประเภทแบบ 2 ค่า คือ สอบผ่าน >=50 คะแนน และสอบตก < 50 คะแนน
+
+- หาสัมประสิทธิ์ Phi เพื่อวิเคราะห์ขนาดความสัมพันธ์ระหว่างตัวแปรทั้งสอง
+
+```{r}
+library(psych)
+exam_temp <- exam %>% 
+  mutate(ach_group = ifelse(ach >= 50, "Pass", "Fail"))
+
+table_data<- table(exam_temp$practice, exam_temp$ach_group)
+table_data
+paste("Phi coefficient = ",phi(table_data))
+```
+
+ach กับ learning performance มีสหสัมพันธ์กันทิศทางบวกในระดับที่สูง แสดงว่าการเปลี่ยนแปลงในตัวแปรทั้งสองมีความสอดคล้องกันค่อนข้างมาก
+
+</div>
+:::
+
+::::
+
+
+## Performance-Importance Matrix (1) {.smaller}
+
+<div style="font-size: 80%;">
+
+เป็นเครื่องมือที่ใช้ในการวิเคราะห์และวางแผนเพื่อปรับปรุงประสิทธิภาพ โดยในบริบทของ ห้องเรียน สามารถนำมาใช้เพื่อประเมินและวางแผนการพัฒนาการเรียนการสอนของครูและการเรียนรู้ของนักเรียนได้อย่างมีประสิทธิภาพ
+
+1.	**แกน Y: Performance (ประสิทธิภาพ)**
+
+- แกน Y แสดงถึง ประสิทธิภาพ หรือ ผลลัพธ์ ที่เกิดขึ้นจริงในห้องเรียน ซึ่งอาจจะเป็น ผลการเรียนรู้ของนักเรียน เช่น คะแนนสอบ ความสนใจในการเรียน การมีส่วนร่วมในกิจกรรม หรือพฤติกรรมการเรียนรู้
+
+- ตัวแปรนี้วัดได้จากการประเมินผลเชิงปฏิบัติ เช่น คะแนน การประเมินเชิงพฤติกรรม หรือการสังเกตความก้าวหน้าของนักเรียน หรือคะแนนปัจจัยที่คาดว่ามีความสัมพันธ์กับผลลัพธ์การเรียนรู้ก็ได้ แล้วแต่จะออกแบบ
+
+2.	**แกน X: Importance (ความสำคัญ)**
+
+- แกน X แสดงถึง ความสำคัญ ของตัวแปรที่ส่งผลต่อการเรียนรู้ในห้องเรียน เช่น ปัจจัยการสอนของครู, สภาพแวดล้อมการเรียนรู้, การสนับสนุนจากเพื่อน, การเตรียมตัวก่อนเรียน ฯลฯ
+
+- ค่าความสำคัญนี้อาจวัดจาก Correlation ระหว่างตัวแปรที่เกี่ยวข้องกับประสิทธิภาพการเรียนรู้ เช่น คะแนนสอบกับพฤติกรรมการเตรียมตัว, หรือความสัมพันธ์ระหว่างการทำการบ้านกับการมีส่วนร่วมในชั้นเรียน
+
+</div>
+
+## Performance-Importance Matrix (2) {.smaller}
+
+วัตถุประสงค์ จะสร้าง  Performance Matrix เพื่อวิเคราะห์ว่าปัจจัยในเป็นปัจจัยที่ควรจะต้องปรับปรุงเพื่อเพ่ิมประสิทธิภาพในการเรียนรู้ของนักเรียน
+
+- แกน y เป็นสัดส่วนการพบปัจจัยที่คาดว่าสัมพันธ์กับปัญหา
+
+- แกน x เป็น correlation ระหว่างปัจจัยกับผลการเรียนรู้ของนักเรียน (`med_score`)
+
+
+```{r}
+perform_data <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(more_attend = percent_attend > 0.8,
+         ontime_inclass = percent_late_inclass < 0.5,
+         rarely_goout = percent_goout < 0.5,
+         frequently_interaction = percent_answer_inclass > 0.5,
+         frequently_practice = practice != "no_pratice",
+         ontime_submit_hw = late_assignment != "late",
+         complete_assign = incomplete_assignment != "incomplete",
+         have_preknowledge = pre_grade_inmath == "success",
+         quick_start_hw = avg_time_start < 0.8) %>% 
+  select(stu_id,more_attend:quick_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>%
+  select(-stu_id)
+
+perform_data %>% glimpse(90)
+```
+
+## Performance-Importance Matrix (3) {.smaller}
+
+correlation matrix ระหว่างตัวแปรทั้งหมด
+
+
+```{r}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(more_attend = percent_attend > 0.8,
+         ontime_inclass = percent_late_inclass < 0.5,
+         rarely_goout = percent_goout < 0.5,
+         frequently_interaction = percent_answer_inclass > 0.5,
+         frequently_practice = practice != "no_pratice",
+         ontime_submit_hw = late_assignment != "late",
+         complete_assign = incomplete_assignment != "incomplete",
+         have_preknowledge = pre_grade_inmath == "success",
+         quick_start_hw = avg_time_start < 0.8) %>% 
+  select(stu_id,more_attend:quick_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>%
+  select(-stu_id) %>% 
+  cor(use = "complete.obs")
+```
+
+## Performance-Importance Matrix (4) {.smaller}
+
+
+```{r}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(more_attend = percent_attend > 0.8,
+         ontime_inclass = percent_late_inclass < 0.5,
+         rarely_goout = percent_goout < 0.5,
+         frequently_interaction = percent_answer_inclass > 0.5,
+         frequently_practice = practice != "no_pratice",
+         ontime_submit_hw = late_assignment != "late",
+         complete_assign = incomplete_assignment != "incomplete",
+         have_preknowledge = pre_grade_inmath == "success",
+         quick_start_hw = avg_time_start < 0.8) %>% 
+  select(stu_id,more_attend:quick_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>%
+  select(-stu_id) %>% 
+  pivot_longer(cols = more_attend:quick_start_hw) %>% 
+  group_by(name) %>% 
+  mutate(performance = mean(value),
+         importance = cor(value, med_score, use = "complete.obs")) %>% 
+  group_by(name) %>%
+  summarise(performance = sum(performance, na.rm = T)/404,
+            importance = mean(importance)) 
+```
+
+## Performance-Importance Matrix (5) {.smaller}
+
+
+ปัจจัยใดที่น่าจะมีความสำคัญและควรเร่งพัฒนาเพื่อช่วยให้นักเรียนมีการเรียนรู้ที่ดีขึ้นมากที่สุด?
+
+```{r}
+library(ggrepel)
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(more_attend = percent_attend > 0.8,
+         ontime_inclass = percent_late_inclass < 0.5,
+         rarely_goout = percent_goout < 0.5,
+         frequently_interaction = percent_answer_inclass > 0.5,
+         frequently_practice = practice != "no_pratice",
+         ontime_submit_hw = late_assignment != "late",
+         complete_assign = incomplete_assignment != "incomplete",
+         have_preknowledge = pre_grade_inmath == "success",
+         quick_start_hw = avg_time_start < 0.8) %>% 
+  select(stu_id,more_attend:quick_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>%
+  select(-stu_id) %>% 
+  pivot_longer(cols = more_attend:quick_start_hw) %>% 
+  group_by(name) %>% 
+  mutate(performance = mean(value),
+         importance = cor(value, med_score, use = "complete.obs")) %>% 
+  group_by(name) %>%
+  summarise(performance = sum(performance, na.rm = T)/404,
+            importance = mean(importance))  %>% 
+  ggplot(aes(importance, performance))+
+  geom_point(alpha = 0.8, col = "steelblue")+
+  geom_text_repel(aes(label = name))+
+  geom_vline(xintercept = c(0.4,0.6), linetype = 3, col = "grey30")+
+  geom_hline(yintercept = c(0.5), linetype = 3, col = "grey30")+
+  scale_x_continuous(breaks=c(0,0.2,0.4,0.6,0.8,1.0))+
+  theme_light()+
+  theme(panel.grid = element_blank())+
+  scale_y_continuous(labels = scales::percent_format())+
+  ggtitle("Performance-Importance Matrix")
+```
+
+
+## ข้อจำกัดของ Correlation {.smaller}
+
+- **ไม่บอกอัตราการเปลี่ยนแปลง: Correlation วัดเพียงทิศทางและความแข็งแกร่งของความสัมพันธ์ แต่ไม่สามารถบอกขนาดหรืออัตราการเปลี่ยนแปลงของตัวแปรที่สัมพันธ์กันได้**
+
+- ไม่บอกถึงความสัมพันธ์เชิงสาเหตุ (Causation): ค่า correlation ไม่ได้หมายถึงการที่ตัวแปรหนึ่งเป็นสาเหตุของการเปลี่ยนแปลงในอีกตัวแปรหนึ่ง เพียงแค่แสดงความสัมพันธ์เท่านั้น
+
+- การตีความค่าใกล้ 0 อาจทำให้เข้าใจผิด: ค่า correlation ที่ใกล้ 0 อาจถูกมองว่าไม่มีความสัมพันธ์ แต่ในบางกรณีอาจมีความสัมพันธ์ที่ไม่เชิงเส้นหรือซับซ้อนที่ค่า correlation ไม่สามารถวัดได้
+
+
+## Regression Analysis (1) {.smaller}
+
+- จากข้อจำกัดของ correlation โดยเฉพาะความสามารถในการบอกอัตราการเปลี่ยนแปลงของตัวแปรทำให้การประเมินหรือคาดการณ์แนวโน้มการบรรเทาหรือแก้ปัญหาไม่สามารถทำได้อย่างชัดเจน
+
+- Regression Analysis ถูกพัฒนาขึ้นมาเพื่อแก้ปัญหาดังกล่าว นอกจากนี้ยังมีประสิทธิภาพเหนือว่า correlation อีกหลายประการ
+
+
+## Regression Analysis (2) {.smaller}
+
+![](img/reg1.png)
+
+## Regression Analysis (3) {.smaller}
+
+![](img/reg2.png){width="80%"}
+
+
+## Regression Analysis (4) {.smaller}
+
+![](img/reg3.png){width="80%"}
+
+
+## Simple Regression Analysis (1) {.smaller}
+
+![](img/sim_reg1.png){width="80%"}
+
+## Simple Regression Analysis (2) {.smaller}
+
+![](img/sim_reg2.png){width="80%"}
+
+## Simple Regression Analysis (3) {.smaller}
+
+![](img/sim_reg3.png){width="80%"}
+
+## Simple Regression Analysis (4) {.smaller}
+
+![](img/rsqr.png)
+
+## Simple Regression Analysis (5) {.smaller}
+
+![](img/rsqr2.png)
+
+## Simple Regression Analysis (5) {.smaller}
+
+![](img/reg_output.png){width="50%"}
+
+
+## Multiple Regression Analysis (1) {.smaller}
+
+![](img/multi_reg1.png)
+
+## Multiple Regression Analysis (2) {.smaller}
+
+![](img/multi_reg2.png){width="80%"}
+
+[https://drive.google.com/file/d/1qk3BvPco3Jd4_xTDfzwW1nKKIsFOxqPB/view?usp=sharing](https://drive.google.com/file/d/1qk3BvPco3Jd4_xTDfzwW1nKKIsFOxqPB/view?usp=sharing)
+
+
+## Multiple Regression Analysis (3) {.smaller}
+
+![](img/multi_reg3.png){width="80%"}
+
+## Multiple Regression Analysis (4) {.smaller}
+
+<br>
+
+กิจกรรม คลิกที่ลิงค์ด้านล่างเลย
+
+[https://forms.gle/8FMr3JAQPsqxQjjEA](https://forms.gle/8FMr3JAQPsqxQjjEA)
+
+
+## Multiple Regression Analysis (5) {.smaller}
+
+กลับมาที่ห้องเรียนของอาจารย์มะ เราจะใช้ multiple regression มาช่วยวินิจฉัยปัจจัยที่เป็นปัญหาการเรียนรู้ของนักเรียนได้อย่างไร
+
+- ใช้ผล regression โดยตรง พิจารณาจาก regression coefficient และ standardized regression coefficient
+
+- นำ standardized regression coefficient มาสร้าง performance-importance matrix
+
+```{r}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(less_attend = percent_attend < 0.8,
+         late_inclass = percent_late_inclass > 0.5,
+         frequently_goout = percent_goout > 0.5,
+         less_interaction = percent_answer_inclass < 0.5,
+         less_practice = practice == "no_pratice",
+         late_submit_hw = late_assignment == "late",
+         incomplete_assign = incomplete_assignment == "incomplete",
+         no_preknowledge = pre_grade_inmath != "success",
+         late_start_hw = avg_time_start > 0.8) %>% 
+  select(stu_id, less_attend:late_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>% 
+  glimpse()
+```
+
+
+## Multiple Regression Analysis (6) {.smaller}
+
+
+ใช้ผลการวิเคราะห์ multiple regression โดยตรง ผลที่ได้เป็นอย่างไร ?
+
+<div style="font-size: 90%;">
+
+```{r}
+reg_summary <- data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(less_attend = percent_attend < 0.8,
+         late_inclass = percent_late_inclass > 0.5,
+         frequently_goout = percent_goout > 0.5,
+         less_interaction = percent_answer_inclass < 0.5,
+         less_practice = practice == "no_pratice",
+         late_submit_hw = late_assignment == "late",
+         incomplete_assign = incomplete_assignment == "incomplete",
+         no_preknowledge = pre_grade_inmath != "success",
+         late_start_hw = avg_time_start > 0.8) %>% 
+  select(stu_id, less_attend:late_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>% 
+  with(lm(med_score ~ . -stu_id, data = .)) %>% 
+  summary()
+
+reg_summary 
+```
+</div>
+
+
+## Performance-Importance Matrix (Revisited) {.smaller}
+
+
+```{r}
+data %>% 
+  select(stu_id,quiz1_7.5, quiz2_7.5, quiz3_15) |>
+  rename(quiz1 = quiz1_7.5, quiz2 = quiz2_7.5, quiz3 = quiz3_15) %>% 
+  mutate(quiz1 = quiz1*100/7.5,
+         quiz2 = quiz2*100/7.5,
+         quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(med_score = median(c(quiz1, quiz2, quiz3))) %>% 
+  select(stu_id, med_score) %>% 
+  ungroup() %>% 
+  inner_join(factor_data %>% 
+  mutate(more_attend = percent_attend > 0.8,
+         ontime_inclass = percent_late_inclass < 0.5,
+         rarely_goout = percent_goout < 0.5,
+         frequently_interaction = percent_answer_inclass > 0.5,
+         frequently_practice = practice != "no_pratice",
+         ontime_submit_hw = late_assignment != "late",
+         complete_assign = incomplete_assignment != "incomplete",
+         have_preknowledge = pre_grade_inmath == "success",
+         quick_start_hw = avg_time_start < 0.8) %>% 
+  select(stu_id,more_attend:quick_start_hw), by = "stu_id") %>% 
+  mutate_if(is.logical, as.numeric) %>%
+  select(-stu_id) %>% 
+  pivot_longer(cols = more_attend:quick_start_hw) %>% 
+  group_by(name) %>% 
+  mutate(performance = mean(value),
+         importance = cor(value, med_score, use = "complete.obs")) %>% 
+  group_by(name)-> perform_data_temp
+
+imp_reg <- c(0.8863711, 8.6148126, 5.0869316, 40.4440224, 7.1807672, 0.7586597, 0.7774931, 0.7774931, 6.7170155)
+
+perform_data_temp %>% 
+  group_by(name) %>% 
+  summarise(performance = sum(performance, na.rm = T)/404,
+         importance_correlatioin = mean(importance)) %>% 
+  ungroup() %>% 
+  mutate(importance_regression = imp_reg)->perform_mat
+```
+
+## Performance-Importance Matrix (Revisited) {.smaller}
+
+
+```{r fig.width=12, fig.height= 5}
+p1<-perform_mat %>% 
+  ggplot(aes(x = importance_correlatioin, y = performance))+
+  geom_point(alpha = 0.8, col ="steelblue")+
+  geom_text_repel(aes(label = name))+
+  geom_hline(yintercept = 0.5, linetype = 3, col = "grey30")+
+  geom_vline(xintercept = 0.6, linetype = 3, col = "grey30")+
+  theme_light()+
+  theme(panel.grid = element_blank())+
+  ggtitle("Performance-Importance Matrix (using Correlation)")
+  
+  
+p2<- perform_mat %>% 
+  ggplot(aes(x = importance_regression, y = performance))+
+  geom_point(alpha = 0.8, col ="steelblue")+
+  geom_text_repel(aes(label = name))+
+  geom_hline(yintercept = 0.5, linetype = 3, col = "grey30")+
+  geom_vline(xintercept = 0.6, linetype = 3, col = "grey30")+
+  theme_light()+
+  theme(panel.grid = element_blank())+
+  ggtitle("Performance-Importance Matrix (using Regression)")
+
+
+p1+p2
+```
 

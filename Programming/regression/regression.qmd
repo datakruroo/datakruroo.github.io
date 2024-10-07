@@ -7,48 +7,41 @@ warning: false
 editor: visual
 ---
 
-
 Regression เป็นวิธีการทางสถิติที่ใช้วิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม (Dependent Variable) และตัวแปรอิสระ (Independent Variables) หนึ่งตัวหรือมากกว่า ซึ่งจะช่วยให้เราเข้าใจว่าตัวแปรตามมีการเปลี่ยนแปลงอย่างไรเมื่อมีการเปลี่ยนแปลงในตัวแปรอิสระ
 
 วัตถุประสงค์ของการวิเคราะห์ regression หลัก ๆ มี 2 ข้อ
 
 คือการสร้างโมเดลทางสถิติที่สามารถใช้
 
-1. อธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+1.  อธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
 
-2. ทำนายแนวโน้มของตัวแปรตามเมื่อกำหนดตัวแปรอิสระ
+2.  ทำนายแนวโน้มของตัวแปรตามเมื่อกำหนดตัวแปรอิสระ
 
+การวิเคราะห์การถดถอยมีหลายประเภท
 
-การวิเคราะห์การถดถอยมีหลายประเภท 
+-   Simple regression
 
-- Simple regression
+-   Multiple regression
 
-- Multiple regression
+-   Polynomial regression
 
-- Polynomial regression
-
-- Logistic regression
+-   Logistic regression
 
 ...
 
-
-
-
-
 ## Simple Linear Regression
 
-เป็นโมเดลพื้นฐานใช้อธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระที่เป็นตัวแปรเดียว ทางสังคมศาสตร์อาจไม่ค่อยใช้โมเดลนี้ในทางปฏิบัติเท่าไหร่ แต่มักใช้เป็นโมเดลแรกในการอธิบาย concept เกี่ยวกับ regression 
+เป็นโมเดลพื้นฐานใช้อธิบายความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระที่เป็นตัวแปรเดียว ทางสังคมศาสตร์อาจไม่ค่อยใช้โมเดลนี้ในทางปฏิบัติเท่าไหร่ แต่มักใช้เป็นโมเดลแรกในการอธิบาย concept เกี่ยวกับ regression
 
 อย่างที่บอกว่า regression analysis จะทำการอธิบายและทำนายตัวแปรตามด้วยตัวแปรอิสระ ผ่านโมเดลทางสถิติ สำหรับ simple regression หรือเรียกเต็ม ๆ ว่า simple linear regression จะมีโมเดลเป็นสมการเส้นตรงที่มีส่วนประกอบจำแนกเป็นสองส่วนได้แก่
 
-- ส่วนที่เป็นความสัมพันธ์เชิงฟังก์ชัน
+-   ส่วนที่เป็นความสัมพันธ์เชิงฟังก์ชัน
 
-- ส่วน noise หรือ error
+-   ส่วน noise หรือ error
 
 $$
 Y_i = \beta_0 + \beta_1X_i + \epsilon_i
 $$
-
 
 ```{r}
 library(tidyverse)
@@ -56,6 +49,77 @@ data <- read_csv("/Users/choat/Downloads/exam.csv")
 glimpse(data)
 ```
 
+สมมุติว่าวัตถุประสงค์การวิเคราะห์ เพื่อวิเคราะห์ความสัมพันธ์ระหว่าง ach กับ learning_performance โดยใช้ simple linear regression
+
+### 1. exploring data
+
+```{r}
+data %>% 
+  select(ach, learning_performance) %>% 
+  cor()
+
+data %>% 
+  ggplot(aes(x = learning_performance, y = ach))+
+  geom_point()
+```
+
+### 2. fit simple regression
+
+การประมาณค่าพารามิเตอร์ใน linear regression ทุกโมเดลจะใช้ ordinary least squares (OLS)
+
+วิธีการประมาณนี้จะพยายามหาค่าพารามิเตอร์ intercept และ slope ที่ทำให้ sum squared error น้อยที่สุด ---\> แปลว่าต้องการโมเดล regression ที่ทำนายได้แม่นยำมากที่สุด หรือ bias น้อยที่สุด
+
+$$
+Q = \sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1X_i)^2
+$$ ตอนประมาณค่าพารามิเตอร์จะใช้การหาอนุพันธ์ของ SSE เทียบกับพารามิเตอร์ intercept และ slope
+
+$$
+\frac{\partial Q}{\partial \beta_0}
+$$
+
+```{r}
+simple_reg <- lm(ach ~ learning_performance, data = data)
+summary(simple_reg)
+```
+
+```{r}
+library(patchwork)
+p1<-data %>% 
+  ggplot(aes(x = learning_performance, y = ach))+
+  geom_point()+
+  geom_abline(intercept = 17.7039 , slope = 0.5654 , col = "steelblue",
+              linewidth = 2)
+
+p2<-data %>% 
+  ggplot(aes(x = learning_performance, y = ach))+
+  geom_point()+
+  geom_smooth(method = "lm")
+p1/p2
+
+data %>% summary()
+```
+
+### 3. การแปลความหมายพารามิเตอร์ในโมเดล
+
+```{r}
+sqrt(86)
+summary(simple_reg)
+anova(simple_reg)
+sqrt(966.9)
+83212/ (33132 +83212)
+```
+
+-   Residual standard error --\> square root ของ MSE ดัชนีตัวนี้ใช้บอกว่า ค่าทำนายของ regression model ของเรามีความคลาดเคลื่อนไปจากค่าจริงโดยเฉลี่ยกี่หน่วย (คะแนน)
+
+การแปลความหมายพารามิเตอร์หลัก ๆ ดูที่ intercept และ slope
+
+-   slope คือ อัตราการเปลี่ยนแปลงของ y เมื่อเทียบกับ --\> delta_y/delta_x
+
+ถ้า slope = 0.57 แปลว่า ถ้านักเรียนมี learning performance สูงขึ้น 1 หน่วย แล้ว ach ของนักเรียนมีแนวโน้มที่จะเพิ่มขึ้นโดยเฉลี่ย 0.57 คะแนน
+
+-   intercept คือ จุดตัดแกน y --\> ค่าของ y เมื่อ x = 0
+
+ถ้าเด็กไม่มี learning performance เลย (LP = 0) เด็กมีแนวโน้มที่จะมีคะแนน ach โดยเฉลี่ย 17.7 คะแนน
 
 ```{r}
 fit_simreg <- lm(ach ~ learning_performance, data = data)
@@ -63,6 +127,20 @@ summary(fit_simreg)
 ```
 
 ## Multiple Regression
+
+```{r}
+data %>% count(engage)
+data %>% 
+#  mutate(engage = factor(engage, levels=c("no engage","little engage",
+ #                                         "moderate engage","much engage"))) %>% 
+ mutate(engage = fct_relevel(engage, "no engage","little engage",  "moderate engage","much engage"))  %>% 
+with(lm(ach ~ learning_performance + engage)) -> fit_mulreg
+summary(fit_mulreg)
+```
+
+-   เมื่อควบคุมให้ตัวแปรอิสระอื่น ๆ คงที่ ถ้านักเรียนมี LP สูงขึ้น 1 คะแนน นักเรียนมีแนวโน้มที่จะมีค่าเฉลี่ย ach สูงขึ้น 0.55 คะแนน
+
+-   เมื่อควบคุมให้ตัวแปรอิสระอื่น ๆ คงที่ นักเรียนที่มีส่วนร่วมในการเรียนน้อยมีแนวโน้มที่จะมี ach โดยเฉลี่ยต่ำกว่านักเรียนที่ไม่มีส่วนร่วมในการเรียน 2.21 คะแนน อย่างไรก็ตามความแตกต่างดังกล่าวไม่พบนัยสำคัญทางสถิติที่ระดับ .05
 
 ```{r}
 fit_mulreg <- lm(ach ~ learning_performance + engage, data = data)
@@ -77,11 +155,11 @@ summary(fit_mulreg)
 
 ### Two-way interaction effect
 
-- ~~ตัวแปรอิสระทั้งสองเป็นตัวแปรจัดประเภท~~
+-   ~~ตัวแปรอิสระทั้งสองเป็นตัวแปรจัดประเภท~~
 
-- ตัวแปรอิสระเป็นตัวแปรจัดประเภทและตัวแปรอิสระเชิงปริมาณ
+-   ตัวแปรอิสระเป็นตัวแปรจัดประเภทและตัวแปรอิสระเชิงปริมาณ
 
-- ตัวแปรอิสระทั้งสองเป็นตัวแปรเชิงปริมาณ
+-   ตัวแปรอิสระทั้งสองเป็นตัวแปรเชิงปริมาณ
 
 #### ตัวแปรอิสระเป็นตัวแปรจัดประเภทและตัวแปรอิสระเชิงปริมาณ
 
@@ -89,49 +167,131 @@ summary(fit_mulreg)
 
 ```{r}
 data <- read_csv("TeacherSalaryData.csv")
-fit_interac1 <- lm(salary~ yrs.service + yrs.service:discipline, data =data)
+glimpse(data)
+fit_interac1 <- lm(salary ~ yrs.service*discipline, data = data)
 summary(fit_interac1)
 ```
 
-การวิเคราะห์ simple slope ของ yrs.service จำแนกตาม discipline
+```{r}
+fit_interac2 <- data %>% 
+  mutate(rank = fct_relevel(rank, "AsstProf", "AssocProf", "Prof")) %>% 
+  with(lm(salary~ yrs.service + discipline + yrs.service:discipline))
+summary(fit_interac2)
+```
+
+การอ่านผล
+
+1.  เราสามารถประเมินอิทธิพลของ main effect ที่ไม่เกี่ยวข้องกับ interaction term ได้เลย
+
+-   เมื่อควบคุมให้ตัวแปรอิสระอื่นคงที่ อาจารย์ที่เป็นรองศาสตราจารย์มีแนวโน้มจะมีเงินเดือนสูงกว่า ผศ. ประมาณ 14000 บท อย่างมีนัยสำคัญทางสถิติที่ระดับ .05 ()
+
+-   เมื่อควบคุมให้ตัวแปรอิสระอื่นคงที่ ศาสตราจารย์ของมหาลัยมีแนวโน้มจะมีเงินเดือนสูงกว่า ผศ. ประมาณ 50000 บาท อย่างมีนัยสำคัญทางสถิติที่ระดับ .05
+
+2.  พิจารณาส่วนปฏิสัมพันธ์
+
+-   พิจารณา term ปฏิสัมพันธ์ก่อนว่ามีนัยสำคัญรึเปล่า (เชิงสถิติ/เชิงปฏฺิบัติ) ถ้าพบนัยสำคัญทางสถิติเราจะไม่อ่านผลที่ main effect
+
+-   เราต้องไปประเมิน simple effect แทน
+
+    -   ประเมินผลของ yrs.service ที่มีต่อ ach จำแนกตาม discipline A และ B \<-- การวิเคราะห์ simple slope
+
+    -   ประเมินผลของ discipline ที่มีต่อ ach จำแนกตาม yrs.service
+
+```{r}
+data %>% 
+  ggplot(aes(x=yrs.service))+
+  geom_histogram()
+```
+
+##### การวิเคราะห์ simple slope ของ yrs.service จำแนกตาม discipline
+
+วิเคราะห์อิทธิพลของ yrs.service ต่อ ach จำแนกตาม discipline
+
+เราจะดู simple slope ของ cont. จำแนกตาม cat.
 
 ```{r}
 library(emmeans)
-simple_slopes <- emtrends(fit_interac1, var = "yrs.service", spec = "discipline")
+simple_slopes <- emtrends(fit_interac2, var = "yrs.service", spec = "discipline")
 ## slope ของ yrs.service จำแนกตาม discipline
 simple_slopes 
 ## ความแตกต่างของ slope ของ yrs.service ระหว่าง 2 discipline
 contrast(simple_slopes, method = "pairwise")
 ```
 
-ลองใช้ `simple_slopes <- emmeans(fit_interac1, pairwise ~ discipline | yrs.service)
-` ผลลัพธ์ที่ได้แตกต่างกันอย่างไร
+ลองใช้ `simple_slopes <- emmeans(fit_interac1, pairwise ~ discipline | yrs.service)` ผลลัพธ์ที่ได้แตกต่างกันอย่างไร
 
+##### วิเคราะห์ simple effect ของ discipline บน yrs.service
+
+simple effect ของ discipline ที่วิเคราะห์ได้แต่ละค่าของ yrs.service
+
+```{r}
+data %>% summary()
+```
 
 ในทำนองเดียวกับ anova เราสามารถวิเคราะห์ simple effect ของ discipline แต่ในกรณีนี้จะเป็นการจำแนกตามระดับของ yrs.service ซึ่งมีจำนวนได้มากมาย
 
 ```{r}
 summary(data)
-emmeans <- emmeans(fit_interac1, pairwise ~ discipline | yrs.service, 
-        at = list(discipline = c("A", "B"), 
-                  yrs.service = c(7, 16,27)))
+emmeans(fit_interac2, pairwise ~ yrs.service | discipline)
+
+emmeans <- emmeans(fit_interac2, pairwise ~ yrs.service | discipline, 
+        at = list(yrs.service = c(7, 8,27)))
+```
+
+```{r}
 emmeans$emmeans %>% data.frame() %>% 
   ggplot(aes(x=emmean, y=factor(yrs.service), col =discipline ))+
   geom_point()+
   geom_errorbar(aes(xmin = lower.CL, xmax = upper.CL), width = 0.1)
 ```
 
-
 เราอาจ plot แผนภาพแสดงความสัมพันธ์แบบ interaction ได้ง่าย ๆ ดังนี้
 
 ```{r}
+fit_interac2 %>% summary()
+
+## partial dependence plot (pdp)
+
+### 1. สร้าง grid ที่เป็น combination ระหว่างตัวแปรอิสระที่ interact กันก่อน
+### สร้าง grid ของ yrs.service
 yrs_grid <- seq(min(data$yrs.service), max(data$yrs.service), 2)
+### สร้าง grid ของ discipline
+dis_grid <- c("A","B")
+
+### combination ของ grid
+expand_grid(yrs.service = yrs_grid, discipline = dis_grid)
+
+### ทำหน้าที่เป็นค่าของตัวแปรอิสระที่ต้องการนำไปหาค่าทำนาย
 grid_pred <- expand_grid(yrs.service = yrs_grid,
                       discipline = unique(data$discipline))
+predict(fit_interac2)
+predict(fit_interac2, newdata = grid_pred)
+
 grid_pred %>% 
-  mutate(pred = predict(fit_interac1, newdata = grid_pred)) %>% 
+  mutate(pred = predict(fit_interac2, newdata = grid_pred)) %>% 
   ggplot(aes(x = yrs.service, y = pred, color = discipline)) +
   geom_line()
+
+
+
+```
+
+```{r}
+simple_slopes 
+```
+
+```{r}
+p1<-data %>% 
+  ggplot(aes(x=yrs.service, y=salary))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+p2<-data %>% 
+  ggplot(aes(x=yrs.service, y=salary, col = discipline))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+p1/p2
 ```
 
 
@@ -145,9 +305,114 @@ data <- read_csv("eff.csv")
 glimpse(data)
 ```
 
+$$
+eff = \beta_0 + \beta_1motiv + \beta_2seef + \beta_3motiv \times seef + \epsilon
+$$
+
+$$
+eff =  \beta_0 + \beta_1motiv + (\beta_2seef + \beta_3motiv \times seef) + \epsilon
+
+$$
+
+$$
+eff =  \beta_0 + \beta_1motiv + (\beta_2 + \beta_3motiv)seef + \epsilon
+
+$$
+
+```{r}
+data %>% summary()
+```
+
+
+```{r}
+fit_interac3 <- data %>% 
+  with(lm(eff ~ motiv + seef + motiv:seef))
+
+summary(fit_interac3)
+```
+ดังนั้นเราสรุปได้ว่า
+
+อิทธิพลของ seef ที่มีต่อ eff อธิบายได้ด้วยสมการ 7.75 - 1.09 x motiv
+
+```{r}
+motiv<-3
+slope_seef <- 7.75 - 1.09*motiv
+```
+
+```{r}
+motiv<-5.048
+slope_seef <- 7.75 - 1.09*motiv
+```
+
+
+```{r}
+data %>% 
+  ggplot(aes(x=seef, y=eff))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)+
+  geom_abline(intercept = 13.6969,slope = 4.48, col ="black", linetype = 2)+
+  geom_abline(intercept = 13.6969,slope = 2.24768, col ="black", linetype = 2)+
+  geom_abline(intercept = 13.6969,slope = 0.12, col ="black", linetype = 2)+
+  ylim(0,80)
+
+
+simple_slope_seef <- emtrends(fit_interac3, var="seef", spec = "motiv",
+         at = list(motiv= c(4.209,5.062,5.954)))
+
+simple_slope_seef %>% contrast(method = "pairwise")
+
+simple_slope_seef %>% data.frame()
+
+data %>% ggplot(aes(x=seef, y=eff))+
+  geom_abline(intercept = ,slope = )
+```
+
+```{r}
+#install.packages("ggeffects")
+library(ggeffects)
+```
+
+
+```{r}
+ggpredict(fit_interac3, terms = c("seef", "motiv")) |> plot()
+```
+
+
+```{r}
+data %>% summary()
+```
 
 
 ## Polynomial Regression
+
+สมการถดถอยพหุนาม
+
+
+ความสัมพันธ์ระหว่างตัวแปรบนโลก อาจจำแนกได้เป็น 2 ลักษณะ
+
+- linear relationship
+
+- non-linear relationship
+
+โมเดลการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรอาจจำแนกได้เป็น 2 ลักษณะเช่นกัน
+
+- linear (in parameters) model
+
+- non-linear model
+
+$$
+y = mx + c
+$$
+$$
+y = ax^2+bx+c
+$$
+
+$$
+y = \frac{exp(ax+b)}{1+exp(ax+b)}
+$$
+
+
+
 
 ```{r}
 library(gapminder)
@@ -157,36 +422,89 @@ gapminder %>%
   filter(year=="2007") %>% 
   ggplot(aes(x = gdpPercap, y=lifeExp))+
   geom_point()+
-  geom_smooth()
+  geom_smooth(method = "lm")+
+  scale_x_log10()
 ```
 
-การสร้าง term polynomial อาจทำได้สองวิธีการ วิธีการแรกคือการใช้ฟังก์ชัน identity function (`I()`) และวิธีการที่สองคือการใช้ `poly()` ความแตกต่างระหว่างการสร้างเทอมพหุนามของทั้งสองวิธีการคือ 
+การสร้าง term polynomial อาจทำได้สองวิธีการ วิธีการแรกคือการใช้ฟังก์ชัน identity function (`I()`) และวิธีการที่สองคือการใช้ `poly()` ความแตกต่างระหว่างการสร้างเทอมพหุนามของทั้งสองวิธีการคือ
 
-- `I()` เป็นวิธีการสร้างพหุนามโดยตรง โดยเราจะใส่ตัวแปรที่ต้องการยกกำลังในฟังก์ชันนี้ ตัวอย่างเช่น I(x^2) หมายถึงการสร้างเทอม x^2 ที่ใช้ในโมเดลการถดถอย ดังนั้นการแปลความหมาย slope ของตัวแปรที่เป็นพหุนามนี้สามารถทำได้อย่างตรงไปตรงมา เพราะตัวแปรต่าง ๆ อยู่ในสเกลต้นฉบับ
+-   `I()` เป็นวิธีการสร้างพหุนามโดยตรง โดยเราจะใส่ตัวแปรที่ต้องการยกกำลังในฟังก์ชันนี้ ตัวอย่างเช่น I(x\^2) หมายถึงการสร้างเทอม x\^2 ที่ใช้ในโมเดลการถดถอย ดังนั้นการแปลความหมาย slope ของตัวแปรที่เป็นพหุนามนี้สามารถทำได้อย่างตรงไปตรงมา เพราะตัวแปรต่าง ๆ อยู่ในสเกลต้นฉบับ
 
 - ปัญหาหนึ่งของการใช้ `I()` คือ multicollinearity!!!
 
 - `poly()` จะสร้างเทอมพหุนามที่เรียกว่า orthogonal polynomial ซึ่งจะทำให้เราไม่ต้องกังวลเรื่อง multicollinearity แต่ต้องแลกมาด้วยการแปลความหมายความสัมพันธ์ที่ยาก เพราะตัวแปรที่ถูกแปลงเป็น orthogonal polynomial จะอยู่คนละสเกลกับตัวแปรเดิม การแปลงลักษณะนี้จึงเหมาะกับวัตถุประสงค์ในการทำนายมากกว่าอธิบายความสัมพันธ์ื
+
+```{r}
+cubic_fit <- gapminder %>% 
+  filter(year=="2007") %>% 
+  with(lm(lifeExp ~ gdpPercap + I(gdpPercap^2) + I(gdpPercap^3))) 
+```
+
+$$
+lifeExp = (5.296e+01) + (2.734e-03)gdpPercap - (9.270e-08)gdpPercap^2 + (1.009e-12)gdpPercap^3
+$$
+## VIF
+
+variance inflation factor --> เป็นดัชนีที่ใช้วัด multicollinearity ของตัวแปรอิสระในโมเดล regression ถ้าค่า VIF มีค่ามากกว่า 10 แสดงว่ามี multicollinearity ในโมเดล
+
+```{r}
+#install.packages("car")
+library(car)
+vif(cubic_fit)
+```
+
+```{r}
+gapminder %>% 
+  filter(year=="2007") %>% 
+  mutate(x = gdpPercap,
+         x2 =gdpPercap^2,
+         x3 = gdpPercap^3) %>% 
+  select(x,x2,x3) %>% cor()
+
+```
+
+```{r}
+gapminder %>% 
+  filter(year=="2007") %>% 
+  mutate(x = gdpPercap,
+         x2 =gdpPercap^2,
+         x3 = gdpPercap^3) %>% 
+  mutate(x_center = x-mean(x),
+         x_center2 = x_center^2,
+         x_center3 = x_center^3) %>%
+  select(x_center, x_center2,x_center3) %>% cor()
+  ggplot(aes(x_center,x_center3 ))+
+  geom_line()
+```
+```{r}
+cubic_fit <- gapminder %>% 
+  filter(year=="2007") %>% 
+  with(lm(lifeExp ~ poly(gdpPercap, 3)))
+cubic_fit %>% summary()
+```
+
+
+
 
 
 ## Regression Diagnostics
 
 regression เป็นโมเดลทางสถิติแบบ parametric ที่การใช้งานจะต้องอยู่ภายใต้ข้อตกลงเบื้องต้นของโมเดลที่ค่อนข้าง strict (แต่ก็ไม่ได้แปลว่าต้อง strict มาก ๆ )
 
-- Independence
+-   Independence
 
-- Linearity
+-   Linearity
 
-- Normality
+-   Normality
 
-- Homoscedasticity
+-   Homoscedasticity
 
-- No Missing Values
+-   No Missing Values
 
-- No Influential Outlier
+-   No Influential Outlier
 
-  - Outlier คือ ค่าสังเกตที่ทำนายไม่ได้หรือมีประสิทธิภาพการทำนายด้วย regression ต่ำ (กล่าวคือมีค่าสัมบูรณ์ของ residual ที่มากเกินไป)
-  
+    -   Outlier คือ ค่าสังเกตที่ทำนายไม่ได้หรือมีประสิทธิภาพการทำนายด้วย regression ต่ำ (กล่าวคือมีค่าสัมบูรณ์ของ residual ที่มากเกินไป)
+
 ```{r}
 gapminder %>% 
   filter(year=="2007") %>% 
@@ -201,16 +519,13 @@ gapminder %>%
                color = 'maroon', linetype = "dashed", fill = NA)
 ```
 
-
-
-  - Leverage value คือ combination ของค่าสังเกตของตัวแปรอิสระที่ผิดปกติ กล่าวคือเป็น outlier ใน feature space ค่า leverage ไม่จำเป็นต้องมีผลต่อค่าของเส้นถดถอยเสมอไป มันเพียงแค่บอกว่าจุดนั้นอยู่ห่างไกลและมีศักยภาพที่จะส่งผลกระทบต่อโมเดล
+-   Leverage value คือ combination ของค่าสังเกตของตัวแปรอิสระที่ผิดปกติ กล่าวคือเป็น outlier ใน feature space ค่า leverage ไม่จำเป็นต้องมีผลต่อค่าของเส้นถดถอยเสมอไป มันเพียงแค่บอกว่าจุดนั้นอยู่ห่างไกลและมีศักยภาพที่จะส่งผลกระทบต่อโมเดล
 
 $$
 h_{ii} = x_i^T (X^T X)^{-1} x_i
-$$
-ค่า $h_{ii}$ มีค่าอยู่ในช่วง [0,1] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
+$$ ค่า $h_{ii}$ มีค่าอยู่ในช่วง \[0,1\] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
 
-  - Influential observation คือค่าสังเกตที่มีอิทธิพลต่อการประมาณค่าพารามิเตอร์ในโมเดลมากกว่าปกติ การประเมินค่าสังเกตประเภทนี้ทำได้ด้วยสถิติ Cook's distance    
+-   Influential observation คือค่าสังเกตที่มีอิทธิพลต่อการประมาณค่าพารามิเตอร์ในโมเดลมากกว่าปกติ การประเมินค่าสังเกตประเภทนี้ทำได้ด้วยสถิติ Cook's distance
 
 $$
 D_i = \frac{(e_i^2)}{p \cdot MSE} \left( \frac{h_{ii}}{(1 - h_{ii})^2} \right)
@@ -234,42 +549,37 @@ p2 <- gapminder %>%
 p1/p2
 ```
 
-
 ## Regression Remedials
 
+1.  Linearity
 
-1. Linearity
+-   เพิ่ม polynomial หรือ interaction terms เพื่อเพิ่มความซับซ้อนของโมเดล
 
-- เพิ่ม polynomial หรือ interaction terms เพื่อเพิ่มความซับซ้อนของโมเดล
+-   แปลงข้อมูลด้วยการใช้ log, square root, หรือการแปลงเชิงเส้นตรงแบบอื่น ๆ
 
-- แปลงข้อมูลด้วยการใช้ log, square root, หรือการแปลงเชิงเส้นตรงแบบอื่น ๆ
+-   ใช้ Multivariate Adaptive Regression Splines (MARs) Generalized Additive Models (GAMs) เพื่อจับความสัมพันธ์ที่ไม่เป็นเชิงเส้น
 
-- ใช้ Multivariate Adaptive Regression Splines (MARs) Generalized Additive Models (GAMs) เพื่อจับความสัมพันธ์ที่ไม่เป็นเชิงเส้น
+2.  Normality
 
+-   แปลงข้อมูล (log-transformation, square root, Box-Cox) เพื่อให้ residuals เป็นปกติมากขึ้น
 
-2. Normality
+-   ใช้ robust regression เพื่อทนทานต่อผลกระทบของ outliers
 
-- แปลงข้อมูล (log-transformation, square root, Box-Cox) เพื่อให้ residuals เป็นปกติมากขึ้น
+-   เพิ่มตัวแปรอิสระหรือเทอมของตัวแปรอิสระที่อาจหายไปเพื่อปรับปรุงการกระจายของ residuals
 
-- ใช้ robust regression เพื่อทนทานต่อผลกระทบของ outliers
+3.  Homoscedasticity
 
-- เพิ่มตัวแปรอิสระหรือเทอมของตัวแปรอิสระที่อาจหายไปเพื่อปรับปรุงการกระจายของ residuals
+-   แปลงค่าตัวแปรตาม (เช่น log, square root) เพื่อลดความแปรปรวน
 
+-   ใช้ Weighted Least Squares (WLS) เพื่อปรับน้ำหนักให้กับจุดข้อมูลที่มีความแปรปรวนต่างกัน
 
-3. Homoscedasticity
+-   ใช้ heteroscedasticity-robust standard errors เพื่อปรับ standard errors ของโมเดล
 
-- แปลงค่าตัวแปรตาม (เช่น log, square root) เพื่อลดความแปรปรวน
+4.  No Influential Ouliers
 
-- ใช้ Weighted Least Squares (WLS) เพื่อปรับน้ำหนักให้กับจุดข้อมูลที่มีความแปรปรวนต่างกัน
+-   ลบหรือปรับค่าสังเกตที่ถูกระบุว่าเป็น influential outiers
 
-- ใช้ heteroscedasticity-robust standard errors เพื่อปรับ standard errors ของโมเดล
-
-4. No Influential Ouliers
-
-- ลบหรือปรับค่าสังเกตที่ถูกระบุว่าเป็น influential outiers
-
-- ใช้ robust regression
-
+-   ใช้ robust regression
 
 ## Model Selection: Best Subset Regression
 
@@ -283,5 +593,3 @@ data <- read_csv("TeacherSalaryData.csv")
 reg_model <- regsubsets(salary ~ ., data=data %>% select(-1), nbest =2, nvmax = 6)
 summary(reg_model)
 ```
-
-
