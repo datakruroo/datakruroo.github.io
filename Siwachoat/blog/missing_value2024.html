@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-10-09">
+
+<title>Missing Value Analysis – Siwachoat Srisuttiyakorn</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="https://fonts.googleapis.com/css?family=Fira+Sans|Merriweather" rel="stylesheet">
+<script src="https://kit.fontawesome.com/0fba9333d8.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Siwachoat Srisuttiyakorn</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../publications/index.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../teaching/index.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#ขนตอนการวเคราะหขอมลทมคาสญหาย" id="toc-ขนตอนการวเคราะหขอมลทมคาสญหาย" class="nav-link" data-scroll-target="#ขนตอนการวเคราะหขอมลทมคาสญหาย">ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย</a></li>
+  <li><a href="#กลไกการเกดคาสญหาย" id="toc-กลไกการเกดคาสญหาย" class="nav-link" data-scroll-target="#กลไกการเกดคาสญหาย">กลไกการเกิดค่าสูญหาย</a>
+  <ul class="collapse">
+  <li><a href="#missing-completely-at-random-mcar" id="toc-missing-completely-at-random-mcar" class="nav-link" data-scroll-target="#missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</a></li>
+  <li><a href="#missing-at-random-mar" id="toc-missing-at-random-mar" class="nav-link" data-scroll-target="#missing-at-random-mar">Missing at Random (MAR)</a></li>
+  <li><a href="#missing-not-at-random-mnar" id="toc-missing-not-at-random-mnar" class="nav-link" data-scroll-target="#missing-not-at-random-mnar">Missing Not at Random (MNAR)</a></li>
+  </ul></li>
+  <li><a href="#การสำรวจและระบคาสญหาย" id="toc-การสำรวจและระบคาสญหาย" class="nav-link" data-scroll-target="#การสำรวจและระบคาสญหาย">การสำรวจและระบุค่าสูญหาย</a>
+  <ul class="collapse">
+  <li><a href="#tabulating-missing-data" id="toc-tabulating-missing-data" class="nav-link" data-scroll-target="#tabulating-missing-data">Tabulating Missing data</a></li>
+  <li><a href="#visualization-for-missing-data" id="toc-visualization-for-missing-data" class="nav-link" data-scroll-target="#visualization-for-missing-data">Visualization for Missing data</a></li>
+  <li><a href="#การสำรวจคาสญหายสำหรบขอมลขนาดใหญ" id="toc-การสำรวจคาสญหายสำหรบขอมลขนาดใหญ" class="nav-link" data-scroll-target="#การสำรวจคาสญหายสำหรบขอมลขนาดใหญ">การสำรวจค่าสูญหายสำหรับข้อมูลขนาดใหญ่</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Missing Value Analysis</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Machine Learning</div>
+    <div class="quarto-category">Missing Values</div>
+    <div class="quarto-category">R Programming</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">9 October 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>ที่ผ่านมาเรายังทำงานโดยไม่ได้เจอกับปัญหา missing value เท่าไหร่นัก อย่างไรก็ตามในสถานการณ์จริงปัญหา missing value เป็นปัญหาใหญ่เหมือนกัน และสามารถสร้างผลกระทบเชิงลบต่อโมเดลการวิเคราะห์ได้อย่างมาก ซึ่งส่งผลทั้งความตรงภายในและความตรงภายนอกของผลการวิเตราะห์</p>
+<p>การสูญหายของข้อมูลเป็นไปได้จากสาเหตุที่หลากหลาย ขึ้นอยู่กับบริบทหรือวิธีการเก็บรวบรวมข้อมูลที่ผู้วิจัยใช้ด้วย</p>
+<ul>
+<li><p>ใน survey ผู้ตอบอาจจะลืมตอบบาง item โดยบังเอิญ ไม่ตอบเพราะไม่รู้หรือไม่สนใจ ไม่ตอบเพราะไม่สะดวก หรือไม่ตอบเพราะไม่มีคำตอบที่ตรงกับตัวเลือกที่ต้องการ</p></li>
+<li><p>การเก็บรวบรวมข้อมูลผ่านระบบเช่น LMS บางตัวชี้วัดอาจมีข้อมูลขาดหายเพราะพฤติกรรมบางอย่างของนักเรียน เช่น ต้องการวัดระยะเวลาที่นักเรียนแต่ละคนใช้ในการทำ quiz หรือการบ้านที่มอบหมาย แต่นักเรียนไม่เข้ามาทำการบ้าน คะแนนค่านี้ก็จะเป็นค่าสูญหาย</p></li>
+<li><p>การเก็บรวบรวมข้อมูลระยะยาวที่จะต้องเก็บข้อมูลจากหน่วยข้อมูลเดียวกันหลาย ๆ ครั้ง หากระหว่างทางมีหน่วยข้อมูลออกจากระบบก็เกิดข้อมูลขาดหายได้เช่นกัน</p></li>
+<li><p>การเก็บข้อมูลจากฐานข้อมูลของหน่วยงานต่าง ๆ เช่น สพฐ. สทศ. สมศ. รวมทั้งหน่วยงานภาครัฐอื่น ๆ แล้วนำมารวมกันเพื่อดำเนินการวิเคราะห์ ก็มีโอกาสที่บางหน่วยข้อมูลขาดหายไปเนื่องจากความแตกต่างของการเก็บข้อมูลในแต่ละฐาน</p></li>
+<li><p>นอกจากนี้ยังมีสาเหตุอื่น ๆ อีกมากมาย</p></li>
+</ul>
+<p>อัลกอริทึมและโมเดลการวิเคราะห์ข้อมูลส่วนใหญ่มักมีข้อสมมุตินึงที่ผู้สอนส่วนใหญ่ก็มักไม่ได้กล่าวถึงคือ ข้อมูลที่นำมาวิเคราะห์จะต้องเป็นข้อมูลที่ไม่มีค่าสูญหาย (เรียกว่า complete data) อย่างไรก็ตามหากมองย้อนตอนที่เราวิเคราะห์ข้อมูลจริง ๆ มีโอกาสน้อยมากที่เราจะพบกับ complete data ดังกล่าว</p>
+<p>กระบวนการปกติที่เรามักใช้ในการจัดการข้อมูลสูญหายคือ</p>
+<ol type="1">
+<li><p>ลบหน่วยข้อมูลที่มีค่าสูญหายออกไปจากการวิเคราะห์ (listwise deletion)</p></li>
+<li><p>แทนค่าสูญหายด้วยค่าที่เหมาะสม</p></li>
+</ol>
+<p>ทั้งสองวิธีการผลลัพธ์สุดท้ายที่ได้คือข้อมูลสมบูรณ์เหมือนกัน (แต่ …)</p>
+<p>บทเรียนวันนี้เราจะพูดถึงวิธีการที่ใช้แก้ปัญหาค่าสูญหาย โดยจะพยายามกล่าวถึงหลาย ๆ วิธีทั้งวิธีการที่ผู้วิเคราะห์ทั่วไปมักนิยมใช้กัน และวิธีการสมัยใหม่ที่เหมาะสมกับการวิเคราะห์แต่ละวัตถุประสงค์</p>
+</section>
+<section id="ขนตอนการวเคราะหขอมลทมคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="ขนตอนการวเคราะหขอมลทมคาสญหาย">ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย</h2>
+<p>การวิเคราะห์ข้อมูลเมื่อมีค่าสูญหายนั้นมีแนวทางหรือวิธีดำเนินงานที่หลากหลายขึ้นอยู่กับว่าเราอ้างอิงสำนักไหน นักสถิติหรือนักวิทยาการข้อมูลคนไหน กลุ่มไหน</p>
+<ul>
+<li><p>Little and Rubin (2002) &lt;– classic</p></li>
+<li><p>Allison (2001)</p></li>
+<li><p><a href="http://www.feat.engineering/">Khun, &amp; Johnson (2019)</a></p></li>
+</ul>
+<p>อย่างไรก็ตามแนวทางโดยทั่วไปที่เหมือนกันประกอบด้วย</p>
+<ol type="1">
+<li><p>การสำรวจและระบุค่าสูญหาย</p></li>
+<li><p>การวิเคราะห์รูปแบบหรือกลไกของค่าสูญหาย</p></li>
+<li><p>การจัดการค่าสูญหาย</p></li>
+</ol>
+</section>
+<section id="กลไกการเกดคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="กลไกการเกดคาสญหาย">กลไกการเกิดค่าสูญหาย</h2>
+<p>สำนัก classic คือ Little และ Rubin นำเสนอ framework ของค่าสูญหายที่ปัจจุบันก็มีการใช้อย่างแพร่หลายมาก ๆ โดยทั้งสองจำแนกประเภทของค่าสูญหายออกเป็น 3 ประเภท การอธิบายลักษณะการสูญหายทั้ง 3 นี้ใช้โมเดลความน่าจะเป็น</p>
+<section id="missing-completely-at-random-mcar" class="level3">
+<h3 class="anchored" data-anchor-id="missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</h3>
+<p>กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ ไม่มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่สังเกตเห็นหรือไม่ได้สังเกตเห็น ข้อมูลนั้นจะถือว่าขาดหายไปแบบสุ่มโดยสมบูรณ์ (Missing Completely At Random - MCAR)</p>
+<p>กำหนดให้ <span class="math inline">m{ij}</span> เป็นตัวแปร dummy แสดงการสูญหายของหน่วยข้อมูลที่ i ในตัวแปรที่ j ถ้ามีค่าเท่ากับ 1 คือเป็นค่าสูญหาย และ <span class="math inline">X_{obs}</span> คือข้อมูลที่ผู้วิเคราะห์สามารถสังเกตได้ในชุดข้อมูล ส่วน <span class="math inline">X_{mis}</span> คือข้อมูลที่สูญหาย</p>
+<p>การสูญหายแบบ MCAR สามารถเขียนอธิบายได้ดังนี้</p>
+<p><span class="math display">
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = p
+</span></p>
+<p>การ simulation ด้านล่างแสดงกลไกการเกิดค่าสูญหายแบบ MCAR ได้อย่างชัดเจน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 387
+Columns: 5
+$ ach                  &lt;dbl&gt; 52.159780, 30.784999, 39.607737, 55.985351, 31.80…
+$ learning_performance &lt;dbl&gt; 32.666667, 10.666667, 28.000000, 52.666667, 15.55…
+$ ontime_class         &lt;chr&gt; "used to late", "used to late", "never late", "us…
+$ engage               &lt;chr&gt; "no engage", "much engage", "much engage", "much …
+$ practice             &lt;chr&gt; "do practice", "do not praction", "do not practio…</code></pre>
+</div>
+</div>
+<p>สมมุติว่ามีการสูญหายแบบ MCAR ขึ้นบนตัวแปร <code>ach</code> ร้อยละ 20 นั่นเทียบเท่ากับการสุ่มตัวอย่างแบบ SRS ออกจาก vector ของ <code>ach</code> ในสัดส่วน 0.2 ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mcar =</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>, <span class="cn">NA</span>, ach))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>การสูญหายแบบ MCAR ไม่ได้ทำให้เกิด bias ในการวิเคราะห์ แต่อาจมีผลกับ precision ของการวิเคราะห์ (ทำไม?)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(ach_mcar)<span class="sc">==</span>T), </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, ach_mcar) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(ach, ach_mcar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(learning_performance, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  name      mean    sd median   cor    r2
+  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 ach       43.6  17.4   43.9 0.846 0.715
+2 ach_mcar  42.6  17.7   42.4 0.855 0.732</code></pre>
+</div>
+</div>
+</section>
+<section id="missing-at-random-mar" class="level3">
+<h3 class="anchored" data-anchor-id="missing-at-random-mar">Missing at Random (MAR)</h3>
+<p>กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่ผู้วิเคราะห์มีข้อมูลสามารถสังเกตค่าได้ โดยไม่เกี่ยวข้องกับข้อมูลที่สูญหายไปของตัวแปรนั้น ข้อมูลนั้นจะถือว่าขาดหายไปแบบ MAR</p>
+<p><span class="math display">
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs})
+</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    learning_performance <span class="sc">&gt;</span> <span class="dv">70</span> <span class="sc">|</span> learning_performance <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>,<span class="cn">NA</span>, ach) ,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> ach</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(ach_mar)<span class="sc">==</span>T), </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, ach_mcar, ach_mar) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(ach, ach_mcar, ach_mar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(learning_performance, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  name      mean    sd median   cor    r2
+  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 ach       43.6  17.4   43.9 0.846 0.715
+2 ach_mar   43.1  16.3   43.3 0.831 0.690
+3 ach_mcar  42.6  17.7   42.4 0.855 0.732</code></pre>
+</div>
+</div>
+</section>
+<section id="missing-not-at-random-mnar" class="level3">
+<h3 class="anchored" data-anchor-id="missing-not-at-random-mnar">Missing Not at Random (MNAR)</h3>
+<ul>
+<li><p>หากการสูญหายไม่ใช่ทั้ง MCAR และ MAR การสูญหายนั้นเป็น MNAR กล่าวในเชิงเทคนิคคือ เป็นการสูญหายที่มีความสัมพันธ์กับค่าที่สูญหายไป และอาจมีความสัมพันธ์กับค่าที่สังเกตได้ด้วย</p></li>
+<li><p>กล่าวง่าย ๆ เป็นการสูญหายที่เกิดขึ้นโดยสัมพันธ์กับค่าที่สูญหาย การสูญหายแบบนี้ไม่สามารถอธิบายได้ด้วยข้อมูลที่มี เช่น</p>
+<ul>
+<li><p>ผู้ตอบไม่ตอบคำถามเกี่ยวกับรายได้เพราะรายได้ของตนเองสูงเกินไป</p></li>
+<li><p>นักเรียนที่มีคะแนนต่ำมากไม่ตอบคำถาม ไม่เข้าเรียน หรือไม่ส่งงานทำให้ครูไม่สามารถประเมินคะแนนให้นักเรียนได้</p></li>
+</ul></li>
+</ul>
+<p><span class="math display">
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
+</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mnar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    ach <span class="sc">&gt;</span> <span class="dv">50</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>,<span class="cn">NA</span>, ach) ,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> ach</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(ach_mnar)<span class="sc">==</span>T), </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, ach_mcar, ach_mar, ach_mnar) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(ach, ach_mcar, ach_mar, ach_mnar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(learning_performance, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  name      mean    sd median   cor    r2
+  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 ach       43.6  17.4   43.9 0.846 0.715
+2 ach_mar   43.1  16.3   43.3 0.831 0.690
+3 ach_mcar  42.6  17.7   42.4 0.855 0.732
+4 ach_mnar  40.1  16.7   39.4 0.823 0.678</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="การสำรวจและระบคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="การสำรวจและระบคาสญหาย">การสำรวจและระบุค่าสูญหาย</h2>
+<p>ทัศนภาพข้อมูลเป็นเครื่องมือสำคัญที่จะช่วยให้ผู้วิเคราะห์ทำความเข้าใจสภาพการสูญหายของข้อมูลในชุดข้อมูลที่ทำงานด้วย โดยปกตินักวิเคราะห์จะใช้ทั้งทัศนภาพข้อมูลควบคู่กับการวิเคราะห์ผลทางสถิติเพื่อทำความเข้าใจและระบุค่าสูญหายในชุดข้อมูล</p>
+<p>อย่างไรก็ตามจากประสบการณ์ของผู้สอน เทคนิคการวิเคราะห์เพื่อสำรวจค่าสูญหายที่ใช้อาจมีความแตกต่างกันขึ้นอยู่กับขนาดของชุดข้อมูลด้วย</p>
+<ul>
+<li><p>การใช้ทัศนภาพข้อมูลและสถิติพื้นฐานเพื่อสำรวจค่าสูญหายเหมาะกับการทำงานบนชุดข้อมูลขนาดเล็ก</p></li>
+<li><p>ข้อมูลขนาดปานหลางหรือขนาดใหญ่อาจจะต้องใช้เทคนิคโดยเฉพาะ ML เข้ามาช่วยเพื่อให้แสดงสภาพการสูญหายของข้อมูลของตัวแปรทั้งหมดได้</p></li>
+</ul>
+<section id="tabulating-missing-data" class="level3">
+<h3 class="anchored" data-anchor-id="tabulating-missing-data">Tabulating Missing data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">miss_var_summary</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  variable             n_miss pct_miss
+  &lt;chr&gt;                 &lt;int&gt;    &lt;num&gt;
+1 ach_mcar                156     40.3
+2 ach_mar                  80     20.7
+3 ach_mnar                 66     17.1
+4 ach                       0      0  
+5 learning_performance      0      0  
+6 ontime_class              0      0  
+7 engage                    0      0  
+8 practice                  0      0  </code></pre>
+</div>
+</div>
+</section>
+<section id="visualization-for-missing-data" class="level3">
+<h3 class="anchored" data-anchor-id="visualization-for-missing-data">Visualization for Missing data</h3>
+<p>เทคนิคทั้งหมดในหัวข้อนี้เหมาะสำหรับใช้กับชุดข้อมูลที่มีขนาดไม่ใหญ่มาก</p>
+<ul>
+<li><p>heatmap</p></li>
+<li><p>missing data pattern plot</p></li>
+<li><p>co-occurence plot</p></li>
+<li><p>scatter plot</p></li>
+</ul>
+<p>ตัวอย่างมีดังนี้</p>
+<p>การสร้าง heatmap สามารถทำได้หลายวิธีการ ตั้งแต่การสร้างแบบ manual (ซึ่งทำบ่อย ๆ ก็เหนื่อย) ไปจนถึงมีฟังก์ชันสำเร็จรูปจากหลาย library</p>
+<section id="heatmap" class="level4">
+<h4 class="anchored" data-anchor-id="heatmap">heatmap</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("visdat")</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visdat)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="do">## create shadow matrix</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_dat</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span><span class="fu">vis_miss</span>(data, <span class="at">cluster =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">vis_miss</span>(data, <span class="at">cluster =</span> <span class="cn">TRUE</span>, <span class="at">facet =</span> ontime_class)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="md-plot" class="level4">
+<h4 class="anchored" data-anchor-id="md-plot">md plot</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("mice)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">md.pattern</span>(data, <span class="at">rotate.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    ach learning_performance ontime_class engage practice ach_mnar ach_mar
+231   1                    1            1      1        1        1       1
+47    1                    1            1      1        1        1       1
+43    1                    1            1      1        1        1       0
+29    1                    1            1      1        1        0       1
+37    1                    1            1      1        1        0       0
+      0                    0            0      0        0       66      80
+    ach_mcar    
+231        1   0
+47         0   1
+43         0   2
+29         0   2
+37         0   3
+         156 302</code></pre>
+</div>
+</div>
+</section>
+<section id="co-occurence-plot" class="level4">
+<h4 class="anchored" data-anchor-id="co-occurence-plot">co-occurence plot</h4>
+<p>co-occurence plot ช่วยแสดงสภาพการสูญหายที่ลึกกว่า heatmap เพราะมีทั้งมิติความถี่ของการสูญหายเป็นรายตัวแปรซึ่งจำแนกเป็นการสูญหายในตัวแปรเดียว และการสูญหายร่วมกัน</p>
+<p>การสูญหายร่วมกันที่มากมีผลทำให้การแก้ปัญหาแบบตัดข้อมูลที่ missing ออกจากไปการวิเคราะห์เริ่มไม่ work (ทำไม?)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="scatter-plot" class="level4">
+<h4 class="anchored" data-anchor-id="scatter-plot">Scatter plot</h4>
+<p>แผนภาพการกระจายมีประโยชน์มากสำหรับวิเคราะห์กลไกการสูญหายของข้อมูล</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance, <span class="at">y=</span>ach_mar))<span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance ,<span class="at">col =</span> ach_mar_NA), <span class="at">sides =</span> <span class="st">"b"</span>)<span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"!NA"</span> <span class="ot">=</span> <span class="cn">NULL</span>, <span class="st">"NA"</span> <span class="ot">=</span> <span class="st">"maroon"</span>),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">c</span>(<span class="cn">NULL</span>, <span class="st">"missing in ach"</span>))<span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>จากรูปจะเห็นได้อย่างชัดเจนว่าการสูญหายที่เกิดขึ้นใน ach มีความสัมพันธ์กับ learning performance ของนักเรียน ซึ่งสะท้อน MAR mechanism</p>
+</section>
+</section>
+<section id="การสำรวจคาสญหายสำหรบขอมลขนาดใหญ" class="level3">
+<h3 class="anchored" data-anchor-id="การสำรวจคาสญหายสำหรบขอมลขนาดใหญ">การสำรวจค่าสูญหายสำหรับข้อมูลขนาดใหญ่</h3>
+<p>ในกรณีที่ชุดข้อมูลมีขนาดใหญ่ โดยเฉพาะเมื่อมีตัวแปรจำนวนมาก การใช้ heatmap หรือ co-occurence plot อาจมีประสิทธิภาพน้อยลง ลองใช้วิธีการข้างต้นวิเคราะห์สภาพการสูญหายในชุดข้อมูลต่อไปนี้</p>
+<p><a href="https://bit.ly/2JoKcqX">ดาวน์โหลด</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/onlinelearning_miss.csv"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> large_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">student_id =</span> X)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">miss_var_summary</span>(large_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(pct_miss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 49 × 3
+   variable            n_miss pct_miss
+   &lt;chr&gt;                &lt;int&gt;    &lt;num&gt;
+ 1 climate.online1         97      9.7
+ 2 climate.onsite2         88      8.8
+ 3 climate.online3         87      8.7
+ 4 climate.onsite3         80      8  
+ 5 climate.onsite1         72      7.2
+ 6 climate.online2         70      7  
+ 7 computer                29      2.9
+ 8 interaction.online1     27      2.7
+ 9 interaction.onsite1     27      2.7
+10 outcome.onsite3         26      2.6
+# ℹ 39 more rows</code></pre>
+</div>
+</div>
+<p>idea คือเราอาจใช้เทคนิค dimensionality reduction เพื่อย่อขนาดข้อมูลก่อนที่จะสร้างทัศนภาพข้อมูล ผลลัพธ์ที่ได้จะช่วยให้ผู้วิเคราะห์สามารถทำความเข้าใจสภาพการสูญหายของข้อมูลได้ง่ายขึ้น</p>
+<p>การใช้ PCA ในบริบทนี้สามารถดำเนินการได้ดังนี้</p>
+<ol type="1">
+<li><p>แปลงข้อมูลของตัวแปรที่มีค่าสูญหายเป็น dummy variable โดยใช้ 1 แทนค่าสูญหาย และ 0 แทนค่าที่ไม่สูญหาย</p></li>
+<li><p>ใช้ PCA เพื่อสกัดองค์ประกอบหลักจาก matrix ของ dummy ดังกล่าว</p></li>
+<li><p>ลักษณะการทำงานของ PCA คือจะสร้างองค์ประกอบหลักที่สามารถอธิบายความแปรปรวนของตัวแปรต้นฉบับเดิมให้ได้มากที่สุด ดังนั้นเมื่อตัวแปรนำเข้าเป็นแบบ binary 0,1 องค์ประกอบหลักที่ได้จึงจะสะท้อนความแปรปรวนหรือรูปแบบการสูญหายของข้อมูล</p></li>
+</ol>
+<p>ทดลองดำเนินการดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dummy_mat <span class="ot">&lt;-</span> large_data <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(as.numeric) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(<span class="sc">~</span> .<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>dummy_mat  <span class="sc">%&gt;%</span> </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(<span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2))<span class="sc">+</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dummy_mat  <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  rownames_to_column(var = "student_id") %&gt;%  # เก็บ rownames เป็นคอลัมน์ (ถ้าต้องการ)</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(student_id = paste0("student", student_id)) %&gt;% </span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  pivot_longer(cols = -student_id, names_to = "variable", values_to = "value") %&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  pivot_wider(names_from = student_id, values_from = value) %&gt;% </span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  column_to_rownames("variable") %&gt;%</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(<span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>(), <span class="at">num_comp =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="ot">-&gt;</span> pca_prep</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>pca_prep <span class="sc">%&gt;%</span> </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(component <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"PC1"</span>,<span class="st">"PC2"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>terms))<span class="sc">+</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>component)<span class="sc">+</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/CTA_-_Ridership_-__L__Station_Entries_-_Daily_Totals_20241006.csv"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>temp <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   station_id    stationname            date             daytype         
+ Min.   :40010   Length:1228271     Length:1228271     Length:1228271    
+ 1st Qu.:40370   Class :character   Class :character   Class :character  
+ Median :40760   Mode  :character   Mode  :character   Mode  :character  
+ Mean   :40768                                                           
+ 3rd Qu.:41160                                                           
+ Max.   :41710                                                           
+     rides      
+ Min.   :    0  
+ 1st Qu.:  934  
+ Median : 1942  
+ Mean   : 2982  
+ 3rd Qu.: 3922  
+ Max.   :36323  </code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2024, Siwachoat Srisuttiyakorn</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/mariecurie">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/mariecurie">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
