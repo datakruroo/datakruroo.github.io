@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DataKruRoo-Blog - How to Create Effective Data Visualization</title>
+<title>How to Create Effective Data Visualization – DataKruRoo-Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../logo.png" rel="icon" type="image/png">
+<link href="../../datakruroo.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -46,7 +46,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -55,8 +61,10 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -67,47 +75,47 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../logo.png" alt="" class="navbar-logo">
+    <img src="../../datakruroo.png" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">DataKruRoo-Blog</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.html" rel="" target=""><i class="bi bi-bi bi-house-door-fill" role="img">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-bi bi-house-door-fill" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target=""><i class="bi bi-bi bi-file-person-fill" role="img">
+    <a class="nav-link" href="../../about.html"> <i class="bi bi-bi bi-file-person-fill" role="img">
 </i> 
- <span class="menu-text">ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span></a>
+<span class="menu-text">ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.facebook.com/Siwachoat" rel="" target=""><i class="bi bi-facebook" role="img">
+    <a class="nav-link" href="https://www.facebook.com/Siwachoat"> <i class="bi bi-facebook" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../xxx" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="../../xxx"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -148,6 +156,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+
 <p>เอกสารคำสอนนี้จะกล่าวถึงหลักการสร้างทัศนภาพข้อมูล (data visualization) ที่มีประสิทธิภาพ เนื้อหาในเอกสารจำแนกออกเป็น ส่วน ได้แก่ รายละเอียดมีดังนี้</p>
 <section id="มโนทศนพนฐาน" class="level1">
 <h1>1. มโนทัศน์พื้นฐาน</h1>
@@ -156,7 +165,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="datvis_def.png" class="img-fluid figure-img" width="833"></p>
-<figcaption class="figure-caption">รูป 1: ความหมายของทัศนภาพข้อมูล</figcaption>
+<figcaption>รูป 1: ความหมายของทัศนภาพข้อมูล</figcaption>
 </figure>
 </div>
 <p>จากความหมายของทัศนภาพข้อมูลข้างต้นจะเห็นว่ามีคำสำคัญที่ควรจะต้องทำความเข้าใจให้มากขึ้นได้แก่ visual representation, presentation และ facilitate understanding รายละเอียดของแต่ละคำมีดังนี้</p>
@@ -170,7 +179,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="coffee2.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 2 : Visual Representation (สิวะโชติ ศรีสุทธิยากร, 2563)</figcaption>
+<figcaption>รูป 2 : Visual Representation (สิวะโชติ ศรีสุทธิยากร, 2563)</figcaption>
 </figure>
 </div>
 <p>การแปลงข้อมูลให้เป็นภาพนั้นสามารถทำได้หลายลักษณะ ขึ้นอยู่กับส่วนผสมของทัศนธาตุที่ผู้พัฒนาเลือกนำมาใช้ ดังตัวอย่างในรูป 2 ด้านล่างทั้งทางซ้ายและขวา จากรูปด้านล่างซ้ายจะเห็นว่ามีการใช้แท่งสีเหลี่ยมแทนหน่วยข้อมูล และมีการใช้คุณลักษณะของแท่งสี่เหลี่ยมได้แก่ ตำแหน่งบนแกน X แทนเวลา ความสูงของแท่งแทนสัดส่วนยอดขาย และสีแทนช่องทางการขาย โดยที่ความยาวโดยรวมของแท่งสี่เหลี่ยมในแต่ละช่วงเวลาจะมีค่าเท่ากับร้อยละ 100 รูปนี้เรียกชื่อทางเทคนิคว่า 100% stacked bar plot ผู้อ่านจะเห็นว่าสารสนเทศที่ได้จากแผนภาพนี้เหมือนกับกราฟเส้นก่อนหน้า อย่างไรก็ตามการทำให้ความเข้าใจสารสนเทศจากแผนภาพนี้อาจทำได้ยากกว่ากราฟเส้น เมื่อพิจารณารูปด้านล่างขวาจะเห็นว่ารูปนี้มีการใช้แท่งสี่เหลี่ยมเป็นสัญลักษณ์แทนข้อมูลเช่นเดียวกัน อย่างไรก็ตามมีการกำหนดคุณลักษณะของแท่งสี่เหลี่ยมที่แตกต่างออกไป โดยให้ตำแหน่งบนแกน X แทนช่องทางการขาย ส่วนความสูงของแท่งสี่เหลี่ยมแทนสัดส่วนยอดขายในแต่ละช่วงเวลา ผู้อ่านจะเห็นว่าถึงแม้จะเป็นแผนภาพแบบ 100% stacked bar plot เหมือนกับแผนภาพก่อนหน้า แต่การกำหนดส่วนผสมของทัศนธาตุที่ไม่เหมาะสม ทำให้เกิดอุปสรรคแต่ผู้อ่านในการทำความเข้าใจปริมาณยอดขายกาแฟในแต่ละช่วงเวลาของแต่ละช่องทาง แผนภาพดังกล่าวมีประสิทธิภาพต่ำมาก (จริง ๆ คือไม่มีประสิทธิภาพ) ในการสื่อสารสาระสำคัญให้กับผู้อ่านได้เลย <strong>จากตัวอย่างในรูป 2 ผู้อ่านจะเห็นว่าการทำ visual representation ที่เหมาะสมจะช่วยสร้างแผนภาพที่ช่วยให้การนำเสนอข้อมูลสามารถทำได้อย่างมีประสิทธิภาพ กล่าวคือเป็นแผนภาพที่ช่วยให้ผู้อ่านสามารถทำความเข้าใจสารสนเทศจากข้อมูลได้ ในทางกลับกันการทำ visual representation ที่ไม่เหมาะสมอาจก่ออุปสรรคให้กับผู้อ่านจนไม่สามารถเข้าถึงหรือทำความเข้าใจสาระสำคัญใด ๆ จากข้อมูลได้เลย</strong></p>
@@ -178,21 +187,21 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="market_share.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 3 : ส่วนแบ่งการตลาดของบริษัท Ed Tech A, B, C, D และ E ในช่วงปี 2015 - 2017</figcaption>
+<figcaption>รูป 3 : ส่วนแบ่งการตลาดของบริษัท Ed Tech A, B, C, D และ E ในช่วงปี 2015 - 2017</figcaption>
 </figure>
 </div>
 <p>เพื่อตอบคำถามในข้างต้น ผู้พัฒนาทัศนภาพข้อมูลอาจลองทำการแปลงข้อมูลให้เป็นภาพด้วยส่วนผสมของทัศนธาตุแบบอื่น รูป 4 แสดงการใช้ 100% stacked bar plot และ simple bar plot แทนการใช้แผนภูมิวงกลม จากรูปจะเห็นว่า 100% stacked bar plot ให้ผลลัพธ์ที่ดีขึ้นกว่าการใช้แผนภูมิวงกลม โดยแสดงให้เห็นอย่างชัดเจนว่าส่วนแบ่งการตลาดของบริษัท E มีค่าสูงที่สุดในปี 2015 โดยคิดเป็นประมาณเกือบร้อยละ 25 และแนวโน้มลดลงเรื่อย ๆ ในช่วงเวลาดังกล่าว แต่เมื่อต้องการพิจารณาระดับและแนวโน้มของส่วนแบ่งการตลาดของบริษัทอื่นพบว่า ทำได้ยากขึ้นเนื่องมาจากสี่เหลี่ยมที่ใช้เป็นตัวแทนหน่วยข้อมูลของแต่ละบริษัทมีฐานที่ไม่ได้เริ่มจาก 0 และฐานดังกล่าวเปลี่ยนแปลงไปตามแต่ละปี ดังนั้น 100% stacked bar plot นี้ถึงแม้ว่าจะทำให้ผู้อ่านสามารถจำแนกความแตกต่างของส่วนแบ่งการตลาดได้ดีขึ้น แต่ก็ยังมีส่วนที่เป็นอุปสรรคสำหรับผู้อ่านซึ่งอาจทำให้เกิดความคลาดเคลื่อนในการสร้างข้อสรุปได้เหมือนกับแผนภูมิวงกลมในรูป 3 เมื่อพิจารณา simple bar plot ในรูป 4 (ด้านล่างขวา) จะเห็นว่า representation นี้ทำให้การจำแนกความแตกต่างหรือเปรียบเทียบส่วนแบ่งการตลาดของแต่ละบริษัทภายในแต่ละช่วงเวลา และแนวโน้มการเปลี่ยนแปลงส่วนแบ่งการตลาดในช่วงเวลาดังกล่าวสามารถทำได้โดยง่าย และเห็นได้อย่างชัดเจนว่าส่วนแบ่งการตลาดของบริษัททั้ง 5 มีการเปลี่ยนแปลงจากเดิมในปี 2015 ที่บริษัท E มีส่วนแบ่งการตลาดมากที่สุด รองลงมาคือบริษัท D, C, B, และ A กลายเป็นในปี 2017 บริษัท A มีส่วนแบ่งการตลาดมากที่สุดแทน และรองลงมาคือบริษัท B, C, D และ E</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="market_share2.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 4 : ส่วนแบ่งการตลาด (alternative representation)</figcaption>
+<figcaption>รูป 4 : ส่วนแบ่งการตลาด (alternative representation)</figcaption>
 </figure>
 </div>
 <p>จากตัวอย่างทั้งสองผู้อ่านจะสังเกตได้ว่าการเลือกส่วนผสมของทัศนธาตุที่แตกต่างกัน อาจทำให้ประสิทธิภาพในการนำเสนอข้อมูลของแผนภาพมีความแตกต่างกันแม้ว่าจะเป็นข้อมูลชุดเดียวกัน โดยบางกรณีแผนภาพที่พัฒนาขึ้นอาจไม่สามารถสื่อสารหรือนำเสนอสาระใด ๆ จากข้อมูลได้เลย บางกรณีแผนภาพอาจนำเสนอสาระสำคัญได้เพียงบางส่วน หรือในบางกรณีแผนภาพอาจทำให้เกิดความเข้าใจที่คลาดเคลื่อนไปจากสภาพจริง สาเหตุของความผันแปรนี้อธิบายได้ด้วยทฤษฎีการรับรู้ภาพของมนุษย์ซึ่งมีผู้นำเสนอไว้หลายทฤษฎี ทฤษฎีหนึ่งที่สามารถนำมาอธิบายได้ดีในบริบทของการพัฒนาทัศนภาพข้อมูลคือทฤษฎี perceptual tasks ของ Mackinlays (1986) ดังรูป 5</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="perceptual_tasks.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 5 : Perceptual Tasks (Mackinlay, 1986)</figcaption>
+<figcaption>รูป 5 : Perceptual Tasks (Mackinlay, 1986)</figcaption>
 </figure>
 </div>
 <p>รูป 5 ด้านบนแสดงประสิทธิภาพในการความแม่นยำของการนำเสนอข้อมูลของคุณลักษณะแต่ละแบบจำแนกตามมาตรวัดของตัวแปร ผู้อ่านจะเห็นว่า ตำแหน่ง (position) เป็นคุณลักษณะที่มีประสิทธิภาพสูงที่สุดในทุกมาตรวัด ทั้งนี้เป็นเพราะมนุษย์สามารถจำแนกแยกแยะและประเมินความแตกต่างในเชิงตำแหน่งที่ตั้งได้ดีมากที่สุด ส่วนในกรณีอื่น ๆ จะพบว่าคุณลักษณะแต่ละประเภทมีความเหมาะสมกับข้อมูลที่แตกต่างประเภทกัน ซึ่งจริง ๆ อาจกล่าวได้ว่าเป็น common sense ที่คุณลักษณะที่มีธรรมชาติสอดคล้องกับข้อมูลที่จะนำเสนอก็จะมีประสิทธิภาพสูงในการนำเสนอข้อมูลดังกล่าว เช่น กลุ่มของคุณลักษณะเชิงปริมาณที่สามารถวัดค่าได้ในเชิงคณิตศาสตร์ ได้แก่ ความยาว ความกว้างของมุม ความชัน และพื้นที่ จะมีประสิทธิภาพสูงเมื่อใช้กับข้อมูลของตัวแปรเชิงปริมาณ และจะมีประสิทธิภาพที่แย่ลงเมื่อใช้กับข้อมูลของตัวแปรแบบจัดประเภท รายละเอียดอื่น ๆ สามารถพิจารณาเพิ่มเติมจากรูป 5</p>
@@ -206,7 +215,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">รูป 6 ปริมาณข้อมูลที่ส่งผ่านเข้าสู่สมองจำแนกตามประสาทรับรู้ของมนุษย์</figcaption>
+<figcaption>รูป 6 ปริมาณข้อมูลที่ส่งผ่านเข้าสู่สมองจำแนกตามประสาทรับรู้ของมนุษย์</figcaption>
 </figure>
 </div>
 </div>
@@ -215,49 +224,49 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 02.26.32.png" class="img-fluid figure-img" width="625"></p>
-<figcaption class="figure-caption">รูป 7 จำนวนนักเรียนจำแนกตามปัญหาสุขลักษณะทางกายและระดับชั้น (กนิษฐ์ ศรีเคลือบ และคณะ, 2564)</figcaption>
+<figcaption>รูป 7 จำนวนนักเรียนจำแนกตามปัญหาสุขลักษณะทางกายและระดับชั้น (กนิษฐ์ ศรีเคลือบ และคณะ, 2564)</figcaption>
 </figure>
 </div>
 <p>รูป 8 แสดงแผนที่ความร้อน (heatmap) ของข้อมูลปัญหาสุขลักษณะทางกายของนักเรียนข้างต้น จากรูปจะเห็นว่าการแปลงข้อมูลในตารางให้เป็นแผนที่ความร้อน ทำให้ผู้อ่านสามารถสรุปได้โดยแทบจะในทันทีว่าปัญหาที่พบมากที่สุดคือปัญหาปวดฟัน/ฟันผุ ปัญหามีเหา และน้ำหนัก/ส่วนสูงต่ำกว่าเกณฑ์ ซึ่งพบมากที่สุดในกลุ่มนักเรียนระดับประถมศึกษาตอนต้น ส่วนในระดับประถมศึกษาตอนปลาย และมัธยมศึกษาตอนต้นพบว่ามีปัญหาการมีกลิ่นตัวที่เพิ่มขึ้นมาเป็นปัญหาหลักหนึ่งสำหรับนักเรียนในกลุ่มดังกล่าว</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 02.33.23.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 8 : แผนที่ความร้อนของจำนวนนักเรียนจำแนกตามปัญหาสุขลักษณะทางกายและระดับชั้น (กนิษฐ์ ศรีเคลือบ และคณะ, 2564))</figcaption>
+<figcaption>รูป 8 : แผนที่ความร้อนของจำนวนนักเรียนจำแนกตามปัญหาสุขลักษณะทางกายและระดับชั้น (กนิษฐ์ ศรีเคลือบ และคณะ, 2564))</figcaption>
 </figure>
 </div>
 <p><strong>(3) ทัศนภาพข้อมูลเป็นเครื่องมือที่มีประสิทธิภาพสูงสำหรับวิเคราะห์/นำเสนอข้อมูลปริมาณมาก</strong> จากตัวอย่างในรูป 7- 8 ข้างต้นจะเห็นว่าทัศนภาพข้อมูลเป็นเครื่องมือประสิทธิภาพสูงที่สามารถนำเสนอข้อมูลปริมาณมากเอาไว้ภายในแผนภาพเดียวได้โดยไม่สร้างภาระให้กับผู้อ่าน คำว่าข้อมูลปริมาณมากนี้หมายรวมไปถึงข้อมูลขนาดใหญ่ (big data) ด้วย โดยในภาพรวมข้อมูลที่มีปริมาณมากนี้อาจมองได้ในสองมิติ คือในด้านจำนวนหน่วยข้อมูล และจำนวนตัวแปร รูป 9 แสดงแผนภาพสายน้ำ (alluvial plot) ของนักเรียนระดับชั้นมัธยมศึกษาปีที่ 3 จำแนกตามระดับของโอกาสทางการศึกษา ภูมิหลังโรงเรียนของนักเรียน ได้แก่ พื้นที่ตั้ง สังกัดของโรงเรียน (สพป. และ สพม.) ขนาดโรงเรียน อัตราส่วนครูต่อนักเรียน และระดับผลสัมฤทธิ์ทางการเรียนของนักเรียน ในรูปมีการใช้สีเป็นคุณลักษณะที่แทนระดับโอกาสทางการศึกษาของนักเรียนแต่ละคน โดยที่สีน้ำเงินและฟ้า แทนกลุ่มนักเรียนที่มีโอกาสทางการศึกษาอยู่ในระดับสูง ส่วนสีแดงแทนกลุ่มนักเรียนที่มีโอกาสทางการศึกษาอยู่ในระดับต่ำ จำนวนนักเรียนที่นำมาสร้างแผนภาพนี้มีจำนวนประมาณเกือบ 300,000 คน และจะเห็นว่ามีจำนวนตัวแปรบนแผนภาพถึง 6 ตัวแปร ทั้งหมดสามารถบรรจุอยู่ในแผนภาพในรูป 9 เพียงแผนภาพเดียว</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 15.58.43.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 9 : แผนภาพสายน้ำ (alluvial plot) ของนักเรียนจำแนกตามระดับโอกาสทางการศึกษา ภูมิหลังของโรงเรียน และระดับผลสัมฤทธิ์ทางการเรียนของนักเรียน (สิวะโชติ ศรีสุทธิยากร, 2561)</figcaption>
+<figcaption>รูป 9 : แผนภาพสายน้ำ (alluvial plot) ของนักเรียนจำแนกตามระดับโอกาสทางการศึกษา ภูมิหลังของโรงเรียน และระดับผลสัมฤทธิ์ทางการเรียนของนักเรียน (สิวะโชติ ศรีสุทธิยากร, 2561)</figcaption>
 </figure>
 </div>
 <p>รูป 10 แสดงอีกตัวอย่างหนึ่งเป็นแผนภาพที่สร้างจากชุดข้อมูล gapminder โดย gapminder.org จากรูปจะเห็นว่าเป็นแผนภาพการกระจาย (scatter plot) ที่ใช้จุดเป็นสัญลักษณ์สำหรับนำเสนอข้อมูลของแต่ละประเทศในปี 2017 โดยที่คุณลักษณะของจุดได้แก่ ตำแหน่งบนแกน X แปรผันตามฐานะทางเศรษฐกิจที่สะท้อนจาก GDP per capita ต่อปีของประชากรในประเทศ ตำแหน่งบนแกน Y แปรผันตามอายุขัยเฉลี่ยของประชากรในประเทศ ขนาดของจุดแปรผันตามจำนวนประชากรแต่ละประเทศ สีของจุดแปรผันตามทวีปของแต่ละประเทศ โดยที่ความหมายของสี และขนาดของจุดสามารถอ้างอิงได้จากคำอธิบายด้านขวาล่างของแผนภาพ (ในทัศนภาพข้อมูลเรียกว่า legend)</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 16.02.45.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 10 แผนภาพการกระจายของ gapminder (gapminder.org, 2017)</figcaption>
+<figcaption>รูป 10 แผนภาพการกระจายของ gapminder (gapminder.org, 2017)</figcaption>
 </figure>
 </div>
 <p>(4) ทัศนภาพข้อมูลเป็นเครื่องมือที่มีประสิทธิภาพในการสำรวจและสร้างสารสนเทศเชิงลึก (insight) จากข้อมูล เป็นที่ทราบกันดีในหมู่นักสถิติ นักวิเคราะห์ข้อมูล และนักวิทยาการข้อมูล ว่าทัศนภาพข้อมูลถือเป็นเครื่องมือสำคัญตัวหนึ่งที่ใช้สำหรับสำรวจและวิเคราะห์ข้อมูลเพื่อสร้างสารสนเทศเชิงลึกที่จะนำไปใช้ประกอบการตัดสินใจ รูป 11 แสดงตัวอย่างการใช้ทัศนภาพข้อมูลพื้นฐานคือฮิสโทแกรม เพื่อสร้างสารสนเทศเชิงลึกที่สามารถสร้างมูลค่าเพิ่มให้กับผู้เกี่ยวข้องได้ เนื้อหาในรูปแสดงการวิเคราะห์ข้อมูลค่าเช่าห้อง/บ้านที่ดึงมาจาก application หนึ่ง ผลการวิเคราะห์ค่าเช่าพบว่ามีจำนวนข้อมูลทั้งสิ้น 9,995 ห้อง/บ้านเช่า โดยมีค่าเฉลี่ยค่าเช่ารายวันเท่ากับ 179.39 บาท (SD = 420.97 บาท) และเมื่อพิจารณาฮิสโทแกรมด้านล่างขวาจะเห็นว่าห้อง/บ้านเช่ามีราคาค่าเช่าที่เห็นในแผนภาพไม่น่าจะเกิน 1,800 บาทต่อคืน ซึ่งถือว่าเป็นราคาที่ไม่สูงมากนัก ดังนั้นผลการวิเคราะห์นี้ไม่สนับสนุนให้ผู้ที่มีห้อง/บ้านเช่าที่อยู่ในระดับ high-end มาปล่อยเช่าในราคาสูงบน application นี้</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 16.20.04.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 11 : ข้อมูล ค่าสถิติพื้นฐาน และฮิสโทแกรมของค่าเช่าห้อง/บ้านต่อคืนจาก website แห่งหนึ่ง</figcaption>
+<figcaption>รูป 11 : ข้อมูล ค่าสถิติพื้นฐาน และฮิสโทแกรมของค่าเช่าห้อง/บ้านต่อคืนจาก website แห่งหนึ่ง</figcaption>
 </figure>
 </div>
 <p>อย่างไรก็ตามหากผู้วิเคราะห์ปรับแต่งพารามิเตอร์ของฮิสโทแกรมได้แก่ จำนวนอันตรภาคชั้น (bins) หรือความกว้างของอันตรภาคชั้น (binwidths) ดังรูป 12 จากรูปจะพบว่าการปรับแต่งพารามิเตอร์อย่างเหมาะสม ทำให้พบว่าในความเป็นจริงมีห้อง/บ้านเช่าที่มีราคาเช่าต่อคืนอยู่ในระดับสูงถึงสูงมาก และมีผู้ใช้บริการเป็นจำนวนที่มากพอสมควรด้วย ข้อค้นพบนี้สนับสนุนว่าหากผู้เกี่ยวข้องมีห้องหรือบ้านเช่าที่ต้องการจะปล่อยเช่าในราคาสูง สามารถมาปล่อยเช่าใน application ดังกล่าวได้</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 16.42.50.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 12 : ฮิสโทแกรมของค่าเช่าห้อง/บ้าน ที่มีการปรับแต่งจำนวนอันตรภาคชั้น (bins) แตกต่างกัน</figcaption>
+<figcaption>รูป 12 : ฮิสโทแกรมของค่าเช่าห้อง/บ้าน ที่มีการปรับแต่งจำนวนอันตรภาคชั้น (bins) แตกต่างกัน</figcaption>
 </figure>
 </div>
 <p>อีกตัวอย่างหนึ่งเป็นตัวอย่างคลาสสิกจากชุดข้อมูล Anscombe ในรูป 13 จากรูป สมมุติว่าผู้วิเคราะห์ต้องการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปร y กับ x ที่อยู่ภายในชุดข้อมูลจำนวน 4 ชุด โดยที่ชุดที่หนึ่งประกอบด้วยตัวแปร x1, y1 ชุดที่สองประกอบด้วยตัวแปร x2, y2 ไปจนถึงชุดที่ 4 ที่ประกอบด้วยตัวแปร x4, y4 ตามลำดับ ผู้วิเคราะห์ได้ดำเนินการวิเคราะห์ข้อมูลเบื้องต้นด้วยสถิติพื้นฐานในตารางด้านล่างของรูป ซึ่งจากตารางจะพบว่า ค่าสถิติพื้นฐานหลายตัว เช่น ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน รวมทั้งค่าสัมประสิทธิ์สหสัมพันธ์ระหว่างตัวแปร y กับ x ของข้อมูลแต่ละชุดมีค่าที่ใกล้เคียงกันมากจนเกือบจะเท่ากัน หากผู้วิเคราะห์ไม่ได้ดำเนินการสำรวจข้อมูลเพิ่มเติมและเลือกที่จะเชื่อผลการวิเคราะห์ดังกล่าว ข้อสรุปที่ได้จากการสำรวจนี้คือข้อมูลทั้ง 4 ชุดมีลักษณะการแจกแจงที่เหมือนกัน และตัวแปร y กับ x ของแต่ละชุดข้อมูลมีความสัมพันธ์กันในเชิงเส้นตรงทางบวกในระดับสูงเหมือนกัน</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 16.49.35.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 13 : ชุดข้อมูล Anscombe และสถิติพื้นฐาน (https://en.wikipedia.org/wiki/Anscombe%27s_quartet)</figcaption>
+<figcaption>รูป 13 : ชุดข้อมูล Anscombe และสถิติพื้นฐาน (https://en.wikipedia.org/wiki/Anscombe%27s_quartet)</figcaption>
 </figure>
 </div>
 <p>ถึงแม้ว่าค่าสถิติจะเป็นเครื่องมือที่ให้ผลการวิเคราะห์ที่มีความเป็นปรนัยสูง แต่ตัวเลขเพียงไม่กี่ค่าไม่สามารถสะท้อนสภาพจริงของข้อมูลได้อย่างครอบคลุม และอาจทำให้เกิดความคลาดเคลื่อนในการสร้างข้อสรุป ทัศนภาพข้อมูลเป็นเครื่องมือที่ช่วยเติมเต็มในส่วนนี้ ถึงแม้ทัศนภาพข้อมูลจะมีข้อจำกัดในด้านการให้ผลการวิเคราะห์ที่มีความเป็นปรนัย แต่ทัศนภาพข้อมูลเป็นเครื่องมือวิเคราะห์ข้อมูลที่มีประสิทธิภาพสูงที่ช่วยให้ผู้วิเคราะห์เห็นสภาพจริงของข้อมูลได้อย่างครอบคลุม จากตัวอย่างในรูป 14 หากผู้วิเคราะห์ดำเนินการสำรวจข้อมูลเพิ่มเติมด้วยทัศนภาพข้อมูลจะพบว่าได้สารสนเทศที่แตกต่างไปจากการวิเคราะห์ด้วยสถิติพื้นฐานในรูป 13 จากรูปจะเห็นว่า มีเพียงชุดข้อมูลชุดที่หนึ่ง (Dataset 1) และชุดที่สาม (Dataset 3) ที่ตัวแปร y กับ x มีความสัมพันธ์ในเชิงเส้นตรงทางบวก ความแตกต่างของความสัมพันธ์ระหว่างสองชุดข้อมูลนี้คือ ชุดข้อมูลที่หนึ่งเป็นความสัมพันธ์ในเชิงสถิติ (statistical relationship) ส่วนชุดข้อมูลที่สามเป็นความสัมพันธ์ในเชิงคณิตศาสตร์ (mathematical relationship) โดยความสัมพันธ์ในรูปที่สามถึงแม้จะเป็นความสัมพันธ์ในเชิงคณิตศาสตร์แต่จะเห็นว่ามีหน่วยข้อมูลหน่วยหนึ่งที่มีความผิดปกติโดยมีค่าของตัวแปร y สูงกว่าที่ควรจะเป็น เมื่อพิจารณาชุดข้อมูลที่สอง (Dataset 2) พบว่า ความสัมพันธ์ระหว่าง y กับ x เป็นความสัมพันธ์เชิงคณิตศาสตร์แบบเส้นโค้ง ส่วนชุดข้อมูลที่สี่ (Dataset 4) พบว่า เป็นชุดข้อมูลที่ผู้เก็บรวบรวมข้อมูลยังเก็บรวบรวมข้อมูลไม่เพียงพอ สังเกตว่าหน่วยข้อมูลทั้งหมดมีคะแนนของตัวแปร x เพียง 2 ค่าได้แก่ 8 และ 19 การมีค่าของ x เพียงเท่านั้นไม่เพียงพอที่จะนำไปวิเคราะห์ความสัมพันธ์สำหรับตัวแปร y กับ x</p>
@@ -265,14 +274,14 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-15 at 17.03.44.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 14 : แผนภาพการกระจายของตัวแปร y กับ x จากชุดข้อมูล Anscombe</figcaption>
+<figcaption>รูป 14 : แผนภาพการกระจายของตัวแปร y กับ x จากชุดข้อมูล Anscombe</figcaption>
 </figure>
 </div>
 <p>นอกจากนี้ยังทัศนภาพข้อมูลยังมีประโยชน์ในระยะภายหลังการวิเคราะห์หรือประมวลผลด้วยวิธีการทางสถิติต่าง ๆ กล่าวคือผู้วิเคราะห์สามารถใช้ทัศนภาพข้อมูลเป็นเครื่องมือช่วยยืนยันความถูกต้อง/ความสมเหตุสมผลของผลการวิเคราะห์ ยกตัวอย่างเช่น ในการวิจัยเรื่อง ความเหลื่อมล้ำทางการศึกษาและปัจจัยที่ส่งผล : การวิเคราะห์พหุระดับร่วมกับดัชนีเอ็นโทรปีนัยทั่วไปที่อิงมัธยฐาน โดย สิวะโชติ ศรีสุทธิยากร (2562) ในการวิจัยได้มีการพัฒนาดัชนีเพื่อวัดความเหลื่อมล้ำทางการศึกษาในระดับสังกัดส่วนภูมิภาคของโรงเรียน โดยมีการนิยามความหมายของความเหลื่อมล้ำทางการศึกษาเอาไว้ว่า เป็นความแตกต่างหรือความผันแปรของคะแนนผลสัมฤทธิ์ทางการเรียนของนักเรียนระดับโรงเรียนภายในแต่ละสังกัด ดัชนีที่พัฒนาขึ้นจะมีค่าอยู่ในช่วง [0,1] โดยสังกัดใดที่มีคะแนนเข้าใกล้ 1 แสดงว่าเป็นสังกัดที่มีความเหลื่อมล้ำทางการศึกษาสูง เมื่อผู้วิจัยได้ออกแบบการคำนวณดัชนี เก็บรวบรวมข้อมูล และวิเคราะห์เพื่อคำนวณคะแนนดัชนีความเหลื่อมล้ำทางการศึกษาแล้ว สิ่งหนึ่งที่ผู้วิจัยจะต้องดำเนินการคือการตรวจสอบย้อนกลับเพื่อประเมินว่าดัชนีที่พัฒนาขึ้นสามารถสะท้อนสภาพความเหลื่อมล้ำทางการศึกษาตรงตามนิยามที่กำหนดไว้หรือไม่ รูป 15 แสดงการเปรียบเทียบคะแนนดัชนีความเหลื่อมล้ำกับการแจกแจงของคะแนนผลสัมฤทธิ์ทางการเรียนของโรงเรียนระดับโรงเรียนภายในแต่ละสังกัด เรียงลำดับจากสังกัดที่มีคะแนนความเหลื่อมล้ำทางการศึกษาสูงไปยังต่ำ จากรูปจะเห็นว่าการแจกแจงของคะแนนผลสัมฤทธิ์ทางการเรียนระดับโรงเรียนในสังกัดที่มีคะแนนความเหลื่อมล้ำสูง จะมีลักษณะที่เป็นสองฐานนิยม หรือเป็นการแจกจแจงที่มีการกระจายสูงอย่างชัดเจน ส่วนในสังกัดที่มีคะแนนความเหลื่อมล้ำทางการศึกษาลดต่ำลง การแจกแจงดังกล่าวก็มีแนวโน้มที่จะเริ่มลู่เข้าสู่ลักษณะที่เป็นการแจกแจงแบบฐานนิยมเดียวและมีการกระจายน้อยลงเรื่อย ๆ ผลการสำรวจจากทัศนภาพข้อมูลนี้แสดงสามารถใช้เป็นหลักฐานที่ยืนยันความน่าเชื่อถือของคะแนนความเหลื่อมล้ำทางการศึกษาที่ได้จากดัชนีที่พัฒนาขึ้น</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-16 at 12.57.40.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 15 : เปรียบเทียบคะแนนความเหลื่อมล้ำทางการศึกษาระดับสังกัดและการแจกแจงของผลสัมฤทธิ์ทางการเรียนของนักเรียนระดับโรงเรียนภายในสังกัด (สิวะโชติ ศรีสุทธิยากร, 2566)</figcaption>
+<figcaption>รูป 15 : เปรียบเทียบคะแนนความเหลื่อมล้ำทางการศึกษาระดับสังกัดและการแจกแจงของผลสัมฤทธิ์ทางการเรียนของนักเรียนระดับโรงเรียนภายในสังกัด (สิวะโชติ ศรีสุทธิยากร, 2566)</figcaption>
 </figure>
 </div>
 <p>จากที่กล่าวในข้างต้นจะเห็นว่า ทัศนภาพข้อมูลเป็นเครื่องมือที่สามารถนำมาใช้ในการวิจัยและงานวิเคราะห์ข้อมูลได้อย่างหลากหลาย ตั้งแต่การนำเสนอสารสนเทศเพื่อให้กลุ่มเป้าหมายสนใจและได้รับสารสนเทศที่ต้องการจะสื่อสารอย่างง่าย รวดเร็ว ตรงประเด็น และถูกต้อง การสร้างสารสนเทศเชิงลึกเพื่อใช้สำหรับสำรวจข้อมูล ออกแบบการวิเคราะห์ข้อมูลหรือการวิจัย ไปจนถึงการวิเคราะห์เพื่อยันยันความถูกต้องของผลการวิเคราะห์ในการวิจัย นอกจากนี้ทัศนภาพข้อมูลยังเป็นเครื่องมือหลักตัวหนึ่งที่ผู้วิเคราะห์มักใช้สำหรับวิเคราะห์ข้อมูลขนาดใหญ่</p>
@@ -283,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-16 at 14.37.49.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 16 : บทบัญญัติการออกแบบที่ดี 10 ประการของ Dieter Rams</figcaption>
+<figcaption>รูป 16 : บทบัญญัติการออกแบบที่ดี 10 ประการของ Dieter Rams</figcaption>
 </figure>
 </div>
 <p>ทัศนภาพข้อมูลที่ดีอาจมีการนิยามหรืออธิบายแตกต่างกันไปหลากหลายลักษณะมีเกณฑ์การพิจารณาหนึ่งที่น่าสนใจ เกณฑ์ดังกล่าวเสนอโดย Andy Kirk (2019) ซึ่งเป็นการประยุกต์ใช้บทบัญญัติ 10 ประการของการออกแบบที่ดี โดย Dieter Rams มาใช้เป็นแนวทางการนิยามความหมายของทัศนภาพข้อมูลที่มีการออกแบบที่ดี รูป 16 แสดงบัญญัติ 10 ประการดังกล่าว อย่างไรก็ตามเมื่อนำบทบัญญัติดังกล่าวมาใช้ในบริบทการออกแบบทัศนภาพข้อมูลพบว่าอาจไม่จำเป็นต้องยึดตามทั้ง 10 ประการ รูป 16 มีการ highlight บทบัญญัติที่เกี่ยวข้องกับการออกแบบทัศนภาพข้อมูลจำนวน 7 ข้อ กล่าวคือทัศนภาพข้อมูลที่ดีต้อง</p>
@@ -299,7 +308,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Screenshot 2566-09-16 at 22.06.22.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">รูป 17 : องค์ประกอบของทัศนภาพข้อมูลที่ดี</figcaption>
+<figcaption>รูป 17 : องค์ประกอบของทัศนภาพข้อมูลที่ดี</figcaption>
 </figure>
 </div>
 
@@ -342,18 +351,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -385,11 +383,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -399,8 +436,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -412,7 +458,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -456,6 +625,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -481,6 +651,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -541,6 +737,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

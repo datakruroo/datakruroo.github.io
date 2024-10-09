@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DataKruRoo-Blog - myblog</title>
+<title>myblog – DataKruRoo-Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./logo.png" rel="icon" type="image/png">
+<link href="./datakruroo.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-listing/list.min.js"></script>
 <script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -48,7 +48,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -57,8 +63,10 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script>
@@ -91,8 +99,35 @@ ul.task-list li input[type="checkbox"] {
   })
   </script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -101,46 +136,46 @@ ul.task-list li input[type="checkbox"] {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./logo.png" alt="" class="navbar-logo">
+    <img src="./datakruroo.png" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">DataKruRoo-Blog</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page"><i class="bi bi-bi bi-house-door-fill" role="img">
+    <a class="nav-link active" href="./index.html" aria-current="page"> <i class="bi bi-bi bi-house-door-fill" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target=""><i class="bi bi-bi bi-file-person-fill" role="img">
+    <a class="nav-link" href="./about.html"> <i class="bi bi-bi bi-file-person-fill" role="img">
 </i> 
- <span class="menu-text">ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span></a>
+<span class="menu-text">ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.facebook.com/Siwachoat" rel="" target=""><i class="bi bi-facebook" role="img">
+    <a class="nav-link" href="https://www.facebook.com/Siwachoat"> <i class="bi bi-facebook" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./xxx" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="./xxx"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -169,7 +204,9 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
+
 
 
 
@@ -177,74 +214,74 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1695314727675" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1723200734292" data-listing-reading-time-sort="6" data-listing-word-count-sort="1034">
 <div class="thumbnail">
-<p><a href="./posts/2023-09-14-Introdatvis/index.html"> <p class="card-img-top"><img src="posts/2023-09-14-Introdatvis/datvis_def.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external"></a></p><a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-09-14-Introdatvis/datvis_def.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-09-14-Introdatvis/index.html">
 <h3 class="no-anchor listing-title">
-How to Create Effective Data Visualization
+<a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external">How to Create Effective Data Visualization</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-เอกสารคำสอนนี้จะกล่าวถึงหลักการสร้างทัศนภาพข้อมูล (data visualization) ที่มีประสิทธิภาพ เนื้อหาในเอกสารจำแนกออกเป็น ส่วน ได้แก่ รายละเอียดมีดังนี้
+<a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external">เอกสารคำสอนนี้จะกล่าวถึงหลักการสร้างทัศนภาพข้อมูล (data visualization) ที่มีประสิทธิภาพ เนื้อหาในเอกสารจำแนกออกเป็น ส่วน ได้แก่ รายละเอียดมีดังนี้</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-09-14-Introdatvis/index.html"> </a>
+<p><a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external"></a></p><a href="./posts/2023-09-14-Introdatvis/index.html" class="no-external">
+</a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1695398717629" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1723200734305" data-listing-reading-time-sort="12" data-listing-word-count-sort="2203">
 <div class="thumbnail">
-<p><a href="./posts/2023-09-22-ggplot2/index.html"> <p class="card-img-top"><img src="posts/2023-09-22-ggplot2/index_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-09-22-ggplot2/index.html" class="no-external"></a></p><a href="./posts/2023-09-22-ggplot2/index.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-09-22-ggplot2/index_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-09-22-ggplot2/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-09-22-ggplot2/index.html">
 <h3 class="no-anchor listing-title">
-Guide on ggplot2 and extensions in R
+<a href="./posts/2023-09-22-ggplot2/index.html" class="no-external">Guide on ggplot2 and extensions in R</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-09-22-ggplot2/index.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-บทเรียนนี้จะกล่าวถึงการสร้างแผนภาพประเภทต่าง ๆ ด้วย ggplot2 และ library ส่วนต่อขยายของ ggplot2 โดยจำแนกแผนภาพออกเป็น 6 กลุ่ม (Wilke, 2019) ได้แก่
+<a href="./posts/2023-09-22-ggplot2/index.html" class="no-external">บทเรียนนี้จะกล่าวถึงการสร้างแผนภาพประเภทต่าง ๆ ด้วย ggplot2 และ library ส่วนต่อขยายของ ggplot2 โดยจำแนกแผนภาพออกเป็น 6 กลุ่ม (Wilke, 2019) ได้แก่</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-09-22-ggplot2/index.html"> </a>
+<p><a href="./posts/2023-09-22-ggplot2/index.html" class="no-external"></a></p><a href="./posts/2023-09-22-ggplot2/index.html" class="no-external">
+</a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="GitHub" data-listing-date-sort="1682269200000" data-listing-file-modified-sort="1682400417906" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
+<div class="quarto-post image-right" data-index="2" data-categories="GitHub" data-listing-date-sort="1682269200000" data-listing-file-modified-sort="1723200734261" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1390">
 <div class="thumbnail">
-<p><a href="./posts/2023-04-24-stathomework/index.html"> <p class="card-img-top"><img src="posts/2023-04-24-stathomework/index_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-04-24-stathomework/index.html" class="no-external"></a></p><a href="./posts/2023-04-24-stathomework/index.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-04-24-stathomework/index_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-04-24-stathomework/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-04-24-stathomework/index.html">
 <h3 class="no-anchor listing-title">
-การบ้าน Multiple Regression
+<a href="./posts/2023-04-24-stathomework/index.html" class="no-external">การบ้าน Multiple Regression</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-04-24-stathomework/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('GitHub'); return false;">
 GitHub
 </div>
 </div>
-<a href="./posts/2023-04-24-stathomework/index.html">
 <div class="listing-description">
-ผลการวิเคราะห์ส่วนนี้แสดงภาพรวมในการทำกิจกรรมการบ้านของนิสิต ประกอบด้วยผลการวิเคราะห์แนวโน้มการเข้ามาทำกิจกรรม และคะแนนกิจกรรมการบ้านในภาพรวมของนิสิต รายละเอียดมีดังนี้
+<a href="./posts/2023-04-24-stathomework/index.html" class="no-external">ผลการวิเคราะห์ส่วนนี้แสดงภาพรวมในการทำกิจกรรมการบ้านของนิสิต ประกอบด้วยผลการวิเคราะห์แนวโน้มการเข้ามาทำกิจกรรม และคะแนนกิจกรรมการบ้านในภาพรวมของนิสิต รายละเอียดมีดังนี้</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-04-24-stathomework/index.html">
+<a href="./posts/2023-04-24-stathomework/index.html" class="no-external">
 <div class="listing-date">
 Apr 24, 2023
 </div>
@@ -254,19 +291,19 @@ Apr 24, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,datavisualization" data-listing-date-sort="1674493200000" data-listing-file-modified-sort="1674553330778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="3" data-categories="R,datavisualization" data-listing-date-sort="1674493200000" data-listing-file-modified-sort="1723200734258" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
 <div class="thumbnail">
-<p><a href="./posts/2023-01-24-datavisR/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+<p><a href="./posts/2023-01-24-datavisR/index.html" class="no-external"></a></p><a href="./posts/2023-01-24-datavisR/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2023-01-24-datavisR/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-01-24-datavisR/index.html">
 <h3 class="no-anchor listing-title">
-R packages 20 ตัวสำหรับการพัฒนาทัศนภาพข้อมูล
+<a href="./posts/2023-01-24-datavisR/index.html" class="no-external">R packages 20 ตัวสำหรับการพัฒนาทัศนภาพข้อมูล</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-01-24-datavisR/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -275,14 +312,12 @@ R
 datavisualization
 </div>
 </div>
-<a href="./posts/2023-01-24-datavisR/index.html">
 <div class="listing-description">
-
+<a href="./posts/2023-01-24-datavisR/index.html" class="no-external"></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-01-24-datavisR/index.html">
+<a href="./posts/2023-01-24-datavisR/index.html" class="no-external">
 <div class="listing-date">
 Jan 24, 2023
 </div>
@@ -292,19 +327,19 @@ Jan 24, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="R,Power Analysis,Sample Size" data-listing-date-sort="1673456400000" data-listing-file-modified-sort="1673530485777" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="4" data-categories="R,Power Analysis,Sample Size" data-listing-date-sort="1673456400000" data-listing-file-modified-sort="1723200734254" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="261">
 <div class="thumbnail">
-<p><a href="./posts/2023-01-12-poweranalysisusingR/index.html"> <p class="card-img-top"><img src="posts/2023-01-12-poweranalysisusingR/images/image-114354291.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external"></a></p><a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-01-12-poweranalysisusingR/images/image-114354291.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-01-12-poweranalysisusingR/index.html">
 <h3 class="no-anchor listing-title">
-การวิเคราะห์อำนาจการทดสอบด้วย R
+<a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external">การวิเคราะห์อำนาจการทดสอบด้วย R</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -316,14 +351,12 @@ Power Analysis
 Sample Size
 </div>
 </div>
-<a href="./posts/2023-01-12-poweranalysisusingR/index.html">
 <div class="listing-description">
-บทความนี้จะกล่าวถึงมโนทัศน์ของการวิเคราะห์อำนาจการทดสอบ (power analysis)…
+<a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external">บทความนี้จะกล่าวถึงมโนทัศน์ของการวิเคราะห์อำนาจการทดสอบ (power analysis)…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-01-12-poweranalysisusingR/index.html">
+<a href="./posts/2023-01-12-poweranalysisusingR/index.html" class="no-external">
 <div class="listing-date">
 Jan 12, 2023
 </div>
@@ -333,25 +366,25 @@ Jan 12, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="NaN" data-listing-file-modified-sort="1694716270010" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="5" data-listing-date-sort="NaN" data-listing-file-modified-sort="1723200734294" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="367">
 <div class="thumbnail">
-<p><a href="./posts/2023-09-14-Introdatvis/pdf.html"> <p class="card-img-top"><img src="posts/2023-09-14-Introdatvis/datvis_def.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external"></a></p><a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-09-14-Introdatvis/datvis_def.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-09-14-Introdatvis/pdf.html">
 <h3 class="no-anchor listing-title">
-R Markdown ภาษาไทย
+<a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external">R Markdown ภาษาไทย</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external"></a>
 </div>
 <div class="listing-description">
-เอกสารคำสอนนี้จะกล่าวถึงหลักการสร้างทัศนภาพข้อมูล (data visualization) ที่มีประสิทธิภาพ เนื้อหาในเอกสารจำแนกออกเป็น ส่วน ได้แก่ รายละเอียดมีดังนี้
+<a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external">เอกสารคำสอนนี้จะกล่าวถึงหลักการสร้างทัศนภาพข้อมูล (data visualization) ที่มีประสิทธิภาพ เนื้อหาในเอกสารจำแนกออกเป็น ส่วน ได้แก่ รายละเอียดมีดังนี้</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-09-14-Introdatvis/pdf.html">
+<a href="./posts/2023-09-14-Introdatvis/pdf.html" class="no-external">
 <div class="listing-date">
 Invalid Date
 </div>
@@ -361,32 +394,30 @@ Invalid Date
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="GitHub" data-listing-date-sort="1672938000000" data-listing-file-modified-sort="1674552998259" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="6" data-categories="GitHub" data-listing-date-sort="1672938000000" data-listing-file-modified-sort="1723200734248" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="804">
 <div class="thumbnail">
-<p><a href="./posts/2023-01-06-github/index.html"> <p class="card-img-top"><img src="posts/2023-01-06-github/images/image-852484314.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-01-06-github/index.html" class="no-external"></a></p><a href="./posts/2023-01-06-github/index.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-01-06-github/images/image-852484314.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-01-06-github/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-01-06-github/index.html">
 <h3 class="no-anchor listing-title">
-What’s GitHub?
+<a href="./posts/2023-01-06-github/index.html" class="no-external">What’s GitHub?</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-01-06-github/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('GitHub'); return false;">
 GitHub
 </div>
 </div>
-<a href="./posts/2023-01-06-github/index.html">
 <div class="listing-description">
-GitHub เป็นบริการประเภท cloud-based hosting มีวัตถุประสงค์หลัก ๆ คือให้ผู้ใช้เก็บบันทึกและติดตามการดำเนินงาน/โปรเจคต่าง ๆ (เรียกว่า version…
+<a href="./posts/2023-01-06-github/index.html" class="no-external">GitHub เป็นบริการประเภท cloud-based hosting มีวัตถุประสงค์หลัก ๆ คือให้ผู้ใช้เก็บบันทึกและติดตามการดำเนินงาน/โปรเจคต่าง ๆ (เรียกว่า version control) ในท้องตลาดไม่ได้มีเพียง…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-01-06-github/index.html">
+<a href="./posts/2023-01-06-github/index.html" class="no-external">
 <div class="listing-date">
 Jan 6, 2023
 </div>
@@ -396,19 +427,19 @@ Jan 6, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="machine learning,R,tidymodels" data-listing-date-sort="1672938000000" data-listing-file-modified-sort="1673200218815" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
+<div class="quarto-post image-right" data-index="7" data-categories="machine learning,R,tidymodels" data-listing-date-sort="1672938000000" data-listing-file-modified-sort="1723200734254" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1519">
 <div class="thumbnail">
-<p><a href="./posts/2023-01-07-tidymodels/index.html"> <p class="card-img-top"><img src="posts/2023-01-07-tidymodels/images/image-670677648.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-01-07-tidymodels/index.html" class="no-external"></a></p><a href="./posts/2023-01-07-tidymodels/index.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-01-07-tidymodels/images/image-670677648.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-01-07-tidymodels/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-01-07-tidymodels/index.html">
 <h3 class="no-anchor listing-title">
-Introduction to tidymodels (part I)
+<a href="./posts/2023-01-07-tidymodels/index.html" class="no-external">Introduction to tidymodels (part I)</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-01-07-tidymodels/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -420,14 +451,12 @@ R
 tidymodels
 </div>
 </div>
-<a href="./posts/2023-01-07-tidymodels/index.html">
 <div class="listing-description">
-อ้างอิง
+<a href="./posts/2023-01-07-tidymodels/index.html" class="no-external">อ้างอิง</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-01-07-tidymodels/index.html">
+<a href="./posts/2023-01-07-tidymodels/index.html" class="no-external">
 <div class="listing-date">
 Jan 6, 2023
 </div>
@@ -437,19 +466,19 @@ Jan 6, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="R markdown,R" data-listing-date-sort="1672765200000" data-listing-file-modified-sort="1673023584303" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="8" data-categories="R markdown,R" data-listing-date-sort="1672765200000" data-listing-file-modified-sort="1723200734245" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="489">
 <div class="thumbnail">
-<p><a href="./posts/2023-01-04-thaipdfrmarkdown/index.html"> <p class="card-img-top"><img src="https://lightbridge-ks.github.io/thaipdf/logo.png"  class="thumbnail-image card-img"/></p> </a></p>
+<p><a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external"></a></p><a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html">
 <h3 class="no-anchor listing-title">
-สร้าง pdf document ภาษาไทยบน rmarkdown ด้วย thaipdf package
+<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external">สร้าง pdf document ภาษาไทยบน rmarkdown ด้วย thaipdf package</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R markdown'); return false;">
 R markdown
@@ -458,14 +487,12 @@ R markdown
 R
 </div>
 </div>
-<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html">
 <div class="listing-description">
-ที่ผ่านมาการสร้างเอกสาร pdf ด้วย rmarkdown…
+<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external">ที่ผ่านมาการสร้างเอกสาร pdf ด้วย rmarkdown ผู้ใช้จำเป็นต้องตั้งค่าเอกสารหลายอย่างเพื่อให้สามารถแสดงผลภาษาไทยได้อย่างถูกต้อง ซึ่งเป็นอุปสรรคในการทำงานไม่น้อย…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html">
+<a href="./posts/2023-01-04-thaipdfrmarkdown/index.html" class="no-external">
 <div class="listing-date">
 Jan 4, 2023
 </div>
@@ -475,19 +502,19 @@ Jan 4, 2023
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="machine learning,concept" data-listing-date-sort="1672678800000" data-listing-file-modified-sort="1673023574285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="quarto-post image-right" data-index="9" data-categories="machine learning,concept" data-listing-date-sort="1672678800000" data-listing-file-modified-sort="1723200734242" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="228">
 <div class="thumbnail">
-<p><a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html"> <img src="./posts/2023-01-03-ML-WhatIsML.qmd/image.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external"></a></p><a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/2023-01-03-ML-WhatIsML.qmd/image.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html">
 <h3 class="no-anchor listing-title">
-What’s Machine Learning?
+<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external">What’s Machine Learning?</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -496,14 +523,12 @@ machine learning
 concept
 </div>
 </div>
-<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html">
 <div class="listing-description">
-บทความนี้จะกล่าวถึงมโนทัศน์เบื้องต้นของการเรียนรู้ของเครื่อง (machine learning: ML) รายละเอียดมีดังนี้
+<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external">บทความนี้จะกล่าวถึงมโนทัศน์เบื้องต้นของการเรียนรู้ของเครื่อง (machine learning: ML) รายละเอียดมีดังนี้</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html">
+<a href="./posts/2023-01-03-ML-WhatIsML.qmd/index.html" class="no-external">
 <div class="listing-date">
 Jan 3, 2023
 </div>
@@ -553,18 +578,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -596,11 +610,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -610,8 +663,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -623,7 +685,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -667,6 +852,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -692,6 +878,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -752,6 +964,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

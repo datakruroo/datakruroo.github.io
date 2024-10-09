@@ -3,9 +3,9 @@ project:
 
 website:
   title: "DataKruRoo-Blog"
-  favicon: logo.png
+  favicon: datakruroo.png
   navbar:
-    logo: logo.png
+    logo: datakruroo.png
     right:
       - icon: bi bi-house-door-fill  # https://icons.getbootstrap.com/
         href: index.html
@@ -18,7 +18,7 @@ website:
   description: "Educational Datascience Blog"
 format:
   html:
-    theme: united
+    theme: night
     hightlight: textmate
     css: styles.css
     body-footer: footer.html

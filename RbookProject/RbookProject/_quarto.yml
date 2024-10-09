@@ -7,15 +7,23 @@ book:
   date: "10/7/2024"
   chapters:
     - index.qmd
-    - intro.qmd
+    - 01intro.qmd
     - summary.qmd
     - references.qmd
+  sidebar:
+    style: docked
+    background: light
+  cover-image: cover2.png
 
 bibliography: references.bib
 
 format:
   html:
     theme: cosmo
+    highlight: github
+    toc: true
+    number_sections: false
+    css: style.css
   pdf:
     documentclass: scrreprt
     classoption: [12pt, b5paper]
