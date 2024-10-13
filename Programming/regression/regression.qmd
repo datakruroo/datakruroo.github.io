@@ -294,8 +294,6 @@ p2<-data %>%
 p1/p2
 ```
 
-
-
 #### ตัวแปรอิสระทั้งสองเป็นตัวแปรเชิงปริมาณ
 
 ![](img/interaction2.png){width="50%"}
@@ -309,20 +307,17 @@ $$
 eff = \beta_0 + \beta_1motiv + \beta_2seef + \beta_3motiv \times seef + \epsilon
 $$
 
-$$
-eff =  \beta_0 + \beta_1motiv + (\beta_2seef + \beta_3motiv \times seef) + \epsilon
+\$\$ eff = \beta\_0 + \beta\_1motiv + (\beta\_2seef + \beta\_3motiv \times seef) + \epsilon
 
-$$
+\$\$
 
-$$
-eff =  \beta_0 + \beta_1motiv + (\beta_2 + \beta_3motiv)seef + \epsilon
+\$\$ eff = \beta\_0 + \beta\_1motiv + (\beta\_2 + \beta\_3motiv)seef + \epsilon
 
-$$
+\$\$
 
 ```{r}
 data %>% summary()
 ```
-
 
 ```{r}
 fit_interac3 <- data %>% 
@@ -330,6 +325,7 @@ fit_interac3 <- data %>%
 
 summary(fit_interac3)
 ```
+
 ดังนั้นเราสรุปได้ว่า
 
 อิทธิพลของ seef ที่มีต่อ eff อธิบายได้ด้วยสมการ 7.75 - 1.09 x motiv
@@ -343,7 +339,6 @@ slope_seef <- 7.75 - 1.09*motiv
 motiv<-5.048
 slope_seef <- 7.75 - 1.09*motiv
 ```
-
 
 ```{r}
 data %>% 
@@ -372,33 +367,29 @@ data %>% ggplot(aes(x=seef, y=eff))+
 library(ggeffects)
 ```
 
-
 ```{r}
 ggpredict(fit_interac3, terms = c("seef", "motiv")) |> plot()
 ```
-
 
 ```{r}
 data %>% summary()
 ```
 
-
 ## Polynomial Regression
 
 สมการถดถอยพหุนาม
 
-
 ความสัมพันธ์ระหว่างตัวแปรบนโลก อาจจำแนกได้เป็น 2 ลักษณะ
 
-- linear relationship
+-   linear relationship
 
-- non-linear relationship
+-   non-linear relationship
 
 โมเดลการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรอาจจำแนกได้เป็น 2 ลักษณะเช่นกัน
 
-- linear (in parameters) model
+-   linear (in parameters) model
 
-- non-linear model
+-   non-linear model
 
 $$
 y = mx + c
@@ -410,8 +401,6 @@ $$
 $$
 y = \frac{exp(ax+b)}{1+exp(ax+b)}
 $$
-
-
 
 
 ```{r}
@@ -430,9 +419,9 @@ gapminder %>%
 
 -   `I()` เป็นวิธีการสร้างพหุนามโดยตรง โดยเราจะใส่ตัวแปรที่ต้องการยกกำลังในฟังก์ชันนี้ ตัวอย่างเช่น I(x\^2) หมายถึงการสร้างเทอม x\^2 ที่ใช้ในโมเดลการถดถอย ดังนั้นการแปลความหมาย slope ของตัวแปรที่เป็นพหุนามนี้สามารถทำได้อย่างตรงไปตรงมา เพราะตัวแปรต่าง ๆ อยู่ในสเกลต้นฉบับ
 
-- ปัญหาหนึ่งของการใช้ `I()` คือ multicollinearity!!!
+-   ปัญหาหนึ่งของการใช้ `I()` คือ multicollinearity!!!
 
-- `poly()` จะสร้างเทอมพหุนามที่เรียกว่า orthogonal polynomial ซึ่งจะทำให้เราไม่ต้องกังวลเรื่อง multicollinearity แต่ต้องแลกมาด้วยการแปลความหมายความสัมพันธ์ที่ยาก เพราะตัวแปรที่ถูกแปลงเป็น orthogonal polynomial จะอยู่คนละสเกลกับตัวแปรเดิม การแปลงลักษณะนี้จึงเหมาะกับวัตถุประสงค์ในการทำนายมากกว่าอธิบายความสัมพันธ์ื
+-   `poly()` จะสร้างเทอมพหุนามที่เรียกว่า orthogonal polynomial ซึ่งจะทำให้เราไม่ต้องกังวลเรื่อง multicollinearity แต่ต้องแลกมาด้วยการแปลความหมายความสัมพันธ์ที่ยาก เพราะตัวแปรที่ถูกแปลงเป็น orthogonal polynomial จะอยู่คนละสเกลกับตัวแปรเดิม การแปลงลักษณะนี้จึงเหมาะกับวัตถุประสงค์ในการทำนายมากกว่าอธิบายความสัมพันธ์ื
 
 ```{r}
 cubic_fit <- gapminder %>% 
@@ -442,10 +431,11 @@ cubic_fit <- gapminder %>%
 
 $$
 lifeExp = (5.296e+01) + (2.734e-03)gdpPercap - (9.270e-08)gdpPercap^2 + (1.009e-12)gdpPercap^3
-$$
-## VIF
+$$ \
 
-variance inflation factor --> เป็นดัชนีที่ใช้วัด multicollinearity ของตัวแปรอิสระในโมเดล regression ถ้าค่า VIF มีค่ามากกว่า 10 แสดงว่ามี multicollinearity ในโมเดล
+### ปัญหา Multicollinearity ใน Polynomial Regression
+
+variance inflation factor --\> เป็นดัชนีที่ใช้วัด multicollinearity ของตัวแปรอิสระในโมเดล regression ถ้าค่า VIF มีค่ามากกว่า 10 แสดงว่ามี multicollinearity ในโมเดล
 
 ```{r}
 #install.packages("car")
@@ -464,6 +454,7 @@ gapminder %>%
 ```
 
 ```{r}
+## correlation matrix between centering variables
 gapminder %>% 
   filter(year=="2007") %>% 
   mutate(x = gdpPercap,
@@ -473,19 +464,27 @@ gapminder %>%
          x_center2 = x_center^2,
          x_center3 = x_center^3) %>%
   select(x_center, x_center2,x_center3) %>% cor()
+
+## scatter plot
+gapminder %>% 
+  filter(year=="2007") %>% 
+  mutate(x = gdpPercap,
+         x2 =gdpPercap^2,
+         x3 = gdpPercap^3) %>% 
+  mutate(x_center = x-mean(x),
+         x_center2 = x_center^2,
+         x_center3 = x_center^3) %>%
+  select(x_center, x_center2,x_center3) %>% 
   ggplot(aes(x_center,x_center3 ))+
   geom_line()
 ```
+
 ```{r}
 cubic_fit <- gapminder %>% 
   filter(year=="2007") %>% 
   with(lm(lifeExp ~ poly(gdpPercap, 3)))
 cubic_fit %>% summary()
 ```
-
-
-
-
 
 ## Regression Diagnostics
 
@@ -581,15 +580,209 @@ p1/p2
 
 -   ใช้ robust regression
 
-## Model Selection: Best Subset Regression
+## Model Selection
 
-วิธีการหนึ่งที่ใช้ค้นหาโมเดลที่ดีที่สุดคือ best subset regression ซึ่งจะทำการสร้างโมเดลทุกโมเดลที่เป็นไปได้จากตัวแปรอิสระที่มี จากนั้นเปรียบเทียบ empirical fit ระหว่างโมเดลดังกล่าว
+ในบริบทของการวิเคราะห์การถดถอย โดยปกติการคัดเลือกโมเดลส่วนหลัก ๆ จะเกี่ยวข้องกับการคัดเลือกตัวแปรอิสระเข้าสู่โมเดล และอีกส่วนหนึ่งคือการกำหนด functional form ของโมเดล ในบทเรียนนี้จะกล่าวถึงส่วน feature selection 
+
+การทำ feature selection คือการคัดกรองตัวแปรที่ไม่มีสาระสำคัญหรือมีความสำคัญน้อยในการพัฒนาโมเดลออกไป
+
+
+```{mermaid}
+flowchart TD
+
+F1-->X1((X))
+F2-->A[F2]
+F3-->B[F3]
+F4-->X2((X))
+F5-->X3((X))
+```
+
+
+การคัดเลือกตัวแปรอิสระเข้าสู่โมเดลมีหลายขั้นตอน อาจจะจำแนกออกเป็นสองประเภทใหญ่ ได้แก่ theory-driven และ data-driven โดยที่ theory-driven จะใช้ความรู้ที่มีอยู่จากงานวิจัยหรือทฤษฎีที่เกี่ยวข้องเพื่อกำหนดและคัดเลือกตัวแปร  ในขณะที่ data-driven จะใช้ข้อมูลที่มีอยู่เพื่อคัดเลือกตัวแปรอิสระที่มีความเหมาะสมและมีประสิทธิภาพในการทำนายเข้าสู่โมเดล
+
+- filter methods
+
+- wrapper methods
+
+- embedded methods
+
+
+### กิจกรรมที่ 1 ทำลองวิเคราะห์การถดถอย
+
+ลองทำ regression analysis เพื่อสร้างโมเดลทำนาย student_outcome_online แล้วพิจารณาผลลัพธ์ที่ได้
+
+```{r}
+
+large_data <- read_csv("/Users/choat/Downloads/onlinelearning_miss.csv")
+large_data %>% glimpse()
+large_data %>% dplyr::select(-1) %>% 
+### ปรับชื่อตัวแปรใหม่
+  rename(student_id = X,
+         school_type = 2,
+         school_location = 3,
+         num_subject = 4,
+         num_online = 5,
+         num_onsite = 6,
+         school_readiness = 7,
+         avg_teacher_age = 15,
+         avg_teacher_techcomp = 16,
+         student_gender = 23,
+         student_level = 24,
+         student_location = 25,
+         student_learningstyle = 26,
+         student_internet_readiness = 30,
+         student_home_climate = 31,
+         student_techcomp = 32,
+         student_learning_attitude = 33,
+         student_stress_online = 40,
+         student_stress_onsite = 41
+         ) %>% 
+### สร้างตัวแปรใหม่
+  rowwise() %>% 
+  mutate(
+         student_climate_online = mean(c(climate.online1, climate.online2, climate.online3)),
+         student_climate_onsite = rowMeans(across(starts_with("climate.onsite"))),
+         student_interaction_online = mean(c(interaction.online1, interaction.online2, interaction.online3)),
+         student_interaction_onsite = rowMeans(across(starts_with("interaction.onsite"))),
+         student_outcome_online = (outcome.online1*20 + outcome.online2*20 + outcome.online3*20 +outcome.online4)/4,
+         student_outcome_onsite = (outcome.onsite1*20 + outcome.onsite2*20 + outcome.onsite3*20 +outcome.onsite4)/4
+         ) %>%
+  dplyr::select(-starts_with("interaction"), -starts_with("outcome")) %>% 
+  dplyr::select(-starts_with("climate")) %>%
+  mutate(student_num_device = sum(c(smartphone,ipad,computer),na.rm = T))  %>% 
+  ungroup()
+```
+
+ผลการวิเคราะห์ที่ได้มีข้อสังเกตอะไรบ้าง
+
+### Filter Methods
+
+Filter Methods เป็นหนึ่งในเทคนิคการคัดเลือกตัวแปร (Feature Selection) ที่ใช้ คุณสมบัติทางสถิติของตัวแปร ในการคัดกรองตัวแปรที่มีความสำคัญต่อการสร้างโมเดล โดยกระบวนการนี้จะไม่พึ่งพาโมเดลใด ๆ ในการประเมิน แต่จะใช้สถิติพื้นฐาน เช่น ความสัมพันธ์ (correlation) ระหว่างตัวแปรอิสระกับตัวแปรตาม และค่าสถิติอื่น ๆ เช่น Chi-square, ANOVA, Mutual Information เพื่อกรองตัวแปรที่มีความสำคัญสูงไว้
+
+- filter zero or near-zero variance
+
+- correlation-based filtering
+
+จุดเด่นของวิธีการนี้คือทำได้อย่างรวดเร็ว แต่เป็นการวิเคราะห์ที่อาจจะละเลยความสัมพันธ์ที่ซับซ้อนระหว่างตัวแปรอิสระกับตัวแปรตาม นอกจากนี้ผลลัพธ์ที่ได้อาจจะไม่ได้เป็นผลลัพธ์ที่ดีที่สุดที่เป็นไปได้
+
+```{r}
+### create predictor matrix
+use_data <- large_data %>% dplyr::select(-1) %>% 
+### ปรับชื่อตัวแปรใหม่
+  rename(student_id = X,
+         school_type = 2,
+         school_location = 3,
+         num_subject = 4,
+         num_online = 5,
+         num_onsite = 6,
+         school_readiness = 7,
+         avg_teacher_age = 15,
+         avg_teacher_techcomp = 16,
+         student_gender = 23,
+         student_level = 24,
+         student_location = 25,
+         student_learningstyle = 26,
+         student_internet_readiness = 30,
+         student_home_climate = 31,
+         student_techcomp = 32,
+         student_learning_attitude = 33,
+         student_stress_online = 40,
+         student_stress_onsite = 41
+         ) %>% 
+### สร้างตัวแปรใหม่
+  rowwise() %>% 
+  mutate(
+         student_climate_online = mean(c(climate.online1, climate.online2, climate.online3)),
+         student_climate_onsite = rowMeans(across(starts_with("climate.onsite"))),
+         student_interaction_online = mean(c(interaction.online1, interaction.online2, interaction.online3)),
+         student_interaction_onsite = rowMeans(across(starts_with("interaction.onsite"))),
+         student_outcome_online = (outcome.online1*20 + outcome.online2*20 + outcome.online3*20 +outcome.online4)/4,
+         student_outcome_onsite = (outcome.onsite1*20 + outcome.onsite2*20 + outcome.onsite3*20 +outcome.onsite4)/4
+         ) %>%
+  dplyr::select(-starts_with("interaction"), -starts_with("outcome")) %>% 
+  dplyr::select(-starts_with("climate")) %>%
+  mutate(student_num_device = sum(c(smartphone,ipad,computer),na.rm = T))  %>% 
+  ungroup()
+```
+
+
+แบ่งชุดข้อมูล online learning 
+
+```{r}
+online_data <- use_data %>% 
+  dplyr::select(-contains("onsite"))
+glimpse(online_data)
+```
+
+
+#### Near-Zero Variance
+
+สร้างชุดข้อมูล predictor matrix ของ online learning
+
+- `freqCut` เปรียบเทียบความถี่ของค่าที่พบมากที่สุดกับค่าที่พบมากที่สุดเป็นอันดับสอง เพื่อดูว่าคอลัมน์นั้นมีการกระจายตัวของค่ามากน้อยเพียงใด
+
+- `uniqueCut` เปรียบเทียบจำนวนค่าที่ไม่ซ้ำกันกับจำนวนตัวอย่างทั้งหมดในคอลัมน์
+
+```{r}
+predictor_online <- online_data %>% dplyr::select(-student_outcome_online)
+## install.packages("caret")
+library(caret)
+nearZeroVar(predictor_online, freqCut = 95/5, uniqueCut = 10, saveMetrics = TRUE)
+```
+
+#### Correlation-based method
+
+
+
+
+### Wrapper Methods
+
+- สร้างโมเดลทำนายหลายชุด: ทดลองชุดของตัวแปรหลายชุด โดยเลือกเพิ่มหรือลบตัวแปรทีละตัว
+
+- ใช้เกณฑ์การประเมินโมเดลเช่น AIC, BIC, AUC, F1-score, RMSE, MAE, หรือค่าสถิติอื่น ๆ ในการประเมินความสามารถของโมเดล
+
+- เลือกชุดตัวแปรที่ดีที่สุด: ชุดตัวแปรที่ให้ประสิทธิภาพดีที่สุดจะถูกเลือกเพื่อใช้ในการสร้างโมเดลสุดท้าย
+
+#### Best Subset Regression
+
+- วิธีการหนึ่งที่ใช้ค้นหาโมเดลที่ดีที่สุดคือ best subset regression ซึ่งจะทำการสร้างโมเดลทุกโมเดลที่เป็นไปได้จากตัวแปรอิสระที่มี จากนั้นเปรียบเทียบ empirical fit ระหว่างโมเดลดังกล่าว
+
+- อย่างไรก็ตามวิธีการดังกล่าวจะใช้ทรัพยากรค่อนข้างเยอะ เพราะจะต้องสร้างโมเดลจากทุกความเป็นไปได้ ยกตัวอย่างเช่น หากมีตัวแปรอิสระทั้งหมด p ตัว โมเดลที่มีเฉพาะ main effect ที่เป็นไปได้จะมีทั้งหมด 2^p โมเดล เทคนิคนี้จึงเหมาะสำหรับสถานการณ์ที่มีข้อมูลที่ขนาดไม่ใหญ่มากเกินไป
+
 
 ```{r}
 #install.packages("leaps")
 library(leaps)
-data <- read_csv("TeacherSalaryData.csv")
 
-reg_model <- regsubsets(salary ~ ., data=data %>% select(-1), nbest =2, nvmax = 6)
-summary(reg_model)
+reg_model <- regsubsets(student_outcome_online ~ . -student_id, data=online_data , nbest =1, nvmax = 10,
+                        method = "exhaustive")
+sum <- summary(reg_model)
 ```
+
+
+ข้อมูลตัวอย่างสำหรับหัวข้อนี้คือ TeacherSalaryData.csv
+
+```{r}
+data <- read_csv("TeacherSalaryData.csv")
+glimpse(data)
+### visualize numeric variables
+p1<-data %>% 
+  select_if(is.numeric) %>%
+  dplyr::select(-1) %>% 
+  pivot_longer(everything()) %>%
+  ggplot(aes(value))+
+  geom_histogram(fill = "steelblue")+
+  facet_wrap(~name, scales = "free")+
+  theme_light()
+### visualize categorical variables
+p2<-data %>% 
+  select_if(is.character) %>%
+  pivot_longer(everything()) %>%
+  ggplot(aes(x = value))+
+  geom_bar(fill = "steelblue")+
+  facet_wrap(~name, scales = "free")+
+  theme_light()
+p1/p2
+```
+
+

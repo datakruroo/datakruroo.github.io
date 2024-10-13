@@ -350,6 +350,21 @@ miss_var_summary(large_data) %>%
   arrange(desc(pct_miss))
 ```
 
+```{r}
+miss_case_summary(large_data)%>% 
+  arrange(desc(pct_miss))
+```
+
+
+
+```{r}
+large_data %>% 
+select(where(~ any(is.na(.)))) %>% 
+  vis_miss(cluster = TRUE)+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+
 idea คือเราอาจใช้เทคนิค dimensionality reduction เพื่อย่อขนาดข้อมูลก่อนที่จะสร้างทัศนภาพข้อมูล ผลลัพธ์ที่ได้จะช่วยให้ผู้วิเคราะห์สามารถทำความเข้าใจสภาพการสูญหายของข้อมูลได้ง่ายขึ้น
 
 การใช้ PCA ในบริบทนี้สามารถดำเนินการได้ดังนี้
@@ -367,9 +382,10 @@ idea คือเราอาจใช้เทคนิค dimensionality reduc
 dummy_mat <- large_data %>% 
   bind_shadow() %>% 
   dplyr::select(ends_with("NA")) %>% 
-  select(-1)
+  select(-1) %>% 
   mutate_all(as.numeric) %>% 
-  mutate_all(~ .-1)
+  mutate_all(~ .-1) %>% 
+  select_if(~ sum(.) > 0)
 
 library(tidymodels)
 dummy_mat  %>% 
@@ -378,13 +394,19 @@ dummy_mat  %>%
   prep() %>%
   juice() %>% 
   ggplot(aes(PC1, PC2))+
-  geom_point()
+  geom_vline(xintercept = 0, linetype=2)+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_point()+
+  ggtitle("หน่วยข้อมูลไหนมีค่าสูญหายในตัวแปรไหน")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+
 ```
+
+ลอง transpose dummy_mat แล้วทำ PCA ผลลัพธ์ที่ได้คืออะไร
 
 
 ```{r}
-install.packages("janitor")
-library(janitor)
+
 dummy_mat  %>% 
 #  rownames_to_column(var = "student_id") %>%  # เก็บ rownames เป็นคอลัมน์ (ถ้าต้องการ)
 #  mutate(student_id = paste0("student", student_id)) %>% 
@@ -400,17 +422,16 @@ pca_prep %>%
   filter(component %in% c("PC1","PC2")) %>% 
   ggplot(aes(x=value, y=terms))+
   geom_col()+
-  facet_wrap(~component)
+  facet_wrap(~component)+
+  theme(text = element_text(family = "ChulaCharasNew"))
+
 
 juice() %>% 
   ggplot(aes(PC1, PC2))+
   geom_point()
 ```
 
+## การแก้ปัญหาค่าสูญหาย
 
-
-```{r}
-temp <- read_csv("/Users/choat/Downloads/CTA_-_Ridership_-__L__Station_Entries_-_Daily_Totals_20241006.csv")
-temp %>% summary()
-```
+หลาย supervised learning เป็นโมเดลที่มีความ
 
