@@ -492,7 +492,7 @@ regression เป็นโมเดลทางสถิติแบบ parametr
 
 -   Independence
 
--   Linearity
+-   Linearity (no misspecification)
 
 -   Normality
 
@@ -504,7 +504,225 @@ regression เป็นโมเดลทางสถิติแบบ parametr
 
     -   Outlier คือ ค่าสังเกตที่ทำนายไม่ได้หรือมีประสิทธิภาพการทำนายด้วย regression ต่ำ (กล่าวคือมีค่าสัมบูรณ์ของ residual ที่มากเกินไป)
 
+
 ```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Downloads/exam.csv")
+glimpse(data)
+```
+เรา fit multiple regression ตามกรอบแนวคิดของการวิเคราะห์ก่อน
+
+
+```{r}
+simple_reg <- lm(ach ~ learning_performance , data=data)
+
+x <- seq(0,100)
+y<-0.5+0.1*x+0.08*x^2+ rnorm(101,0,50)
+
+p1<-data.frame(x,y) %>% 
+  ggplot(aes(x=x, y=y))+
+  geom_point()+
+  geom_smooth(method = "lm", se= F)
+```
+
+```{r}
+data.frame(x,y)->temp
+simple_reg <- lm(y~x, data=temp)
+
+p2<-data.frame(y_truth = y, pred = predict(simple_reg)) %>% 
+  mutate(residual = y_truth-pred) %>% 
+  ggplot(aes(x=pred, y=residual))+
+  geom_point()+
+  geom_smooth()+
+  geom_hline(yintercept = 0, linetype = "dashed")+
+  ggtitle("residual plot")
+
+library(patchwork)
+p2
+```
+
+
+```{r}
+simple_reg <- lm(y~x, data=temp)
+poly_reg <- lm(y~x+I(x^2), data= temp)
+anova(simple_reg , poly_reg)
+```
+
+
+
+```{r}
+multi_reg <- lm(ach ~ . , data=data)
+summary(multi_reg)
+```
+
+### Linearity
+
+ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระจะต้องเป็นความสัมพันธ์เชิงเส้นตรง วิธีการหนึ่งที่มีประโยชน์มากในการตรวจสอบ linearity assumption ระหว่างตัวแปรตามกับตัวแปรอิสระหลาย ๆ ตัว คือการพิจารณา error ของโมเดล เรียกการวิเคราะห์นี้ว่า การวิเคราะห์เศษเหลือ (residual analysis)
+
+เศษเหลือคืออะไร???
+
+กำหนดให้ สมการถดถอยที่ประมาณได้มีสมการเป็น $\hat{y} = b0+b1x1+b2x2+...+bpxp$
+
+$$
+e_i = y_i - \hat{y}_i
+$$
+
+```{r}
+## ค่าทำนายของ y จาก multiple regression ข้างต้น (y_hat)
+predict(multi_reg) 
+
+## ค่าจริงของ y
+data$ach
+
+## เศษเหลือจากการทำนาย y ด้วย yhat
+e = data$ach - predict(multi_reg)
+
+data.frame(ach_truth = data$ach, pred = predict(multi_reg), e = e) %>% 
+  mutate(std_res = e-mean(e)/sd(e)) %>% 
+  ggplot(aes(x=pred, y=std_res))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype = "dashed")+
+  ggtitle("Residual plot")
+```
+
+```{r}
+residuals(multi_reg)
+```
+
+
+### Normality
+
+ข้อตกลงเบื้องต้นระบุอยู่บน noise ของโมเดล แสดงว่าถ้าต้องการตรวจสอบว่าโมเดลมีข้อตกลงเบื้องต้นนี้จริง ๆ ก็จะตรวจสอบผ่าน residual ได้เหมือนกัน
+
+```{r}
+p1<-residuals(multi_reg) %>% 
+  data.frame() %>% 
+  rename(residual = 1) %>% 
+  ggplot(aes(x=residual))+
+  geom_histogram()
+
+p2<-residuals(multi_reg) %>% 
+  data.frame() %>% 
+  rename(residual = 1) %>% 
+  ggplot(aes(sample = residual)) +
+  geom_qq()+
+  geom_qq_line()
+p1/p2
+```
+
+```{r}
+residuals(multi_reg) %>% shapiro.test()
+```
+
+### homogeneity of variance
+
+ความแปรปรวนของความคลาดเคลื่อนสุ่มมีความเป็นเอกพันธ์กันระหว่างกลุ่มของตัวแปรอิสระ
+
+
+### homoscedasticity
+
+ความแปรปรวนของความคลาดเคลื่อนสุ่มมีความเป็นเอกพันธ์ในทุกค่า x ที่เป็นไปได้ (ในทุกระดับของค่าทำนายที่เป็นไปได้)
+
+```{r}
+data.frame(ach_truth = data$ach, pred = predict(multi_reg), e = e) %>% 
+  mutate(std_res = e-mean(e)/sd(e)) %>% 
+  ggplot(aes(x=pred, y=std_res))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype = "dashed")+
+  ggtitle("Residual plot")
+```
+
+$$
+e_i = y_i - \hat{y}_i
+$$
+
+อยากหาความแปรปรวนของความคลาดเคลื่อนสุ่ม
+
+$$
+var(e) = \frac{\sum(e^2)}{n-1}
+$$
+
+
+
+
+```{r}
+data.frame(ach_truth = data$ach, pred = predict(multi_reg), e = e) %>% 
+  bind_cols(data) %>% 
+  mutate(e2 = e^2) %>%  ## -- sufficient estimator of residual variance
+  ggplot(aes(x=pred, y=e2))+
+  geom_point()+
+  geom_smooth()
+```
+
+Breuch-Pagan Test
+
+```{r}
+data.frame(ach_truth = data$ach, pred = predict(multi_reg), e = e) %>% 
+  bind_cols(data) %>% 
+  mutate(e2 = e^2)  %>% 
+  with(lm(e2 ~ pred)) %>% summary()
+```
+
+White's Test
+
+```{r}
+data.frame(ach_truth = data$ach, pred = predict(multi_reg), e = e) %>% 
+  bind_cols(data) %>% 
+  mutate(e2 = e^2)  %>% 
+  with(lm(e2 ~ pred + I(pred^2))) %>% summary()
+```
+
+### No Multicollinearity
+
+ในการวิเคราะห์การถดถอยใช้การประมาณค่าพารามิเตอร์ด้วยระบบสมการหลายตัวแปร (simutaneous equation)
+
+ตัวแปรอิสระในโมเดลจะต้องไม่มีความสัมพันธ์ิเชิงเส้นตรงต่อกันมากเกินไป การตรวจสอบข้อตกลงเบื้องต้นนี้สามารถทำได้หลายวิธีการ แต่ละวิธีการก็จะ based on การวิเคราะห์สหสัมพันธ์ระหว่างตัวแปรอิสระ
+
+- correlation matrix ระหว่างตัวแปรอิสระ โดยปกติจะคัดกรองตัวแปรอิสระที่มีแนวโน้มจะมีปัญหาจาก cut-off ของค่า correlation ที่สูงเกินไป 0.7,  0.8, 0.9
+
+- ใช้ดัชนีที่เรียกว่าค่า VIF (variance inflation factor) 
+
+$$
+VIF_j = \frac{1}{1-R^2_j}
+$$
+
+$R^2_j$ เป็นค่า R2 ที่คำนวณจากสมการถดถอย โดยตัวแปรตามเป็นตัวแปรอิสระตัวที่ j
+
+โดยปกติการประเมินว่าในโมเดลการวิเคราะห์มีปัญหา multicollinearity หรือไม่จาก vif ก็จะมี cut-off ที่มาประกอบ 2, 4, 10, 20, ...
+
+```{r}
+library(car)
+## vif ach model
+vif(multi_reg)
+```
+
+
+### No influential outliers
+
+ค่าผิดปกติ
+
+- anomaly data ---> anomaly detection
+
+- outlier ค่าสังเกตที่มีความแตกต่างไปจากค่าสังเกตโดยปกติ 
+
+  - no influential outlier
+  
+  - influential outlier
+
+
+```{r}
+gapminder %>% 
+  filter(year=="2007") %>% 
+  ggplot(aes(x = gdpPercap))+
+  geom_boxplot()
+```
+
+
+
+```{r}
+library(gapminder)
+library(ggforce)
+
 gapminder %>% 
   filter(year=="2007") %>% 
   ggplot(aes(x = gdpPercap, y=lifeExp))+
@@ -518,11 +736,18 @@ gapminder %>%
                color = 'maroon', linetype = "dashed", fill = NA)
 ```
 
+
+
+
 -   Leverage value คือ combination ของค่าสังเกตของตัวแปรอิสระที่ผิดปกติ กล่าวคือเป็น outlier ใน feature space ค่า leverage ไม่จำเป็นต้องมีผลต่อค่าของเส้นถดถอยเสมอไป มันเพียงแค่บอกว่าจุดนั้นอยู่ห่างไกลและมีศักยภาพที่จะส่งผลกระทบต่อโมเดล
 
 $$
 h_{ii} = x_i^T (X^T X)^{-1} x_i
-$$ ค่า $h_{ii}$ มีค่าอยู่ในช่วง \[0,1\] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
+$$
+
+ค่า $h_{ii}$ 
+
+มีค่าอยู่ในช่วง \[0,1\] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
 
 -   Influential observation คือค่าสังเกตที่มีอิทธิพลต่อการประมาณค่าพารามิเตอร์ในโมเดลมากกว่าปกติ การประเมินค่าสังเกตประเภทนี้ทำได้ด้วยสถิติ Cook's distance
 
@@ -548,9 +773,66 @@ p2 <- gapminder %>%
 p1/p2
 ```
 
+
+
+
+### กิจกรรมตรวจสอบข้อตกลงเบื้องต้น
+
+```{r}
+teacher_data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/regression/TeacherSalaryData.csv")
+```
+
+```{r}
+teacher_reg <- teacher_data %>% 
+  rename(id = 1) %>% 
+  with(lm(salary ~. -id, data = .))
+plot(teacher_reg)
+```
+
+
+#### linearity
+
+```{r}
+data.frame(
+pred = predict(teacher_reg),
+res = residuals(teacher_reg)) %>% 
+  ggplot(aes(x=pred, y=res))+
+  geom_point()+
+  geom_smooth()+
+  geom_hline(yintercept = 0, linetype = "dashed")
+
+data.frame(
+pred = predict(teacher_reg),
+res = residuals(teacher_reg)) %>% 
+  ggplot(aes(sample = res))+
+  geom_qq()+
+  geom_qq_line()
+
+data.frame(
+pred = predict(teacher_reg),
+res = residuals(teacher_reg)) %>% 
+  ggplot(aes(x = res))+
+  geom_histogram()
+```
+
+
+```{r}
+multi_reg %>% plot()
+teacher_reg %>% plot()
+cooks.distance(teacher_reg) %>% data.frame() %>% 
+  rename(cook = 1) %>% 
+  filter(cook > 0.05)
+
+teacher_data %>% 
+  rename(id = 1) %>% 
+  filter(id %in% c(250,331))
+```
+
+
+
 ## Regression Remedials
 
-1.  Linearity
+###  Linearity
 
 -   เพิ่ม polynomial หรือ interaction terms เพื่อเพิ่มความซับซ้อนของโมเดล
 
@@ -558,27 +840,217 @@ p1/p2
 
 -   ใช้ Multivariate Adaptive Regression Splines (MARs) Generalized Additive Models (GAMs) เพื่อจับความสัมพันธ์ที่ไม่เป็นเชิงเส้น
 
-2.  Normality
 
--   แปลงข้อมูล (log-transformation, square root, Box-Cox) เพื่อให้ residuals เป็นปกติมากขึ้น
 
--   ใช้ robust regression เพื่อทนทานต่อผลกระทบของ outliers
+### Normality
 
--   เพิ่มตัวแปรอิสระหรือเทอมของตัวแปรอิสระที่อาจหายไปเพื่อปรับปรุงการกระจายของ residuals
+- โดยส่วนเกือบใหญ่ปัญหา nonnormality มักเกิดจาก heteroscedasticity
 
-3.  Homoscedasticity
+- ปัญหา heteroscedasticity ส่วนนึงที่เกือบใหญ่ เกิดจาก model ที่เลือกไม่สอดคล้องกับธรรมชาติของข้อมูล เช่น ลืม interaction term ที่สำคัญในโมเดล
+
+- เพิ่มตัวแปรอิสระหรือเทอมของตัวแปรอิสระที่อาจหายไปเพื่อปรับปรุงการกระจายของ residuals
+
+- แปลงข้อมูล (log-transformation, square root, Box-Cox) เพื่อให้ residuals เป็นปกติมากขึ้น
+
+- ใช้ robust regression เพื่อทนทานต่อผลกระทบของ outliers
+
+- bootstraping regression
+
+#### log-transformation
+
+ตัวอย่างต่อไปนี้ทดลอง take-log ให้ตัวแปรตามคือ salary ในชุดข้อมูล teacher salary ลองพิจารณาเปรียบเทียบผลลัพธ์ที่ได้
+
+```{r}
+### log-transformation
+teacher_reg_log <- teacher_data %>% 
+  rename(id = 1) %>% 
+  mutate(log_salary = log(salary)) %>% 
+  with(lm(log_salary ~. -id, data = .))
+
+teacher_reg %>% summary()
+teacher_reg_log %>% summary()
+```
+
+```{r}
+teacher_reg %>% plot(main = "Original Model")
+teacher_reg_log %>% plot(main = "Log-Transformed Model")
+```
+
+#### Box-Cox Transformation
+
+ฟังก์ชันนี้จะพยายามช่วยเราหา lambda (power parameter) ที่ทำให้ log-likelihood ของโมเดลมีค่าสูงสุด
+
+```{r}
+### Box-Cox transformation
+library(MASS)
+### คำนวณ output
+boxcox_res <- boxcox(teacher_reg,  data=teacher_data %>% rename(id = 1),
+       lambda = seq(-2,2,0.1)) ## box-cox power parameter
+### ประเมินค่า lambda ที่ทำให้ log-likelihood มีค่าสูงสุด
+data.frame(lambda = boxcox_res$x, 
+           log_likelihood = boxcox_res$y) %>% 
+filter(log_likelihood == max(log_likelihood))
+```
+เมื่อได้ค่า lambda จะนำค่า lambda นี้ไปใช้ในการ transform ตัวแปรตาม เราสามารถเขียนสูตรเองก็ได้ ดูสูตรจากในนี้ --> [https://www.statisticshowto.com/probability-and-statistics/normal-distributions/box-cox-transformation/](https://www.statisticshowto.com/probability-and-statistics/normal-distributions/box-cox-transformation/)
+
+หรือใช้ฟังก์ชันสำเร็จรูปช่วยในการคำนวณจาก library-car
+
+```{r fig.height = 6}
+library(car)
+par(mfrow=c(2,1))
+teacher_data$salary %>% hist()
+car::bcPower(teacher_data$salary, lambda = -0.8282828) %>% hist()
+```
+ลองไป fit multiple regression ใหม่
+
+```{r}
+teacher_reg_bc <- teacher_data %>% 
+  rename(id=1) %>% 
+  mutate(salary_bc = car::bcPower(teacher_data$salary, lambda = -0.8282828)) %>% 
+  dplyr::select(-salary) %>% 
+  with(lm(salary_bc ~. -id, data=.))
+teacher_reg_bc %>% summary()
+teacher_reg_bc %>% plot()
+```
+
+- จะเห็นว่าปัญหาหายไปเกือบหมดนอกจาก nonnormality แล้วยังช่วยแก้ปัญหา heteroscedasticity อีกด้วย สะท้อนว่าปัญหาทั้งสองมีความสัมพันธ์กันจริง ๆ 
+
+- แต่การแปลผล coefficient ของ regression ให้มีความหมายทำได้ค่อนข้างยาก
+
+#### เพิ่ม interaction term ในโมเดล
+
+บางครั้งปัญหา nonnormality เกิดจากการละเมิดข้อตกลงเบื้องต้นข้ออื่นโดยเฉพาะ heteroscedasticity และสาเหตุของการเกิด heteroscedasticity บางครั้งก็เกิดจาก misspecification ของโมเดล เช่น การละเลย iteraction term ที่สำคัญ ดังนั้นหากมีเหตุผลหรือข้อมูล support การเพิ่ม interaction term ที่เหมาะสมอาจช่วยให้โมเดลมีคุณสมบัติที่ดีขึ้น
+
+รูปด้านล่างแสดงให้เห็นว่าการเพิ่ม interaction มีแนวโน้มจะลดปัญหา heteroscedasticity ได้บ้าง เพราะเรามีโมเดลที่ซับซ้อนขึ้น และมีความสามารถในการทำนาย/อธิบายหน่วยข้อมูลคืออาจารย์มหาวิทยาลัยที่มีประสบกาณ์ทำงานสูงได้ดีขึ้นบ้างแต่ก็ไม่ได้ดีมากในกรณีนี้
+
+```{r}
+teacher_data %>% 
+  ggplot(aes(x=yrs.since.phd, y=salary))+
+  geom_point()+
+  geom_smooth(method= "lm", aes(col = discipline))
+```
+
+ทดลองใส่ interaction term ลงในโมเดล อย่างไรก็ตามการแก้ปัญหาในกรณีนี้ไม่ได้มีผลอะไรมากเท่าไหร่
+
+ืnote: การวิเคราะห์ด้านล่างเน้นโชว์ให้ดูความแตกต่างระหว่างโมเดลที่มีกับไม่มี interaction ดังนั้นการใส่ตัวแปรแบบนี้ไม่ได้ makesense 
+
+```{r}
+## witjout interaction
+teacher_data %>% 
+  rename(id = 1) %>% 
+  with(lm(salary ~ yrs.since.phd + discipline + rank+sex -id, data = .)) %>% plot(3)
+
+## with interaction
+teacher_data %>% 
+  rename(id = 1) %>% 
+  with(lm(salary ~ yrs.since.phd*discipline*rank*sex -id, data = .)) %>% plot(3)
+```
+
+
+### Homoscedasticity
 
 -   แปลงค่าตัวแปรตาม (เช่น log, square root) เพื่อลดความแปรปรวน
 
--   ใช้ Weighted Least Squares (WLS) เพื่อปรับน้ำหนักให้กับจุดข้อมูลที่มีความแปรปรวนต่างกัน
+- ควรหาสาเหตุของการละเมิด hetero ว่าเกิดจาก misspecification ส่วนไหนรึเปล่า ---> ลืม interaction term ที่สำคัญ
+
+-   ใช้ Weighted Least Squares (WLS), Generalized Least Squares (GLS), เพื่อปรับน้ำหนักให้กับจุดข้อมูลที่มีความแปรปรวนต่างกัน
 
 -   ใช้ heteroscedasticity-robust standard errors เพื่อปรับ standard errors ของโมเดล
 
-4.  No Influential Ouliers
+#### Robust Standard Error
 
--   ลบหรือปรับค่าสังเกตที่ถูกระบุว่าเป็น influential outiers
+ดังที่ได้กล่าวไว้ในคาบเรียนว่า ปัญหา nonnormality และ heteroscedasticity มีความสัมพันธ์กันและทั้งสองปัญหามีผลกระทบต่อการอนุมานเชิงสถิติของโมเดล ได้แก่ การทดสอบสมมุติฐาน และการประมาณช่วงความเชื่อมั่นของค่าพารามิเตอร์ต่าง ๆ 
 
--   ใช้ robust regression
+- nonnormality อาจทำให้ sampling distribution ของสถิติทดสอบ t-test และ F-test สำหรับ regression รวมทั้ง linear model ไม่เป็นไปตามทฤษฎีควบคุม type I error ที่ต้องการไม่ได้
+
+- heteroscedasticity ทำให้การประมาณค่า MSE ของโมเดลคลาดเคลื่อนค่าประมาณที่ได้ไม่เป็นตัวแทนของความแปรปรวรของความคลาดเคลื่อนสุ่มของโมเดล ค่า MSE เป็นส่วนประกอบสำคัญในการประมาณค่า standard error ของค่าประมาณพารามิเตอร์ในโมเดล ปัญหาดังกล่าวจึงกระทบโดยตรงต่อการอนุมานเชิงสถิติ
+
+การแก้ปัญหา heteroscedasticity ในเชิงที่มองว่ามันทำให้การประมาณค่า standard error คลาดเคลื่อนคือการใช้สูตรการประมาณ standard error ใหม่เราเรียกมันว่า robust standard error เมื่อประมาณ SE ได้ดีขึ้น การอนุมานภายใต้การละเมิดข้อตกลงเบื้องต้นนี้ก็จะมีความถูกต้องมากขึ้นไปด้วย
+
+การอนุมานเชิงสถิติด้วย robust standard error ใน R สามารถทำได้ดังนี้
+
+```{r}
+##install.packages("sandwich")
+##install.packages("lmtest")
+library(sandwich)
+library(lmtest)
+?coef.coeftest ## <-- ลองเรียก help แล้วอ่านดู ตัวประมาณ robust SE มักเรียกว่า sandwich estimator เพราะมีการสอดไส้ในสูตรการประมาณ SE เหมือนทำ sandwich
+?vcovHC ## <-- อ่านอันนี้ด้วย
+teacher_reg %>% summary()
+teacher_reg %>% coeftest(., vcov = vcovHC(., type = "HC1"))
+```
+
+ผลการวิเคราะห์ข้างต้นจะเห็นว่าเมื่อใช้ robust SE จะมีการปรับการคำนวณทำให้ SE ที่ได้แตกต่างออกไป นัยสำคัญที่วิเคราะห์ได้ก็จะแตกต่างไปจากเดิม
+
+การแก้ปัญหาด้วยวิธีนี้เป็นการแก้ปัญหาเฉพาะเจาะจงไม่ได้แก้ปัญหาอย่างเป็นระบบหรือที่สาเหตุของปัญหาอย่างแท้จริง โดยปกติมักใช้เมื่อเราจะไม่วิเคราะห์โมเดลอื่นแล้ว และวัตถุประสงค์หลักเป็นการอนุมานเกี่ยวกับพารามิเตอร์ของโมเดลเป็นหลัก
+
+
+
+###  Multicollinearity
+
+ปัญหานี้เกิดเมื่อตัวแปรอิสระในโมเดลมีความสัมพันธ์ซึ่งกันและกันสูงเกินไป ส่งผลต่อความเสถียรหรือความน่าเชื่อถือของค่าพารามิเตอร์ regression coefficient ในโมเดล รวมไปถึงการอนุมานเชิงสถิติด้วย ปัญหานี้ร้ายแรงหากตรวจพบควรแก้ไขให้ได้
+
+การแก้ปัญหาสามารถทำได้หลายวิธีการ ได้แก่
+
+#### ลบตัวแปรอิสระที่มีค่า VIF มากเกินไป และส่งผลกระทบต่อการวิเคราะห์
+
+ตัวอย่างด้านล่างแสดงการลบตัวแปรออกจากโมเดลจะเห็นว่าค่าพารามิเตอร์ที่เกี่ยวข้องมีการเปลี่ยนแปลงอย่างมากเมื่อมีการลบตัวแปรออกไป สะท้อนปัญหา multicollinearity ที่ค่อนข้างรุนแรง
+
+
+```{r}
+teacher_reg_no_phd <- lm(salary ~ . -yrs.since.phd, data = teacher_data %>% 
+                           dplyr::select(-1))
+teacher_reg_no_ser <- lm(salary ~ . -yrs.service, data = teacher_data %>% 
+                           dplyr::select(-1))
+summary(teacher_reg)
+summary(teacher_reg_no_phd)
+summary(teacher_reg_no_ser)
+vif(teacher_reg_no_ser)
+```
+
+อย่างไรก็ตาม regression coeffcient ของ yrs.service ยังมีค่าติดลบ ข้อสังเกตนี้สะท้อนว่าอาจมีปัญหาอื่นเกี่ยวกับการระบุโมเดลที่ผิดพลาดได้ เช่น อาจลืมตัวแปรอิสระที่สำคัญ หรือ interaction term เป็นต้น
+
+
+#### ทำ feature extraction รวม/ผสาน ตัวแปรอิสระที่มีแนวโน้มจะเกิดปัญหา multi เข้าด้วยกันเป็นตัวแปรใหม่
+
+วิธีการนี้คือการสร้างตัวแปรใหม่ที่รวมตัวแปรอิสระที่มีความสัมพันธ์สูง ๆ เข้าด้วยกัน เช่น การหาค่าเฉลี่ย การบวก หรือการใช้อัลกอริทึมเช่น PCA เข้ามาช่วย เรียกกระบวนการนี้รวม ๆ ว่าการสกัดตัวแปร (feature extraction) 
+
+การรวมตัวแปรด้วยตัวผู้วิเคราะห์ควรพิจารณาเหตุผลในเชิงทฤษฎี หรืออย่างน้อยก็ดูว่าเมื่อนำตัวแปรสองตัวหรือมากกว่านั้นมารวมกัน จะแปลความหมายของตัวแปรใหม่ได้อย่างไร เช่น เงินเดือนพ่อ + เงินเดือนแม่ = รายได้ต่อเดือนของครอบครัว หรือ จำนวนครู/ห้องเรียน = อัตราส่วนครูต่อห้องเรียน
+
+ส่วนการรวมด้วยอัลกอริทึม เช่น PCA การแปลความหมายตัวแปรใหม่ (องค์ประกอบหลัก) จะพิจารณาจากค่าสถิติ การใช้ PCA ในการวิเคราะห์ regression จะเรียกโมเดลการวิเคราะห์นี้ว่า PCR หรือ Principal component regression นอกจากนี้ยังมีวิธีการอื่นในคล้ายกับ PCR เช่น PLS == partial least square regression อีกด้วย
+
+การทำ PCR สามารถทำได้ง่าย ๆ คือ
+
+1. ทำ PCA กับตัวแปรอิสระทั้งหมด แล้วคัดเลือกองค์ประกอบหลักที่จำเป็น
+
+2. แปลความหมายองค์ประกอบหลักที่เลือกมาให้ได้
+
+3. ประมาณ factor score หรือ component score แล้วเอาคะแนนดังกล่าวไปเป็นตัวแปรอิสระใน regression model
+
+
+
+### No Influential Ouliers
+
+อย่างที่บอกในห้องเรียนว่า outlier ที่มีอิทธิพลสูงอาจบิดเบือนการประมาณค่าสัมประสิทธิ์ต่าง ๆ ในการวิเคราะห์การถดถอย การวิเคราะห์และตรวจจับค่าสังเกตที่มีอิทธิพลจะช่วยให้ผู้วิเคราะห์ทราบสถานะของค่าสังเกตในชุดข้อมูลว่า 
+
+1. ค่าใดมีแนวโน้มจะเป็นค่าผิดปกติ (ผิดปกติใน y หรือ x)
+
+2. ค่าผิดปกติใดมีอิทธิพลต่อการประมาณในโมเดล
+
+เมื่อคัดกรองค่าผิดปกติที่มีอิทธิพลได้แล้ว ผู้วิเคราะห์ควรลองวิเคราะห์เปรียบเทียบว่าการมี หรือไม่มีค่าสังเกตที่ผิดปกติดังกล่าว ทำให้การประมาณค่าพารามิเตอร์ในโมเดลหรือประสิทธิภาพการทำนายของโมเดลมีการเปลี่ยนแปลงไปมากแค่ไหน มีนัยสำคัญต่อการวิเคราะห์หรือไม่ แล้วจึงพิจารณาว่าจะแก้หรือไม่แก้ปัญหาดังกล่าว
+
+การแก้ปัญหาค่าผิดปกติที่มีอิทธิพลนี้สามารถทำได้หลัก ๆ อาจจะ 3 วิธีการ
+
+1. ลบหรือปรับค่าสังเกตที่ถูกระบุว่าเป็น influential outiers อันนี้ง่าย ๆ คัดกรองค่าที่มี cook's distance สูงเกินเกณฑ์ที่กำหนด และลบออก
+
+2. ทำ bining กล่าวคือหาก influential outlier ที่เกิดขึ้น เกิดขึ้นในตัวแปรอิสระเราอาจแปลงค่าตัวแปรอิสระเชิงปริมาณให้เป็นตัวแปรจัดประเภท โดยการแบ่งค่าที่เป็นไปได้ออกเป็นอันครภาคชั้น วิธีการนี้ช่วยลดผลกระทบของ influential outlier ได้อย่างมีนัยสำคัญ
+
+3. มองค่าผิดปกติดังกล่าวเป็น missing value จากนั้น impute มันด้วย algorithm ที่เหมาะสม
+
+4. ใช้ Robust Regression เช่น quantile regression ที่มีความไวต่อค่าผิดปกติน้อยกว่า
+
+... อื่น ๆ 
+
 
 ## Model Selection
 
