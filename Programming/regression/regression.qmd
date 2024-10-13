@@ -2,6 +2,7 @@
 title: "Regression"
 format: html
 toc: true
+toc-depth: 4
 message: false
 warning: false
 editor: visual
@@ -569,10 +570,10 @@ $$
 
 ```{r}
 ## ค่าทำนายของ y จาก multiple regression ข้างต้น (y_hat)
-predict(multi_reg) 
+predict(multi_reg) %>% head()
 
 ## ค่าจริงของ y
-data$ach
+data$ach %>% head()
 
 ## เศษเหลือจากการทำนาย y ด้วย yhat
 e = data$ach - predict(multi_reg)
@@ -586,7 +587,8 @@ data.frame(ach_truth = data$ach, pred = predict(multi_reg), e = e) %>%
 ```
 
 ```{r}
-residuals(multi_reg)
+## เราคำนวณ residuals ของโมเดลได้ง่าย ๆ ด้วย residuals()
+residuals(multi_reg) %>% hist()
 ```
 
 
@@ -710,7 +712,9 @@ vif(multi_reg)
   - influential outlier
 
 
-```{r}
+การตรวจสอบ outlier แบบ univaraite อาจไม่สามารถตรวจจับ outlier ในหลายมิติได้
+
+```{r fig.height = 3}
 gapminder %>% 
   filter(year=="2007") %>% 
   ggplot(aes(x = gdpPercap))+
@@ -725,8 +729,11 @@ library(ggforce)
 
 gapminder %>% 
   filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
   ggplot(aes(x = gdpPercap, y=lifeExp))+
   geom_point()+
+  geom_text(data = . %>% filter(lifeExp < 60 & gdpPercap > 8000), aes(label = id), 
+            nudge_x = 1000, nudge_y = 1, size = 3)+
   geom_smooth()+
   geom_ellipse(data = gapminder %>% 
                         filter(year=="2007") %>% 
@@ -737,7 +744,7 @@ gapminder %>%
 ```
 
 
-
+ดัชนีที่สำคัญในการตรวจจับ outlier สำหรับการวิเคราะห์ regression และโมเดลในกลุ่มเดียวกันนี้มี 3 ตัวได้แก่ leverage value สำหรับตรวจสอบค่าผิดปกติใน x , standardized residuals สำหรับตรวจสอบค่าผิดปกติใน y และ cook's distance สำหรับตรวจสอบค่าผิดปกติที่มีอิทธิพล
 
 -   Leverage value คือ combination ของค่าสังเกตของตัวแปรอิสระที่ผิดปกติ กล่าวคือเป็น outlier ใน feature space ค่า leverage ไม่จำเป็นต้องมีผลต่อค่าของเส้นถดถอยเสมอไป มันเพียงแค่บอกว่าจุดนั้นอยู่ห่างไกลและมีศักยภาพที่จะส่งผลกระทบต่อโมเดล
 
@@ -745,9 +752,7 @@ $$
 h_{ii} = x_i^T (X^T X)^{-1} x_i
 $$
 
-ค่า $h_{ii}$ 
-
-มีค่าอยู่ในช่วง \[0,1\] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
+ค่า $h_{ii}$ มีค่าอยู่ในช่วง \[0,1\] ถ้ามีค่าใกล้ 1.0 แสดงว่าค่าสังเกตของตัวแปรอิสระนั้นมีแนวโน้มอยู่ใกล้จากแนวโน้มส่วนใหญ่
 
 -   Influential observation คือค่าสังเกตที่มีอิทธิพลต่อการประมาณค่าพารามิเตอร์ในโมเดลมากกว่าปกติ การประเมินค่าสังเกตประเภทนี้ทำได้ด้วยสถิติ Cook's distance
 
@@ -755,24 +760,68 @@ $$
 D_i = \frac{(e_i^2)}{p \cdot MSE} \left( \frac{h_{ii}}{(1 - h_{ii})^2} \right)
 $$
 
-```{r fig.height=8}
-library(patchwork)
-p1 <- gapminder %>% 
-  filter(year=="2007") %>% 
-  ggplot(aes(x = gdpPercap, y=lifeExp))+
-  geom_point()+
-  geom_smooth()
 
-p2 <- gapminder %>% 
-  filter(year=="2007") %>% 
-  filter(gdpPercap < 10000) %>%
-  ggplot(aes(x = gdpPercap, y=lifeExp))+
-  geom_point()+
-  geom_smooth()
-  
-p1/p2
+จากชุดข้อมูล `gapminder` ข้างต้น
+
+```{r}
+fit1 <- lm(lifeExp ~ gdpPercap, data = gapminder %>% filter(year=="2007"))
+plot(fit1, 5)
 ```
 
+จะเห็นว่าไม่พบว่ามีค่าผิดปกติที่มีอิทธิพลต่อประมาณค่าพารามิเตอร์ และค่าผิดปกติมากที่สุดในโมเดลเป็นค่าผิดปกติใน x แล้วก็ไม่ใช่ค่าผิดปกติที่เรามองเห็นด้วยสายตาในตอนแรกด้วย
+
+
+```{r fig.height=9}
+library(broom)
+### all observation
+p1 <- gapminder %>% 
+  filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_text(data = . %>% filter(id %in% c(114, 96, 72)), aes(label = id), 
+            nudge_x = 1000, nudge_y = 1, size = 3)+
+  geom_smooth(method = "lm")
+
+## ตัดค่าที่ cook's distance สูงออก
+p2 <- gapminder %>% 
+  filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
+  filter(!id %in% c(114, 96, 72)) %>% 
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+p3<- gapminder %>% 
+  filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
+  filter(!id %in% c(14,41,46,118)) %>% 
+  ggplot(aes(x = gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+
+gapminder %>% 
+  filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
+  with(lm(lifeExp ~ gdpPercap, data = .)) %>% glance()
+
+gapminder %>% 
+  filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
+  filter(!id %in% c(114, 96, 72)) %>% 
+  with(lm(lifeExp ~ gdpPercap, data = .)) %>% glance()
+
+gapminder %>% 
+  filter(year=="2007") %>% 
+  rownames_to_column("id") %>% 
+  filter(!id %in% c(14,41,46,118)) %>% 
+  with(lm(lifeExp ~ gdpPercap, data = .)) %>% glance()
+
+```
+
+
+ผลการวิเคราะห์จะเห็นว่าการตัดค่าผิดปกติทั้งที่พิจารณาจากค่าสถิติ และพิจารณาจากสายตาไม่ได้ทำให้ผลการวิเคราะห์การถดถอยแตกต่างออกไปจากเดิมมากนัก ซึ่งสอดคล้องกับผลการวิเคราะห์ด้วย Cook's distance ที่ไม่พบค่าผิดปกติที่มีอิทธิพลต่อการประมาณค่าพารามิเตอร์
 
 
 
@@ -944,6 +993,30 @@ teacher_data %>%
 teacher_data %>% 
   rename(id = 1) %>% 
   with(lm(salary ~ yrs.since.phd*discipline*rank*sex -id, data = .)) %>% plot(3)
+```
+
+#### Bootstrap Regression
+
+![Bootstraping Concept](https://bookdown.org/jgscott/DSGI/images/samplingdistribution_schematic.png)
+[อ่านเพิ่มเติมได้ที่นี่](https://bookdown.org/jgscott/DSGI/the-bootstrap.html)
+
+
+เราสามารถทำ bootstrap regression ได้ง่าย ๆ ด้วย library-car ดังนี้
+
+เริ่มต้นจาก `teacher_reg` ที่มีปัญหา nonnormality
+
+
+```{r}
+library(car)
+##?Boot() <--- อ่านนิดนึง
+## เราต้องเขียนโมเดลใหม่เพราะ Boot() ไม่รองรับการกำหนดโมเดลที่ใช้ . ทั้งหลาย
+teacher_fit_forboot <- lm(salary~rank+discipline+yrs.since.phd+yrs.service+sex, 
+                          data = teacher_data)
+fit_boot <- Boot(teacher_fit_forboot, 
+                 R = 5000) ## กำหนดจำนวน bootstrap samples
+hist(fit_boot) ## bootsrap distribution จะเห็นว่าเราสร้าง sampling distribution เองได้จากการสุ่มซ้ำแบบใส่คืน
+summary(fit_boot)
+confint(fit_boot) ## เราสามารถใช้ confidence interval ทดสอบสมมุติฐานหรือประมาณค่าได้
 ```
 
 
