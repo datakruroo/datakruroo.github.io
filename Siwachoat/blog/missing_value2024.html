@@ -55,7 +55,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -197,19 +217,29 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#ขนตอนการวเคราะหขอมลทมคาสญหาย" id="toc-ขนตอนการวเคราะหขอมลทมคาสญหาย" class="nav-link" data-scroll-target="#ขนตอนการวเคราะหขอมลทมคาสญหาย">ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย</a></li>
-  <li><a href="#กลไกการเกดคาสญหาย" id="toc-กลไกการเกดคาสญหาย" class="nav-link" data-scroll-target="#กลไกการเกดคาสญหาย">กลไกการเกิดค่าสูญหาย</a>
+  <li><a href="#คาสญหาย" id="toc-คาสญหาย" class="nav-link active" data-scroll-target="#คาสญหาย">ค่าสูญหาย</a></li>
+  <li><a href="#สาเหตของการสญหายของขอมล" id="toc-สาเหตของการสญหายของขอมล" class="nav-link" data-scroll-target="#สาเหตของการสญหายของขอมล">สาเหตุของการสูญหายของข้อมูล</a>
   <ul class="collapse">
-  <li><a href="#missing-completely-at-random-mcar" id="toc-missing-completely-at-random-mcar" class="nav-link" data-scroll-target="#missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</a></li>
-  <li><a href="#missing-at-random-mar" id="toc-missing-at-random-mar" class="nav-link" data-scroll-target="#missing-at-random-mar">Missing at Random (MAR)</a></li>
-  <li><a href="#missing-not-at-random-mnar" id="toc-missing-not-at-random-mnar" class="nav-link" data-scroll-target="#missing-not-at-random-mnar">Missing Not at Random (MNAR)</a></li>
+  <li><a href="#ผใหขอมลหรอการวดคาสงเกต" id="toc-ผใหขอมลหรอการวดคาสงเกต" class="nav-link" data-scroll-target="#ผใหขอมลหรอการวดคาสงเกต">1. ผู้ให้ข้อมูลหรือการวัดค่าสังเกต</a></li>
+  <li><a href="#การยบรวมขอมลจากแหลงขอมลทหลากหลาย" id="toc-การยบรวมขอมลจากแหลงขอมลทหลากหลาย" class="nav-link" data-scroll-target="#การยบรวมขอมลจากแหลงขอมลทหลากหลาย">2. การยุบรวมข้อมูลจากแหล่งข้อมูลที่หลากหลาย</a></li>
+  <li><a href="#การเกบรวบรวมขอมลระยะยาว" id="toc-การเกบรวบรวมขอมลระยะยาว" class="nav-link" data-scroll-target="#การเกบรวบรวมขอมลระยะยาว">3. การเก็บรวบรวมข้อมูลระยะยาว</a></li>
   </ul></li>
+  <li><a href="#ประเภทของคาสญหาย" id="toc-ประเภทของคาสญหาย" class="nav-link" data-scroll-target="#ประเภทของคาสญหาย">ประเภทของค่าสูญหาย</a>
+  <ul class="collapse">
+  <li><a href="#การสญหายจากการออกแบบการเกบขอมลทไมเหมาะสม" id="toc-การสญหายจากการออกแบบการเกบขอมลทไมเหมาะสม" class="nav-link" data-scroll-target="#การสญหายจากการออกแบบการเกบขอมลทไมเหมาะสม">การสูญหายจากการออกแบบการเก็บข้อมูลที่ไม่เหมาะสม</a></li>
+  <li><a href="#การสญหายจากปรากฏการณสม" id="toc-การสญหายจากปรากฏการณสม" class="nav-link" data-scroll-target="#การสญหายจากปรากฏการณสม">การสูญหายจากปรากฏการณ์สุ่ม</a></li>
+  <li><a href="#การสญหายจากสาเหตเฉพาะ" id="toc-การสญหายจากสาเหตเฉพาะ" class="nav-link" data-scroll-target="#การสญหายจากสาเหตเฉพาะ">การสูญหายจากสาเหตุเฉพาะ</a></li>
+  </ul></li>
+  <li><a href="#ขนตอนการวเคราะหขอมลทมคาสญหาย" id="toc-ขนตอนการวเคราะหขอมลทมคาสญหาย" class="nav-link" data-scroll-target="#ขนตอนการวเคราะหขอมลทมคาสญหาย">ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย</a></li>
   <li><a href="#การสำรวจและระบคาสญหาย" id="toc-การสำรวจและระบคาสญหาย" class="nav-link" data-scroll-target="#การสำรวจและระบคาสญหาย">การสำรวจและระบุค่าสูญหาย</a>
   <ul class="collapse">
   <li><a href="#tabulating-missing-data" id="toc-tabulating-missing-data" class="nav-link" data-scroll-target="#tabulating-missing-data">Tabulating Missing data</a></li>
   <li><a href="#visualization-for-missing-data" id="toc-visualization-for-missing-data" class="nav-link" data-scroll-target="#visualization-for-missing-data">Visualization for Missing data</a></li>
   <li><a href="#การสำรวจคาสญหายสำหรบขอมลขนาดใหญ" id="toc-การสำรวจคาสญหายสำหรบขอมลขนาดใหญ" class="nav-link" data-scroll-target="#การสำรวจคาสญหายสำหรบขอมลขนาดใหญ">การสำรวจค่าสูญหายสำหรับข้อมูลขนาดใหญ่</a></li>
+  </ul></li>
+  <li><a href="#การแกปญหาคาสญหาย" id="toc-การแกปญหาคาสญหาย" class="nav-link" data-scroll-target="#การแกปญหาคาสญหาย">การแก้ปัญหาค่าสูญหาย</a>
+  <ul class="collapse">
+  <li><a href="#imputing-missing-values-in-recipe" id="toc-imputing-missing-values-in-recipe" class="nav-link" data-scroll-target="#imputing-missing-values-in-recipe">Imputing Missing Values in Recipe</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -247,57 +277,64 @@ window.Quarto = {
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>ที่ผ่านมาเรายังทำงานโดยไม่ได้เจอกับปัญหา missing value เท่าไหร่นัก อย่างไรก็ตามในสถานการณ์จริงปัญหา missing value เป็นปัญหาใหญ่เหมือนกัน และสามารถสร้างผลกระทบเชิงลบต่อโมเดลการวิเคราะห์ได้อย่างมาก ซึ่งส่งผลทั้งความตรงภายในและความตรงภายนอกของผลการวิเตราะห์</p>
-<p>การสูญหายของข้อมูลเป็นไปได้จากสาเหตุที่หลากหลาย ขึ้นอยู่กับบริบทหรือวิธีการเก็บรวบรวมข้อมูลที่ผู้วิจัยใช้ด้วย</p>
-<ul>
-<li><p>ใน survey ผู้ตอบอาจจะลืมตอบบาง item โดยบังเอิญ ไม่ตอบเพราะไม่รู้หรือไม่สนใจ ไม่ตอบเพราะไม่สะดวก หรือไม่ตอบเพราะไม่มีคำตอบที่ตรงกับตัวเลือกที่ต้องการ</p></li>
-<li><p>การเก็บรวบรวมข้อมูลผ่านระบบเช่น LMS บางตัวชี้วัดอาจมีข้อมูลขาดหายเพราะพฤติกรรมบางอย่างของนักเรียน เช่น ต้องการวัดระยะเวลาที่นักเรียนแต่ละคนใช้ในการทำ quiz หรือการบ้านที่มอบหมาย แต่นักเรียนไม่เข้ามาทำการบ้าน คะแนนค่านี้ก็จะเป็นค่าสูญหาย</p></li>
-<li><p>การเก็บรวบรวมข้อมูลระยะยาวที่จะต้องเก็บข้อมูลจากหน่วยข้อมูลเดียวกันหลาย ๆ ครั้ง หากระหว่างทางมีหน่วยข้อมูลออกจากระบบก็เกิดข้อมูลขาดหายได้เช่นกัน</p></li>
-<li><p>การเก็บข้อมูลจากฐานข้อมูลของหน่วยงานต่าง ๆ เช่น สพฐ. สทศ. สมศ. รวมทั้งหน่วยงานภาครัฐอื่น ๆ แล้วนำมารวมกันเพื่อดำเนินการวิเคราะห์ ก็มีโอกาสที่บางหน่วยข้อมูลขาดหายไปเนื่องจากความแตกต่างของการเก็บข้อมูลในแต่ละฐาน</p></li>
-<li><p>นอกจากนี้ยังมีสาเหตุอื่น ๆ อีกมากมาย</p></li>
-</ul>
+<section id="คาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="คาสญหาย">ค่าสูญหาย</h2>
+<p>ค่าสูญหาย (missing values) เป็นปัญหาทั่วไปที่มักพบได้เสมอในการวิเคราะห์ข้อมูล โดยเป็นสถานการณ์ที่ค่าสังเกตของตัวแปรบางตัว หรือหน่วยข้อมูลบางหน่วยมีการขาดหายไปจากชุดข้อมูล ซึ่งทำให้ชุดข้อมูลดังกล่าวไม่ได้มีข้อมูลที่ครบถ้วนสมบูรณ์</p>
 <p>อัลกอริทึมและโมเดลการวิเคราะห์ข้อมูลส่วนใหญ่มักมีข้อสมมุตินึงที่ผู้สอนส่วนใหญ่ก็มักไม่ได้กล่าวถึงคือ ข้อมูลที่นำมาวิเคราะห์จะต้องเป็นข้อมูลที่ไม่มีค่าสูญหาย (เรียกว่า complete data) อย่างไรก็ตามหากมองย้อนตอนที่เราวิเคราะห์ข้อมูลจริง ๆ มีโอกาสน้อยมากที่เราจะพบกับ complete data ดังกล่าว</p>
 <p>กระบวนการปกติที่เรามักใช้ในการจัดการข้อมูลสูญหายคือ</p>
 <ol type="1">
 <li><p>ลบหน่วยข้อมูลที่มีค่าสูญหายออกไปจากการวิเคราะห์ (listwise deletion)</p></li>
 <li><p>แทนค่าสูญหายด้วยค่าที่เหมาะสม</p></li>
 </ol>
-<p>ทั้งสองวิธีการผลลัพธ์สุดท้ายที่ได้คือข้อมูลสมบูรณ์เหมือนกัน (แต่ …)</p>
-<p>บทเรียนวันนี้เราจะพูดถึงวิธีการที่ใช้แก้ปัญหาค่าสูญหาย โดยจะพยายามกล่าวถึงหลาย ๆ วิธีทั้งวิธีการที่ผู้วิเคราะห์ทั่วไปมักนิยมใช้กัน และวิธีการสมัยใหม่ที่เหมาะสมกับการวิเคราะห์แต่ละวัตถุประสงค์</p>
+<p>ทั้งสองวิธีการผลลัพธ์สุดท้ายที่ได้คือข้อมูลสมบูรณ์เหมือนกัน แต่ในหลายกรณีให้ผลลัพธ์ที่แตกต่างกัน และมีประสิทธิภาพที่แตกต่างกันด้วย</p>
+<p>ถึงแม้ค่าสูญหายจะเหมือนเป็นปัญหาทั่วไปแต่ในหลายกรณีเมื่อมีค่าสูญหายเกิดขึ้นการตัดสินใจและดำเนินการที่ไม่เหมาะสมของผู้วิเคราะห์ล้วนมีแนวโน้มส่งผลกระทบเชิงลบต่อโมเดลการวิเคราะห์ไม่มากก็น้อย ผลกระทบดังกล่าวทำให้ความแม่นยำและความน่าเชื่อถือของผลการวิเคราะห์ลดน้อยลง การสำรวจ วิเคราะห์ และแก้ไขปัญหาค่าสูญหายจึงเป็นขั้นตอนจำเป็นที่ผู้วิเคราะห์จะต้องดำเนินการอย่างระมัดระวัง</p>
 </section>
-<section id="ขนตอนการวเคราะหขอมลทมคาสญหาย" class="level2">
-<h2 class="anchored" data-anchor-id="ขนตอนการวเคราะหขอมลทมคาสญหาย">ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย</h2>
-<p>การวิเคราะห์ข้อมูลเมื่อมีค่าสูญหายนั้นมีแนวทางหรือวิธีดำเนินงานที่หลากหลายขึ้นอยู่กับว่าเราอ้างอิงสำนักไหน นักสถิติหรือนักวิทยาการข้อมูลคนไหน กลุ่มไหน</p>
-<ul>
-<li><p>Little and Rubin (2002) &lt;– classic</p></li>
-<li><p>Allison (2001)</p></li>
-<li><p><a href="http://www.feat.engineering/">Khun, &amp; Johnson (2019)</a></p></li>
-</ul>
-<p>อย่างไรก็ตามแนวทางโดยทั่วไปที่เหมือนกันประกอบด้วย</p>
+<section id="สาเหตของการสญหายของขอมล" class="level2">
+<h2 class="anchored" data-anchor-id="สาเหตของการสญหายของขอมล">สาเหตุของการสูญหายของข้อมูล</h2>
+<p>การสูญหายของข้อมูลเป็นไปได้จากสาเหตุที่หลากหลาย ขึ้นอยู่กับบริบทหรือวิธีการเก็บรวบรวมข้อมูลที่ผู้วิจัยใช้ด้วย โดยอาจแจกแจงสาเหตุการสูญหายของข้อมูลได้ดังนี้</p>
+<section id="ผใหขอมลหรอการวดคาสงเกต" class="level3">
+<h3 class="anchored" data-anchor-id="ผใหขอมลหรอการวดคาสงเกต">1. ผู้ให้ข้อมูลหรือการวัดค่าสังเกต</h3>
+<p>เป็นไปได้หลากหลายลักษณะ เช่น ในการวิจัยเชิงสำรวจที่มีการเก็บรวบรวมข้อมูลด้วยแบบสอบถามหรือแบบวัด มีความเป็นไปได้ที่ผู้ตอบอาจลืมตอบคำถามในบางข้อ หรือเลือกที่จะไม่ตอบเพราะไม่มีความรู้ หรือไม่สนใจที่จะให้ข้อมูล หรืออาจมีความสะดวกในการตอบคำถาม ปัจจัยดังกล่าวล้วนเป็นสาเหตุที่ทำให้เกิดค่าสูญหายทั้งสิ้น</p>
+<p>ความผิดพลาดของอุปกรณ์วัดก็เป็นปัจจัยในด้านนี้ด้วย เช่น ผู้วิจัยอาจเลือกใช้ smart watch เป็นเครื่องมือในการวัดชีพจร และตัวชี้วัดทางกายภาพของผู้เรียนระหว่างการจัดการเรียนรู้ อาจมีความเป็นไปได้ที่ผู้เรียนบางคนไม่ได้ใส่อุปกรณ์อย่างถูกต้อง หรืออุปกรณ์ทำงานผิดพลาดจากสาเหตุอื่น ๆ ทำให้ไม่สามารถเก็บรวบรวมข้อมูลได้อย่างครบถ้วน</p>
+<p>อีกลักษณะหนึ่งคือการขาดหายไปจากการที่หน่วยข้อมูลบางหน่วยไม่ได้เข้าร่วมกิจกรรมที่กำหนดไว้สำหรับการเก็บรวบรวมข้อมูล เช่น การออกแบบการเก็บรวบรวมข้อมูลในชั้นเรียน หรือเป็นการบ้านให้กับนักเรียน แต่อาจมีนักเรียนบางคนที่ไม่ได้เข้าเรียนในวันดังกล่าว หรือไม่ส่งการบ้าน สถานการณ์ดังกล่าวทำให้เกิดค่าสูญหายได้เช่นเดียวกัน</p>
+</section>
+<section id="การยบรวมขอมลจากแหลงขอมลทหลากหลาย" class="level3">
+<h3 class="anchored" data-anchor-id="การยบรวมขอมลจากแหลงขอมลทหลากหลาย">2. การยุบรวมข้อมูลจากแหล่งข้อมูลที่หลากหลาย</h3>
+<p>การเก็บข้อมูลจากฐานข้อมูลของหน่วยงานต่าง ๆ เช่น สพฐ. สทศ. สมศ. รวมทั้งหน่วยงานภาครัฐอื่น ๆ แล้วนำมารวมกันเพื่อดำเนินการวิเคราะห์ ก็มีโอกาสที่บางหน่วยข้อมูลขาดหายไปเนื่องจากความแตกต่างของการเก็บข้อมูลในแต่ละฐาน</p>
+</section>
+<section id="การเกบรวบรวมขอมลระยะยาว" class="level3">
+<h3 class="anchored" data-anchor-id="การเกบรวบรวมขอมลระยะยาว">3. การเก็บรวบรวมข้อมูลระยะยาว</h3>
+<p>การเก็บรวบรวมข้อมูลระยะยาวที่จะต้องเก็บข้อมูลจากหน่วยข้อมูลเดียวกันหลาย ๆ ครั้ง หากระหว่างทางมีหน่วยข้อมูลออกจากระบบก็เกิดข้อมูลขาดหายได้เช่นกัน</p>
+</section>
+</section>
+<section id="ประเภทของคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="ประเภทของคาสญหาย">ประเภทของค่าสูญหาย</h2>
+<p>การจำแนกประเภทของค่าสูญหายสามารถจำแนกได้หลายลักษณะ ขึ้นกับบริบทที่ทำการวิเคราะห์ค่าสูญหาย หรือเกณฑ์ที่ใช้ในการพิจารณา โดยทั่วไปอาจจำแนกค่าสูญหายออกเป็น 3 ประเภท ได้แก่ ข้อมูลสูญหายที่เกิดจาก</p>
 <ol type="1">
-<li><p>การสำรวจและระบุค่าสูญหาย</p></li>
-<li><p>การวิเคราะห์รูปแบบหรือกลไกของค่าสูญหาย</p></li>
-<li><p>การจัดการค่าสูญหาย</p></li>
+<li><p>การออกแบบการเก็บข้อมูลที่ไม่เหมาะสม</p></li>
+<li><p>ปรากฏการณ์สุ่ม</p></li>
+<li><p>สาเหตุเฉพาะ</p></li>
 </ol>
+<section id="การสญหายจากการออกแบบการเกบขอมลทไมเหมาะสม" class="level3">
+<h3 class="anchored" data-anchor-id="การสญหายจากการออกแบบการเกบขอมลทไมเหมาะสม">การสูญหายจากการออกแบบการเก็บข้อมูลที่ไม่เหมาะสม</h3>
+<p>ลักษณะการสูญหายประเภทแรกสามารถเกิดได้ กล่าวคือผู้วิเคราะห์อาจมีการออกแบบการเก็บรวบรวมข้อมูลที่ไม่สอดคล้องกับสถานการณ์จริง ทำให้บางหน่วยข้อมูลถูกบันทึกเป็นค่าสูญหายแต่ในความเป็นจริงหน่วยข้อมูลดังกล่าวควรสามารถบันทึกข้อมูลได้ ยกตัวอย่างเช่น การวิเคราะห์การเรียนรู้ของนักเรียนาอาจมีการออกแบบการเก็บรวบรวมข้อมูลการมาเรียนของนักเรียน โดยมีการบันทึกข้อมูลไว้ 2 ลักษณะ ได้แก่ มาเรียนตรงเวลา (<code>ontime</code>) และมาเรียนสาย (<code>late</code>) แต่เมื่อเก็บรวบรวมข้อมูลเสร็จพบว่ามีนักเรียนบางคนไม่มีข้อมูลในตัวแปรนี้</p>
+<p>เมื่อพิจารณาเพิ่มเติมพบว่า นักเรียนกลุ่มที่ไม่มีข้อมูลในตัวแปรดังกล่าว คือกลุ่มนักเรียนที่ไม่ได้มาเรียนในวันนั้นทำให้ไม่สามารถระบุได้ว่ามาตรงเวลาหรือมาสาย สถานการณ์ดังกล่าวผู้วิเคราะห์สามารถแก้ปัญหาโดยปรับโครงสร้างการเก็บค่าของตัวแปรนี้ใหม่ โดยอาจเพิ่มกลุ่มนักเรียนที่ไม่ได้มาเรียน (<code>absent</code>) เป็นค่าที่เป็นไปได้ของตัวแปรนี้อีกหนึ่งค่า ซึ่งจะทำให้ผู้วิเคราะห์มีข้อมูลที่สมบูรณ์ของตัวแปรนี้</p>
 </section>
-<section id="กลไกการเกดคาสญหาย" class="level2">
-<h2 class="anchored" data-anchor-id="กลไกการเกดคาสญหาย">กลไกการเกิดค่าสูญหาย</h2>
-<p>สำนัก classic คือ Little และ Rubin นำเสนอ framework ของค่าสูญหายที่ปัจจุบันก็มีการใช้อย่างแพร่หลายมาก ๆ โดยทั้งสองจำแนกประเภทของค่าสูญหายออกเป็น 3 ประเภท การอธิบายลักษณะการสูญหายทั้ง 3 นี้ใช้โมเดลความน่าจะเป็น</p>
-<section id="missing-completely-at-random-mcar" class="level3">
-<h3 class="anchored" data-anchor-id="missing-completely-at-random-mcar">Missing Completely at Random (MCAR)</h3>
-<p>กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ ไม่มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่สังเกตเห็นหรือไม่ได้สังเกตเห็น ข้อมูลนั้นจะถือว่าขาดหายไปแบบสุ่มโดยสมบูรณ์ (Missing Completely At Random - MCAR)</p>
-<p>กำหนดให้ <span class="math inline">m{ij}</span> เป็นตัวแปร dummy แสดงการสูญหายของหน่วยข้อมูลที่ i ในตัวแปรที่ j ถ้ามีค่าเท่ากับ 1 คือเป็นค่าสูญหาย และ <span class="math inline">X_{obs}</span> คือข้อมูลที่ผู้วิเคราะห์สามารถสังเกตได้ในชุดข้อมูล ส่วน <span class="math inline">X_{mis}</span> คือข้อมูลที่สูญหาย</p>
-<p>การสูญหายแบบ MCAR สามารถเขียนอธิบายได้ดังนี้</p>
+<section id="การสญหายจากปรากฏการณสม" class="level3">
+<h3 class="anchored" data-anchor-id="การสญหายจากปรากฏการณสม">การสูญหายจากปรากฏการณ์สุ่ม</h3>
+<p>การสูญหายในลักษณะที่สองคือการสูญหายจากปรากฏการณ์สุ่ม เรียกได้ว่าเป็นการสูญหายในเชิงสถิติ <span class="citation" data-cites="little2014statistical">(<a href="#ref-little2014statistical" role="doc-biblioref">Little and Rubin 2014</a>)</span> โดยสามารถจำแนกได้เป็น 2 ประเภทได้แก่</p>
+<p><strong>การสูญหายแบบสุ่มสมบูรณ์ (missing completely at random: MCAR)</strong></p>
+<p>กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ ไม่มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่สังเกตเห็นหรือไม่ได้สังเกตเห็น ข้อมูลนั้นจะถือว่าขาดหายไปแบบสุ่มโดยสมบูรณ์ กลไกการสูญหายแบบ MCAR สามารถอธิบายในเชิงคณิตศาสตร์ได้ดังนี้</p>
+<p>กำหนดให้ <span class="math inline">m_{ij}</span> เป็นตัวแปร dummy แสดงการสูญหายของหน่วยข้อมูลที่ i ในตัวแปรที่ j ถ้ามีค่าเท่ากับ 1 คือเป็นค่าสูญหาย และ <span class="math inline">X_{obs}</span> คือข้อมูลที่ผู้วิเคราะห์สามารถสังเกตได้ในชุดข้อมูล ส่วน <span class="math inline">X_{mis}</span> คือข้อมูลที่สูญหาย กลไกลการสูญหายแบบ MCAR คือความน่าจะเป็นในการสูญหายของหน่วยข้อมูลที่ <span class="math inline">i</span> ในตัวแปรที่ <span class="math inline">j</span> เป็นค่าคงที่ ที่ไม่สัมพันธ์หรือขึ้นกับข้อมูลที่สังเกตได้และข้อมูลสูญหาย ดังนี้</p>
 <p><span class="math display">
 p(m_{ij} = 1 | X_{obs}, X_{mis}) = p
 </span></p>
 <p>การ simulation ด้านล่างแสดงกลไกการเกิดค่าสูญหายแบบ MCAR ได้อย่างชัดเจน</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## ชุดข้อมูลสมบูรณ์</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 387
 Columns: 5
@@ -308,23 +345,24 @@ $ engage               &lt;chr&gt; "no engage", "much engage", "much engage", "m
 $ practice             &lt;chr&gt; "do practice", "do not praction", "do not practio…</code></pre>
 </div>
 </div>
-<p>สมมุติว่ามีการสูญหายแบบ MCAR ขึ้นบนตัวแปร <code>ach</code> ร้อยละ 20 นั่นเทียบเท่ากับการสุ่มตัวอย่างแบบ SRS ออกจาก vector ของ <code>ach</code> ในสัดส่วน 0.2 ดังนี้</p>
+<p>สมมุติว่ามีการสูญหายแบบ MCAR ขึ้นบนตัวแปร <code>learning_performance</code> ร้อยละ 20 สถานการณ์นี้เทียบเท่ากับการสุ่มตัวอย่างแบบ SRS ออกจาก vector ของ <code>ach</code> ในสัดส่วน 0.2 ดังนี้</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mcar =</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>, <span class="cn">NA</span>, ach))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mcar =</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.2</span>,<span class="cn">NA</span>, learning_performance)) </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -333,12 +371,12 @@ $ practice             &lt;chr&gt; "do practice", "do not praction", "do not pra
 </div>
 </div>
 </div>
-<p>การสูญหายแบบ MCAR ไม่ได้ทำให้เกิด bias ในการวิเคราะห์ แต่อาจมีผลกับ precision ของการวิเคราะห์ (ทำไม?)</p>
+<p>การสูญหายแบบ MCAR ไม่ได้ทำให้เกิด bias ในการวิเคราะห์ แต่อาจมีผลกับ precision ของการวิเคราะห์ ลองพิจารณาผลการวิเคราะห์ด้านล่าง</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(ach_mcar)<span class="sc">==</span>T), </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(learning_performance_mcar)<span class="sc">==</span>T), </span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -349,53 +387,56 @@ $ practice             &lt;chr&gt; "do practice", "do not praction", "do not pra
 </figure>
 </div>
 </div>
+</div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, ach_mcar) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(ach, ach_mcar)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(learning_performance, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, learning_performance_mcar) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(learning_performance, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                        learning_performance_mcar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(ach, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 6
-  name      mean    sd median   cor    r2
-  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1 ach       43.6  17.4   43.9 0.846 0.715
-2 ach_mcar  42.6  17.7   42.4 0.855 0.732</code></pre>
+  name                       mean    sd median   cor    r2
+  &lt;chr&gt;                     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 learning_performance       45.8  26.0   47.6 0.846 0.715
+2 learning_performance_mcar  45.4  26.0   47.4 0.842 0.708</code></pre>
 </div>
 </div>
-</section>
-<section id="missing-at-random-mar" class="level3">
-<h3 class="anchored" data-anchor-id="missing-at-random-mar">Missing at Random (MAR)</h3>
-<p>กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่ผู้วิเคราะห์มีข้อมูลสามารถสังเกตค่าได้ โดยไม่เกี่ยวข้องกับข้อมูลที่สูญหายไปของตัวแปรนั้น ข้อมูลนั้นจะถือว่าขาดหายไปแบบ MAR</p>
-<p><span class="math display">
-p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs})
-</span></p>
+<p><strong>การสูญหายแบบสุ่ม (missing at random: MAR)</strong></p>
+<p>กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่ผู้วิเคราะห์มีข้อมูลสามารถสังเกตค่าได้ โดยไม่เกี่ยวข้องกับข้อมูลที่สูญหายไปของตัวแปรนั้น ข้อมูลนั้นจะถือว่าขาดหายไปแบบ MAR กลไกการสูญหายแบบ MAR สามารถอธิบายในเชิงคณิตศาสตร์ได้ดังนี้</p>
+<p>$$</p>
+<p>p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs})</p>
+<p>$$</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mar =</span> <span class="fu">case_when</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    learning_performance <span class="sc">&gt;</span> <span class="dv">70</span> <span class="sc">|</span> learning_performance <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>,<span class="cn">NA</span>, ach) ,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    ach <span class="sc">&gt;</span> <span class="dv">70</span> <span class="sc">|</span> ach <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.5</span>,<span class="cn">NA</span>, ach) ,</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> ach</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -404,84 +445,55 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs})
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(ach_mar)<span class="sc">==</span>T), </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(learning_performance_mar)<span class="sc">==</span>T), </span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, ach_mcar, ach_mar) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(ach, ach_mcar, ach_mar)) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(learning_performance, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance,learning_performance_mcar, </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         learning_performance_mar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(learning_performance,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                        learning_performance_mcar, </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                        learning_performance_mar)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(ach, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 6
-  name      mean    sd median   cor    r2
-  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1 ach       43.6  17.4   43.9 0.846 0.715
-2 ach_mar   43.1  16.3   43.3 0.831 0.690
-3 ach_mcar  42.6  17.7   42.4 0.855 0.732</code></pre>
+  name                       mean    sd median   cor    r2
+  &lt;chr&gt;                     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 learning_performance       45.8  26.0   47.6 0.846 0.715
+2 learning_performance_mar   45.8  15.2   46.1 1     1    
+3 learning_performance_mcar  45.4  26.0   47.4 0.842 0.708</code></pre>
 </div>
 </div>
-</section>
-<section id="missing-not-at-random-mnar" class="level3">
-<h3 class="anchored" data-anchor-id="missing-not-at-random-mnar">Missing Not at Random (MNAR)</h3>
-<ul>
-<li><p>หากการสูญหายไม่ใช่ทั้ง MCAR และ MAR การสูญหายนั้นเป็น MNAR กล่าวในเชิงเทคนิคคือ เป็นการสูญหายที่มีความสัมพันธ์กับค่าที่สูญหายไป และอาจมีความสัมพันธ์กับค่าที่สังเกตได้ด้วย</p></li>
-<li><p>กล่าวง่าย ๆ เป็นการสูญหายที่เกิดขึ้นโดยสัมพันธ์กับค่าที่สูญหาย การสูญหายแบบนี้ไม่สามารถอธิบายได้ด้วยข้อมูลที่มี เช่น</p>
-<ul>
-<li><p>ผู้ตอบไม่ตอบคำถามเกี่ยวกับรายได้เพราะรายได้ของตนเองสูงเกินไป</p></li>
-<li><p>นักเรียนที่มีคะแนนต่ำมากไม่ตอบคำถาม ไม่เข้าเรียน หรือไม่ส่งงานทำให้ครูไม่สามารถประเมินคะแนนให้นักเรียนได้</p></li>
-</ul></li>
-</ul>
-<p><span class="math display">
-p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
-</span></p>
+<p>จากผลการวิเคราะห์ข้างต้นจะเห็นว่าการสูญหายแบบ MAR มีแนวโน้มทำให้เกิดความลำเอียงในการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปร</p>
+<p>การตรวจสอบว่าการสูญหายในชุดข้อมูลเป็น MCAR หรือ MAR สามารถทำได้หลายวิธีการ แนวคิดหลัก ๆ คือการวิเคราะห์ความสัมพันธ์ระหว่างการสูญหายของข้อมูลกับตัวแปรอื่น ๆ ในชุดข้อมูล หากพบหลักฐานว่ามีความสัมพันธ์ดังกล่าวแสดงว่าการสูญหายที่เกิดขึ้นเป็นแบบ MAR รูปด้านล่างแสดงตัวอย่างการวิเคราะห์ข้อมูลจำลองข้างต้น</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mnar =</span> <span class="fu">case_when</span>(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    ach <span class="sc">&gt;</span> <span class="dv">50</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>,<span class="cn">NA</span>, ach) ,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> ach</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"ach"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="768"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(ach_mnar)<span class="sc">==</span>T), </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">|&gt;</span>  <span class="do">## สร้าง shadow matrix</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar_NA, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MCAR Mechanism"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">|&gt;</span> </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">|&gt;</span>  <span class="do">## สร้าง shadow matrix</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar_NA, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MAR Mechanism"</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -489,26 +501,166 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, ach, ach_mcar, ach_mar, ach_mnar) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(ach, ach_mcar, ach_mar, ach_mnar)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(learning_performance, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>จากรูปจะเห็นว่าข้อมูลที่สูญหาย <code>NA</code> ใน learning performance มีความสัมพันธ์กับ <code>ach</code> โดยการสูญหายพบมากในนักเรียนที่มี <code>ach</code> อยู่ในระดับต่ำและสูง อย่างชัดเจน ลักษณะนี้แสดงการสูญหายที่มีกลไกแบบ MAR</p>
+<p>เมื่อเปรียบเทียบกับการสูญหายใน learning performance ที่มีการสูญหายแบบ MCAR จะเห็นว่าไม่มีแนวโน้มความสัมพันธ์ระหว่างการสูญหายของข้อมูลกับ <code>ach</code></p>
+<p>หากมีตัวแปรหลายตัวในชุดข้อมูล เราสามารถใช้การวิเคราะหการถดถอย logistic หรือโมเดลทำนายอื่น ๆ ช่วยในการวิเคราะห์ความสัมพันธ์ระหว่างการสูญหายกับข้อมูลตัวแปรอื่น ๆ เพื่อวินิจฉัยลักษณะของกลไกการสูญหายแบบสุ่มได้ เช่นตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance_mar_NA, ach, engage, ontime_class, practice) <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ปรับให้ตัวแปรตามเป็น binary 0,1</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar_NA =</span> <span class="fu">as.numeric</span>(learning_performance_mar_NA)<span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">glm</span>(learning_performance_mar_NA <span class="sc">~</span> ach <span class="sc">+</span> engage <span class="sc">+</span> ontime_class <span class="sc">+</span> practice, <span class="at">family =</span> binomial)) <span class="sc">|&gt;</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = learning_performance_mar_NA ~ ach + engage + ontime_class + 
+    practice, family = binomial)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)               0.24149    0.43274   0.558    0.577    
+ach                      -0.05429    0.01087  -4.993 5.94e-07 ***
+engagemoderate engage    -0.28707    0.46266  -0.620    0.535    
+engagemuch engage        -0.50548    0.42143  -1.199    0.230    
+engageno engage           0.74495    0.56177   1.326    0.185    
+ontime_classused to late  0.36631    0.32893   1.114    0.265    
+practicedo practice       0.26216    0.41625   0.630    0.529    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 309.13  on 386  degrees of freedom
+Residual deviance: 262.52  on 380  degrees of freedom
+AIC: 276.52
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<p>ผลการวิเคราะห์ข้างต้นเห็นชัดเจนว่า <code>ach</code> เป็นตัวแปรที่มีความสัมพันธ์กับการสูญหายใน learning performance ดังนั้นการสูญหายดังกล่าวมีแนวโน้มเป็นการสูญหายแบบ MAR</p>
+</section>
+<section id="การสญหายจากสาเหตเฉพาะ" class="level3">
+<h3 class="anchored" data-anchor-id="การสญหายจากสาเหตเฉพาะ">การสูญหายจากสาเหตุเฉพาะ</h3>
+<p>สาเหตุเฉพาะหรือ Missing Not at Random (MNAR) คือ การสูญหายที่มีความสัมพันธ์กับค่าของตัวแปรที่สูญหายไป หรือค่าของตัวแปรอื่น ๆ ที่ไม่สามารถสังเกตได้ หรือไม่ได้สังเกต</p>
+<p><span class="math display">
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
+</span></p>
+<p>กล่าวง่าย ๆ เป็นการสูญหายที่เกิดขึ้นโดยสัมพันธ์กับค่าที่สูญหาย การสูญหายแบบนี้ไม่สามารถอธิบายได้ด้วยข้อมูลที่มี เช่น</p>
+<ul>
+<li><p>ผู้ตอบไม่ตอบคำถามเกี่ยวกับรายได้เพราะรายได้ของตนเองสูงเกินไป</p></li>
+<li><p>นักเรียนที่มีคะแนนต่ำมากไม่ตอบคำถาม ไม่เข้าเรียน หรือไม่ส่งงานทำให้ครูไม่สามารถประเมินคะแนนให้นักเรียนได้</p></li>
+<li><p>ผู้เรียนที่เรียนไม่เก่ง drop out ออกไปจากชั้นเรียนระหว่างการเรียนรู้ทำให้ไม่สามารถประเมินผลการเรียนรู้หรือตัวแปรที่เกี่ยวข้องได้</p></li>
+</ul>
+<p>ผลลัพธ์ด้านล่างแสดงผลการเปรียบเทียบการวิเคราะห์ในสถานการณ์ที่ข้อมูลสูญหายแบบ MNAR เปรียบเทียบกับการสูญหายแบบอื่น โดยใช้ข้อมูลจำลอง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mnar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    learning_performance <span class="sc">&lt;</span> <span class="dv">30</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.4</span>,<span class="cn">NA</span>, ach) ,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> learning_performance</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">%&gt;%</span> </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance))<span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach),<span class="at">alpha=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(learning_performance_mnar)<span class="sc">==</span>T), </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">y=</span>ach), <span class="at">col=</span><span class="st">"maroon"</span>, <span class="at">shape =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(learning_performance, learning_performance_mcar, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>         learning_performance_mar, learning_performance_mnar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> T),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(value,<span class="at">na.rm =</span> T),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">cor =</span> <span class="fu">cor</span>(ach, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">r2 =</span> cor<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 6
-  name      mean    sd median   cor    r2
-  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1 ach       43.6  17.4   43.9 0.846 0.715
-2 ach_mar   43.1  16.3   43.3 0.831 0.690
-3 ach_mcar  42.6  17.7   42.4 0.855 0.732
-4 ach_mnar  40.1  16.7   39.4 0.823 0.678</code></pre>
+  name                       mean    sd median   cor    r2
+  &lt;chr&gt;                     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 learning_performance       45.8  26.0   47.6 0.846 0.715
+2 learning_performance_mar   45.8  15.2   46.1 1     1    
+3 learning_performance_mcar  45.4  26.0   47.4 0.842 0.708
+4 learning_performance_mnar  52.3  21.9   52   0.890 0.793</code></pre>
 </div>
 </div>
+<p>การตรวจสอบ MNAR ค่อนข้างลำบากเมื่อเปรียบเทียบกับการวิเคราะห์กลไกการสูญหายแบบอื่น ตัวอย่างด้านล่างแสดงให้เห็นว่าเมื่อมีการสูญหายแบบ MAR ผลการวิเคราะห์ความสัมพันธ์ระหว่างการสูญหายกับตัวแปรในชุดข้อมูลมีลักษณะที่เหมือนกับผลการวิเคราะห์ที่ได้จาก MAR กล่าวคือการแยกกลไกการสูญหายแบบ MAR และ MNAR ออกจากกันด้วยข้อมูลเชิงปริมาณแต่เพียงอย่างเดียวทำได้ยากหรืออาจทำไม่ได้เลย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>data <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">|&gt;</span>  <span class="do">## สร้าง shadow matrix</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar_NA, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MCAR Mechanism"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>data <span class="sc">|&gt;</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">|&gt;</span>  <span class="do">## สร้าง shadow matrix</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar_NA, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MAR Mechanism"</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>p3<span class="ot">&lt;-</span>data <span class="sc">|&gt;</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">|&gt;</span>  <span class="do">## สร้าง shadow matrix</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mnar_NA, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"MNAR Mechanism"</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2<span class="sc">+</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>จากลักษณะการสูญหายแบบ MNAR ที่มีกลไกที่แฝงอยู่เบื้องหลังค่าที่สูญหายอีกทีหนึ่งนี้ การตรวจสอบจึงค่อนข้างยากลำบาก แต่ก็สามารถดำเนินการได้ โดยวิธีการตรวจสอบที่เป็นไปได้ เช่น</p>
+<p>การเปรียบเทียบกับทฤษฎีหรือความรู้หรือข้อมูลอื่นที่มีอยู่เกี่ยวกับบริบทที่ทำการวิเคราะห์ ยกตัวอย่างเช่น การเก็บรวบรวมข้อมูลรายได้ผู้ปกครองของนักเรียนซึ่งพบว่ามีค่าสูญหาย เมื่อทำการวิเคราะห์ข้อมูลรายได้ที่เก็บรวบรวมได้ดังกล่าวอาจพบว่าค่าเฉลี่ย และขอบเขตของรายได้ผู้ปกครองนักเรียนในโรงเรียนนี้มีแนวโน้มที่ต่ำกว่าปกติ โดยอาจสังเกตว่าต่ำกว่าผลการสำรวจในอดีต หรือต่ำกว่าที่ควรจะเป็นจากการพิจารณาบริบทแวดล้อมของโรงเรียน กรณีเช่นนี้อาจตั้งสมมุติฐานได้ว่าการสูญหายดังกล่าวเป็นการสูญหายในกลุ่มของนักเรียนที่ครอบครัวมีฐานะร่ำรวย จากตัวอย่างนี้จะเห็นว่าการตรวจสอบการสูญหายแบบ MNAR ต้องอาศัยความรู้ในส่วนอื่นนอกเหนือจากข้อมูลเชิงปริมาณที่เก็บรวบรวมมาแต่เพียงอย่างเดียว</p>
+<p>อีกวิธีการหนึ่งคือการใช้โมเดลการวิเคราะห์ความลำเอียงในการเลือกตัวอย่าง (sample selection bias) หรือ Heckman Selection Model หรือ Heckman Correction <span class="citation" data-cites="Galimard2018">(<a href="#ref-Galimard2018" role="doc-biblioref">Galimard et al. 2018</a>)</span> โมเดลดังกล่าวเป็นทั้งโมเดลการวิเคราะห์และแก้ปัญหาการสูญหายแบบ MNAR อย่างไรก็ตามรายละเอียดส่วนนี้ค่อนข้างมีมากและอยู่นอกเหนือขอบเขตเนื้อหาในหัวข้่อนี้ อ่านเพิ่มเติมได้ที่ — &gt; **</p>
 </section>
+</section>
+<section id="ขนตอนการวเคราะหขอมลทมคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="ขนตอนการวเคราะหขอมลทมคาสญหาย">ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย</h2>
+<p>การวิเคราะห์ข้อมูลเมื่อมีค่าสูญหายนั้นมีแนวทางหรือวิธีดำเนินงานที่หลากหลายขึ้นอยู่กับว่าเราอ้างอิงสำนักไหน นักสถิติหรือนักวิทยาการข้อมูลคนไหน กลุ่มไหน อย่างไรก็ตามแนวทางโดยทั่วไปที่เหมือนกันประกอบด้วย</p>
+<ol type="1">
+<li><p>การสำรวจและระบุค่าสูญหาย</p></li>
+<li><p>การวิเคราะห์รูปแบบหรือกลไกของค่าสูญหาย</p></li>
+<li><p>การจัดการค่าสูญหาย</p></li>
+</ol>
+<p>รายละเอียดในแต่ละขั้นตอนมีดังนี้</p>
 </section>
 <section id="การสำรวจและระบคาสญหาย" class="level2">
 <h2 class="anchored" data-anchor-id="การสำรวจและระบคาสญหาย">การสำรวจและระบุค่าสูญหาย</h2>
@@ -521,20 +673,20 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 <section id="tabulating-missing-data" class="level3">
 <h3 class="anchored" data-anchor-id="tabulating-missing-data">Tabulating Missing data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">miss_var_summary</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">miss_var_summary</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 3
-  variable             n_miss pct_miss
-  &lt;chr&gt;                 &lt;int&gt;    &lt;num&gt;
-1 ach_mcar                156     40.3
-2 ach_mar                  80     20.7
-3 ach_mnar                 66     17.1
-4 ach                       0      0  
-5 learning_performance      0      0  
-6 ontime_class              0      0  
-7 engage                    0      0  
-8 practice                  0      0  </code></pre>
+  variable                  n_miss pct_miss
+  &lt;chr&gt;                      &lt;int&gt;    &lt;num&gt;
+1 learning_performance_mcar     69     17.8
+2 learning_performance_mar      53     13.7
+3 learning_performance_mnar     44     11.4
+4 ach                            0      0  
+5 learning_performance           0      0  
+6 ontime_class                   0      0  
+7 engage                         0      0  
+8 practice                       0      0  </code></pre>
 </div>
 </div>
 </section>
@@ -552,36 +704,36 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 <section id="heatmap" class="level4">
 <h4 class="anchored" data-anchor-id="heatmap">heatmap</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("visdat")</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visdat)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="do">## create shadow matrix</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_dat</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("visdat")</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visdat)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="do">## create shadow matrix</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_dat</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span><span class="fu">vis_miss</span>(data, <span class="at">cluster =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span><span class="fu">vis_miss</span>(data, <span class="at">cluster =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">vis_miss</span>(data, <span class="at">cluster =</span> <span class="cn">TRUE</span>, <span class="at">facet =</span> ontime_class)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">vis_miss</span>(data, <span class="at">cluster =</span> <span class="cn">TRUE</span>, <span class="at">facet =</span> ontime_class)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -590,31 +742,47 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 <section id="md-plot" class="level4">
 <h4 class="anchored" data-anchor-id="md-plot">md plot</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("mice)</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">md.pattern</span>(data, <span class="at">rotate.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("mice)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">md.pattern</span>(data, <span class="at">rotate.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    ach learning_performance ontime_class engage practice ach_mnar ach_mar
-231   1                    1            1      1        1        1       1
-47    1                    1            1      1        1        1       1
-43    1                    1            1      1        1        1       0
-29    1                    1            1      1        1        0       1
-37    1                    1            1      1        1        0       0
-      0                    0            0      0        0       66      80
-    ach_mcar    
-231        1   0
-47         0   1
-43         0   2
-29         0   2
-37         0   3
-         156 302</code></pre>
+<pre><code>    ach learning_performance ontime_class engage practice
+268   1                    1            1      1        1
+44    1                    1            1      1        1
+25    1                    1            1      1        1
+6     1                    1            1      1        1
+13    1                    1            1      1        1
+9     1                    1            1      1        1
+12    1                    1            1      1        1
+10    1                    1            1      1        1
+      0                    0            0      0        0
+    learning_performance_mnar learning_performance_mar
+268                         1                        1
+44                          1                        1
+25                          1                        0
+6                           1                        0
+13                          0                        1
+9                           0                        1
+12                          0                        0
+10                          0                        0
+                           44                       53
+    learning_performance_mcar    
+268                         1   0
+44                          0   1
+25                          1   1
+6                           0   2
+13                          1   1
+9                           0   2
+12                          1   2
+10                          0   3
+                           69 166</code></pre>
 </div>
 </div>
 </section>
@@ -623,12 +791,12 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 <p>co-occurence plot ช่วยแสดงสภาพการสูญหายที่ลึกกว่า heatmap เพราะมีทั้งมิติความถี่ของการสูญหายเป็นรายตัวแปรซึ่งจำแนกเป็นการสูญหายในตัวแปรเดียว และการสูญหายร่วมกัน</p>
 <p>การสูญหายร่วมกันที่มากมีผลทำให้การแก้ปัญหาแบบตัดข้อมูลที่ missing ออกจากไปการวิเคราะห์เริ่มไม่ work (ทำไม?)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gg_miss_upset</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -638,18 +806,20 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 <h4 class="anchored" data-anchor-id="scatter-plot">Scatter plot</h4>
 <p>แผนภาพการกระจายมีประโยชน์มากสำหรับวิเคราะห์กลไกการสูญหายของข้อมูล</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance, <span class="at">y=</span>ach_mar))<span class="sc">+</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance ,<span class="at">col =</span> ach_mar_NA), <span class="at">sides =</span> <span class="st">"b"</span>)<span class="sc">+</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"!NA"</span> <span class="ot">=</span> <span class="cn">NULL</span>, <span class="st">"NA"</span> <span class="ot">=</span> <span class="st">"maroon"</span>),</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">c</span>(<span class="cn">NULL</span>, <span class="st">"missing in ach"</span>))<span class="sc">+</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar))<span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">y=</span>ach ,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"!NA"</span> <span class="ot">=</span> <span class="cn">NULL</span>, <span class="st">"NA"</span> <span class="ot">=</span> <span class="st">"maroon"</span>),</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">c</span>(<span class="cn">NULL</span>, <span class="st">"missing in ach"</span>))<span class="sc">+</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -662,12 +832,12 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 <p>ในกรณีที่ชุดข้อมูลมีขนาดใหญ่ โดยเฉพาะเมื่อมีตัวแปรจำนวนมาก การใช้ heatmap หรือ co-occurence plot อาจมีประสิทธิภาพน้อยลง ลองใช้วิธีการข้างต้นวิเคราะห์สภาพการสูญหายในชุดข้อมูลต่อไปนี้</p>
 <p><a href="https://bit.ly/2JoKcqX">ดาวน์โหลด</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/onlinelearning_miss.csv"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> large_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">student_id =</span> X)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">miss_var_summary</span>(large_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(pct_miss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/onlinelearning_miss.csv"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>large_data <span class="ot">&lt;-</span> large_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">student_id =</span> X)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">miss_var_summary</span>(large_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(pct_miss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 49 × 3
    variable            n_miss pct_miss
@@ -694,81 +864,294 @@ p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
 </ol>
 <p>ทดลองดำเนินการดังนี้</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dummy_mat <span class="ot">&lt;-</span> large_data <span class="sc">%&gt;%</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(as.numeric) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(<span class="sc">~</span> .<span class="sc">-</span><span class="dv">1</span>)</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>dummy_mat  <span class="sc">%&gt;%</span> </span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(<span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2))<span class="sc">+</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dummy_mat <span class="ot">&lt;-</span> large_data <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(as.numeric) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(<span class="sc">~</span> .<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>dummy_mat  <span class="sc">%&gt;%</span> </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(<span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(PC1, PC2))<span class="sc">+</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dummy_mat  <span class="sc">%&gt;%</span> </span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  rownames_to_column(var = "student_id") %&gt;%  # เก็บ rownames เป็นคอลัมน์ (ถ้าต้องการ)</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(student_id = paste0("student", student_id)) %&gt;% </span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  pivot_longer(cols = -student_id, names_to = "variable", values_to = "value") %&gt;%</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  pivot_wider(names_from = student_id, values_from = value) %&gt;% </span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  column_to_rownames("variable") %&gt;%</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(<span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>(), <span class="at">num_comp =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="ot">-&gt;</span> pca_prep</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>pca_prep <span class="sc">%&gt;%</span> </span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(component <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"PC1"</span>,<span class="st">"PC2"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>terms))<span class="sc">+</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>component)<span class="sc">+</span></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dummy_mat  <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  rownames_to_column(var = "student_id") %&gt;%  # เก็บ rownames เป็นคอลัมน์ (ถ้าต้องการ)</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(student_id = paste0("student", student_id)) %&gt;% </span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  pivot_longer(cols = -student_id, names_to = "variable", values_to = "value") %&gt;%</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  pivot_wider(names_from = student_id, values_from = value) %&gt;% </span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  column_to_rownames("variable") %&gt;%</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(<span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>(), <span class="at">num_comp =</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="ot">-&gt;</span> pca_prep</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Variance Extraction</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>pca_prep <span class="sc">%&gt;%</span> </span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="dv">1</span>, <span class="at">type =</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(terms <span class="sc">==</span> <span class="st">"percent variance"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>component, <span class="at">y=</span>value))<span class="sc">+</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Percent Variance Explained"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_value2024_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Component Loadings</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>pca_prep <span class="sc">%&gt;%</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(component <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"PC1"</span>,<span class="st">"PC2"</span>,<span class="st">"PC3"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">y=</span>terms))<span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>component)<span class="sc">+</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))<span class="sc">+</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Factor Loadings"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<section id="ตวอยางการใช-correlation-วเคราะหกลไกการสญหาย" class="level4">
+<h4 class="anchored" data-anchor-id="ตวอยางการใช-correlation-วเคราะหกลไกการสญหาย">ตัวอย่างการใช้ correlation วิเคราะห์กลไกการสูญหาย</h4>
+<p>เราสามารถใช้คะแนนองค์ประกอบหลักของค่าสูญหายในการวิเคราะห์กลไกการสูญหายของข้อมูลได้ ยกตัวอย่างเช่น การนำคะแนนองค์ประกอบหลักของค่าสูญหายไปวิเคราะห์ความสัมพันธ์กับตัวแปรอื่น ๆ ในโมเดล</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/CTA_-_Ridership_-__L__Station_Entries_-_Daily_Totals_20241006.csv"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>temp <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> pca_prep <span class="sc">|&gt;</span> <span class="fu">juice</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PC1 =</span> <span class="sc">-</span>PC1) <span class="sc">|&gt;</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(PC1) <span class="sc">|&gt;</span> </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(large_data) <span class="sc">|&gt;</span> </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id, <span class="sc">-</span>climate.online1) <span class="sc">|&gt;</span> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>PC1) <span class="sc">|&gt;</span> </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span> </span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cor =</span> <span class="fu">cor</span>(PC1, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">abs</span>(cor), <span class="at">y=</span><span class="fu">reorder</span>(name, <span class="fu">abs</span>(cor))))<span class="sc">+</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))<span class="sc">+</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.2</span>))<span class="sc">+</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> pca_prep <span class="sc">|&gt;</span> <span class="fu">juice</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(PC2) <span class="sc">|&gt;</span> </span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(large_data) <span class="sc">|&gt;</span> </span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id, <span class="sc">-</span>climate.onsite3, <span class="sc">-</span>climate.onsite2) <span class="sc">|&gt;</span> </span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>PC2) <span class="sc">|&gt;</span> </span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span> </span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cor =</span> <span class="fu">cor</span>(PC2, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">abs</span>(cor), <span class="at">y=</span><span class="fu">reorder</span>(name, <span class="fu">abs</span>(cor))))<span class="sc">+</span></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))<span class="sc">+</span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.2</span>))<span class="sc">+</span></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>)</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> pca_prep <span class="sc">|&gt;</span> <span class="fu">juice</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(PC3) <span class="sc">|&gt;</span> </span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(large_data) <span class="sc">|&gt;</span> </span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span> </span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>student_id, <span class="sc">-</span>climate.onsite2, <span class="sc">-</span>climate.online3) <span class="sc">|&gt;</span> </span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>PC3) <span class="sc">|&gt;</span> </span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span> </span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cor =</span> <span class="fu">cor</span>(PC3, value, <span class="at">use =</span> <span class="st">"complete.obs"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">abs</span>(cor), <span class="at">y=</span><span class="fu">reorder</span>(name, <span class="fu">abs</span>(cor))))<span class="sc">+</span></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>))<span class="sc">+</span></span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.2</span>))<span class="sc">+</span></span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>)</span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">/</span>p2<span class="sc">/</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ตวอยางการใช-decision-tree-วเคราะหกลไกการสญหาย" class="level4">
+<h4 class="anchored" data-anchor-id="ตวอยางการใช-decision-tree-วเคราะหกลไกการสญหาย">ตัวอย่างการใช้ decision tree วิเคราะห์กลไกการสูญหาย</h4>
+<p>การวิเคราะห์ด้านล่างแสดงให้เห็นว่าองค์ประกอบหลักที่ 1 ของค่าสูญหายไม่มีแนวโน้มความสัมพันธ์กับตัวแปรอิสระในโมเดลอย่างชัดเจน แสดงให้เห็นว่าการสูญหายที่เกิดขึ้นใน <code>climate.online1</code> มีแนวโน้มเป็นแบบ MCAR</p>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>   station_id    stationname            date             daytype         
- Min.   :40010   Length:1228271     Length:1228271     Length:1228271    
- 1st Qu.:40370   Class :character   Class :character   Class :character  
- Median :40760   Mode  :character   Mode  :character   Mode  :character  
- Mean   :40768                                                           
- 3rd Qu.:41160                                                           
- Max.   :41710                                                           
-     rides      
- Min.   :    0  
- 1st Qu.:  934  
- Median : 1942  
- Mean   : 2982  
- 3rd Qu.: 3922  
- Max.   :36323  </code></pre>
+<pre><code># A tibble: 2 × 4
+  .metric .estimator .estimate .config             
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 f_meas  binary        0.05   Preprocessor1_Model1
+2 sens    binary        0.0286 Preprocessor1_Model1</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-23-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="การแกปญหาคาสญหาย" class="level2">
+<h2 class="anchored" data-anchor-id="การแกปญหาคาสญหาย">การแก้ปัญหาค่าสูญหาย</h2>
+<p>การแก้ปัญหาค่าสูญหายอาจทำให้หลายวิธีการ ทั้งนี้ขึ้นอยู่กับความเหมาะสมว่าในแต่ละกรณีควรเลือกใช้วิธีการใด โดยปกติอาจจำแนกวิธีการแก้ปัญหาได้เป็นดังนี้</p>
+<ul>
+<li><p>เลือกใช้โมเดลการวิเคราะห์ที่แกร่งต่อการสูญหายของข้อมูล เช่น tree-based models</p></li>
+<li><p>การลบข้อมูลที่มีค่าสูญหายทิ้ง ซึ่งสามารถทำได้หลายลักษณะ เช่น การลบตัวแปรที่มีค่าสูญหายอย่างรุนแรงออกไปจากการวิเคราะห์ หรือการลบหน่วยข้อมูลที่มีค่าสูญหายออกไปจากการวิเคราะห์ วิธีการนี้อาจเหมาะสมถ้าในการวิเคราะห์มีตัวแปรหรือหน่วยข้อมูลบางตัวที่มีค่าสูญหายมากอย่างผิดปกติหรือรุนแรงมากเมื่อเปรียบเทียบกับตัวแปรหรือหน่วยข้อมูลอื่น ๆ อย่างไรก็ตามหากพบว่าการสูญหายมีการกระจายตัวไปหลายตัวแปรพและหลายหน่วยข้อมูลพร้อมกันวิธีการนี้จะไม่ work เพราะอาจสร้าง bias ให้กับการวิเคราะห์</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 387
+Columns: 5
+$ ach                  &lt;dbl&gt; 52.159780, 30.784999, 39.607737, 55.985351, 31.80…
+$ learning_performance &lt;dbl&gt; 32.666667, 10.666667, 28.000000, 52.666667, 15.55…
+$ ontime_class         &lt;chr&gt; "used to late", "used to late", "never late", "us…
+$ engage               &lt;chr&gt; "no engage", "much engage", "much engage", "much …
+$ practice             &lt;chr&gt; "do practice", "do not praction", "do not practio…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="do">### ลองสร้าง missign value ใน learning performance</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>data_miss <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance =</span> </span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>           <span class="fu">case_when</span>(</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>             ach <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="dv">2</span>, <span class="cn">NA</span>, learning_performance),</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>             ach <span class="sc">&gt;=</span><span class="dv">30</span> <span class="sc">~</span> learning_performance</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>           )</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a> <span class="co">#dplyr::select(-learning_performance)</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>data_miss <span class="sc">%&gt;%</span> <span class="fu">vis_miss</span>(<span class="at">cluster =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>data_miss <span class="sc">%&gt;%</span> <span class="fu">miss_var_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  variable             n_miss pct_miss
+  &lt;chr&gt;                 &lt;int&gt;    &lt;num&gt;
+1 learning_performance     89     23.0
+2 ach                       0      0  
+3 ontime_class              0      0  
+4 engage                    0      0  
+5 practice                  0      0  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>data_miss <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> data, <span class="at">col =</span> <span class="st">"maroon"</span>)<span class="sc">+</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"lm"</span>, <span class="at">se =</span> F)<span class="sc">+</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>)<span class="sc">+</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">data =</span> data, <span class="at">col =</span> <span class="st">"maroon"</span>, <span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_value2024_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>อีกปัจจัยหนึ่งที่ควรนำมาพิจารณาร่วมในการลบข้อมูลคือกลไกการสูญหายของข้อมูล กล่าวคือหากการสูญหายที่เกิดขึ้นเป็นแบบ MCAR การลบข้อมูลสามารถทำได้โดยไม่ได้ทำให้เกิดความลำเอียงในผลการวิเคราะห์ อย่างไรก็ตามหากการสูญหายเป็น MAR หรือ MNAR การลบข้อมูลอาจทำให้เกิดความลำเอียงดังที่ได้กล่าวไว้</p>
+<ul>
+<li>การลงรหัสข้อมูลสูญหาย กล่าวคือในบางกรณีการสูญหายของข้อมูลสอดคล้องกับธรรมชาติของตัวแปรที่สูญหายทำให้ผู้วิเคราะห์สามารถลงรหัสของข้อมูลได้แทนที่จะกำหนดเป็นค่าสูญหาย ยกตัวอย่างจากชุดข้อมูล <code>exam.csv</code> หากผู้วิเคราะห์ทราบว่ามีหน่วยข้อมูลหลายหน่วยที่มีค่าสูญหายในตัวแปร <code>engage</code> และ <code>ontime_class</code> โดยที่หน่วยข้อมูลดังกล่าวเป็นนักเรียนที่ขาดเรียนบ่อยหรือแทบจะไม่มาเรียนในคลาสเลย กรณีเช่นนี้ผู้วิเคราะห์สามารถลงรหัสข้อมูลของนักเรียนดังกล่าวเป็น <code>no engage</code> และ <code>missed class</code> ตามลำดับ แทนที่จะกำหนดเป็นค่าสูญหาย และหากมีการสูญหายใน learning_performance ผู้วิเคราะห์อาจใช้ค่าเฉลี่ย learning_performance ของกลุ่มนักเรียนที่ไม่มาเรียนหรือมาเรียนน้อยเป็นตัวแทนค่าสูญหายดังกล่าวได้</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">count</span>(ontime_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  ontime_class     n
+  &lt;chr&gt;        &lt;int&gt;
+1 never late     249
+2 used to late   138</code></pre>
+</div>
+</div>
+<ul>
+<li>การทดแทนค่าสูญหาย (imputation methods) วิธีการนี้มักทดแทนค่าสูญหายโดยใช้ความสัมพันธ์ระหว่างตัวแปรที่มีค่าสูญหายกับตัวแปรอื่น ๆ เพื่อหาค่าทดแทนที่มีความสมเหตุสมผลมากที่สุด</li>
+</ul>
+<p>การวิจัยในอดีตมักเน้นการวิเคราะห์เพื่ออนุมานเชิงสถิติ ดังนั้นที่ผ่านมาวิธีการทดแทนค่าสูญหายหลายวิธีการจึงมีการออกแบบให้คำนึงถึงผลกระทบที่จะมีต่อการอนุมานเชิงสถิติในโมเดลต่าง ๆ กล่าวคือวัตถุประสงค์หลักในการหาค่าทดแทนคือการรับประกันว่าค่าทดแทนที่กำหนดให้กับข้อมูลสูญหายจะมีคุณภาพเพียงพอที่จะทำให้การทดสอบสมมุติฐานหรือการประมาณค่าแบบช่วงมีความน่าเชื่อถือ วิธีการที่มักใช้แก้ปัญหาเป็นหลักในกลุ่มนี้คือ การทดแทนค่าสูญหายแบบหลายค่า (multiple imputation)</p>
+<p><img src="mi.png" class="img-fluid"></p>
+<p>อย่างไรก็ตามวิธีการดังกล่าวอาจไม่ work ในการพัฒนาโมเดลทำนายทั้งนี้เป็นเพราะ</p>
+<ol type="1">
+<li><p>โมเดลทำนายหลายตัวไม่ได้เป็น parametric model กล่าวคือไม่ได้มีข้อตกลงเบื้องต้นเกี่ยวกับการแจกแจงของข้อมูล เช่น decision tree, K-NN ทำให้โมเดลดังกล่าวไม่สามารถสร้างสารสนเทศในการอนุมานเชิงสถิติได้ multiple imputation จะไม่เหมาะกับการทำงานร่วมกับโมเดลแบบนี้</p></li>
+<li><p>การพัฒนาโมเดลทำนายมีกระบวนการที่ค่อนข้างซับซ้อนหลายขั้น มีการใช้การสุ่มตัวอย่างซ้ำ เช่น cross-validation หรือ bootstraping เพื่อคำนวณความคลาดเคลื่อนแบบ out-sample นอกจากนี้หลายโมเดลยังมีการประมวลผลที่ซับซ้อนใช้เวลาต่อหนึ่งรอบในการประมาณที่ค่อนข้างมาก การทำ multiple imputation จะยิ่งเพิ่มเวลาในการประมวลผลและการใช้ทรัพยากรไปอีก</p></li>
+</ol>
+<p>อย่างไรก็ตามการประเมินความผันแปรในการทดแทนค่าสูญหายเป็นประเด็นที่ควรวิเคราะห์/ศึกษาในงานวิจัย ซึ่งเราสามารถทำได้ผ่านการสุ่มซ้ำในขั้นตอนการ train model แทนการใช้ multiple imputation (กล่าวคือกำหนดการทดแทนค่าสูญหายเป็นขั้นตอนหนึ่งในแต่ละ cross-validation เลย) ผลลัพธ์ที่ได้จะช่วยลดภาระในการคำนวณ และสะท้อน variation ที่เกิดจากการทดแทนข้อมูลสูญหายได้</p>
+<ol start="3" type="1">
+<li><p>การพัฒนาโมเดลทำนายมีวัตถุประสงค์เพื่อทำนายข้อมูลที่ยังไม่เคยเห็นหรือไม่ทราบคำตอบมาก่อน แทนที่จะอธิบายความสัมพันธ์หรือสร้างองค์ความรู้จากความสัมพันธ์ระหว่างตัวแปร ดังนั้นค่าที่ทดแทนค่าสูญหายที่สร้างขึ้นจึงควรมีความใกล้เคียงกับค่าจริงให้มากที่สุดเท่าที่จะเป็นไปได้</p></li>
+<li><p>การทำ multiple imputation เป็นการสร้างผลลัพธ์การอนุมานเชิงสถิติซึ่งจะไม่สามารถโมเดลหรืออัลกอริทึมสำหรับการทดแทนค่าสูญหายเอาไว้ใช้ต่อได้ ทำให้เป็นอุปสรรคในการนำโมเดลนี้ไปใช้กับกลุ่มเป้าหมายในกรณีทั่วไป</p></li>
+<li><p>การทดแทนค่าสูญหายในการพัฒนาโมเดลทำนายควรมีลักษณะเฉพาะคือ มีความแกร่งต่อการสูญหายในหลายตัวแปรพร้อมกัน สามารถเก็บอัลกอริทึมหรือโมเดลการทดแทนค่าสูญหายเอาไว้ได้เพื่อเอาไปผนวกหรือใช้ร่วมกับโมเดลการทำนายในกรณีทั่วไป ควรรองรับการสูญหายของตัวแปรได้หลายประเภทในโมเดลเดียว และควรมีความทนทานต่อค่าผิดปกติมีความเสถียรในการสร้างค่าทดแทนค่าสูญหาย</p></li>
+</ol>
+<section id="imputing-missing-values-in-recipe" class="level3">
+<h3 class="anchored" data-anchor-id="imputing-missing-values-in-recipe">Imputing Missing Values in Recipe</h3>
+<blockquote class="blockquote">
+<p>การทดแทนค่าสูญหายควรเป็นกระบวนการแรกในการเตรียมข้อมูล</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute via bagged trees</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_bag</span>() </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute via k-nearest neighbours</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_knn</span>()</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute numeric variables via a linear model</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_linear</span>()</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute numeric data using the mean</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_mean</span>() </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute numeric data using the median</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_median</span>() </span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute nominal data using the most common value</span></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_mode</span>() </span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute numeric data using minimum value</span></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a><span class="fu">step_impute_lower</span>()</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign missing categories to "unknown" </span></span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a><span class="fu">step_unknown</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
 
 
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Galimard2018" class="csl-entry" role="listitem">
+Galimard, Jean-Emmanuel, Sylvie Chevret, Emmanuel Curis, and Matthieu Resche-Rigon. 2018. <span>“Heckman Imputation Models for Binary or Continuous MNAR Outcomes and MAR Predictors.”</span> <em>BMC Medical Research Methodology</em> 18 (1): 90. <a href="https://doi.org/10.1186/s12874-018-0547-1">https://doi.org/10.1186/s12874-018-0547-1</a>.
+</div>
+<div id="ref-little2014statistical" class="csl-entry" role="listitem">
+Little, Roderick J. A., and Donald B. Rubin. 2014. <em>Statistical Analysis with Missing Data</em>. 3rd ed. Hoboken, NJ: John Wiley &amp; Sons.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

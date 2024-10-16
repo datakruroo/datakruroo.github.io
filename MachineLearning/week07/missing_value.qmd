@@ -74,16 +74,20 @@ $$
 
 ```{r}
 library(tidyverse)
+library(naniar)
 data <- read_csv("/Users/choat/Downloads/exam.csv")
 glimpse(data)
+### การ screen หยาบที่สุดเลยว่าใช้ชุขด้อมูลมีค่าสูญหายอย่างน้อย 1 ค่ามั้ย
+any_na(data)
 ```
+
 สมมุติว่ามีการสูญหายแบบ MCAR ขึ้นบนตัวแปร `ach` ร้อยละ 20 นั่นเทียบเท่ากับการสุ่มตัวอย่างแบบ SRS ออกจาก vector ของ `ach` ในสัดส่วน 0.2 ดังนี้
 
 ```{r fig.width = 8, fig.height=3}
 library(patchwork)
 set.seed(123)
 data <- data %>% 
-  mutate(ach_mcar = ifelse(runif(387,0,1)<0.4, NA, ach))
+  mutate(ach_mcar = ifelse(runif(387,0,1)<0.2, NA, ach))
 p1<-data %>% 
   pivot_longer(cols=starts_with("ach")) %>% 
   ggplot(aes(x=value))+
@@ -97,7 +101,22 @@ p2<-data %>%
 p1+p2
 ```
 
+```{r}
+data %>% 
+  dplyr::select(ach, ach_mcar) %>% 
+  summary()
+```
+
+
 การสูญหายแบบ MCAR ไม่ได้ทำให้เกิด bias ในการวิเคราะห์ แต่อาจมีผลกับ precision ของการวิเคราะห์ (ทำไม?)
+
+
+ค่าคลาดเคลื่อนมาตรฐาน (standard error) จะมีส่วนประกอบในคำนวณค่ามีการเอาขนาดตัวอย่างไปหาร ยกตัวอย่างเช่น ค่าคลาดเคลื่อนมาตรฐานของค่าเฉลี่ยตัวอย่าง
+
+$$
+SE(\bar{X}) = \frac{SD}{\sqrt{n}}
+$$
+
 
 ```{r}
 data %>% 
@@ -248,7 +267,11 @@ data %>%
 
 ```{r}
 library(naniar)
+any_na(data)
 miss_var_summary(data)
+miss_case_summary(data) %>% 
+  arrange(desc(pct_miss)) %>% 
+  filter(n_miss > 0)
 ```
 
 
@@ -262,7 +285,6 @@ miss_var_summary(data)
 - missing data pattern plot
 
 - co-occurence plot
-
 
 - scatter plot
 
@@ -280,6 +302,13 @@ miss_var_summary(data)
 library(visdat)
 ## create shadow matrix
 vis_dat(data)
+vis_miss(data, cluster = TRUE)
+
+temp <- data %>% 
+  mutate(performance = learning_performance > 50) %>% 
+  mutate(performance = factor(performance))
+
+vis_miss(temp, cluster = TRUE, facet = performance)
 ```
 
 ```{r}
@@ -294,11 +323,19 @@ p2
 ```
 
 
+```{r}
+data %>% 
+  bind_shadow() %>% 
+  summary()
+```
+
+
+
 
 #### md plot
 
 ```{r fig.width = 8}
-## install.packages("mice)
+## install.packages("mice")
 library(mice)
 md.pattern(data, rotate.names = TRUE)
 ```
@@ -348,7 +385,8 @@ large_data <- large_data %>% select(-1) %>%
   rename(student_id = X)
 
 miss_var_summary(large_data) %>% 
-  arrange(desc(pct_miss))
+  arrange(desc(pct_miss)) %>% 
+  filter(n_miss >0)
 ```
 
 ```{r}
@@ -363,7 +401,10 @@ large_data %>%
 select(where(~ any(is.na(.)))) %>% 
   vis_miss(cluster = TRUE)+
   theme(text = element_text(family = "ChulaCharasNew"))
+
+gg_miss_upset(large_data, nsets = 10)
 ```
+
 
 
 idea คือเราอาจใช้เทคนิค dimensionality reduction เพื่อย่อขนาดข้อมูลก่อนที่จะสร้างทัศนภาพข้อมูล ผลลัพธ์ที่ได้จะช่วยให้ผู้วิเคราะห์สามารถทำความเข้าใจสภาพการสูญหายของข้อมูลได้ง่ายขึ้น
@@ -387,27 +428,94 @@ dummy_mat <- large_data %>%
   mutate_all(as.numeric) %>% 
   mutate_all(~ .-1) %>% 
   select_if(~ sum(.) > 0)
-
-library(tidymodels)
-dummy_mat  %>% 
-  recipe(~.) %>% 
-  step_pca(all_predictors()) %>% 
-  prep() %>%
-  juice() %>% 
-  ggplot(aes(PC1, PC2))+
-  geom_vline(xintercept = 0, linetype=2)+
-  geom_hline(yintercept = 0, linetype=2)+
-  geom_point()+
-  ggtitle("หน่วยข้อมูลไหนมีค่าสูญหายในตัวแปรไหน")+
-  theme(text = element_text(family = "ChulaCharasNew"))
-
 ```
 
-ลอง transpose dummy_mat แล้วทำ PCA ผลลัพธ์ที่ได้คืออะไร
+ผลการวิเคราะห์สำคัญของ PCA ได้แก่
+
+- Eigenvalues เพื่อบอกความสำคัญของแต่ละองค์ประกอบ --> ใช้ตัดสินใจด้วยว่าการบรรยายสภาพข้อมูลด้วยการลดมิตินี้ควรมีกี่องค์ประกอบถึงจะพอ <-- สามารถอธิบายความแปรปรวนส่วนใหญ่ในข้อมูลต้นฉบับ <--- สาระสำคัญเดิมของข้อมูลต้นฉบับ
+
+- Factor loadings เพื่อบอกสหสัมพันธ์ระหว่างต้นแปรต้นฉบับกับองค์ประกอบหลักแต่ละองค์ประกอบ
+
+```{r}
+pca_prep <- dummy_mat  %>% 
+  recipe(~.) %>% 
+# step_normalize(all_predictors()) %>%
+  step_pca(all_predictors()) %>% 
+  prep() 
+  
+  
+pca_prep %>% 
+  tidy(1, type = "variance") %>% 
+  filter(terms == "percent variance") %>% 
+  ggplot(aes(x=component, y=value))+
+  geom_col()
+
+pca_prep %>% 
+  tidy(1) %>% 
+  filter(component %in% c("PC1","PC2","PC3","PC4","PC5","PC6")) %>% 
+  ggplot(aes(x=value, y=terms))+
+  geom_col()+
+  facet_wrap(~component)+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
 
 
 ```{r}
+library(tidymodels)
+library(ggrepel)
+dummy_mat  %>% 
+  recipe(~.) %>% 
+# step_normalize(all_predictors()) %>%
+  step_pca(all_predictors()) %>% 
+  prep() %>%
+  juice() %>%  ## ผลลัพธ์จาก PCA ส่วนนี้จะเป็นคะแนนองค์ประกอบหลักของการสูญหายในข้อมูล
+  bind_cols(id = large_data$student_id) %>% 
+  ggplot(aes(PC1, PC2))+
+  geom_vline(xintercept = 0, linetype=2)+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_jitter(width = 0.05, height = 0.05)+
+  geom_text(aes(label = id))+
+  ggtitle("หน่วยข้อมูลไหนมีค่าสูญหายในตัวแปรไหน")+
+  theme(text = element_text(family = "ChulaCharasNew"))
 
+
+dummy_mat  %>% 
+  recipe(~.) %>% 
+# step_normalize(all_predictors()) %>%
+  step_pca(all_predictors()) %>% 
+  prep() %>%
+  juice() %>%  ## ผลลัพธ์จาก PCA ส่วนนี้จะเป็นคะแนนองค์ประกอบหลักของการสูญหายในข้อมูล
+  bind_cols(id = large_data$student_id) %>% 
+  dplyr::select(id, PC1) %>% 
+  filter(PC1 > 0.8)
+```
+
+```{r}
+dummy_mat  %>% 
+  recipe(~.) %>% 
+# step_normalize(all_predictors()) %>%
+  step_pca(all_predictors()) %>% 
+  prep() %>%
+  juice() %>% 
+  dplyr::select(PC1) %>% 
+  bind_cols(large_data) %>% 
+  select_if(is.numeric) %>% 
+  select(-student_id) %>% 
+  drop_na() %>% 
+  cor(use = "complete.obs") %>% 
+  data.frame() %>% 
+  dplyr::select(PC1)
+
+```
+
+
+
+### การบ้าน อย่าลืมให้ใน canvas 
+
+> ลอง transpose dummy_mat แล้วทำ PCA ผลลัพธ์ที่ได้คืออะไร
+
+
+```{r}
 dummy_mat  %>% 
 #  rownames_to_column(var = "student_id") %>%  # เก็บ rownames เป็นคอลัมน์ (ถ้าต้องการ)
 #  mutate(student_id = paste0("student", student_id)) %>% 
@@ -426,6 +534,7 @@ pca_prep %>%
   facet_wrap(~component)+
   theme(text = element_text(family = "ChulaCharasNew"))
 ```
+
 
 ## การแก้ปัญหาค่าสูญหาย
 
@@ -465,6 +574,11 @@ data_miss %>%
 
 
 - การลงรหัสข้อมูลสูญหาย กล่าวคือในบางกรณีการสูญหายของข้อมูลสอดคล้องกับธรรมชาติของตัวแปรที่สูญหายทำให้ผู้วิเคราะห์สามารถลงรหัสของข้อมูลได้แทนที่จะกำหนดเป็นค่าสูญหาย ยกตัวอย่างจากชุดข้อมูล `exam.csv` หากผู้วิเคราะห์ทราบว่ามีหน่วยข้อมูลหลายหน่วยที่มีค่าสูญหายในตัวแปร `engage` และ `ontime_class` โดยที่หน่วยข้อมูลดังกล่าวเป็นนักเรียนที่ขาดเรียนบ่อยหรือแทบจะไม่มาเรียนในคลาสเลย กรณีเช่นนี้ผู้วิเคราะห์สามารถลงรหัสข้อมูลของนักเรียนดังกล่าวเป็น `no engage` และ `missed class` ตามลำดับ แทนที่จะกำหนดเป็นค่าสูญหาย และหากมีการสูญหายใน learning_performance ผู้วิเคราะห์อาจใช้ค่าเฉลี่ย learning_performance ของกลุ่มนักเรียนที่ไม่มาเรียนหรือมาเรียนน้อยเป็นตัวแทนค่าสูญหายดังกล่าวได้
+
+```{r}
+data %>% count(ontime_class)
+```
+
 
 
 - การทดแทนค่าสูญหาย (imputation methods) วิธีการนี้มักทดแทนค่าสูญหายโดยใช้ความสัมพันธ์ระหว่างตัวแปรที่มีค่าสูญหายกับตัวแปรอื่น ๆ เพื่อหาค่าทดแทนที่มีความสมเหตุสมผลมากที่สุด
@@ -523,3 +637,20 @@ step_unknown()
 ## กิจกรรม
 
 สร้างโมเดลทำนาย student_outcome_online และ onsite โดยมีทั้งโมเดลที่ไม่ได้ทดแทนค่าสูญหาย และมีการทดแทนค่าสูญหายแบบต่าง ๆ 
+
+```{r}
+large_data %>% glimpse()
+```
+
+
+```{r}
+recipe(y ~ ., data= train_data) %>% 
+  step_impute_knn(interaction.online1 ,neighbors = 10) %>% 
+  step_normalize(all_predictors()) %>%
+  prep()
+  
+```
+
+
+
+
