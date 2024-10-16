@@ -1,0 +1,722 @@
+---
+date: "2024-10-09"
+title: "Missing Value Analysis"
+categories:
+  - Machine Learning
+  - Missing Values
+  - R Programming
+image: img/missing_value.png
+message: false
+warning: false
+highlight: atom
+bibliography: reference.bib 
+---
+
+
+## ค่าสูญหาย
+
+ค่าสูญหาย (missing values) เป็นปัญหาทั่วไปที่มักพบได้เสมอในการวิเคราะห์ข้อมูล โดยเป็นสถานการณ์ที่ค่าสังเกตของตัวแปรบางตัว หรือหน่วยข้อมูลบางหน่วยมีการขาดหายไปจากชุดข้อมูล ซึ่งทำให้ชุดข้อมูลดังกล่าวไม่ได้มีข้อมูลที่ครบถ้วนสมบูรณ์
+
+อัลกอริทึมและโมเดลการวิเคราะห์ข้อมูลส่วนใหญ่มักมีข้อสมมุตินึงที่ผู้สอนส่วนใหญ่ก็มักไม่ได้กล่าวถึงคือ ข้อมูลที่นำมาวิเคราะห์จะต้องเป็นข้อมูลที่ไม่มีค่าสูญหาย (เรียกว่า complete data) อย่างไรก็ตามหากมองย้อนตอนที่เราวิเคราะห์ข้อมูลจริง ๆ มีโอกาสน้อยมากที่เราจะพบกับ complete data ดังกล่าว
+
+กระบวนการปกติที่เรามักใช้ในการจัดการข้อมูลสูญหายคือ
+
+1. ลบหน่วยข้อมูลที่มีค่าสูญหายออกไปจากการวิเคราะห์ (listwise deletion)
+
+2. แทนค่าสูญหายด้วยค่าที่เหมาะสม
+
+ทั้งสองวิธีการผลลัพธ์สุดท้ายที่ได้คือข้อมูลสมบูรณ์เหมือนกัน แต่ในหลายกรณีให้ผลลัพธ์ที่แตกต่างกัน และมีประสิทธิภาพที่แตกต่างกันด้วย
+
+
+ถึงแม้ค่าสูญหายจะเหมือนเป็นปัญหาทั่วไปแต่ในหลายกรณีเมื่อมีค่าสูญหายเกิดขึ้นการตัดสินใจและดำเนินการที่ไม่เหมาะสมของผู้วิเคราะห์ล้วนมีแนวโน้มส่งผลกระทบเชิงลบต่อโมเดลการวิเคราะห์ไม่มากก็น้อย ผลกระทบดังกล่าวทำให้ความแม่นยำและความน่าเชื่อถือของผลการวิเคราะห์ลดน้อยลง  การสำรวจ วิเคราะห์ และแก้ไขปัญหาค่าสูญหายจึงเป็นขั้นตอนจำเป็นที่ผู้วิเคราะห์จะต้องดำเนินการอย่างระมัดระวัง
+
+## สาเหตุของการสูญหายของข้อมูล
+
+การสูญหายของข้อมูลเป็นไปได้จากสาเหตุที่หลากหลาย ขึ้นอยู่กับบริบทหรือวิธีการเก็บรวบรวมข้อมูลที่ผู้วิจัยใช้ด้วย โดยอาจแจกแจงสาเหตุการสูญหายของข้อมูลได้ดังนี้
+
+### 1. ผู้ให้ข้อมูลหรือการวัดค่าสังเกต
+
+เป็นไปได้หลากหลายลักษณะ เช่น ในการวิจัยเชิงสำรวจที่มีการเก็บรวบรวมข้อมูลด้วยแบบสอบถามหรือแบบวัด มีความเป็นไปได้ที่ผู้ตอบอาจลืมตอบคำถามในบางข้อ หรือเลือกที่จะไม่ตอบเพราะไม่มีความรู้ หรือไม่สนใจที่จะให้ข้อมูล หรืออาจมีความสะดวกในการตอบคำถาม ปัจจัยดังกล่าวล้วนเป็นสาเหตุที่ทำให้เกิดค่าสูญหายทั้งสิ้น
+
+ความผิดพลาดของอุปกรณ์วัดก็เป็นปัจจัยในด้านนี้ด้วย เช่น ผู้วิจัยอาจเลือกใช้ smart watch เป็นเครื่องมือในการวัดชีพจร และตัวชี้วัดทางกายภาพของผู้เรียนระหว่างการจัดการเรียนรู้ อาจมีความเป็นไปได้ที่ผู้เรียนบางคนไม่ได้ใส่อุปกรณ์อย่างถูกต้อง หรืออุปกรณ์ทำงานผิดพลาดจากสาเหตุอื่น ๆ ทำให้ไม่สามารถเก็บรวบรวมข้อมูลได้อย่างครบถ้วน
+
+อีกลักษณะหนึ่งคือการขาดหายไปจากการที่หน่วยข้อมูลบางหน่วยไม่ได้เข้าร่วมกิจกรรมที่กำหนดไว้สำหรับการเก็บรวบรวมข้อมูล เช่น การออกแบบการเก็บรวบรวมข้อมูลในชั้นเรียน หรือเป็นการบ้านให้กับนักเรียน แต่อาจมีนักเรียนบางคนที่ไม่ได้เข้าเรียนในวันดังกล่าว หรือไม่ส่งการบ้าน สถานการณ์ดังกล่าวทำให้เกิดค่าสูญหายได้เช่นเดียวกัน
+
+### 2. การยุบรวมข้อมูลจากแหล่งข้อมูลที่หลากหลาย 
+
+การเก็บข้อมูลจากฐานข้อมูลของหน่วยงานต่าง ๆ เช่น สพฐ. สทศ. สมศ. รวมทั้งหน่วยงานภาครัฐอื่น ๆ แล้วนำมารวมกันเพื่อดำเนินการวิเคราะห์ ก็มีโอกาสที่บางหน่วยข้อมูลขาดหายไปเนื่องจากความแตกต่างของการเก็บข้อมูลในแต่ละฐาน
+
+### 3. การเก็บรวบรวมข้อมูลระยะยาว
+
+การเก็บรวบรวมข้อมูลระยะยาวที่จะต้องเก็บข้อมูลจากหน่วยข้อมูลเดียวกันหลาย ๆ ครั้ง หากระหว่างทางมีหน่วยข้อมูลออกจากระบบก็เกิดข้อมูลขาดหายได้เช่นกัน
+
+
+## ประเภทของค่าสูญหาย
+
+การจำแนกประเภทของค่าสูญหายสามารถจำแนกได้หลายลักษณะ ขึ้นกับบริบทที่ทำการวิเคราะห์ค่าสูญหาย หรือเกณฑ์ที่ใช้ในการพิจารณา โดยทั่วไปอาจจำแนกค่าสูญหายออกเป็น 3 ประเภท ได้แก่ ข้อมูลสูญหายที่เกิดจาก
+
+1. การออกแบบการเก็บข้อมูลที่ไม่เหมาะสม
+
+2. ปรากฏการณ์สุ่ม
+
+3. สาเหตุเฉพาะ
+
+### การสูญหายจากการออกแบบการเก็บข้อมูลที่ไม่เหมาะสม
+
+ลักษณะการสูญหายประเภทแรกสามารถเกิดได้ กล่าวคือผู้วิเคราะห์อาจมีการออกแบบการเก็บรวบรวมข้อมูลที่ไม่สอดคล้องกับสถานการณ์จริง ทำให้บางหน่วยข้อมูลถูกบันทึกเป็นค่าสูญหายแต่ในความเป็นจริงหน่วยข้อมูลดังกล่าวควรสามารถบันทึกข้อมูลได้ ยกตัวอย่างเช่น การวิเคราะห์การเรียนรู้ของนักเรียนาอาจมีการออกแบบการเก็บรวบรวมข้อมูลการมาเรียนของนักเรียน โดยมีการบันทึกข้อมูลไว้ 2 ลักษณะ ได้แก่ มาเรียนตรงเวลา (`ontime`) และมาเรียนสาย (`late`) แต่เมื่อเก็บรวบรวมข้อมูลเสร็จพบว่ามีนักเรียนบางคนไม่มีข้อมูลในตัวแปรนี้
+
+เมื่อพิจารณาเพิ่มเติมพบว่า นักเรียนกลุ่มที่ไม่มีข้อมูลในตัวแปรดังกล่าว คือกลุ่มนักเรียนที่ไม่ได้มาเรียนในวันนั้นทำให้ไม่สามารถระบุได้ว่ามาตรงเวลาหรือมาสาย สถานการณ์ดังกล่าวผู้วิเคราะห์สามารถแก้ปัญหาโดยปรับโครงสร้างการเก็บค่าของตัวแปรนี้ใหม่ โดยอาจเพิ่มกลุ่มนักเรียนที่ไม่ได้มาเรียน (`absent`) เป็นค่าที่เป็นไปได้ของตัวแปรนี้อีกหนึ่งค่า ซึ่งจะทำให้ผู้วิเคราะห์มีข้อมูลที่สมบูรณ์ของตัวแปรนี้
+
+### การสูญหายจากปรากฏการณ์สุ่ม
+
+การสูญหายในลักษณะที่สองคือการสูญหายจากปรากฏการณ์สุ่ม เรียกได้ว่าเป็นการสูญหายในเชิงสถิติ [@little2014statistical] โดยสามารถจำแนกได้เป็น 2 ประเภทได้แก่
+
+**การสูญหายแบบสุ่มสมบูรณ์ (missing completely at random: MCAR)**
+
+
+กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ ไม่มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่สังเกตเห็นหรือไม่ได้สังเกตเห็น ข้อมูลนั้นจะถือว่าขาดหายไปแบบสุ่มโดยสมบูรณ์ กลไกการสูญหายแบบ MCAR สามารถอธิบายในเชิงคณิตศาสตร์ได้ดังนี้
+
+กำหนดให้ $m_{ij}$ เป็นตัวแปร dummy แสดงการสูญหายของหน่วยข้อมูลที่ i ในตัวแปรที่ j ถ้ามีค่าเท่ากับ 1 คือเป็นค่าสูญหาย และ $X_{obs}$ คือข้อมูลที่ผู้วิเคราะห์สามารถสังเกตได้ในชุดข้อมูล ส่วน $X_{mis}$ คือข้อมูลที่สูญหาย กลไกลการสูญหายแบบ MCAR คือความน่าจะเป็นในการสูญหายของหน่วยข้อมูลที่ $i$ ในตัวแปรที่ $j$ เป็นค่าคงที่ ที่ไม่สัมพันธ์หรือขึ้นกับข้อมูลที่สังเกตได้และข้อมูลสูญหาย ดังนี้
+
+$$
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = p
+$$
+
+การ simulation ด้านล่างแสดงกลไกการเกิดค่าสูญหายแบบ MCAR ได้อย่างชัดเจน
+
+```{r}
+library(tidyverse)
+## ชุดข้อมูลสมบูรณ์
+data <- read_csv("/Users/choat/Downloads/exam.csv")
+glimpse(data)
+```
+
+สมมุติว่ามีการสูญหายแบบ MCAR ขึ้นบนตัวแปร `learning_performance` ร้อยละ 20 สถานการณ์นี้เทียบเท่ากับการสุ่มตัวอย่างแบบ SRS ออกจาก vector ของ `ach` ในสัดส่วน 0.2 ดังนี้
+
+```{r fig.width = 8, fig.height=3}
+library(patchwork)
+set.seed(123)
+data <- data %>% 
+  mutate(learning_performance_mcar = ifelse(runif(387,0,1)<0.2,NA, learning_performance)) 
+p1<-data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(aes(fill = name))+
+  theme(legend.position = "none")
+
+p2<-data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x = value, y=name))+
+  geom_boxplot(aes(fill = name))
+
+p1+p2
+```
+
+การสูญหายแบบ MCAR ไม่ได้ทำให้เกิด bias ในการวิเคราะห์ แต่อาจมีผลกับ precision ของการวิเคราะห์ ลองพิจารณาผลการวิเคราะห์ด้านล่าง
+
+```{r}
+data %>% 
+  ggplot(aes(x=learning_performance))+
+  geom_point(aes(y=ach),alpha=0.1)+
+  geom_point(data = data %>% filter(is.na(learning_performance_mcar)==T), 
+             aes(y=ach), col="maroon", shape = 2)+
+  theme_light()+
+  theme(panel.grid = element_blank())
+```
+
+
+```{r}
+data %>% 
+  select(learning_performance, ach, learning_performance_mcar) %>% 
+  pivot_longer(cols = c(learning_performance, 
+                        learning_performance_mcar)) %>% 
+  group_by(name) %>% 
+  summarise(mean = mean(value, na.rm = T),
+            sd = sd(value,na.rm = T),
+            median = median(value,na.rm = T),
+            cor = cor(ach, value, use = "complete.obs"),
+            r2 = cor^2)
+```
+
+
+**การสูญหายแบบสุ่ม (missing at random: MAR)**
+
+กล่าวคือ ถ้าการมีอยู่ของข้อมูลที่ขาดหายไปในตัวแปรหนึ่ง ๆ มีความสัมพันธ์กับตัวแปรอื่น ๆ ที่ผู้วิเคราะห์มีข้อมูลสามารถสังเกตค่าได้ โดยไม่เกี่ยวข้องกับข้อมูลที่สูญหายไปของตัวแปรนั้น ข้อมูลนั้นจะถือว่าขาดหายไปแบบ MAR กลไกการสูญหายแบบ MAR สามารถอธิบายในเชิงคณิตศาสตร์ได้ดังนี้
+
+$$
+
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs})
+
+$$
+
+
+```{r fig.width = 8, fig.height=3}
+set.seed(123)
+data <- data %>% 
+  mutate(learning_performance_mar = case_when(
+    ach > 70 | ach < 30 ~ ifelse(runif(387,0,1)<0.5,NA, ach) ,
+    .default = ach
+  )
+  )
+p1<-data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(aes(fill = name))+
+  theme(legend.position = "none")
+
+
+p2<-data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x = value, y=name))+
+  geom_boxplot(aes(fill = name))
+
+p1+p2
+```
+
+
+```{r}
+data %>% 
+  ggplot(aes(x=learning_performance))+
+  geom_point(aes(y=ach),alpha=0.1)+
+  geom_point(data = data %>% filter(is.na(learning_performance_mar)==T), 
+             aes(y=ach), col="maroon", shape = 2)+
+  theme_light()+
+  theme(panel.grid = element_blank())
+
+data %>% 
+  select(learning_performance,learning_performance_mcar, 
+         learning_performance_mar, ach) %>% 
+  pivot_longer(cols = c(learning_performance,
+                        learning_performance_mcar, 
+                        learning_performance_mar)) %>%
+  group_by(name) %>% 
+  summarise(mean = mean(value, na.rm = T),
+            sd = sd(value,na.rm = T),
+            median = median(value,na.rm = T),
+            cor = cor(ach, value, use = "complete.obs"),
+            r2 = cor^2)
+```
+
+จากผลการวิเคราะห์ข้างต้นจะเห็นว่าการสูญหายแบบ MAR มีแนวโน้มทำให้เกิดความลำเอียงในการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปร
+
+การตรวจสอบว่าการสูญหายในชุดข้อมูลเป็น MCAR หรือ MAR สามารถทำได้หลายวิธีการ แนวคิดหลัก ๆ คือการวิเคราะห์ความสัมพันธ์ระหว่างการสูญหายของข้อมูลกับตัวแปรอื่น ๆ ในชุดข้อมูล หากพบหลักฐานว่ามีความสัมพันธ์ดังกล่าวแสดงว่าการสูญหายที่เกิดขึ้นเป็นแบบ MAR รูปด้านล่างแสดงตัวอย่างการวิเคราะห์ข้อมูลจำลองข้างต้น
+
+```{r}
+library(naniar)
+p1<-data |> 
+  bind_shadow() |>  ## สร้าง shadow matrix
+  ggplot(aes(x = learning_performance_mcar_NA, y=ach))+
+  geom_boxplot()+
+  ggtitle("MCAR Mechanism")
+
+p2<-data |> 
+  bind_shadow() |>  ## สร้าง shadow matrix
+  ggplot(aes(x = learning_performance_mar_NA, y=ach))+
+  geom_boxplot()+
+  ggtitle("MAR Mechanism")
+
+p1+p2
+```
+
+จากรูปจะเห็นว่าข้อมูลที่สูญหาย `NA` ใน learning performance มีความสัมพันธ์กับ `ach` โดยการสูญหายพบมากในนักเรียนที่มี `ach` อยู่ในระดับต่ำและสูง อย่างชัดเจน ลักษณะนี้แสดงการสูญหายที่มีกลไกแบบ MAR 
+
+เมื่อเปรียบเทียบกับการสูญหายใน learning performance ที่มีการสูญหายแบบ MCAR จะเห็นว่าไม่มีแนวโน้มความสัมพันธ์ระหว่างการสูญหายของข้อมูลกับ `ach` 
+
+หากมีตัวแปรหลายตัวในชุดข้อมูล เราสามารถใช้การวิเคราะหการถดถอย logistic หรือโมเดลทำนายอื่น ๆ ช่วยในการวิเคราะห์ความสัมพันธ์ระหว่างการสูญหายกับข้อมูลตัวแปรอื่น ๆ เพื่อวินิจฉัยลักษณะของกลไกการสูญหายแบบสุ่มได้ เช่นตัวอย่างต่อไปนี้
+
+```{r}
+  data |> 
+  bind_shadow() |> 
+  select(learning_performance_mar_NA, ach, engage, ontime_class, practice) |>
+  ## ปรับให้ตัวแปรตามเป็น binary 0,1
+  mutate(learning_performance_mar_NA = as.numeric(learning_performance_mar_NA)-1) %>% 
+  with(glm(learning_performance_mar_NA ~ ach + engage + ontime_class + practice, family = binomial)) |> 
+  summary()
+```
+
+ผลการวิเคราะห์ข้างต้นเห็นชัดเจนว่า `ach` เป็นตัวแปรที่มีความสัมพันธ์กับการสูญหายใน learning performance ดังนั้นการสูญหายดังกล่าวมีแนวโน้มเป็นการสูญหายแบบ MAR
+
+
+### การสูญหายจากสาเหตุเฉพาะ
+
+สาเหตุเฉพาะหรือ Missing Not at Random (MNAR) คือ การสูญหายที่มีความสัมพันธ์กับค่าของตัวแปรที่สูญหายไป หรือค่าของตัวแปรอื่น ๆ ที่ไม่สามารถสังเกตได้ หรือไม่ได้สังเกต 
+
+$$
+p(m_{ij} = 1 | X_{obs}, X_{mis}) = f(X_{obs}, X_{mis})
+$$
+
+กล่าวง่าย ๆ เป็นการสูญหายที่เกิดขึ้นโดยสัมพันธ์กับค่าที่สูญหาย การสูญหายแบบนี้ไม่สามารถอธิบายได้ด้วยข้อมูลที่มี  เช่น
+
+- ผู้ตอบไม่ตอบคำถามเกี่ยวกับรายได้เพราะรายได้ของตนเองสูงเกินไป
+  
+- นักเรียนที่มีคะแนนต่ำมากไม่ตอบคำถาม ไม่เข้าเรียน หรือไม่ส่งงานทำให้ครูไม่สามารถประเมินคะแนนให้นักเรียนได้
+
+- ผู้เรียนที่เรียนไม่เก่ง drop out ออกไปจากชั้นเรียนระหว่างการเรียนรู้ทำให้ไม่สามารถประเมินผลการเรียนรู้หรือตัวแปรที่เกี่ยวข้องได้
+
+ผลลัพธ์ด้านล่างแสดงผลการเปรียบเทียบการวิเคราะห์ในสถานการณ์ที่ข้อมูลสูญหายแบบ MNAR เปรียบเทียบกับการสูญหายแบบอื่น โดยใช้ข้อมูลจำลอง
+
+```{r fig.width = 8, fig.height=3, warning = F}
+set.seed(123)
+data <- data %>% 
+  mutate(learning_performance_mnar = case_when(
+    learning_performance < 30  ~ ifelse(runif(387,0,1)<0.4,NA, ach) ,
+    .default = learning_performance
+  )
+  )
+p1<-data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(aes(fill = name))+
+  theme(legend.position = "none")
+
+p2<-data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x = value, y=name))+
+  geom_boxplot(aes(fill = name))
+
+p1+p2
+```
+
+
+```{r}
+data %>% 
+  ggplot(aes(x=learning_performance))+
+  geom_point(aes(y=ach),alpha=0.1)+
+  geom_point(data = data %>% filter(is.na(learning_performance_mnar)==T), 
+             aes(y=ach), col="maroon", shape = 2)+
+  theme_light()+
+  theme(panel.grid = element_blank())
+
+data %>% 
+  select(learning_performance, learning_performance_mcar, 
+         learning_performance_mar, learning_performance_mnar, ach) %>% 
+  pivot_longer(cols = starts_with("learning")) %>% 
+  group_by(name) %>% 
+  summarise(mean = mean(value, na.rm = T),
+            sd = sd(value,na.rm = T),
+            median = median(value,na.rm = T),
+            cor = cor(ach, value, use = "complete.obs"),
+            r2 = cor^2)
+```
+
+
+การตรวจสอบ MNAR ค่อนข้างลำบากเมื่อเปรียบเทียบกับการวิเคราะห์กลไกการสูญหายแบบอื่น  ตัวอย่างด้านล่างแสดงให้เห็นว่าเมื่อมีการสูญหายแบบ MAR ผลการวิเคราะห์ความสัมพันธ์ระหว่างการสูญหายกับตัวแปรในชุดข้อมูลมีลักษณะที่เหมือนกับผลการวิเคราะห์ที่ได้จาก MAR กล่าวคือการแยกกลไกการสูญหายแบบ MAR และ MNAR ออกจากกันด้วยข้อมูลเชิงปริมาณแต่เพียงอย่างเดียวทำได้ยากหรืออาจทำไม่ได้เลย
+
+```{r}
+p1<-data |> 
+  bind_shadow() |>  ## สร้าง shadow matrix
+  ggplot(aes(x = learning_performance_mcar_NA, y=ach))+
+  geom_boxplot()+
+  ggtitle("MCAR Mechanism")
+
+p2<-data |> 
+  bind_shadow() |>  ## สร้าง shadow matrix
+  ggplot(aes(x = learning_performance_mar_NA, y=ach))+
+  geom_boxplot()+
+  ggtitle("MAR Mechanism")
+
+p3<-data |> 
+  bind_shadow() |>  ## สร้าง shadow matrix
+  ggplot(aes(x = learning_performance_mnar_NA, y=ach))+
+  geom_boxplot()+
+  ggtitle("MNAR Mechanism")
+
+p1+p2+p3
+```
+
+จากลักษณะการสูญหายแบบ MNAR ที่มีกลไกที่แฝงอยู่เบื้องหลังค่าที่สูญหายอีกทีหนึ่งนี้ การตรวจสอบจึงค่อนข้างยากลำบาก แต่ก็สามารถดำเนินการได้ โดยวิธีการตรวจสอบที่เป็นไปได้ เช่น
+
+การเปรียบเทียบกับทฤษฎีหรือความรู้หรือข้อมูลอื่นที่มีอยู่เกี่ยวกับบริบทที่ทำการวิเคราะห์ ยกตัวอย่างเช่น การเก็บรวบรวมข้อมูลรายได้ผู้ปกครองของนักเรียนซึ่งพบว่ามีค่าสูญหาย เมื่อทำการวิเคราะห์ข้อมูลรายได้ที่เก็บรวบรวมได้ดังกล่าวอาจพบว่าค่าเฉลี่ย และขอบเขตของรายได้ผู้ปกครองนักเรียนในโรงเรียนนี้มีแนวโน้มที่ต่ำกว่าปกติ โดยอาจสังเกตว่าต่ำกว่าผลการสำรวจในอดีต หรือต่ำกว่าที่ควรจะเป็นจากการพิจารณาบริบทแวดล้อมของโรงเรียน กรณีเช่นนี้อาจตั้งสมมุติฐานได้ว่าการสูญหายดังกล่าวเป็นการสูญหายในกลุ่มของนักเรียนที่ครอบครัวมีฐานะร่ำรวย จากตัวอย่างนี้จะเห็นว่าการตรวจสอบการสูญหายแบบ MNAR ต้องอาศัยความรู้ในส่วนอื่นนอกเหนือจากข้อมูลเชิงปริมาณที่เก็บรวบรวมมาแต่เพียงอย่างเดียว
+
+อีกวิธีการหนึ่งคือการใช้โมเดลการวิเคราะห์ความลำเอียงในการเลือกตัวอย่าง (sample selection bias) หรือ Heckman Selection Model หรือ Heckman Correction [@Galimard2018] โมเดลดังกล่าวเป็นทั้งโมเดลการวิเคราะห์และแก้ปัญหาการสูญหายแบบ MNAR อย่างไรก็ตามรายละเอียดส่วนนี้ค่อนข้างมีมากและอยู่นอกเหนือขอบเขตเนื้อหาในหัวข้่อนี้ อ่านเพิ่มเติมได้ที่ --- > **
+
+
+## ขั้นตอนการวิเคราะห์ข้อมูลที่มีค่าสูญหาย
+
+การวิเคราะห์ข้อมูลเมื่อมีค่าสูญหายนั้นมีแนวทางหรือวิธีดำเนินงานที่หลากหลายขึ้นอยู่กับว่าเราอ้างอิงสำนักไหน นักสถิติหรือนักวิทยาการข้อมูลคนไหน กลุ่มไหน อย่างไรก็ตามแนวทางโดยทั่วไปที่เหมือนกันประกอบด้วย
+
+1. การสำรวจและระบุค่าสูญหาย
+
+2. การวิเคราะห์รูปแบบหรือกลไกของค่าสูญหาย
+
+3. การจัดการค่าสูญหาย
+
+รายละเอียดในแต่ละขั้นตอนมีดังนี้
+
+## การสำรวจและระบุค่าสูญหาย
+
+ทัศนภาพข้อมูลเป็นเครื่องมือสำคัญที่จะช่วยให้ผู้วิเคราะห์ทำความเข้าใจสภาพการสูญหายของข้อมูลในชุดข้อมูลที่ทำงานด้วย โดยปกตินักวิเคราะห์จะใช้ทั้งทัศนภาพข้อมูลควบคู่กับการวิเคราะห์ผลทางสถิติเพื่อทำความเข้าใจและระบุค่าสูญหายในชุดข้อมูล
+
+อย่างไรก็ตามจากประสบการณ์ของผู้สอน เทคนิคการวิเคราะห์เพื่อสำรวจค่าสูญหายที่ใช้อาจมีความแตกต่างกันขึ้นอยู่กับขนาดของชุดข้อมูลด้วย
+
+- การใช้ทัศนภาพข้อมูลและสถิติพื้นฐานเพื่อสำรวจค่าสูญหายเหมาะกับการทำงานบนชุดข้อมูลขนาดเล็ก
+
+- ข้อมูลขนาดปานหลางหรือขนาดใหญ่อาจจะต้องใช้เทคนิคโดยเฉพาะ ML เข้ามาช่วยเพื่อให้แสดงสภาพการสูญหายของข้อมูลของตัวแปรทั้งหมดได้
+
+
+### Tabulating Missing data
+
+```{r}
+library(naniar)
+miss_var_summary(data)
+```
+
+
+### Visualization for Missing data
+
+เทคนิคทั้งหมดในหัวข้อนี้เหมาะสำหรับใช้กับชุดข้อมูลที่มีขนาดไม่ใหญ่มาก
+
+
+- heatmap
+
+- missing data pattern plot
+
+- co-occurence plot
+
+
+- scatter plot
+
+ตัวอย่างมีดังนี้
+
+
+
+การสร้าง heatmap สามารถทำได้หลายวิธีการ ตั้งแต่การสร้างแบบ manual (ซึ่งทำบ่อย ๆ ก็เหนื่อย) ไปจนถึงมีฟังก์ชันสำเร็จรูปจากหลาย library
+
+
+#### heatmap
+
+```{r}
+## install.packages("visdat")
+library(visdat)
+## create shadow matrix
+vis_dat(data)
+```
+
+```{r}
+p1<-vis_miss(data, cluster = TRUE)
+p1
+```
+
+
+```{r}
+p2<-vis_miss(data, cluster = TRUE, facet = ontime_class)
+p2
+```
+
+
+
+#### md plot
+
+```{r fig.width = 8}
+## install.packages("mice)
+library(mice)
+md.pattern(data, rotate.names = TRUE)
+```
+
+
+
+#### co-occurence plot
+
+co-occurence plot ช่วยแสดงสภาพการสูญหายที่ลึกกว่า heatmap เพราะมีทั้งมิติความถี่ของการสูญหายเป็นรายตัวแปรซึ่งจำแนกเป็นการสูญหายในตัวแปรเดียว และการสูญหายร่วมกัน
+
+การสูญหายร่วมกันที่มากมีผลทำให้การแก้ปัญหาแบบตัดข้อมูลที่ missing ออกจากไปการวิเคราะห์เริ่มไม่ work (ทำไม?)
+
+```{r}
+library(naniar)
+gg_miss_upset(data)
+```
+
+#### Scatter plot
+
+แผนภาพการกระจายมีประโยชน์มากสำหรับวิเคราะห์กลไกการสูญหายของข้อมูล
+
+```{r}
+data %>% 
+  bind_shadow() %>% 
+  ggplot(aes(x = learning_performance_mar))+
+  geom_point(aes(y=ach))+
+  geom_rug(aes(y=ach))+
+  geom_rug(aes(y=ach ,
+               col = learning_performance_mar_NA))+
+  scale_color_manual(values = c("!NA" = NULL, "NA" = "maroon"),
+                     labels=c(NULL, "missing in ach"))+
+  theme_light()
+```
+
+จากรูปจะเห็นได้อย่างชัดเจนว่าการสูญหายที่เกิดขึ้นใน ach มีความสัมพันธ์กับ learning performance ของนักเรียน ซึ่งสะท้อน MAR mechanism
+
+
+
+### การสำรวจค่าสูญหายสำหรับข้อมูลขนาดใหญ่
+
+
+ในกรณีที่ชุดข้อมูลมีขนาดใหญ่  โดยเฉพาะเมื่อมีตัวแปรจำนวนมาก การใช้ heatmap หรือ co-occurence plot อาจมีประสิทธิภาพน้อยลง ลองใช้วิธีการข้างต้นวิเคราะห์สภาพการสูญหายในชุดข้อมูลต่อไปนี้
+
+[ดาวน์โหลด](https://bit.ly/2JoKcqX)
+
+```{r}
+large_data <- read_csv("/Users/choat/Downloads/onlinelearning_miss.csv")
+large_data <- large_data %>% select(-1) %>% 
+  rename(student_id = X)
+
+miss_var_summary(large_data) %>% 
+  arrange(desc(pct_miss))
+```
+
+idea คือเราอาจใช้เทคนิค dimensionality reduction เพื่อย่อขนาดข้อมูลก่อนที่จะสร้างทัศนภาพข้อมูล ผลลัพธ์ที่ได้จะช่วยให้ผู้วิเคราะห์สามารถทำความเข้าใจสภาพการสูญหายของข้อมูลได้ง่ายขึ้น
+
+การใช้ PCA ในบริบทนี้สามารถดำเนินการได้ดังนี้
+
+1. แปลงข้อมูลของตัวแปรที่มีค่าสูญหายเป็น dummy variable โดยใช้ 1 แทนค่าสูญหาย และ 0 แทนค่าที่ไม่สูญหาย
+
+2. ใช้ PCA เพื่อสกัดองค์ประกอบหลักจาก matrix ของ dummy ดังกล่าว
+
+3. ลักษณะการทำงานของ PCA คือจะสร้างองค์ประกอบหลักที่สามารถอธิบายความแปรปรวนของตัวแปรต้นฉบับเดิมให้ได้มากที่สุด ดังนั้นเมื่อตัวแปรนำเข้าเป็นแบบ binary 0,1 องค์ประกอบหลักที่ได้จึงจะสะท้อนความแปรปรวนหรือรูปแบบการสูญหายของข้อมูล
+
+
+ทดลองดำเนินการดังนี้
+
+```{r}
+dummy_mat <- large_data %>% 
+  bind_shadow() %>% 
+  dplyr::select(ends_with("NA")) %>% 
+  select(-1) |> 
+  mutate_all(as.numeric) %>% 
+  mutate_all(~ .-1)
+
+library(tidymodels)
+dummy_mat  %>% 
+  recipe(~.) %>% 
+  step_pca(all_predictors()) %>% 
+  prep() %>%
+  juice() %>% 
+  ggplot(aes(PC1, PC2))+
+  geom_point()
+```
+
+
+```{r}
+dummy_mat  %>% 
+#  rownames_to_column(var = "student_id") %>%  # เก็บ rownames เป็นคอลัมน์ (ถ้าต้องการ)
+#  mutate(student_id = paste0("student", student_id)) %>% 
+#  pivot_longer(cols = -student_id, names_to = "variable", values_to = "value") %>%
+#  pivot_wider(names_from = student_id, values_from = value) %>% 
+#  column_to_rownames("variable") %>%
+  recipe(~.) %>% 
+  step_pca(all_predictors(), num_comp = 3) %>% 
+  prep() -> pca_prep
+
+## Variance Extraction
+pca_prep %>% 
+  tidy(1, type = "variance") |> 
+  filter(terms == "percent variance") |> 
+  ggplot(aes(x=component, y=value))+
+  geom_col()+
+  ggtitle("Percent Variance Explained")
+
+## Component Loadings
+pca_prep %>% 
+  tidy(1) %>% 
+  filter(component %in% c("PC1","PC2","PC3")) %>% 
+  ggplot(aes(x=value, y=terms))+
+  geom_col()+
+  facet_wrap(~component)+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ggtitle("Factor Loadings")
+```
+
+
+#### ตัวอย่างการใช้ correlation วิเคราะห์กลไกการสูญหาย
+
+เราสามารถใช้คะแนนองค์ประกอบหลักของค่าสูญหายในการวิเคราะห์กลไกการสูญหายของข้อมูลได้ ยกตัวอย่างเช่น การนำคะแนนองค์ประกอบหลักของค่าสูญหายไปวิเคราะห์ความสัมพันธ์กับตัวแปรอื่น ๆ ในโมเดล
+
+
+```{r fig.height = 9}
+p1 <- pca_prep |> juice() |> 
+  mutate(PC1 = -PC1) |> 
+  dplyr::select(PC1) |> 
+  bind_cols(large_data) |> 
+  select_if(is.numeric) |> 
+  select(-student_id, -climate.online1) |> 
+  pivot_longer(cols = -PC1) |> 
+  group_by(name) |> 
+  summarise(cor = cor(PC1, value, use = "complete.obs")) |> 
+  ggplot(aes(x = abs(cor), y=reorder(name, abs(cor))))+
+  geom_col()+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  scale_x_continuous(limits=c(0,0.2))+
+  ylab("")
+
+p2 <- pca_prep |> juice() |> 
+  dplyr::select(PC2) |> 
+  bind_cols(large_data) |> 
+  select_if(is.numeric) |> 
+  select(-student_id, -climate.onsite3, -climate.onsite2) |> 
+  pivot_longer(cols = -PC2) |> 
+  group_by(name) |> 
+  summarise(cor = cor(PC2, value, use = "complete.obs")) |> 
+  ggplot(aes(x = abs(cor), y=reorder(name, abs(cor))))+
+  geom_col()+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  scale_x_continuous(limits=c(0,0.2))+
+  ylab("")
+
+p3 <- pca_prep |> juice() |> 
+  dplyr::select(PC3) |> 
+  bind_cols(large_data) |> 
+  select_if(is.numeric) |> 
+  select(-student_id, -climate.onsite2, -climate.online3) |> 
+  pivot_longer(cols = -PC3) |> 
+  group_by(name) |> 
+  summarise(cor = cor(PC3, value, use = "complete.obs")) |> 
+  ggplot(aes(x = abs(cor), y=reorder(name, abs(cor))))+
+  geom_col()+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  scale_x_continuous(limits=c(0,0.2))+
+  ylab("")
+
+p1/p2/p3
+```
+
+#### ตัวอย่างการใช้ decision tree วิเคราะห์กลไกการสูญหาย
+
+การวิเคราะห์ด้านล่างแสดงให้เห็นว่าองค์ประกอบหลักที่ 1 ของค่าสูญหายไม่มีแนวโน้มความสัมพันธ์กับตัวแปรอิสระในโมเดลอย่างชัดเจน แสดงให้เห็นว่าการสูญหายที่เกิดขึ้นใน `climate.online1` มีแนวโน้มเป็นแบบ MCAR 
+
+```{r echo = F}
+set.seed(123)
+temp <- pca_prep |> juice() |> 
+  mutate(PC1 = -PC1) |> 
+  bind_cols(large_data) |> 
+  dplyr::select(-contains("onsite"), -PC2, -PC3) |> 
+  mutate(PC1  = factor(ifelse(PC1 > 0.8,"missing","not")))
+
+split<- initial_split(temp, prop = 0.7, strata = PC1)
+train_data <- training(split)
+test_data <- testing(split)
+
+library(themis)
+rec <-  train_data |> 
+  recipe(PC1 ~ .) |> 
+  update_role(student_id, new_role = "ID") |> 
+  step_dummy(all_nominal_predictors())
+
+
+reg_spec <- decision_tree() %>% 
+  set_engine("rpart") %>% 
+  set_mode("classification")
+
+missing_fit <- workflow() %>% 
+  add_recipe(rec) %>% 
+  add_model(reg_spec) %>% 
+  last_fit(split, metrics = metric_set(f_meas, sens))
+
+missing_fit |> collect_metrics()
+
+library(rpart.plot)
+missing_fit |> extract_fit_engine() |> 
+  rpart.plot(family = "ChulaCharasNew")
+
+
+library(vip)
+missing_fit |> 
+  extract_fit_engine() |> 
+  vip(method = "model", geom = "point")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+## การแก้ปัญหาค่าสูญหาย
+
+
+การแก้ปัญหาค่าสูญหายอาจทำให้หลายวิธีการ ทั้งนี้ขึ้นอยู่กับความเหมาะสมว่าในแต่ละกรณีควรเลือกใช้วิธีการใด โดยปกติอาจจำแนกวิธีการแก้ปัญหาได้เป็นดังนี้
+
+-   เลือกใช้โมเดลการวิเคราะห์ที่แกร่งต่อการสูญหายของข้อมูล เช่น tree-based models
+
+-   การลบข้อมูลที่มีค่าสูญหายทิ้ง ซึ่งสามารถทำได้หลายลักษณะ เช่น การลบตัวแปรที่มีค่าสูญหายอย่างรุนแรงออกไปจากการวิเคราะห์ หรือการลบหน่วยข้อมูลที่มีค่าสูญหายออกไปจากการวิเคราะห์ วิธีการนี้อาจเหมาะสมถ้าในการวิเคราะห์มีตัวแปรหรือหน่วยข้อมูลบางตัวที่มีค่าสูญหายมากอย่างผิดปกติหรือรุนแรงมากเมื่อเปรียบเทียบกับตัวแปรหรือหน่วยข้อมูลอื่น ๆ อย่างไรก็ตามหากพบว่าการสูญหายมีการกระจายตัวไปหลายตัวแปรพและหลายหน่วยข้อมูลพร้อมกันวิธีการนี้จะไม่ work เพราะอาจสร้าง bias ให้กับการวิเคราะห์
+
+```{r}
+data <- read_csv("/Users/choat/Downloads/exam.csv")
+glimpse(data)
+### ลองสร้าง missign value ใน learning performance
+set.seed(123)
+data_miss <- data %>% 
+  mutate(learning_performance = 
+           case_when(
+             ach < 30 ~ ifelse(runif(387,0,1)<2, NA, learning_performance),
+             ach >=30 ~ learning_performance
+           )
+  )
+ #dplyr::select(-learning_performance)
+data_miss %>% vis_miss(cluster = T)
+data_miss %>% miss_var_summary()
+
+data_miss %>% 
+  bind_shadow() %>% 
+  ggplot(aes(x=learning_performance, y=ach))+
+  geom_point(data = data, col = "maroon")+
+  geom_smooth(method="lm", se = F)+
+  geom_point(col = "steelblue")+
+  geom_smooth(data = data, col = "maroon", method = "lm")
+```
+
+อีกปัจจัยหนึ่งที่ควรนำมาพิจารณาร่วมในการลบข้อมูลคือกลไกการสูญหายของข้อมูล กล่าวคือหากการสูญหายที่เกิดขึ้นเป็นแบบ MCAR การลบข้อมูลสามารถทำได้โดยไม่ได้ทำให้เกิดความลำเอียงในผลการวิเคราะห์ อย่างไรก็ตามหากการสูญหายเป็น MAR หรือ MNAR การลบข้อมูลอาจทำให้เกิดความลำเอียงดังที่ได้กล่าวไว้
+
+-   การลงรหัสข้อมูลสูญหาย กล่าวคือในบางกรณีการสูญหายของข้อมูลสอดคล้องกับธรรมชาติของตัวแปรที่สูญหายทำให้ผู้วิเคราะห์สามารถลงรหัสของข้อมูลได้แทนที่จะกำหนดเป็นค่าสูญหาย ยกตัวอย่างจากชุดข้อมูล `exam.csv` หากผู้วิเคราะห์ทราบว่ามีหน่วยข้อมูลหลายหน่วยที่มีค่าสูญหายในตัวแปร `engage` และ `ontime_class` โดยที่หน่วยข้อมูลดังกล่าวเป็นนักเรียนที่ขาดเรียนบ่อยหรือแทบจะไม่มาเรียนในคลาสเลย กรณีเช่นนี้ผู้วิเคราะห์สามารถลงรหัสข้อมูลของนักเรียนดังกล่าวเป็น `no engage` และ `missed class` ตามลำดับ แทนที่จะกำหนดเป็นค่าสูญหาย และหากมีการสูญหายใน learning_performance ผู้วิเคราะห์อาจใช้ค่าเฉลี่ย learning_performance ของกลุ่มนักเรียนที่ไม่มาเรียนหรือมาเรียนน้อยเป็นตัวแทนค่าสูญหายดังกล่าวได้
+
+```{r}
+data %>% count(ontime_class)
+```
+
+-   การทดแทนค่าสูญหาย (imputation methods) วิธีการนี้มักทดแทนค่าสูญหายโดยใช้ความสัมพันธ์ระหว่างตัวแปรที่มีค่าสูญหายกับตัวแปรอื่น ๆ เพื่อหาค่าทดแทนที่มีความสมเหตุสมผลมากที่สุด
+
+การวิจัยในอดีตมักเน้นการวิเคราะห์เพื่ออนุมานเชิงสถิติ ดังนั้นที่ผ่านมาวิธีการทดแทนค่าสูญหายหลายวิธีการจึงมีการออกแบบให้คำนึงถึงผลกระทบที่จะมีต่อการอนุมานเชิงสถิติในโมเดลต่าง ๆ กล่าวคือวัตถุประสงค์หลักในการหาค่าทดแทนคือการรับประกันว่าค่าทดแทนที่กำหนดให้กับข้อมูลสูญหายจะมีคุณภาพเพียงพอที่จะทำให้การทดสอบสมมุติฐานหรือการประมาณค่าแบบช่วงมีความน่าเชื่อถือ วิธีการที่มักใช้แก้ปัญหาเป็นหลักในกลุ่มนี้คือ การทดแทนค่าสูญหายแบบหลายค่า (multiple imputation)
+
+![](mi.png)
+
+อย่างไรก็ตามวิธีการดังกล่าวอาจไม่ work ในการพัฒนาโมเดลทำนายทั้งนี้เป็นเพราะ
+
+1.  โมเดลทำนายหลายตัวไม่ได้เป็น parametric model กล่าวคือไม่ได้มีข้อตกลงเบื้องต้นเกี่ยวกับการแจกแจงของข้อมูล เช่น decision tree, K-NN ทำให้โมเดลดังกล่าวไม่สามารถสร้างสารสนเทศในการอนุมานเชิงสถิติได้ multiple imputation จะไม่เหมาะกับการทำงานร่วมกับโมเดลแบบนี้
+
+2.  การพัฒนาโมเดลทำนายมีกระบวนการที่ค่อนข้างซับซ้อนหลายขั้น มีการใช้การสุ่มตัวอย่างซ้ำ เช่น cross-validation หรือ bootstraping เพื่อคำนวณความคลาดเคลื่อนแบบ out-sample นอกจากนี้หลายโมเดลยังมีการประมวลผลที่ซับซ้อนใช้เวลาต่อหนึ่งรอบในการประมาณที่ค่อนข้างมาก การทำ multiple imputation จะยิ่งเพิ่มเวลาในการประมวลผลและการใช้ทรัพยากรไปอีก
+
+อย่างไรก็ตามการประเมินความผันแปรในการทดแทนค่าสูญหายเป็นประเด็นที่ควรวิเคราะห์/ศึกษาในงานวิจัย ซึ่งเราสามารถทำได้ผ่านการสุ่มซ้ำในขั้นตอนการ train model แทนการใช้ multiple imputation (กล่าวคือกำหนดการทดแทนค่าสูญหายเป็นขั้นตอนหนึ่งในแต่ละ cross-validation เลย) ผลลัพธ์ที่ได้จะช่วยลดภาระในการคำนวณ และสะท้อน variation ที่เกิดจากการทดแทนข้อมูลสูญหายได้
+
+3.  การพัฒนาโมเดลทำนายมีวัตถุประสงค์เพื่อทำนายข้อมูลที่ยังไม่เคยเห็นหรือไม่ทราบคำตอบมาก่อน แทนที่จะอธิบายความสัมพันธ์หรือสร้างองค์ความรู้จากความสัมพันธ์ระหว่างตัวแปร ดังนั้นค่าที่ทดแทนค่าสูญหายที่สร้างขึ้นจึงควรมีความใกล้เคียงกับค่าจริงให้มากที่สุดเท่าที่จะเป็นไปได้
+
+4.  การทำ multiple imputation เป็นการสร้างผลลัพธ์การอนุมานเชิงสถิติซึ่งจะไม่สามารถโมเดลหรืออัลกอริทึมสำหรับการทดแทนค่าสูญหายเอาไว้ใช้ต่อได้ ทำให้เป็นอุปสรรคในการนำโมเดลนี้ไปใช้กับกลุ่มเป้าหมายในกรณีทั่วไป
+
+5.  การทดแทนค่าสูญหายในการพัฒนาโมเดลทำนายควรมีลักษณะเฉพาะคือ มีความแกร่งต่อการสูญหายในหลายตัวแปรพร้อมกัน สามารถเก็บอัลกอริทึมหรือโมเดลการทดแทนค่าสูญหายเอาไว้ได้เพื่อเอาไปผนวกหรือใช้ร่วมกับโมเดลการทำนายในกรณีทั่วไป ควรรองรับการสูญหายของตัวแปรได้หลายประเภทในโมเดลเดียว และควรมีความทนทานต่อค่าผิดปกติมีความเสถียรในการสร้างค่าทดแทนค่าสูญหาย
+
+
+### Imputing Missing Values in Recipe
+
+> การทดแทนค่าสูญหายควรเป็นกระบวนการแรกในการเตรียมข้อมูล
+
+
+```{r eval = F}
+# Impute via bagged trees
+step_impute_bag() 
+
+# Impute via k-nearest neighbours
+step_impute_knn()
+
+# Impute numeric variables via a linear model
+step_impute_linear()
+
+# Impute numeric data using the mean
+step_impute_mean() 
+
+# Impute numeric data using the median
+step_impute_median() 
+
+# Impute nominal data using the most common value
+step_impute_mode() 
+
+# Impute numeric data using minimum value
+step_impute_lower()
+
+# Assign missing categories to "unknown" 
+step_unknown()
+```
+
+
+
