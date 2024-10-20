@@ -1,0 +1,283 @@
+---
+title: "model interpretation"
+format: html
+editor: visual
+---
+
+
+ที่ผ่านมาเราจะเห็นว่า supervised learning model บางตัวเช่น linear regression สามารถอธิบายความสัมพันธ์ระหว่างตัวแปรตามและตัวแปรอิสระได้ค่อนข้างชัดเจน เข้าใจง่าย แต่บางโมเดลเช่น KNN, SVM, random forest หรือ boosting tree ที่ถูกออกแบบให้จับความสัมพันธ์ที่ซับซ้อนมากมีข้อจำกัดในการอธิบายความสัมพันธ์
+
+ปัจจุบันมีการพัฒนา model explainer algorithm ซึ่งมีเทคนิคหลายตัวที่ช่วยสร้างความเข้าใจเกี่ยวกับค่าทำนายหรือความสัมพันธ์ระหว่างตัวแปรในโมเดลได้
+
+บทเรียนนี้จะกล่าวถึงการใช้ library สองตัวได้แก่ `vip` และ `DALEXtra` ในการอธิบายโมเดล ทั้งสองมีจุดเด่นและข้อจำกัดที่แตกต่างกันรายละเอียดมีดังนี้
+
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week03/TeacherSalaryData.csv")
+glimpse(data)
+data <- data %>% dplyr::select(-1) %>% 
+  mutate_if(is.character, factor)
+```
+
+## data spliting
+
+```{r}
+set.seed(123)
+split<-initial_split(data, prop = 0.8, strata = salary)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+```{r}
+## recipe
+rec1 <- recipe(salary~., data=train_data) %>% 
+  step_rm(yrs.service) %>% 
+ # step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors())
+
+rec2<- recipe(salary~., data=train_data) %>% 
+  step_rm(yrs.service) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_interact(terms = ~all_predictors():all_predictors())
+  
+
+## model
+glmnet_spec <- linear_reg(penalty = tune()) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+
+knn_spec <- nearest_neighbor(neighbors = tune()) %>%
+  set_engine("kknn") %>%
+  set_mode("regression")
+
+dt_spec <- decision_tree() %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+
+svm_spec <- svm_rbf() %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+```
+
+
+```{r}
+cv<-vfold_cv(train_data, v=5, repeats = 3)
+
+## workflow
+wf_set <- workflow_set(
+  preproc = list(rec1),
+  models = list(glmnet_spec, knn_spec)
+)
+
+```
+
+
+```{r}
+
+glm_tune <- wf_set %>% 
+  workflow_map(resamples = cv, 
+            grid = 10
+            )
+
+glm_tune %>% collect_metrics() %>% 
+  filter(.metric == "rmse") %>% 
+  arrange(mean) %>% 
+  head(5)
+
+best <- glm_tune %>% 
+  extract_workflow_set_result("recipe_nearest_neighbor") %>% 
+  select_best(metric = "rmse")
+
+wf_set %>% 
+  extract_workflow("recipe_nearest_neighbor") %>%
+  finalize_workflow(best) %>% 
+  last_fit(split) %>% collect_metrics() 
+
+glmnet_fit <- wf_set %>% 
+  extract_workflow("recipe_2_linear_reg") %>%
+  finalize_workflow(best) %>% 
+  fit(data)
+
+knn_fit <- wf_set %>% 
+  extract_workflow("recipe_nearest_neighbor") %>% 
+  finalize_workflow(best) %>% 
+  fit(data)
+```
+
+ความสัมพันธ์ที่จะวิเคราะห์ต่อไปนี้ เป็นความสัมพันธ์ระหว่างตัวแปรอิสระกับค่าทำนายตัวแปรตามของโมเดล ดังนั้นผลการวิเคราะห์หรืออธิบายโมเดลที่ได้อาจจะไม่สามารถบ่งชี้ความสัมพันธ์เชิงสาเหตุระหว่างตัวแปรได้
+
+## Create explainer
+
+ขั้นตอนแรกของการวิเคราะห์/แปลความหมายของโมเดล คือเราจะต้องสร้างตัวอธิบายโมเดล model explainer ก่อน
+
+
+
+```{r}
+## install.packages("DALEX")
+## install.packages("DALEXtra")
+library(DALEXtra)
+
+### glmnet explainer
+explainer_glmnet <- 
+  explain_tidymodels(
+    model = glmnet_fit, 
+    data = data, 
+    y = data$salary,
+    label = "glmnet + interactions",
+    verbose = FALSE
+  )
+
+explainer_glmnet
+
+
+### knn explainer
+explainer_knn <- 
+  explain_tidymodels(
+    model = knn_fit, 
+    data = data, 
+    y = data$salary,
+    label = "knn",
+    verbose = FALSE
+  )
+```
+
+
+## Local explainer
+
+Local model explanations จะให้ข้อมูลเกี่ยวกับการทำนายผลสำหรับตัวอย่างเฉพาะเพียงตัวเดียว เป็นวิธีการหนึ่งในการทำความเข้าใจว่าทำไมตัวอย่างที่กำหนดจึงได้ค่าทำนายแบบนั้น ยกตัวอย่างเช่น
+
+
+```{r}
+data
+assist <- data %>% slice(3)
+assoc <- data %>% slice(6)
+```
+
+```{r}
+predict(glmnet_fit, new_data =assist )
+predict(knn_fit, new_data =assoc)
+```
+
+การวิเคราะห์แยกส่วนค่าทำนาย
+
+```{r}
+glmnet_breakdown <- predict_parts(
+  explainer = explainer_glmnet, 
+  new_observation = assist)
+glmnet_breakdown 
+```
+
+
+```{r}
+knn_breakdown <- predict_parts(
+  explainer = explainer_knn, 
+  new_observation = assoc)
+knn_breakdown
+```
+
+
+```{r}
+knn_breakdown <- predict_parts(
+  explainer = explainer_knn, 
+  new_observation = assist)
+knn_breakdown
+```
+
+
+Shapley Additive Explanations (SHAP) คือวิธีการที่ใช้ในการอธิบายค่าทำนายของโมเดล ที่คำนวณ contribution ของแต่ละตัวแปรในทุกรูปแบบลำดับที่เป็นไปได้ แล้วค่อยเฉลี่ยรวมกัน เพื่อให้ได้ contribution ที่มีความถูกต้องมากขึ้น
+
+```{r}
+set.seed(123)
+shap_duplex <- 
+  predict_parts(
+    explainer = explainer_glmnet, 
+    new_observation = assoc, 
+    type = "shap",
+    B = 20
+  )
+shap_duplex$contribution
+```
+
+```{r}
+shap_duplex %>% 
+  group_by(variable) %>% 
+  mutate(mean_val = mean(contribution)) %>%
+  ungroup() %>%
+  filter(!str_detect(variable, "salary")) %>% 
+  mutate(variable = fct_reorder(variable, abs(mean_val))) %>%
+  dplyr::select(variable, contribution, mean_val) %>% 
+  ggplot(aes(contribution, variable, fill = mean_val > 0)) +
+  geom_col(data = ~distinct(., variable, mean_val), 
+           aes(mean_val, variable), 
+           alpha = 0.5) +
+  geom_boxplot(width = 0.5) +
+  theme(legend.position = "none") +
+  scale_fill_viridis_d() +
+  labs(y = NULL)
+```
+
+## Global Explainer: VIP
+
+การอธิบายโมเดลในระดับภาพรวม (Global model explanations) หรือที่เรียกว่า global feature importance หรือ variable importance ช่วยให้เราเข้าใจว่าคุณลักษณะใดมีความสำคัญที่สุด หรือความความสัมพันธ์กับค่าทำนายของตัวแปรตามมากที่สุด
+
+```{r}
+vip_glmnet <- model_parts(explainer_glmnet)
+plot(vip_glmnet)
+```
+
+## Global Explainer: Partial Dependence Plot
+
+เป็นแผนภาพที่สร้างการอธิบายความสัมพันธ์โดยรวมระหว่างตัวแปรอิสระกับตัวแปรตาม ผ่านการวิเคราะห์ local explainer ที่เราสร้างขึ้นมา
+
+การสร้างการอธิบายโมเดลดังกล่าวสามารถทำได้วิธีหนึ่งคือการหาค่าเฉลี่ยของ profile การทำนายของแต่ละหน่วยข้อมูล เพื่อพิจารณาการเปลี่ยนแปลงของค่าทำนายบนตัวแปรอิสระแต่ละตัว เรียก profile นี้ว่า ceteris paribus profile
+
+```{r}
+set.seed(123)
+pdp_rank <- model_profile(explainer_glmnet, 
+                          N = NULL, 
+                          variables = "rank")
+```
+
+
+```{r}
+### pdp plot function
+ggplot_pdp <- function(obj, x) {
+  
+  p <- 
+    as_tibble(obj$agr_profiles) %>%
+    mutate(`_label_` = stringr::str_remove(`_label_`, "^[^_]*_")) %>%
+    ggplot(aes(`_x_`, `_yhat_`)) +
+    geom_line(data = as_tibble(obj$cp_profiles),
+              aes(x = {{ x }}, group = `_ids_`),
+              linewidth = 0.5, alpha = 0.05, color = "gray50")
+  
+  num_colors <- n_distinct(obj$agr_profiles$`_label_`)
+  
+  if (num_colors > 1) {
+    p <- p + geom_line(aes(color = `_label_`), linewidth = 1.2, alpha = 0.8)
+  } else {
+    p <- p + geom_line(color = "midnightblue", linewidth = 1.2, alpha = 0.8)
+  }
+  
+  p
+}
+```
+
+
+```{r}
+ggplot_pdp(pdp_rank, rank)
+```
+
+
+```{r}
+pdp_yrs <- model_profile(explainer_glmnet, N = NULL, 
+                         variables = "yrs.since.phd",
+                         groups = "rank")
+ggplot_pdp(pdp_yrs, yrs.since.phd)
+```
+
+

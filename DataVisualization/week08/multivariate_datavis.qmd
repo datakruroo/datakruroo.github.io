@@ -1,0 +1,682 @@
+---
+title: "Multivariate Data Visualizaion II"
+format: html
+editor: visual
+---
+
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Downloads/use_data.csv")
+glimpse(data)
+```
+
+## วิเคราะห์ปัญหา
+
+```{r}
+data %>% 
+  pivot_longer(cols=starts_with("quiz")) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram()+
+  facet_wrap(~name, scales = "free_x")
+
+data %>% 
+  pivot_longer(cols=starts_with("quiz")) %>% 
+  group_by(name) %>% 
+  mutate(value = scale(value)) %>% 
+  ggplot(aes(x=name, y = value))+
+  geom_boxplot()
+
+```
+
+ปัญหา : มีนักเรียนจำนวนมากที่เรียนไม่ได้ มีผลการเรียนรู้ระหว่างเรียนยังไม่ถึงครึ่งด้วยซ้ำ
+
+## วิเคราะห์ปัจจัยที่คาดว่าน่าจะมีความสัมพันธ์หรือเป็นสาเหตุของปัญหา
+
+### 1. Pareto Chart
+
+> กว่า 80% ของปัญหาที่เกิดขึ้น เกิดขึ้นจากสาเหตุเพียง 20% ของสาเหตุทั้งหมดที่เกี่ยวข้องหรือเป็นไปได้
+
+วิธีการนี้มีแนวคิดง่าย ๆ คือ
+
+1.  คัดกรองผู้เรียนที่เป็นปัญหาขึ้นมาก่อน
+
+2.  มาพิจารณาว่าในกลุ่มผู้เรียนที่เป็นปัญหามีคุณลักษณะใดที่ไม่พึงประสงค์เยอะ ๆ บ้าง
+
+3.  ลองเปรียบเทียบคุณลักษณะที่ไม่พึงประสงค์ดังกล่าว กับกลุ่มผู้เรียนที่ไม่มีปัญหา
+
+```{r}
+data %>% 
+  ## standarized ข้อมูล
+  mutate(percent_quiz1 = quiz1*100/7.5,
+         percent_quiz2 = quiz2*100/7.5,
+         percent_quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(
+    avg_quiz = (percent_quiz1 + percent_quiz2 + percent_quiz3)/3,
+    med_quiz = median(c(percent_quiz1, percent_quiz2, percent_quiz3))
+  ) %>% 
+  ggplot(aes(x=med_quiz))+
+  geom_histogram()
+```
+
+การรวมคะแนน quiz ทั้งสามเข้าด้วยกัน
+
+-   average
+
+-   คะแนน quiz ที่มากที่สุด
+
+-   คะแนน quiz ที่น้อยที่สุด
+
+-   median
+
+-   total
+
+```{r}
+problem_student <- data %>% 
+  ## standarized ข้อมูล
+  mutate(percent_quiz1 = quiz1*100/7.5,
+         percent_quiz2 = quiz2*100/7.5,
+         percent_quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(
+    avg_quiz = (percent_quiz1 + percent_quiz2 + percent_quiz3)/3,
+    med_quiz = median(c(percent_quiz1, percent_quiz2, percent_quiz3))
+  ) %>% 
+  filter(med_quiz < 25)
+
+problem_student %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  dplyr::select_if(is.numeric) %>% 
+  pivot_longer(cols = everything()) %>% 
+  ggplot(aes(x= value))+
+  geom_density(bw = 0.1)+
+  facet_wrap(~name, scales = "free_x")
+```
+
+```{r}
+problem_student %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% glimpse()
+  
+```
+
+```{r}
+problem_student %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  mutate(less_attend_bi = ifelse(percent_attend < 0.8 , 1,0),
+         frequently_late_bi = ifelse(percent_late_inclass>0.5, 1,0),
+         frequently_goout_bi = ifelse(percent_goout > 0.5, 1,0),
+         less_interact_bi = ifelse(percent_answer_inclass > 0.5 ,1,0),
+         no_practice_bi = ifelse(practice == "no_pratice", 1,0),
+         late_assignment_bi = ifelse(late_assignment == "late", 1,0),
+         incomplete_assignment_bi = ifelse(incomplete_assignment == "incomplete", 1,0),
+         pre_grade_inmath_bi = ifelse(pre_grade_inmath != "success", 1,0),
+         avg_time_start_bi = ifelse(avg_time_start > 0.5, 1, 0)) %>% 
+  dplyr::select(ends_with("bi")) %>% 
+  pivot_longer(cols = everything()) %>% 
+  group_by(name) %>% 
+  summarise(n = sum(value, na.rm = TRUE)) %>% 
+  ggplot(aes(x=reorder(name,n), y=n))+
+  geom_col()+
+  coord_flip()
+  
+```
+
+### 2. Correlation analysis
+
+ความสัมพันธ์ระหว่างตัวแปรคือสถานการณ์ที่ค่าสังเกตของตัวแปรตัวหนึ่งมีการเปลี่ยนแปลงสอดคล้องไปกับการเปลี่ยนแปลงของค่าสังเกตในตัวแปรอีกตัวหนึ่ง (หรือมากกว่า 1 ตัวก็ได้)
+
+-   สถิติวิเคราะห์สำหรับวัดความสัมพันธ์เชิงเส้นระหว่างตัวแปร 2 ตัว
+
+    -   ทิศทางความสัมพันธ์ ทิศทางบวก กับ ลบ
+
+    -   ขนาดความสัมพันธ์ --\> ความชัดเจนของความสัมพันธ์แบบเส้นตรงระหว่างตัวแปรทั้งสองตัว
+
+ประเภทของ correlation
+
+-   Pearson correlation วัดสหสัมพันธ์ระหหว่างตัวแปรเชิงปริมาณสองตัว
+
+-   Spearman/Kendall correlation วัดสหสัมพันธ์ระหว่างตัวแปรแบบ ranking (ordinal scale)
+
+-   Phi/Cramer's V วัดสหสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวแปร
+
+-   Point-Biserial Correlation วัดสหสัมพันธ์ระหว่างตัวแปรประเภทแบบ binary กับ ปริมาณ จริง ๆ มันคือ Pearson correlation ระหว่างตัวแปรประเภทแบบ binary กับ ปริมาณ
+
+```{r}
+quiz_score <- data %>% 
+  ## standarized ข้อมูล
+  mutate(percent_quiz1 = quiz1*100/7.5,
+         percent_quiz2 = quiz2*100/7.5,
+         percent_quiz3 = quiz3*100/15) %>% 
+  rowwise() %>%
+  mutate(
+    avg_quiz = (percent_quiz1 + percent_quiz2 + percent_quiz3)/3,
+    med_quiz = median(c(percent_quiz1, percent_quiz2, percent_quiz3))
+  ) %>% 
+  dplyr::select(med_quiz)
+```
+
+```{r}
+use_data %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  mutate(less_attend_bi = ifelse(percent_attend < 0.8 , 1,0),
+         frequently_late_bi = ifelse(percent_late_inclass>0.5, 1,0),
+         frequently_goout_bi = ifelse(percent_goout > 0.5, 1,0),
+         less_interact_bi = ifelse(percent_answer_inclass > 0.5 ,1,0),
+         no_practice_bi = ifelse(practice == "no_pratice", 1,0),
+         late_assignment_bi = ifelse(late_assignment == "late", 1,0),
+         incomplete_assignment_bi = ifelse(incomplete_assignment == "incomplete", 1,0),
+         pre_grade_inmath_bi = ifelse(pre_grade_inmath != "success", 1,0),
+         avg_time_start_bi = ifelse(avg_time_start > 0.5, 1, 0)) %>% 
+  dplyr::select(ends_with("bi")) %>% 
+  bind_cols(quiz_score) %>% 
+  glimpse()
+  
+```
+
+เราจะใช้การวิเคราะห์สหสัมพันธ์เข้ามาช่วยวิเคราะหืว่าปัจจัยใดที่มีความสัมพันธ์กับผลลัพธืการเรียนรู้ที่คาดหวัง
+
+```{r}
+use_data %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  mutate(less_attend_bi = ifelse(percent_attend < 0.8 , 1,0),
+         frequently_late_bi = ifelse(percent_late_inclass>0.5, 1,0),
+         frequently_goout_bi = ifelse(percent_goout > 0.5, 1,0),
+         less_interact_bi = ifelse(percent_answer_inclass > 0.5 ,1,0),
+         no_practice_bi = ifelse(practice == "no_pratice", 1,0),
+         late_assignment_bi = ifelse(late_assignment == "late", 1,0),
+         incomplete_assignment_bi = ifelse(incomplete_assignment == "incomplete", 1,0),
+         pre_grade_inmath_bi = ifelse(pre_grade_inmath != "success", 1,0),
+         avg_time_start_bi = ifelse(avg_time_start > 0.5, 1, 0)) %>% 
+  dplyr::select(ends_with("bi")) %>% 
+  bind_cols(quiz_score) %>% 
+  cor(use = "complete.obs") %>% 
+  data.frame() %>% 
+  rownames_to_column(var = "var")  %>% 
+  dplyr::select(var, med_quiz) %>% 
+  slice(-10) %>% 
+  arrange(desc(abs(med_quiz))) %>% 
+  ggplot(aes(x=med_quiz, y=reorder(var, med_quiz)))+
+  geom_col()
+```
+
+มาดู performance ของนักเรียนในชั้นเรียนแต่ละด้าน
+
+```{r}
+use_data %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  mutate(less_attend_bi = ifelse(percent_attend < 0.8 , 1,0),
+         frequently_late_bi = ifelse(percent_late_inclass>0.5, 1,0),
+         frequently_goout_bi = ifelse(percent_goout > 0.5, 1,0),
+         less_interact_bi = ifelse(percent_answer_inclass > 0.5 ,1,0),
+         no_practice_bi = ifelse(practice == "no_pratice", 1,0),
+         late_assignment_bi = ifelse(late_assignment == "late", 1,0),
+         incomplete_assignment_bi = ifelse(incomplete_assignment == "incomplete", 1,0),
+         pre_grade_inmath_bi = ifelse(pre_grade_inmath != "success", 1,0),
+         avg_time_start_bi = ifelse(avg_time_start > 0.5, 1, 0)) %>% 
+  dplyr::select(ends_with("bi")) %>% 
+  bind_cols(quiz_score) %>% 
+  cor(use = "complete.obs") %>% 
+  data.frame() %>% 
+  rownames_to_column(var = "var")  %>% 
+  dplyr::select(var, med_quiz) %>% 
+  slice(-10)->temp_cor
+
+library(ggrepel)
+use_data %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  mutate(less_attend_bi = ifelse(percent_attend < 0.8 , 1,0),
+         frequently_late_bi = ifelse(percent_late_inclass>0.5, 1,0),
+         frequently_goout_bi = ifelse(percent_goout > 0.5, 1,0),
+         less_interact_bi = ifelse(percent_answer_inclass > 0.5 ,1,0),
+         no_practice_bi = ifelse(practice == "no_pratice", 1,0),
+         late_assignment_bi = ifelse(late_assignment == "late", 1,0),
+         incomplete_assignment_bi = ifelse(incomplete_assignment == "incomplete", 1,0),
+         pre_grade_inmath_bi = ifelse(pre_grade_inmath != "success", 1,0),
+         avg_time_start_bi = ifelse(avg_time_start > 0.5, 1, 0)) %>% 
+  dplyr::select(ends_with("bi")) %>%
+  pivot_longer(cols = everything()) %>%
+  group_by(name) %>% 
+  summarise(performance = 1-sum(value, na.rm = TRUE)/n()) %>% 
+  inner_join(temp_cor, by= join_by(name == var)) %>% 
+  rename(importance = med_quiz) %>% 
+  ## importance == correlation --> correlation^2 == R2
+  mutate(importance = (importance)^2) %>% 
+  ggplot(aes(x=importance, y= performance))+
+  geom_point()+
+  geom_vline(xintercept = 0.3, linetype = 2)+
+  geom_text_repel(aes(label = name))+
+  ggtitle("Performance-Importance matrix")+
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1))
+```
+
+```{r}
+reg_data <- use_data %>% 
+  mutate(avg_time_do_hw = (time_do_homework1 + time_do_homework1)/2) %>% 
+  dplyr::select(-contains("quiz"), -percent_time_start1, -percent_time_start2,
+                -time_do_homework1, -time_do_homework2) %>% 
+  mutate(less_attend_bi = ifelse(percent_attend < 0.8 , 1,0),
+         frequently_late_bi = ifelse(percent_late_inclass>0.5, 1,0),
+         frequently_goout_bi = ifelse(percent_goout > 0.5, 1,0),
+         less_interact_bi = ifelse(percent_answer_inclass > 0.5 ,1,0),
+         no_practice_bi = ifelse(practice == "no_pratice", 1,0),
+         late_assignment_bi = ifelse(late_assignment == "late", 1,0),
+         incomplete_assignment_bi = ifelse(incomplete_assignment == "incomplete", 1,0),
+         pre_grade_inmath_bi = ifelse(pre_grade_inmath != "success", 1,0),
+         avg_time_start_bi = ifelse(avg_time_start > 0.5, 1, 0)) %>% 
+  dplyr::select(ends_with("bi")) %>% 
+  bind_cols(quiz_score)
+lm_fit <- lm(med_quiz ~. ,data=reg_data)
+summary(lm_fit)
+lm_fit %>% coef() %>% data.frame() %>% 
+  slice(-1)
+```
+
+
+# การสร้างทัศนภาพข้อมูลจาก unsupervised learning ที่ใช้ลดมิติข้อมูล
+
+หลายสถานการณ์เราอาจมีชุดข้อมูลที่มีตัวแปรจำนวนมากและเป็นการยากที่จะออกแบบ visualization แบบปกติเพื่อบรรยายหรือทำความเข้าใจสภาพของตัวแปรทุกตัวคราวเดียว กรณีนี้ผู้วิเคราะห์มักใช้เทคนิคการวิเคราะห์ข้อมูลโดยเฉพาะในกลุ่ม dimensionality reduction เข้ามาช่วยในการทำงาน
+
+idea ของการใช้วิธีการในกลุ่มนี้คือการลดทอนมิติในด้านตัวแปรให้มีน้อยลง แต่ยังคงสาระสำคัญส่วนใหญ่เอาไว้ได้อยู่ ซึ่งช่วยให้การวิเคราะห์ ทำความเข้าใจ และนำเสนอข้อมูลมิติสูงนี้ทำได้ง่ายและชัดเจนมากขึ้น
+
+-   PCA
+
+-   MDS
+
+-   tSNE
+
+-   UMAP
+
+
+## Principal Component Analysis (PCA)
+
+Principal Component Analysis (PCA) เป็นเทคนิคสถิติที่ใช้ในการวิเคราะห์และการลดมิติข้อมูล โดยมีจุดประสงค์เพื่อลดจำนวนตัวแปร (features) จำนวนมากให้มีน้อยลงซึ่งจะอยู่ในสเกลของตัวแปรใหม่ที่เรียกว่า องค์ประกอบหลัก (principla component) โดยที่ PC ดังกล่าวยังสามารถคงสาระสำคัญของข้อมูลเดิมไว้ เทคนิคนี้ช่วยให้การวิเคราะห์ข้อมูลมีประสิทธิภาพมากขึ้น และยังช่วยให้เราสามารถศึกษาและนำเสนอข้อมูลที่ซับซ้อนได้ง่ายขึ้นโดยไม่สูญเสียความหมายสำคัญไป
+
+หลักการทำงานของ PCA:
+
+1.  หา Covariance Matrix หรือ Correlation Matrix: ขั้นตอนแรกใน PCA คือการคำนวณ covariance matrix ของข้อมูล เพื่อหาความสัมพันธ์ระหว่างตัวแปรต่างๆ ในชุดข้อมูล
+
+2.  การหา Eigenvalues และ Eigenvectors: Covariance matrix จะถูกนำไปหา eigenvalues และ eigenvectors ซึ่ง eigenvectors จะช่วยบ่งบอกถึงทิศทางของข้อมูลในขณะที่ eigenvalues ชี้ให้เห็นถึงความสำคัญของแต่ละทิศทางนั้น
+
+3.  การเลือก Principal Components: เลือก eigenvectors ที่มี eigenvalues สูงที่สุดเพื่อเป็น principal components ของข้อมูล เนื่องจากส่วนประกอบเหล่านี้จะมีความสำคัญและอธิบายข้อมูลได้มากที่สุด
+
+4.  การแปลงข้อมูล: ข้อมูลดั้งเดิมจะถูกแปลงโดยใช้ principal components ที่ได้เลือกไว้ เพื่อสร้างชุดข้อมูลใหม่ที่มีมิติน้อยกว่าแต่ยังคงคุณลักษณะสำคัญของข้อมูลเดิม
+
+การทำ PCA ใน R สามารถทำได้หลายวิธีการ วิธีการที่นำเสนอต่อไปนี้จะใช้ `factoextra` และ `ggplot2` ช่วยในการแสดงผลลัพธ์ที่ได้จาก PCA ขั้นตอนการวิเคราะห์หลัก ๆ อาจมีดังนี้
+
+1.  เตรียมข้อมูลนำเข้า --\> tidydata
+
+2.  ทำ PCA ด้วย `prcomp()`
+
+3.  ตรวจสอบองค์ประกอบหลักในเชิงความสำคัญและความหมาย
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Downloads/onlinelearning_miss.csv")
+glimpse(data)
+data <- data %>% dplyr::select(-1) %>% 
+  rename(student_id = 1)
+glimpse(data)
+```
+
+วัตถุประสงค์คือ อยากอธิบายรูปแบบการสูญหายในข้อมูลนี้
+
+```{r}
+data %>% is.na() %>% colSums()
+```
+
+```{r}
+##install.packages("naniar")
+library(naniar)
+vis_miss(data, cluster = TRUE)+
+  theme(text = element_text(family ="ChulaCharasNew"))
+```
+```{r}
+miss_var_summary(data) %>% 
+  filter(n_miss>0) %>% pull(variable) -> miss_var
+miss_var
+```
+
+```{r}
+miss_case_summary(data)
+```
+
+
+```{r}
+naniar::gg_miss_upset(data,nset = 10)
+```
+
+```{r}
+data %>%
+  dplyr::select(climate.online1, climate.online2, climate.online3) %>% 
+  drop_na()
+```
+
+
+
+
+
+job ที่ 1 เราจะลองวิเคราะห์ลักษณะการสูญหายของข้อมูลในชุดข้อมูลข้างต้น โดยใช้ PCA เข้ามาลดมิติ และอธิบายลักษณะการสูญหาย
+
+1. เตรีนมชุดข้อมูลของค่าสูญหาย ---> แปลงข้อมูลเดิม โดยถ้าเป็นข้อมูลที่ไม่สูญหายเราจะให้ค่าเป็น 0 และถ้าเป็นค่าสูญหายเราจะให้ค่าเป็น 1
+
+2. เอาข้อมูลในข้อ 1. มาทำ PCA
+
+3. ตรวจสอบจำนวนองค์ประกอบหลักที่เหมาะสม และตีความหมายขององค์ประกอบหลักที่ได้
+
+
+PCA พยายามจัดองค์ประกอบหลักตามความสัมพันธ์เชิงเส้นของข้อมูลตามคอลัมน์ แปลว่าคอลัมน์ที่มีความสัมพันธ์กันสุง ๆ จะถูกจัดให้อยู่ในองค์ประกอบหลักเดียวกัน
+
+```{r}
+### เตรียมชุดข้อมูลค่าสูญหาย
+missing_mat <- data %>% 
+  ## คัดเลือกเฉพาะตัวแปรที่มี missing value เท่านั้น
+  dplyr::select(miss_var) %>% 
+  ## สร้าง shadow matrix ด้วย naniar
+  bind_shadow() %>% 
+  dplyr::select(30:58) %>% 
+  mutate_all(as.numeric) %>% 
+  mutate_all(~.-1)
+
+
+pca_res <- princomp(missing_mat)  
+pca_res$sdev ## standard deviation ของ PC
+### Scree plot
+data.frame(PC = 1:29, eigen = pca_res$sdev^2) %>% 
+  ggplot(aes(x=PC, y=eigen))+
+  geom_col()+
+  ggtitle("Scree plot of PC")
+```
+component หรือ factor loading คือสหสัมพันธ์ระหว่างตัวแปรต้นฉบับกับองค์ประกอบหลักแต่ละตัว ใช้ตีความหมายขององค์ประกอบหลักใน PCA
+
+
+```{r}
+## component loading
+pca_res$loadings[1:29,] %>% 
+  data.frame() %>% 
+  rownames_to_column("var") %>% 
+  dplyr::select(1:7) %>% 
+  pivot_longer(cols = 2:7) %>% 
+  ggplot(aes(x=value, y=var))+
+  geom_col()+
+  facet_wrap(~name)+
+  theme(text = element_text(family = "ChulaCharasNew"))
+
+```
+
+
+
+```{r}
+### factor score data.frame
+pca_res %>% predict() %>% 
+  data.frame() %>% 
+  dplyr::select(1:3) %>% 
+  ggplot(aes(x=Comp.1 , y=Comp.3))+
+  geom_point()
+
+```
+
+
+## MDS
+
+Multidimensional Scaling (MDS) เป็นเทคนิคการลดมิติข้อมูลที่ใช้ในการแสดงข้อมูลในรูปแบบของกราฟ โดยที่ระยะห่างระหว่างจุดในกราฟจะสะท้อนถึงความคล้ายคลึงของข้อมูล ซึ่ง MDS จะพยายามจัดเรียงข้อมูลในรูปแบบที่ระยะห่างระหว่างจุดในกราฟจะสะท้อนถึงความคล้ายคลึงของข้อมูลในรูปแบบที่เราสามารถมองเห็นได้ง่าย
+
+หลักการโดยรวมของ MDS คือการแสดงภาพของข้อมูลในหลายมิติบนข้อมูลที่มีมิติน้อยลง เช่นแผนภาพในสองหรือสามมิติ โดยที่จะพยายามคงสภาพหรือรักษาระยะห่างของข้อมูลต้นฉบับในมิติสูงไว้ให้ได้มากที่สุด กล่าวคือข้อมูลที่คล้ายคลึงกันในมิติสูงจะมีแนวโน้มที่อยู่ใกล้เคียงกันในมิติน้อย ในทางกลับกันข้อมูลที่แตกต่างกันในมิติสูงจะมีแนวโน้มที่อยู่ห่างกันในมิติน้อย
+
+### การทำงานของ MDS
+
+-   ขั้นตอนแรกคือการเตรียมข้อมูลนำเข้าสำหรับ MDS โดยทั่วไปคือ เมทริกซ์ความคล้ายคลึง (similarity matrix) หรือ เมทริกซ์ระยะห่าง (distance matrix) ซึ่งระบุความคล้ายคลึงหรือความแตกต่างรายคู่ของข้อมูล การคำนวณระยะห่างนี้สามารถทำได้หลายวิธีการขึ้นอยู่กับวัตถุประสงค์ของการวัดและลักษณะข้อมูล
+
+-   การลดมิติโดยพยายามรักษาระยะห่างระหว่างข้อมูลต้นฉบับให้คงเดิมไว้มากที่สุด อัลกอริทึมจะพยายามคำนวณ coordinate ของข้อมูลมิติสูงบนมิติที่ต่ำกว่า การปรับตำแหน่งข้อมูลให้มิติต่ำดังกล่าวมีฟังก์ชันวัตถุประสงค์คือ stress function
+
+$$
+\text{Stress} = \sqrt{\frac{\sum (d_{ij} - \delta_{ij})^2}{\sum d_{ij}^2}}
+$$
+ค่าความเครียด
+
+- < 0.2 ดีมาก
+
+- > 1 ควรพิจารณา
+
+โดยที่ $d_{ij}$ คือระยะห่างระหว่างจุด i และ j ในข้อมูลต้นฉบับ และ $\delta_{ij}$ คือระยะห่างระหว่างจุด i และ j ในข้อมูลที่ถูกลดมิติ
+
+การปรับตำแหน่ง coordinate เป็นกระบวนการทวนซ้ำที่ทำจนกระทั่งได้ชุดของ coordinate ที่สามารถลด stress function ได้มากที่สุด
+
+```{r}
+library(tidyverse)
+data <- read_csv('/Users/choat/Documents/multiple_intelligences_responses_v2 copy.csv')
+glimpse(data)
+use_data <- data %>% column_to_rownames(var = "Student ID")
+use_data
+use_data<-umap_data
+```
+
+คำนวณระยะห่างระหว่างข้อมูล
+
+```{r}
+dist(use_data) %>% as.matrix() %>% dim()
+dist <- dist(use_data %>% t() %>%   scale())
+dist %>% as.matrix() %>% dim()
+```
+
+ทำ MDS เราอาจะเลือกทำได้สองวิธีการได้แก่ classic MDS และ non-metric MDS ดังนี้
+
+```{r}
+classic_mds <- cmdscale(dist, k=2)
+```
+
+```{r}
+library(MASS)
+nonmetric_mds <- isoMDS(dist, k=2, trace = T)
+```
+
+```{r}
+## classic MDS 
+classic_mds 
+```
+
+```{r}
+## nonmetric MDS
+nonmetric_mds 
+```
+
+ตรวจสอบคุณภาพของ MDS ที่สร้างขึ้น
+
+```{r}
+dist %>% as.numeric()
+```
+
+
+```{r}
+## คำนวณ Stress ของ MDS
+stress_dist <- function(dist_origin, dist_mds){
+  stress <- sqrt(sum(as.numeric(dist_origin)-as.numeric(dist_mds))^2/sum(as.numeric(dist_origin)^2))
+  return(stress)
+}
+## ทดลองคำนวณ stree ของ k=2
+stress_dist(dist_origin = dist, dist_mds = dist(classic_mds))
+```
+
+ทดลองหาจำนวน MDS ที่ดีที่สุดสำหรับลดมิติข้อมูล
+
+```{r}
+library(purrr)
+### classic MDS
+num_mds <- 1:20
+stress_cal <- function(data, k){
+ 
+  stress_dist <- function(dist_origin, dist_mds){
+  stress <- sqrt(sum(as.numeric(dist_origin)-as.numeric(dist_mds))^2/sum(as.numeric(dist_origin)^2))
+  return(stress)
+  }
+  
+  dist_ori <- dist(data %>% scale())
+  dist_mds <- dist(cmdscale(dist_ori, k=k))
+  stress <- stress_dist(dist_origin = dist_ori, dist_mds = dist_mds)
+  return(stress)
+}
+
+map_dbl(num_mds, ~stress_cal(use_data, k = .)) %>% plot(type = "b", main = "Classic MDS")
+```
+
+```{r}
+### non-metric MDS
+num_mds <- 1:20
+map_dbl(num_mds, ~isoMDS(dist, k=., trace = F)$stress) %>%plot(type = "b", main = "Non-metric MDS")
+```
+
+```{r}
+
+mds <- cmdscale(dist, k=2)
+library(ggrepel)
+
+mds %>% data.frame() %>% 
+  rownames_to_column("item") %>% 
+  rename(mds1 = 2, mds2 =3) %>% 
+  ggplot(aes(mds1, mds2))+
+  geom_point()+
+ # geom_vline(xintercept = 0, linetype = 2)+
+  geom_text_repel(aes(label = item))
+```
+
+
+```{r}
+nonmetric_mds <- isoMDS(dist, k=2, trace = T)
+nonmetric_mds$points
+nonmetric_mds[[1]] %>% 
+  data.frame() %>% 
+  rownames_to_column("item") %>% 
+  rename(mds1 = 2, mds2 =3) %>% 
+  ggplot(aes(mds1, mds2))+
+  geom_point()+
+  geom_vline(xintercept = 0, linetype = 2)+
+  geom_text_repel(aes(label = item))
+```
+
+
+
+
+
+### ประเภทของระยะทาง
+
+กำหนดให้ $x_i$ และ $y_i$ เป็นเวกเตอร์ของตัวแปรขนาด px1 ของหน่วยข้อมูล x และ y ตามลำดับ
+
+-   Euclidean distance เป็นระยะทางที่สั้นที่สุดระหว่างจุดสองจุดบนพิกัด cartesian เป็นวิธีการพื้นฐานที่นิยมใช้น่าจะมากที่สุด และเหมาะสำหรับข้อมูลเชิงปริมาณ
+
+\$\$ d\_{\text{Euclidean}}(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2} = \sqrt{(x - y)^T (x - y)}
+
+\$\$
+
+-   Manhattan distance เป็นระยะทางที่มีค่าเท่ากับผลรวมความแตกต่างจำแนกตามแกนของข้อมูล
+
+\$\$ d\_{\text{Manhattan}}(x, y) = \sum\_{i=1}\^{n} \|x_i - y_i\|
+
+\$\$
+
+-   Mahalanobis distance เป็นระยะทางระหว่างจุดของข้อมูลคล้ายกับ euclidean แต่มีการปรับ weight ด้วยการคำนวณ covariance matrix ของข้อมูล จึงเหมาะกับข้อมูลเชิงปริมาณที่มีความสัมพันธ์กัน
+
+\$\$ d\_{\text{Mahalanobis}}(x, y) = \sqrt{(x - y)^T S^{-1} (x - y)}
+
+\$\$
+
+-   Hamming Distance เป็นระยะทางระหว่างข้อมูลประเภท binary ระยะทางแบบนี้ใช้การวัดระยะโดยนับจำนวนตำแหน่งข้อมูลแบบ binary ที่แตกต่างกัน
+
+$$
+d_{\text{Hamming}}(x, y) = \sum_{i=1}^{n} \mathbb{1}(x_i \neq y_i)
+$$
+
+-   Gower Distance เป็นระยะทางที่ใช้วัดระยะห่างระหว่างข้อมูลที่มีประเภทต่าง ๆ รวมถึงข้อมูลประเภท binary, ordinal, nominal และ interval โดยใช้การคำนวณระยะทางแต่ละประเภทของข้อมูลและนำมาเข้าสูตรเพื่อคำนวณระยะทางรวม
+
+\$\$ d\_{\text{Gower}}(x, y) = \frac{1}{p} \sum\_{i=1}\^{p} \frac{|x_i - y_i|}{R_i}
+
+\\
+
+S\_{\text{Gower}}(x, y) = 1-\frac{1}{p} \sum\_{i=1}\^{p} \frac{|x_i - y_i|}{R_i}
+
+\$\$ เมื่อ $p$ คือจำนวนตัวแปร ส่วน $R_i$ คือ range ของข้อมูล ผลต่าง $|x_i - y_i|$ มีการคำนวณด้วยวิธีการที่แตกต่างกันขึ้นอยู่กับประเภทข้อมูล แต่ไม่ว่าจะเป็นระยะแบบไหนจะถูก normalized ด้วย range ของข้อมูล ทำให้สามารถนำมาเฉลี่ยรวมกันได้
+
+-   Cosine Similarity เป็นดัชนีที่ใช้วัดความคล้ายคลึงของหน่วยข้อมูลโดยใช้มุมระหว่างเวกเตอร์ของหน่วยข้อมูล คำนวณจากการกลับสูตร inner product ของเวกเตอร์ข้อมูล
+
+$$
+S_{\text{cosine}}(x, y) = \frac{x \cdot y}{\|x\| \|y\|} \in [-1, 1]
+$$
+
+## tSNE
+
+## UMAP
+
+UMAP (Uniform Manifold Approximation and Projection) มีความคล้ายคลึงกับ MDS ในแง่ที่เป็นเครื่องมือสำหรับการลดมิติ แต่ทำงานต่างจาก MDS ในหลายแง่มุมหลัก โดย UMAP มุ่งเน้นไปที่การรักษา local structure และโครงสร้างทั้งหมด (global structure) ไปพร้อมกัน ซึ่งแตกต่างจาก MDS ที่พยายามรักษา glocal structure แต่เพียงอย่างเดียว
+
+กล่าวคือ MDS พยายามรักษาระยะห่างเดิมของข้อมูลในมิติสูงบนมิติต่ำ แต่ UMAP จะพยายามสร้างสเกลที่ทำให้ข้อมูลที่คล้ายกันในมิติสูงอยู่ใกล้กันในมิติต่ำ
+
+-   `n_neighbors`
+
+ค่านี้กำหนดจำนวน "เพื่อนบ้านที่ใกล้ที่สุด" ที่ใช้ในการคำนวณโครงสร้างของข้อมูล ค่าที่ต่ำจะเน้นไปที่การรักษา local structure แต่ถ้าค่า n_neighbors สูงขึ้น จะช่วยให้ UMAP รักษา global structure ได้ดีขึ้น เพราะการพิจารณาเพื่อนบ้านในระยะไกลจะถูกนำมาใช้มากขึ้น
+
+-   `min_dist`
+
+ค่านี้กำหนดว่าจุดข้อมูลในมิติต่ำสามารถอยู่ใกล้กันได้มากน้อยเพียงใด ค่า min_dist ที่ต่ำจะทำให้ข้อมูลที่คล้ายกันถูกบีบให้ชิดกันมาก (เน้น local structure) แต่ค่า min_dist ที่สูงขึ้นจะช่วยให้ข้อมูลถูกกระจายออกไปมากขึ้น ซึ่งจะช่วยรักษาโครงสร้างในระดับ global ได้ดีขึ้น
+
+```{r}
+library(readxl)
+umap_data <- read_excel("/Users/choat/Downloads/2758501-1-1-67-1.xlsx", skip = 2, sheet = 3,
+                        col_names = F)
+umap_data <- umap_data %>% dplyr::select(-1)
+answer <- read_excel("/Users/choat/Downloads/2758501-1-1-67-1.xlsx", skip = 1, sheet = 3,
+                        col_names = F) %>% slice(1)
+answer <- answer[,-1] 
+write_excel_csv(umap_data, file = "/Users/choat/Downloads/umap_data.csv")
+answer_key <- answer %>% t() %>% data.frame() %>% slice(-1) %>% 
+  rownames_to_column("item") %>% 
+  slice(-41) %>% 
+  mutate(item = paste0("item",1:40))
+write_excel_csv(answer_key, file = "/Users/choat/Downloads/answer_key.csv")
+```
+
+```{r}
+umap_data %>% dplyr::select(-41)->umap_data
+names(umap_data) <- paste0("item",1:40)
+umap_data %>% 
+  mutate(student_id =1:234, .before = "item1") %>% 
+  column_to_rownames("student_id")
+```
+
+
+
+
+```{r}
+#install.packages("uwot")
+library(uwot)
+umap_result <- umap2(umap_data, n_neighbors = 10)
+umap_result %>% data.frame() %>% 
+  rename(x = 1, y=2) %>% 
+  rownames_to_column("student_id") %>% 
+  ggplot(aes(x,y))+
+  geom_point()
+```
+
+```{r}
+umap_result %>% data.frame() %>% 
+  rename(x = 1, y=2) %>% 
+  rownames_to_column("student_id") %>% 
+  filter(x< -2.5) %>% pull(student_id) -> filter_id
+
+umap_data %>% 
+  mutate(student_id =1:234, .before = "item1") %>% 
+  filter(student_id %in% filter_id)
+```
+
