@@ -1,0 +1,163 @@
+---
+title: "Ensemble Learning"
+format: html
+toc: true
+message: false
+warning: false
+editor: visual
+---
+
+บทเรียนนี้จะกล่าวถึง ensemble learning ซึ่งเป็นเทคนิคการสร้างโมเดลทำนายที่นำโมเดลย่อย ๆ หลาย ๆ โมเดลมาร่วมกันทำนายโดยมีวัตถุประสงค์เพื่อลดความคลาดเคลื่อนให้ต่ำลง 
+
+## Ensemble Methods
+
+concept หลักของ ensemble learning คือการสร้าง single learnings ที่จะเรียกว่า weak learners หลาย ๆ ตัวมารวมกันเป็น strong learner ที่มีความแม่นยำสูง
+
+จุดเด่นของวิธีการนี้คือการช่วยการทำนาย หากมีโมเดลไหนที่ทำนายผิดพลาดไปบ้างก็ยังมีโมเดลอื่น ๆ ที่ช่วยดึงผลการทำนายให้ถูกต้องมากขึ้น จุดเด่นนี้ทำให้การใช้ ensemble learning มีแนวโน้มจะให้ประสิทธิภาพที่สูงกว่า single learning ในหลายกรณี
+
+```{mermaid eval = F}
+flowchart TB
+
+A[Training set] --> B1(Classifier C1)
+A --> B2(Classifier C2)
+A --> B3(Classifier C3)
+A --> B4(...)
+A --> B5(Classifier Cm)
+
+B1 --> P1(Prediction1)
+B2 --> P2(Prediction2)
+B3 --> P3(Prediction3)
+B4 --> P4(Prediction4)
+B5 --> P5(Prediction5)
+
+P1-->V["Voting"]
+P2-->V
+P3-->V
+P4-->V
+P5-->V
+
+V-->F["Final Prediction"]
+
+style B4 fill: white  ,stroke: white ,stroke-width:4px
+```
+
+
+เทคนิคการทำ Ensemble อาจจำแนกเป็น 3 ประเภทหลัก ได้แก่
+
+- Bagging (Bootstrap Aggregating)
+
+- Boosting
+
+- Stacking
+
+### Bagging
+
+Bagging หรือ Bootstrap Aggregating คือเทคนิคการสร้าง ensemble โดยการสร้างโมเดลย่อย ๆ หลาย ๆ โมเดล การ train model ย่อยแต่ละตัวจะเริ่มจากการสุ่มข้อมูลจาก training dataset ด้วยวิธีการแบบ boostrap เพื่อมาสร้างโมเดลย่อย แล้วนำผลการทำนายของโมเดลแต่ละตัวมาเข้ารวมกันด้วยวิธีการที่เหมาะสมเพื่อทำนายผลลัพธ์
+
+
+### Boosting
+
+Boosting คือเทคนิคการสร้าง ensemble โดยการสร้างโมเดลย่อย ๆ หลาย ๆ โมเดล โดยการให้โมเดลแต่ละตัวเรียนรู้จากข้อมูลที่ถูกแก้ไขจากการทำนายของโมเดลก่อนหน้า โดยที่โมเดลที่ทำนายผิดพลาดจะถูกให้น้ำหนักมากขึ้นในขั้นตอนการเรียนรู้ของโมเดลถัดไป ซึ่งทำให้โมเดลที่ถูกสร้างขึ้นมีความแม่นยำสูงขึ้น
+
+
+![](img/ensemble2.png){width="90%"}
+
+### Stacking
+
+ใช้หลักการ ensemble คล้าย  ๆ กัน แต่ single learner แต่ละตัวจะสร้างจากโมเดลการเรียนรู้ที่แตกต่างกัน และในแต่ละโมเดลการเรียนรู้อาจสร้างจากการกำหนด hyperparameter ที่แตกต่างกันด้วย เพื่อให้ครอบคลุม aspect การทำนายที่หลากหลายมากขึ้น ค่าทำนายที่ได้จากโมเดลทั้งหมดจะถูกนำมาเป็น training data ให้กับ Meta model อีกทีหนึ่
+
+
+![https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0qQTUDfImZYQBsyn9F6dpw.png](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0qQTUDfImZYQBsyn9F6dpw.png)
+
+
+
+## Bagging Tree and Random Forest
+
+```{r eval = F}
+library(baguette)
+## Bagging tree
+bag_tree(tree_depth = integer(1), 
+         min_n = integer(1), 
+         cost_complexity = double(1)) %>% 
+  set_engine("rpart") %>% 
+  set_mode("classification")
+```
+
+
+
+```{r eval = F}
+## random forest
+rand_forest(
+  mode = "unknown",
+  engine = "ranger",
+  mtry = NULL,
+  trees = NULL,
+  min_n = NULL
+)
+```
+
+![](img/rf.png)
+
+## Example: Random Forest
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+
+train_data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week09/train.csv")
+test_data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week09/test.csv")
+```
+
+```{r}
+library(patchwork)
+#plot function
+plot_digit <- function(data, index)
+{
+title_lab <- data[index,"label"]
+data %>%
+  slice(index) %>%
+  dplyr::select(starts_with("pixel")) %>%
+  pivot_longer(starts_with("pixel")) %>%
+  mutate(x = rep(1:28,28),
+         y = rep(1:28, each = 28)) %>%
+  ggplot(aes(x = x, y = y))+
+  geom_tile(aes(fill = value))+
+  scale_y_reverse()+
+  scale_fill_gradient(low = "white", high = "black")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        panel.grid = element_blank()
+  )+
+  ggtitle(title_lab)+
+  labs(fill = "Darkness")
+}
+
+p1 <- plot_digit(train_data, 1)
+p2 <- plot_digit(train_data,10)
+p3 <- plot_digit(train_data,20)
+p4 <- plot_digit(train_data,30)
+
+(p1+p2)/(p2+p4)
+```
+
+```{r}
+ggplot(train_data, aes(x=label))+
+  geom_bar()
+```
+
+
+### กิจกรรม 1: ทดลอง fit single learner เพื่อทำนาย label
+
+ผลลัพธ์ที่ได้เป็นอย่างไร??
+
+
+### กิจกรรมที่ 2: ใช้  bagging-trees และ random forest
+
+ผลลัพธ์ที่ได้เป็นอย่างไร??
+
+
+### กิจกรรมที่ 3: ใช้ ฺBoosting 
+
+
+ผลลัพธ์ที่ได้เป็นอย่างไร??
+
