@@ -1,0 +1,763 @@
+---
+title: "ggplot Extensions"
+format: html
+toc: true
+toc-depth: 4
+number-sections: false
+---
+
+
+
+[![](img/ggplot2_extension.png)](https://exts.ggplot2.tidyverse.org/gallery/)
+
+
+บทเรียนนี้จะกล่าวถึง extension library ของ ggplot2 โดยปกติการใช้ extension มีวัตถุประสงค์ดังนี้
+
+1. เพื่อสร้าง visualization ที่มีรูปแบบเฉพาะหรือสร้างยากหากใช้ grammar of graphic โดยตรง
+
+2. เพื่อปรับแต่งรูปแบบของแผนภาพด้วย theme สำเร็จรูปที่มีผู้ออกแบบไว้แล้ว
+
+3. เพิ่มความสามารถด้าน interactive ให้กับแผนภาพ
+
+<br>
+
+
+
+## 1. Creating New Charts
+
+เนื้อหาส่วนนี้จะแนะนำ extension บางตัวที่ใช้สร้าง visualization เฉพาะหรือที่สร้างยากจาก ggplot2 โดยตรง
+
+### 1.1 [{`ggstream`}](https://github.com/davidsjoberg/ggstream)
+
+หนึ่งในแผนภาพที่อาจสร้างยากใน ggplot2 โดยตรงคือ Stream Chart วัตถุประสงค์ของแผนภาพนี้คือการนำเสนอสารสนเทศที่เกี่ยวข้องกับแนวโน้มการเปลี่ยนแปลงตามเวลาที่จำแนกตามกลุ่มย่อย
+
+ฟังก์ชันหลักของ library นี้มี 2 ตัวได้แก่
+
+- `geom_stream()`
+
+- `geom_stream_label()`
+
+
+```{r fig.height = 10}
+## install.packages("ggstream")
+library(ggplot2)
+library(ggstream)
+library(patchwork)
+library(cowplot)
+data <- blockbusters
+head(data)
+```
+
+
+```{r fig.height = 10}
+
+p1<-data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    ## 'mirror' which stacks symmetrically around the x axis
+    geom_stream(type = "mirror")+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")+
+    ggtitle("mirror")
+
+p2<-data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    ## 'ridge' which stacks from the x-axis
+    geom_stream(type = "ridge")+
+    geom_stream_label(aes(label = genre), type = "ridge")+
+    cowplot::theme_minimal_vgrid(font_size = 18) +
+    ggtitle("ridge")
+
+library(rcartocolor)
+p3<-data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    ## 'proportional' คล้ายกับ  100%-stacked area chart
+    geom_stream(type = "proportional")+
+    geom_stream_label(aes(label = genre), type = "proportional",
+                      col = "grey20")+
+    ggtitle("proportional")+
+    cowplot::theme_cowplot(font_family = "ChulaCharasNew")+
+    scale_fill_carto_d(palette = 1)+
+    scale_y_continuous(labels = scales::percent_format(1))
+
+p1/p2/p3
+```
+
+
+นอกจากนี้ยังมี argument อีกหลายตัวที่ช่วยปรับรูปแบบ stream chart ให้เป็นไปตามที่ต้องการได้มากขึ้น ได้แก่
+
+1. `bw`
+
+2. `extra_span` 
+
+3. `true_range` 
+
+4. `sorting`
+
+
+#### `bw`
+
+```{r fig.height=10}
+p1 <- data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.3)+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")
+p2 <- data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.5)+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")
+
+p3 <- data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 1)+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")
+
+p1/p2/p3
+```
+
+
+#### `extra_span`  & `true_range`
+
+- ขอบของกราฟ Stream Chart อาจมีปรากฏการณ์บวมที่เกิดจากวิธีการประมาณค่าทางสถิติที่ใช้ในการสร้างแผนภาพซึ่งเป็นผลมาจากการใช้ smoothing technique เพื่อสร้างแผนภาพดังกล่าว 
+
+- หลายกรณีข้อมูลที่อยู่ในขอบ (บริเวณส่วนแรกและส่วนท้าย) จะมีจุดข้อมูลใกล้เคียงน้อยกว่าตรงกลาง ทำให้การประมาณค่าที่ขอบไม่แม่นยำเท่ากับตรงกลาง ส่งผลให้เกิด “การบวม” ที่ขอบของกราฟ
+
+- extra_span จึงถูกนำมาใช้เพื่อช่วยลดปัญหานี้ โดยการเพิ่มพื้นที่เพิ่มเติมที่ขอบ และบังคับให้ขอบกราฟลดลงไปถึง y = 0 ซึ่งทำให้ขอบกราฟไม่บวมและดูสมดุลมากขึ้น
+
+
+```{r}
+data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.75, 
+    extra_span = 0.001)+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")
+```
+
+
+```{r fig.height=8}
+p1<-data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.75, 
+                extra_span = 0.01)+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")
+
+p2<-data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.75, 
+    extra_span = 0.3,
+    true_range = "none")+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")
+p1/p2
+```
+
+
+#### `sorting`
+
+
+```{r fig.height=10}
+cols <- c("#FFB400", "#FFC740", "#C20008", "#FF020D", "#13AFEF")
+
+p1 <- data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.75, col = "grey20",
+                extra_span = 0.01,
+                sorting = "none")+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20")+
+    scale_fill_manual(values = cols)+
+    cowplot::theme_minimal_vgrid()+
+    ggtitle("sorting = none")+
+    theme(legend.position = "none")
+
+p2 <- data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.75, col = "grey20",
+                extra_span = 0.01,
+                sorting = "inside_out")+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20",
+                      sorting = "inside_out")+
+    scale_fill_manual(values = cols)+
+    cowplot::theme_minimal_vgrid()+
+    ggtitle("sorting = inside_out")+
+    theme(legend.position = "none")
+
+
+p3 <- data |> 
+    ggplot(aes(x = year, y= box_office, fill = genre))+
+    geom_stream(bw = 0.75, col = "grey20",
+                extra_span = 0.01,
+                sorting = "onset")+
+    geom_stream_label(aes(label = genre), type = "mirror",
+                      col = "grey20",
+                      sorting = "onset")+
+    scale_fill_manual(values = cols)+
+    cowplot::theme_minimal_vgrid()+
+    ggtitle("sorting = onset")+
+    theme(legend.position = "none")
+
+p1/p2/p3
+```
+
+
+### 1.2 {`ggsankey`}
+
+```{r}
+devtools::install_github("davidsjoberg/ggsankey")
+library(ggsankey)
+```
+
+- Sankey Diagram คือการสร้างภาพที่ใช้แสดงการไหลของปริมาณ/จำนวนของสิ่งที่สนใจ จากชุดข้อมูลหนึ่งไปยังอีกชุดข้อมูลหนึ่ง สิ่งที่ถูกเชื่อมต่อกันเรียกว่า โหนด (nodes) และการเชื่อมต่อเหล่านั้นเรียกว่า ลิงก์ (links) 
+
+
+
+![https://github.com/davidsjoberg/ggsankey/blob/main/man/figures/README-unnamed-chunk-2-1.png](https://github.com/davidsjoberg/ggsankey/blob/main/man/figures/README-unnamed-chunk-2-1.png?raw=true)
+
+![https://github.com/davidsjoberg/ggsankey/blob/main/man/figures/README-unnamed-chunk-3-1.png?raw=true](https://github.com/davidsjoberg/ggsankey/blob/main/man/figures/README-unnamed-chunk-3-1.png?raw=true)
+
+
+![https://github.com/davidsjoberg/ggsankey/blob/main/man/figures/README-unnamed-chunk-4-1.png?raw=true](https://github.com/davidsjoberg/ggsankey/blob/main/man/figures/README-unnamed-chunk-4-1.png?raw=true)
+
+
+```{r}
+## install.packages("ggsankey")
+library(ggsankey)
+library(tidyverse)
+```
+
+
+```{r message = F}
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week01/learning_data.csv")
+data |> select(-1)
+```
+
+
+#### Sankey plot: `geom_sankey()`
+
+```{r}
+## Preprocessing data
+prep_data <- data |> 
+    mutate(learning_performance  = case_when(
+                learning_performance >80 ~ "good",
+                .default = "bad"),
+           percent_submit = case_when(
+            percent_submit >80 ~ "frequently",
+            .default = "not"),
+           cheat_index = case_when(
+            cheat_index < 0.95 ~ "innocent",
+            .default = "cheater"),
+           concepts = case_when(
+            concepts < 50 ~ "fail",
+            concepts >=50 & concepts < 80 ~ "fair",
+            concepts >= 80 ~ "good"),
+           research_score = ifelse(research_score > 70, "success","fail")) |> 
+    drop_na() |> 
+    make_long(learning_performance, percent_submit, cheat_index,concepts,
+              research_score)
+```
+
+```{r fig.width = 10, fig.height = 6}
+prep_data |> 
+ggplot(aes(x = x, 
+               next_x = next_x, 
+               node = node, 
+               next_node = next_node)) +
+  geom_sankey(node.color = "grey20",
+             aes(fill = node),
+             flow.alpha = 0.7) +
+  geom_sankey_text(aes(label = node), hjust = -0.3)+
+  scale_fill_manual(values = c(
+    "good" = "steelblue",         
+    "frequently" = "steelblue",   
+    "innocent" = "steelblue",     
+    "success" = "steelblue",      
+    
+    "bad" = "maroon",             
+    "not" = "maroon",             
+    "cheater" = "maroon",         
+    "fail" = "maroon",            
+    
+    "fair" = "orange"             
+  )) +
+  xlab("")+
+  theme_light()+
+  theme(axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = "none")
+```
+
+
+#### Alluvial plot: `geom_alluvial()`
+
+
+มีอีก plot หนึ่งที่คล้ายคลึงกับ sankey คือ alluvial plot สามารถสร้างได้จาก `geom_alluvial()` 
+
+
+```{r fig.height = 6, fig.width = 16}
+prep_data |> 
+ggplot(aes(x = x, 
+               next_x = next_x, 
+               node = node, 
+               next_node = next_node)) +
+  geom_alluvial(node.color = "grey20",
+             aes(fill = node),
+             flow.alpha = 0.7) +
+  geom_alluvial_text(aes(label = node), hjust = -0.3)+
+  scale_fill_manual(values = c(
+    "good" = "steelblue",         
+    "frequently" = "steelblue",   
+    "innocent" = "steelblue",     
+    "success" = "steelblue",      
+    
+    "bad" = "maroon",             
+    "not" = "maroon",             
+    "cheater" = "maroon",         
+    "fail" = "maroon",            
+    
+    "fair" = "orange"             
+  )) +
+  xlab("")+
+  theme_light()+
+  theme(axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = "none")
+```
+
+มี extension อีกตัวหนึ่งที่ใช้สร้าง alluvial plot เช่นเดียวกัน การ customize แผนภาพมีความแตกต่างกัน ได้แก่ library-[`ggalluvial`](https://corybrunson.github.io/ggalluvial/)
+
+> "The alluvial plots implemented here can be used to visualize frequency distributions over time or frequency tables involving several categorical variables.""
+
+```{r}
+#remotes::install_github("corybrunson/ggalluvial@main", build_vignettes = TRUE)
+library(ggalluvial)
+```
+
+- ggalluvial package มีฟังก์ชัน `geom_alluvium` และ `geom_stratum` สำหรับสร้างแผนภาพ alluvial ใน ggplot2
+
+- ข้อมูลที่ใช้ต้องอยู่ในรูปแบบ long format
+
+- อาร์กิวเมนท์หลักคือ `axis...` 
+
+```{r fig.height = 8, fig.width = 12, warning = F}
+data |> 
+    mutate(learning_performance  = case_when(
+                learning_performance >80 ~ "good",
+                .default = "bad"),
+           percent_submit = case_when(
+            percent_submit >80 ~ "frequently",
+            .default = "not"),
+           cheat_index = case_when(
+            cheat_index < 0.95 ~ "innocent",
+            .default = "cheater"),
+           concepts = case_when(
+            concepts < 50 ~ "fail",
+            concepts >=50 & concepts < 70 ~ "fair",
+            concepts >= 70 ~ "good"),
+           research_score = ifelse(research_score > 80, "success","fail")) |> 
+    drop_na() |> 
+### create frequency table
+group_by(learning_performance, percent_submit,
+        cheat_index, concepts, research_score) |> 
+count() |> 
+ggplot(aes(axis1 = learning_performance,
+           axis2 = percent_submit,
+           axis3 = cheat_index,
+           axis4 = concepts,
+           axis5 = research_score,
+           y = n))+
+geom_alluvium(aes(fill = research_score))+
+geom_stratum(width = 0.35, fill = "grey20", alpha = 0.9, col = "white")+
+ylab("Frequency")+
+geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 4,
+            alpha = 0.5, col = "white", fill = "white")+
+theme_void(base_size = 16)+
+theme(axis.text.x = element_text(family = "ChulaCharasNew"))+
+scale_fill_manual(values = c("maroon","steelblue"))+
+scale_x_discrete(limits = c("learning_performance", 
+                            "percent_submit", "cheat_index",
+                            "concepts", "research_score"), expand = c(0.1, 0.05))
+```
+
+#### `geom_sankey_bump`
+
+เป็นแผนภาพลูกผสมระหว่าง bump chart กับ sankey เน้นนำเสนอแนวโน้มของข้อมูลตามเวลาจำแนกตามกลุ่มย่อย
+
+```{r}
+data <- blockbusters
+head(data)
+```
+
+```{r message = F, warning = F}
+data |> 
+mutate(genre = factor(genre)) |> 
+ggplot(aes(x=year, 
+              node = genre,
+              fill = genre,
+              value = box_office))+
+geom_sankey_bump(
+              space = 0.1, type = "sankey", smooth = 20)+
+scale_fill_carto_d(palette = 5)+
+cowplot::theme_minimal_vgrid()
+```
+
+
+### 1.3 {`ggbump`}
+
+bump chart เป็นแผนภาพนำเสนอแนวโน้มของข้อมูลที่มีลักษณะเป็นอันดับ (ranking)
+
+```{r}
+##install.packages("ggbump")
+library(ggbump)
+```
+
+[https://www.bangkokbiznews.com/business/economic/1074457](https://www.bangkokbiznews.com/business/economic/1074457)
+
+```{r message = F}
+library(gapminder)
+## preprocessing data
+rank_data <- gapminder |> 
+  group_by(year) %>% 
+  mutate(rank_life = rank(lifeExp, ties.method = "random")) %>% 
+  ungroup() |> 
+  filter(country %in% c("Thailand", "China","Singapore","Finland",
+                        "Sweden","Vietnam"))
+```
+
+```{r}
+## visualization
+rank_data |> 
+    ggplot(aes(x = year, y = rank_life, col = country))+
+    geom_bump(smooth = 10)+
+    scale_y_reverse()
+```
+
+
+
+```{r}
+rank_data |> 
+    ggplot(aes(x = year, y = rank_life, col = country))+
+    geom_bump(smooth = 10)+
+    geom_text(data = rank_data |> filter(year == min(year)),
+             aes(x = year, y =rank_life, label = country),
+             hjust = 1.1)+
+    scale_y_reverse()+
+    scale_x_continuous(limits=c(1946, 2007.5))+
+    theme_void()+
+    theme(axis.text.x = element_text())
+```
+
+แผนภาพข้างต้นควรมีการปรับปรุงอย่างไร?
+
+
+### 1.4 {[`ggridge`](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html)}
+
+เป็นแผนภาพสำหรับสร้างการแจกแจงของข้อมูลหลาย ๆ ชั้นซ้อนกัน ซึ่งสามารถนำไปประยุกต์ใช้ได้ในหลายสถานการณ์ ทั้งในเชิงการเปรียบเทียบ การวิเคราะห์แนวโน้ม
+
+```{r fig.height = 6}
+library(ggridges)
+
+gapminder |> 
+    filter(continent == "Asia") |> 
+    ggplot(aes(x = lifeExp, y = factor(year)))+
+    geom_density_ridges(rel_min_height = 0.03, scale = 3)
+
+gapminder |> 
+    filter(continent == "Asia") |> 
+    ggplot(aes(x = lifeExp, y = factor(year), fill = stat(x)))+
+    geom_density_ridges_gradient(rel_min_height = 0.03, scale = 4,
+    quantile_lines = TRUE, quantile = c(0.25,0.5,0.75),alpha = 0.1)+
+    scale_fill_viridis_c(option = "D", direction = 1)+
+    ylab("")+
+    theme_light()
+```
+
+
+### 1.5 {[`gggibbous`](https://cran.r-project.org/web/packages/gggibbous/vignettes/gggibbous.html)}
+
+> "A pie chart divides a circle into multiple sections where the arc lengths (and so also the areas) of the sections represent proportions of a whole. A moon chart, similarly, divides a circle into sections where the areas represent proportions of a whole, but in a moon chart the areas are drawn as crescent or gibbous portions of a circle—like the phases of the moon."
+
+```{r message = F}
+## install.packages("gggibbous")
+library(gggibbous)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week01/learning_data.csv")
+
+```
+
+> "gggibbous extends the ggplot2 data visualization package to provide support for moon charts in R. Unlike the pie charts supported natively by coord_polar() in R, moon charts in gggibbous do not require any special coordinate system. They are drawn most similarly to points in ggplot2: their position is defined by an x and a y coordinate and their size is defined independently of the coordinate system, so they always remain circular."
+
+
+```{r fig.height = 10}
+data |> 
+    mutate(research_score = case_when(
+        research_score >80 ~  "good",
+        .default = "not good")
+    ) |> 
+    group_by(department, gender) |> 
+    count(research_score) |> 
+    mutate(percent = n*100/sum(n)) |> 
+    ungroup() |> 
+    #filter(research_score == "good") |> 
+    ggplot(aes(y =department, x = gender, 
+             ratio = percent/100,
+             right = research_score == "good",
+             fill = research_score == "good"))+
+    geom_moon()+
+    labs(fill = "research_score")+
+    theme_light()+
+    theme(text = element_text(family = "ChulaCharasNew"),
+    legend.position = "top")+
+    scale_fill_manual(values = c("black","white"))
+```
+
+
+
+### 1.6 {[`ggdist`](https://mjskay.github.io/ggdist/)}
+
+```{r}
+library(ggdist)
+```
+
+`ggdist` ถูกออกแบบมาเพื่อช่วยสร้างทัศนภาพข้อมูลของการกระจายหรือความไม่แน่นอนในการแจกแจงของข้อมูล รองรับการนำเสนอความไม่แน่นอนทั้งแบบ frequentist และ bayesian 
+
+- frequentist มักจะแสดงการกระจายหรือความไม่แน่นอนของข้อมูล/ค่าสถิติ จากแผนภาพความหนาแน่น ช่วงความเชื่อมั่น หรือการแจกแจงของค่าสถิติที่ได้จากตัวอย่างสุ่มแบบ bootstrap 
+
+- bayesian มักจะแสดงการกระจายของการแจกแจงความน่าจะเป็นภายหลัง (posterior distribution) การแจกแจงความน่าจะเป็นก่อนหน้า (prior distribution) ช่วงความน่าเชื่อถือ (credible interval) เป็นต้น
+
+
+ใน library มี geometry หลักจำนวน 3 กลุ่มได้แก่ slab, dots และ lineribbon
+
+![](https://mjskay.github.io/ggdist/reference/figures/README/preview-1.png)
+
+
+
+```{r}
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week01/learning_data.csv")
+data |> select(-1)
+```
+
+
+```{r fig.height = 9}
+### ggplot2 approach
+p1 <- data |> 
+    ggplot(aes(x = research_score, y = reorder(gender, research_score)))+
+    stat_slabinterval(aes(fill = gender),
+                     side = "right")+
+    theme(text = element_text(family = "ChulaCharasNew"))+
+    theme(legend.position = "none")+
+    ylab("")
+
+p2 <- data |> 
+    ggplot(aes(x = research_score, y = reorder(gender, research_score)))+
+    stat_slabinterval(aes(fill = gender),
+                     side = "left")+
+    theme(text = element_text(family = "ChulaCharasNew"))+
+    theme(legend.position = "none")+
+    ylab("")
+
+
+p3 <- data |> 
+    ggplot(aes(x = research_score, y = reorder(gender, research_score)))+
+    stat_slabinterval(aes(fill = gender),
+                     side = "both")+
+    theme(text = element_text(family = "ChulaCharasNew"))+
+    theme(legend.position = "none")+
+    ylab("")
+p1/p2/p3
+```
+
+
+```{r}
+ data |> 
+    ggplot(aes(y = research_score, x = reorder(gender, research_score)))+
+    stat_slabinterval(aes(fill = gender),
+                     side = "right")+
+    theme(text = element_text(family = "ChulaCharasNew"))+
+    theme(legend.position = "none")+
+    xlab("")
+```
+
+### 1.7 {`[ggpubr](https://rpkgs.datanovia.com/ggpubr/)`} และ {`[ggstatplot](https://github.com/IndrajeetPatil/ggstatsplot)`}
+
+> "The ‘ggpubr’ package provides some easy-to-use functions for creating and customizing ‘ggplot2’- based publication ready plots."
+
+> "{ggstatsplot} is an extension of {ggplot2} package for creating graphics with details from statistical tests included in the information-rich plots themselves. In a typical exploratory data analysis workflow, data visualization and statistical modeling are two different phases: visualization informs modeling, and modeling in its turn can suggest a different visualization method, and so on and so forth. The central idea of {ggstatsplot} is simple: combine these two phases into one in the form of graphics with statistical details, which makes data exploration simpler and faster."
+
+
+## 2. Enhancing ggplot2
+
+
+### 2.1 {[`ggforce`](https://ggforce.data-imaginist.com/)}
+
+```{r}
+library(ggforce)
+```
+
+> "ggforce is a package aimed at providing missing functionality to ggplot2 through the extension system introduced with ggplot2 v2.0.0. Broadly speaking ggplot2 has been aimed primarily at explorative data visualization in order to investigate the data at hand, and less at providing utilities for composing custom plots a la D3.js. ggforce is mainly an attempt to address these “shortcomings” (design choices might be a better description). The goal is to provide a repository of geoms, stats, etc. that are as well documented and implemented as the official ones found in ggplot2."
+
+- shape
+
+- line
+
+- annotation
+
+- facets
+
+- scales
+
+- transformation
+
+- misc...
+
+[อ้างอิง](https://thomasp85.r-universe.dev/ggforce/doc/manual.html)
+
+
+#### `geom_mark_xxx()` for highlight and labeling
+
+
+```{r fig.width = 10, fig.height = 8}
+p1<-data |> 
+    ggplot(aes(x = learning_performance, y = concepts))+
+    geom_point(aes(col = research_score > 80))+
+    geom_mark_circle(aes(fill = research_score > 80, filter = research_score > 80))+
+    theme_light()
+
+p2<-data |> 
+    ggplot(aes(x = learning_performance, y = concepts))+
+    geom_point(aes(col = research_score > 80))+
+    geom_mark_ellipse(aes(fill = research_score > 80, filter = research_score > 80))+
+    theme_light()
+
+p3<-data |> 
+    ggplot(aes(x = learning_performance, y = concepts))+
+    geom_point(aes(col = research_score > 80))+
+    geom_mark_hull(aes(fill = research_score > 80, filter = research_score > 80))+
+    theme_light()
+
+p4<-data |> 
+    ggplot(aes(x = learning_performance, y = concepts))+
+    geom_point(aes(col = research_score > 80))+
+    geom_mark_rect(aes(fill = research_score > 80, filter = research_score > 80))+
+    theme_light()
+
+(p1 + p2) / (p3 + p4) + plot_layout(guides = "collect")
+```
+
+
+
+```{r fig.width = 9}
+data |> 
+    ggplot(aes(x = learning_performance, y = concepts))+
+    geom_point(aes(col = concepts > 25 & learning_performance > 45))+
+    geom_mark_ellipse(aes(filter = concepts < 25 & learning_performance < 41,
+                         label = "need help!!",
+                         description = "ที่ปรึกษาควรเข้ามาดูแลด่วน"),
+                         label.family = "ChulaCharasNew",
+                         label.lineheight = 2,
+                         label.fontsize = 10,
+                         label.fill = "maroon",
+                         label.colour = "white")+
+    theme_light()+
+    xlim(0,100)+ ylim(0,100)+
+    theme(text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none")
+```
+
+![](img/mark.png)
+
+### 2.2 {['ggtext'](https://wilkelab.org/ggtext/)}
+
+ggtext เป็นแพ็กเกจเสริมของ ggplot2 ที่เพิ่มความสามารถในการจัดรูปแบบข้อความในกราฟอย่างยืดหยุ่นมากขึ้น ช่วยให้ผู้ใช้สามารถจัดการกับข้อความในกราฟได้อย่างหลากหลาย เช่น การใส่สี ตัวหนา ตัวเอียง หรือการจัดรูปแบบ HTML และ Markdown ในกราฟ โดยที่ ggplot2 เวอร์ชันปกติไม่สามารถจัดการได้ละเอียดขนาดนี้
+
+#### การใช้ HTML ในการจัดรูปแบบ
+
+```{r}
+library(ggplot2)
+library(ggtext)
+
+ggplot(mtcars, aes(mpg, wt)) +
+  geom_point() +
+  labs(
+    title = "<span style='color:red'>Red</span> and <span style='color:blue'>Blue</span> Text",
+    subtitle = "This is an **example** of using ggtext"
+  ) +
+  theme(
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown()
+  )
+```
+
+
+#### การสร้างกล่องข้อความในแผนภาพ
+
+
+```{r}
+library(ggplot2)
+library(ggtext)
+
+ggplot(mtcars, aes(mpg, wt)) +
+  geom_point() +
+  labs(
+    caption = "This is a **custom caption** with a textbox"
+  ) +
+  theme(
+    plot.caption = element_textbox_simple(
+      fill = "lightblue", 
+      color = "black", 
+      box.color = "darkblue", 
+      size = 12, 
+      padding = unit(c(4, 4, 4, 4), "pt")
+    )
+  )
+```
+
+
+### 2.3 {[`geofacet`](https://cran.r-project.org/web/packages/geofacet/vignettes/geofacet.html)}
+
+```{r}
+library(geofacet)
+```
+
+
+```{r fig.height = 8}
+# สร้างข้อมูล grid จำลองสำหรับโต๊ะแบบเหลื่อม
+classroom_grid <- data.frame(
+  code = 1:20,  # รหัสสำหรับแต่ละโต๊ะ
+  name = c("Desk 1", "Desk 2", "Desk 3", "Desk 4", "Desk 5",
+           "Desk 6", "Desk 7", "Desk 8", "Desk 9", "Desk 10",
+           "Desk 11", "Desk 12", "Desk 13", "Desk 14", "Desk 15",
+           "Desk 16", "Desk 17", "Desk 18", "Desk 19", "Desk 20"),
+  row = c(1, 1, 1, 2, 2,
+          3, 3, 3, 4, 4,
+          5, 5, 5, 6, 6,
+          7, 7, 7, 8, 8), # จัด row สลับแถว 3 กับแถว 2
+  col = c(1, 3, 5, 2, 4,
+          1, 3, 5, 2, 4,
+          1, 3, 5, 2, 4,
+          1, 3, 5, 2, 4)  # จัด col เพื่อสลับโต๊ะตามต้องการ
+)
+grid_preview(classroom_grid)
+
+df <- data.frame(
+  desk = rep(c("Desk 1", "Desk 2", "Desk 3", "Desk 4", "Desk 5",
+               "Desk 6", "Desk 7", "Desk 8", "Desk 9", "Desk 10",
+               "Desk 11", "Desk 12", "Desk 13", "Desk 14", "Desk 15",
+               "Desk 16", "Desk 17", "Desk 18", "Desk 19", "Desk 20"), each = 3),
+  assessment = rep(1:3, times = 20),  # พัฒนาการ 3 ครั้งสำหรับนักเรียนแต่ละคน
+  score = runif(60, 50, 100)  # คะแนนพัฒนาการสุ่มระหว่าง 50-100
+)
+
+ggplot(df, aes(x = factor(assessment), y = score, group = desk)) +
+  geom_line(aes(color = desk)) +
+  geom_point(aes(color = desk)) +
+  facet_geo(~ desk, grid = classroom_grid) +
+  theme_minimal() +
+  labs(title = "Development Scores of Students by Desk",
+       x = "Assessment Number",
+       y = "Score")+
+  theme(legend.position = "none")
+```
