@@ -745,13 +745,9 @@ p1+p2
 
 เมื่อตัวแปรตามเป็นตัวแปรแบบ binary ที่มีสองค่าได้แก่ 0,1 จะทำให้ค่าทำนายที่ได้จากสมการถดถอยมีความหมายเป็นสัดส่วนของการเกิดเหตุการณ์ที่สนใจ (เพราะอะไร?) ดังนั้นจึงมีความเป็นไปได้ที่จะใช้สมการถดถอยเชิงเส้นสำหรับอธิบายความสัมพันธ์ระหว่างสัดส่วนหรือความน่าจะเป็นของการเกิดเหตุการณ์ที่สนใจกับตัวแปรอิสระ
 
-
 จากรูปด้านล่าง (ซ้าย) แสดงการใช้สมการเส้นตรง fit กับความสัมพันธ์ระหว่างตัวแปรตามแบบ binary คือการสูญหายใน learning performance กับผลสัมฤทธิ์ทางการเรียน (ach) เมื่อพิจารณาในส่วน scatter plot จะเห็นว่าความสัมพันธ์ระหว่างการสูญหายใน learning performance กับ ach มีแนวโน้มสัมพันธ์ในทิศทางลบ กล่าวคือการสูญหายมีแนวโน้มพบมากกว่าในกลุ่มนักเรียนที่มี ach ต่ำ ค่าทำนายของสัดส่วนหรือโอกาสการเกิดค่าสูญหาย (พิจารณาจากเส้นตรง) จึงมีแนวโน้มสูงในกลุ่ม ach ต่ำ และมีแนวโน้มลดต่ำลงเมื่อ ach มีแนวโน้มเพิ่มสูงขึ้น ในทางสถิติเรียกโมเดลการวิเคราะห์นี้ว่า โมเดลความน่าจะเป็นเชิงเส้น (linear probability model) อย่างไรก็ตามการใช้โมเดลดังกล่าวเพื่อทำนายความน่าจะเป็นของเหตุการณ์ที่สนใจไม่เหมาะสมนัก ทั้งนี้เป็นเพราะสมการทำนายดังกล่าวสามารถให้ค่าความน่าจะเป็นที่ต่ำกว่า 0 และมากกว่า 1 ได้โดยเฉพาะบริเวณส่วนปลายของการแจกแจง ach ซึ่งไม่สอดคล้องกับสัจพจน์ (axoim) ของความน่าจะเป็น
 
-
-การแก้ปัญหาดังกล่าวสามารถทำได้ด้วยการปรับเปลี่ยนฟังก์ชันการตอบสนอง (response function) หรือ functional form ของสมการถดถอยให้เป็นแบบ non-linear สมการที่เหมาะสมคือ logistic function หรือที่เรียกว่า Sigmoid curve ดังรูปด้านล่าง (ขวา) ทั้งนี้เป็นเพราะฟังก์ชันดังกล่าวมีลักษณะเป็นเส้นโค้งที่สามารถกำกับค่าความน่าจะเป็นให้อยู่ในช่วง [0,1]
-
-
+การแก้ปัญหาดังกล่าวสามารถทำได้ด้วยการปรับเปลี่ยนฟังก์ชันการตอบสนอง (response function) หรือ functional form ของสมการถดถอยให้เป็นแบบ non-linear สมการที่เหมาะสมคือ logistic function หรือที่เรียกว่า Sigmoid curve ดังรูปด้านล่าง (ขวา) ทั้งนี้เป็นเพราะฟังก์ชันดังกล่าวมีลักษณะเป็นเส้นโค้งที่สามารถกำกับค่าความน่าจะเป็นให้อยู่ในช่วง \[0,1\]
 
 ```{r echo = F, fig.width = 10}
 ## linear probability model
@@ -786,7 +782,6 @@ p2<-ggplot() +
 
 p1+p2
 ```
-
 
 โมเดล logistic regression สามารถเขียนได้หลายรูปแบบ สมการด้านล่างเรียกว่า logistic regression แสดงความสัมพันธ์ระหว่างความน่าจะเป็นของการสูญหายกับตัวแปรอื่น ๆ ที่สังเกตค่าได้ในชุดข้อมูล
 
@@ -983,7 +978,6 @@ data |>
   ggtitle("Mean Imputation")
 ```
 
-
 ผลการวิเคราะห์ด้วยสถิติพื้นฐานด้านล่างแสดงให้เห็นว่าการทดแทนค่าสูญหายด้วยค่าเฉลี่ยนอกจากจะไม่แก้ปัญหาแล้วยังเพิ่มปัญหาไปอีกด้วย ดังนั้นการใช้ mean หรือ median imputation ควรใช้อย่างระมัดระวังมาก ๆ และควรใช้ในกรณีที่ชุดข้อมูลมีค่าสูญหายจำนวนน้อยมาก ๆ เท่านั้น
 
 ```{r}
@@ -1000,8 +994,6 @@ data |>
   mutate(across(2:4, ~round(.,2)))
 ```
 
-
-
 #### Donor-based imputation
 
 วิธีการในกลุ่มนี้มีลักษณะสำคัญคือใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายกัน (หรือที่เรียกว่า “donors”) เพื่อทดแทนค่าสูญหายในชุดข้อมูล วิธีนี้จะค้นหาหน่วยข้อมูลอื่นที่มีลักษณะคล้ายคลึงกันตามตัวแปรที่เกี่ยวข้อง จากนั้นใช้ข้อมูลจากหน่วยนั้นในการเติมค่าที่สูญหาย โดยวิธีการนี้แบ่งออกเป็นหลายเทคนิค เช่น:
@@ -1012,12 +1004,9 @@ data |>
 
 Hot-Deck เป็นวิธีการทดแทนค่าสูญหายที่ใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายกันในชุดข้อมูลเพื่อเติมค่าให้กับหน่วยที่มีค่าสูญหาย โดยกระบวนการหลักจะเกี่ยวข้องกับการสุ่มหรือการจับคู่หน่วยข้อมูลที่มีค่าที่สมบูรณ์ (เรียกว่า “donors”) เพื่อทดแทนค่าที่หายไปในหน่วยข้อมูลที่สูญหาย (เรียกว่า “recipients”) วิธีนี้เป็นที่นิยมเนื่องจากมีความยืดหยุ่นและสามารถรักษาคุณลักษณะของข้อมูลจริงได้ดี อย่างไรก็ตามควรใช้วิธีการนี้กับการสูญหายแบบ MCAR
 
-
 ##### Random Hot-Deck imputation
 
-
-การทำ hot-deck imputation ใน R สามารถทำได้จากหลาย library เช่น การใช้ฟังก์ชัน `hotdeck()` จาก library-VIM  
-
+การทำ hot-deck imputation ใน R สามารถทำได้จากหลาย library เช่น การใช้ฟังก์ชัน `hotdeck()` จาก library-VIM
 
 ```{r}
 library(VIM)
@@ -1028,7 +1017,6 @@ data %>%
 ```
 
 อัลกอริทึมข้างต้นเรียกว่า random hot-deck ซึ่งจะทดแทนค่าสูญหายในคอลัมน์ที่กำหนดโดยการสุ่มค่าสังเกตที่มีข้อมูลในคอลัมน์เดียวกัน ดังนั้นการทดแทนค่าสูญหาย เช่น `learning_performance_mcar` ในหน่วยข้อมูลที่ 3 จะทดแทนโดยการสุ่มค่า learning performance ที่มีข้อมูลเพื่อมาเป็นค่าทดแทนค่าสูญหาย ดังนั้นผลลัพธ์ที่ได้ในแต่ละครั้งอาจไม่เหมือนกัน และเนื่องจากอัลกอริทึมในการสุ่มอย่างง่ายจากข้อมูลที่มีโดยไม่ได้มีการควบคุม ผลลัพธ์ที่ได้จึงอาจบิดเบือนการแจกแจงของข้อมูลรวมทั้งความสัมพันธ์ระหว่างข้อมูล
-
 
 ```{r fig.width = 9}
 
@@ -1053,7 +1041,6 @@ p3 <- data %>%
   rownames_to_column("id") %>% 
   dplyr::select(id,learning_performance_mcar, ach) %>% 
   bind_shadow() %>% 
-  #hotdeck(variable = c("learning_performance_mcar")) %>% 
   ggplot(aes(x=learning_performance_mcar, y=ach))+
   geom_point()+
   geom_rug(aes(x = learning_performance_mcar, 
@@ -1075,163 +1062,455 @@ p4 <- data %>%
                y = ach, col = factor(learning_performance_mcar_imp)),
            sides = "l")+
   scale_color_manual(values=c("grey","maroon"))+
-  ggtitle("Imputed Data")+
+  ggtitle("Imputed Data: Random Hot-Deck")+
   theme_light()+
   theme(legend.position = "none")
 
 
 (p1+p2)/(p3+p4) 
-
 ```
 
 ##### Conditional Hot-Deck imputation
 
 เป็นวิธีการทดแทนข้อมูลสูญหาย (missing data) โดยใช้ข้อมูลที่มีอยู่ในชุดข้อมูลเดียวกันเพื่อทำการสุ่มเลือกค่าทดแทน แต่การสุ่มเลือกค่านี้จะถูกกำหนดโดยตัวแปรเงื่อนไข (domain variable) ซึ่งทำให้กระบวนการสุ่มเลือกค่าทดแทนมีความเฉพาะเจาะจงมากขึ้น กล่าวคือ ค่าที่ถูกใช้ในการทดแทนจะถูกสุ่มมาจากกลุ่มข้อมูลที่มีเงื่อนไขหรือคุณสมบัติที่เหมือนกันกับตัวแปรเงื่อนไขที่กำหนดไว้
 
-ข้อจำกัดของวิธีการนี้คือตัวแปรที่จะทดแทนค่าสูญหายควรมีความสัมพันธ์กับตัวแปรที่ใช้กำหนดเป็นเงื่อนไข เพื่อให้การทดแทนค่าสูญหายมีความแม่นยำมากขึ้น
+ข้อจำกัดของวิธีการนี้คือตัวแปรที่จะทดแทนค่าสูญหายควรมีความสัมพันธ์กับตัวแปรที่ใช้กำหนดเป็นเงื่อนไข เพื่อให้การทดแทนค่าสูญหายมีความแม่นยำมากขึ้น นอกจากนี้การกำหนดตัวแปรเงื่อนไขยังทำได้เฉพาะตัวแปรแบบจัดประเภทอีกด้วย
 
+ตัวอย่างด้านล่างผลการวิเคราะห์เราพบว่าตัวแปร learning_performance มีแนวโน้มสัมพันธ์กับ engage
 
 ```{r}
 data %>% 
+  mutate(engage = fct_relevel(engage, "no engage","little engage","moderate engage","much engage")) %>% 
+  ggplot(aes(engage, learning_performance_mcar))+
+  geom_boxplot()
+```
+
+การกำหนดเงื่อนไขการทดแทนค่าสูญหายโดยใช้ engage เป็นเงื่อนไขจึงมีแนวโน้มที่น่าจะให้ค่าทดแทนค่าสูญหายที่ดีขึ้น
+
+```{r}
+p5 <- data %>% 
   rownames_to_column("id") %>% 
   dplyr::select(id,learning_performance_mcar, ach, engage) %>% 
   data.frame() %>% 
   hotdeck(variable = c("learning_performance_mcar"), 
-          domain_var = "engage")
+          domain_var = "engage") %>%                      # <1>
+  ggplot(aes(x=learning_performance_mcar, y=ach))+        # <2>
+  geom_point()+
+  geom_point(aes(col = learning_performance_mcar_imp))+
+  geom_rug(aes(x = learning_performance_mcar, 
+               y = ach, col = factor(learning_performance_mcar_imp)),
+           sides = "l")+
+  scale_color_manual(values=c("grey","maroon"))+
+  ggtitle("Imputed Data: Conditional Hot-Deck1")+
+  theme_light()+
+  theme(legend.position = "none")
+
 ```
 
+1.  กำหนด engage เป็นตัวแปรเงื่อนไขในการทดแทนค่าสูญหายใน `domain_var`
 
-ลองพิจารณาการทำงานของ `hotdeck()` ดังนี้
+2.  สร้าง scatter plot เพื่อพิจารณาการทดแทนข้อมูลสูญหาย
 
-```{r}
-exam_data %>% hotdeck(variable = c("x1"))
+```{r fig.width = 8, fig.height = 5}
+p4+p5
 ```
 
-รูปด้านล่างแสดงการใช้ฟังก์ชัน `hotdeck()` ดังกล่าวเพื่อทดแทนค่าสูญหายใน learniing
-
-
-
-
-
-
-
-
-library-simputaion มีฟังก์ชันหลายตัวสำหรับการทดแทนค่าสูญหายแบบ hot-deck โดยจำแนกเป็น 4 ประเภทได้แก่ random hot-deck, sequential hot-deck, k-nearest neighbor hot-deck และ predictive mean matching hot-deck การใช้งาน simputation มีจุดเด่นคือเชื่อมต่อกับ tidyverse ได้ดี และสามารถใช้งานร่วมกับ pipe operator ได้สะดวก
-
-**Random Hot-Deck Imputation**
-
-จะทดแทนค่าสูญหายจากการสุ่มหน่วยข้อมูลที่มีค่าในคอลัมน์เดียวกัน ยกตัวอย่างเช่น หน่วยข้อมูลหน่วยที่ 3 ใน x1 เป็นค่าสูญหาย การทดแทนค่านี้จะสุ่มข้อมูลที่มีค่าใน x1 ซึ่งในกรณีนี้ได้แก่ 1, 2, 4 หรือ 5 มาทดแทนค่าสูญหายในหน่วยข้อมูลดังกล่าว ดังนั้นผลลัพธ์จากการทดแทนค่าสูญหายด้วยวิธีการนี้อาจไม่เหมือนกันในแต่ละรอบของการทดแทนค่าสูญหาย ตัวอย่างด้านล่างแสดงการใช้ฟังก์ชัน `impute_rhd(data, formula, pool, prob)` เพื่อทำ random hot-deck ตามหลักการดังกล่าว โดยใข้ข้อมูล `exam_data` ที่เป็นตัวอย่างข้างต้น
+ประสิทธิภาพของวิธีการนี้ขึ้นกับความสัมพันธ์ระหว่างตัวแปรที่ใช้เป็นเงื่อนไขและตัวแปรที่จะทดแทนค่าสูญหาย สำหรับตัวแปรแบบต่อเนื่อง conditional hot-deck จะใช้การเรียงลำดับชุดข้อมูลใหม่ตามตัวแปรต่อเนื่องที่มีความสัมพันธ์กับตัวแปรที่ต้องการทดแทนค่าสูญหาย จากนั้นเลือกหรือสุ่มข้อมูลสมบูรณ์จากหน่วยข้อมูลที่มีความคล้ายคลึงกับหน่วยข้อมูลที่มีค่าสูญหายเป็นค่าทดแทน
 
 ```{r}
-library(simputation)
-exam_data %>% 
-## impute_rhd รองรับ data.frame แต่อาจมีปัญหากับ tibble
+p6 <- data %>% 
+  rownames_to_column("id") %>% 
+  dplyr::select(id,learning_performance_mcar, ach, engage) %>% 
   data.frame() %>% 
-  impute_rhd(x1 ~ 1, pool = "complete")
+  hotdeck(variable = c("learning_performance_mcar"), 
+          domain_var = "engage",                       # <1>
+          ord_var = "ach") %>%                            # <2>          
+  ggplot(aes(x=learning_performance_mcar, y=ach))+        # <3>
+  geom_point()+
+  geom_point(aes(col = learning_performance_mcar_imp))+
+  geom_rug(aes(x = learning_performance_mcar, 
+               y = ach, col = factor(learning_performance_mcar_imp)),
+           sides = "l")+
+  scale_color_manual(values=c("grey","maroon"))+
+  ggtitle("Imputed Data: Conditional Hot-Deck2")+
+  theme_light()+
+  theme(legend.position = "none")
 ```
 
-- ข้อควรระวังของการใช้การทดแทนค่าสูญหายนี้คือเป็นวิธีการที่มีแนวโน้มบิดเบือนการแจกแจงของข้อมูลต้นฉบับ การ เนื่องจากการสุ่มค่ามาจากข้อมูลที่มีอยู่ในคอลัมน์เดียวกัน โดยไม่ได้พิจารณาข้อมูลในตัวแปรอื่น ๆ นอกจากนี้กระบวนการสุ่มดังกล่าวยังสามารถบิดเบือนความสัมพันธ์ระหว่างตัวแปรได้อีกด้วย วิธีการนี้จึงไม่ค่อยแนะนำสำหรับทดแทนค่าสูญหายโดยเฉพาะในกรณีที่มีค่าสูญหายเป็นจำนวนมาก
+1.  กำหนด engage เป็นตัวแปรเงื่อนไขในการทดแทนค่าสูญหายใน `domain_var`
 
+2.  กำหนดให้ ach เป็นตัวแปรต่อเนื่องที่ใช้เรียงลำดับหน่วยข้อมูล
 
-- การแก้ปัญหาดังกล่าวสามารถทำได้โดยการทำ hot-deck แบบมีเงื่อนไข กล่าวคือแทนที่จะดำเนินการสุ่มเพื่อทดแทนค่าสูญหายแบบอิสระ conditional random hot-deck จะพิจารณาค่าของตัวแปรอื่นที่เกี่ยวข้องประกอบเพื่อกำหนดขอบเขตของการสุ่มข้อมูลมาทดแทนค่าสูญหายให้ใกล้เคียงกับหน่วยข้อมูลที่คล้ายกับหน่วยข้อมูลที่มีค่าสูญหาย การกำหนดเงื่อนไขดังกล่าวใน simputation สามารถทำได้โดยกำหนด formula ในการทดแทนค่าสูญหายในอาร์กิวเมนท์ `formula`  ที่มีรูปแบบการเขียนดังนี้
+3.  สร้าง scatter plot เพื่อพิจารณาการทดแทนข้อมูลสูญหาย
 
-```{r eval = F}
-IMPUTED_VARIABLES ~ MODEL_SPECIFICATION [ | GROUPING_VARIABLES ]
+```{r fig.width = 12, fig.height = 5}
+
+p4+p4+p6
 ```
 
-โดยที่ ตัวแปรทางซ้ายของสูตรคือตัวแปรที่ต้องการทดแทนค่าสูญหาย และตัวแปรทางขวาทั้งใน `MODEL_SPECIFICATION` และ `GROUPING_VARIABLES` จะทำหน้าที่จัดกลุ่มข้อมูลออกเป็นกลุ่มย่อย และสุ่มค่าที่สมบูรณ์จากกลุ่มย่อยนั้นไปเป็นค่าทดแทนค่าสูญหายของหน่วยข้อมูลที่อยู่ในกลุ่มเดียวกัน ดังตัวอย่างต่อไปนี้
+##### กิจกรรม
+
+ลองทดแทนค่าสูญหายด้วย conditional hot-deck กับสถานการณ์การสูญหายแบบ MAR และ MNAR
 
 ```{r}
-exam_data %>% 
-  impute_rhd(x1 ~ x2)
+exam_data <- read_csv("/Users/choat/Downloads/exam.csv")
+
+missing_data <- exam_data %>% 
+  ## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage
+  mutate(learning_performance_mar = case_when(
+     ach < 40 | engage == "moderate engage"  ~ ifelse(runif(387,0,1)<0.8,NA, learning_performance) ,
+    .default = learning_performance
+  )
+  ) %>% 
+  ## สร้างตัวแปรใหม่ที่สูญหายแบบ MNAR โดยมีความสัมพันธ์กับ ach และ engage
+ mutate(learning_performance_mnar = case_when(
+    learning_performance < 30  ~ ifelse(runif(387,0,1)<0.8,NA, learning_performance) ,
+    .default = learning_performance
+  )
+  )
+
+missing_data
 ```
 
+```{r message=F, warning = F, echo = F, eval = F, fig.width = 10, fig.height = 5}
+library(ggrepel)
+imp_data <- missing_data %>% 
+  rownames_to_column("id") %>% 
+  data.frame() %>% 
+  hotdeck(variable = c("learning_performance_mar"), 
+          domain_var = c("practice"),                       
+          ord_var = "ach")
 
+mar1 <-  imp_data %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach))+
+  geom_point(aes(col = learning_performance_mar_imp))+
+  geom_text_repel(data = . %>% filter(ach<20, learning_performance_mar>50),
+            aes(x = learning_performance_mar, y = ach, label = id), col = "maroon")+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")
+  
+mar2 <-  imp_data %>% 
+  ggplot(aes(x = engage, y = ach))+
+  geom_boxplot()+
+  geom_jitter(aes(col = learning_performance_mar_imp), width = 0.2)+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "none")
 
-
-
-
-- `impute_rhd(data, formula, pool, prob)` เป็นฟังก์ชันสำหรับทำ random hot-deck ซึ่งมีหลักการคือจะทดแทนค่าสูญหายจากการสุ่มหน่วยข้อมูลที่มีค่าในคอลัมน์เดียวกัน ยกตัวอย่างเช่น
-
-- `impute_shd(...)` เป็นฟังก์ชันสำหรับทำ sequential hot-deck
-
-
-
-
-Hot-Deck Imputation ใน library-VIM มีสองลักษณะ ลักษณะแรกคือ random hot-deck และลักษณะที่สองคือ sequantial hot-deck รายละเอียดมีดังนี้
-
-**Random hot-deck** 
-
-**Sequential hot-deck** จะทดแทนค่าสูญหายจากหน่วยข้อมูลที่ใกล้เคียงกันมากที่สุดกับหน่วยข้อมูลที่มีค่าสูญหาย โดยการเปรียบเทียบความใกล้เคียงกันระหว่างหน่วยข้อมูลจะใช้การเรียงลำดับหน่วยข้อมูลตามตัวแปรที่กำหนด ยกตัวอย่างเช่น การทดแทนค่าสูญหายในตัวแปร x1 ของชุดข้อมูลข้างต้น ผู้วิเคราะห์อาจเลือกเรียงลำดับข้อมูลด้วยตัวแปร x3 ซึ่งจะได้ผลลัพธ์เป็นดังนี้
-
-```{r echo = F}
-exam_data %>% 
-  arrange(x3)
+mar1+mar2 +
+   plot_layout(axis_titles = "collect")
 ```
 
-เมื่อพิจารณาค่า x3 ของหน่วยข้อมูลที่ 3 จะพบว่ามีค่าใกล้เคียงกับหน่วยข้อมูลที่ 2 และ 4 มากที่สุด ดังนั้นค่าทดแทนสำหรับค่าสูญหายใน x1 ของหน่วยข้อมูลที่ 3 อาจเป็นค่า 2 หรือ 4 สำหรับ `hotdeck()` ใน VIM จะเลือกทดแทนด้วยค่าก่อนหน้า ดังตัวอย่างด้านล่าง
+**ผลลัพธ์ที่ได้เป็นอย่างไร?**
+
+Note: มีอีก library หนึ่งคือ {`simputation`} ที่สามารถปรับการทดแทนค่าสูญหายในบางอัลกอริทึมได้ละเอียดกว่า
+
+<https://github.com/markvanderloo/simputation>
 
 ```{r}
-# install.packages("VIM")
-library(VIM)
-hotdeck(exam_data, 
-        variable = "x1",  ## กำหนดตัวแปรที่ต้องการ impute
-        ord_var = "x3") ## กำหนดตัวแปรที่ใช้เรียงลำดับหน่วยข้อมูล
-```
-ฟังก์ชัน `hotdeck()` ยังมีอาร์กิวเมนท์ `domain_var` ที่ใช้ระบุตัวแปรจัดประเภทสำหรับจำแนกเพื่อทดแทนค่าสูญหาย ซึ่งช่วยให้การทดแทนค่าสูญหายมีความเหมาะสมมากขึ้น 
-
-
-```{r}
-## install.packages("simputation")
 library(simputation)
-## random hot-deck
-impute_rhd(dat = data %>% dplyr::select(-learning_performance,
-                                        -learning_performance_mar,
-                                        -learning_performance_mnar) %>% data.frame(), 
-           formula = learning_performance_mcar ~ 1)
-data %>% data.frame() %>% impute_rhd(learning_performance_mcar ~ 1) %>% 
-  dplyr::select(learning_performance_mcar)
-
-head(data,20)
-summary(data)
-```
-
-```{r}
-data %>% rownames_to_column("id") %>% 
-  mutate(id = as.numeric(id)) %>% 
-  arrange(learning_performance_mcar) %>% 
-  dplyr::select(id, learning_performance_mcar) %>% 
+missing_data %>% 
   bind_shadow() %>% 
+  select(-learning_performance_mnar) %>% 
   data.frame() %>% 
-  arrange(id) %>% 
-  impute_rhd(learning_performance_mcar ~ ach) %>% 
-  arrange(desc(learning_performance_mcar_NA))
+  impute_shd(learning_performance_mar ~ ach, pool = "univariate")  %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")
 ```
-
-
-
-
-
-- `impute_knn(...)` เป็นฟังก์ชันสำหรับทำ k-nearest neighbor hot-deck
-
-- `impute_pmm(...)` เป็นฟังก์ชันสำหรับทำ predictive mean matching hot-deck
-
-
-
-```{r}
-# install.packages("VIM")
-library(VIM)
-dat_imp_mean <- hotdeck(data, variable = "learning_performance_mcar")
-dat_imp_mean |> dplyr::select(learning_performance_mcar, learning_performance_mcar_imp) |> 
-  arrange(learning_performance_mcar) |> head()
-```
-
-note: การทดแทนค่าสูญหายแบบ hot-deck อาจบิดเบือนการแจกแจงและความสัมพันธ์ระหว่างตัวแปรในชุดข้อมูลได้
 
 ##### KNN imputation
 
 วิธีการนี้สามารถใช้ได้กับการสูญหายแบบ MAR ในบางสถานการณ์ วิธีการนี้จะใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายคลึงกันมาเติมเต็มค่าสูญหาย โดยพิจารณาความคล้ายคลึงจากระยะทางระหว่างหน่วยข้อมูลดังกล่าว อัลกอริทึมนี้มี hyperparameter 1 ตัวได้แก่ k หรือจำนวนหน่วยข้อมูลคล้ายคลึงที่จะนำมาเฉลี่ยเพื่อสร้างค่าทดแทนของข้อมูลสูญหาย
 
 ```{r}
-dat_imp_knn <- kNN(data, k = 15, variable = "learning_performance_mar")
+dat_imp_knn <- missing_data %>% 
+  bind_shadow() %>% 
+  data.frame() %>% 
+  impute_knn(learning_performance_mar ~ ach, k = 5)
+
+dat_imp_knn %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("KNN Imputation")
+```
+
+#### Model-Based Imputation
+
+การทดแทนค่าสูญหายในกลุ่มนี้เป็นการนำโมเดลทางสถิติรวมทั้ง machine learning มาช่วยทดแทนค่าสูญหายในแต่ละตัวแปร หลักการสำคัญของวิธีการในกลุ่มนี้คือการใช้ความสัมพันธ์ระหว่างตัวแปรในชุดข้อมูลเข้ามาช่วยทำนายค่าสูญหาย โดยทั่วไปวิธีการนี้มีลักษณะเด่นดังนี้
+
+-   เป็นกระบวนการทวนซ้ำตามตัวแปรที่มีค่าสูญหาย
+
+-   แต่ละตัวแปรที่มีค่าสูญหายจะต้องมีการกำหนดโมเดลทำนายค่าสูญหาย
+
+-   มีการ train โมเดลสำหรับทำนายค่าสูญหายและใช้โมเดลดังกล่าวในการทำนายค่าสูญหาย
+
+-   กระบวนการทดแทนนี้จะทำซ้ำเรียงตามลำดับตัวแปรไปจนกระทั่งค่าทดแทนค่าสูญหายมีแนวโน้มลู่เข้าจึงหยุดกระบวนการ
+
+```{r}
+example_data <- data.frame(
+  x1 = c(5,1,NA,4,NA),
+  x2 = c(34,22,65,87,23),
+  x3 = c(NA,NA,55,27,10),
+  x4 = c(1,4,2,2,1)
+)
+example_data
+```
+
+##### Chain-Imputation Algorithm
+
+เราออกแบบการทดแทนค่าสูญหายด้วยโมเดลทำนายดังนี้
+
+1.  ทดแทนค่าสูญหายในตัวแปร`x1` โดยใช้ตัวแปรที่เหลือในชุดข้อมูลเป็นตัวแปรทำนาย
+
+2.  ทดแทนค่าสูญหายในตัวแปร `x2` โดยใช้ตัวแปรที่เหลือในชุดข้อมูล
+
+3.  ทวนซ้ำโดยแทนค่าที่ทดแทนใน `x1` กลับไปเป็น `NA` แล้วทดแทนด้วยข้อมูลที่เหลือ
+
+4.  ...
+
+ทำไปเรื่อย ๆ จนกระทั่งค่าทดแทนค่าสูญหายไม่เปลี่ยนแปลงหรือลู่เข้า ลองทดลองทำดู
+
+```{r}
+missing_data2 <- read_csv("/Users/choat/Downloads/exam.csv") %>% 
+  mutate(learning_performance_mar = case_when(
+     ach < 40 | engage == "moderate engage"  ~ ifelse(runif(387,0,1)<0.3,NA, learning_performance) ,
+    .default = learning_performance
+  ),
+  
+  ach_mar = case_when(
+    learning_performance_mar < 30 | engage == "little engage" ~
+      ifelse(runif(387,0,1)<0.8,NA, ach) ,
+        .default = ach
+
+  ),
+  
+  practice_mar = case_when(
+   ach <20 ~ ifelse(runif(387,0,1)<0.8,NA, practice) ,
+       .default = practice
+
+  )
+  )  %>% 
+  select(ach_mar, learning_performance_mar, practice_mar, engage, ontime_class)
+```
+
+```{r}
+## create chain imputation
+missing_pattern <- missing_data2 %>% 
+  bind_shadow() %>% select(ends_with("NA"))
+
+ach_imp <- missing_data2$ach_mar
+lp_imp <- missing_data2$learning_performance_mar
+practice_imp <- missing_data2$practice_mar
+missing <- missing_data2
+for (i in 1:10)
+{
+imp <- missing %>% 
+    mutate(ach_mar = ifelse(is.na(missing_pattern$ach_mar_NA), NA, ach_mar)) %>%
+  impute_lm(ach_mar ~ .) %>% 
+    mutate(learning_performance_mar = 
+             ifelse(is.na(missing_pattern$learning_performance_mar_NA), 
+                    NA, learning_performance_mar)) %>% 
+  impute_lm(learning_performance_mar ~.) %>% 
+    mutate(practice_mar = 
+             ifelse(is.na(missing_pattern$practice_mar_NA), NA, practice_mar)) %>% 
+  impute_cart(practice_mar ~ .)
+  #impute_lm(ach_mar ~ -learning_performance_mar) %>% 
+  #impute_lm(learning_performance_mar ~ practice_mar + engage + ontime_clas)  
+
+missing <- imp
+ach_imp <- data.frame(ach_imp,imp$ach_mar)
+lp_imp <- data.frame(lp_imp, imp$learning_performance_mar)
+practice_imp <- data.frame(practice_imp, imp$practice_mar)
+}
+```
+
+```{r fig.height = 10}
+p1<-imp %>% 
+  bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach_mar))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("Model-Based Imputation")
+
+p2<-imp %>% 
+  bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach_mar))+
+  geom_point(aes(col = ach_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("Model-Based Imputation")
+
+p3<-imp %>% 
+  bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
+  ggplot(aes(x = practice_mar, y = ach_mar))+
+  geom_boxplot()+
+  geom_jitter(aes(col = practice_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("Model-Based Imputation")
+
+p1/p2/p3
+```
+
+##### EM-algorithm
+
+EM Algorithm (Expectation-Maximization Algorithm) เป็นวิธีการที่ใช้บ่อยในการทดแทนค่าสูญหาย โดยเฉพาะในกรณีที่มีข้อมูลสูญหายแบบ MAR (Missing at Random) ซึ่งข้อมูลสูญหายไม่ได้เป็นอิสระจากข้อมูลอื่น แต่สัมพันธ์กับตัวแปรอื่นในชุดข้อมูล
+
+1.  Initial Step : ประมาณค่าสูญหายให้เป็นค่าเริ่มต้น
+
+2.  เข้ากระบวนการ EM
+
+-   E-step (Expectaion): คำนวณ expected value ของค่าสูญหายที่ไม่มีข้อมูล
+
+-   M-step (Maximization): ปรับค่าพารามิเตอร์ในโมเดลทำนายค่าสูญหายให้เหมาะสม
+
+ทวนซ้ำ 2. จนกระทั่งลู่เข้า
+
+```{r}
+## install.packages("missMethods")
+library(missMethods)
+missing_data2 %>% 
+  select_if(is.numeric) %>% 
+  impute_EM() %>% 
+  bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach_mar))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("Model-Based Imputation")
+
+```
+
+```{r fig.width = 8}
+## create chain imputation
+missing_pattern <- missing_data2 %>% 
+  bind_shadow() %>% select(ends_with("NA"))
+
+imp2 <- missing_data2
+#imp2 %>% arrange(ach_mar)
+#imp2[imp2$ach_mar <0.5,1] <- 0
+
+for (i in 1:10)
+{
+imp1 <- imp2 %>% 
+    mutate(ach_mar = ifelse(is.na(missing_pattern$ach_mar_NA), NA, ach_mar),
+           learning_performance_mar = 
+             ifelse(is.na(missing_pattern$learning_performance_mar_NA), 
+                    NA, learning_performance_mar)) %>%
+  select_if(is.numeric) %>% 
+  impute_EM() %>% 
+  mutate(ach_mar = ifelse(ach_mar <0,0,ach_mar)) %>% 
+  mutate(learning_performance_mar = 
+           ifelse(learning_performance_mar <0,0,learning_performance_mar))
+
+
+imp2<- imp1 %>% 
+    bind_cols(missing %>% select_if(~ !is.numeric(.))) %>% 
+    mutate(practice_mar = 
+             ifelse(is.na(missing_pattern$practice_mar_NA), NA, practice_mar)) %>% 
+  impute_cart(practice_mar ~ .)
+}
+
+p1<- imp2 %>% 
+  bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
+  ggplot(aes(x = learning_performance_mar, y = ach_mar))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("Model-Based Imputation with EM")
+
+p2<-imp2 %>% 
+ bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
+  ggplot(aes(x = practice_mar, y = ach_mar))+
+  geom_boxplot()+
+  geom_jitter(aes(col = practice_mar_NA))+
+  theme_light()+
+  scale_color_manual(values = c("grey","maroon"))+
+  theme(legend.position = "top")+
+  ggtitle("Model-Based Imputation")
+
+
+p1+p2
+```
+
+การประเมินผลกระทบจากการทดแทนค่าสูญหายที่แตกต่างวิธีการสามารถพิจารณาผ่านผลการวิเคราะห์หลักที่ใช้ในการวิจัยได้ดังนี้
+
+```{r}
+fit_complete_case <- lm(ach_mar ~ learning_performance_mar + practice_mar, data = missing_data2)
+fit_model_imp <- lm(ach_mar ~ learning_performance_mar + practice_mar, data = imp)
+fit_model_em <- lm(ach_mar ~ learning_performance_mar + practice_mar, data = imp2)
+
+library(broom)
+glance(fit_complete_case) %>% 
+  bind_rows(glance(fit_model_imp)) %>% 
+  bind_rows(glance(fit_model_em))
+```
+
+#### Multiple Imputation
+
+การทดแทนค่าสูญหายแบบค่าเดียวมีจุดสังเกตหนึ่งที่เป็นปัญหาคือ ค่าสูญหายเป็นค่าที่ไม่ทราบ การทดแทนเพียงค่าเดียวจึงเป็นการละเลยความไม่แน่นอน (ความเป็นไปได้ที่มีหลากหลาย) ของค่าสูญหายนั้น ซึ่งเพิ่มโอกาสของการเกิดความลำเอียงในผลการวิเคราะห์ นอกจากนี้ในกรณีที่ใช้โมเดลทำนายเป็นโมเดลทดแทนค่าสูญหาย การทดแทนแบบค่าเดียวอาจทำให้ผู้วิเคราะห์ประสบปัญหาความแปรปรวนต่ำเกินไป นื่องจากค่าสูญหายทั้งหมดถูกแทนด้วยค่าเดียวที่คำนวณจากโมเดล ทำให้ขาดการสะท้อนความหลากหลายของข้อมูลที่แท้จริง
+
+จากปัญหาดังกล่าวจึงมีการพัฒนาวิธีการทดแทนค่าสูญหายแบบหลายค่า เรียกว่า multiple imputation วิธีการนี้ใช้ประโยชน์จากการสุ่มตัวอย่างแบบใส่คืนมาสร้างตัวอย่าง bootstrap จำนวนหลาย ๆ ชุด โดยแต่ละชุดจะนำมาดำเนินการทดแทนค่าสูญหาย วิเคราะห์ ผลที่ได้จากกระบวนการนี้จะทำให้ผู้วิเคราะห์มีผลการวิเคราะห์จากตัวอย่างดังกล่าวหลายชุด ผลการวิเคราะห์ดังกล่าวจะถูกนำมารวมกันเพื่อคำนวณเป็นค่าประมาณพารามิเตอร์ในโมเดลตามวัตถุประสงค์หลักของการวิจัย
+
+![](img/MI.png)
+
+library สำคัญสำหรับการทำ multiple imputation คือ {`mice`} การทำงานหลัก ๆ ของ library นี้ประกอบด้วย 3 ขั้นตอนได้แก่ [@mice]
+
+-   `mice()`
+
+-   `with()`
+
+-   `pool()`
+
+```{r}
+library(mice)
+missing_data2 %>% miss_var_summary()
+```
+
+```{r}
+imp_data_mice <- mice(missing_data2, m = 5) #<1>
+lm_mice <- imp_data_mice %>% 
+  with(lm(ach_mar ~ learning_performance_mar + practice_mar + engage + ontime_class)) #<2>
+lm_mice_pooled <- pool(lm_mice) #<3>
+tidy(lm_mice_pooled, conf.int = TRUE, conf.level = 0.95) #<4>
+```
+1. สุ่มซ้ำและทดแทนค่าสูญหาย
+
+2. สร้างโมเดลตามวัตถุประสงค์ของการวิจัย
+
+3. รวมผลการวิเคราะห์จากแต่ละชุด
+
+4. สรุปผลการวิเคราะห์
+
+ผลการวิเคราะห์ข้างต้นมีค่าสถิติที่สำคัญได้แก่
+
+- lambda (imputation variance) คือสัดส่วนความแปรปรวนที่เกิดจากการทดแทนค่าสูญหาย [0,1] มีค่าสูงแปลว่าความแปรปรวนในการประมาณค่าพารามิเตอร์นี้ส่วนใหญ่เกิดจากการทดแทนค่าสูญหาย
+
+- fmi (fraction of missing information) คือสัดส่วนของข้อมูลสูญหายที่มีผลต่อความไม่แน่นอนในการวิเคราะห์ [0,1]
+
+- riv (relative increase in variance) คืออัตราส่วนความแปรปรวนระหว่างความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายต่อความแปรปรวนส่วนเหลือ 
+
+- ubar ค่าเฉลี่ยความแปรปรวนของพารามิเตอร์ที่ได้จากชุดข้อมูลที่ทดแทนค่าสูญหายแต่ละชุด
+
+
+```{r}
+imp_data_mice %>% densityplot()
+imp_data_mice %>% densityplot( ~ ach_mar|engage)
+
+stripplot(imp_data_mice, learning_performance_mar, pch=16, cex=1.5)
+bwplot(imp_data_mice, learning_performance_mar)
+bwplot(imp_data_mice, learning_performance_mar ~ practice_mar)
 ```

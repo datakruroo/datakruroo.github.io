@@ -166,9 +166,17 @@ window.Quarto = {
   <li><a href="#simple-imputation" id="toc-simple-imputation" class="nav-link" data-scroll-target="#simple-imputation"><span class="header-section-number">3.3.1</span> Simple imputation</a></li>
   <li><a href="#donor-based-imputation" id="toc-donor-based-imputation" class="nav-link" data-scroll-target="#donor-based-imputation"><span class="header-section-number">3.3.2</span> Donor-based imputation</a>
   <ul class="collapse">
-  <li><a href="#hot-deck-imputation" id="toc-hot-deck-imputation" class="nav-link" data-scroll-target="#hot-deck-imputation"><span class="header-section-number">3.3.2.1</span> Hot-Deck imputation</a></li>
-  <li><a href="#knn-imputation" id="toc-knn-imputation" class="nav-link" data-scroll-target="#knn-imputation"><span class="header-section-number">3.3.2.2</span> KNN imputation</a></li>
+  <li><a href="#random-hot-deck-imputation" id="toc-random-hot-deck-imputation" class="nav-link" data-scroll-target="#random-hot-deck-imputation"><span class="header-section-number">3.3.2.1</span> Random Hot-Deck imputation</a></li>
+  <li><a href="#conditional-hot-deck-imputation" id="toc-conditional-hot-deck-imputation" class="nav-link" data-scroll-target="#conditional-hot-deck-imputation"><span class="header-section-number">3.3.2.2</span> Conditional Hot-Deck imputation</a></li>
+  <li><a href="#กจกรรม" id="toc-กจกรรม" class="nav-link" data-scroll-target="#กจกรรม"><span class="header-section-number">3.3.2.3</span> กิจกรรม</a></li>
+  <li><a href="#knn-imputation" id="toc-knn-imputation" class="nav-link" data-scroll-target="#knn-imputation"><span class="header-section-number">3.3.2.4</span> KNN imputation</a></li>
   </ul></li>
+  <li><a href="#model-based-imputation" id="toc-model-based-imputation" class="nav-link" data-scroll-target="#model-based-imputation"><span class="header-section-number">3.3.3</span> Model-Based Imputation</a>
+  <ul class="collapse">
+  <li><a href="#chain-imputation-algorithm" id="toc-chain-imputation-algorithm" class="nav-link" data-scroll-target="#chain-imputation-algorithm"><span class="header-section-number">3.3.3.1</span> Chain-Imputation Algorithm</a></li>
+  <li><a href="#em-algorithm" id="toc-em-algorithm" class="nav-link" data-scroll-target="#em-algorithm"><span class="header-section-number">3.3.3.2</span> EM-algorithm</a></li>
+  </ul></li>
+  <li><a href="#multiple-imputation" id="toc-multiple-imputation" class="nav-link" data-scroll-target="#multiple-imputation"><span class="header-section-number">3.3.4</span> Multiple Imputation</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1377,94 +1385,1060 @@ Prediction   0   1
 <p>วิธีการในกลุ่มนี้มีลักษณะสำคัญคือใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายกัน (หรือที่เรียกว่า “donors”) เพื่อทดแทนค่าสูญหายในชุดข้อมูล วิธีนี้จะค้นหาหน่วยข้อมูลอื่นที่มีลักษณะคล้ายคลึงกันตามตัวแปรที่เกี่ยวข้อง จากนั้นใช้ข้อมูลจากหน่วยนั้นในการเติมค่าที่สูญหาย โดยวิธีการนี้แบ่งออกเป็นหลายเทคนิค เช่น:</p>
 <ul>
 <li><p>Hot-Deck imputation</p></li>
-<li><p>Cold-Deck imputation</p></li>
 <li><p>KNN imputation</p></li>
 </ul>
-<section id="hot-deck-imputation" class="level5" data-number="3.3.2.1">
-<h5 data-number="3.3.2.1" class="anchored" data-anchor-id="hot-deck-imputation"><span class="header-section-number">3.3.2.1</span> Hot-Deck imputation</h5>
-<p>เป็นวิธีการทดแทนค่าสูญหายที่ใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายกันในชุดข้อมูลเพื่อเติมค่าให้กับหน่วยที่มีค่าสูญหาย โดยกระบวนการหลักจะเกี่ยวข้องกับการสุ่มหรือการจับคู่หน่วยข้อมูลที่มีค่าที่สมบูรณ์ (เรียกว่า “donors”) เพื่อทดแทนค่าที่หายไปในหน่วยข้อมูลที่สูญหาย (เรียกว่า “recipients”) วิธีนี้เป็นที่นิยมเนื่องจากมีความยืดหยุ่นและสามารถรักษาคุณลักษณะของข้อมูลจริงได้ดี อย่างไรก็ตามควรใช้วิธีการนี้กับการสูญหายแบบ MCAR</p>
-<p>หลักการทดแทนค่าสูญหายแบบ Hot-Deck อธิบายได้ดังนี้ สมมุติว่ามีข้อมูลชุดหนึ่งที่มีตัวแปรได้แก่ x1, x2 และ x3 ที่มีค่าสูญหายดังนี้</p>
+<p>Hot-Deck เป็นวิธีการทดแทนค่าสูญหายที่ใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายกันในชุดข้อมูลเพื่อเติมค่าให้กับหน่วยที่มีค่าสูญหาย โดยกระบวนการหลักจะเกี่ยวข้องกับการสุ่มหรือการจับคู่หน่วยข้อมูลที่มีค่าที่สมบูรณ์ (เรียกว่า “donors”) เพื่อทดแทนค่าที่หายไปในหน่วยข้อมูลที่สูญหาย (เรียกว่า “recipients”) วิธีนี้เป็นที่นิยมเนื่องจากมีความยืดหยุ่นและสามารถรักษาคุณลักษณะของข้อมูลจริงได้ดี อย่างไรก็ตามควรใช้วิธีการนี้กับการสูญหายแบบ MCAR</p>
+<section id="random-hot-deck-imputation" class="level5" data-number="3.3.2.1">
+<h5 data-number="3.3.2.1" class="anchored" data-anchor-id="random-hot-deck-imputation"><span class="header-section-number">3.3.2.1</span> Random Hot-Deck imputation</h5>
+<p>การทำ hot-deck imputation ใน R สามารถทำได้จากหลาย library เช่น การใช้ฟังก์ชัน <code>hotdeck()</code> จาก library-VIM</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>exam_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>, <span class="dv">4</span>, <span class="dv">5</span>),</span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>),</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>)</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>exam_data </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VIM)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hotdeck</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"learning_performance_mcar"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  id x1 x2 x3
-1  1  1 NA  2
-2  2  2  1  3
-3  3 NA  2  4
-4  4  4  3  5
-5  5  5 NA  6</code></pre>
+<pre><code>     id learning_performance_mcar       ach learning_performance_mcar_imp
+1     1                 32.666667 52.159780                         FALSE
+2     2                 10.666667 30.784999                         FALSE
+3     3                 28.000000 39.607737                         FALSE
+4     4                 52.666667 55.985351                         FALSE
+5     5                 15.555556 31.800255                         FALSE
+6     6                  4.444444 70.544232                          TRUE
+7     7                 18.666667 21.153590                         FALSE
+8     8                 14.222222  9.963093                         FALSE
+9     9                 68.444444 65.028104                         FALSE
+10   10                 55.111111 61.423482                         FALSE
+11   11                  6.222222 14.158104                         FALSE
+12   12                 21.777778 29.131224                         FALSE
+13   13                 14.000000 19.246805                         FALSE
+14   14                 29.111111 31.566105                         FALSE
+15   15                 34.888889 25.048183                          TRUE
+16   16                 22.222222 20.244099                         FALSE
+17   17                 41.555556 40.828556                         FALSE
+18   18                 58.666667 36.332986                          TRUE
+19   19                 25.555556 46.742625                         FALSE
+20   20                 72.888889 66.304324                         FALSE
+21   21                 71.111111 62.449263                         FALSE
+22   22                 75.555556 66.015826                         FALSE
+23   23                 59.777778 48.727004                         FALSE
+24   24                 74.444444 64.040506                         FALSE
+25   25                 58.444444 57.483179                         FALSE
+26   26                 79.555556 62.591741                         FALSE
+27   27                 92.000000 78.382666                         FALSE
+28   28                 56.222222 56.778988                         FALSE
+29   29                 59.111111 50.250194                         FALSE
+30   30                 72.888889 40.991311                          TRUE
+31   31                 96.000000 77.102606                         FALSE
+32   32                 95.555556 75.104048                         FALSE
+33   33                 70.666667 62.338120                         FALSE
+34   34                 13.555556 28.622395                         FALSE
+35   35                 54.888889 69.627446                          TRUE
+36   36                 92.222222 75.121712                         FALSE
+37   37                 46.222222 50.194450                         FALSE
+38   38                 87.555556 69.170199                         FALSE
+39   39                 57.777778 44.172282                         FALSE
+40   40                 47.333333 41.376205                         FALSE
+41   41                  6.888889 30.019246                          TRUE
+42   42                 92.888889 71.456394                         FALSE
+43   43                 85.777778 58.758231                         FALSE
+44   44                 55.111111 64.209985                         FALSE
+45   45                 54.222222 56.074985                          TRUE
+46   46                 15.333333 39.152925                          TRUE
+47   47                 47.555556 37.733248                         FALSE
+48   48                 70.222222 64.015246                         FALSE
+49   49                 49.777778 51.034486                         FALSE
+50   50                 45.333333 44.634737                         FALSE
+51   51                 40.000000 55.853736                          TRUE
+52   52                 51.777778 46.939940                         FALSE
+53   53                 83.555556 54.989688                         FALSE
+54   54                 75.555556 63.740542                          TRUE
+55   55                 78.666667 59.107009                         FALSE
+56   56                 24.444444 26.200015                         FALSE
+57   57                 18.222222 43.873145                          TRUE
+58   58                 38.222222 22.100319                         FALSE
+59   59                 29.555556 34.259831                         FALSE
+60   60                 85.777778 66.461050                         FALSE
+61   61                 14.444444 32.162707                         FALSE
+62   62                 15.555556 58.365416                          TRUE
+63   63                 88.000000 83.414677                         FALSE
+64   64                 76.666667 62.701549                         FALSE
+65   65                 52.444444 30.956524                         FALSE
+66   66                  4.888889 21.851733                         FALSE
+67   67                 64.222222 58.775803                         FALSE
+68   68                  6.666667 13.652267                         FALSE
+69   69                 72.000000 53.825437                         FALSE
+70   70                 63.555556 49.410834                         FALSE
+71   71                 57.111111 37.053727                         FALSE
+72   72                 73.111111 53.280283                         FALSE
+73   73                 34.888889 38.677377                         FALSE
+74   74                 85.333333 50.593266                          TRUE
+75   75                 46.888889 43.748650                         FALSE
+76   76                 52.222222 46.067695                         FALSE
+77   77                 73.111111 75.109772                         FALSE
+78   78                 66.000000 45.427755                         FALSE
+79   79                 23.555556 45.626542                         FALSE
+80   80                 22.666667 30.503778                          TRUE
+81   81                 81.777778 77.445374                         FALSE
+82   82                 42.444444 45.643483                         FALSE
+83   83                 61.111111 60.622359                         FALSE
+84   84                 83.333333 56.835232                         FALSE
+85   85                 57.111111 33.327661                          TRUE
+86   86                 19.555556 27.784317                         FALSE
+87   87                 52.222222 56.888530                         FALSE
+88   88                 34.666667 50.461564                         FALSE
+89   89                 46.222222 49.933358                         FALSE
+90   90                 35.777778 55.340994                          TRUE
+91   91                 65.333333 50.887105                          TRUE
+92   92                 32.222222 15.133796                         FALSE
+93   93                 74.000000 56.835426                         FALSE
+94   94                 54.222222 46.046210                         FALSE
+95   95                 27.333333  6.453335                         FALSE
+96   96                 72.000000 34.214203                          TRUE
+97   97                 66.666667 66.149144                         FALSE
+98   98                 38.444444 44.499339                          TRUE
+99   99                 52.000000 42.697130                         FALSE
+100 100                 80.888889 65.974096                         FALSE
+101 101                 27.555556 43.254268                         FALSE
+102 102                 24.000000 35.658121                         FALSE
+103 103                 66.222222 44.935297                         FALSE
+104 104                 66.666667 48.099891                         FALSE
+105 105                 87.555556 61.750784                         FALSE
+106 106                 72.666667 57.868442                         FALSE
+107 107                  5.777778 30.761188                         FALSE
+108 108                 14.666667 41.999791                         FALSE
+109 109                 47.333333 38.840754                         FALSE
+110 110                 14.444444 65.887166                          TRUE
+111 111                 13.555556 35.707178                         FALSE
+112 112                 44.666667 35.507200                         FALSE
+113 113                 16.666667 49.100709                          TRUE
+114 114                 41.555556 36.318975                         FALSE
+115 115                  6.000000 22.355916                         FALSE
+116 116                 82.666667 38.026119                          TRUE
+117 117                 61.333333 35.804370                         FALSE
+118 118                 83.111111 50.911634                         FALSE
+119 119                 92.444444 75.021971                         FALSE
+120 120                 73.777778 54.064800                         FALSE
+121 121                 42.444444 51.889430                         FALSE
+122 122                 94.888889 65.228950                         FALSE
+123 123                 70.444444 52.851567                         FALSE
+124 124                 30.000000 37.275190                         FALSE
+125 125                 27.333333 13.821305                         FALSE
+126 126                 95.555556 57.457202                         FALSE
+127 127                 24.444444 22.061439                          TRUE
+128 128                 64.888889 56.852451                          TRUE
+129 129                 65.333333 40.024283                          TRUE
+130 130                 58.888889 50.740190                         FALSE
+131 131                 49.555556 31.850431                         FALSE
+132 132                 67.555556 41.138200                         FALSE
+133 133                 34.444444 28.476372                         FALSE
+134 134                 59.333333 34.960741                         FALSE
+135 135                 42.888889 44.887023                         FALSE
+136 136                 13.777778 23.997759                         FALSE
+137 137                 68.888889 58.155935                         FALSE
+138 138                 62.444444 47.359959                         FALSE
+139 139                 57.333333 37.669322                         FALSE
+140 140                 76.666667 59.758422                         FALSE
+141 141                 28.666667 41.681319                         FALSE
+142 142                 34.888889 27.254943                         FALSE
+143 143                 65.333333 64.881954                          TRUE
+144 144                 34.444444 48.565652                          TRUE
+145 145                 60.888889 39.621925                         FALSE
+146 146                 54.444444 49.987031                         FALSE
+147 147                 51.777778 31.404050                         FALSE
+148 148                 82.666667 32.254133                          TRUE
+149 149                 32.888889 30.471432                         FALSE
+150 150                 55.111111 37.540283                         FALSE
+151 151                 22.666667 14.857692                         FALSE
+152 152                 21.333333  8.775116                         FALSE
+153 153                 52.222222 49.111824                         FALSE
+154 154                 48.444444 53.570274                         FALSE
+155 155                 17.111111 23.832523                          TRUE
+156 156                 60.222222 52.873493                         FALSE
+157 157                 91.111111 72.204089                         FALSE
+158 158                 72.000000 66.837116                         FALSE
+159 159                 75.555556 56.445136                         FALSE
+160 160                 64.222222 50.464240                         FALSE
+161 161                 35.777778 46.902832                         FALSE
+162 162                 34.888889 39.359723                         FALSE
+163 163                 52.444444 42.730307                         FALSE
+164 164                 68.000000 62.396606                         FALSE
+165 165                 67.555556 49.526841                         FALSE
+166 166                 71.333333 66.743900                         FALSE
+167 167                 82.666667 76.485153                         FALSE
+168 168                 25.333333 31.837708                         FALSE
+169 169                 18.444444 47.889315                         FALSE
+170 170                 50.444444 42.519219                         FALSE
+171 171                 64.888889 61.230313                         FALSE
+172 172                 24.444444 24.254402                          TRUE
+173 173                 63.555556 61.744853                         FALSE
+174 174                 73.555556 56.143639                         FALSE
+175 175                 31.777778 34.491855                         FALSE
+176 176                 66.222222 58.595600                         FALSE
+177 177                 73.555556 53.014102                         FALSE
+178 178                 72.888889 78.282790                         FALSE
+179 179                 24.666667 33.885158                         FALSE
+180 180                 40.222222 41.210304                         FALSE
+181 181                 54.444444 36.605234                         FALSE
+182 182                 69.333333 53.084875                         FALSE
+183 183                 42.444444 50.931677                         FALSE
+184 184                 88.888889 60.301155                         FALSE
+185 185                 60.666667 64.463870                         FALSE
+186 186                 68.888889 55.116632                         FALSE
+187 187                 11.555556 42.239084                         FALSE
+188 188                 53.555556 51.485406                         FALSE
+189 189                 31.111111 32.725641                         FALSE
+190 190                 21.333333 32.683710                         FALSE
+191 191                 41.555556 31.133709                         FALSE
+192 192                 47.333333 43.249440                         FALSE
+193 193                 50.444444 43.313191                         FALSE
+194 194                 11.111111 14.222776                         FALSE
+195 195                 18.666667 42.406885                         FALSE
+196 196                 44.000000 31.748585                         FALSE
+197 197                 18.222222 23.596056                         FALSE
+198 198                 68.666667 64.481467                         FALSE
+199 199                 14.000000 55.381013                          TRUE
+200 200                 30.222222 42.313398                         FALSE
+201 201                 64.888889 50.508336                         FALSE
+202 202                 12.222222 23.335141                         FALSE
+203 203                 84.666667 63.220976                         FALSE
+204 204                  6.444444 28.981081                         FALSE
+205 205                 83.333333 77.229266                         FALSE
+206 206                 62.000000 60.107249                         FALSE
+207 207                 58.666667 66.404280                         FALSE
+208 208                 80.444444 68.368183                         FALSE
+209 209                 59.111111 34.418131                          TRUE
+210 210                 76.666667 73.302312                          TRUE
+211 211                 42.666667 41.822497                         FALSE
+212 212                 77.111111 68.120110                         FALSE
+213 213                 24.888889 41.915937                         FALSE
+214 214                 30.000000 49.977550                         FALSE
+215 215                 55.111111 59.180179                          TRUE
+216 216                 18.222222 23.282042                         FALSE
+217 217                 50.888889 41.042072                         FALSE
+218 218                 79.111111 70.732889                         FALSE
+219 219                 52.444444 49.425920                         FALSE
+220 220                 24.000000 38.570078                         FALSE
+221 221                 50.666667 56.095645                         FALSE
+222 222                 93.333333 71.486747                         FALSE
+223 223                 16.444444 14.683723                         FALSE
+224 224                 85.333333 78.023473                         FALSE
+225 225                 71.555556 53.918175                          TRUE
+226 226                 32.888889  7.134282                         FALSE
+227 227                 65.333333 50.825690                         FALSE
+228 228                 51.111111 54.410973                         FALSE
+229 229                 81.111111 62.451924                         FALSE
+230 230                 66.000000 57.541582                         FALSE
+231 231                 75.555556 54.018752                         FALSE
+232 232                 71.555556 45.298130                         FALSE
+233 233                 75.777778 59.804928                         FALSE
+234 234                 11.777778 43.324704                          TRUE
+235 235                 69.333333 51.363519                         FALSE
+236 236                 27.555556 28.273272                         FALSE
+237 237                 16.444444 24.113266                          TRUE
+238 238                 58.000000 55.881960                         FALSE
+239 239                 92.222222 64.906012                          TRUE
+240 240                 58.000000 55.142469                         FALSE
+241 241                 47.333333 33.701291                         FALSE
+242 242                 27.777778 47.520497                         FALSE
+243 243                 10.666667 46.841390                          TRUE
+244 244                 18.222222 37.643333                         FALSE
+245 245                 61.111111 59.791786                         FALSE
+246 246                 17.111111 21.722665                         FALSE
+247 247                 11.333333 31.465894                         FALSE
+248 248                 23.333333 33.017200                         FALSE
+249 249                 28.666667 35.689278                         FALSE
+250 250                 15.777778 21.051837                         FALSE
+251 251                 13.333333 28.400471                         FALSE
+252 252                 35.777778 30.394915                         FALSE
+253 253                  5.777778 29.078974                         FALSE
+254 254                  6.888889 20.737224                         FALSE
+255 255                 54.888889 47.651567                         FALSE
+256 256                 17.555556 33.561586                         FALSE
+257 257                 42.444444 51.189638                          TRUE
+258 258                 14.222222  8.627494                         FALSE
+259 259                  8.222222 35.217834                         FALSE
+260 260                 13.777778 24.199900                         FALSE
+261 261                 69.111111 63.115875                         FALSE
+262 262                 77.333333 75.414644                         FALSE
+263 263                  4.000000 32.476183                         FALSE
+264 264                 18.666667  8.308901                         FALSE
+265 265                 24.666667 33.544572                         FALSE
+266 266                  8.444444 32.348799                         FALSE
+267 267                  2.666667 11.355064                         FALSE
+268 268                 25.777778 38.317478                         FALSE
+269 269                 14.444444 16.405277                          TRUE
+270 270                 20.666667 25.710983                         FALSE
+271 271                 16.000000 28.886049                         FALSE
+272 272                 27.333333 12.463117                          TRUE
+273 273                 60.666667 16.043602                          TRUE
+274 274                 55.111111 31.130925                          TRUE
+275 275                 16.666667 19.103720                         FALSE
+276 276                 23.111111 36.898098                         FALSE
+277 277                  6.888889 28.683384                         FALSE
+278 278                 38.000000 36.756780                         FALSE
+279 279                 14.000000 17.165950                          TRUE
+280 280                  3.777778  3.523936                         FALSE
+281 281                  7.111111  4.104578                         FALSE
+282 282                 42.444444 28.787424                          TRUE
+283 283                 14.666667 25.572049                         FALSE
+284 284                 74.000000 67.400627                         FALSE
+285 285                 67.555556 33.433171                          TRUE
+286 286                 88.666667 65.625006                         FALSE
+287 287                 63.555556 48.700585                          TRUE
+288 288                 30.222222 47.570969                         FALSE
+289 289                 34.888889 27.611006                          TRUE
+290 290                 30.000000 25.583903                         FALSE
+291 291                 62.444444 59.882999                         FALSE
+292 292                 51.777778 57.971862                          TRUE
+293 293                 24.666667 56.152910                          TRUE
+294 294                 50.000000 58.409910                         FALSE
+295 295                 48.000000 52.001565                         FALSE
+296 296                 13.333333 41.641811                         FALSE
+297 297                 61.555556 55.656791                         FALSE
+298 298                 56.222222 50.260517                          TRUE
+299 299                 72.666667 33.866946                          TRUE
+300 300                 11.777778 20.548251                         FALSE
+301 301                 23.111111 29.525051                         FALSE
+302 302                 82.666667 66.370251                          TRUE
+303 303                 68.666667 73.963743                         FALSE
+304 304                 69.777778 59.119187                         FALSE
+305 305                 40.000000 25.112639                         FALSE
+306 306                  8.222222  9.983790                         FALSE
+307 307                 22.666667 51.034396                          TRUE
+308 308                 42.444444 44.577051                          TRUE
+309 309                 31.777778 40.190718                         FALSE
+310 310                  9.777778 12.832670                         FALSE
+311 311                  4.444444 43.452167                         FALSE
+312 312                 10.666667 25.832618                         FALSE
+313 313                 16.888889 33.534645                         FALSE
+314 314                 17.333333 57.879993                          TRUE
+315 315                 72.666667 62.285026                         FALSE
+316 316                 48.000000 31.360606                         FALSE
+317 317                 70.888889 52.089733                         FALSE
+318 318                 92.666667 66.334289                         FALSE
+319 319                 38.444444 51.842048                         FALSE
+320 320                 57.111111 54.756749                         FALSE
+321 321                 86.666667 58.143628                         FALSE
+322 322                 85.333333 66.552569                         FALSE
+323 323                 10.666667 60.607715                          TRUE
+324 324                 75.555556 57.928153                         FALSE
+325 325                 75.777778 12.430458                          TRUE
+326 326                 66.444444 69.995842                          TRUE
+327 327                 66.444444 49.603018                         FALSE
+328 328                 16.444444 69.705728                          TRUE
+329 329                 15.333333 18.791411                         FALSE
+330 330                 15.333333  8.238568                         FALSE
+331 331                 62.444444 29.615403                         FALSE
+332 332                 56.000000 24.805120                         FALSE
+333 333                 66.222222 62.073011                         FALSE
+334 334                 54.222222 45.535498                         FALSE
+335 335                 18.000000 46.463795                         FALSE
+336 336                 16.444444  6.769625                         FALSE
+337 337                 70.666667 57.353560                         FALSE
+338 338                 71.111111 69.222212                         FALSE
+339 339                 32.222222 45.088006                         FALSE
+340 340                 10.444444 13.881842                         FALSE
+341 341                 10.666667 29.331037                         FALSE
+342 342                 38.000000 61.639197                          TRUE
+343 343                 50.888889 28.315896                         FALSE
+344 344                 14.000000 -1.575576                         FALSE
+345 345                  8.000000 15.606012                         FALSE
+346 346                  5.111111 17.003194                         FALSE
+347 347                 17.777778 34.484268                         FALSE
+348 348                 54.666667 56.211766                         FALSE
+349 349                 34.222222 17.045757                         FALSE
+350 350                 81.111111 59.087025                         FALSE
+351 351                 18.222222 46.070195                          TRUE
+352 352                 28.444444 22.170878                         FALSE
+353 353                 58.666667 54.252386                         FALSE
+354 354                 24.888889 45.018613                          TRUE
+355 355                 79.555556 66.718427                         FALSE
+356 356                 24.444444 39.925445                         FALSE
+357 357                 21.777778 29.588151                         FALSE
+358 358                 13.111111 37.419969                         FALSE
+359 359                 36.444444 40.289666                         FALSE
+360 360                  6.666667 22.949017                         FALSE
+361 361                 15.555556 79.967639                          TRUE
+362 362                  6.888889 54.075336                          TRUE
+363 363                 27.777778 34.158403                         FALSE
+364 364                  6.888889 25.935650                         FALSE
+365 365                 47.555556 43.331507                         FALSE
+366 366                 13.555556 26.623358                         FALSE
+367 367                 52.444444 32.058265                          TRUE
+368 368                 59.111111 27.463084                          TRUE
+369 369                 84.666667 57.828346                         FALSE
+370 370                 24.222222 21.705117                         FALSE
+371 371                 22.444444 15.515806                         FALSE
+372 372                 28.888889 37.283463                         FALSE
+373 373                 19.777778 44.287377                         FALSE
+374 374                 14.222222 35.389668                         FALSE
+375 375                  6.888889 31.583689                         FALSE
+376 376                 10.666667 29.702664                         FALSE
+377 377                  7.777778 23.223320                         FALSE
+378 378                 48.000000 42.136068                         FALSE
+379 379                 47.555556 37.005496                         FALSE
+380 380                 30.888889 46.590159                         FALSE
+381 381                 65.333333 38.282243                         FALSE
+382 382                  8.666667 29.641562                         FALSE
+383 383                 28.222222 40.898818                         FALSE
+384 384                  8.444444 16.407469                         FALSE
+385 385                  7.111111 31.738276                         FALSE
+386 386                 17.333333 24.129012                         FALSE
+387 387                 70.444444 32.661737                          TRUE</code></pre>
 </div>
 </div>
-<p>การทำ hot-deck imputation ใน R สามารถทำได้จากหลาย library เช่น การใช้ฟังก์ชัน <code>hotdeck()</code> จาก library-VIM หรือการใช้ฟังก์ชันจาก library-simputation</p>
-<p>Hot-Deck Imputation ใน library-VIM มีสองลักษณะ ลักษณะแรกคือ random hot-deck และลักษณะที่สองคือ sequantial hot-deck รายละเอียดมีดังนี้</p>
-<p><strong>Random hot-deck</strong> จะทดแทนค่าสูญหายจากการสุ่มหน่วยข้อมูลที่มีค่าในคอลัมน์เดียวกัน ยกตัวอย่างเช่น หน่วยข้อมูลหน่วยที่ 3 ใน x1 เป็นค่าสูญหาย การทดแทนค่านี้จะสุ่มข้อมูลที่มีค่าใน x1 ซึ่งในกรณีนี้ได้แก่ 1, 2, 4 หรือ 5 มาทดแทนค่าสูญหายในหน่วยข้อมูลดังกล่าว จะเห็นว่าการทดแทนแบบนี้อาจบิดเบือนการแจกแจงของข้อมูลโดยเฉพาะความสัมพันธ์ระหว่างตัวแปรได้</p>
-<p><strong>Sequential hot-deck</strong> จะทดแทนค่าสูญหายจากหน่วยข้อมูลที่ใกล้เคียงกันมากที่สุดกับหน่วยข้อมูลที่มีค่าสูญหาย โดยการเปรียบเทียบความใกล้เคียงกันระหว่างหน่วยข้อมูลจะใช้การเรียงลำดับหน่วยข้อมูลตามตัวแปรที่กำหนด ยกตัวอย่างเช่น การทดแทนค่าสูญหายในตัวแปร x1 ของชุดข้อมูลข้างต้น ผู้วิเคราะห์อาจเลือกเรียงลำดับข้อมูลด้วยตัวแปร x3 ซึ่งจะได้ผลลัพธ์เป็นดังนี้</p>
+<p>อัลกอริทึมข้างต้นเรียกว่า random hot-deck ซึ่งจะทดแทนค่าสูญหายในคอลัมน์ที่กำหนดโดยการสุ่มค่าสังเกตที่มีข้อมูลในคอลัมน์เดียวกัน ดังนั้นการทดแทนค่าสูญหาย เช่น <code>learning_performance_mcar</code> ในหน่วยข้อมูลที่ 3 จะทดแทนโดยการสุ่มค่า learning performance ที่มีข้อมูลเพื่อมาเป็นค่าทดแทนค่าสูญหาย ดังนั้นผลลัพธ์ที่ได้ในแต่ละครั้งอาจไม่เหมือนกัน และเนื่องจากอัลกอริทึมในการสุ่มอย่างง่ายจากข้อมูลที่มีโดยไม่ได้มีการควบคุม ผลลัพธ์ที่ได้จึงอาจบิดเบือนการแจกแจงของข้อมูลรวมทั้งความสัมพันธ์ระหว่างข้อมูล</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>  id x1 x2 x3
-1  1  1 NA  2
-2  2  2  1  3
-3  3 NA  2  4
-4  4  4  3  5
-5  5  5 NA  6</code></pre>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar))<span class="sc">+</span></span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hotdeck</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"learning_performance_mcar"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar))<span class="sc">+</span></span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"maroon"</span>,<span class="at">bins =</span> <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span>
+<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance_mcar, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar, </span>
+<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ach, <span class="at">col =</span> <span class="fu">factor</span>(learning_performance_mcar_NA)),</span>
+<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>           <span class="at">sides =</span> <span class="st">"l"</span>)<span class="sc">+</span></span>
+<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb62-28"><a href="#cb62-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Original Data"</span>)<span class="sc">+</span></span>
+<span id="cb62-29"><a href="#cb62-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb62-30"><a href="#cb62-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb62-31"><a href="#cb62-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-32"><a href="#cb62-32" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb62-33"><a href="#cb62-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-34"><a href="#cb62-34" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-35"><a href="#cb62-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hotdeck</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"learning_performance_mcar"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb62-36"><a href="#cb62-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance_mcar, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="cb62-37"><a href="#cb62-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb62-38"><a href="#cb62-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mcar_imp))<span class="sc">+</span></span>
+<span id="cb62-39"><a href="#cb62-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar, </span>
+<span id="cb62-40"><a href="#cb62-40" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ach, <span class="at">col =</span> <span class="fu">factor</span>(learning_performance_mcar_imp)),</span>
+<span id="cb62-41"><a href="#cb62-41" aria-hidden="true" tabindex="-1"></a>           <span class="at">sides =</span> <span class="st">"l"</span>)<span class="sc">+</span></span>
+<span id="cb62-42"><a href="#cb62-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb62-43"><a href="#cb62-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Imputed Data: Random Hot-Deck"</span>)<span class="sc">+</span></span>
+<span id="cb62-44"><a href="#cb62-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb62-45"><a href="#cb62-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb62-46"><a href="#cb62-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-47"><a href="#cb62-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-48"><a href="#cb62-48" aria-hidden="true" tabindex="-1"></a>(p1<span class="sc">+</span>p2)<span class="sc">/</span>(p3<span class="sc">+</span>p4) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
 </div>
 </div>
-<p>เมื่อพิจารณาค่า x3 ของหน่วยข้อมูลที่ 3 จะพบว่ามีค่าใกล้เคียงกับหน่วยข้อมูลที่ 2 และ 4 มากที่สุด ดังนั้นค่าทดแทนสำหรับค่าสูญหายใน x1 ของหน่วยข้อมูลที่ 3 อาจเป็นค่า 2 หรือ 4 สำหรับ <code>hotdeck()</code> ใน VIM จะเลือกทดแทนด้วยค่าก่อนหน้า ดังตัวอย่างด้านล่าง</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("VIM")</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VIM)</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hotdeck</span>(exam_data, </span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">variable =</span> <span class="st">"x1"</span>,  <span class="do">## กำหนดตัวแปรที่ต้องการ impute</span></span>
-<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ord_var =</span> <span class="st">"x3"</span>) <span class="do">## กำหนดตัวแปรที่ใช้เรียงลำดับหน่วยข้อมูล</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  id x1 x2 x3 x1_imp
-1  1  1 NA  2  FALSE
-2  2  2  1  3  FALSE
-3  3  2  2  4   TRUE
-4  4  4  3  5  FALSE
-5  5  5 NA  6  FALSE</code></pre>
 </div>
-</div>
-<p>ฟังก์ชัน <code>hotdeck()</code> ยังมีอาร์กิวเมนท์ <code>domain_var</code> ที่ใช้ระบุตัวแปรจัดประเภทสำหรับจำแนกเพื่อทดแทนค่าสูญหาย ซึ่งช่วยให้การทดแทนค่าสูญหายมีความเหมาะสมมากขึ้น</p>
-<p>library-simputaion มีฟังก์ชันหลายตัวสำหรับการทดแทนค่าสูญหายแบบ hot-deck โดยจำแนกเป็น 4 ประเภทได้แก่ random hot-deck, sequential hot-deck, k-nearest neighbor hot-deck และ predictive mean matching hot-deck รายละเอียดมีดังนี้</p>
-<ul>
-<li><p><code>impute_rhd(data, formula, pool, prob)</code> เป็นฟังก์ชันสำหรับทำ random hot-deck</p></li>
-<li><p><code>impute_shd(...)</code> เป็นฟังก์ชันสำหรับทำ sequential hot-deck</p></li>
-<li><p><code>impute_knn(...)</code> เป็นฟังก์ชันสำหรับทำ k-nearest neighbor hot-deck</p></li>
-<li><p><code>impute_pmm(...)</code> เป็นฟังก์ชันสำหรับทำ predictive mean matching hot-deck</p></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("VIM")</span></span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VIM)</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>dat_imp_mean <span class="ot">&lt;-</span> <span class="fu">hotdeck</span>(data, <span class="at">variable =</span> <span class="st">"learning_performance_mcar"</span>)</span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>dat_imp_mean <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(learning_performance_mcar, learning_performance_mcar_imp) <span class="sc">|&gt;</span> </span>
-<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(learning_performance_mcar) <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  learning_performance_mcar learning_performance_mcar_imp
-1                  2.666667                         FALSE
-2                  3.777778                         FALSE
-3                  4.000000                         FALSE
-4                  4.444444                          TRUE
-5                  4.444444                         FALSE
-6                  4.888889                         FALSE</code></pre>
-</div>
-</div>
-<p>note: การทดแทนค่าสูญหายแบบ hot-deck อาจบิดเบือนการแจกแจงและความสัมพันธ์ระหว่างตัวแปรในชุดข้อมูลได้</p>
 </section>
-<section id="knn-imputation" class="level5" data-number="3.3.2.2">
-<h5 data-number="3.3.2.2" class="anchored" data-anchor-id="knn-imputation"><span class="header-section-number">3.3.2.2</span> KNN imputation</h5>
+<section id="conditional-hot-deck-imputation" class="level5" data-number="3.3.2.2">
+<h5 data-number="3.3.2.2" class="anchored" data-anchor-id="conditional-hot-deck-imputation"><span class="header-section-number">3.3.2.2</span> Conditional Hot-Deck imputation</h5>
+<p>เป็นวิธีการทดแทนข้อมูลสูญหาย (missing data) โดยใช้ข้อมูลที่มีอยู่ในชุดข้อมูลเดียวกันเพื่อทำการสุ่มเลือกค่าทดแทน แต่การสุ่มเลือกค่านี้จะถูกกำหนดโดยตัวแปรเงื่อนไข (domain variable) ซึ่งทำให้กระบวนการสุ่มเลือกค่าทดแทนมีความเฉพาะเจาะจงมากขึ้น กล่าวคือ ค่าที่ถูกใช้ในการทดแทนจะถูกสุ่มมาจากกลุ่มข้อมูลที่มีเงื่อนไขหรือคุณสมบัติที่เหมือนกันกับตัวแปรเงื่อนไขที่กำหนดไว้</p>
+<p>ข้อจำกัดของวิธีการนี้คือตัวแปรที่จะทดแทนค่าสูญหายควรมีความสัมพันธ์กับตัวแปรที่ใช้กำหนดเป็นเงื่อนไข เพื่อให้การทดแทนค่าสูญหายมีความแม่นยำมากขึ้น นอกจากนี้การกำหนดตัวแปรเงื่อนไขยังทำได้เฉพาะตัวแปรแบบจัดประเภทอีกด้วย</p>
+<p>ตัวอย่างด้านล่างผลการวิเคราะห์เราพบว่าตัวแปร learning_performance มีแนวโน้มสัมพันธ์กับ engage</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">engage =</span> <span class="fu">fct_relevel</span>(engage, <span class="st">"no engage"</span>,<span class="st">"little engage"</span>,<span class="st">"moderate engage"</span>,<span class="st">"much engage"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(engage, learning_performance_mcar))<span class="sc">+</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>การกำหนดเงื่อนไขการทดแทนค่าสูญหายโดยใช้ engage เป็นเงื่อนไขจึงมีแนวโน้มที่น่าจะให้ค่าทดแทนค่าสูญหายที่ดีขึ้น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-43"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-43-1"><a href="#annotated-cell-43-1" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-43-2"><a href="#annotated-cell-43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-43-3"><a href="#annotated-cell-43-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach, engage) <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-43-4"><a href="#annotated-cell-43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-43-5"><a href="#annotated-cell-43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hotdeck</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"learning_performance_mcar"</span>), </span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-43" data-target-annotation="1" onclick="event.preventDefault();" href="">1</a><span id="annotated-cell-43-6" class="code-annotation-target"><a href="#annotated-cell-43-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">domain_var =</span> <span class="st">"engage"</span>) <span class="sc">%&gt;%</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-43" data-target-annotation="2" onclick="event.preventDefault();" href="">2</a><span id="annotated-cell-43-7" class="code-annotation-target"><a href="#annotated-cell-43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance_mcar, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="annotated-cell-43-8"><a href="#annotated-cell-43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="annotated-cell-43-9"><a href="#annotated-cell-43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mcar_imp))<span class="sc">+</span></span>
+<span id="annotated-cell-43-10"><a href="#annotated-cell-43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar, </span>
+<span id="annotated-cell-43-11"><a href="#annotated-cell-43-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ach, <span class="at">col =</span> <span class="fu">factor</span>(learning_performance_mcar_imp)),</span>
+<span id="annotated-cell-43-12"><a href="#annotated-cell-43-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">sides =</span> <span class="st">"l"</span>)<span class="sc">+</span></span>
+<span id="annotated-cell-43-13"><a href="#annotated-cell-43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="annotated-cell-43-14"><a href="#annotated-cell-43-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Imputed Data: Conditional Hot-Deck1"</span>)<span class="sc">+</span></span>
+<span id="annotated-cell-43-15"><a href="#annotated-cell-43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="annotated-cell-43-16"><a href="#annotated-cell-43-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-43" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-43" data-code-lines="6" data-code-annotation="1">กำหนด engage เป็นตัวแปรเงื่อนไขในการทดแทนค่าสูญหายใน <code>domain_var</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-43" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-43" data-code-lines="7" data-code-annotation="2">สร้าง scatter plot เพื่อพิจารณาการทดแทนข้อมูลสูญหาย</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>p4<span class="sc">+</span>p5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>ประสิทธิภาพของวิธีการนี้ขึ้นกับความสัมพันธ์ระหว่างตัวแปรที่ใช้เป็นเงื่อนไขและตัวแปรที่จะทดแทนค่าสูญหาย สำหรับตัวแปรแบบต่อเนื่อง conditional hot-deck จะใช้การเรียงลำดับชุดข้อมูลใหม่ตามตัวแปรต่อเนื่องที่มีความสัมพันธ์กับตัวแปรที่ต้องการทดแทนค่าสูญหาย จากนั้นเลือกหรือสุ่มข้อมูลสมบูรณ์จากหน่วยข้อมูลที่มีความคล้ายคลึงกับหน่วยข้อมูลที่มีค่าสูญหายเป็นค่าทดแทน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-45"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-45-1"><a href="#annotated-cell-45-1" aria-hidden="true" tabindex="-1"></a>p6 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-45-2"><a href="#annotated-cell-45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-45-3"><a href="#annotated-cell-45-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(id,learning_performance_mcar, ach, engage) <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-45-4"><a href="#annotated-cell-45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="annotated-cell-45-5"><a href="#annotated-cell-45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hotdeck</span>(<span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"learning_performance_mcar"</span>), </span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-45" data-target-annotation="1" onclick="event.preventDefault();" href="">1</a><span id="annotated-cell-45-6" class="code-annotation-target"><a href="#annotated-cell-45-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">domain_var =</span> <span class="st">"engage"</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-45" data-target-annotation="2" onclick="event.preventDefault();" href="">2</a><span id="annotated-cell-45-7" class="code-annotation-target"><a href="#annotated-cell-45-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">ord_var =</span> <span class="st">"ach"</span>) <span class="sc">%&gt;%</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-45" data-target-annotation="3" onclick="event.preventDefault();" href="">3</a><span id="annotated-cell-45-8" class="code-annotation-target"><a href="#annotated-cell-45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>learning_performance_mcar, <span class="at">y=</span>ach))<span class="sc">+</span></span>
+<span id="annotated-cell-45-9"><a href="#annotated-cell-45-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="annotated-cell-45-10"><a href="#annotated-cell-45-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mcar_imp))<span class="sc">+</span></span>
+<span id="annotated-cell-45-11"><a href="#annotated-cell-45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mcar, </span>
+<span id="annotated-cell-45-12"><a href="#annotated-cell-45-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> ach, <span class="at">col =</span> <span class="fu">factor</span>(learning_performance_mcar_imp)),</span>
+<span id="annotated-cell-45-13"><a href="#annotated-cell-45-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">sides =</span> <span class="st">"l"</span>)<span class="sc">+</span></span>
+<span id="annotated-cell-45-14"><a href="#annotated-cell-45-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="annotated-cell-45-15"><a href="#annotated-cell-45-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Imputed Data: Conditional Hot-Deck2"</span>)<span class="sc">+</span></span>
+<span id="annotated-cell-45-16"><a href="#annotated-cell-45-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="annotated-cell-45-17"><a href="#annotated-cell-45-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-45" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-45" data-code-lines="6" data-code-annotation="1">กำหนด engage เป็นตัวแปรเงื่อนไขในการทดแทนค่าสูญหายใน <code>domain_var</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-45" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-45" data-code-lines="7" data-code-annotation="2">กำหนดให้ ach เป็นตัวแปรต่อเนื่องที่ใช้เรียงลำดับหน่วยข้อมูล</span>
+</dd>
+<dt data-target-cell="annotated-cell-45" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-45" data-code-lines="8" data-code-annotation="3">สร้าง scatter plot เพื่อพิจารณาการทดแทนข้อมูลสูญหาย</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>p4<span class="sc">+</span>p4<span class="sc">+</span>p6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="กจกรรม" class="level5" data-number="3.3.2.3">
+<h5 data-number="3.3.2.3" class="anchored" data-anchor-id="กจกรรม"><span class="header-section-number">3.3.2.3</span> กิจกรรม</h5>
+<p>ลองทดแทนค่าสูญหายด้วย conditional hot-deck กับสถานการณ์การสูญหายแบบ MAR และ MNAR</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>exam_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>missing_data <span class="ot">&lt;-</span> exam_data <span class="sc">%&gt;%</span> </span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="do">## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>     ach <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">|</span> engage <span class="sc">==</span> <span class="st">"moderate engage"</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, learning_performance) ,</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> learning_performance</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">## สร้างตัวแปรใหม่ที่สูญหายแบบ MNAR โดยมีความสัมพันธ์กับ ach และ engage</span></span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a> <span class="fu">mutate</span>(<span class="at">learning_performance_mnar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>    learning_performance <span class="sc">&lt;</span> <span class="dv">30</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, learning_performance) ,</span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> learning_performance</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>missing_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 387 × 7
+     ach learning_performance ontime_class engage      practice       
+   &lt;dbl&gt;                &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;          
+ 1 52.2                  32.7 used to late no engage   do practice    
+ 2 30.8                  10.7 used to late much engage do not praction
+ 3 39.6                  28   never late   much engage do not praction
+ 4 56.0                  52.7 used to late much engage do practice    
+ 5 31.8                  15.6 used to late much engage do not praction
+ 6 70.5                  88.2 used to late much engage do practice    
+ 7 21.2                  18.7 used to late much engage do not praction
+ 8  9.96                 14.2 used to late much engage do not praction
+ 9 65.0                  68.4 used to late much engage do not praction
+10 61.4                  55.1 used to late much engage do practice    
+# ℹ 377 more rows
+# ℹ 2 more variables: learning_performance_mar &lt;dbl&gt;,
+#   learning_performance_mnar &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p><strong>ผลลัพธ์ที่ได้เป็นอย่างไร?</strong></p>
+<p>Note: มีอีก library หนึ่งคือ {<code>simputation</code>} ที่สามารถปรับการทดแทนค่าสูญหายในบางอัลกอริทึมได้ละเอียดกว่า</p>
+<p><a href="https://github.com/markvanderloo/simputation" class="uri">https://github.com/markvanderloo/simputation</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(simputation)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>missing_data <span class="sc">%&gt;%</span> </span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mnar) <span class="sc">%&gt;%</span> </span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_shd</span>(learning_performance_mar <span class="sc">~</span> ach, <span class="at">pool =</span> <span class="st">"univariate"</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y =</span> ach))<span class="sc">+</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="knn-imputation" class="level5" data-number="3.3.2.4">
+<h5 data-number="3.3.2.4" class="anchored" data-anchor-id="knn-imputation"><span class="header-section-number">3.3.2.4</span> KNN imputation</h5>
 <p>วิธีการนี้สามารถใช้ได้กับการสูญหายแบบ MAR ในบางสถานการณ์ วิธีการนี้จะใช้ข้อมูลจากหน่วยข้อมูลที่คล้ายคลึงกันมาเติมเต็มค่าสูญหาย โดยพิจารณาความคล้ายคลึงจากระยะทางระหว่างหน่วยข้อมูลดังกล่าว อัลกอริทึมนี้มี hyperparameter 1 ตัวได้แก่ k หรือจำนวนหน่วยข้อมูลคล้ายคลึงที่จะนำมาเฉลี่ยเพื่อสร้างค่าทดแทนของข้อมูลสูญหาย</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>dat_imp_knn <span class="ot">&lt;-</span> <span class="fu">kNN</span>(data, <span class="at">k =</span> <span class="dv">15</span>, <span class="at">variable =</span> <span class="st">"learning_performance_mar"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>dat_imp_knn <span class="ot">&lt;-</span> missing_data <span class="sc">%&gt;%</span> </span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_knn</span>(learning_performance_mar <span class="sc">~</span> ach, <span class="at">k =</span> <span class="dv">5</span>)</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>dat_imp_knn <span class="sc">%&gt;%</span> </span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y =</span> ach))<span class="sc">+</span></span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"KNN Imputation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="model-based-imputation" class="level4" data-number="3.3.3">
+<h4 data-number="3.3.3" class="anchored" data-anchor-id="model-based-imputation"><span class="header-section-number">3.3.3</span> Model-Based Imputation</h4>
+<p>การทดแทนค่าสูญหายในกลุ่มนี้เป็นการนำโมเดลทางสถิติรวมทั้ง machine learning มาช่วยทดแทนค่าสูญหายในแต่ละตัวแปร หลักการสำคัญของวิธีการในกลุ่มนี้คือการใช้ความสัมพันธ์ระหว่างตัวแปรในชุดข้อมูลเข้ามาช่วยทำนายค่าสูญหาย โดยทั่วไปวิธีการนี้มีลักษณะเด่นดังนี้</p>
+<ul>
+<li><p>เป็นกระบวนการทวนซ้ำตามตัวแปรที่มีค่าสูญหาย</p></li>
+<li><p>แต่ละตัวแปรที่มีค่าสูญหายจะต้องมีการกำหนดโมเดลทำนายค่าสูญหาย</p></li>
+<li><p>มีการ train โมเดลสำหรับทำนายค่าสูญหายและใช้โมเดลดังกล่าวในการทำนายค่าสูญหาย</p></li>
+<li><p>กระบวนการทดแทนนี้จะทำซ้ำเรียงตามลำดับตัวแปรไปจนกระทั่งค่าทดแทนค่าสูญหายมีแนวโน้มลู่เข้าจึงหยุดกระบวนการ</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>example_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">1</span>,<span class="cn">NA</span>,<span class="dv">4</span>,<span class="cn">NA</span>),</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">34</span>,<span class="dv">22</span>,<span class="dv">65</span>,<span class="dv">87</span>,<span class="dv">23</span>),</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">c</span>(<span class="cn">NA</span>,<span class="cn">NA</span>,<span class="dv">55</span>,<span class="dv">27</span>,<span class="dv">10</span>),</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x4 =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>example_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x1 x2 x3 x4
+1  5 34 NA  1
+2  1 22 NA  4
+3 NA 65 55  2
+4  4 87 27  2
+5 NA 23 10  1</code></pre>
+</div>
+</div>
+<section id="chain-imputation-algorithm" class="level5" data-number="3.3.3.1">
+<h5 data-number="3.3.3.1" class="anchored" data-anchor-id="chain-imputation-algorithm"><span class="header-section-number">3.3.3.1</span> Chain-Imputation Algorithm</h5>
+<p>เราออกแบบการทดแทนค่าสูญหายด้วยโมเดลทำนายดังนี้</p>
+<ol type="1">
+<li><p>ทดแทนค่าสูญหายในตัวแปร<code>x1</code> โดยใช้ตัวแปรที่เหลือในชุดข้อมูลเป็นตัวแปรทำนาย</p></li>
+<li><p>ทดแทนค่าสูญหายในตัวแปร <code>x2</code> โดยใช้ตัวแปรที่เหลือในชุดข้อมูล</p></li>
+<li><p>ทวนซ้ำโดยแทนค่าที่ทดแทนใน <code>x1</code> กลับไปเป็น <code>NA</code> แล้วทดแทนด้วยข้อมูลที่เหลือ</p></li>
+<li><p>…</p></li>
+</ol>
+<p>ทำไปเรื่อย ๆ จนกระทั่งค่าทดแทนค่าสูญหายไม่เปลี่ยนแปลงหรือลู่เข้า ลองทดลองทำดู</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>missing_data2 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>     ach <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">|</span> engage <span class="sc">==</span> <span class="st">"moderate engage"</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.3</span>,<span class="cn">NA</span>, learning_performance) ,</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> learning_performance</span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ach_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>    learning_performance_mar <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">|</span> engage <span class="sc">==</span> <span class="st">"little engage"</span> <span class="sc">~</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, ach) ,</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">.default =</span> ach</span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">practice_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>   ach <span class="sc">&lt;</span><span class="dv">20</span> <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, practice) ,</span>
+<span id="cb72-16"><a href="#cb72-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">.default =</span> practice</span>
+<span id="cb72-17"><a href="#cb72-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-18"><a href="#cb72-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb72-19"><a href="#cb72-19" aria-hidden="true" tabindex="-1"></a>  )  <span class="sc">%&gt;%</span> </span>
+<span id="cb72-20"><a href="#cb72-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ach_mar, learning_performance_mar, practice_mar, engage, ontime_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="do">## create chain imputation</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>missing_pattern <span class="ot">&lt;-</span> missing_data2 <span class="sc">%&gt;%</span> </span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>ach_imp <span class="ot">&lt;-</span> missing_data2<span class="sc">$</span>ach_mar</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>lp_imp <span class="ot">&lt;-</span> missing_data2<span class="sc">$</span>learning_performance_mar</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>practice_imp <span class="ot">&lt;-</span> missing_data2<span class="sc">$</span>practice_mar</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>missing <span class="ot">&lt;-</span> missing_data2</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>imp <span class="ot">&lt;-</span> missing <span class="sc">%&gt;%</span> </span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ach_mar =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(missing_pattern<span class="sc">$</span>ach_mar_NA), <span class="cn">NA</span>, ach_mar)) <span class="sc">%&gt;%</span></span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_lm</span>(ach_mar <span class="sc">~</span> .) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-14"><a href="#cb73-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> </span>
+<span id="cb73-15"><a href="#cb73-15" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(<span class="fu">is.na</span>(missing_pattern<span class="sc">$</span>learning_performance_mar_NA), </span>
+<span id="cb73-16"><a href="#cb73-16" aria-hidden="true" tabindex="-1"></a>                    <span class="cn">NA</span>, learning_performance_mar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-17"><a href="#cb73-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_lm</span>(learning_performance_mar <span class="sc">~</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-18"><a href="#cb73-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">practice_mar =</span> </span>
+<span id="cb73-19"><a href="#cb73-19" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(<span class="fu">is.na</span>(missing_pattern<span class="sc">$</span>practice_mar_NA), <span class="cn">NA</span>, practice_mar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-20"><a href="#cb73-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_cart</span>(practice_mar <span class="sc">~</span> .)</span>
+<span id="cb73-21"><a href="#cb73-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">#impute_lm(ach_mar ~ -learning_performance_mar) %&gt;% </span></span>
+<span id="cb73-22"><a href="#cb73-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#impute_lm(learning_performance_mar ~ practice_mar + engage + ontime_clas)  </span></span>
+<span id="cb73-23"><a href="#cb73-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-24"><a href="#cb73-24" aria-hidden="true" tabindex="-1"></a>missing <span class="ot">&lt;-</span> imp</span>
+<span id="cb73-25"><a href="#cb73-25" aria-hidden="true" tabindex="-1"></a>ach_imp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(ach_imp,imp<span class="sc">$</span>ach_mar)</span>
+<span id="cb73-26"><a href="#cb73-26" aria-hidden="true" tabindex="-1"></a>lp_imp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(lp_imp, imp<span class="sc">$</span>learning_performance_mar)</span>
+<span id="cb73-27"><a href="#cb73-27" aria-hidden="true" tabindex="-1"></a>practice_imp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(practice_imp, imp<span class="sc">$</span>practice_mar)</span>
+<span id="cb73-28"><a href="#cb73-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span>imp <span class="sc">%&gt;%</span> </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y =</span> ach_mar))<span class="sc">+</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation"</span>)</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>imp <span class="sc">%&gt;%</span> </span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y =</span> ach_mar))<span class="sc">+</span></span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> ach_mar_NA))<span class="sc">+</span></span>
+<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb74-16"><a href="#cb74-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb74-17"><a href="#cb74-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation"</span>)</span>
+<span id="cb74-18"><a href="#cb74-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-19"><a href="#cb74-19" aria-hidden="true" tabindex="-1"></a>p3<span class="ot">&lt;-</span>imp <span class="sc">%&gt;%</span> </span>
+<span id="cb74-20"><a href="#cb74-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-21"><a href="#cb74-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> practice_mar, <span class="at">y =</span> ach_mar))<span class="sc">+</span></span>
+<span id="cb74-22"><a href="#cb74-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb74-23"><a href="#cb74-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">col =</span> practice_mar_NA))<span class="sc">+</span></span>
+<span id="cb74-24"><a href="#cb74-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb74-25"><a href="#cb74-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb74-26"><a href="#cb74-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb74-27"><a href="#cb74-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation"</span>)</span>
+<span id="cb74-28"><a href="#cb74-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-29"><a href="#cb74-29" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">/</span>p2<span class="sc">/</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="em-algorithm" class="level5" data-number="3.3.3.2">
+<h5 data-number="3.3.3.2" class="anchored" data-anchor-id="em-algorithm"><span class="header-section-number">3.3.3.2</span> EM-algorithm</h5>
+<p>EM Algorithm (Expectation-Maximization Algorithm) เป็นวิธีการที่ใช้บ่อยในการทดแทนค่าสูญหาย โดยเฉพาะในกรณีที่มีข้อมูลสูญหายแบบ MAR (Missing at Random) ซึ่งข้อมูลสูญหายไม่ได้เป็นอิสระจากข้อมูลอื่น แต่สัมพันธ์กับตัวแปรอื่นในชุดข้อมูล</p>
+<ol type="1">
+<li><p>Initial Step : ประมาณค่าสูญหายให้เป็นค่าเริ่มต้น</p></li>
+<li><p>เข้ากระบวนการ EM</p></li>
+</ol>
+<ul>
+<li><p>E-step (Expectaion): คำนวณ expected value ของค่าสูญหายที่ไม่มีข้อมูล</p></li>
+<li><p>M-step (Maximization): ปรับค่าพารามิเตอร์ในโมเดลทำนายค่าสูญหายให้เหมาะสม</p></li>
+</ul>
+<p>ทวนซ้ำ 2. จนกระทั่งลู่เข้า</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("missMethods")</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(missMethods)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>missing_data2 <span class="sc">%&gt;%</span> </span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_EM</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y =</span> ach_mar))<span class="sc">+</span></span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb75-12"><a href="#cb75-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="do">## create chain imputation</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>missing_pattern <span class="ot">&lt;-</span> missing_data2 <span class="sc">%&gt;%</span> </span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))</span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>imp2 <span class="ot">&lt;-</span> missing_data2</span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a><span class="co">#imp2 %&gt;% arrange(ach_mar)</span></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co">#imp2[imp2$ach_mar &lt;0.5,1] &lt;- 0</span></span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a>imp1 <span class="ot">&lt;-</span> imp2 <span class="sc">%&gt;%</span> </span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ach_mar =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(missing_pattern<span class="sc">$</span>ach_mar_NA), <span class="cn">NA</span>, ach_mar),</span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">learning_performance_mar =</span> </span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(<span class="fu">is.na</span>(missing_pattern<span class="sc">$</span>learning_performance_mar_NA), </span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>                    <span class="cn">NA</span>, learning_performance_mar)) <span class="sc">%&gt;%</span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_EM</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ach_mar =</span> <span class="fu">ifelse</span>(ach_mar <span class="sc">&lt;</span><span class="dv">0</span>,<span class="dv">0</span>,ach_mar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> </span>
+<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a>           <span class="fu">ifelse</span>(learning_performance_mar <span class="sc">&lt;</span><span class="dv">0</span>,<span class="dv">0</span>,learning_performance_mar))</span>
+<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a>imp2<span class="ot">&lt;-</span> imp1 <span class="sc">%&gt;%</span> </span>
+<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(missing <span class="sc">%&gt;%</span> <span class="fu">select_if</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">is.numeric</span>(.))) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">practice_mar =</span> </span>
+<span id="cb76-26"><a href="#cb76-26" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(<span class="fu">is.na</span>(missing_pattern<span class="sc">$</span>practice_mar_NA), <span class="cn">NA</span>, practice_mar)) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">impute_cart</span>(practice_mar <span class="sc">~</span> .)</span>
+<span id="cb76-28"><a href="#cb76-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb76-29"><a href="#cb76-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-30"><a href="#cb76-30" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span> imp2 <span class="sc">%&gt;%</span> </span>
+<span id="cb76-31"><a href="#cb76-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-32"><a href="#cb76-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y =</span> ach_mar))<span class="sc">+</span></span>
+<span id="cb76-33"><a href="#cb76-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb76-34"><a href="#cb76-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb76-35"><a href="#cb76-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb76-36"><a href="#cb76-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation with EM"</span>)</span>
+<span id="cb76-38"><a href="#cb76-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-39"><a href="#cb76-39" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>imp2 <span class="sc">%&gt;%</span> </span>
+<span id="cb76-40"><a href="#cb76-40" aria-hidden="true" tabindex="-1"></a> <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-41"><a href="#cb76-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> practice_mar, <span class="at">y =</span> ach_mar))<span class="sc">+</span></span>
+<span id="cb76-42"><a href="#cb76-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb76-43"><a href="#cb76-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">col =</span> practice_mar_NA))<span class="sc">+</span></span>
+<span id="cb76-44"><a href="#cb76-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb76-45"><a href="#cb76-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
+<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
+<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation"</span>)</span>
+<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-49"><a href="#cb76-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-50"><a href="#cb76-50" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>การประเมินผลกระทบจากการทดแทนค่าสูญหายที่แตกต่างวิธีการสามารถพิจารณาผ่านผลการวิเคราะห์หลักที่ใช้ในการวิจัยได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>fit_complete_case <span class="ot">&lt;-</span> <span class="fu">lm</span>(ach_mar <span class="sc">~</span> learning_performance_mar <span class="sc">+</span> practice_mar, <span class="at">data =</span> missing_data2)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>fit_model_imp <span class="ot">&lt;-</span> <span class="fu">lm</span>(ach_mar <span class="sc">~</span> learning_performance_mar <span class="sc">+</span> practice_mar, <span class="at">data =</span> imp)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>fit_model_em <span class="ot">&lt;-</span> <span class="fu">lm</span>(ach_mar <span class="sc">~</span> learning_performance_mar <span class="sc">+</span> practice_mar, <span class="at">data =</span> imp2)</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(fit_complete_case) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">glance</span>(fit_model_imp)) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">glance</span>(fit_model_em))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.644         0.641  8.19      197. 1.95e- 49     2  -773. 1554. 1568.
+2     0.823         0.822  6.88      876. 2.81e-142     2 -1267. 2542. 2558.
+3     0.744         0.743  8.73      558. 2.55e-114     2 -1386. 2781. 2796.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="multiple-imputation" class="level4" data-number="3.3.4">
+<h4 data-number="3.3.4" class="anchored" data-anchor-id="multiple-imputation"><span class="header-section-number">3.3.4</span> Multiple Imputation</h4>
+<p>การทดแทนค่าสูญหายแบบค่าเดียวมีจุดสังเกตหนึ่งที่เป็นปัญหาคือ ค่าสูญหายเป็นค่าที่ไม่ทราบ การทดแทนเพียงค่าเดียวจึงเป็นการละเลยความไม่แน่นอน (ความเป็นไปได้ที่มีหลากหลาย) ของค่าสูญหายนั้น ซึ่งเพิ่มโอกาสของการเกิดความลำเอียงในผลการวิเคราะห์ นอกจากนี้ในกรณีที่ใช้โมเดลทำนายเป็นโมเดลทดแทนค่าสูญหาย การทดแทนแบบค่าเดียวอาจทำให้ผู้วิเคราะห์ประสบปัญหาความแปรปรวนต่ำเกินไป นื่องจากค่าสูญหายทั้งหมดถูกแทนด้วยค่าเดียวที่คำนวณจากโมเดล ทำให้ขาดการสะท้อนความหลากหลายของข้อมูลที่แท้จริง</p>
+<p>จากปัญหาดังกล่าวจึงมีการพัฒนาวิธีการทดแทนค่าสูญหายแบบหลายค่า เรียกว่า multiple imputation วิธีการนี้ใช้ประโยชน์จากการสุ่มตัวอย่างแบบใส่คืนมาสร้างตัวอย่าง bootstrap จำนวนหลาย ๆ ชุด โดยแต่ละชุดจะนำมาดำเนินการทดแทนค่าสูญหาย วิเคราะห์ ผลที่ได้จากกระบวนการนี้จะทำให้ผู้วิเคราะห์มีผลการวิเคราะห์จากตัวอย่างดังกล่าวหลายชุด ผลการวิเคราะห์ดังกล่าวจะถูกนำมารวมกันเพื่อคำนวณเป็นค่าประมาณพารามิเตอร์ในโมเดลตามวัตถุประสงค์หลักของการวิจัย</p>
+<p><img src="img/MI.png" class="img-fluid"></p>
+<p>library สำคัญสำหรับการทำ multiple imputation คือ {<code>mice</code>} การทำงานหลัก ๆ ของ library นี้ประกอบด้วย 3 ขั้นตอนได้แก่ <span class="citation" data-cites="mice">(<a href="#ref-mice" role="doc-biblioref">Buuren and Groothuis-Oudshoorn 2011</a>)</span></p>
+<ul>
+<li><p><code>mice()</code></p></li>
+<li><p><code>with()</code></p></li>
+<li><p><code>pool()</code></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>missing_data2 <span class="sc">%&gt;%</span> <span class="fu">miss_var_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  variable                 n_miss pct_miss
+  &lt;chr&gt;                     &lt;int&gt;    &lt;num&gt;
+1 ach_mar                     115    29.7 
+2 learning_performance_mar     53    13.7 
+3 practice_mar                 29     7.49
+4 engage                        0     0   
+5 ontime_class                  0     0   </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-58"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="1" onclick="event.preventDefault();" href="">1</a><span id="annotated-cell-58-1" class="code-annotation-target"><a href="#annotated-cell-58-1" aria-hidden="true" tabindex="-1"></a>imp_data_mice <span class="ot">&lt;-</span> <span class="fu">mice</span>(missing_data2, <span class="at">m =</span> <span class="dv">5</span>)</span>
+<span id="annotated-cell-58-2"><a href="#annotated-cell-58-2" aria-hidden="true" tabindex="-1"></a>lm_mice <span class="ot">&lt;-</span> imp_data_mice <span class="sc">%&gt;%</span> </span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="2" onclick="event.preventDefault();" href="">2</a><span id="annotated-cell-58-3" class="code-annotation-target"><a href="#annotated-cell-58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">lm</span>(ach_mar <span class="sc">~</span> learning_performance_mar <span class="sc">+</span> practice_mar <span class="sc">+</span> engage <span class="sc">+</span> ontime_class))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="3" onclick="event.preventDefault();" href="">3</a><span id="annotated-cell-58-4" class="code-annotation-target"><a href="#annotated-cell-58-4" aria-hidden="true" tabindex="-1"></a>lm_mice_pooled <span class="ot">&lt;-</span> <span class="fu">pool</span>(lm_mice)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="4" onclick="event.preventDefault();" href="">4</a><span id="annotated-cell-58-5" class="code-annotation-target"><a href="#annotated-cell-58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(lm_mice_pooled, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-58" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-58" data-code-lines="1" data-code-annotation="1">สุ่มซ้ำและทดแทนค่าสูญหาย</span>
+</dd>
+<dt data-target-cell="annotated-cell-58" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-58" data-code-lines="3" data-code-annotation="2">สร้างโมเดลตามวัตถุประสงค์ของการวิจัย</span>
+</dd>
+<dt data-target-cell="annotated-cell-58" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-58" data-code-lines="4" data-code-annotation="3">รวมผลการวิเคราะห์จากแต่ละชุด</span>
+</dd>
+<dt data-target-cell="annotated-cell-58" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-58" data-code-lines="5" data-code-annotation="4">สรุปผลการวิเคราะห์</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ iter imp variable
+  1   1  ach_mar  learning_performance_mar
+  1   2  ach_mar  learning_performance_mar
+  1   3  ach_mar  learning_performance_mar
+  1   4  ach_mar  learning_performance_mar
+  1   5  ach_mar  learning_performance_mar
+  2   1  ach_mar  learning_performance_mar
+  2   2  ach_mar  learning_performance_mar
+  2   3  ach_mar  learning_performance_mar
+  2   4  ach_mar  learning_performance_mar
+  2   5  ach_mar  learning_performance_mar
+  3   1  ach_mar  learning_performance_mar
+  3   2  ach_mar  learning_performance_mar
+  3   3  ach_mar  learning_performance_mar
+  3   4  ach_mar  learning_performance_mar
+  3   5  ach_mar  learning_performance_mar
+  4   1  ach_mar  learning_performance_mar
+  4   2  ach_mar  learning_performance_mar
+  4   3  ach_mar  learning_performance_mar
+  4   4  ach_mar  learning_performance_mar
+  4   5  ach_mar  learning_performance_mar
+  5   1  ach_mar  learning_performance_mar
+  5   2  ach_mar  learning_performance_mar
+  5   3  ach_mar  learning_performance_mar
+  5   4  ach_mar  learning_performance_mar
+  5   5  ach_mar  learning_performance_mar
+                      term     estimate  std.error    statistic      p.value
+1              (Intercept) 15.994257853 2.33310541  6.855351574 4.288307e-05
+2 learning_performance_mar  0.562885159 0.02828525 19.900308532 1.371906e-12
+3  practice_mardo practice  2.052202927 1.18363461  1.733814568 8.401985e-02
+4    engagemoderate engage  0.803671122 1.91843330  0.418920543 6.777977e-01
+5        engagemuch engage  0.620402986 1.67681028  0.369989971 7.132889e-01
+6          engageno engage  0.007758402 2.92975597  0.002648139 9.979108e-01
+7 ontime_classused to late  0.761052472 1.06256611  0.716240115 4.751837e-01
+    conf.low  conf.high           b        df dfcom        fmi     lambda m
+1 10.8003425 21.1881732 2.752717791  10.06529   351 0.66702389 0.60684002 5
+2  0.5028486  0.6229217 0.000320938  15.75926   351 0.53666662 0.48137379 5
+3 -0.2774565  4.3818623 0.050761355 288.34785   351 0.05004514 0.04347896 5
+4 -3.0889691  4.6963114 0.950502122  35.50686   351 0.34575606 0.30991381 5
+5 -2.7656889  4.0064948 0.667883248  41.11804   351 0.31745633 0.28504534 5
+6 -6.0661414  6.0816582 2.875417089  22.12832   351 0.44958987 0.40199366 5
+7 -1.3419683  2.8640733 0.129097033 124.57201   351 0.15073627 0.13720994 5
+         riv         ubar
+1 1.54349387 2.1401195103
+2 0.92817097 0.0004149296
+3 0.04545531 1.3400772605
+4 0.44909435 2.5397837962
+5 0.39869009 2.0102328050
+6 0.67222307 5.1329695178
+7 0.15903051 0.9741302967</code></pre>
+</div>
+</div>
+<p>ผลการวิเคราะห์ข้างต้นมีค่าสถิติที่สำคัญได้แก่</p>
+<ul>
+<li><p>lambda (imputation variance) คือสัดส่วนความแปรปรวนที่เกิดจากการทดแทนค่าสูญหาย [0,1] มีค่าสูงแปลว่าความแปรปรวนในการประมาณค่าพารามิเตอร์นี้ส่วนใหญ่เกิดจากการทดแทนค่าสูญหาย</p></li>
+<li><p>fmi (fraction of missing information) คือสัดส่วนของข้อมูลสูญหายที่มีผลต่อความไม่แน่นอนในการวิเคราะห์ [0,1]</p></li>
+<li><p>riv (relative increase in variance) คืออัตราส่วนความแปรปรวนระหว่างความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายต่อความแปรปรวนส่วนเหลือ</p></li>
+<li><p>ubar ค่าเฉลี่ยความแปรปรวนของพารามิเตอร์ที่ได้จากชุดข้อมูลที่ทดแทนค่าสูญหายแต่ละชุด</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>imp_data_mice <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>imp_data_mice <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>( <span class="sc">~</span> ach_mar<span class="sc">|</span>engage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-54-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stripplot</span>(imp_data_mice, learning_performance_mar, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-54-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(imp_data_mice, learning_performance_mar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-54-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(imp_data_mice, learning_performance_mar <span class="sc">~</span> practice_mar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-54-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 
-</section>
 </section>
 </section>
 </section>
@@ -1472,6 +2446,9 @@ Prediction   0   1
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-baraldi2010introduction" class="csl-entry" role="listitem">
 Baraldi, Amanda N, and Craig K Enders. 2010. <span>“An Introduction to Modern Missing Data Analyses.”</span> <em>Journal of School Psychology</em> 48 (1): 5–37. <a href="https://doi.org/10.1016/j.jsp.2009.10.001">https://doi.org/10.1016/j.jsp.2009.10.001</a>.
+</div>
+<div id="ref-mice" class="csl-entry" role="listitem">
+Buuren, Stef van, and Karin Groothuis-Oudshoorn. 2011. <span>“Mice: Multivariate Imputation by Chained Equations in r.”</span> <em>Journal of Statistical Software</em> 45 (3): 1–67. <a href="https://doi.org/10.18637/jss.v045.i03">https://doi.org/10.18637/jss.v045.i03</a>.
 </div>
 <div id="ref-Galimard2018" class="csl-entry" role="listitem">
 Galimard, Jean-Emmanuel, Sylvie Chevret, Emmanuel Curis, and Matthieu Resche-Rigon. 2018. <span>“Heckman Imputation Models for Binary or Continuous MNAR Outcomes and MAR Predictors.”</span> <em>BMC Medical Research Methodology</em> 18 (1): 90. <a href="https://doi.org/10.1186/s12874-018-0547-1">https://doi.org/10.1186/s12874-018-0547-1</a>.

@@ -106,7 +106,13 @@ library(tidymodels)
 
 train_data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week09/train.csv")
 test_data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week09/test.csv")
+glimpse(train_data)
 ```
+
+```{r}
+train_data %>% head()
+```
+
 
 ```{r}
 library(patchwork)
@@ -132,7 +138,7 @@ data %>%
   labs(fill = "Darkness")
 }
 
-p1 <- plot_digit(train_data, 1)
+p1 <- plot_digit(train_data, 1) ## เอาทุกคอลัมน์ในแถวที่ 1 มาสร้างรูป
 p2 <- plot_digit(train_data,10)
 p3 <- plot_digit(train_data,20)
 p4 <- plot_digit(train_data,30)
@@ -142,13 +148,69 @@ p4 <- plot_digit(train_data,30)
 
 ```{r}
 ggplot(train_data, aes(x=label))+
-  geom_bar()
+  geom_bar()+
+  scale_x_continuous(breaks = 0:9)
 ```
 
 
 ### กิจกรรม 1: ทดลอง fit single learner เพื่อทำนาย label
 
-ผลลัพธ์ที่ได้เป็นอย่างไร??
+- multinomial logistic regression
+
+- knn
+
+- svm
+
+
+```{r}
+library(tidymodels)
+## preprocessing 
+train_data <- train_data %>% 
+  mutate(label = factor(label))
+split <- initial_split(train_data, prop = 0.2, strata = label)
+train <- training(split)
+test <- testing(split)
+
+rec <- recipe(label ~ ., data=train)
+
+## model
+lasso_spec <- multinom_reg(penalty = tune()) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+
+knn_spec <- nearest_neighbor(weight_func = "optimal", neighbors = tune()) %>%
+  set_engine("kknn") %>%
+  set_mode("classification")
+
+svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("classification")
+```
+
+
+```{r}
+### workflowset
+wf_set <- workflow_set(
+  preproc = list(rec),
+  models = list(lasso_spec, knn_spec, svm_spec)
+)
+
+## workflow map
+library(future)
+plan(multisession, workers = 12)
+cv <- vfold_cv(train_data, v=5, repeats = 3, strata = label)
+wf_map <- wf_set %>%
+  workflow_map(
+    resamples = cv,
+    grid = 10,
+    control = control_grid(save_pred = TRUE)
+  )
+
+```
+
+
+
+
 
 
 ### กิจกรรมที่ 2: ใช้  bagging-trees และ random forest
