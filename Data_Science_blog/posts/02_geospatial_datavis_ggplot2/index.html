@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Siwachoat Srisuttiyakorn">
+<meta name="dcterms.date" content="2024-11-01">
+
+<title>Geospatial Visualization using ggplot2 and sf – KruRoo Blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">KruRoo Blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> <i class="bi bi-body-text" role="img">
+</i> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> <i class="bi bi-fire" role="img">
+</i> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Geospatial Visualization using ggplot2 and sf</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">data visualization</div>
+                <div class="quarto-category">geospatial</div>
+                <div class="quarto-category">ggplot2</div>
+                <div class="quarto-category">sf</div>
+                <div class="quarto-category">leaflet</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Siwachoat Srisuttiyakorn </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 1, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#geospatial-data-visualization-with-sf" id="toc-geospatial-data-visualization-with-sf" class="nav-link active" data-scroll-target="#geospatial-data-visualization-with-sf"><span class="header-section-number">1</span> Geospatial Data Visualization with <code>{sf}</code></a>
+  <ul class="collapse">
+  <li><a href="#แหลงขอมลภมสารสนเทศของประเทศไทย" id="toc-แหลงขอมลภมสารสนเทศของประเทศไทย" class="nav-link" data-scroll-target="#แหลงขอมลภมสารสนเทศของประเทศไทย"><span class="header-section-number">1.1</span> แหล่งข้อมูลภูมิสารสนเทศของประเทศไทย</a></li>
+  <li><a href="#นำเขา-shapefile" id="toc-นำเขา-shapefile" class="nav-link" data-scroll-target="#นำเขา-shapefile"><span class="header-section-number">1.2</span> นำเข้า shapefile</a></li>
+  <li><a href="#ggplot2-with-sf" id="toc-ggplot2-with-sf" class="nav-link" data-scroll-target="#ggplot2-with-sf"><span class="header-section-number">1.3</span> <code>{ggplot2}</code> with <code>{sf}</code></a></li>
+  <li><a href="#coordinate-reference-system" id="toc-coordinate-reference-system" class="nav-link" data-scroll-target="#coordinate-reference-system"><span class="header-section-number">1.4</span> Coordinate Reference System</a></li>
+  <li><a href="#geometry" id="toc-geometry" class="nav-link" data-scroll-target="#geometry"><span class="header-section-number">1.5</span> Geometry</a></li>
+  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes"><span class="header-section-number">1.6</span> Attributes</a></li>
+  <li><a href="#sf-with-tidyverse" id="toc-sf-with-tidyverse" class="nav-link" data-scroll-target="#sf-with-tidyverse"><span class="header-section-number">1.7</span> <code>{sf}</code> with <code>{tidyverse}</code></a></li>
+  <li><a href="#geometry-operations" id="toc-geometry-operations" class="nav-link" data-scroll-target="#geometry-operations"><span class="header-section-number">1.8</span> Geometry Operations</a></li>
+  <li><a href="#กจกรรม" id="toc-กจกรรม" class="nav-link" data-scroll-target="#กจกรรม"><span class="header-section-number">1.9</span> กิจกรรม</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>บทเรียนนี้จะกล่าวถึงการสร้างทัศนภาพข้อมูลเชิงภูมิศาสตร์ (geospatial data visualization) วัตถุประสงค์หลักของบทเรียนนี้ได้แก่</p>
+<ul>
+<li><p>เข้าใจและสามารถใช้ <code>{sf}</code> สำหรับจัดการและวิเคราะห์ข้อมูลเชิงภูมิศาสตร์</p></li>
+<li><p>สร้าง geospatial data visualization ผ่าน <code>{ggplot2}</code></p></li>
+<li><p>สร้าง interactive mapping ด้วย <code>{leaflet}</code></p></li>
+</ul>
+<section id="geospatial-data-visualization-with-sf" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="geospatial-data-visualization-with-sf"><span class="header-section-number">1</span> Geospatial Data Visualization with <code>{sf}</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("sf")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ของ R เป็น library ที่มีเครื่องมือสำหรับจัดการข้อมูลเชิงภูมิศาสตร์ โดยมีความสามารถในการจัดการข้อมูลเชิงภูมิศาสตร์ที่มีความซับซ้อน และมีการเก็บข้อมูลเชิงภูมิศาสตร์ในรูปแบบของ simple features <span class="citation" data-cites="Pebesma_sf_2024">(<a href="#ref-Pebesma_sf_2024" role="doc-biblioref">Pebesma 2024</a>)</span> ซึ่งเป็นมาตรฐานของข้อมูลเชิงภูมิศาสตร์ที่ถูกกำหนดโดย ISO 19125-1:2004</p>
+<p>มาตรฐานดังกล่าวกำหนดวิธีการแทนค่าและจัดเก็บข้อมูลวัตถุในโลกจริงที่มีลักษณะเชิงพื้นที่ (spatial geometry) เช่น จุด เส้น และพื้นที่ในระบบข้อมูลที่เกี่ยวกับภูมิสารสนเทศ (GIS) simple features จะประกอบด้วยสองส่วนหลัก คือ</p>
+<ul>
+<li><p>ส่วนข้อมูลเชิงภูมิศาสตร์ (geometry) ที่เก็บข้อมูลเชิงพื้นที่ของวัตถุในโลกจริง เช่น จุด เส้น และพื้นที่</p></li>
+<li><p>ส่วนข้อมูลที่เกี่ยวข้อง (attribute) ที่เก็บข้อมูลที่เกี่ยวข้องกับวัตถุในโลกจริง เช่น ชื่อ รหัส และค่าที่เกี่ยวข้อง</p></li>
+</ul>
+<p>นอกจากนี้ <code>{sf}</code> ยังรองรับการอ่านและเขียนไฟล์ Shapefile ซึ่งเป็นรูปแบบไฟล์ที่พัฒนาโดย ESRI สำหรับจัดเก็บข้อมูลเชิงเวกเตอร์ เช่น ข้อมูลเกี่ยวกับพิกัดและข้อมูลบรรยายที่ใช้ในระบบข้อมูลภูมิสารสนเทศ (GIS) รูปแบบ Shapefile ประกอบด้วยหลายไฟล์ เช่น <code>.shp</code> (เก็บข้อมูลเรขาคณิต), <code>.shx</code> (ดัชนีเชิงพื้นที่), และ <code>.dbf</code> (เก็บข้อมูลเชิงบรรยาย) ซึ่ง <code>{sf}</code> สามารถอ่านและแปลงเป็น sf-object เพื่อให้ใช้งานและวิเคราะห์ใน R ได้ง่ายขึ้น</p>
+<p>สำหรับการสร้าง Geospatial Visualization ของประเทศไทย สิ่งสำคัญที่ต้องเริ่มต้นคือการมี ไฟล์ข้อมูลภูมิสารสนเทศ ที่ใช้เป็นพื้นฐานในการสร้างแผนที่ ซึ่งไฟล์นี้จะบรรจุข้อมูลเรขาคณิตเชิงพื้นที่ของพื้นที่ต่าง ๆ ในประเทศไทย เช่น พิกัดของขอบเขตจังหวัดหรืออำเภอ โดยข้อมูลในไฟล์นี้จะเป็นพื้นฐานที่แสดงรูปร่างของแต่ละพื้นที่</p>
+<p>หลังจากมีไฟล์พื้นฐานแล้ว เราสามารถ รวบรวมข้อมูลเชิงบรรยาย (attributes) เพิ่มเติม เช่น ข้อมูลประชากร รายได้เฉลี่ย หรือความเสี่ยงต่อภัยธรรมชาติ แล้วใช้แพ็กเกจ {sf} ใน R เพื่อรวมข้อมูลเชิงบรรยายเหล่านี้เข้ากับข้อมูลพื้นที่ (spatial data) โดยการ join ตามขอบเขตพื้นที่ เช่น จังหวัดหรืออำเภอ ทำให้เราสามารถแสดงผลข้อมูลเชิงบรรยายร่วมกับแผนที่เชิงภูมิศาสตร์ได้</p>
+<section id="แหลงขอมลภมสารสนเทศของประเทศไทย" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="แหลงขอมลภมสารสนเทศของประเทศไทย"><span class="header-section-number">1.1</span> แหล่งข้อมูลภูมิสารสนเทศของประเทศไทย</h3>
+<ul>
+<li><p><a href="https://data.humdata.org/dataset/cod-ab-tha">OCHA Services</a></p></li>
+<li><p><a href="https://gadm.org/download_country_v3.html">GADM</a></p></li>
+<li><p><a href="https://opendata.onwr.go.th/dataset">สำนักงานทรัพยากรน้ำแห่งชาติ</a></p></li>
+</ul>
+</section>
+<section id="นำเขา-shapefile" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="นำเขา-shapefile"><span class="header-section-number">1.2</span> นำเข้า shapefile</h3>
+<p>เราสามารถนำเข้าไฟล์ข้อมูลภูมิสารสนเทศ (shapefile) ด้วยคำสั่ง <code>st_read()</code> ของ <code>{sf}</code> โดยระบุที่อยู่ของไฟล์ shapefile ที่ต้องการนำเข้า ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>thai_prov_map <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"/Users/choat/Downloads/tha_adm_rtsd_itos_20210121_shp/tha_admbnda_adm1_rtsd_20220121.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
+  `/Users/choat/Downloads/tha_adm_rtsd_itos_20210121_shp/tha_admbnda_adm1_rtsd_20220121.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 77 features and 16 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<p>ทดลองเรียกตัวอย่างข้อมูลขึ้นมาดู</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(thai_prov_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 16 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 100.1913 ymin: 13.47842 xmax: 100.9639 ymax: 14.80246
+Geodetic CRS:  WGS 84
+  Shape_Leng Shape_Area                  ADM1_EN       ADM1_TH ADM1_PCODE
+1   2.417227 0.13133873                  Bangkok  กรุงเทพมหานคร       TH10
+2   1.695100 0.07926199             Samut Prakan    สมุทรปราการ       TH11
+3   1.251111 0.05323766               Nonthaburi         นนทบุรี       TH12
+4   1.884945 0.12698345             Pathum Thani        ปทุมธานี       TH13
+5   3.041716 0.21393797 Phra Nakhon Si Ayutthaya พระนครศรีอยุธยา       TH14
+6   1.739908 0.07920961                Ang Thong        อ่างทอง       TH15
+  ADM1_REF ADM1ALT1EN ADM1ALT2EN ADM1ALT1TH ADM1ALT2TH  ADM0_EN   ADM0_TH
+1     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+2     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+3     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+4     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+5     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+6     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+  ADM0_PCODE       date    validOn validTo                       geometry
+1         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.6139 13...
+2         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.7306 13...
+3         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.3415 14...
+4         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.8916 14...
+5         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.5131 14...
+6         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.3332 14...</code></pre>
+</div>
+</div>
+<p>สังเกตว่าชุดข้อมูล <code>sf</code> มีส่วนประกอบสองส่วนดังที่กล่าวไว้ ส่วนแรกที่เป็นข้อมูลเชิงพื้นที่จะอยู่ในคอลัมน์ <code>geometry</code> ซึ่งเก็บข้อมูลเรขาคณิตเชิงพื้นที่ของพื้นที่ต่าง ๆ ในประเทศไทย ส่วนที่สองคือข้อมูลเชิงบรรยายที่เกี่ยวข้องกับพื้นที่นั้น ๆ จะอยู่ในคอลัมน์อื่น ๆ ที่ไม่ใช่ <code>geometry</code> ซึ่งเก็บข้อมูลที่เกี่ยวข้องกับพื้นที่นั้น ๆ เช่น ชื่อ รหัส และค่าที่เกี่ยวข้อง</p>
+<p>ชุดข้อมูลข้างต้นเมื่อพิจารณาส่วน <code>geometry</code> จะเห็นว่ามีการกำกับไว้ว่าเป็น <code>MULTIPOLYGON</code> ซึ่งเป็นรูปแบบของเรขาคณิตเชิงพื้นที่ประเภทหนึ่งที่มีพื้นที่ย่อยหลาย ๆ พื้นที่ีรวมกัน เราสามารถนำข้อมูลส่วนนี้มาสร้างทัศนภาพข้อมูลได้เลยดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">### plot(thai_prov_map)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(thai_prov_map[<span class="st">"Shape_Area"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ggplot2-with-sf" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="ggplot2-with-sf"><span class="header-section-number">1.3</span> <code>{ggplot2}</code> with <code>{sf}</code></h3>
+<p>เราสามารถใช้ ggplot2 กับ object ประเภท <code>{sf}</code> ได้โดยใช้ <code>geom_sf()</code> ซึ่งเป็น geom ที่ใช้สำหรับพล็อตข้อมูลเชิงภูมิศาสตร์ ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> thai_prov_map <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> Shape_Area))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="coordinate-reference-system" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="coordinate-reference-system"><span class="header-section-number">1.4</span> Coordinate Reference System</h3>
+<p>Coordinate Reference System (CRS) เป็นระบบพิกัดที่ใช้ในการกำหนดตำแหน่งของวัตถุในโลกจริงแบบ 3D ให้อยู่บนแผนที่ ระบบ CRS มีหลายรูปแบบขึ้นอยู่กับการใช้งาน เช่น</p>
+<ul>
+<li><p>WGS84 (World Geodetic System 1984: EPSG:4326) เป็นระบบพิกัดที่ใช้กันทั่วไปน่าจะแพร่หลายที่สุดในโลกระบบหนึ่งอยู่ในกลุ่ม geographic coordinate system (GCS) ลักษณะเด่นคือการระบุตำแหน่งต่าง ๆ หรือรูปทรงเรขาคณิตบนโลกผ่านพิกัดลองจิจูด (latitude) และละติจูด (longitude) เป็นระบบที่ง่ายแต่อาจไม่ได้มีความแม่นยำสูงมาก</p></li>
+<li><p>NAD83 (EPSG:4269) คล้าย WGS84 แต่มีการปรับปรุงความแม่นยำในการฉายภาพให้ตรงกับสภาพของทวีปอเมริกาเหนือมากขึ้น</p></li>
+<li><p>Web Mercator (EPSG:3857) เป็นระบบพิกัดประเภท projected coordinate system (PCS) เน้นใช้แสดงผลบน website เช่น google map, openstreetmap ลักษณะเด่นคือมีการแปลงพิกัดบนทรงกลม (โลก) ให้เป็นพื้นราบ 2D โดยใช้ mercator projection วิธีการนี้มีแนวโน้มบิดเบือนพื้นที่บริเวณขั้วโลกให้ดูใหญ่กว่าความเป็นจริง</p></li>
+<li><p>UTM (Universal Transverse Mercator) เป็นระบบพิกัดที่ใช้ในการแสดงผลบนแผนที่ที่มีความแม่นยำสูง โดยแบ่งโลกออกเป็น 60 โซนตามแนวตั้ง แต่ละโซนมีความกว้าง 6 องศา และมีระบบพิกัดของตัวเอง การแปลงพิกัดบนทรงกลม (โลก) ให้เป็นพื้นราบ 2D โดยใช้ Transverse Mercator projection พิกัดนี้เหมาะกับการทำแผนที่พื้นที่ขนาดเล็ก</p></li>
+</ul>
+<p>ใน R เราสามารถตรวจสอบ CRS ของข้อมูลเชิงภูมิศาสตร์ได้ด้วยคำสั่ง <code>st_crs()</code> และเปลี่ยน CRS ด้วยคำสั่ง <code>st_transform()</code> ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(thai_prov_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: WGS 84 
+  wkt:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["latitude",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["longitude",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    ID["EPSG",4326]]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> thai_prov_map <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3857</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> Shape_Area))<span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"EPSG:3857"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> thai_prov_map <span class="sc">%&gt;%</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span> ) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> Shape_Area))<span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"EPSG:32647"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2<span class="sc">+</span>p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="1440"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="geometry" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="geometry"><span class="header-section-number">1.5</span> Geometry</h3>
+<p>ข้อมูลเชิงพื้นที่ที่อยู่ในรูปของ geometry ใน sf มีหลายประเภท ซึ่งแต่ละประเภทจะเก็บข้อมูลเรขาคณิตเชิงพื้นที่ของวัตถุในโลกจริงในรูปแบบที่แตกต่างกัน ประเภทข้อมูลหลัก ๆ เช่น</p>
+<ul>
+<li><p>POINT เป็นข้อมูลเรขาคณิตเชิงพื้นที่ของจุดบนแผนที่ ซึ่งมีค่าพิกัดลองและละติจูด</p></li>
+<li><p>LINESTRING เป็นข้อมูลเรขาคณิตเชิงพื้นที่ของเส้นที่เชื่อมต่อจุดหลาย ๆ จุดเข้าด้วยกัน</p></li>
+<li><p>POLYGON เป็นข้อมูลเรขาคณิตเชิงพื้นที่ของพื้นที่ที่มีขอบเขตเป็นเส้นต่อเนื่อง ๆ ที่ปิดรูป</p></li>
+<li><p>MULTIPOLYGON เป็นข้อมูลเรขาคณิตเชิงพื้นที่ของพื้นที่ที่มีขอบเขตเป็นเส้นต่อเนื่อง ๆ ที่ปิดรูป แต่มีพื้นที่ย่อยหลาย ๆ พื้นที่รวมกัน</p></li>
+</ul>
+<p>ในแผนภาพหนึ่ง ๆ อาจจะต้องใช้ geometry หลายประเภทเพื่อนำเสนอข้อมูลเชิงพื้นที่หลากหลายลักษณะขึ้นอยู่งาน</p>
+</section>
+<section id="attributes" class="level3" data-number="1.6">
+<h3 data-number="1.6" class="anchored" data-anchor-id="attributes"><span class="header-section-number">1.6</span> Attributes</h3>
+<p>Attribute เป็นข้อมูลคุณลักษณะของวัตถุเชิงพื้นที่ใช้บรรยายสภาพหรือบริบทของวัตถุนั้น ๆ ในโลกจริง ใน <code>{sf}</code> จะเก็บ attribute ดังกล่าวในรูปแบบตารางเหมือนกับ data.frame แต่จะมีความเชื่อมโยงกับข้อมูลเชิงพื้นที่ในคอลัมน์ <code>geometry</code> พิจารณาชุดข้อมูล <code>thai_prov_map</code> ที่เราได้นำเข้ามาก่อนหน้านี้ จะเห็นว่ามีตัวแปรคุณลักษณะหลายตัวที่นำเข้ามาพร้อมกัน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(thai_prov_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 77
+Columns: 17
+$ Shape_Leng &lt;dbl&gt; 2.417227, 1.695100, 1.251111, 1.884945, 3.041716, 1.739908,…
+$ Shape_Area &lt;dbl&gt; 0.13133873, 0.07926199, 0.05323766, 0.12698345, 0.21393797,…
+$ ADM1_EN    &lt;chr&gt; "Bangkok", "Samut Prakan", "Nonthaburi", "Pathum Thani", "P…
+$ ADM1_TH    &lt;chr&gt; "กรุงเทพมหานคร", "สมุทรปราการ", "นนทบุรี", "ปทุมธานี", "พระนครศรีอ…
+$ ADM1_PCODE &lt;chr&gt; "TH10", "TH11", "TH12", "TH13", "TH14", "TH15", "TH16", "TH…
+$ ADM1_REF   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ADM1ALT1EN &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ADM1ALT2EN &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ADM1ALT1TH &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ADM1ALT2TH &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ADM0_EN    &lt;chr&gt; "Thailand", "Thailand", "Thailand", "Thailand", "Thailand",…
+$ ADM0_TH    &lt;chr&gt; "ประเทศไทย", "ประเทศไทย", "ประเทศไทย", "ประเทศไทย", "ประเทศ…
+$ ADM0_PCODE &lt;chr&gt; "TH", "TH", "TH", "TH", "TH", "TH", "TH", "TH", "TH", "TH",…
+$ date       &lt;date&gt; 2019-02-18, 2019-02-18, 2019-02-18, 2019-02-18, 2019-02-18…
+$ validOn    &lt;date&gt; 2022-01-22, 2022-01-22, 2022-01-22, 2022-01-22, 2022-01-22…
+$ validTo    &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ geometry   &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((100.6139 13..., MULTIPOLYGON (…</code></pre>
+</div>
+</div>
+<p>ผลลัพธ์ข้างต้นจะเห็นว่า</p>
+<ul>
+<li><p>ชุดข้อมูลมี 77 แถว (ตามจำนวนจังหวัด) และมี 17 คอลัมน์</p></li>
+<li><p>คอลัมน์ <code>geometry</code> เก็บข้อมูลเรขาคณิตเชิงพื้นที่ของพื้นที่ต่าง ๆ ในประเทศไทย</p></li>
+<li><p>คอลัมน์ที่เหลือเป็นข้อมูลพื้นฐานที่เกี่ยวข้องของแต่ละจังหวัด เช่น ความยาว ขนาดพื้นที่ ชื่อ รหัส …</p></li>
+</ul>
+</section>
+<section id="sf-with-tidyverse" class="level3" data-number="1.7">
+<h3 data-number="1.7" class="anchored" data-anchor-id="sf-with-tidyverse"><span class="header-section-number">1.7</span> <code>{sf}</code> with <code>{tidyverse}</code></h3>
+<p>เนื่องจาก <code>{sf}</code> ถูกออกแบบให้มีลักษณะเป็นชุดข้อมูลแบบ data.frame ดังนั้นจึงสามารถทำงานภายใต้ tidyverse ได้โดยตรง ซึ่งเป็นข้อได้เปรียบที่สำคัญที่ทำให้สามารถใช้ <code>{sf}</code> ในการจัดการข้อมูลเชิงภูมิศาสตร์ได้ง่ายขึ้น เบื้องต้นเราสามารถใช้ <code>{dplyr}</code> หรือ <code>{tidyr}</code> รวมทั้ง <code>{ggplot2}</code> (แสดงให้ดูไปแล้ว) เพื่อจัดกระทำและสร้างทัศนภาพข้อมูลเชิงพื้นที่ตามที่ต้องการได้ เช่น</p>
+<section id="การคดเลอกตวแปร" class="level4" data-number="1.7.1">
+<h4 data-number="1.7.1" class="anchored" data-anchor-id="การคดเลอกตวแปร"><span class="header-section-number">1.7.1</span> การคัดเลือกตัวแปร</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>thai_prov_map <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ADM1_TH, Shape_Area) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 2 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 100.1913 ymin: 13.47842 xmax: 100.9639 ymax: 14.80246
+Geodetic CRS:  WGS 84
+        ADM1_TH Shape_Area                       geometry
+1  กรุงเทพมหานคร 0.13133873 MULTIPOLYGON (((100.6139 13...
+2    สมุทรปราการ 0.07926199 MULTIPOLYGON (((100.7306 13...
+3         นนทบุรี 0.05323766 MULTIPOLYGON (((100.3415 14...
+4        ปทุมธานี 0.12698345 MULTIPOLYGON (((100.8916 14...
+5 พระนครศรีอยุธยา 0.21393797 MULTIPOLYGON (((100.5131 14...
+6        อ่างทอง 0.07920961 MULTIPOLYGON (((100.3332 14...</code></pre>
+</div>
+</div>
+<p>ผลลัพธ์ข้างต้นเราจะเห็นว่า <code>geometry</code> จะติดมากับ attribute ที่เราเลือกไว้ด้วยเสมอ</p>
+</section>
+<section id="การคดกรองขอมล" class="level4" data-number="1.7.2">
+<h4 data-number="1.7.2" class="anchored" data-anchor-id="การคดกรองขอมล"><span class="header-section-number">1.7.2</span> การคัดกรองข้อมูล</h4>
+<div class="cell" data-figh.height="6">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> thai_prov_map <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADM1_TH <span class="sc">==</span> <span class="st">"กรุงเทพมหานคร"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>)<span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()<span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Bangkok"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="การ-join-ขอมล" class="level4" data-number="1.7.3">
+<h4 data-number="1.7.3" class="anchored" data-anchor-id="การ-join-ขอมล"><span class="header-section-number">1.7.3</span> การ join ข้อมูล</h4>
+<p>โดยปกติเราสามารถเข้าถึงข้อมูลเชิงพื้นที่ที่จะใช้สำหรับสร้างแผนที่ที่ต้องการได้ไม่ยาก ปัญหาหลักคือเราต้องการชุดข้อมูลเชิงพื้นที่ที่ประกอบด้วย attribute เป้าหมายที่จะใช้นำเสนอซึ่งชุดข้อมูลลักษณะนี้ผู้วิเคราะห์จำเป็นต้องสร้างเอง ยกตัวอย่างเช่น</p>
+<ul>
+<li><a href="average_expense.xlsx">ค่าใช้จ่ายเฉลี่ยต่อเดือนของครัวเรือนรายจังหวัด</a></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>data_expense <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"average_expense.xlsx"</span>, <span class="at">sheet =</span> <span class="dv">1</span>, <span class="at">skip =</span> <span class="dv">2</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_expense, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 14
+   ภาค    `จังหวัด` `2555` `2556` `2557` `2558` `2559` `2560` `2561` `2562` `2563`
+   &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1 ทั่วราช… ทั่วราชอ… 18766  19061  20892. 21157  21144. 21436. 21346. 20742. 21329.
+ 2 กรุงเท… กรุงเทพ… 31971. 32425  31606. 30882  32091. 33126. 33408. 30778. 31142.
+ 3 &lt;NA&gt;   กรุงเทพ… 33957. 35024. 34426. 33086. 35101. 35351. 34127. 31753. 32052.
+ 4 &lt;NA&gt;   สมุทรปร… 25861. 26193. 22747. 22332. 24354. 24355. 23232. 21423. 23851.
+ 5 &lt;NA&gt;   นนทบุรี   28731. 26947. 30812. 31381  28828. 33313. 33809. 32189. 33042.
+ 6 &lt;NA&gt;   ปทุมธานี  30669. 29514  30197. 29770  31271. 33604. 43301. 37086. 33824.
+ 7 ภาคกล… ภาคกลาง 19762  19728  21144. 21055  20493. 21120. 21168. 20645. 21771.
+ 8 &lt;NA&gt;   พระนคร… 25216. 20494. 20410. 22218. 23095. 23780. 22790. 24440. 23391.
+ 9 &lt;NA&gt;   อ่างทอง  21273. 21182. 19634. 17574. 20372. 17162. 17295. 17011. 17727.
+10 &lt;NA&gt;   ลพบุรี    17357. 15945. 14911. 17969. 15876. 16012. 17017. 16830. 19180.
+# ℹ 3 more variables: `2564` &lt;dbl&gt;, `2565` &lt;dbl&gt;, `2566` &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>สมมุติว่าวัตถุประสงค์คือการ plot รายจ่ายโดยเฉลี่ยของครัวเรือนในแต่ะละจังหวัด เราจำเป็นที่จะต้องเชื่อมโยงข้อมูลรายจ่ายดังกล่าวเข้ากับข้อมูลเชิงพื้นที่ใน <code>thai_prov_map</code> อย่างไรก็ตามหากใช้การรวมข้อมูลด้วย <code>dplyr</code> แบบปกติจะทำให้สูญเสีย class ของข้อมูลเดิมคือ <code>sf</code> ไป การแก้ปัญหาดังกล่าวสามารถทำได้โดยใช้ <code>st_as_sf()</code> ในการแปลงข้อมูลเชิงพื้นที่ที่เราได้รวมข้อมูลเชิงบรรยายเข้าไปกลับเป็น <code>sf</code> อีกครั้ง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_expense <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">region =</span> <span class="dv">1</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">prov =</span> <span class="dv">2</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">year2566 =</span> <span class="st">`</span><span class="at">2566</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(region, prov, year2566) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(region, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">right_join</span>(thai_prov_map, </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"prov"</span> <span class="sc">==</span> <span class="st">"ADM1_TH"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> year2566))<span class="sc">+</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"maroon"</span>, </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                       <span class="at">mid =</span> <span class="st">"white"</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">high =</span> <span class="st">"steelblue"</span>, </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">20000</span>)<span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="group_by-และ-summarise" class="level4" data-number="1.7.4">
+<h4 data-number="1.7.4" class="anchored" data-anchor-id="group_by-และ-summarise"><span class="header-section-number">1.7.4</span> <code>group_by()</code> และ <code>summarise()</code></h4>
+<p>ทำนองเดียวกับการจัดกระทำข้อมูลทั่วไป เราสามารถใช้ <code>group_by()</code> และ <code>summarise()</code> ในการสรุปข้อมูลเชิงพื้นที่ได้เช่นกัน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>expense_st_joined <span class="ot">&lt;-</span> data_expense <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">region =</span> <span class="dv">1</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">prov =</span> <span class="dv">2</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">year2566 =</span> <span class="st">`</span><span class="at">2566</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(region, prov, year2566) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(region, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">right_join</span>(thai_prov_map, </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"prov"</span> <span class="sc">==</span> <span class="st">"ADM1_TH"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>expense_st_joined <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_expense =</span> <span class="fu">mean</span>(year2566)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> avg_expense))<span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"maroon"</span>, </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">mid =</span> <span class="st">"white"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">high =</span> <span class="st">"steelblue"</span>, </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">20000</span>)<span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Average Expense by Region"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>จะเห็นว่าการใช้ grammar of data maniputation ร่วมกับ <code>{sf}</code> ทำให้เราสามารถจัดการข้อมูลเชิงพื้นที่ได้อย่างมีประสิทธิภาพ สามารถนำเสนอมิติต่าง ๆ ของข้อมูลได้โดยง่าย</p>
+</section>
+</section>
+<section id="geometry-operations" class="level3" data-number="1.8">
+<h3 data-number="1.8" class="anchored" data-anchor-id="geometry-operations"><span class="header-section-number">1.8</span> Geometry Operations</h3>
+<ul>
+<li><p><code>st_distance()</code> ใช้คำนวณระยะห่างระหว่าง geometry สองตัว</p></li>
+<li><p><code>st_union()</code> ใช้รวม geometry หลายตัวเข้าด้วยกัน</p></li>
+<li><p><code>st_centroid()</code> ใช้หาจุดศูนย์กลางของ geometry</p></li>
+</ul>
+<p>st_intersects(), st_disjoint(), st_touches(), st_crosses(), st_within(), st_contains(), st_overlaps(), st_equals(), st_covers(), st_covered_by(), st_equals_exact() and st_is_within_distance() รายละเอียดถ้าจำเป็นต้องใช้สามารถศึกษาได้จาก <span class="citation" data-cites="Pebesma_sf_2024">(<a href="#ref-Pebesma_sf_2024" role="doc-biblioref">Pebesma 2024</a>)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> thai_prov_map <span class="sc">%&gt;%</span> <span class="fu">filter</span>(ADM1_TH <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"กรุงเทพมหานคร"</span>,<span class="st">"ยะลา"</span>,<span class="st">"เชียงใหม่"</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> thai_prov_map <span class="sc">%&gt;%</span> <span class="fu">filter</span>(ADM1_TH <span class="sc">==</span> <span class="st">"นครราชสีมา"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_distance</span>(x,y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Units: [m]
+          [,1]
+[1,]  68260.06
+[2,] 370023.01
+[3,] 834005.26</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_distance</span>(x,y) <span class="sc">%&gt;%</span> units<span class="sc">::</span><span class="fu">set_units</span>(km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Units: [km]
+          [,1]
+[1,]  68.26006
+[2,] 370.02301
+[3,] 834.00526</code></pre>
+</div>
+</div>
+</section>
+<section id="กจกรรม" class="level3" data-number="1.9">
+<h3 data-number="1.9" class="anchored" data-anchor-id="กจกรรม"><span class="header-section-number">1.9</span> กิจกรรม</h3>
+<p>ขอให้ผู้เรียนลองสร้างทัศนภาพข้อมูลพื้นที่เสี่ยงภัยของประเทศดังรูป</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>options:        ENCODING=WINDOWS-874 
+Reading layer `All_Thai_AB_161061' from data source 
+  `/Users/choat/Downloads/5.พื้นที่เป้าหมาย (Area Based)/All_Thai_AB_161061.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 66 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 418132 ymin: 637937.4 xmax: 1190131 ymax: 2263222
+Projected CRS: WGS 84 / UTM zone 47N</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>ชุดข้อมูลที่เกี่ยวข้อง</p>
+<ul>
+<li><p><a href="https://opendata.onwr.go.th/dataset/onwr_66_03_01">พื้นที่เป้าหมาย</a></p></li>
+<li><p><a href="https://data.humdata.org/dataset/cod-ab-tha">OCHA Services</a></p></li>
+</ul>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Pebesma_sf_2024" class="csl-entry" role="listitem">
+Pebesma, Edzer. 2024. <em>Simple Features for r</em>. <a href="https://r-spatial.github.io/sf/articles/sf1.html">https://r-spatial.github.io/sf/articles/sf1.html</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
