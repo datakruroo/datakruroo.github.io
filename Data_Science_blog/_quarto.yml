@@ -1,0 +1,25 @@
+project:
+  type: website
+
+website:
+  title: "KruRoo Blog"
+  navbar:
+    logo: logo.png
+    background: "#181C14"
+    right:
+      - icon: bi-body-text
+        text: Blog
+        href: index.qmd
+      - icon: bi-fire
+        text: About
+        href: about.qmd
+    page-footer:
+      left: "Copyright 2024, Siwachoat Srisuttiyakorn"
+      background: "#181C14"
+format:
+  html:
+    theme: flatly
+    css: styles.css
+
+editor: visual
+
