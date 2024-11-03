@@ -1431,7 +1431,7 @@ p1<- imp2 %>%
   theme_light()+
   scale_color_manual(values = c("grey","maroon"))+
   theme(legend.position = "top")+
-  ggtitle("Model-Based Imputation with EM")
+  ggtitle("Model-Based Imputation with EM and CART")
 
 p2<-imp2 %>% 
  bind_cols(missing_data2 %>% bind_shadow(only_miss = TRUE) %>% select(ends_with("NA"))) %>% 
@@ -1440,9 +1440,7 @@ p2<-imp2 %>%
   geom_jitter(aes(col = practice_mar_NA))+
   theme_light()+
   scale_color_manual(values = c("grey","maroon"))+
-  theme(legend.position = "top")+
-  ggtitle("Model-Based Imputation")
-
+  theme(legend.position = "top")
 
 p1+p2
 ```
@@ -1468,50 +1466,250 @@ glance(fit_complete_case) %>%
 
 ![](img/MI.png)
 
-library สำคัญสำหรับการทำ multiple imputation คือ {`mice`} การทำงานหลัก ๆ ของ library นี้ประกอบด้วย 3 ขั้นตอนได้แก่ [@mice]
+การทำ multiple imputation อาจจำแนกได้เป็นสองวิธีการตามลักษณะหรือวิธีการทดแทนค่าสูญหายที่ใช้ ได้แก่
 
--   `mice()`
+- **Joint Multivariate Normal Mutiple Imputation:** ข้อตกลงเบื้องต้นหลักของวิธีการนี้คือข้อมูลค่าสังเกตที่จะทดแทนค่าสูญหายนั้นจะต้องมีลักษณะใกล้เคียงหรือเป็นไปตามการแจกแจงแบบปกติหลายตัวแปร วิธีในกลุ่ม EM จะเป็นวิธีการพื้นฐานที่ใช้ทดแทนค่าสูญหาย
 
--   `with()`
+- **Conditional Multiple Imputation:** มีลักษณะการเติมค่าสูญหายแบบทวนซ้ำ ผ่านการแจกแจงความน่าจะเป็นที่มีเงื่อนไขของตัวแปรหนึ่ง หรือกลุ่มตัวแปรหนึ่ง เมื่อกำหนดค่าของตัวแปรที่เหลือ เทคนิคในกลุ่มนี้ทำให้การทดแทนค่าสูญหายมีความยืดหยุ่นมากขึ้น สามารถทดแทนค่าสูญหายของตัวแปรที่มีลักษณะการแจกแจงแตกต่างกันได้อย่างมีประสิทธิภาพ 
 
--   `pool()`
+
+library สำคัญสำหรับการทำ multiple imputation คือ `{mice}` การทำงานหลัก ๆ ของ library นี้ประกอบด้วย 3 ขั้นตอนได้แก่ [@mice]
 
 ```{r}
+## install.packages("mice")
 library(mice)
+```
+
+-   `mice()` สร้าง bootstraping sample จากชุดข้อมูลต้นฉบับ แล้วแทนค่าสูญหาย การทดแทนค่าสูญหายใน `{mice}` จะเป็นไปในลักษณะที่สองคือ conditional multiple imputation
+
+-   `with()` นำ imputed data แต่ละชุดมาวิเคราะห์ตามวัตถุประสงค์ เช่น `t.test()`, `lm()`, `glm()` หรืออื่น ๆ
+
+-   `pool()` รวมผลการวิเคราะห์ทั้งหมดเข้าด้วยกันพร้อมคำนวณค่าสถิติที่เกี่ยวข้อง
+
+##### ชุดข้อมูลตัวอย่าง
+
+
+ตัวอย่างนี้ใช้ข้อมูลจำลองที่มีขนาดเล็กก่อน จากการสำรวจพบว่ามีตัวแปร 3 ตัวที่มีค่าสูญหาย โดยมีทั้งตัวแปรเชิงปริมาณและตัวแปรจัดประเภท 
+
+```{r}
 missing_data2 %>% miss_var_summary()
 ```
 
+วัตถุประสงค์หลักของการวิเคราะห์ข้อมูลคือการสร้างโมเดลทำนายผลสัมฤทธิ์ทางการเรียนของนักเรียน
+
+$$
+ach_i = \beta_0 + \beta_1LP_i + ... + \epsilon_i
+$$
+
+
+ก่อนการทดแทนค่าสูญหายผู้วิเคราะห์ทดลองวิเคราะห์ข้อมูลตามวัตถุประสงค์หลักนี้โดยไม่ได้แก้ปัญหา
+
 ```{r}
-imp_data_mice <- mice(missing_data2, m = 5) #<1>
-lm_mice <- imp_data_mice %>% 
-  with(lm(ach_mar ~ learning_performance_mar + practice_mar + engage + ontime_class)) #<2>
-lm_mice_pooled <- pool(lm_mice) #<3>
-tidy(lm_mice_pooled, conf.int = TRUE, conf.level = 0.95) #<4>
+missing_data2 <- missing_data2 |> 
+  mutate(engage = factor(engage, levels=c("no engage","little engage","moderate engage","much engage")),
+  practice_mar = factor(practice_mar, levels=c("do not praction","do practice")),
+  ontime_class = factor(ontime_class, levels=c("used to late","never late")))
+
+fit_noimp <- lm(ach_mar ~., data = missing_data2)
+fit_noimp |> summary()
 ```
-1. สุ่มซ้ำและทดแทนค่าสูญหาย
 
-2. สร้างโมเดลตามวัตถุประสงค์ของการวิจัย
 
-3. รวมผลการวิเคราะห์จากแต่ละชุด
+##### `mice()` step
 
-4. สรุปผลการวิเคราะห์
+ขั้นตอนแรกคือการสร้างตัวอย่าง bootstrap แล้วทดแทนค่าสูญหาย ขั้นตอนนี้มีรายละเอียดที่อาจจะต้องพิจารณาสองส่วน ส่วนแรกคือ การระบุ predictor matrix สำหรับการทดแทนค่าสูญหาย และการระบุวิธีการทดแทนค่าสูญหาย
+
+ขั้นแรกเราทดลองสร้างชุดข้อมูลดังกล่าวก่อนด้วยค่าเริ่มต้น จากนั้นเราสามารถเรียกดู predictor matrix ที่เป็นการกำหนดโมเดลสำหรับการทดแทนค่าสูญหายของตัวแปรแต่ละตัวได้ดังนี้
+
+```{r}
+imp <- mice(missing_data2, m = 5)
+imp$predictorMatrix
+```
+
+note: Predictor Matrix เป็นเมทริกซ์แบบ binary 0,1 ถ้ากำหนดค่าเป็น 1 แปลว่าตัวแปรในคอลัมน์นั้นจะถูกใช้เป็นตัวทำนายค่าสูญหายในแถวนั้น **Predictor Matrix ข้างต้นมีความหมายว่าอย่างไร**
+
+เราสามาถรปรับเปลี่ยนตัวแปรทำนายค่าสูญหายแต่ละตัวได้ผ่าน predictor matrix นี้ เช่น
+
+```{r}
+my_predMat <- imp$predictorMatrix
+my_predMat[1,4:5] <- 0
+my_predMat[4,] <- 0
+my_predMat[5,] <- 0
+my_predMat
+```
+
+ส่วนวิธีการทดแทนค่าสูญหาย สามารถเรียกดูได้ ดังนี้ โดยรายละเอียดของวิธีการทดแทนค่าสูญหายใน `{mice}` สามารถศึกษาได้จาก `?mice()`
+
+```{r}
+imp$method
+```
+
+ในทำนองเดียวกันเราสามารถปรับเปลี่ยนวิธีการทดแทนค่าสูญหายของตัวแปรแต่ละตัวได้อย่างอิสระ
+
+```{r}
+my_method <- imp$method
+my_method[1:3] <- c(ach_mar = "midastouch",
+                   learning_performance_mar =  "midastouch",
+                   practice_mar = "midastouch")
+my_method
+```
+
+เมื่อกำหนด spec ของการทดแทนค่าสูญหายแล้ว ให้ดำเนินการสร้าง bootstrap sample และทดแทนค่าสูญหายใหม่
+
+```{r}
+set.seed(123)
+my_imp <- mice(missing_data2, 
+              m = 50, 
+              predictorMatrix = my_predMat,
+              method = my_method,
+              print = F)
+```
+
+
+เมื่อกำหนดการทดแทนค่าสูญหายเสร็จเราสามารถเรียกดูผลลัพธ์การทดแทนค่าสูญหายได้เป็นรายตัวแปรดังนี้
+
+```{r}
+set.seed(1234)
+p1 <- my_imp$imp$ach_mar |> slice_sample(n=10) |> 
+  data.frame() |> 
+  rownames_to_column("id") |> 
+  pivot_longer(cols = -id) |> 
+  ggplot(aes(x = reorder(id,id), y = value))+
+  geom_boxplot()+
+  geom_jitter(width = 0.2, col = "steelblue")+
+  ylim(0,100)+
+  theme_light()
+
+p2 <- my_imp$imp$ach_mar |> slice_sample(n=10) |> 
+  data.frame() |> 
+  rownames_to_column("id") |> 
+  pivot_longer(cols = -id) |> 
+  ggplot(aes(x = value))+
+  geom_density(col = "maroon", aes(group = id))+
+  geom_density(data = missing_data2, aes(x = ach_mar), col = "black")+
+  theme_light()+
+  xlim(0,100)
+
+p1/p2
+
+```
+
+
+เราสามารถตรวจสอบการแจกแจงของค่าสูญหายกับการแจกแจงของข้อมูลต้นฉบับได้ โดยใช้ฟังก์ชันสำเร็จรูปดังนี้
+
+```{r}
+my_imp %>% densityplot()
+my_imp %>% densityplot( ~ ach_mar|engage)
+stripplot(my_imp, learning_performance_mar, pch=16, cex=0.3)
+bwplot(my_imp, learning_performance_mar ~ engage)
+bwplot(my_imp, learning_performance_mar ~ practice_mar)
+```
+
+
+##### `with()` step
+
+เมื่อทดแทนค่าสูญหายได้เรียบร้อยขั้นตอนถัดมาคือการวิเคราะห์ตามวัตถุประสงค์ของงาน ในที่นี้คือการวิเคราะห์การถดถอย อย่างไรก็ตามการวิเคราะห์จำเป็นจะต้องทำกับทุกชุดข้อมูล (ข้างต้นคือ 100 ชุด) ดังนั้นจะต้องใช้ฟังก์ชัน `with()` เข้ามาช่วยวนลูปและเก็บผลลัพธ์ดังกล่าว
+
+```{r}
+fit_imp1 <- my_imp |> 
+            with(lm(ach_mar ~ learning_performance_mar + practice_mar + engage + ontime_class))
+fit_imp1$analyses[1:5]
+```
+
+ผลลัพธ์ข้างต้นจะเห็นว่าเรามีผลการวิเคราะห์ regression จำนวน 100 ชุด
+
+
+##### `pool()` step
+
+สำหรับการอนุมานเชิงสถิติ เราจะนำผลการวิเคราะห์จากชุดข้อมูล bootstrap ข้างต้นมารวมกันเพื่อคำนวณค่ากลางของผลการรวิเคราะห์หลัก และค่าสถิติของเพื่ออธิบายความไม่แน่นอนของการทดแทนค่าสูญหาย
+
+```{r}
+lm_pooled_imp1 <- pool(fit_imp1)
+tidy(lm_pooled_imp1, conf.int = TRUE, conf.level = 0.95) 
+```
+
+
 
 ผลการวิเคราะห์ข้างต้นมีค่าสถิติที่สำคัญได้แก่
 
-- lambda (imputation variance) คือสัดส่วนความแปรปรวนที่เกิดจากการทดแทนค่าสูญหาย [0,1] มีค่าสูงแปลว่าความแปรปรวนในการประมาณค่าพารามิเตอร์นี้ส่วนใหญ่เกิดจากการทดแทนค่าสูญหาย
+**lambda (imputation variance)** คือสัดส่วนความแปรปรวนที่เกิดจากการทดแทนค่าสูญหาย [0,1] มีค่าสูงแปลว่าความแปรปรวนในการประมาณค่าพารามิเตอร์นี้ส่วนใหญ่เกิดจากการทดแทนค่าสูญหาย
 
-- fmi (fraction of missing information) คือสัดส่วนของข้อมูลสูญหายที่มีผลต่อความไม่แน่นอนในการวิเคราะห์ [0,1]
+$$
+\lambda = \frac{B}{T}
+$$
 
-- riv (relative increase in variance) คืออัตราส่วนความแปรปรวนระหว่างความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายต่อความแปรปรวนส่วนเหลือ 
+- $B$ คือ ความแปรปรวนของค่าประมาณพารามิเตอร์ระหว่างชุดข้อมูลที่ทดแทนค่าสูญหาย
 
-- ubar ค่าเฉลี่ยความแปรปรวนของพารามิเตอร์ที่ได้จากชุดข้อมูลที่ทดแทนค่าสูญหายแต่ละชุด
+- $T$ คือ ความแปรปรวนรวมของค่าประมาณพารามิเตอร์ $T = \bar{U} + (1+\frac{1}{m})B$
+
+
+**fmi (fraction of missing information)** คืออัตราส่วนของความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายมีค่าอยู่ในช่วง [0,1]
+
+
+$$
+FMI =  \frac{B + \frac{B}{m}}{T}
+$$
+
+FMI สูง (ใกล้ 1) หมายถึงข้อมูลที่สูญหายมีผลกระทบมากในการเพิ่มความไม่แน่นอนของค่าประมาณพารามิเตอร์
+
+
+**riv (relative increase in variance)** คืออัตราส่วนความแปรปรวนระหว่างความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายต่อความแปรปรวนส่วนเหลือ 
+
+$$
+RIV = \frac{(1+\frac{1}{m})B}{\bar{U}}
+$$
+
+RIV สูงแสดงว่าความแปรปรวนในการประมาณพารามิเตอร์เพิ่มขึ้นมากเนื่องจากการทดแทนข้อมูลที่ขาดหาย แสดงว่าความไม่แน่นอนที่เกิดจากข้อมูลที่ขาดหายมีผลกระทบสูง
+
+สถิติทั้งหมดข้างต้นสะท้อนความไม่แน่นอนของผลการวิเคราะห์ที่จะได้รับที่เกิดจากการทดแทนค่าสูญหาย
+
+##### เปรียบเทียบผลการวิเคราะห์ที่ได้
 
 
 ```{r}
-imp_data_mice %>% densityplot()
-imp_data_mice %>% densityplot( ~ ach_mar|engage)
-
-stripplot(imp_data_mice, learning_performance_mar, pch=16, cex=1.5)
-bwplot(imp_data_mice, learning_performance_mar)
-bwplot(imp_data_mice, learning_performance_mar ~ practice_mar)
+## เปรียบเทียบ R2
+lm_pooled_imp1$glanced |> head()
+lm_pooled_imp1$glanced |> 
+  rownames_to_column("iteration") |> 
+  ggplot(aes(x = iteration, y=adj.r.squared))+
+  geom_line(group = 1)+
+  geom_line(aes(y = r.squared),linetype = 2, group = 2)+
+  geom_hline(yintercept = 0.6136, col = "steelblue")+
+  ylim(0,1)
 ```
+
+
+
+```{r}
+# ดึงค่าค่าสัมประสิทธิ์และ standard errors จากแบบจำลองก่อนและหลังการทดแทน
+fit_noimp_coef <- summary(fit_noimp)$coefficients %>%
+  as.data.frame() %>%
+  rownames_to_column("term") %>%
+  mutate(model = "Before Imputation")
+
+lm_pooled_imp1_coef <- tidy(lm_pooled_imp1) %>%
+  select(term, estimate, std.error) %>%
+  rename(Estimate = estimate, `Std. Error` = std.error) %>%
+  mutate(model = "After Imputation")
+
+# รวมข้อมูลทั้งสองแบบจำลอง
+compare_coefs <- bind_rows(
+  fit_noimp_coef %>%
+    rename(Estimate = `Estimate`, `Std. Error` = `Std. Error`),
+  lm_pooled_imp1_coef
+)
+
+# สร้าง plot เปรียบเทียบ coefficients และ standard error
+ggplot(compare_coefs, aes(x = term, y = Estimate, color = model)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  geom_vline(xintercept = 0, linetype = 2)+
+  geom_errorbar(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`),
+                width = 0.2, position = position_dodge(width = 0.5)) +
+  labs(title = "Comparison of Coefficients and Standard Errors",
+       x = "Terms",
+       y = "Estimate (with Standard Error)",
+       color = "Model") +
+  theme_minimal() +
+  coord_flip()
+```
+

@@ -10,6 +10,7 @@ number-sections: true
 bibliography: reference.bib
 ---
 
+
 ```{r}
 library(sf)
 library(tidyverse)
@@ -27,6 +28,10 @@ thai_prov_map <- st_read("/Users/choat/Downloads/tha_adm_rtsd_itos_20210121_shp/
 -   ทำความเข้าใจ attribute ร่วมกับบริบทเชิงพื้นที่ ซึ่งอาจช่วยให้ผู้ใช้ทำความเข้าใจความสัมพันธ์ระหว่างคุณลักษณะของหน่วยข้อมูลกับพื้นที่เชิงภูมิศาสตร์
 
 -   การสร้างแผนที่ที่สามารถปรับเปลี่ยนได้ตามความต้องการ ช่วยให้ผู้ใช้สามารถสำรวจจข้อมูลด้วยตนเองได้ง่าย และลดความซับซ้อนในการสื่อสารข้อมูล
+
+
+
+
 
 โครงสร้างของแผนภาพแบบ leaflet ประกอบด้วย layer ของทัศนภาพหลายชั้นซ้อนกันในทำนองเดียวกับ `{ggplot2}`
 
@@ -51,10 +56,10 @@ leaflet สามารถเลือกใช้แผนที่พื้น
 
 ```{r}
 leaflet() %>% 
-  addProviderTiles(provider = "OpenStreetMap")
+  addProviderTiles(provider = "Stadia.AlidadeSmoothDark")
 
 leaflet() %>%
-  addProviderTiles(providers$OpenRailwayMap)
+  addProviderTiles(providers$CyclOSM)
 
 leaflet() %>% 
   addProviderTiles(providers$Esri.WorldImagery)
@@ -69,6 +74,11 @@ leaflet::providers %>% head()
 ### Adding Polygons in leaflet
 
 เราสามารถเติม geometry ของข้อมูลเชิงพื้นที่ใน leaflet ได้โดยใช้ `addPolygons()` ฟังก์ชันนี้จะต้องทำงานร่วมกับ `{sf}`
+
+```{r}
+thai_prov_map
+```
+
 
 ```{r}
 mymap <- leaflet() %>% 
@@ -106,11 +116,6 @@ cmx_map <- leaflet() %>%
   setMaxBounds(centroid_coords[1]-0.01, centroid_coords[2]-0.01, 
                centroid_coords[1]+0.01, centroid_coords[2]+0.01) %>% 
   addTiles() %>% 
-  addPolygons(data = thai_prov_map %>%
-                filter(ADM1_TH == "เชียงใหม่"),
-              col = "steelblue",
-              label = ~ADM1_TH) %>%
-  # เพิ่มพื้นหลังเฉพาะขอบเขตเชียงใหม่
   addPolygons(
     data = thai_prov_map %>%
                 filter(ADM1_TH == "เชียงใหม่"),
@@ -118,7 +123,7 @@ cmx_map <- leaflet() %>%
     color = "blue",
     weight = 2,
     opacity = 1,
-    fillOpacity = 0.2,
+    fillOpacity = 0.7,
     label = "จังหวัดเชียงใหม่"
   ) %>% 
   leafletOptions(zoomControl = FALSE)
@@ -136,14 +141,18 @@ library(leaflet)
 ## สร้างชุดข้อมูลฝั่ง attribute
 
 example_data <- read_csv("example_data.csv")
+
 aggregate_data <- example_data %>% 
   filter(student_level == "p6") %>% 
   group_by(province, school_lon, school_lat, school_size, hard_to_reach, school_code3) %>% 
   summarise(avg_risk = mean(risk_index_df5)) %>% 
   filter(province == "เชียงใหม่")
 
+
 # สร้างพาเลตสีสำหรับค่า avg_risk
-risk_palette <- colorBin(palette = "plasma", domain = aggregate_data$avg_risk, bins = c(0,0.6,0.8,1.0))
+risk_palette <- colorBin(palette = "plasma", 
+                         domain = aggregate_data$avg_risk, 
+                         bins = c(0,0.6,0.8,1.0))
 
 # ตั้งค่า zoom ที่ต้องการ (ตัวอย่างใช้ระดับ zoom = 10)
 zoom_level <- 7
@@ -376,15 +385,6 @@ leaflet() %>%
     overlayGroups = c("Chiang Mai Boundary", "Contour Lines", "Low Risk School", "Moderate Risk School", "High Risk School"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>%
-  
-  # เพิ่ม legend สำหรับระดับความเสี่ยง
-  addLegend(
-    position = "bottomright",
-    pal = risk_palette,
-    values = aggregate_data$avg_risk,
-    title = "Risk Score",
-    opacity = 1
-  ) %>% 
   addLegend(
     "bottomright",
     pal = risk_palette,

@@ -176,7 +176,14 @@ window.Quarto = {
   <li><a href="#chain-imputation-algorithm" id="toc-chain-imputation-algorithm" class="nav-link" data-scroll-target="#chain-imputation-algorithm"><span class="header-section-number">3.3.3.1</span> Chain-Imputation Algorithm</a></li>
   <li><a href="#em-algorithm" id="toc-em-algorithm" class="nav-link" data-scroll-target="#em-algorithm"><span class="header-section-number">3.3.3.2</span> EM-algorithm</a></li>
   </ul></li>
-  <li><a href="#multiple-imputation" id="toc-multiple-imputation" class="nav-link" data-scroll-target="#multiple-imputation"><span class="header-section-number">3.3.4</span> Multiple Imputation</a></li>
+  <li><a href="#multiple-imputation" id="toc-multiple-imputation" class="nav-link" data-scroll-target="#multiple-imputation"><span class="header-section-number">3.3.4</span> Multiple Imputation</a>
+  <ul class="collapse">
+  <li><a href="#ชดขอมลตวอยาง" id="toc-ชดขอมลตวอยาง" class="nav-link" data-scroll-target="#ชดขอมลตวอยาง"><span class="header-section-number">3.3.4.1</span> ชุดข้อมูลตัวอย่าง</a></li>
+  <li><a href="#mice-step" id="toc-mice-step" class="nav-link" data-scroll-target="#mice-step"><span class="header-section-number">3.3.4.2</span> <code>mice()</code> step</a></li>
+  <li><a href="#with-step" id="toc-with-step" class="nav-link" data-scroll-target="#with-step"><span class="header-section-number">3.3.4.3</span> <code>with()</code> step</a></li>
+  <li><a href="#pool-step" id="toc-pool-step" class="nav-link" data-scroll-target="#pool-step"><span class="header-section-number">3.3.4.4</span> <code>pool()</code> step</a></li>
+  <li><a href="#เปรยบเทยบผลการวเคราะหทได" id="toc-เปรยบเทยบผลการวเคราะหทได" class="nav-link" data-scroll-target="#เปรยบเทยบผลการวเคราะหทได"><span class="header-section-number">3.3.4.5</span> เปรียบเทียบผลการวิเคราะห์ที่ได้</a></li>
+  </ul></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1864,7 +1871,7 @@ Prediction   0   1
 <span id="cb76-34"><a href="#cb76-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
 <span id="cb76-35"><a href="#cb76-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
 <span id="cb76-36"><a href="#cb76-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
-<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation with EM"</span>)</span>
+<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation with EM and CART"</span>)</span>
 <span id="cb76-38"><a href="#cb76-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb76-39"><a href="#cb76-39" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span>imp2 <span class="sc">%&gt;%</span> </span>
 <span id="cb76-40"><a href="#cb76-40" aria-hidden="true" tabindex="-1"></a> <span class="fu">bind_cols</span>(missing_data2 <span class="sc">%&gt;%</span> <span class="fu">bind_shadow</span>(<span class="at">only_miss =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">ends_with</span>(<span class="st">"NA"</span>))) <span class="sc">%&gt;%</span> </span>
@@ -1873,11 +1880,9 @@ Prediction   0   1
 <span id="cb76-43"><a href="#cb76-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">col =</span> practice_mar_NA))<span class="sc">+</span></span>
 <span id="cb76-44"><a href="#cb76-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
 <span id="cb76-45"><a href="#cb76-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey"</span>,<span class="st">"maroon"</span>))<span class="sc">+</span></span>
-<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)<span class="sc">+</span></span>
-<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Model-Based Imputation"</span>)</span>
-<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-49"><a href="#cb76-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-50"><a href="#cb76-50" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1913,15 +1918,26 @@ Prediction   0   1
 <p>การทดแทนค่าสูญหายแบบค่าเดียวมีจุดสังเกตหนึ่งที่เป็นปัญหาคือ ค่าสูญหายเป็นค่าที่ไม่ทราบ การทดแทนเพียงค่าเดียวจึงเป็นการละเลยความไม่แน่นอน (ความเป็นไปได้ที่มีหลากหลาย) ของค่าสูญหายนั้น ซึ่งเพิ่มโอกาสของการเกิดความลำเอียงในผลการวิเคราะห์ นอกจากนี้ในกรณีที่ใช้โมเดลทำนายเป็นโมเดลทดแทนค่าสูญหาย การทดแทนแบบค่าเดียวอาจทำให้ผู้วิเคราะห์ประสบปัญหาความแปรปรวนต่ำเกินไป นื่องจากค่าสูญหายทั้งหมดถูกแทนด้วยค่าเดียวที่คำนวณจากโมเดล ทำให้ขาดการสะท้อนความหลากหลายของข้อมูลที่แท้จริง</p>
 <p>จากปัญหาดังกล่าวจึงมีการพัฒนาวิธีการทดแทนค่าสูญหายแบบหลายค่า เรียกว่า multiple imputation วิธีการนี้ใช้ประโยชน์จากการสุ่มตัวอย่างแบบใส่คืนมาสร้างตัวอย่าง bootstrap จำนวนหลาย ๆ ชุด โดยแต่ละชุดจะนำมาดำเนินการทดแทนค่าสูญหาย วิเคราะห์ ผลที่ได้จากกระบวนการนี้จะทำให้ผู้วิเคราะห์มีผลการวิเคราะห์จากตัวอย่างดังกล่าวหลายชุด ผลการวิเคราะห์ดังกล่าวจะถูกนำมารวมกันเพื่อคำนวณเป็นค่าประมาณพารามิเตอร์ในโมเดลตามวัตถุประสงค์หลักของการวิจัย</p>
 <p><img src="img/MI.png" class="img-fluid"></p>
-<p>library สำคัญสำหรับการทำ multiple imputation คือ {<code>mice</code>} การทำงานหลัก ๆ ของ library นี้ประกอบด้วย 3 ขั้นตอนได้แก่ <span class="citation" data-cites="mice">(<a href="#ref-mice" role="doc-biblioref">Buuren and Groothuis-Oudshoorn 2011</a>)</span></p>
+<p>การทำ multiple imputation อาจจำแนกได้เป็นสองวิธีการตามลักษณะหรือวิธีการทดแทนค่าสูญหายที่ใช้ ได้แก่</p>
 <ul>
-<li><p><code>mice()</code></p></li>
-<li><p><code>with()</code></p></li>
-<li><p><code>pool()</code></p></li>
+<li><p><strong>Joint Multivariate Normal Mutiple Imputation:</strong> ข้อตกลงเบื้องต้นหลักของวิธีการนี้คือข้อมูลค่าสังเกตที่จะทดแทนค่าสูญหายนั้นจะต้องมีลักษณะใกล้เคียงหรือเป็นไปตามการแจกแจงแบบปกติหลายตัวแปร วิธีในกลุ่ม EM จะเป็นวิธีการพื้นฐานที่ใช้ทดแทนค่าสูญหาย</p></li>
+<li><p><strong>Conditional Multiple Imputation:</strong> มีลักษณะการเติมค่าสูญหายแบบทวนซ้ำ ผ่านการแจกแจงความน่าจะเป็นที่มีเงื่อนไขของตัวแปรหนึ่ง หรือกลุ่มตัวแปรหนึ่ง เมื่อกำหนดค่าของตัวแปรที่เหลือ เทคนิคในกลุ่มนี้ทำให้การทดแทนค่าสูญหายมีความยืดหยุ่นมากขึ้น สามารถทดแทนค่าสูญหายของตัวแปรที่มีลักษณะการแจกแจงแตกต่างกันได้อย่างมีประสิทธิภาพ</p></li>
 </ul>
+<p>library สำคัญสำหรับการทำ multiple imputation คือ <code>{mice}</code> การทำงานหลัก ๆ ของ library นี้ประกอบด้วย 3 ขั้นตอนได้แก่ <span class="citation" data-cites="mice">(<a href="#ref-mice" role="doc-biblioref">Buuren and Groothuis-Oudshoorn 2011</a>)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>missing_data2 <span class="sc">%&gt;%</span> <span class="fu">miss_var_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("mice")</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p><code>mice()</code> สร้าง bootstraping sample จากชุดข้อมูลต้นฉบับ แล้วแทนค่าสูญหาย การทดแทนค่าสูญหายใน <code>{mice}</code> จะเป็นไปในลักษณะที่สองคือ conditional multiple imputation</p></li>
+<li><p><code>with()</code> นำ imputed data แต่ละชุดมาวิเคราะห์ตามวัตถุประสงค์ เช่น <code>t.test()</code>, <code>lm()</code>, <code>glm()</code> หรืออื่น ๆ</p></li>
+<li><p><code>pool()</code> รวมผลการวิเคราะห์ทั้งหมดเข้าด้วยกันพร้อมคำนวณค่าสถิติที่เกี่ยวข้อง</p></li>
+</ul>
+<section id="ชดขอมลตวอยาง" class="level5" data-number="3.3.4.1">
+<h5 data-number="3.3.4.1" class="anchored" data-anchor-id="ชดขอมลตวอยาง"><span class="header-section-number">3.3.4.1</span> ชุดข้อมูลตัวอย่าง</h5>
+<p>ตัวอย่างนี้ใช้ข้อมูลจำลองที่มีขนาดเล็กก่อน จากการสำรวจพบว่ามีตัวแปร 3 ตัวที่มีค่าสูญหาย โดยมีทั้งตัวแปรเชิงปริมาณและตัวแปรจัดประเภท</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>missing_data2 <span class="sc">%&gt;%</span> <span class="fu">miss_var_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   variable                 n_miss pct_miss
@@ -1933,136 +1949,446 @@ Prediction   0   1
 5 ontime_class                  0     0   </code></pre>
 </div>
 </div>
+<p>วัตถุประสงค์หลักของการวิเคราะห์ข้อมูลคือการสร้างโมเดลทำนายผลสัมฤทธิ์ทางการเรียนของนักเรียน</p>
+<p><span class="math display">\[
+ach_i = \beta_0 + \beta_1LP_i + ... + \epsilon_i
+\]</span></p>
+<p>ก่อนการทดแทนค่าสูญหายผู้วิเคราะห์ทดลองวิเคราะห์ข้อมูลตามวัตถุประสงค์หลักนี้โดยไม่ได้แก้ปัญหา</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-58"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="1" onclick="event.preventDefault();" href="">1</a><span id="annotated-cell-58-1" class="code-annotation-target"><a href="#annotated-cell-58-1" aria-hidden="true" tabindex="-1"></a>imp_data_mice <span class="ot">&lt;-</span> <span class="fu">mice</span>(missing_data2, <span class="at">m =</span> <span class="dv">5</span>)</span>
-<span id="annotated-cell-58-2"><a href="#annotated-cell-58-2" aria-hidden="true" tabindex="-1"></a>lm_mice <span class="ot">&lt;-</span> imp_data_mice <span class="sc">%&gt;%</span> </span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="2" onclick="event.preventDefault();" href="">2</a><span id="annotated-cell-58-3" class="code-annotation-target"><a href="#annotated-cell-58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">with</span>(<span class="fu">lm</span>(ach_mar <span class="sc">~</span> learning_performance_mar <span class="sc">+</span> practice_mar <span class="sc">+</span> engage <span class="sc">+</span> ontime_class))</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="3" onclick="event.preventDefault();" href="">3</a><span id="annotated-cell-58-4" class="code-annotation-target"><a href="#annotated-cell-58-4" aria-hidden="true" tabindex="-1"></a>lm_mice_pooled <span class="ot">&lt;-</span> <span class="fu">pool</span>(lm_mice)</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-58" data-target-annotation="4" onclick="event.preventDefault();" href="">4</a><span id="annotated-cell-58-5" class="code-annotation-target"><a href="#annotated-cell-58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(lm_mice_pooled, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-58" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-58" data-code-lines="1" data-code-annotation="1">สุ่มซ้ำและทดแทนค่าสูญหาย</span>
-</dd>
-<dt data-target-cell="annotated-cell-58" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-58" data-code-lines="3" data-code-annotation="2">สร้างโมเดลตามวัตถุประสงค์ของการวิจัย</span>
-</dd>
-<dt data-target-cell="annotated-cell-58" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-58" data-code-lines="4" data-code-annotation="3">รวมผลการวิเคราะห์จากแต่ละชุด</span>
-</dd>
-<dt data-target-cell="annotated-cell-58" data-target-annotation="4">4</dt>
-<dd>
-<span data-code-cell="annotated-cell-58" data-code-lines="5" data-code-annotation="4">สรุปผลการวิเคราะห์</span>
-</dd>
-</dl>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>missing_data2 <span class="ot">&lt;-</span> missing_data2 <span class="sc">|&gt;</span> </span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">engage =</span> <span class="fu">factor</span>(engage, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"no engage"</span>,<span class="st">"little engage"</span>,<span class="st">"moderate engage"</span>,<span class="st">"much engage"</span>)),</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">practice_mar =</span> <span class="fu">factor</span>(practice_mar, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"do not praction"</span>,<span class="st">"do practice"</span>)),</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ontime_class =</span> <span class="fu">factor</span>(ontime_class, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"used to late"</span>,<span class="st">"never late"</span>)))</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>fit_noimp <span class="ot">&lt;-</span> <span class="fu">lm</span>(ach_mar <span class="sc">~</span>., <span class="at">data =</span> missing_data2)</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>fit_noimp <span class="sc">|&gt;</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = ach_mar ~ ., data = missing_data2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-25.5535  -5.0902   0.4975   5.3982  19.5995 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)              22.80221    2.94780   7.735 4.06e-13 ***
+learning_performance_mar  0.53418    0.02904  18.398  &lt; 2e-16 ***
+practice_mardo practice   1.85378    1.24002   1.495   0.1364    
+engagelittle engage      -1.81153    4.17202  -0.434   0.6646    
+engagemoderate engage    -2.35790    2.80028  -0.842   0.4007    
+engagemuch engage        -1.77313    2.57948  -0.687   0.4926    
+ontime_classnever late   -2.20864    1.17031  -1.887   0.0605 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 8.182 on 213 degrees of freedom
+  (167 observations deleted due to missingness)
+Multiple R-squared:  0.6512,    Adjusted R-squared:  0.6414 
+F-statistic: 66.29 on 6 and 213 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
+</div>
+</section>
+<section id="mice-step" class="level5" data-number="3.3.4.2">
+<h5 data-number="3.3.4.2" class="anchored" data-anchor-id="mice-step"><span class="header-section-number">3.3.4.2</span> <code>mice()</code> step</h5>
+<p>ขั้นตอนแรกคือการสร้างตัวอย่าง bootstrap แล้วทดแทนค่าสูญหาย ขั้นตอนนี้มีรายละเอียดที่อาจจะต้องพิจารณาสองส่วน ส่วนแรกคือ การระบุ predictor matrix สำหรับการทดแทนค่าสูญหาย และการระบุวิธีการทดแทนค่าสูญหาย</p>
+<p>ขั้นแรกเราทดลองสร้างชุดข้อมูลดังกล่าวก่อนด้วยค่าเริ่มต้น จากนั้นเราสามารถเรียกดู predictor matrix ที่เป็นการกำหนดโมเดลสำหรับการทดแทนค่าสูญหายของตัวแปรแต่ละตัวได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(missing_data2, <span class="at">m =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  iter imp variable
-  1   1  ach_mar  learning_performance_mar
-  1   2  ach_mar  learning_performance_mar
-  1   3  ach_mar  learning_performance_mar
-  1   4  ach_mar  learning_performance_mar
-  1   5  ach_mar  learning_performance_mar
-  2   1  ach_mar  learning_performance_mar
-  2   2  ach_mar  learning_performance_mar
-  2   3  ach_mar  learning_performance_mar
-  2   4  ach_mar  learning_performance_mar
-  2   5  ach_mar  learning_performance_mar
-  3   1  ach_mar  learning_performance_mar
-  3   2  ach_mar  learning_performance_mar
-  3   3  ach_mar  learning_performance_mar
-  3   4  ach_mar  learning_performance_mar
-  3   5  ach_mar  learning_performance_mar
-  4   1  ach_mar  learning_performance_mar
-  4   2  ach_mar  learning_performance_mar
-  4   3  ach_mar  learning_performance_mar
-  4   4  ach_mar  learning_performance_mar
-  4   5  ach_mar  learning_performance_mar
-  5   1  ach_mar  learning_performance_mar
-  5   2  ach_mar  learning_performance_mar
-  5   3  ach_mar  learning_performance_mar
-  5   4  ach_mar  learning_performance_mar
-  5   5  ach_mar  learning_performance_mar
-                      term     estimate  std.error    statistic      p.value
-1              (Intercept) 15.994257853 2.33310541  6.855351574 4.288307e-05
-2 learning_performance_mar  0.562885159 0.02828525 19.900308532 1.371906e-12
-3  practice_mardo practice  2.052202927 1.18363461  1.733814568 8.401985e-02
-4    engagemoderate engage  0.803671122 1.91843330  0.418920543 6.777977e-01
-5        engagemuch engage  0.620402986 1.67681028  0.369989971 7.132889e-01
-6          engageno engage  0.007758402 2.92975597  0.002648139 9.979108e-01
-7 ontime_classused to late  0.761052472 1.06256611  0.716240115 4.751837e-01
-    conf.low  conf.high           b        df dfcom        fmi     lambda m
-1 10.8003425 21.1881732 2.752717791  10.06529   351 0.66702389 0.60684002 5
-2  0.5028486  0.6229217 0.000320938  15.75926   351 0.53666662 0.48137379 5
-3 -0.2774565  4.3818623 0.050761355 288.34785   351 0.05004514 0.04347896 5
-4 -3.0889691  4.6963114 0.950502122  35.50686   351 0.34575606 0.30991381 5
-5 -2.7656889  4.0064948 0.667883248  41.11804   351 0.31745633 0.28504534 5
-6 -6.0661414  6.0816582 2.875417089  22.12832   351 0.44958987 0.40199366 5
-7 -1.3419683  2.8640733 0.129097033 124.57201   351 0.15073627 0.13720994 5
-         riv         ubar
-1 1.54349387 2.1401195103
-2 0.92817097 0.0004149296
-3 0.04545531 1.3400772605
-4 0.44909435 2.5397837962
-5 0.39869009 2.0102328050
-6 0.67222307 5.1329695178
-7 0.15903051 0.9741302967</code></pre>
+  1   1  ach_mar  learning_performance_mar  practice_mar
+  1   2  ach_mar  learning_performance_mar  practice_mar
+  1   3  ach_mar  learning_performance_mar  practice_mar
+  1   4  ach_mar  learning_performance_mar  practice_mar
+  1   5  ach_mar  learning_performance_mar  practice_mar
+  2   1  ach_mar  learning_performance_mar  practice_mar
+  2   2  ach_mar  learning_performance_mar  practice_mar
+  2   3  ach_mar  learning_performance_mar  practice_mar
+  2   4  ach_mar  learning_performance_mar  practice_mar
+  2   5  ach_mar  learning_performance_mar  practice_mar
+  3   1  ach_mar  learning_performance_mar  practice_mar
+  3   2  ach_mar  learning_performance_mar  practice_mar
+  3   3  ach_mar  learning_performance_mar  practice_mar
+  3   4  ach_mar  learning_performance_mar  practice_mar
+  3   5  ach_mar  learning_performance_mar  practice_mar
+  4   1  ach_mar  learning_performance_mar  practice_mar
+  4   2  ach_mar  learning_performance_mar  practice_mar
+  4   3  ach_mar  learning_performance_mar  practice_mar
+  4   4  ach_mar  learning_performance_mar  practice_mar
+  4   5  ach_mar  learning_performance_mar  practice_mar
+  5   1  ach_mar  learning_performance_mar  practice_mar
+  5   2  ach_mar  learning_performance_mar  practice_mar
+  5   3  ach_mar  learning_performance_mar  practice_mar
+  5   4  ach_mar  learning_performance_mar  practice_mar
+  5   5  ach_mar  learning_performance_mar  practice_mar</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>imp<span class="sc">$</span>predictorMatrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         ach_mar learning_performance_mar practice_mar engage
+ach_mar                        0                        1            1      1
+learning_performance_mar       1                        0            1      1
+practice_mar                   1                        1            0      1
+engage                         1                        1            1      0
+ontime_class                   1                        1            1      1
+                         ontime_class
+ach_mar                             1
+learning_performance_mar            1
+practice_mar                        1
+engage                              1
+ontime_class                        0</code></pre>
+</div>
+</div>
+<p>note: Predictor Matrix เป็นเมทริกซ์แบบ binary 0,1 ถ้ากำหนดค่าเป็น 1 แปลว่าตัวแปรในคอลัมน์นั้นจะถูกใช้เป็นตัวทำนายค่าสูญหายในแถวนั้น <strong>Predictor Matrix ข้างต้นมีความหมายว่าอย่างไร</strong></p>
+<p>เราสามาถรปรับเปลี่ยนตัวแปรทำนายค่าสูญหายแต่ละตัวได้ผ่าน predictor matrix นี้ เช่น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>my_predMat <span class="ot">&lt;-</span> imp<span class="sc">$</span>predictorMatrix</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>my_predMat[<span class="dv">1</span>,<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>my_predMat[<span class="dv">4</span>,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>my_predMat[<span class="dv">5</span>,] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>my_predMat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         ach_mar learning_performance_mar practice_mar engage
+ach_mar                        0                        1            1      0
+learning_performance_mar       1                        0            1      1
+practice_mar                   1                        1            0      1
+engage                         0                        0            0      0
+ontime_class                   0                        0            0      0
+                         ontime_class
+ach_mar                             0
+learning_performance_mar            1
+practice_mar                        1
+engage                              0
+ontime_class                        0</code></pre>
+</div>
+</div>
+<p>ส่วนวิธีการทดแทนค่าสูญหาย สามารถเรียกดูได้ ดังนี้ โดยรายละเอียดของวิธีการทดแทนค่าสูญหายใน <code>{mice}</code> สามารถศึกษาได้จาก <code>?mice()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>imp<span class="sc">$</span>method</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 ach_mar learning_performance_mar             practice_mar 
+                   "pmm"                    "pmm"                 "logreg" 
+                  engage             ontime_class 
+                      ""                       "" </code></pre>
+</div>
+</div>
+<p>ในทำนองเดียวกันเราสามารถปรับเปลี่ยนวิธีการทดแทนค่าสูญหายของตัวแปรแต่ละตัวได้อย่างอิสระ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>my_method <span class="ot">&lt;-</span> imp<span class="sc">$</span>method</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>my_method[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">ach_mar =</span> <span class="st">"midastouch"</span>,</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">learning_performance_mar =</span>  <span class="st">"midastouch"</span>,</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">practice_mar =</span> <span class="st">"midastouch"</span>)</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>my_method</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 ach_mar learning_performance_mar             practice_mar 
+            "midastouch"             "midastouch"             "midastouch" 
+                  engage             ontime_class 
+                      ""                       "" </code></pre>
+</div>
+</div>
+<p>เมื่อกำหนด spec ของการทดแทนค่าสูญหายแล้ว ให้ดำเนินการสร้าง bootstrap sample และทดแทนค่าสูญหายใหม่</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>my_imp <span class="ot">&lt;-</span> <span class="fu">mice</span>(missing_data2, </span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">m =</span> <span class="dv">50</span>, </span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">predictorMatrix =</span> my_predMat,</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">method =</span> my_method,</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">print =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>เมื่อกำหนดการทดแทนค่าสูญหายเสร็จเราสามารถเรียกดูผลลัพธ์การทดแทนค่าสูญหายได้เป็นรายตัวแปรดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> my_imp<span class="sc">$</span>imp<span class="sc">$</span>ach_mar <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>id) <span class="sc">|&gt;</span> </span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(id,id), <span class="at">y =</span> value))<span class="sc">+</span></span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>)<span class="sc">+</span></span>
+<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">100</span>)<span class="sc">+</span></span>
+<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()</span>
+<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> my_imp<span class="sc">$</span>imp<span class="sc">$</span>ach_mar <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"id"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>id) <span class="sc">|&gt;</span> </span>
+<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value))<span class="sc">+</span></span>
+<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">col =</span> <span class="st">"maroon"</span>, <span class="fu">aes</span>(<span class="at">group =</span> id))<span class="sc">+</span></span>
+<span id="cb95-18"><a href="#cb95-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">data =</span> missing_data2, <span class="fu">aes</span>(<span class="at">x =</span> ach_mar), <span class="at">col =</span> <span class="st">"black"</span>)<span class="sc">+</span></span>
+<span id="cb95-19"><a href="#cb95-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb95-20"><a href="#cb95-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>,<span class="dv">100</span>)</span>
+<span id="cb95-21"><a href="#cb95-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">/</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>เราสามารถตรวจสอบการแจกแจงของค่าสูญหายกับการแจกแจงของข้อมูลต้นฉบับได้ โดยใช้ฟังก์ชันสำเร็จรูปดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>my_imp <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>my_imp <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>( <span class="sc">~</span> ach_mar<span class="sc">|</span>engage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-61-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stripplot</span>(my_imp, learning_performance_mar, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-61-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(my_imp, learning_performance_mar <span class="sc">~</span> engage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-61-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(my_imp, learning_performance_mar <span class="sc">~</span> practice_mar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="missing_files/figure-html/unnamed-chunk-61-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="with-step" class="level5" data-number="3.3.4.3">
+<h5 data-number="3.3.4.3" class="anchored" data-anchor-id="with-step"><span class="header-section-number">3.3.4.3</span> <code>with()</code> step</h5>
+<p>เมื่อทดแทนค่าสูญหายได้เรียบร้อยขั้นตอนถัดมาคือการวิเคราะห์ตามวัตถุประสงค์ของงาน ในที่นี้คือการวิเคราะห์การถดถอย อย่างไรก็ตามการวิเคราะห์จำเป็นจะต้องทำกับทุกชุดข้อมูล (ข้างต้นคือ 100 ชุด) ดังนั้นจะต้องใช้ฟังก์ชัน <code>with()</code> เข้ามาช่วยวนลูปและเก็บผลลัพธ์ดังกล่าว</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>fit_imp1 <span class="ot">&lt;-</span> my_imp <span class="sc">|&gt;</span> </span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">with</span>(<span class="fu">lm</span>(ach_mar <span class="sc">~</span> learning_performance_mar <span class="sc">+</span> practice_mar <span class="sc">+</span> engage <span class="sc">+</span> ontime_class))</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>fit_imp1<span class="sc">$</span>analyses[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+
+Call:
+lm(formula = ach_mar ~ learning_performance_mar + practice_mar + 
+    engage + ontime_class)
+
+Coefficients:
+             (Intercept)  learning_performance_mar   practice_mardo practice  
+                 21.5406                    0.4945                    1.1817  
+     engagelittle engage     engagemoderate engage         engagemuch engage  
+                  2.4247                    1.4355                    1.3256  
+  ontime_classnever late  
+                 -1.6780  
+
+
+[[2]]
+
+Call:
+lm(formula = ach_mar ~ learning_performance_mar + practice_mar + 
+    engage + ontime_class)
+
+Coefficients:
+             (Intercept)  learning_performance_mar   practice_mardo practice  
+                21.10564                   0.52055                   2.12513  
+     engagelittle engage     engagemoderate engage         engagemuch engage  
+                -0.19414                  -0.06212                  -0.73597  
+  ontime_classnever late  
+                -1.37420  
+
+
+[[3]]
+
+Call:
+lm(formula = ach_mar ~ learning_performance_mar + practice_mar + 
+    engage + ontime_class)
+
+Coefficients:
+             (Intercept)  learning_performance_mar   practice_mardo practice  
+                 21.6821                    0.5244                    1.4487  
+     engagelittle engage     engagemoderate engage         engagemuch engage  
+                 -1.0802                   -0.3800                   -0.9621  
+  ontime_classnever late  
+                 -1.0548  
+
+
+[[4]]
+
+Call:
+lm(formula = ach_mar ~ learning_performance_mar + practice_mar + 
+    engage + ontime_class)
+
+Coefficients:
+             (Intercept)  learning_performance_mar   practice_mardo practice  
+                 20.9506                    0.5175                    1.5865  
+     engagelittle engage     engagemoderate engage         engagemuch engage  
+                 -0.5440                    1.7112                    0.3301  
+  ontime_classnever late  
+                 -1.8060  
+
+
+[[5]]
+
+Call:
+lm(formula = ach_mar ~ learning_performance_mar + practice_mar + 
+    engage + ontime_class)
+
+Coefficients:
+             (Intercept)  learning_performance_mar   practice_mardo practice  
+                 21.2561                    0.4914                    2.6976  
+     engagelittle engage     engagemoderate engage         engagemuch engage  
+                  1.7845                    2.0977                    0.9805  
+  ontime_classnever late  
+                 -1.7313  </code></pre>
+</div>
+</div>
+<p>ผลลัพธ์ข้างต้นจะเห็นว่าเรามีผลการวิเคราะห์ regression จำนวน 100 ชุด</p>
+</section>
+<section id="pool-step" class="level5" data-number="3.3.4.4">
+<h5 data-number="3.3.4.4" class="anchored" data-anchor-id="pool-step"><span class="header-section-number">3.3.4.4</span> <code>pool()</code> step</h5>
+<p>สำหรับการอนุมานเชิงสถิติ เราจะนำผลการวิเคราะห์จากชุดข้อมูล bootstrap ข้างต้นมารวมกันเพื่อคำนวณค่ากลางของผลการรวิเคราะห์หลัก และค่าสถิติของเพื่ออธิบายความไม่แน่นอนของการทดแทนค่าสูญหาย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1 <span class="ot">&lt;-</span> <span class="fu">pool</span>(fit_imp1)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(lm_pooled_imp1, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      term   estimate  std.error  statistic      p.value
+1              (Intercept) 21.2322519 2.56750608  8.2696014 1.526672e-13
+2 learning_performance_mar  0.5037660 0.03128068 16.1047008 2.346089e-24
+3  practice_mardo practice  2.0408949 1.20802114  1.6894530 9.246165e-02
+4      engagelittle engage  0.7817795 2.58340708  0.3026157 7.625853e-01
+5    engagemoderate engage  0.9726428 2.27816379  0.4269416 6.698325e-01
+6        engagemuch engage  0.5861121 2.19569845  0.2669365 7.897892e-01
+7   ontime_classnever late -1.2823776 1.04081999 -1.2320840 2.192229e-01
+    conf.low  conf.high            b        df dfcom       fmi    lambda  m
+1 16.1517715 26.3127322 2.5337636007 127.39322   351 0.4013765 0.3920517 50
+2  0.4412923  0.5662397 0.0005952755  64.89706   351 0.6317120 0.6205344 50
+3 -0.3390656  4.4208554 0.2706806441 234.50738   351 0.1960220 0.1891944 50
+4 -4.3211366  5.8846956 2.1268431233 156.21795   351 0.3335281 0.3250498 50
+5 -3.5167657  5.4620514 1.0465795284 223.68789   351 0.2126930 0.2056850 50
+6 -3.7432054  4.9154297 1.1292196792 202.86296   351 0.2463035 0.2389094 50
+7 -3.3335449  0.7687896 0.2217334317 221.69268   351 0.2158185 0.2087758 50
+        riv         ubar
+1 0.6448766 4.0076486048
+2 1.6352848 0.0003712999
+3 0.2333413 1.1832208100
+4 0.4815909 4.5046121302
+5 0.2589463 4.1225191171
+6 0.3139040 3.6692875920
+7 0.2638642 0.8571381470</code></pre>
 </div>
 </div>
 <p>ผลการวิเคราะห์ข้างต้นมีค่าสถิติที่สำคัญได้แก่</p>
+<p><strong>lambda (imputation variance)</strong> คือสัดส่วนความแปรปรวนที่เกิดจากการทดแทนค่าสูญหาย [0,1] มีค่าสูงแปลว่าความแปรปรวนในการประมาณค่าพารามิเตอร์นี้ส่วนใหญ่เกิดจากการทดแทนค่าสูญหาย</p>
+<p><span class="math display">\[
+\lambda = \frac{B}{T}
+\]</span></p>
 <ul>
-<li><p>lambda (imputation variance) คือสัดส่วนความแปรปรวนที่เกิดจากการทดแทนค่าสูญหาย [0,1] มีค่าสูงแปลว่าความแปรปรวนในการประมาณค่าพารามิเตอร์นี้ส่วนใหญ่เกิดจากการทดแทนค่าสูญหาย</p></li>
-<li><p>fmi (fraction of missing information) คือสัดส่วนของข้อมูลสูญหายที่มีผลต่อความไม่แน่นอนในการวิเคราะห์ [0,1]</p></li>
-<li><p>riv (relative increase in variance) คืออัตราส่วนความแปรปรวนระหว่างความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายต่อความแปรปรวนส่วนเหลือ</p></li>
-<li><p>ubar ค่าเฉลี่ยความแปรปรวนของพารามิเตอร์ที่ได้จากชุดข้อมูลที่ทดแทนค่าสูญหายแต่ละชุด</p></li>
+<li><p><span class="math inline">\(B\)</span> คือ ความแปรปรวนของค่าประมาณพารามิเตอร์ระหว่างชุดข้อมูลที่ทดแทนค่าสูญหาย</p></li>
+<li><p><span class="math inline">\(T\)</span> คือ ความแปรปรวนรวมของค่าประมาณพารามิเตอร์ <span class="math inline">\(T = \bar{U} + (1+\frac{1}{m})B\)</span></p></li>
 </ul>
+<p><strong>fmi (fraction of missing information)</strong> คืออัตราส่วนของความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายมีค่าอยู่ในช่วง [0,1]</p>
+<p><span class="math display">\[
+FMI =  \frac{B + \frac{B}{m}}{T}
+\]</span></p>
+<p>FMI สูง (ใกล้ 1) หมายถึงข้อมูลที่สูญหายมีผลกระทบมากในการเพิ่มความไม่แน่นอนของค่าประมาณพารามิเตอร์</p>
+<p><strong>riv (relative increase in variance)</strong> คืออัตราส่วนความแปรปรวนระหว่างความแปรปรวนที่เกิดจากการทดแทนค่าสูญหายต่อความแปรปรวนส่วนเหลือ</p>
+<p><span class="math display">\[
+RIV = \frac{(1+\frac{1}{m})B}{\bar{U}}
+\]</span></p>
+<p>RIV สูงแสดงว่าความแปรปรวนในการประมาณพารามิเตอร์เพิ่มขึ้นมากเนื่องจากการทดแทนข้อมูลที่ขาดหาย แสดงว่าความไม่แน่นอนที่เกิดจากข้อมูลที่ขาดหายมีผลกระทบสูง</p>
+<p>สถิติทั้งหมดข้างต้นสะท้อนความไม่แน่นอนของผลการวิเคราะห์ที่จะได้รับที่เกิดจากการทดแทนค่าสูญหาย</p>
+</section>
+<section id="เปรยบเทยบผลการวเคราะหทได" class="level5" data-number="3.3.4.5">
+<h5 data-number="3.3.4.5" class="anchored" data-anchor-id="เปรยบเทยบผลการวเคราะหทได"><span class="header-section-number">3.3.4.5</span> เปรียบเทียบผลการวิเคราะห์ที่ได้</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>imp_data_mice <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="do">## เปรียบเทียบ R2</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1<span class="sc">$</span>glanced <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  r.squared adj.r.squared    sigma statistic       p.value df    logLik
+1 0.6944402     0.6892170 8.478115  132.9519  3.271387e-87  6 -1269.666
+2 0.7182899     0.7134743 8.394378  149.1603  2.237574e-93  6 -1266.113
+3 0.7489856     0.7446947 7.894558  174.5543 3.914094e-102  6 -1244.136
+4 0.7108986     0.7059567 8.571625  143.8512  2.064567e-91  6 -1273.593
+5 0.6798442     0.6743714 8.744682  124.2235  1.129723e-83  6 -1280.749
+6 0.6778609     0.6723543 8.758173  123.0986  3.320064e-83  6 -1281.301
+       AIC      BIC deviance df.residual nobs
+1 2555.332 2586.376 25229.33         351  358
+2 2548.225 2579.269 24733.42         351  358
+3 2504.271 2535.315 21875.74         351  358
+4 2563.186 2594.230 25788.94         351  358
+5 2577.498 2608.542 26840.78         351  358
+6 2578.602 2609.646 26923.66         351  358</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1<span class="sc">$</span>glanced <span class="sc">|&gt;</span> </span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"iteration"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> iteration, <span class="at">y=</span>adj.r.squared))<span class="sc">+</span></span>
+<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">group =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb107-5"><a href="#cb107-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> r.squared),<span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">group =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.6136</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>)<span class="sc">+</span></span>
+<span id="cb107-7"><a href="#cb107-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>imp_data_mice <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>( <span class="sc">~</span> ach_mar<span class="sc">|</span>engage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ดึงค่าค่าสัมประสิทธิ์และ standard errors จากแบบจำลองก่อนและหลังการทดแทน</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>fit_noimp_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit_noimp)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"term"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Before Imputation"</span>)</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1_coef <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lm_pooled_imp1) <span class="sc">%&gt;%</span></span>
+<span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error) <span class="sc">%&gt;%</span></span>
+<span id="cb108-9"><a href="#cb108-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Estimate =</span> estimate, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> std.error) <span class="sc">%&gt;%</span></span>
+<span id="cb108-10"><a href="#cb108-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"After Imputation"</span>)</span>
+<span id="cb108-11"><a href="#cb108-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-12"><a href="#cb108-12" aria-hidden="true" tabindex="-1"></a><span class="co"># รวมข้อมูลทั้งสองแบบจำลอง</span></span>
+<span id="cb108-13"><a href="#cb108-13" aria-hidden="true" tabindex="-1"></a>compare_coefs <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb108-14"><a href="#cb108-14" aria-hidden="true" tabindex="-1"></a>  fit_noimp_coef <span class="sc">%&gt;%</span></span>
+<span id="cb108-15"><a href="#cb108-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Estimate =</span> <span class="st">`</span><span class="at">Estimate</span><span class="st">`</span>, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>),</span>
+<span id="cb108-16"><a href="#cb108-16" aria-hidden="true" tabindex="-1"></a>  lm_pooled_imp1_coef</span>
+<span id="cb108-17"><a href="#cb108-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb108-18"><a href="#cb108-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-19"><a href="#cb108-19" aria-hidden="true" tabindex="-1"></a><span class="co"># สร้าง plot เปรียบเทียบ coefficients และ standard error</span></span>
+<span id="cb108-20"><a href="#cb108-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(compare_coefs, <span class="fu">aes</span>(<span class="at">x =</span> term, <span class="at">y =</span> Estimate, <span class="at">color =</span> model)) <span class="sc">+</span></span>
+<span id="cb108-21"><a href="#cb108-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb108-22"><a href="#cb108-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb108-23"><a href="#cb108-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Estimate <span class="sc">-</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>, <span class="at">ymax =</span> Estimate <span class="sc">+</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>),</span>
+<span id="cb108-24"><a href="#cb108-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb108-25"><a href="#cb108-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Comparison of Coefficients and Standard Errors"</span>,</span>
+<span id="cb108-26"><a href="#cb108-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Terms"</span>,</span>
+<span id="cb108-27"><a href="#cb108-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Estimate (with Standard Error)"</span>,</span>
+<span id="cb108-28"><a href="#cb108-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Model"</span>) <span class="sc">+</span></span>
+<span id="cb108-29"><a href="#cb108-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb108-30"><a href="#cb108-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-54-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stripplot</span>(imp_data_mice, learning_performance_mar, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-54-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(imp_data_mice, learning_performance_mar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-54-4.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(imp_data_mice, learning_performance_mar <span class="sc">~</span> practice_mar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-54-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 
+</section>
 </section>
 </section>
 </section>

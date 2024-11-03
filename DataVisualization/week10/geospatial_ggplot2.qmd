@@ -50,6 +50,28 @@ library(tidyverse)
 
 ### นำเข้า shapefile
 
+```{r}
+library(sf)
+library(tidyverse)
+
+map <- st_read('/Users/choat/Downloads/tha_adm_rtsd_itos_20210121_shp (1)/tha_admbnda_adm0_rtsd_20220121.shp')
+```
+```{r}
+glimpse(map)
+map$geometry
+```
+
+
+
+
+
+```{r}
+plot(map)
+```
+
+
+
+
 เราสามารถนำเข้าไฟล์ข้อมูลภูมิสารสนเทศ (shapefile) ด้วยคำสั่ง `st_read()` ของ `{sf}` โดยระบุที่อยู่ของไฟล์ shapefile ที่ต้องการนำเข้า ดังตัวอย่างต่อไปนี้
 
 ```{r}
@@ -71,12 +93,33 @@ head(thai_prov_map)
 plot(thai_prov_map["Shape_Area"])
 ```
 
+
+
+
+
 ### `{ggplot2}` with `{sf}`
 
 เราสามารถใช้ ggplot2 กับ object ประเภท `{sf}` ได้โดยใช้ `geom_sf()` ซึ่งเป็น geom ที่ใช้สำหรับพล็อตข้อมูลเชิงภูมิศาสตร์ ดังตัวอย่างต่อไปนี้
 
 ```{r}
-p1 <- thai_prov_map %>% 
+thai_prov_map
+```
+
+
+
+
+```{r}
+thai_prov_map %>% class()
+
+thai_prov_map %>% 
+  ggplot() +
+  geom_sf()
+```
+
+
+
+```{r}
+p1 <- thai_prov_map %>%  ## sf data.frame
   ggplot() + 
   geom_sf(aes(geometry = geometry, fill = Shape_Area))
 p1
@@ -147,6 +190,7 @@ glimpse(thai_prov_map)
 
 -   คอลัมน์ที่เหลือเป็นข้อมูลพื้นฐานที่เกี่ยวข้องของแต่ละจังหวัด เช่น ความยาว ขนาดพื้นที่ ชื่อ รหัส ...
 
+
 ### `{sf}` with `{tidyverse}`
 
 เนื่องจาก `{sf}` ถูกออกแบบให้มีลักษณะเป็นชุดข้อมูลแบบ data.frame ดังนั้นจึงสามารถทำงานภายใต้ tidyverse ได้โดยตรง ซึ่งเป็นข้อได้เปรียบที่สำคัญที่ทำให้สามารถใช้ `{sf}` ในการจัดการข้อมูลเชิงภูมิศาสตร์ได้ง่ายขึ้น เบื้องต้นเราสามารถใช้ `{dplyr}` หรือ `{tidyr}` รวมทั้ง `{ggplot2}` (แสดงให้ดูไปแล้ว) เพื่อจัดกระทำและสร้างทัศนภาพข้อมูลเชิงพื้นที่ตามที่ต้องการได้ เช่น
@@ -174,6 +218,17 @@ p4 <- thai_prov_map %>%
 p4
 ```
 
+```{r}
+thai_level2 <- st_read('/Users/choat/Downloads/tha_adm_rtsd_itos_20210121_shp (1)/tha_admbnda_adm2_rtsd_20220121.shp')
+
+thai_level2 %>% 
+  filter(ADM1_EN %in% c("Bangkok","Yala")) %>% 
+  ggplot()+
+  geom_sf()+
+  theme_void()
+```
+
+
 #### การ join ข้อมูล
 
 โดยปกติเราสามารถเข้าถึงข้อมูลเชิงพื้นที่ที่จะใช้สำหรับสร้างแผนที่ที่ต้องการได้ไม่ยาก ปัญหาหลักคือเราต้องการชุดข้อมูลเชิงพื้นที่ที่ประกอบด้วย attribute เป้าหมายที่จะใช้นำเสนอซึ่งชุดข้อมูลลักษณะนี้ผู้วิเคราะห์จำเป็นต้องสร้างเอง ยกตัวอย่างเช่น
@@ -186,6 +241,31 @@ data_expense <- read_excel("average_expense.xlsx", sheet = 1, skip = 2)
 head(data_expense, 10)
 
 ```
+
+
+```{r}
+thai_prov_map %>% class()
+```
+
+
+```{r}
+data_expense %>% 
+  rename(province = 2,
+         year2566 = `2566`) %>% 
+  select(-1) %>% 
+  right_join(thai_prov_map, by = join_by("province" == "ADM1_TH")) %>% ## data.frame
+  st_as_sf() %>%  ## convert to sf
+  ggplot()+
+  geom_sf(aes(fill = year2566))+
+  scale_fill_gradient2(low = "steelblue", 
+                       mid = "white",
+                       high = "maroon", 
+                       midpoint = 20000)+
+  theme_light()
+```
+
+
+
 
 สมมุติว่าวัตถุประสงค์คือการ plot รายจ่ายโดยเฉลี่ยของครัวเรือนในแต่ะละจังหวัด เราจำเป็นที่จะต้องเชื่อมโยงข้อมูลรายจ่ายดังกล่าวเข้ากับข้อมูลเชิงพื้นที่ใน `thai_prov_map` อย่างไรก็ตามหากใช้การรวมข้อมูลด้วย `dplyr` แบบปกติจะทำให้สูญเสีย class ของข้อมูลเดิมคือ `sf` ไป การแก้ปัญหาดังกล่าวสามารถทำได้โดยใช้ `st_as_sf()` ในการแปลงข้อมูลเชิงพื้นที่ที่เราได้รวมข้อมูลเชิงบรรยายเข้าไปกลับเป็น `sf` อีกครั้ง
 
@@ -210,6 +290,11 @@ data_expense %>%
 
 #### `group_by()` และ `summarise()`
 
+```{r}
+data_expense
+```
+
+
 ทำนองเดียวกับการจัดกระทำข้อมูลทั่วไป เราสามารถใช้ `group_by()` และ `summarise()` ในการสรุปข้อมูลเชิงพื้นที่ได้เช่นกัน
 
 ```{r}
@@ -218,10 +303,11 @@ expense_st_joined <- data_expense %>%
          prov = 2,
          year2566 = `2566`) %>% 
   select(region, prov, year2566) %>% 
-  fill(region, .direction = "down") %>% 
+  fill(region, .direction = "down") %>%  ## data.frame
   right_join(thai_prov_map, 
-             by = join_by("prov" == "ADM1_TH")) %>% 
+             by = join_by("prov" == "ADM1_TH")) %>%  ## data.frame
   st_as_sf()
+expense_st_joined
 ```
 
 ```{r}
@@ -260,6 +346,15 @@ st_distance(x,y) %>% units::set_units(km)
 ### กิจกรรม
 
 ขอให้ผู้เรียนลองสร้างทัศนภาพข้อมูลพื้นที่เสี่ยงภัยของประเทศดังรูป
+
+```{r}
+risk %>% count(TYPE1)
+thai_prov_map
+risk %>% 
+filter(str_detect(TYPE1, "เสี่ยง")) %>% 
+                 st_transform(crs = 4326)
+```
+
 
 ```{r echo = F, message = F, warning = F}
 risk <- st_read('/Users/choat/Downloads/5.พื้นที่เป้าหมาย (Area Based)/All_Thai_AB_161061.shp', options = "ENCODING=WINDOWS-874")
