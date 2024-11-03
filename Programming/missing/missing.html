@@ -2132,18 +2132,13 @@ ontime_class                        0</code></pre>
 <p>เราสามารถตรวจสอบการแจกแจงของค่าสูญหายกับการแจกแจงของข้อมูลต้นฉบับได้ โดยใช้ฟังก์ชันสำเร็จรูปดังนี้</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>my_imp <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
 </div>
-</div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>my_imp <span class="sc">%&gt;%</span> <span class="fu">densityplot</span>( <span class="sc">~</span> ach_mar<span class="sc">|</span>engage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-61-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2151,7 +2146,7 @@ ontime_class                        0</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-61-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-62-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2159,7 +2154,7 @@ ontime_class                        0</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-61-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-62-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2167,7 +2162,7 @@ ontime_class                        0</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-61-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-62-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2315,8 +2310,44 @@ RIV = \frac{(1+\frac{1}{m})B}{\bar{U}}
 <section id="เปรยบเทยบผลการวเคราะหทได" class="level5" data-number="3.3.4.5">
 <h5 data-number="3.3.4.5" class="anchored" data-anchor-id="เปรยบเทยบผลการวเคราะหทได"><span class="header-section-number">3.3.4.5</span> เปรียบเทียบผลการวิเคราะห์ที่ได้</h5>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="do">## เปรียบเทียบ R2</span></span>
-<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1<span class="sc">$</span>glanced <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="do">## original data (no missing)</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>original_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Downloads/exam.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">engage =</span> <span class="fu">factor</span>(engage, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"no engage"</span>,<span class="st">"little engage"</span>,<span class="st">"moderate engage"</span>,<span class="st">"much engage"</span>)),</span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">practice =</span> <span class="fu">factor</span>(practice, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"do not praction"</span>,<span class="st">"do practice"</span>)),</span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ontime_class =</span> <span class="fu">factor</span>(ontime_class, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"used to late"</span>,<span class="st">"never late"</span>)))</span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-8"><a href="#cb105-8" aria-hidden="true" tabindex="-1"></a>fit_original <span class="ot">&lt;-</span> <span class="fu">lm</span>(ach<span class="sc">~</span>., <span class="at">data=</span> original_data)</span>
+<span id="cb105-9"><a href="#cb105-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_original)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = ach ~ ., data = original_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-28.2350  -5.8607   0.3238   6.3497  24.0758 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)            19.20934    2.12493   9.040   &lt;2e-16 ***
+learning_performance    0.55155    0.02043  26.998   &lt;2e-16 ***
+ontime_classnever late -1.03293    0.98764  -1.046    0.296    
+engagelittle engage    -2.28433    2.21548  -1.031    0.303    
+engagemoderate engage  -0.46175    2.16437  -0.213    0.831    
+engagemuch engage       0.40317    2.04955   0.197    0.844    
+practicedo practice     0.28692    1.17647   0.244    0.807    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 9.275 on 380 degrees of freedom
+Multiple R-squared:  0.719, Adjusted R-squared:  0.7146 
+F-statistic: 162.1 on 6 and 380 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="do">## เปรียบเทียบ R2</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1<span class="sc">$</span>glanced <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  r.squared adj.r.squared    sigma statistic       p.value df    logLik
 1 0.6944402     0.6892170 8.478115  132.9519  3.271387e-87  6 -1269.666
@@ -2333,56 +2364,71 @@ RIV = \frac{(1+\frac{1}{m})B}{\bar{U}}
 5 2577.498 2608.542 26840.78         351  358
 6 2578.602 2609.646 26923.66         351  358</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1<span class="sc">$</span>glanced <span class="sc">|&gt;</span> </span>
-<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"iteration"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> iteration, <span class="at">y=</span>adj.r.squared))<span class="sc">+</span></span>
-<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">group =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
-<span id="cb107-5"><a href="#cb107-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> r.squared),<span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">group =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
-<span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.6136</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>)<span class="sc">+</span></span>
-<span id="cb107-7"><a href="#cb107-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1<span class="sc">$</span>glanced <span class="sc">|&gt;</span> </span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"iteration"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> iteration, <span class="at">y=</span>adj.r.squared))<span class="sc">+</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">group =</span> <span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> r.squared),<span class="at">linetype =</span> <span class="dv">2</span>, <span class="at">group =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.6136</span>, <span class="at">col =</span> <span class="st">"steelblue"</span>)<span class="sc">+</span></span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ดึงค่าค่าสัมประสิทธิ์และ standard errors จากแบบจำลองก่อนและหลังการทดแทน</span></span>
-<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>fit_noimp_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit_noimp)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span></span>
-<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"term"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Before Imputation"</span>)</span>
-<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1_coef <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lm_pooled_imp1) <span class="sc">%&gt;%</span></span>
-<span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error) <span class="sc">%&gt;%</span></span>
-<span id="cb108-9"><a href="#cb108-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Estimate =</span> estimate, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> std.error) <span class="sc">%&gt;%</span></span>
-<span id="cb108-10"><a href="#cb108-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"After Imputation"</span>)</span>
-<span id="cb108-11"><a href="#cb108-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb108-12"><a href="#cb108-12" aria-hidden="true" tabindex="-1"></a><span class="co"># รวมข้อมูลทั้งสองแบบจำลอง</span></span>
-<span id="cb108-13"><a href="#cb108-13" aria-hidden="true" tabindex="-1"></a>compare_coefs <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb108-14"><a href="#cb108-14" aria-hidden="true" tabindex="-1"></a>  fit_noimp_coef <span class="sc">%&gt;%</span></span>
-<span id="cb108-15"><a href="#cb108-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Estimate =</span> <span class="st">`</span><span class="at">Estimate</span><span class="st">`</span>, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>),</span>
-<span id="cb108-16"><a href="#cb108-16" aria-hidden="true" tabindex="-1"></a>  lm_pooled_imp1_coef</span>
-<span id="cb108-17"><a href="#cb108-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb108-18"><a href="#cb108-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb108-19"><a href="#cb108-19" aria-hidden="true" tabindex="-1"></a><span class="co"># สร้าง plot เปรียบเทียบ coefficients และ standard error</span></span>
-<span id="cb108-20"><a href="#cb108-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(compare_coefs, <span class="fu">aes</span>(<span class="at">x =</span> term, <span class="at">y =</span> Estimate, <span class="at">color =</span> model)) <span class="sc">+</span></span>
-<span id="cb108-21"><a href="#cb108-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb108-22"><a href="#cb108-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
-<span id="cb108-23"><a href="#cb108-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Estimate <span class="sc">-</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>, <span class="at">ymax =</span> Estimate <span class="sc">+</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>),</span>
-<span id="cb108-24"><a href="#cb108-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb108-25"><a href="#cb108-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Comparison of Coefficients and Standard Errors"</span>,</span>
-<span id="cb108-26"><a href="#cb108-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Terms"</span>,</span>
-<span id="cb108-27"><a href="#cb108-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Estimate (with Standard Error)"</span>,</span>
-<span id="cb108-28"><a href="#cb108-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Model"</span>) <span class="sc">+</span></span>
-<span id="cb108-29"><a href="#cb108-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb108-30"><a href="#cb108-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ดึงค่าค่าสัมประสิทธิ์และ standard errors จากแบบจำลองก่อนและหลังการทดแทน</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>fit_noimp_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit_noimp)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"term"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Before Imputation"</span>)</span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a>lm_pooled_imp1_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(lm_pooled_imp1) <span class="sc">%&gt;%</span></span>
+<span id="cb110-8"><a href="#cb110-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, statistic, p.value) <span class="sc">%&gt;%</span></span>
+<span id="cb110-9"><a href="#cb110-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Estimate =</span> estimate, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> std.error,</span>
+<span id="cb110-10"><a href="#cb110-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">t value</span><span class="st">`</span> <span class="ot">=</span> statistic, <span class="st">`</span><span class="at">Pr(&gt;|t|)</span><span class="st">`</span> <span class="ot">=</span> p.value) <span class="sc">%&gt;%</span></span>
+<span id="cb110-11"><a href="#cb110-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"After Imputation"</span>)</span>
+<span id="cb110-12"><a href="#cb110-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-13"><a href="#cb110-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-14"><a href="#cb110-14" aria-hidden="true" tabindex="-1"></a>fit_original_coef <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit_original)<span class="sc">$</span>coefficients <span class="sc">%&gt;%</span></span>
+<span id="cb110-15"><a href="#cb110-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb110-16"><a href="#cb110-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"term"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb110-17"><a href="#cb110-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"No Missing"</span>)</span>
+<span id="cb110-18"><a href="#cb110-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-19"><a href="#cb110-19" aria-hidden="true" tabindex="-1"></a><span class="co"># รวมผลการวิเคราะห์ทั้งหมด</span></span>
+<span id="cb110-20"><a href="#cb110-20" aria-hidden="true" tabindex="-1"></a>compare_coefs <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb110-21"><a href="#cb110-21" aria-hidden="true" tabindex="-1"></a>  fit_noimp_coef <span class="sc">%&gt;%</span></span>
+<span id="cb110-22"><a href="#cb110-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Estimate =</span> <span class="st">`</span><span class="at">Estimate</span><span class="st">`</span>, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>),</span>
+<span id="cb110-23"><a href="#cb110-23" aria-hidden="true" tabindex="-1"></a>  lm_pooled_imp1_coef</span>
+<span id="cb110-24"><a href="#cb110-24" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb110-25"><a href="#cb110-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb110-26"><a href="#cb110-26" aria-hidden="true" tabindex="-1"></a>    fit_original_coef <span class="sc">%&gt;%</span></span>
+<span id="cb110-27"><a href="#cb110-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Estimate =</span> <span class="st">`</span><span class="at">Estimate</span><span class="st">`</span>, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>)</span>
+<span id="cb110-28"><a href="#cb110-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb110-29"><a href="#cb110-29" aria-hidden="true" tabindex="-1"></a>compare_coefs <span class="ot">&lt;-</span> compare_coefs <span class="sc">|&gt;</span> </span>
+<span id="cb110-30"><a href="#cb110-30" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">term =</span> <span class="fu">str_remove</span>(term,<span class="st">"_mar"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co"># สร้าง plot เปรียบเทียบ coefficients และ standard error</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(compare_coefs, </span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">aes</span>(<span class="at">x =</span> term, <span class="at">y =</span> Estimate, <span class="at">color =</span> model)) <span class="sc">+</span></span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Estimate <span class="sc">-</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>, <span class="at">ymax =</span> Estimate <span class="sc">+</span> <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span>),</span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Comparison of Coefficients and Standard Errors"</span>,</span>
+<span id="cb111-9"><a href="#cb111-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Terms"</span>,</span>
+<span id="cb111-10"><a href="#cb111-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Estimate (with Standard Error)"</span>,</span>
+<span id="cb111-11"><a href="#cb111-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Model"</span>) <span class="sc">+</span></span>
+<span id="cb111-12"><a href="#cb111-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb111-13"><a href="#cb111-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="missing_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="missing_files/figure-html/unnamed-chunk-68-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

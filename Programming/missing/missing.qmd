@@ -1597,8 +1597,11 @@ p1/p2
 
 เราสามารถตรวจสอบการแจกแจงของค่าสูญหายกับการแจกแจงของข้อมูลต้นฉบับได้ โดยใช้ฟังก์ชันสำเร็จรูปดังนี้
 
-```{r}
+```{r eval = F}
 my_imp %>% densityplot()
+```
+
+```{r}
 my_imp %>% densityplot( ~ ach_mar|engage)
 stripplot(my_imp, learning_performance_mar, pch=16, cex=0.3)
 bwplot(my_imp, learning_performance_mar ~ engage)
@@ -1665,6 +1668,17 @@ RIV สูงแสดงว่าความแปรปรวนในกา�
 
 ##### เปรียบเทียบผลการวิเคราะห์ที่ได้
 
+```{r}
+## original data (no missing)
+original_data <- read_csv("/Users/choat/Downloads/exam.csv") |> 
+   mutate(engage = factor(engage, levels=c("no engage","little engage","moderate engage","much engage")),
+  practice = factor(practice, levels=c("do not praction","do practice")),
+  ontime_class = factor(ontime_class, levels=c("used to late","never late")))
+
+
+fit_original <- lm(ach~., data= original_data)
+summary(fit_original)
+```
 
 ```{r}
 ## เปรียบเทียบ R2
@@ -1687,20 +1701,38 @@ fit_noimp_coef <- summary(fit_noimp)$coefficients %>%
   rownames_to_column("term") %>%
   mutate(model = "Before Imputation")
 
-lm_pooled_imp1_coef <- tidy(lm_pooled_imp1) %>%
-  select(term, estimate, std.error) %>%
-  rename(Estimate = estimate, `Std. Error` = std.error) %>%
+lm_pooled_imp1_coef <- summary(lm_pooled_imp1) %>%
+  select(term, estimate, std.error, statistic, p.value) %>%
+  rename(Estimate = estimate, `Std. Error` = std.error,
+        `t value` = statistic, `Pr(>|t|)` = p.value) %>%
   mutate(model = "After Imputation")
 
-# รวมข้อมูลทั้งสองแบบจำลอง
+
+fit_original_coef <- summary(fit_original)$coefficients %>%
+  as.data.frame() %>%
+  rownames_to_column("term") %>%
+  mutate(model = "No Missing")
+
+# รวมผลการวิเคราะห์ทั้งหมด
 compare_coefs <- bind_rows(
   fit_noimp_coef %>%
     rename(Estimate = `Estimate`, `Std. Error` = `Std. Error`),
   lm_pooled_imp1_coef
-)
+) |> 
+  bind_rows(
+    fit_original_coef %>%
+    rename(Estimate = `Estimate`, `Std. Error` = `Std. Error`)
+  )
+compare_coefs <- compare_coefs |> 
+mutate(term = str_remove(term,"_mar"))
+```
 
+
+
+```{r}
 # สร้าง plot เปรียบเทียบ coefficients และ standard error
-ggplot(compare_coefs, aes(x = term, y = Estimate, color = model)) +
+ggplot(compare_coefs, 
+     aes(x = term, y = Estimate, color = model)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_vline(xintercept = 0, linetype = 2)+
   geom_errorbar(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`),
