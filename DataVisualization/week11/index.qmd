@@ -1,0 +1,1026 @@
+---
+title: "Social Network Visualization"
+author: "Siwachoat Srisuttiyakorn"
+message: false
+warning: false
+toc: true
+toc-depth: 4
+number-sections: true
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+บทเรียนนี้จะกล่าวถึงมโนทัศน์และการประยุกต์ใช้ network analysis สำหรับการวิจัยและงานด้านวิทยาการข้อมูลการศึกษา
+
+- Create
+
+- Analyze
+
+- Visualize
+
+
+## What are Networks?
+
+network graph เป็นแผนภาพที่มีวัตถุประสงค์หลักคือ เพื่อแสดงเครือข่ายการเชื่อมต่อระหว่างหน่วยข้อมูล ซึ่งอาจเป็นบุคคล ผลงานทางวิชาการ/นวัตกรรม หรือองค์กร 
+
+
+เส้นเชื่อมระหว่างหน่วยข้อมูลหรือการไม่มีเส้นเชื่อมระหว่างหน่วยข้อมูลในแผนภาพ network บ่งชี้รูปแบบความสัมพันธ์ระหว่างหน่วยข้อมูลภายใต้บริบทที่ทำการศึกษา การวิเคราะห์เครือข่ายนี้มีการประยุกต์ใช้กับหลายบริบททั้งด้านสังคมศาสตร์ วิทยาศาสตร์ ไปจนถึงการแพทย์ ในบริบททางสังคมศาสตร์การวิเคราะห์เครือข่ายที่ใช้มากคือการวิเคราะห์ความสัมพันธ์ระหว่างบุคคลภายใต้บริบทหนึ่ง ๆ จึงมักเรียกการวิเคราะห์ดังกล่าวว่า การวิเคราะห์เครือข่ายสังคม (social network analysis) 
+
+แผนภาพ network แต่ละแผนภาพมีส่วนประกอบสำคัญ 2 ส่วนได้แก่
+
+- จุดยอด (vectices หรือ nodes) ที่ใช้แทนหน่วยข้อมูล
+
+- เส้นเชื่อม (edges) ที่ใช้แทนความสัมพันธ์ระหว่างหน่วยข้อมูล
+
+
+
+## Input Data and igraph object
+
+ชุดข้อมูลที่จะนำมาใช้ในการวิเคราะห์เครือข่ายจำแนกได้เป็นสองลักษณะ ตามโครงสร้างของข้อมูลได้แก่
+
+1. Adjacency Matrix ซึ่งมีลักษณะเป็นเมทริกซ์ที่แถวและคอลัมน์เป็นจุดยอด และค่าภายในเมทริกซ์มีค่าเป็นไปได้สองค่าได้แก่ 0,1 โดย 0 หมายถึง ไม่มีเส้นเชื่อมระหว่างจุดยอด และ 1 หมายถึง มีเส้นเชื่อมระหว่างจุดยอด จากชุดข้อมูลนี้สามารถนำไปทำการวิเคราะห์เพื่อสร้างข้อมูลเชิงลึกที่อยู่เบื้องหลัง เช่น โครงสร้างของเครือข่าย ความสำคัญหรืออิทธิพลของจุดยอดหลัก
+
+
+ตัวอย่าง adjacency matrix
+
+```{r echo=F}
+mat <- matrix(c(0, 1, 1, 0,
+                1, 0, 1, 0,
+                1, 1, 0, 1,
+                0, 0, 1, 0), nrow=4)
+rownames(mat) <- colnames(mat) <- c("A", "B", "C", "D")
+colnames(mat) <- c("A", "B", "C", "D")
+mat
+```
+
+2. Edgelist มีลักษณะเป็นตารางสองคอลัมน์ และแต่ละแถวแสดงการเชื่อมโยงกันระหว่างจุดยอดสองจุดในแต่ละคอลัมน์
+
+ตัวอย่าง edgelist
+```{r echo = F}
+edges <- data.frame(
+  from = c("A", "B", "C", "A"),
+  to = c("B", "C", "D", "D")
+)
+edges
+```
+
+
+### Visualization library
+
+มี library หลายตัวที่สามารถใช้สร้าง network visualization ได้ บทเรียนนี้จะแนะนำสองตัวได้แก่ `{igraph}` และ `{ggraph}` 
+
+```{r message = F, warning = F}
+## install.packages("igraph")
+## install.packages("ggraph")
+library(igraph)
+library(ggraph)
+
+```
+
+### igraph objects
+
+การใช้ `{igraph}` ขั้นตอนแรกคือการสร้าง igraph object ซึ่งสามารถสร้างได้จากทั้ง adjacency matrix หรือ edgelist จากชุดข้อมูลข้างต้นเราสามารถ convert เมทริกซ์และชุดข้อมูลทั้งสองให้เป็น igraph object ได้ดังนี้
+
+- สร้าง igraph จาก adjacency matrix
+
+```{r}
+g <- graph_from_adjacency_matrix(mat, mode = "undirected")
+```
+
+- สร้าง igraph จาก edgelist
+
+```{r}
+g <- graph_from_edgelist(as.matrix(edges), directed = F)
+g
+```
+igraph ให้รายละเอียดหลายส่วนเกี่ยวกับ network ที่สร้างขึ้นจากชุดข้อมูลดังนี้
+
+- บรรทัดแรก ระบุว่า มีจุดยอด (vertex) จำนวน 4 จุด และมีเส้นเชื่อมจำนวน 4 เส้นเชื่อม
+
+- บรรทัดที่สอง ระบุถึงตัวแปรที่ใช้เป็น attribute ของ network ในที่นี้คือ `name (v/c)` แปลว่าตอนนี้ `name` ถูกใช้เป็น attribute ของจุดยอด และ attribute นี้เป็นข้อมูลแบบจัดประเภท
+
+- บรรทุดที่สาม ระบุถึงเส้นเชื่อมของ network 
+
+
+## Dataset: `data_AJ suchada.xlsx` 
+
+เราจะใช้ชุดข้อมูลวิทยานิพนธ์ภายใต้การดูแลของ รศ.ดร.สุชาดา บวรกิติวงศ์ เป็นชุดข้อมูลประกอบการเรียนในวันนี้ก่อน
+
+
+```{r}
+library(readxl)
+thesis_data <- read_excel('/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week03/data_AJ suchada.xlsx')
+glimpse(thesis_data)
+```
+
+ข้อมูลเบื้องต้นของชุดข้อมูล
+
+```{r fig.width = 8}
+p <- thesis_data %>% 
+  group_by(year) %>% 
+  count() %>% 
+  ggplot(aes(year, n))+
+  geom_line(linewidth = 1)+
+  scale_x_continuous(breaks = 2542:2556)+
+  scale_y_continuous(breaks=1:10)+
+  theme_light()+
+  theme(panel.grid.minor = element_blank())
+```
+
+clean ข้อมูลนิดหน่อยเพื่อให้ชื่อของอาจารย์ที่ปรึกษา ที่ปรึกษาร่วม และกรรมการถูกต้องก่อน
+
+```{r}
+thesis_data <- thesis_data %>% 
+mutate(commitee1 = str_replace(commitee1,"วรรณี  แกมเกตุ", "วรรณี แกมเกตุ")) %>%
+mutate(commitee1 = str_replace(commitee1,"วราภรณ์  บวรศิริ", "วราภรณ์ บวรศิริ")) %>%
+mutate(commitee1 = str_replace(commitee1,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>%
+mutate(commitee1 = str_replace(commitee1,"สุวิมล  ว่องวาณิช", "สุวิมล ว่องวาณิช")) %>%
+mutate(commitee2 = str_replace(commitee2,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>%
+mutate(commitee2 = str_replace(commitee2,"เอมอร จังศิริพรปกรณ์", "โชติกา ภาษีผล")) %>%
+mutate(commitee3 = str_replace(commitee3,"เอมอร จังศิริพรปกรณ์", "โชติกา ภาษีผล")) %>% 
+mutate(commitee3 = str_replace(commitee3,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา"))
+
+```
+ชุดข้อมูลยังมีข้อมูลเกี่ยวกับ `mainStat` คำสำคัญ และ software ที่น่าจะเอามาทำ network ได้อีกด้วย
+
+```{r}
+thesis_data %>% 
+  select(code, year, depart, mainStat, starts_with("software"), starts_with("key")) %>% 
+  head()
+```
+
+
+## การเตรียมข้อมูล
+
+ลองสร้าง network เพื่อแสดงเครือข่ายของคำสำคัญของวิทยานิพนธ์ที่เป็นข้อมูลในชุดข้อมูล ก่อนจะทำการวิเคราะห์หรือสร้าง network เราจะต้องเตรียม igraph object ของชุดข้อมูลคำสำคัญนี้ก่อน
+
+เราจะต้องออกแบบ network ของเราก่อนที่จะสร้าง igraph object การออกแบบนี้จะต้องสัมพันธ์กับคำถามวิจัยหรือวัตถุประสงค์ของการวิเคราะห์ ตัวอย่างแรกเราจะทำง่าย ๆ ก่อน โดยจำสร้างเครือข่ายของอาจารย์ที่ปรึกษา ที่ปรึกษาร่วม และกรรมการก่อน ข้อมูลนี้ไม่ต้องจัดกระทำข้อความหมายก็ใช้ได้เลย
+ 
+
+- จุดยอดคือ อาจารย์ที่ปรึกษา ที่ปรึกษาร่วม และกรรมการ
+
+- เส้นเชื่อมคือ ความสัมพันธ์ระหว่างอาจารย์
+
+
+```{r}
+teacher_network <- thesis_data %>% 
+  select(code, year, advisor, co_advisor, starts_with("commitee"))
+teacher_network
+```
+
+คราวนี้เราจะต้องทำข้อมูลให้เป็นรูปแบบ adjacency หรือ edgelist ก่อน ในกรณีนี้เราทำเป็น edgelist น่าจะสะดวกกว่า
+
+
+```{r}
+teacher_network_edgelist <- teacher_network %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez"))
+teacher_network_edgelist
+```
+
+จากนั้นแปลงชุดข้อมูล edgelist ให้เป็น igraph object
+
+```{r}
+teacher_network_igraph <- graph_from_edgelist(teacher_network_edgelist %>% 
+                                                select(advisor, name) %>% 
+                                                as.matrix(),
+                                              directed = F)
+teacher_network_igraph
+```
+
+อีกวิธีหนึ่งหากเรามีข้อมูลเป็น tibble หรือ data.frame เราสามารถใช้ `graph_from_data_frame()` ก็ได้ กรณีนี้จะไม่ต้องแปลงเป็น matrix
+
+```{r}
+teacher_network_igraph <- graph_from_data_frame(teacher_network_edgelist %>% 
+                                                  select(advisor, name),
+                                                directed = F)
+teacher_network_igraph 
+```
+
+
+## การสำรวจ Network เบื้องต้น
+
+
+จะเห็นว่าในชุดข้อมูลจริงถึงแม้จะเป็นข้อมูลขนาดเล็กแต่เมื่อเรียก igraph object ขึ้นมาก็มีรายละเอียดจำนวนมากที่พิจารณายาก `{igraph}` มีฟังก์ชันที่ช่วยให้ผู้วิเคราะห์ทราบรายละเอียดเกี่ยวกับข้อมูลพื้นฐานของ network ได้ง่ายขึ้น ดังนี้
+
+- เรียกดูจุดยอด
+
+```{r}
+## จำนวนจุดยอดทั้งหมด
+gorder(teacher_network_igraph )
+## เรียกดูจุดยอด
+V(teacher_network_igraph ) %>% names() %>% head(20)
+```
+
+- เรียกดูเส้นเชื่อม
+
+```{r}
+E(teacher_network_igraph)
+```
+
+- quick plot
+
+ใน igraph มีฟังก์ชัน `plot()` ซึ่งเป็น generic function สำหรับสร้าง  network เราสามารถสร้าง network อย่างไว ๆ ได้ดังนี้เลย
+
+```{r}
+plot(teacher_network_igraph,
+     vertex.label.family = "ChulaCharasNew",
+     vertex.label.cex = 0.8,
+     vertex.label.font = 2)
+```
+
+จะเห็นว่าแผนภาพดังกล่าวดูยังไม่รู้เรื่อง ปกติเราจะต้องปรับแต่งแผนภาพรวมทั้งในสารสนเทศต่าง ๆ ลงในแผนภาพ network ด้วย ปัจจุบันการสร้าง static network visualization สามารถทำได้ง่ายขึ้นและยิ่งผู้ใช้มีความคุ้นเคยกับ tidyverse framework การสร้าง network ดังกล่าวแนะนำให้ลองใช้ `{ggraph}`
+
+
+grammar ของ `{ggraph}` มีลักษณะเป็นเหมือน `ggplot2` ทำให้ผู้ใช้สามารถสร้าง network visualization ได้อย่างรวดเร็วโดยไม่ต้องเรียนรู้ grammar ใหม่มากนัก
+
+```{r}
+teacher_network_igraph %>% 
+  ggraph("fr")+
+  geom_edge_link0()+
+  geom_node_point(size = 10, alpha=0.4)+
+  geom_node_text(aes(label = name), size = 4, family = "ChulaCharasNew",
+                 check_overlap = TRUE)+
+  theme_void()+
+  ggforce::theme_no_axes()
+```
+
+## Attribute ของ Network
+
+การ plot เครือข่ายขึ้นมาสิ่งที่เราเห็นครั้งแรกเลยคือความสัมพันธ์ระหว่าง node ต่าง ๆ อย่างไรก็ตามข้อมูลเพียงแค่นี้ตื้นเกินไปและใช้ข้อมูลที่มีไม่คุ้มค่านัก ปกติเราสามารถเพิ่มข้อมูลของตัวแปรอื่น ๆ ที่เกี่ยวข้องลงไปใน attribute ของแผนภาพได้ เหมือนกับทัศนภาพข้อมูลประเภทอื่น ๆ 
+
+attribute ของ network อาจจำแนกได้เป็นสองส่วนตาม geometry ได้แก่
+
+1. attribute ของจุดยอด ได้แก่ ตำแหน่ง สี รูปร่าง ขนาด ความหนาของเส้นขอบ เป็นต้น
+
+2. attribute ของเส้นเชื่อม ได้แก่ สี ความหนา รูปแบบของเส้นเชื่อม เป็นต้น
+
+จาก attribute ข้างต้นทำให้เราสามารถสร้าง visualization ของ network ที่มีความหมายและสื่อสารข้อมูลได้มากขึ้น การเพิ่มหรือ mapping ตัวแปรกับ attribute ใน network สามารถทำได้ภายหลังจากการสร้าง igraph object แล้ว
+
+
+### การเพิ่ม vertex attributres
+
+```{r}
+graph <- set_vertex_attr(
+  teacher_network_igraph,
+  "gender",
+  value = c("Male","Female","Male","Male","Female","Female","Female","Female","Male",
+            "Male","Female","Female","Female","Female","Female","Male","Female","Female",
+            "Female","Male","Female","Female","Female","Female","Female","Female","Male",
+            "Male","Male","Male"))
+vertex_attr(graph)
+```
+
+### การเพิ่ม edge attributes
+
+```{r}
+graph <- set_edge_attr(
+  teacher_network_igraph,
+  "role",
+  value = teacher_network_edgelist$role)
+edge_attr(graph)
+```
+
+```{r}
+graph
+```
+
+### สร้าง igraph object ด้วย `graph_from_data_frame()`
+
+เรายังสามารถใส่ attribute ผ่าน data.frame ได้ด้วย โดยจะต้องจัดรูป data.frame ให้สองคอลัมน์แรกเป็น edgelist ส่วนที่เหลือเป็น attribute เช่น
+
+```{r}
+## vertex dataset
+gender <- c("Male","Female","Male","Male","Female","Female","Female","Female","Male",
+            "Male","Female","Female","Female","Female","Female","Male","Female","Female",
+            "Female","Male","Female","Female","Female","Female","Female","Female","Male",
+            "Male","Male","Male")
+
+vertex_data <- data.frame(name = V(teacher_network_igraph)$name,
+                     gender = gender)
+vertex_data
+```
+
+```{r}
+## edge dataset
+edge_data <- teacher_network %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez")) %>% 
+  select(advisor, name, code, year, role) %>% 
+  rename(name_role = role) 
+edge_data
+```
+
+จากนั้นนำทั้งหมดมาสร้าง igraph object ใหม่ ด้วยฟังก์ชัน `graph_from_data_frame()` ดังนี้
+
+```{r}
+graph_with_attr <- graph_from_data_frame(d = edge_data,
+                                         vertices = vertex_data,
+                                         directed = F)
+graph_with_attr
+```
+
+note: สังเกตผลลัพธ์ข้างต้นว่ามี attribute อะไรบ้าง และแต่ละ attribute เป็นของ geometry ใด มีลักษณะเป็นอย่างไร
+
+### Subsetting Network
+
+เมื่อมี attribute จึงเป็นไปได้ที่เราจะ filter บางส่วนของ network เพื่อมาทำการวิเคราะห์หรือดำเนินการต่อ
+
+```{r}
+E(graph_with_attr)[[.from("ศิริชัย")]]
+E(graph_with_attr)[[year > 2550]]
+V(graph_with_attr)[[1:6]]
+V(graph_with_attr)[[gender == "Male"]]
+```
+
+การ filter ดังกล่าวมีประโยชน์มากสำหรับการนำเสนอ network ที่มีขนาดใหญ่ และมีข้อมูลที่ซับซ้อน การ filter จะช่วยให้เราสามารถเลือกเฉพาะข้อมูลที่สนใจเท่านั้น
+
+## Visualizing Network with Attributes
+
+```{r}
+## สร้าง attribute สีของเพศใน igraph
+V(graph_with_attr)$color <- ifelse(V(graph_with_attr)$gender == "Male", "steelblue","orange")
+graph_with_attr
+```
+### การใช้ `plot()` พื้นฐานของ igraph
+
+```{r}
+plot(graph_with_attr,
+     vertex.color = V(graph_with_attr)$color,
+     vertex.label.family = "ChulaCharasNew",
+     vertex.label.cex = 0.8,      
+     vertex.label.color = "black")
+```
+
+### การใช้ `{ggraph}` 
+
+```{r}
+graph_with_attr %>% 
+  ggraph()+
+  geom_edge_link()+
+  geom_node_point(aes(color = gender), size = 8)+
+  geom_node_text(aes(label = name), family = "ChulaCharasNew")+
+  scale_color_manual(values = c("orange","steelblue"))+
+  ggforce::theme_no_axes()
+       
+```
+
+
+
+
+```{r}
+graph_with_attr %>% 
+  ggraph()+
+  geom_edge_link(aes(linetype = year < 2550,
+                     color = year < 2550))+
+  geom_node_point(aes(color = gender, shape = gender), size = 8)+
+  geom_node_text(data = . %>% filter(gender == "Female"),
+                 aes(label = name), family = "ChulaCharasNew", alpha = 0.8)+
+  scale_color_manual(values = c("orange","steelblue"))+
+  ggforce::theme_no_axes()
+                       
+```
+
+### การเลือก layout
+
+การเลือก layout ของ network มีความสำคัญมาก โดยเฉพาะเมื่อ network มีขนาดใหญ่ การวาง layout ที่ดีของ network ควรมีลักษณะต่อไปนี้
+
+- มีการทับซ้อนกันของ edge ให้น้อยที่สุดเท่าที่เป็นไปได้
+
+- vertices ไม่ควรมีการซ้อนทับกัน
+
+- ความยาวของ edge ควรเท่า ๆ กัน เท่าที่เป็นไปได้
+
+- network ควรมีความสมมาตรให้มากที่สุด
+
+- จุดยอดที่มีอิทธิพล (influential node) มากใน network ก็ควรอยู่ใกล้กับส่วนกลางของ network
+
+**Layouts จาก igraph:** - layout_nicely - layout_randomly - layout_in_circle - layout_on_grid - layout_as_tree - layout_with_fr (Force-directed layout โดยใช้ Fruchterman-Reingold algorithm) - layout_with_kk (Kamada-Kawai algorithm) - layout_with_drl (Distributed Recursive Layout algorithm) - layout_with_lgl (Large Graph Layout algorithm) - layout_with_dh (Davidson-Harel algorithm) - layout_with_gem (Graph Embedder algorithm) - layout_with_mds (Multidimensional Scaling)
+
+
+```{r fig.width = 12, fig.height = 8}
+par(mfrow=c(2,2), mar = c(0,0,5,0))
+set.seed(1234)
+plot(graph_with_attr, layout = layout_with_fr(graph_with_attr),
+     vertex.label.family = "ChulaCharasNew", main = "Fruchterman-Reingold")
+plot(graph_with_attr, layout = layout_in_circle(graph_with_attr),
+     vertex.label.family = "ChulaCharasNew", main = "Circle")
+plot(graph_with_attr, layout =layout_as_tree(graph_with_attr),
+     vertex.label.family = "ChulaCharasNew", main = "Tree")
+plot(graph_with_attr, layout =layout_with_dh(graph_with_attr),
+     vertex.label.family = "ChulaCharasNew", main = "Davidson-Harel")
+```
+
+
+ผู้วิเคราะห์ควรลองใช้ layout แบบต่าง ๆ และเลือก layout ที่เหมาะสมกับ network ของตนเอง การเลือก layout ที่เหมาะสมจะทำให้ผู้วิเคราะห์สามารถอ่านข้อมูลได้ง่ายขึ้น และเข้าใจความสัมพันธ์ระหว่างจุดยอดได้ดีขึ้น
+
+สำหรับ `{ggraph}` การกำหนด layout สามารถทำได้ดังนี้
+
+```{r fig.width = 12, fig.height = 6}
+library(patchwork)
+set.seed(1234)
+p1 <- graph_with_attr %>% 
+  ggraph(layout = "fr")+
+  geom_edge_link(aes(linetype = year < 2550,
+                     color = year < 2550))+
+  geom_node_point(aes(color = gender, shape = gender), size = 8)+
+  geom_node_text(data = . %>% filter(gender == "Female"),
+                 aes(label = name), family = "ChulaCharasNew", alpha = 0.8)+
+  scale_color_manual(values = c("orange","steelblue"))+
+  ggforce::theme_no_axes()+
+  ggtitle("Fruchterman-Reingold")
+
+p2 <- graph_with_attr %>% 
+  ggraph(layout = "lgl")+
+  geom_edge_link(aes(linetype = year < 2550,
+                     edge_color = year < 2550))+
+  geom_node_point(aes(color = gender, shape = gender), size = 8)+
+  geom_node_text(#data = . %>% filter(gender == "Female" | name %in% c("ไพฑูรย์", "ปทีป")),
+                 aes(label = name), family = "ChulaCharasNew", alpha = 0.8)+
+  scale_color_manual(values = c("orange","steelblue"))+
+  scale_edge_color_manual(values = c("black","grey80"))+
+  ggforce::theme_no_axes()+
+  ggtitle("Kamada-Kawai")
+
+p1+p2+plot_layout(guides= "collect") &
+  theme(legend.position = "bottom")
+```
+
+Note: เราสามารถเรียกดูการจัดวางตำแหน่งของจุดยอด นอกจากนี้ยังสามารถปรับแต่งได้ด้วยตนเองดังนี้
+
+```{r}
+m <- layout_nicely(graph_with_attr)
+m %>% data.frame()
+plot(graph_with_attr, layout = m,
+     vertex.label.family = "ChulaCharasNew")
+```
+
+```{r}
+## visualizing subset of network
+delete_edges(graph_with_attr,E(graph_with_attr)[year<2550]) %>% 
+  plot(vertex.label.family = "ChulaCharasNew",
+       layout = layout_with_drl(graph_with_attr))
+```
+
+
+
+### กิจกรรม
+
+
+1. มีเส้นเชื่อมใน network ระหว่าง ศิริชัย กับดิเรก กี่เส้น
+
+
+2. สร้าง network ดังรูปด้านล่าง
+
+```{r echo = F, eval = F}
+teacher_network_edgelist %>% 
+  group_by(advisor, name) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  select(advisor, name, n) %>% 
+  rename(num_thesis = n) %>% 
+ # mutate(year = case_when(year < 2545 ~ "Before 2545",
+#                         year >=45 & year < 2550 ~ "2545 - 2550",
+#                         year >= 2550 ~ "After 2550"),
+#         year = factor(year, levels=c("Before 2545", "2545 - 2550", "After 2550"))) %>% 
+  graph_from_data_frame(directed = F)->temp
+
+gender <- c("Male","Female","Male","Male","Female","Female","Female","Female","Male",
+            "Male","Female","Female","Female","Female","Female","Male","Female","Female",
+            "Female","Male","Female","Female","Female","Female","Female","Female","Male",
+            "Male","Male","Male")
+
+V(temp)$gender <- ifelse(gender == "Male","steelblue","orange")
+par(mar=c(0,0,0,0))
+plot(temp, 
+     vertex.color = V(temp)$gender, 
+     vertex.label.family = "ChulaCharasNew",
+     edge.width = E(temp)$num_thesis,
+     layout = layout_with_fr(temp))
+
+```
+
+
+
+```{r fig.width = 14, fig.height = 5, echo = F}
+teacher_network_edgelist %>% 
+  group_by(advisor, name, year) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  rename(num_thesis = n) %>% 
+  mutate(year_group = case_when(year < 2545 ~ "1",
+                         year >=45 & year < 2550 ~ "2",
+                         year >= 2550 ~ "3")) %>% 
+  ungroup() %>% 
+  graph_from_data_frame(directed = F) %>% 
+  ggraph("fr")+
+  geom_edge_link0(aes(linewidth = num_thesis, alpha = num_thesis))+
+  geom_node_point(col = "white")+
+  geom_node_text(aes(label = name), family = "ChulaCharasNew", check_overlap = TRUE)+
+  facet_wrap(~ year_group, labeller = as_labeller(c("1" = "Before 2545", 
+                                                    "2" = "2545 - 2550",
+                                                    "3" = "After 2550")))+
+  ggforce::theme_no_axes()+
+  scale_edge_width(range = c(0.5, 2.5))
+```
+
+## การวิเคราะห์ Network
+
+การวิเคราะห์ network ทำให้ผู้วิเคราะห์สามารถเข้าใจความสัมพันธ์ระหว่างจุดยอดได้ดีขึ้น การวิเคราะห์ network สามารถทำได้หลายอย่าง ตั้งแต่การใช้สถิติบรรยายไปจนถึงการวิเคราะห์ด้วย model ทางสถิติ
+
+### Directed Network
+
+การสร้าง network แบบมีทิศทาง (directed network) อย่างเหมาะสม ทำให้ผู้วิเคราะห์ทราบสภาพความสัมพันธ์ระหว่าง node ในเชิงลึกมากยิ่งขึ้น ยกตัวอย่างรูปด้านล่าง
+
+```{r fig.width = 12, echo = F}
+g1 <- thesis_data %>% 
+  select(year, advisor, co_advisor, starts_with("commitee"), depart) %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez")) %>% 
+  select(advisor, name, depart, year) %>% 
+  group_by(advisor, name, depart) %>% count() %>% 
+  filter(depart == "วิจัยการศึกษา") %>% 
+  graph_from_data_frame(directed = F)
+
+
+g2 <- thesis_data %>% 
+  select(year, advisor, co_advisor, starts_with("commitee"), depart) %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez")) %>% 
+  select(advisor, name, depart, year) %>% 
+  group_by(advisor, name, depart) %>% count() %>% 
+  filter(depart == "วิจัยการศึกษา") %>% 
+  graph_from_data_frame(directed = T) 
+
+g3 <- thesis_data %>% 
+  select(year, advisor, co_advisor, starts_with("commitee"), depart) %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez")) %>% 
+  select(name, advisor, depart, year) %>% 
+  group_by(name, advisor, depart) %>% count() %>% 
+  filter(depart == "วิจัยการศึกษา") %>% 
+  graph_from_data_frame(directed = T) 
+
+
+par(mfrow=c(1,3), mar=c(0,0,2,0))
+set.seed(123)
+g1 %>% 
+  plot(vertex.label.family = "ChulaCharasNew", main = "undirected")
+set.seed(123)
+g2 %>% 
+  plot(vertex.label.family = "ChulaCharasNew", main = "directed1")
+set.seed(123)
+g3 %>% 
+  plot(vertex.label.family = "ChulaCharasNew", main = "directed2")
+```
+
+
+### In-degree and Out-degree
+
+Degree คือจำนวนเส้นเชื่อมที่เชื่อมต่อกับจุดยอดแต่ละจุดยอด ดังนั้นจุดยอดที่มี degree มากแสดงว่าเป็นจุดยอดที่มีการติดต่อหรือมีปฏิสัมพันธ์กับจุดยอดหรือหน่วยข้อมูลอื่นมาก สะท้อนความสำคัญหรือความสามารถในการเชื่อมโยงเครือข่ายของจุดยอดนั้น
+
+
+#### Degree of Undirected network
+
+```{r}
+set.seed(123)
+g1 %>% 
+  plot(vertex.label.family = "ChulaCharasNew", main = "undirected")
+degree(g1)
+```
+
+
+#### Degree of Directed network
+
+สำหรับ directed network จะจำแนก degree ออกได้เป็น 2 ประเภท ได้แก่
+
+- in-degree: คือจำนวนเส้นเชื่อมที่เข้ามายังจุดยอดนั้น ซึ่งแสดงถึงความสำคัญของจุดยอดนั้นในเชิงรับข้อมูล
+
+- out-degree: คือจำนวนเส้นเชื่อมที่ออกจากจุดยอดนั้น ซึ่งแสดงถึงความสำคัญของจุดยอดนั้นในเชิงส่งข้อมูล
+
+ลองพิจารณา in-degree และ out-degree ของ network ต่อไปนี้
+
+```{r}
+set.seed(123)
+g3 %>% 
+  plot(vertex.label.family = "ChulaCharasNew", main = "directed2")
+
+## calculate in-degree
+degree(g3, mode = "in") %>% sort(decreasing = T)
+## calculate out-degree
+degree(g3, mode = "out") %>% sort(decreasing = T)
+```
+
+#### กิจกรรม
+
+สร้าง network ของการดูแลวิทยานิพนธ์ในสาขาวิชา "อุดมศึกษา" ดังรูปด้านล่าง และคำนวณ In-degree และ Out-degree ของ vertex ใน network ผลที่ได้เป็นอย่างไร
+
+```{r echo = F}
+g4 <- thesis_data %>% 
+  select(year, advisor, co_advisor, starts_with("commitee"), depart) %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez")) %>% 
+  select(name, advisor, depart, year) %>% 
+  group_by(name, advisor, depart) %>% count() %>% 
+  filter(depart == "อุดมศึกษา") %>% 
+  graph_from_data_frame(directed = TRUE)
+
+plot(g4, vertex.label.family = "ChulaCharasNew", main = "directed")
+```
+
+
+#### Integrating Degree Statistics in Visualization
+
+
+แผนภาพด้านล่างมีความหมายอย่างไร
+
+```{r}
+## คำนวณ degree
+V(g2)$in_degree <- degree(g2, mode = "in")
+V(g3)$in_degree <- degree(g3, mode = "in")
+
+par(mfrow=c(1,2),mar=c(0,1,3,0))
+set.seed(12345)
+plot(g2, vertex.label.family = "ChulaCharasNew", main = "directed1",
+     vertex.size = V(g2)$in_degree*12,
+     layout = layout_with_fr(g2))
+set.seed(12345)
+plot(g3, vertex.label.family = "ChulaCharasNew", main = "directed2",
+     vertex.size = V(g3)$in_degree*2,
+      layout = layout_with_fr(g2))
+```
+
+
+
+#### กิจกรรม
+
+> สร้าง network เพื่ออธิบายการถูกเชิญให้เป็นกรรมการสอบวิทยานิพนธ์
+
+```{r}
+## รวมทุกสาขาวิชา
+
+all_g <- thesis_data %>% 
+  select(year, advisor, co_advisor, starts_with("commitee"), depart) %>% 
+  pivot_longer(cols = c("co_advisor",starts_with("commitee")),
+               names_to = "role",
+               values_to = "name") %>% 
+  drop_na() %>% 
+  ## ตัดนามสกุลออก
+  mutate(advisor = str_remove(advisor, "\\s.*"),
+         name = str_remove(name, "\\s.*")) %>% 
+  mutate(name = str_replace(name, "Professor","Martinez")) %>% 
+  select(advisor, name, depart, year) %>% 
+  group_by(advisor,name, depart) %>% count() %>% 
+  graph_from_data_frame(directed = TRUE)
+
+V(all_g)$in_degree <- degree(all_g, mode = "in")
+par(family = "ChulaCharasNew", mar = c(0,0,3,0))
+plot(all_g, vertex.label.family = "ChulaCharasNew", main = "All",
+     vertex.size = V(all_g)$in_degree*3,
+     edge.arrow.size = 0.5,
+     layout = layout_with_kk(all_g))
+```
+
+### Subgraph analysis
+
+- เราสามารถสำรวจส่วนย่อยของ network เพื่อให้ได้ผลการวิเคราะห์ที่เป็นปรนัยมากขึ้นได้ เช่น อาจมีข้อสังเกตว่า มีความเส้นเชื่อมระหว่าง อ.สุชาดา กับ อ.โชติกา หรือไม่
+
+```{r}
+## มีเส้นเชื่อมระหว่าง v"สุชาดา" กับ v"โชติกา" หรือไม่
+g2["สุชาดา","โชติกา"]
+```
+
+ผลลัพธ์ข้างต้นแสดงให้เห็นว่า อ.โชติกาไม่เคยเป็นกรรมการสอบหรือที่ปรึกษาร่วมให้กับวิทยานิพนธ์เล่มที่ อ.สุชาดาเป็นที่ปรึกษาเลย **แล้ว อ.โชติกาเกี่ยวข้องยังไงกับ อ.สุชาดา???**
+
+- นอกจากนี้เรายังสามารถสร้าง network ที่มีเฉพาะเส้นเชื่อมจากจุดยอดที่กำหนด เช่น
+
+```{r}
+## อ.ดวงกมลเชิญใครมาเป็นกรรมการบ้าง
+incident(g3, "ดวงกมล", mode = "in") 
+```
+
+```{r}
+par(family = "ChulaCharasNew", mar = c(0,0,5,0))
+incident_edges <- incident(g3, "ดวงกมล", mode = "in") 
+subgraph_from_edges(g3, eids = incident_edges) %>% 
+plot(vertex.label.family = "ChulaCharasNew",
+     vertex.size = 40,
+     main = "กรรมการสอบเล่มที่ อ.ดวงกมลเป็นที่ปรึกษา")
+```
+
+
+
+
+
+```{r}
+## ทิศทางแสดงการเป็น advisor
+V(g4)$out_degree <- degree(g4, mode = "out")
+V(g4)$in_degree <- degree(g4, mode = "in")
+set.seed(245)
+par(mfrow = c(1,2), mar=c(0,0,2,0),
+    family = "ChulaCharasNew")
+plot(g4, vertex.label.family = "ChulaCharasNew", main = "กรรมการสอบของอุดมศึกษา",
+     vertex.size = (V(g4)$out_degree)*10 ,
+      layout = layout_with_fr(g4))
+set.seed(245)
+plot(g4, vertex.label.family = "ChulaCharasNew", main = "ที่ปรึกษาของอุดมศึกษา",
+     vertex.size = (V(g4)$in_degree)*5 ,
+      layout = layout_with_fr(g4))
+```
+
+### ความสัมพันธ์ระหว่างจุดยอด
+
+ใน network เราสามารถวิเคราะห์ความสัมพันธ์ระหว่างจุดยอดได้ วิธีการหนึ่งคือการพิจารณาจุดยอดที่เป็นเพื่อนบ้านของจุดยอดที่เราสนใจ  ความเป็นเพื่อนบ้านนี้คือการที่จุดยอดมีเส้นเชื่อมต่อกันนั่นเอง ลองพิจารณารูปดังนี้
+
+```{r}
+## ทิศทางแสดงการเป็นกรรมการสอบ กล่าวคือ in-degree คือเป็นกรรมการ
+set.seed(123)
+par(family = "ChulaCharasNew", mar = c(0,0,3,0))
+plot(all_g, vertex.label.family = "ChulaCharasNew", main = "All",
+     vertex.size = V(all_g)$in_degree*3,
+     edge.arrow.size = 0.5,
+     layout = layout_with_kk(all_g))
+```
+
+#### direct neighbors
+
+เราสามารถพิจารณาเพื่อนบ้านของจุดยอดที่กำหนดได้ดังนี้
+
+```{r}
+neighbors(all_g, "ศิริเดช", mode = "all")
+neighbors(all_g, "ศิริเดช", mode = "in")
+```
+
+
+ผลการวิเคราะห์ข้างต้นบ่งชี้อะไร??
+
+
+#### indirect neighbors
+
+ความสัมพันธ์ระหว่างจุดยอดอาจจะไม่ได้เป็นความสัมพันธ์ที่เชื่อมโยงกันโดยตรง แต่เป็นการเชื่อมโยงผ่านจุดยอดอีกจุดหนึ่ง  ผลการวิเคราะห์ด้านล่างแสดงให้เห็นว่า อ.สุชาดา ไม่ได้มีความสัมพันธ์โดยตรงกับ อ.พฤทธิ์ เลย แต่ใน network มีจุดยอดของ อ.พฤทธิ์ อยู่ด้วย ดังนั้น อ.สุชาดาน่าจะต้องมีความสัมพันธ์กับ อ.พฤทธิ์ ผ่านจุดยอดหรือ อ.ท่านอื่น
+ 
+```{r}
+neighbors(all_g, "สุชาดา", mode = "all")$name == "พฤทธิ์"
+```
+ 
+เพื่อสำรวจสภาพที่สงสัยข้างต้น เราสามารถใช้ฟังก์ชัน `intersection(x,y)` ช่วยในการหาเพื่อนคนกลางระหว่าง อ.สุชาดา และ อ.พฤทธิ์ ได้
+
+```{r}
+x <- neighbors(all_g, "สุชาดา", mode = "all")
+y <- neighbors(all_g, "พฤทธิ์", mode = "all")
+intersection(x,y)
+```
+
+ 
+#### Distance between neighbors
+
+เส้นทางที่ยาวที่สุดของ network `all_g`
+
+```{r}
+farthest_vertices(all_g)
+```
+ลำดับการเชื่อมต่อที่ยาวที่สุดของ network 
+
+```{r}
+get_diameter(all_g)
+```
+
+ืนอกจากนี้เรายังสามารถระบุจุดยอดทั้งหมดที่สามารถเข้าถึงในหรือมีระยะห่าง n ขั้นจากจุดยอดที่กำหนด
+
+```{r}
+ego(all_g, 1, "สุชาดา", mode = "in")
+```
+
+### Vectex metrices
+
+การหาจุดยอดที่มีอิทธิพลใน network สามารถทำได้หลายวิธี โดยที่แต่ละวิธีการมีนิยามของความสำคัญที่แตกต่างกัน
+
+- degree centrality กล่าวไปแล้วข้างต้น centrality ตัวนี้สะท้อนความสำคัญในเชิงผู้รับหรือผู้ส่งข้อมูลภายใน network
+
+- betweenness centrality วัดจากความถี่ของจำนวนเส้นทางที่สั้นที่สุดระหว่างจุดยอดที่กำหนดกับจุดยอดอื่น ๆ ซึ่งสะท้อนถึงความสำคัญของจุดยอดในการเชื่อมโยงกับเพื่อนบ้านที่ใกล้ที่สุด
+
+- eigenvector centrality
+
+- closeness centrality
+
+- pagerank centrality
+
+
+#### Betweenness Centrality
+
+betweeness เป็นความสำคัญในเชิงการเชื่อมโยงส่วนต่าง ๆ ของ เครือข่าย
+
+- จุดยอดที่มีค่า betweenness สูงแสดงว่าถ้าเอาจุดยอดนี้ออกไปเครือข่ายอาจจะไม่เป็นเครือข่ายอีกต่อไป
+
+- ในขณะที่จุดยอดที่มีค่า betweenness ต่ำแสดงว่าจุดยอดนี้ไม่สำคัญในการเชื่อมโยงเครือข่าย
+
+จากรูปด้านล่างจะเห็นว่า อ.สุชาดามีแนวโน้มที่จะเป็นจุดยอดที่มี betweenness สูงมาก รองลงมาน่าจะเป็น อ.ดวงกมล
+
+```{r fig.width = 8}
+betweenness(g1, 
+            directed = F, 
+            normalized = TRUE)
+
+V(g1)$betweenness <- betweenness(g1, 
+            directed = F, 
+            normalized = TRUE)
+par(mfrow=c(1,2), mar=c(0,0,2,0))
+set.seed(123)
+plot(g1, 
+     vertex.label.family = "ChulaCharasNew")
+set.seed(123)
+plot(g1, 
+     vertex.label.family = "ChulaCharasNew",
+     vertex.size = V(g1)$betweenness*50,
+     main = "betweenness centrality")
+```
+
+
+#### Closeness Centrality
+
+คล้ายกับ betweenness แต่มีค่าเท่ากับค่าเฉลี่ยของระยะทางที่สั้นที่สุดจากจุดยอดที่สนใจไปยังจุดยอดอื่น ๆ ซึ่งสะท้อนถึงความสำคัญของจุดยอดในการเชื่อมโยงกับเพื่อนบ้านที่ใกล้ที่สุดคล้ายกับ betweenness
+
+```{r}
+closeness(g1,
+          mode = "all",
+          normalized = TRUE)
+
+V(g1)$closeness <- closeness(g1,
+          mode = "all",
+          normalized = TRUE)
+
+par(mfrow=c(1,2), mar=c(0,0,2,0))
+set.seed(123)
+plot(g1, 
+     vertex.label.family = "ChulaCharasNew",
+     vertex.size = V(g1)$betweenness*50,
+     main = "betweenness centrality")
+set.seed(123)
+plot(g1, 
+     vertex.label.family = "ChulaCharasNew",
+     vertex.size = V(g1)$closeness*40,
+     main = "closeness centrality")
+```
+
+
+#### Eigenvector Centrality
+
+เป็นสถิติที่ใช้สะท้อนว่าจุดยอดแต่ละจุดมีความเชื่อมโยงกับจุดยอดอื่น ๆ ภายใน network ได้ดีมากแค่ไหน โดยพิจารณาทั้งทางตรงและทางอ้อม
+
+Eigenvector Centrality ของจุดยอดหนึ่ง ๆ จะสูงเมื่อ:
+
+1. จุดยอดนั้นมีเส้นเชื่อมเยอะ
+
+2. จุดยอดนั้นเชื่อมต่อกับจุดยอดอื่น ๆ ที่มีค่า Eigenvector Centrality สูง
+
+
+เพื่อให้เข้าใจได้ง่ายขึ้น, คิดว่า Eigenvector Centrality เป็นเหมือน “ความเป็นที่รู้จัก/ความดัง” ในเครือข่ายสังคม: ถ้าคุณรู้จักคนที่ดัง, คุณก็มีแนวโน้มจะดังไปด้วย. และถ้าคุณรู้จักหลายคนที่ดัง, คุณก็จะเป็นที่รู้จักมากขึ้น
+
+
+```{r fig.width = 8, fig.height = 6}
+par(mar=c(0,0,1,0))
+eigen_centrality(all_g)$vector
+V(all_g)$eigen <- eigen_centrality(all_g)$vector
+set.seed(1234)
+plot(all_g, vertex.label.family = "ChulaCharasNew", 
+     main = "eigenvector centrality",
+     vertex.size = V(all_g)$eigen*15,
+     edge.arrow.size = 0.5,
+     layout = layout_with_fr(all_g))
+```
+
+### Edge metrices
+
+สถิติกลุ่มนี้เป็นการประเมินโครงสร้างของ network ในมิติด้านความเชื่อมโยง ซึ่งมีหลายตัว
+
+#### Density
+
+คือความหนาแน่นของ network คำนวณจากสัดส่วนของเส้นเชื่อมที่มีอยู่จริงต่อเส้นเชื่อมทั้งหมดที่เป็นไปได้ในเครือข่าย ค่าที่สูงบ่งชี้ความใกล้ชิดหรือความมีประสิทธิภาพในการติดต่อสื่อสารหรือถ่ายโอนข้อมูลซึ่งกันและกันของจุดยอด
+
+```{r}
+## ความหนาแน่นของเครือข่ายในสาขาวิชาวิจัย
+edge_density(g1)
+## ความหนาแน่นของเครือข่ายในสาขาวิชาอุดมศึกษา
+edge_density(g4)
+```
+
+
+#### Average path length
+
+นอกจากความหนาแน่นแล้ว ระยะทางโดยเฉลี่ยเป็นตัวชี้วัดประสิทธิภาพหรือความรวดเร็วในการติดต่อสื่อสารของเครือข่ายด้วย
+
+```{r}
+mean_distance(g1, directed = F)
+mean_distance(g2, directed = T)
+mean_distance(all_g, directed = T)
+```
+
+
+#### Random Graphs Analysis
+
+เราสามารถใช้ random graph ในการทำการวิเคราะห์เพื่อเปรียบเทียบกับ network ที่เราสนใจ โดย random graph ที่เราสนใจจะมีคุณสมบัติเดียวกันกับ network ที่เราสนใจ แต่มีการสุ่มเส้นเชื่อมระหว่างจุดยอด การ generate random graph ซ้ำ ๆ ในจำนวนที่มากเพียงจะทำให้ผู้วิเคราะห์สามารถเปรียบเทียบ metric ของ network ที่เราสนใจกับ random graph ได้
+
+ความแตกต่างของ metric ระหว่าง network จริงกับ random graph สะท้อนว่า network ที่เราสนใจมีคุณสมบัติเฉพาะเจาะจง และนำไปสู่การวิเคราะห์เชิงลึกในมิตินั้นของ network นั้นได้ต่อไป อัลกอริทึม random graph analysis มีคร่าว ๆ ดังนี้
+
+- สร้าง random graph จำนวนมากเพียงพอ เช่น 500, 1000 graphs โดยให้มีโครงสร้างเดียวกับ network ต้นฉบับที่ต้องการวิเคราะห์ เช่น มีจำนวนจุดยอดเท่ากัน มีความหนาแน่นกันเท่า เป็นต้น ใน igraph สามารถทำได้ง่าย ๆ ด้วยฟังก์ชัน `sample_gnp(n, p, directed)` หรือ `sample_gnm()` 
+
+- คำนวณ metric ที่สนใจ ของ random graph ทุกตัว เก็บค่าไว้
+
+- คำนวณ metric ที่สนใจ ของ network ที่ต้องการวิเคราะห์
+
+- เปรียบเทียบ metric จาก network ที่ต้องการวิเคราะห์กับ random graph
+
+ทดลองเปรียบเทียบคุณสมบัติด้าน average path length
+
+```{r}
+avg_path_rand <- numeric(1000)
+
+for (i in 1:1000)
+{
+  avg_path_rand[i] <- sample_gnp(n = gorder(all_g),
+                                 p = edge_density(all_g),
+                                 directed = T) %>% 
+                      mean_distance(directed = T)
+}
+
+avg_path_mynet <- mean_distance(all_g, directed = T)
+
+data.frame(avg_path_rand = avg_path_rand,
+           avg_path_mynet = avg_path_mynet) %>% 
+  ggplot(aes(x = avg_path_rand))+
+  geom_histogram(col = "white", fill = "steelblue")+
+  geom_vline(xintercept = avg_path_mynet, col = "orange")+
+  theme_bw()+
+  ggtitle("ผลลัพธ์นี้แปลความหมายได้อย่างไร?")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+
+```
+
+#### กิจกรรม
+
+> ลองทำ random graph analysis เพื่อวิเคราะห์โครงสร้างของ network ในมิติอื่น
+
+## ทบทวน
+
+1. ลองสร้าง network ของ `mainStat` กับสาขาวิชา
+
+2. วิเคราะห์โครงสร้างของ network ในข้อ 1.
+
+```{r eval = F}
+library(thaitextrecipe)
+## สร้าง network ของ mainStat กับคำสำคัญหลักของงานวิจัย
+thesis_data %>% glimpse()
+thesis_data %>% 
+  select(mainStat, depart) %>% 
+  mutate(mainStat = str_replace_all(mainStat, ","," ")) %>% 
+  unnest_tokens(word, mainStat, 
+                token = thai_tokenizer,
+                token_engine = "longest") %>% 
+  filter(!word %in% stop_words) %>% 
+  filter(!str_detect(word, "\\d+")) %>% 
+  mutate(word = str_squish(word)) %>% 
+  group_by(depart, word) %>% 
+  count() %>% 
+  arrange(desc(n))
+```
+
+
