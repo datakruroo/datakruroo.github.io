@@ -524,7 +524,7 @@ teacher_network_edgelist %>%
   arrange(desc(n)) %>% 
   rename(num_thesis = n) %>% 
   mutate(year_group = case_when(year < 2545 ~ "1",
-                         year >=45 & year < 2550 ~ "2",
+                         year >=2545 & year < 2550 ~ "2",
                          year >= 2550 ~ "3")) %>% 
   ungroup() %>% 
   graph_from_data_frame(directed = F) %>% 
