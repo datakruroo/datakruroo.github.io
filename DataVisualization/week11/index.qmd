@@ -70,7 +70,7 @@ edges
 
 ### Visualization library
 
-มี library หลายตัวที่สามารถใช้สร้าง network visualization ได้ บทเรียนนี้จะแนะนำสองตัวได้แก่ `{igraph}` และ `{ggraph}` 
+มี library หลายตัวที่สามารถใช้สร้าง network visualization ได้ บทเรียนนี้จะแนะนำสองตัวได้แก่ `{igraph}` และ `{ggraph}` [@igraph2023]
 
 ```{r message = F, warning = F}
 ## install.packages("igraph")
@@ -1047,6 +1047,7 @@ plot(g,
      vertex.label.color = "black",
      vertex.label.family = "ChulaCharasNew",
      vertex.label.cex = 1,
+     vertex.label.dist = 0,
      layout = layout_with_kk(g))
 
 # Add a legend
@@ -1070,7 +1071,7 @@ legend(x = -2.13, y= -0.2,
        cex = 1,                              
        bty = "n")                              
 
-legend(x = -2.13, y= -0.5,  # position of the legend
+legend(x = -2.13, y= -0.45,  # position of the legend
        legend = c("Out-Degree = 6"),  
        col = "grey",       
        adj = 0.25,
@@ -1082,7 +1083,10 @@ legend(x = -2.13, y= -0.5,  # position of the legend
        bty = "n")     
 ```
 
-คราวนี้ลองสร้างแผนภาพเดิมด้วย ggraph จะเห็นว่าการสร้าง การ mapping attribute การปรับแต่งและการทำซ้ำ ทำได้ง่ายกว่า igraph อย่างไรก็ตาม ggraph จะไม่ได้ theme เดียวกับ igraph
+คราวนี้ลองสร้างแผนภาพเดิมด้วย ggraph จะเห็นว่าการสร้าง การ mapping attribute การปรับแต่งและการทำซ้ำ ทำได้ง่ายกว่า igraph อย่างไรก็ตามการใช้ ggraph จะไม่ได้ theme เหมือนกับ igraph โดยเฉพาะลักษณะของลูกศรใน directed graph (อันนี้ความชอบส่วนตัวของผู้สอน) นอกจากนี้อัลกอริทึมในการสร้างแผนภาพจริง ๆ  แล้ว igraph ฉลาดกว่า ggraph อยู่บ้าง โดยเฉพาะในการจัดวางจุดยอดให้เป็นระเบียบ และการจัดวางเส้นเชื่อมให้สวยงาม อย่างไรก็ตาม ggraph สามารถสร้าง graph ได้ยืดหยุ่นหลากหลายมากกว่า igraph
+
+จะเห็นว่าอัลกอริทึมทั้งสองมีข้อดีและข้อจำกัดทั้งคู่การเลือกว่าจะใช้ library ไหนในการสร้าง graph น่าจะพิจารณาจากความต้องการในการใช้งานในแต่ละงาน
+ 
 
 ```{r}
 V(g)$eigen <- eigens
@@ -1091,19 +1095,27 @@ g %>%
   ggraph("kk")+
   geom_edge_link(aes(linewidth = num_thesis),
                  edge_color = "grey90")+
-  geom_edge_link(arrow = arrow(type = "closed", length = unit(0.08, "inches")),
+  geom_edge_link(arrow = arrow(type = "closed", length = unit(1.5, "mm")),
+                 aes(start_cap = label_rect(node2.name),
+                     end_cap = label_rect(node1.name)),
                  edge_color = "#243642", linewidth = 0.2, alpha = 0.8)+
   geom_node_point(aes(size = out_degree, color = eigen))+
   geom_node_text(aes(label = name), check_overlap = TRUE,
-                 family = "ChulaCharasNew")+
+                 family = "ChulaCharasNew",
+                 size = 3.5, col = "grey30")+
   labs(color = "Eigen Centrality",
        size = "Out-Degree")+
   scale_radius(breaks = c(6,18), range = c(2,20))+
   scale_color_brewer(type = "seq", palette = "Reds")+
-  ggforce::theme_no_axes()+
-  theme(text = element_text(family = "ChulaCharasNew"))
+  scale_edge_width(name = "Number of Theses")+
+  guides(size = guide_legend(order = 1),
+         color = guide_legend(order = 2))+
+  theme_void()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        plot.margin = margin(0,10,0,0))+
+  xlim(-3,4)
+  
 ```
-
 
 
 
