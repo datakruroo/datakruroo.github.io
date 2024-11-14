@@ -55,7 +55,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="index_files/libs/clipboard/clipboard.min.js"></script>
@@ -217,7 +237,7 @@ D 0 0 1 0</code></pre>
 </div>
 <section id="visualization-library" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="visualization-library"><span class="header-section-number">2.1</span> Visualization library</h3>
-<p>มี library หลายตัวที่สามารถใช้สร้าง network visualization ได้ บทเรียนนี้จะแนะนำสองตัวได้แก่ <code>{igraph}</code> และ <code>{ggraph}</code></p>
+<p>มี library หลายตัวที่สามารถใช้สร้าง network visualization ได้ บทเรียนนี้จะแนะนำสองตัวได้แก่ <code>{igraph}</code> และ <code>{ggraph}</code> <span class="citation" data-cites="igraph2023">(<a href="#ref-igraph2023" role="doc-biblioref">Csardi and Nepusz 2023</a>)</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("igraph")</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## install.packages("ggraph")</span></span>
@@ -241,9 +261,9 @@ D 0 0 1 0</code></pre>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_edgelist</span>(<span class="fu">as.matrix</span>(edges), <span class="at">directed =</span> F)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH cacb5e9 UN-- 4 4 -- 
+<pre><code>IGRAPH 667a8f6 UN-- 4 4 -- 
 + attr: name (v/c)
-+ edges from cacb5e9 (vertex names):
++ edges from 667a8f6 (vertex names):
 [1] A--B B--C C--D A--D</code></pre>
 </div>
 </div>
@@ -402,9 +422,9 @@ $ mainStat          &lt;chr&gt; "HLM,SEM,Latent Growth Curve Model", "MANOVA, Pa
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">directed =</span> F)</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>teacher_network_igraph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH 4b33a48 UN-- 30 125 -- 
+<pre><code>IGRAPH 100b149 UN-- 30 125 -- 
 + attr: name (v/c)
-+ edges from 4b33a48 (vertex names):
++ edges from 100b149 (vertex names):
  [1] ศิริชัย --สุชาดา    ศิริชัย --ทวีวัฒน์    ศิริชัย --ศิริเดช    สุชาดา--นงลักษณ์  
  [5] สุชาดา--วรรณี     สุชาดา--สิริพันธุ์    สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์   
  [9] สุชาดา--วรรณี     สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์    สุชาดา--วรรณี    
@@ -423,9 +443,9 @@ $ mainStat          &lt;chr&gt; "HLM,SEM,Latent Growth Curve Model", "MANOVA, Pa
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">directed =</span> F)</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>teacher_network_igraph </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH f0d4ea8 UN-- 30 125 -- 
+<pre><code>IGRAPH 56e415d UN-- 30 125 -- 
 + attr: name (v/c)
-+ edges from f0d4ea8 (vertex names):
++ edges from 56e415d (vertex names):
  [1] ศิริชัย --สุชาดา    ศิริชัย --ทวีวัฒน์    ศิริชัย --ศิริเดช    สุชาดา--นงลักษณ์  
  [5] สุชาดา--วรรณี     สุชาดา--สิริพันธุ์    สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์   
  [9] สุชาดา--วรรณี     สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์    สุชาดา--วรรณี    
@@ -465,7 +485,7 @@ $ mainStat          &lt;chr&gt; "HLM,SEM,Latent Growth Curve Model", "MANOVA, Pa
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(teacher_network_igraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 125/125 edges from f0d4ea8 (vertex names):
+<pre><code>+ 125/125 edges from 56e415d (vertex names):
  [1] ศิริชัย --สุชาดา    ศิริชัย --ทวีวัฒน์    ศิริชัย --ศิริเดช    สุชาดา--นงลักษณ์  
  [5] สุชาดา--วรรณี     สุชาดา--สิริพันธุ์    สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์   
  [9] สุชาดา--วรรณี     สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์    สุชาดา--วรรณี    
@@ -592,9 +612,9 @@ $gender
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>graph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH f0d4ea8 UN-- 30 125 -- 
+<pre><code>IGRAPH 56e415d UN-- 30 125 -- 
 + attr: name (v/c), role (e/c)
-+ edges from f0d4ea8 (vertex names):
++ edges from 56e415d (vertex names):
  [1] ศิริชัย --สุชาดา    ศิริชัย --ทวีวัฒน์    ศิริชัย --ศิริเดช    สุชาดา--นงลักษณ์  
  [5] สุชาดา--วรรณี     สุชาดา--สิริพันธุ์    สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์   
  [9] สุชาดา--วรรณี     สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์    สุชาดา--วรรณี    
@@ -692,10 +712,10 @@ $gender
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">directed =</span> F)</span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>graph_with_attr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH 08c7c3c UN-- 30 125 -- 
+<pre><code>IGRAPH bd9ab84 UN-- 30 125 -- 
 + attr: name (v/c), gender (v/c), code (e/n), year (e/n), name_role
 | (e/c)
-+ edges from 08c7c3c (vertex names):
++ edges from bd9ab84 (vertex names):
  [1] ศิริชัย --สุชาดา    ศิริชัย --ทวีวัฒน์    ศิริชัย --ศิริเดช    สุชาดา--นงลักษณ์  
  [5] สุชาดา--วรรณี     สุชาดา--สิริพันธุ์    สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์   
  [9] สุชาดา--วรรณี     สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์    สุชาดา--วรรณี    
@@ -714,7 +734,7 @@ $gender
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(graph_with_attr)[[<span class="fu">.from</span>(<span class="st">"ศิริชัย"</span>)]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 10/125 edges from 08c7c3c (vertex names):
+<pre><code>+ 10/125 edges from bd9ab84 (vertex names):
     tail   head tid hid code year  name_role
 1   ศิริชัย  สุชาดา   1   2    1 2543 co_advisor
 2   ศิริชัย  ทวีวัฒน์   1   9    1 2543  commitee1
@@ -729,7 +749,7 @@ $gender
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">E</span>(graph_with_attr)[[year <span class="sc">&gt;</span> <span class="dv">2550</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 28/125 edges from 08c7c3c (vertex names):
+<pre><code>+ 28/125 edges from bd9ab84 (vertex names):
     tail     head tid hid code year  name_role
 9  สุชาดา     วรรณี   2  12    5 2551 co_advisor
 10 สุชาดา    ศิริเดช   2  10    6 2551 co_advisor
@@ -762,7 +782,7 @@ $gender
 </div>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(graph_with_attr)[[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 6/30 vertices, named, from 08c7c3c:
+<pre><code>+ 6/30 vertices, named, from bd9ab84:
     name gender
 1   ศิริชัย   Male
 2  สุชาดา Female
@@ -773,7 +793,7 @@ $gender
 </div>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(graph_with_attr)[[gender <span class="sc">==</span> <span class="st">"Male"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 11/30 vertices, named, from 08c7c3c:
+<pre><code>+ 11/30 vertices, named, from bd9ab84:
        name gender
 1      ศิริชัย   Male
 3       ปทีป   Male
@@ -798,10 +818,10 @@ $gender
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">V</span>(graph_with_attr)<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">V</span>(graph_with_attr)<span class="sc">$</span>gender <span class="sc">==</span> <span class="st">"Male"</span>, <span class="st">"steelblue"</span>,<span class="st">"orange"</span>)</span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>graph_with_attr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>IGRAPH 08c7c3c UN-- 30 125 -- 
+<pre><code>IGRAPH bd9ab84 UN-- 30 125 -- 
 + attr: name (v/c), gender (v/c), color (v/c), code (e/n), year (e/n),
 | name_role (e/c)
-+ edges from 08c7c3c (vertex names):
++ edges from bd9ab84 (vertex names):
  [1] ศิริชัย --สุชาดา    ศิริชัย --ทวีวัฒน์    ศิริชัย --ศิริเดช    สุชาดา--นงลักษณ์  
  [5] สุชาดา--วรรณี     สุชาดา--สิริพันธุ์    สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์   
  [9] สุชาดา--วรรณี     สุชาดา--ศิริเดช    สุชาดา--สิริพันธุ์    สุชาดา--วรรณี    
@@ -1187,7 +1207,7 @@ $gender
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="do">## อ.ดวงกมลเชิญใครมาเป็นกรรมการบ้าง</span></span>
 <span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">incident</span>(g3, <span class="st">"ดวงกมล"</span>, <span class="at">mode =</span> <span class="st">"in"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 6/16 edges from 2233864 (vertex names):
+<pre><code>+ 6/16 edges from f816221 (vertex names):
 [1] วรรณี -&gt;ดวงกมล ศิริชัย -&gt;ดวงกมล สิริพันธุ์-&gt;ดวงกมล สุชาดา-&gt;ดวงกมล อวยพร-&gt;ดวงกมล
 [6] โชติกา-&gt;ดวงกมล</code></pre>
 </div>
@@ -1255,12 +1275,12 @@ $gender
 <div class="cell">
 <div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">neighbors</span>(all_g, <span class="st">"ศิริเดช"</span>, <span class="at">mode =</span> <span class="st">"all"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 5/30 vertices, named, from e0ecfa0:
+<pre><code>+ 5/30 vertices, named, from 15da289:
 [1] ศิริชัย  สิริพันธุ์ สุชาดา สุชาดา สุชาดา</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">neighbors</span>(all_g, <span class="st">"ศิริเดช"</span>, <span class="at">mode =</span> <span class="st">"in"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 5/30 vertices, named, from e0ecfa0:
+<pre><code>+ 5/30 vertices, named, from 15da289:
 [1] ศิริชัย  สิริพันธุ์ สุชาดา สุชาดา สุชาดา</code></pre>
 </div>
 </div>
@@ -1284,7 +1304,7 @@ $gender
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">neighbors</span>(all_g, <span class="st">"พฤทธิ์"</span>, <span class="at">mode =</span> <span class="st">"all"</span>)</span>
 <span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="fu">intersection</span>(x,y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 1/30 vertex, named, from e0ecfa0:
+<pre><code>+ 1/30 vertex, named, from 15da289:
 [1] ไพฑูรย์</code></pre>
 </div>
 </div>
@@ -1296,7 +1316,7 @@ $gender
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">farthest_vertices</span>(all_g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$vertices
-+ 2/30 vertices, named, from e0ecfa0:
++ 2/30 vertices, named, from 15da289:
 [1] ดวงกมล ศิริยุภา 
 
 $distance
@@ -1307,7 +1327,7 @@ $distance
 <div class="cell">
 <div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_diameter</span>(all_g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>+ 4/30 vertices, named, from e0ecfa0:
+<pre><code>+ 4/30 vertices, named, from 15da289:
 [1] ดวงกมล สุชาดา  สุวิมล   ศิริยุภา </code></pre>
 </div>
 </div>
@@ -1316,7 +1336,7 @@ $distance
 <div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ego</span>(all_g, <span class="dv">1</span>, <span class="st">"สุชาดา"</span>, <span class="at">mode =</span> <span class="st">"in"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
-+ 8/30 vertices, named, from e0ecfa0:
++ 8/30 vertices, named, from 15da289:
 [1] สุชาดา  ดวงกมล ปทีป    ศิริชัย   สิริพันธุ์  สุวิมล   อาชัญญา ไพฑูรย์ </code></pre>
 </div>
 </div>
@@ -1665,25 +1685,87 @@ $distance
 <li><p>วิเคราะห์โครงสร้างของ network ในข้อ 1.</p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(thaitextrecipe)</span>
-<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="do">## สร้าง network ของ mainStat กับคำสำคัญหลักของงานวิจัย</span></span>
-<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>thesis_data <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span>
-<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>thesis_data <span class="sc">%&gt;%</span> </span>
-<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(mainStat, depart) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace_all</span>(mainStat, <span class="st">","</span>,<span class="st">" "</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(word, mainStat, </span>
-<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">token =</span> thai_tokenizer,</span>
-<span id="cb114-9"><a href="#cb114-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">token_engine =</span> <span class="st">"longest"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-10"><a href="#cb114-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> stop_words) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-11"><a href="#cb114-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(word, <span class="st">"</span><span class="sc">\\</span><span class="st">d+"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-12"><a href="#cb114-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">str_squish</span>(word)) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-13"><a href="#cb114-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(depart, word) <span class="sc">%&gt;%</span> </span>
-<span id="cb114-14"><a href="#cb114-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb114-15"><a href="#cb114-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>thesis_data <span class="sc">%&gt;%</span></span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(code, mainStat) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(mainStat, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"stat1"</span>,<span class="st">"stat2"</span>,<span class="st">"stat3"</span>,<span class="st">"stat4"</span>,</span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"stat5"</span>,<span class="st">"stat6"</span>), <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">names_to =</span> <span class="st">"statid"</span>, <span class="at">values_to =</span> <span class="st">"mainStat"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_to_lower</span>(mainStat)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-9"><a href="#cb114-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"lisrel"</span>,<span class="st">"sem"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-10"><a href="#cb114-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"การวิเคราะห์สหสัมพันธ์"</span>,<span class="st">"correlation"</span>))<span class="sc">%&gt;%</span> </span>
+<span id="cb114-11"><a href="#cb114-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_squish</span>(mainStat)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-12"><a href="#cb114-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"mean"</span>,<span class="st">"descriptive"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-13"><a href="#cb114-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"monte carlo simulation technique"</span>,<span class="st">"monte carlo simulation"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-14"><a href="#cb114-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"invariance"</span>,<span class="st">"multi-group analysis"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-15"><a href="#cb114-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"analytic induction"</span>,<span class="st">"analysis induction"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-16"><a href="#cb114-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mainStat =</span> <span class="fu">str_replace</span>(mainStat, <span class="st">"model multi-group analysis"</span>,<span class="st">"multi-group analysis"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-17"><a href="#cb114-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb114-18"><a href="#cb114-18" aria-hidden="true" tabindex="-1"></a>    thesis_data <span class="sc">%&gt;%</span></span>
+<span id="cb114-19"><a href="#cb114-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(code, depart),</span>
+<span id="cb114-20"><a href="#cb114-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"code"</span></span>
+<span id="cb114-21"><a href="#cb114-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb114-22"><a href="#cb114-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-23"><a href="#cb114-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(mainStat, depart, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-24"><a href="#cb114-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb114-25"><a href="#cb114-25" aria-hidden="true" tabindex="-1"></a>    thesis_data <span class="sc">%&gt;%</span> </span>
+<span id="cb114-26"><a href="#cb114-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(code,advisor) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-27"><a href="#cb114-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">advisor =</span> <span class="fu">str_remove</span>(advisor, <span class="st">"</span><span class="sc">\\</span><span class="st">s.*"</span>)),</span>
+<span id="cb114-28"><a href="#cb114-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"code"</span></span>
+<span id="cb114-29"><a href="#cb114-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-30"><a href="#cb114-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(depart,mainStat, advisor) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-31"><a href="#cb114-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(depart, mainStat, advisor) <span class="sc">%&gt;%</span> </span>
+<span id="cb114-32"><a href="#cb114-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb114-33"><a href="#cb114-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb114-34"><a href="#cb114-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb114-35"><a href="#cb114-35" aria-hidden="true" tabindex="-1"></a>  <span class="do">## ตัด row ที่ไม่มีข้อมูลออก</span></span>
+<span id="cb114-36"><a href="#cb114-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(mainStat <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb114-37"><a href="#cb114-37" aria-hidden="true" tabindex="-1"></a>  <span class="do">## convert to igraph object</span></span>
+<span id="cb114-38"><a href="#cb114-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">graph_from_data_frame</span>(<span class="at">directed =</span> T)<span class="ot">-&gt;</span> mainStat_graph</span>
+<span id="cb114-39"><a href="#cb114-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb114-40"><a href="#cb114-40" aria-hidden="true" tabindex="-1"></a>mainStat_graph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>IGRAPH 61c3d32 DN-- 60 75 -- 
++ attr: name (v/c), advisor (e/c), n (e/n)
++ edges from 61c3d32 (vertex names):
+[1] การวัดผลทางการศึกษา      -&gt;hlm                                    
+[2] การวัดผลทางการศึกษา      -&gt;latent growth curve model              
+[3] การวัดผลทางการศึกษา      -&gt;sem                                    
+[4] การวัดและประเมินผลการศึกษา-&gt;correlation                            
+[5] การวัดและประเมินผลการศึกษา-&gt;descriptive statistics                 
+[6] การวัดและประเมินผลการศึกษา-&gt;generalized analysis of variance system
+[7] การวัดและประเมินผลการศึกษา-&gt;rater agreement index                  
+[8] การวัดและประเมินผลการศึกษา-&gt;การจำลองข้อมูล                           
++ ... omitted several edges</code></pre>
 </div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>mainStat_graph <span class="sc">%&gt;%</span> </span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggraph</span>(<span class="st">"kk"</span>)<span class="sc">+</span></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="at">edge_color =</span> <span class="st">"grey90"</span>,</span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">1.5</span>, <span class="st">"mm"</span>)))<span class="sc">+</span></span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_node_point(col = "grey30", alpha = 0.5)+</span></span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), </span>
+<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">check_overlap =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">family =</span> <span class="st">"ChulaCharasNew"</span>)<span class="sc">+</span></span>
+<span id="cb116-9"><a href="#cb116-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-igraph2023" class="csl-entry" role="listitem">
+Csardi, Gabor, and Tamas Nepusz. 2023. <span>“Igraph - Network Analysis and Visualization.”</span> <a href="https://r.igraph.org/articles/igraph.html">https://r.igraph.org/articles/igraph.html</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

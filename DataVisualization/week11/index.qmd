@@ -6,6 +6,7 @@ warning: false
 toc: true
 toc-depth: 4
 number-sections: true
+bibliography: reference.bib
 ---
 
 ```{r}
@@ -1125,22 +1126,61 @@ g %>%
 
 2. วิเคราะห์โครงสร้างของ network ในข้อ 1.
 
-```{r eval = F}
-library(thaitextrecipe)
-## สร้าง network ของ mainStat กับคำสำคัญหลักของงานวิจัย
-thesis_data %>% glimpse()
-thesis_data %>% 
-  select(mainStat, depart) %>% 
-  mutate(mainStat = str_replace_all(mainStat, ","," ")) %>% 
-  unnest_tokens(word, mainStat, 
-                token = thai_tokenizer,
-                token_engine = "longest") %>% 
-  filter(!word %in% stop_words) %>% 
-  filter(!str_detect(word, "\\d+")) %>% 
-  mutate(word = str_squish(word)) %>% 
-  group_by(depart, word) %>% 
+```{r eval = T}
+library(stringr)
+thesis_data %>%
+  select(code, mainStat) %>% 
+  separate(mainStat, into = c("stat1","stat2","stat3","stat4",
+                              "stat5","stat6"), sep = ",") %>% 
+  pivot_longer(cols = -1, names_to = "statid", values_to = "mainStat") %>% 
+  drop_na() %>% 
+  mutate(mainStat = str_to_lower(mainStat)) %>% 
+  mutate(mainStat = str_replace(mainStat, "lisrel","sem")) %>% 
+  mutate(mainStat = str_replace(mainStat, "การวิเคราะห์สหสัมพันธ์","correlation"))%>% 
+  mutate(mainStat = str_squish(mainStat)) %>% 
+  mutate(mainStat = str_replace(mainStat, "mean","descriptive")) %>% 
+  mutate(mainStat = str_replace(mainStat, "monte carlo simulation technique","monte carlo simulation")) %>% 
+  mutate(mainStat = str_replace(mainStat, "invariance","multi-group analysis")) %>% 
+  mutate(mainStat = str_replace(mainStat, "analytic induction","analysis induction")) %>% 
+  mutate(mainStat = str_replace(mainStat, "model multi-group analysis","multi-group analysis")) %>% 
+  full_join(
+    thesis_data %>%
+      select(code, depart),
+    by = "code"
+    
+  ) %>% 
+  select(mainStat, depart, 1:2) %>% 
+  full_join(
+    thesis_data %>% 
+      select(code,advisor) %>% 
+      mutate(advisor = str_remove(advisor, "\\s.*")),
+    by = "code"
+  ) %>% 
+  select(depart,mainStat, advisor) %>% 
+  group_by(depart, mainStat, advisor) %>% 
   count() %>% 
-  arrange(desc(n))
+  drop_na() %>% 
+  ungroup() %>% 
+  ## ตัด row ที่ไม่มีข้อมูลออก
+  filter(mainStat != "") %>%
+  ## convert to igraph object
+  graph_from_data_frame(directed = T)-> mainStat_graph
+
+mainStat_graph
+```
+
+
+
+```{r fig.width = 12, fig.height=8}
+mainStat_graph %>% 
+  ggraph("kk")+
+  geom_edge_link(edge_color = "grey90",
+                 arrow = arrow(type = "closed", length = unit(1.5, "mm")))+
+  #geom_node_point(col = "grey30", alpha = 0.5)+
+  geom_node_text(aes(label = name), 
+                 check_overlap = TRUE,
+                 family = "ChulaCharasNew")+
+  theme_void()
 ```
 
 
