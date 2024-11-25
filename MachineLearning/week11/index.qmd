@@ -1,0 +1,541 @@
+---
+title: "Topic Modelling"
+author: "Siwachoat Srisuttiyakorn"
+date: "2024-11-14"
+message: false
+warning: false
+toc: true
+number-sections: true
+---
+
+ในการวิเคราะห์ข้อความหรือการทำเหมืองข้อความ ผู้วิเคราะห์มักมีเอกสารที่เป็นข้อมูลต้นฉบับจำนวนมาก เช่น บทความ วิทยานิพนธ์ หรือ blog, post ... การวิเคราะห์ข้อมูลต้นฉบับเหล่านี้ให้เข้าใจได้ง่ายจำเป็นต้องมีการลดความซับซ้อนของข้อมูลที่มีให้เหลือแต่สาระสำคัญในมิติต่าง ๆ  วัตถุประสงค์ในลักษณะนี้สามารถตอบได้โดยใช้การเรียนรู้ของเครื่องในกลุ่ม unsupervised learning
+
+สำหรับข้อมูลแบบข้อความ เรามีวิธีการวิเคราะห์เพื่อสรุปหาสาระสำคัญจากเอกสารหลากหลายวิธี วิธีการหนึ่งคือการจัดกลุ่มเอกสารดังกล่าวเพื่อระบุคุณลักษณะร่วม หรือประเด็นที่เป็นใจความสำคัญของเอกสาร วิธีการที่ได้รับความนิยมในบริบทดังกล่าวคือ topic modelling 
+
+บทเรียนยังจะกล่าวถึงการใช้เทคนิค topic modelling ในลักษณะที่เป็น unsupervised learning ตัวหนึ่งสำหรับทำความเข้าใจคุณลักษณะของเอกสารหรือข้อมูลประเภทข้อความ นอกจากนี้ยังจะกล่าวถึงวิธีการจัดการข้อมูลประเภทข้อความใน R ภายใต้ `{tidyverse}` ซึ่งมี library ที่เกี่ยวข้องหลายตัวได้แก่ `{stringr}`, `{tidytext}` และ `{thaitextrecipe}` จากนั้นจึงกล่าวถึงการทำ topic modelling จากข้อมูลที่เรา preprocess เรียบร้อยแล้ว รายละเอียดมีดังนี้
+
+
+## แนวคิดหลักของ LDA
+
+
+Latent Dirichlet Allocation (LDA) เป็นวิธีที่ได้รับความนิยมในการสร้างโมเดลหัวข้อ โดยจะมองว่าเอกสารแต่ละฉบับประกอบด้วยส่วนผสมของหัวข้อต่าง ๆ และแต่ละหัวข้อเองก็ประกอบด้วยส่วนผสมของคำหลายคำ วิธีนี้ช่วยให้เอกสารสามารถ “ทับซ้อน” กันได้ในแง่ของเนื้อหา แทนที่จะต้องถูกแยกเป็นกลุ่มที่ไม่ทับซ้อนกัน ซึ่งสะท้อนถึงการใช้ภาษาธรรมชาติในชีวิตจริง
+
+หลักไม่ลง detail ในเชิงคณิตศาสตร์ LDA แนวคิดหลักของ LDA มีอยู่สองส่วนได้แก่
+
+1. แต่ละเอกสารประกอบด้วยหัวข้อต่าง ๆ ในอัตราส่วนต่าง ๆ กล่าวคือ บทความวิจัย หนังสือ หรือเอกสารแต่ละฉบับนั้น มีการเขียนเนื้อหาในหลากหลายประเด็น/หัวข้อ แต่อาจมีสัดส่วนของหัวข้อดังกล่าวที่แตกต่างกัน เช่น บทความวิจัย A อาจมีหัวข้อเกี่ยวกับ regression analysis ที่เป็นเครื่องมือหลักอยู่ 10% แต่บทความวิจัย B อาจมีมากกว่านั้น
+
+2. แต่ละหัวข้อหรือประเด็นดังกล่าวเป็น combination ของคำหลายคำ เช่นหัวข้อเกี่ยวกับ regression อาจมาทั้งคำว่า R2, coefficient, slope และอื่น ๆ ที่เกี่ยวข้อง แต่ถ้าเป็นหัวข้อแนว content ของตัวแปร เช่น ผลสัมฤทธิ์ทางการเรียน เราอาจเกี่ยวข้องกับคำ เช่น ผลลัพธ์การเรียนรู้ การเรียนรู้ คณิตศาสตร์ และอื่น ๆ เป็นต้น
+
+LDA เป็นอัลกอริทึมที่จะประเมินข้อความที่นำเข้ามาวิเคราะห์จากทั้งสองหลักการข้างต้นไปพร้อม ๆ  กัน โดยพยายามหา combination ของคำที่มีความสัมพันธ์หรือเชื่อมโยงกับประเด็น/หัวข้อ ในขณะเดียวกันก็จะหา combination ของหัวข้อที่ใช้อธิบายเอกสาร/บทความแต่ละฉบับ
+
+ในเชิงคณิตศาสตร์ (ข้ามได้) LDA ใช้ค่าความน่าจะเป็น เป็นเครื่องมือหลักในการจัดกลุ่มคำหรือหัวข้อดังกล่าว การคำนวณความน่าจะเป็นนี้ดำเนินการโดยอิงกับหลักความน่าจะเป็นแบบเบส์ รายละเอียดมีดังนี้
+
+โมเดล LDA คือโมเดลความน่าจะเป็นร่วม (joint probability distribution) ของชุดเอกสาร/บทความทั้งหมด ดังนี่้
+
+$$
+   p(\mathbf{w}, \mathbf{z}, \theta, \phi | \alpha, \beta) = \prod_{d=1}^D p(\theta_d | \alpha) \prod_{k=1}^K p(\phi_k | \beta) \prod_{n=1}^{N_d} p(z_{d,n} | \theta_d) p(w_{d,n} | \phi_{z_{d,n}})
+$$
+
+โดยที่
+
+- $\mathbf{w}$ คือ คำเวกเตอร์หรือเซตของคำทั้งหมดในทุกเอกสาร
+
+- $\mathbf{z}$ คือ หัวข้อทั้งหมดที่กำหนดให้กับแต่ละคำภายในเอกสาร สมาชิกในเวกเตอร์นี้เขียนแทนด้วย $z_{d,i}$ ซึ่งเป็นหัวข้อที่กำหนดให้กับคำที่ $i$ ในเอกสารที่ $d$
+
+- $\theta$ คือ ตัวแปรสุ่มแสดงการแจกแจงของหัวข้อแต่ละหัวข้อในเอกสารทั้งหมด
+
+- $\phi$ คือ ตัวแปรสุ่มแสดงการแจกแจงของคำแต่ละคำในหัวข้อทั้งหมด
+
+
+จากสมการข้างต้นแสดงให้เห็นความสัมพันธ์ระหว่างชุดข้อมูลนำเข้าซึ่ง represent ในรูปความน่าจะเป็นร่วมทางด้านซ้ายของสมการ กับ โมเดล LDA ที่มีการแตกตัวแปรสุ่มในความน่าจะเป็นร่วมออกเป็นฟังก์ชันความน่าจะเป็นแบบมีเงื่อนไขทางด้านขวาของสมการ การแตกฟังก์ชันความน่าจะเป็นดังกล่าวทำให้เราสามารถสร้างคำอธิบายหัวข้อและคำในเอกสารที่ใช้เป็นข้อมูลนำเข้าได้ โดยพารามิเตอร์ $\alpha$ จะเป็นพารามิเตอร์สำหรับอธิบาย $\theta$ และ $\beta$ จะเป็นพารามิเตอร์สำหรับอธิบาย $\phi$ 
+
+กล่าวโดยสรุปจากสมการข้างต้น หากเราสามารถประมาณ $\theta_d$ ได้จะทำให้เราทราบการแจกแจงของหัวข้อภายในแต่ละเอกสาร สารสนเทศที่ได้จากการแจกแจงความน่าจะเป็นนี้นำไปสู่การสร้างข้อสรุปได้ว่า เอกสารแต่ละฉบับมีจุดเน้นในประเด็นหรือหัวข้อใด และหากสามารถประมาณ $\phi_k$ ได้จะทำให้เราทราบการแจกแจงของคำในแต่ละหัวข้อ สารสนเทศที่ได้จากการแจกแจงความน่าจะเป็นนี้นำไปสู่การสร้างข้อสรุปได้ว่า หัวข้อแต่ละหัวข้อมีคำใดบ้าง นำไปสู่การให้ความหมายหรือวิเคราะห์สาระสำคัญของแต่ละหัวข้อได้
+
+
+
+## LDA vs Clustering
+
+LDA และ clustering ทั่วไปมีส่วนที่เหมือนกันคือเป็น unsupervised learning และมีการจัดกลุ่มข้อมูลเพื่อบรรยายหรือสำรวจสภาพหรือระบุส่วนสำคัญของหน่วยข้อมูล แต่ในเชิงลึกแล้วทั้งสองกลุ่มเทคนิคมีความแตกต่างกัน
+
+- K-Means และ Hierarchical clustering เป็นเทคนิคจัดกลุ่มหน่วยข้อมูลที่อิงกับระยะห่าง (distance) ซึ่งเหมาะกับการจัดกลุ่มโดยที่ผู้วิเคราะห์มีข้อมูลแบบตัวเลขที่มีค่าต่อเนื่อง ในขณะที่ LDA อิงจากจำนวนคำหรือการแจกแจงของคำ ซึ่งเป็นข้อมูลที่ไม่ต่อเนื่อง
+
+- Clustering ดังกล่าวจะจัดกลุ่มข้อมูลโดยยอมให้แต่ละหน่วยข้อมูลอยู่ในกลุ่มได้เพียงกลุ่มเดียวเท่านั้น จะไม่มีการจัดกลุ่มที่ทับซ้อนกันได้ ซึ่งเป็นจุดที่แตกต่างจาก LDA ที่ยอมให้แต่ละเอกสารมีหัวข้อได้หลายหัวข้อทับซ้อนกันได้
+
+
+## การเตรียมข้อมูล
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(stringr)
+```
+
+
+### นำเข้าชุดข้อมูล
+
+ชุดข้อมูลตัวอย่างในบทเรียนนี้จะใช้ชุดข้อมูลวิทยานิพนธ์ภายใต้การดูแลของ อ.สุชาดา ตัวแปรที่เลือกมาทำการวิเคราะห์มีดังนี้
+
+```{r}
+library(readxl)
+thesis_data <- read_excel('/Users/choat/Documents/GitHub/datakruroo.github.io/DataVisualization/week03/data_AJ suchada.xlsx')
+use_data <- thesis_data %>% select(code, year, advisor, thesisnameTH,
+                                   depart, edu, absTH, absEN)
+glimpse(use_data)
+```
+
+วัตถุประสงค์ของการวิเคราะห์นี้จะดำเนินการสกัดประเด็น/หัวข้อจากข้อมูลบทคัดย่อของวิทยานิพนธ์ โดยใช้เทคนิค LDA ลองพิจารณาตัวอย่างบทคัดย่อของเอกสารแรกด้านล่าง
+
+```{r}
+use_data %>% 
+  slice(1) %>% 
+  pull(absEN) %>% 
+  str_wrap(width = 60) %>% 
+  str_split("\n")
+```
+
+
+### ขั้นตอนการเตรียมข้อมูล
+
+การสร้างโมเดล LDA เงื่อนไขแรกคือผู้วิเคราะห์จะต้องสร้างข้อมูลนำเข้าในรูปแบบเมทริกซ์ที่เรียกว่า document-term matrix ก่อน ตามชื่อของเมทริกซ์นี้ แถวของเมทริกซ์แทนเอกสารหรือบทความแต่ละฉบับ ส่วนคอลัมน์แทนคำทั้งหมดที่ปรากฎในเอกสารทั้งหมด เซลล์ของเมทริกซ์บรรจุ metric ของความถี่หรือน้ำหนักของคำในเอกสารแล้วแต่วิธีการคำนวณ
+
+เนื่องจากคำที่ปราฎในเอกสารมจำนวนมาก ดังนั้นเมทริกซ์ dtm ที่สร้างขึ้นถึงแม้ว่าจะมีขนาดที่ใหญ่ แต่ก็มีแนวโน้มจะเกิดค่า 0 เป็นจำนวนมากในเซลล์ของเมทริกซ์ หากผู้วิเคราะห์เก็บข้อมูลดังกล่าวในเมทริกซ์ทั่วไปจะเป็นการลดประสิทธิภาพในการจัดเก็บและประมวลผลข้อมูลโดยไม่จำเป็น เพื่อแก้ปัญหานี้จึงมีการพัฒนาโครงสร้างสำหรับเก็บข้อมูลในกรณีนี้โดยเฉพาะ เรียกว่า Sparse Matrix ที่มีลักษณะสำคัญคือเป็นเมทริกซ์ที่มีโครงสร้างภายในหลีกเลี่ยงการเก็บค่า 0 จำนวนมากในหน่วยความจำ ซึ่งช่วยประหยัดหน่วยความจำ เพิ่มความเร็วในการประมวลผล ได้อย่างมีประสิทธิภาพ
+
+
+![https://www.datacamp.com/tutorial/what-is-topic-modeling](https://images.datacamp.com/image/upload/v1697708918/image_8ba024f31a.png)
+
+ขั้นตอนการสร้าง dtm มีดังนี้
+
+1. เตรียมข้อมูลดิบ
+
+ตอนนี้ข้อมูลดิบคือ
+
+```{r}
+use_data %>% 
+  select(code, absEN)
+```
+
+
+2. แบ่งข้อมูลดิบให้อยู่ในรูปแบบ tidytext รูปแบบนี้มี concept เดียวกับ tidydata คือ แถวเป็นหน่วยข้อมูล ในกรณีนี้คือบทความ/เอกสาร ส่วนคอลัมน์คือคำที่ปรากฏในเอกสาร ชุดข้อมูลแบบนี้เป็นชุดข้อมูลแบบยาว สามารถสร้างได้โดยการตัดข้อความในเอกสารออกเป็นหน่วยย่อย ๆ  เช่น คำ เรียกกระบวนการนี้ว่า tokenization ซึ่งสามารถทำได้ง่าย ๆด้วย `unnest_token()` ของ `{tidytext}` อย่างไรก็ตามการทำงานร่วมกับภาษาไทยจำเป็นต้องใช้อัลกอริทึมตัดคำภาษาไทยด้วย ปัจจุบัน pythainlp เป็น library ที่มีเครื่องมือดังกล่าวที่สามารถนำมาใช้ได้ค่อนข้างดี การนำ pythainlp เข้ามาใช้ร่วมกับ `{tidytext}` ใน R ทำได้โดยใช้ `{thaitextrecipe}`
+
+3. เมื่อตัดคำเรียบร้อยแล้วส่วนสำคัญคือทำความสะอาดคำเพื่อลด noise ในข้อมูลนำเข้า เช่น การตัด stopword หรือการลบตัวเลข สัญลักษณ์ที่ไม่เกี่ยวข้องออกจากชุดข้อมูล
+
+4. คำนวณความถี่หรือน้ำหนักของคำแต่ละคำ
+
+5. สร้าง dtm โดยใช้ `cast_dtm()` ของ `{tidytext}`
+
+
+### Tokenization
+
+ตัวอย่างต่อไปนี้แสดงการจัดการข้อมูล อ.สุชาดา ตามขั้นตอนดังกล่าวเพื่อให้เห็นกระบวนการทำ topic modelling ส่วนนี้จะใช้บทคัดย่อภาษาอังกฤษที่ดำเนินการได้ง่ายกว่าก่อน 
+
+ผลลัพธ์ด้านล่างแสดงการตัดคำโดยใช้ tokenization 3 แบบ จะเห็นว่าการตัดคำด้วย `unnest_tokens()` จะให้ผลลัพธ์เป็นชุดข้อมูลแบบยาว ดังนี้
+
+```{r}
+token_data_en1 <- use_data %>% 
+  select(code, absEN) %>% 
+  unnest_tokens(
+    output = word,
+    input = absEN,
+    token = "words" ## unigram
+  )
+token_data_en1 
+```
+
+
+```{r}
+token_data_en2 <- use_data %>% 
+  select(code, absEN) %>% 
+  unnest_tokens(
+    output = word,
+    input = absEN,
+    token = "ngrams",
+    n = 2
+  )
+token_data_en2 
+```
+
+
+
+```{r}
+token_data_en3 <- use_data %>% 
+  select(code, absEN) %>% 
+  unnest_tokens(
+    output = word,
+    input = absEN,
+    token = "ngrams",
+    n = 3
+  )
+token_data_en3
+```
+
+### Cleaning and Calculate TF-IDF
+
+จากนั้นจะทำความสะอาดข้อมูลกระบวนการที่มักดำเนินการทั่วไปคือ การลบช่องว่าง การปรับตัวอักษรให้เป็นตัวเล็กหรือตัวใหญ่ทั้งหมด การลบ stopword ลบสัญลักษณ์พิเศษและตัวเลข 
+
+
+ใน tidytext มี dictionary stopword ให้ใช้งานโดยดึงมาจากพจนานุกรมภาษาอังกฤษ 3 เล่ม ดังนี้
+
+```{r}
+tidytext::stop_words %>% 
+  group_by(lexicon) %>% 
+  count()
+```
+
+
+```{r}
+## install.packages("textstem")
+library(textstem)
+
+tfidf_mat1 <- token_data_en1 %>% 
+  mutate(word = str_trim(word, side = "both")) %>% 
+  ## mutate(word = str_to_lower(word)) %>% 
+  anti_join(stop_words, by = "word") %>% 
+  mutate(word = lemmatize_words(word)) %>% 
+  filter(!str_detect(word, "\\d+")) %>%
+  filter(!str_detect(word, "[[:punct:]]")) %>% 
+  ## convert to tf-idf 
+  group_by(code, word) %>% 
+  count() %>% 
+  ungroup() %>% 
+  bind_tf_idf(term = word, document = code, n = n) %>% 
+  group_by(code) %>%
+  slice_max(n = 20, tf_idf)
+
+tfidf_mat1
+```
+
+```{r}
+tfidf_mat3 <- token_data_en3 %>% 
+  mutate(word = str_trim(word, side = "both")) %>% 
+  mutate(word = str_to_lower(word)) %>% 
+  separate(word, into = c("word1", "word2", "word3"), sep = " ") %>% 
+  anti_join(stop_words, by = c("word1" = "word")) %>% 
+  anti_join(stop_words, by = c("word2" = "word")) %>%
+  anti_join(stop_words, by = c("word3" = "word")) %>% 
+  #mutate(word1 = lemmatize_words(word1)) %>% 
+  #mutate(word2 = lemmatize_words(word2)) %>%
+  #mutate(word3 = lemmatize_words(word3)) %>%
+  filter(!str_detect(word1, "\\d+")) %>%
+  filter(!str_detect(word2, "\\d+")) %>%
+  filter(!str_detect(word3, "\\d+")) %>%
+  filter(!str_detect(word1, "[[:punct:]]")) %>% 
+  filter(!str_detect(word2, "[[:punct:]]")) %>%
+  filter(!str_detect(word3, "[[:punct:]]")) %>%
+  #select(-word3) %>% 
+  unite(word, word1, word2, word3, sep = " ") %>% 
+  #filter(!str_detect(word, "[[:punct:]]")) %>% 
+  ## convert to tf-idf 
+  group_by(code, word) %>% 
+  count() %>% 
+  ungroup() %>% 
+  bind_tf_idf(term = word, document = code, n = n)
+
+tfidf_mat3
+```
+
+
+
+
+```{r bigram, eval = F, echo = F}
+tfidf_mat2 <- token_data_en2 %>% 
+  mutate(word = str_trim(word, side = "both")) %>% 
+  mutate(word = str_to_lower(word)) %>% 
+  separate(word, into = c("word1", "word2", "word3"), sep = " ") %>% 
+  anti_join(stop_words, by = c("word1" = "word")) %>% 
+  anti_join(stop_words, by = c("word2" = "word")) %>%
+  anti_join(stop_words, by = c("word3" = "word")) %>% 
+  #mutate(word1 = lemmatize_words(word1)) %>% 
+  #mutate(word2 = lemmatize_words(word2)) %>%
+  #mutate(word3 = lemmatize_words(word3)) %>%
+  filter(!str_detect(word1, "\\d+")) %>%
+  filter(!str_detect(word2, "\\d+")) %>%
+  #filter(!str_detect(word3, "\\d+")) %>%
+  filter(!str_detect(word1, "[[:punct:]]")) %>% 
+  filter(!str_detect(word2, "[[:punct:]]")) %>%
+  #filter(!str_detect(word3, "[[:punct:]]")) %>%
+  select(-word3) %>% 
+  unite(word, word1, word2, sep = " ") %>% 
+ # filter(!str_detect(word, "[[:punct:]]")) %>% 
+  ## convert to tf-idf 
+  group_by(code, word) %>% 
+  count() %>% 
+  ungroup() %>% 
+  bind_tf_idf(term = word, document = code, n = n) 
+
+tfidf_mat3 <- token_data_en3 %>% 
+  mutate(word = str_trim(word, side = "both")) %>% 
+  mutate(word = str_to_lower(word)) %>% 
+  separate(word, into = c("word1", "word2", "word3"), sep = " ") %>% 
+  anti_join(stop_words, by = c("word1" = "word")) %>% 
+  anti_join(stop_words, by = c("word2" = "word")) %>%
+  anti_join(stop_words, by = c("word3" = "word")) %>% 
+  #mutate(word1 = lemmatize_words(word1)) %>% 
+  #mutate(word2 = lemmatize_words(word2)) %>%
+  #mutate(word3 = lemmatize_words(word3)) %>%
+  filter(!str_detect(word1, "\\d+")) %>%
+  filter(!str_detect(word2, "\\d+")) %>%
+  filter(!str_detect(word3, "\\d+")) %>%
+  filter(!str_detect(word1, "[[:punct:]]")) %>% 
+  filter(!str_detect(word2, "[[:punct:]]")) %>%
+  filter(!str_detect(word3, "[[:punct:]]")) %>%
+  select(-word3) %>% 
+  unite(word, word1, word2, sep = " ") %>% 
+  #filter(!str_detect(word, "[[:punct:]]")) %>% 
+  ## convert to tf-idf 
+  group_by(code, word) %>% 
+  count() %>% 
+  ungroup() %>% 
+  bind_tf_idf(term = word, document = code, n = n)
+
+tfidf_mat <- bind_rows(tfidf_mat2, tfidf_mat3)
+```
+
+กระบวนการข้างต้นมีการจัดระเบียบและทำความสะอาดข้อมูล จากนั้นแปลงข้อมูลเป็น tf-idf ซึ่งเป็นดัชนีความถี่ของคำที่ใช้ในการวิเคราะห์หัวข้อ โดยเราจะเลือกเฉพาะคำที่มีค่า tf-idf สูงสุด 20 คำเท่านั้น
+
+
+TF-IDF เป็นดัชนีที่ใช้วัดความสำคัญของคำในแต่ละเอกสารโดยใช้ความถี่หรือความบ่อยของการพบคำดังกล่าวเป็นเกณฑ์ จากชื่อของดัชนี
+
+- TF หมายถึง Term Frequency หรือความถี่ของคำในเอกสาร คำนวณได้จากจำนวนคำที่ปรากฎในเอกสารหนึ่ง ๆ หารด้วยจำนวนคำนั้นที่ปรากฎในเอกสารทั้งหมด 
+
+- IDF หมายถึง Inverse Document Frequencyความถี่ผกผันของเอกสาร ซึ่งบอกถึงความสำคัญของคำในทุกเอกสาร ยิ่งคำปรากฏบ่อยในหลายเอกสาร ค่า IDF จะยิ่งต่ำ แต่ถ้าคำใดปรากฏน้อยครั้งหรือปรากฏเฉพาะในเอกสารบางฉบับ ค่า IDF จะสูงขึ้น กำหนดให้ $D$ คือจำนวนเอกสารทั้งหมด และ $D_{term}$ คือจำนวนเอกสารที่ปรากฎคำนั้น ๆ
+
+
+$$
+IDF(term) = log(\frac{D}{1+D_{term}})
+$$
+
+
+- TF-IDF คำนวณจากการนำดัชนีทั้งสองมารวมกันดังนี้
+
+$$
+TFIDF = TF \times IDF
+$$
+
+### Create Document-Term Matrix
+
+จากนั้นนำชุดข้อมูล tfidf ที่ได้มาสร้างเป็น dtm ดังนี้
+
+```{r}
+dtm_thesis <- tfidf_mat3 %>% 
+  mutate(tf_idf = round(tf_idf * 1000,0)) %>%
+  cast_dtm(code, word, tf_idf)
+dtm_thesis
+```
+
+
+## การสร้างโมเดล LDA
+
+เมื่อเตรียมข้อมูลเรียบร้อยแล้วเราสามารถสร้างโมเดล LDA ได้โดยใช้ `LDA()` ของ `{topicmodels}` โดยให้ระบุจำนวนหัวข้อที่ต้องการจัดกลุ่ม และจำนวนคำที่ต้องการให้เป็นหัวข้อ ดังนี้
+
+```{r}
+library(topicmodels)
+lda_res <- LDA(
+  x = dtm_thesis,
+  k = 5,
+  method = "Gibbs",
+  control = list(seed = 123)
+)
+lda_res 
+```
+
+```{r}
+lda_res %>% glimpse()
+```
+
+
+```{r fig.height = 6}
+lda_res %>% tidy(matrix = "beta") %>% 
+  group_by(topic) %>% 
+  slice_max(n = 20, order_by = beta) %>% 
+  ggplot(aes(x = beta, y= reorder(term, beta)))+
+  geom_col(aes(fill = factor(topic)))+
+  facet_wrap(~topic, scales = "free_y", nrow = 2)+
+  theme(text = element_text(family = "ChulaCharasNew", size = 18))+
+  labs(y=NULL)
+```
+
+
+```{r eval = F}
+lda_res %>% tidy(matrix = "gamma") %>% 
+  arrange(document, topic) %>% 
+  mutate(document = as.numeric(document)) %>% 
+  group_by(document) %>% 
+  filter(gamma == max(gamma)) %>% 
+  filter(topic == 2) %>% pull(document)->doc1
+
+
+use_data %>% 
+  filter(code %in% doc1) 
+```
+
+บางครั้งผลลัพธ์จาก LDA อาจทำได้ไม่ดีหรืออาจคลุมเครือในการแปลความหมายของ topic กรณีนี้เรามีทางเลือกหลายทางในการทำงาน เช่น ปรับปรุง dtm ใหม่ โดยอาจเลือกใช้ความถี่ หรือ tdidf หรือตัวชี้วัดอื่นที่บ่งชี้ความบ่อยหรือน้ำหนักของคำแต่ละคำภายในแต่ละเอกสาร หรือการดำเนินการตัดคำด้วยวิธีการใหม่ อาจทดลองใช้ bigram หรือ trigram ในกรณีที่เนื้อหาในเอกสารมีสาระสำคัญที่แสดงผ่านคำที่มีความยาวหรือวลี หรืออาจใช้เทคนิคการตัดคำอื่น ๆ ที่เหมาะสม นอกจากนี้การทำความสะอาดข้อความให้มีข้อความที่เป็น noise น้อยที่สุดก็เป็นอีกปัจจัยหนึ่งที่ช่วยให้การทำงานของ LDA ดีขึ้นได้ สุดท้ายการลองเปลี่ยน hyperparameter จำนวน topic ของ LDA ให้เพิ่มมากขึ้นก็เป็นวิธีการหนึ่งที่ช่วยได้เช่นเดียวกัน
+
+อย่างไรก็ตามหากลองทุกวิธีการแล้วยังไม่ได้คำตอบที่เหมาะสม เราอาจพิจารณาเปลี่ยนวิธีการลดมิติของข้อมูลั ปัจจุบันมีหลายวิธีการที่ถูกพัฒนาขึ้นเพื่อทำงานในลักษณะเดียวกันหรือคล้ายคลึงกับ LDA
+
+
+## Correlated Topic Model (CTM)
+
+CTM หรือ Correlated Topic Model เป็นการขยายจาก Latent Dirichlet Allocation (LDA) ที่เพิ่มความสามารถในการจับความสัมพันธ์ระหว่างหัวข้อ (topics) โดย CTM ออกแบบมาให้แก้ไขข้อจำกัดของ LDA ซึ่งสมมติให้หัวข้อทั้งหมดในเอกสารเป็นอิสระต่อกัน (independent). ในความเป็นจริง หัวข้อมักมีความสัมพันธ์กัน เช่น ในเอกสารวิทยาศาสตร์ หัวข้อ “machine learning” อาจมีความสัมพันธ์กับ “data science” หรือ “artificial intelligence”
+
+CTM ใช้การแจกแจงที่เรียกว่า logistic normal distribution ในการจับความสัมพันธ์ระหว่างหัวข้อ โดยที่หัวข้อที่มีความสัมพันธ์กันจะมีค่าใกล้เคียงกัน ในขณะที่หัวข้อที่ไม่เกี่ยวข้องกันจะมีค่าห่างกัน
+
+
+```{r}
+ctm_res <- topicmodels::CTM(dtm_thesis, k = 3, control = list(seed = 123))
+ctm_res
+```
+
+```{r}
+terms(ctm_res, 20)
+```
+
+```{r}
+posterior(ctm_res)$terms %>% t() %>% data.frame() %>% head()
+```
+
+```{r}
+posterior(ctm_res)$topics %>% data.frame() %>% head()
+```
+
+
+## Non-negative Matrix Factorization (NMF)
+
+LDA หัวข้อนี้จะกล่าวถึงวิธี Non-negative Matrix Factorization (NMF) ซึ่งเป็นวิธีการที่ใช้ในการลดมิติของข้อมูลโดยเฉพาะในกรณีของข้อมูลที่มีค่าบวกเท่านั้น [@Lee1999] ซึ่งทำให้เหมาะสำหรับข้อมูลที่ไม่สามารถมีค่าติดลบได้ เช่น ความถี่คำในข้อความ (text mining), รูปภาพ (image processing), และสัญญาณเสียง (audio signal processing)
+
+กำหนดให้ $X$ เป็นเมทริกซ์ของข้อมูลนำเข้า (เช่น dtm) ที่มีขนาด $D \times T$ อัลกอริทึม NMF จะพยายามแยกตัวประกอบของเมทริกซ์ดังกล่าวออกเป็นสองเมทริกซ์ย่อยได้แก่ $W$ และ $H$ 
+
+$$
+X \approx  W \times H
+$$
+
+
+- $W$ เป็นเมทริกซ์ขนาด $D \times K$  (แถวคือเอกสาร ส่วนคอลัมน์คือหัวข้อ)
+
+- $H$ เป็นเมทริกซ์ขนาด $K \times T$ (แถวคือหัวข้อ ส่วนคอลัมน์คือคำ)
+
+โดยที่ $K$ คือจำนวนหัวข้อที่ต้องการจัดกลุ่ม ซึ่งเมทริกซ์ $W$ จะเป็นเมทริกซ์ที่เก็บข้อมูลสำคัญที่เป็นหัวข้อ หรือสาระสำคัญของข้อมูล ส่วนเมทริกซ์ $H$ จะเป็นเมทริกซ์ที่เก็บข้อมูลที่ไม่สำคัญหรือเป็น noise ในข้อมูล
+
+เราสามารถใช้ผลลัพธ์คือเมทริกซ์ย่อยทั้งสองในการสำรวจหัวข้อของคำที่อยู่ในเอกสารต่าง ๆ ได้ โดยการดูคำสำคัญที่มีค่าสูงสุดในแต่ละหัวข้อ หรือการดูเอกสารที่มีความสัมพันธ์กับหัวข้อใด ๆ ได้
+
+
+```{r}
+library(NMF)
+nmf_model <- nmf(dtm_thesis %>% as.matrix(), rank = 4, seed = 123)
+```
+
+
+## Biterm Topic Model (BTM)
+
+เป็นเทคนิคสำหรับ Topic Modeling ที่ออกแบบมาโดยเฉพาะสำหรับการวิเคราะห์ข้อความสั้น เช่น โพสต์บนโซเชียลมีเดีย ข้อความบทสนทนา หรือบทวิจารณ์ที่มีความยาวไม่มาก โดย BTM มุ่งเน้นการหาความสัมพันธ์ระหว่างคู่ของคำ (biterms) ในระดับของชุดข้อมูลทั้งหมดแทนการวิเคราะห์ที่ระดับเอกสารเช่น LDA
+
+
+กระบวนการทำงานของ BTM สามารถสรุปได้ดังนี้
+
+1.	สร้างคู่คำจากเอกสารทั้งหมด กล่าวคือ ทุกเอกสารจะถูกแปลงเป็นคู่คำ เช่น ข้อความ “data science is fun” จะถูกแปลงเป็น (data, science), (data, is), (data, fun), (science, is), (science, fun), (is, fun)
+
+2. สุ่มหัวข้อสำหรับแต่ละคู่คำ โดยสำหรับแต่ละคู่คำ BTM จะสุ่มหัวข้อให้ตามการแจกแจงความน่าจะเป็นของหัวข้อที่กำหนด
+
+3. ปรับปรุงการแจกแจงหัวข้อซ้ำๆ เพื่อ refine น้ำหนักหรือความน่าจะเป็นในการแจกแจงของหัวข้อ เพื่อให้สอดคล้องกับข้อมูลมากที่สุด
+
+4. แปลผล
+
+
+```{r}
+library(BTM)
+# สร้าง BTM โมเดล
+btm_model <- BTM(tfidf_mat1  %>% select(1:2), 
+                 k = 3, iter = 100, 
+                 alpha = 0.1, beta = 0.01,
+                 background = TRUE)
+btm_model %>% glimpse()
+```
+
+
+```{r}
+## top terms in each topic
+terms(btm_model, top_n = 10)
+```
+
+```{r}
+## จัดกลุ่มเอกสาร/บทความ
+predict(btm_model, newdata = tfidf_mat1 %>% select(1:2))
+```
+
+## ตัวอย่างการวิเคราะห์กับข้อความภาษาไทย
+
+```{bash eval = F}
+pip install pythainlp
+```
+
+
+```{r}
+library(thaitextrecipe)
+## เรียกตัวอย่างคำศัพท์สถิติ
+stat_word <- read_csv("stat_word.csv")
+stat_word <- custom_dict(c(stat_word$mainStat,"พารามิเตอร์","ความแปรปรวน","การวิเคราะห์ความแปรปรวน","เชิงปริมาณ","เชิงคุณภาพ",
+                           "โมเดลการวัด","กึ่งซิมเพลกซ์","พหุระดับ","เชิงปริมาณ","เชิงคุณภาพ","พุทธวิถี","ข้อมูลเชิงประจักษ์",
+                           "เศษเหลือ","ความน่าจะเป็น","ความไม่แปรเปลี่ยน","จิตมิติ","ความคลาดเคลื่อน","เปรียบเทียบความแตกต่าง",
+                           "ความเที่ยง","มาตรประมาณค่า","ลิเคอร์ท","ทีแพค-เอส","ความคงเส้นคงวา",
+                           "วิจัยเป็นฐาน","ผลสัมฤทธิ์","สุ่มในบล็อกสมบูรณ์","โมเดลเชิงเส้น","โมเดลเชิงเส้นตรงระดับลดหลั่น",
+                           "ความตรง","ลิสเรล","ไคสแควร์","ความเบ้","ความโด่ง","ความแกร่ง","อำนาจการทดสอบ",
+                           "ความคลาดเคลื่อนประเภทที่หนึ่ง","โค้งพัฒนาการ","ตัวแปรแฝง","ตัวแปรเดี่ยว","ตัวแปรพหุ",
+                           "โมเดลพหุระดับ","โมเดลสมการโครงสร้าง","โมเดลสมการโครงสร้างพหุระดับ","เพียร์สัน",
+                           "การเปรียบเทียบเชิงซ้อน"))
+
+token_data <- use_data %>% 
+  select(code, absTH) %>% 
+  unnest_tokens(
+    output = word,
+    input = absTH,
+    token = thai_tokenizer,
+    token_engine = "newmm",
+    custom_dict = stat_word
+  )
+```
+
+
+จะเห็นว่าการตัดคำด้วย `unnest_tokens()` จะให้ผลลัพธ์เป็นชุดข้อมูลแบบยาว ดังนี้
+
+```{r}
+token_data %>% head()
+```
+
+หากสำรวจดูจะเห็นว่ามีหลายคำที่เป็นคำไม่มีความหมายเรียกว่า stopword เราสามารถคัดกรองคำเหล่านี้ออกไปได้โดยใช้ dictionary stopword ภาษาไทย ซึ่งมีอยู่ใน `{thaitextrecipe}` ดังนี้
+
+
+```{r}
+cleaned_data <- token_data %>%
+  mutate(word = str_squish(word)) %>% 
+  mutate(word = str_to_lower(word)) %>% 
+  filter(word != "") %>% 
+  ## ลบ stopword ภาษาไทย
+  anti_join(thai_stopwords()) %>% 
+  ## ลบตัวเลข
+  filter(!str_detect(word, "\\d+")) %>% 
+  ## ลบสัญลักษณ์
+  filter(!str_detect(word, "[[:punct:]]")) %>% 
+  filter(!str_detect(word,"=")) %>% 
+  filter(!str_detect(word, "\\\\.")) %>% 
+  filter(!str_detect(word, "^[a-z]"))  %>% 
+  filter(!str_detect(word, "^[ก-ฮ]")) %>% 
+  filter(str_length(word)>2) 
+```
+
+สร้าง tfidf เพื่อคำนวณดัชนีความถี่ของคำแต่ละคำ
+
+```{r}
+cleaned_data %>% 
+  count(code, word) %>% 
+  arrange(desc(n)) %>% 
+  bind_tf_idf(term = word, document = code, n = n) %>% 
+  arrange(idf,word) %>% 
+  group_by(word) %>% 
+  summarise(mean_tf = mean(tf),
+            mean_idf = mean(idf),
+            mean_tfidf = mean(tf_idf)) %>% 
+  arrange(mean_idf) %>% 
+  ggplot(aes(mean_idf, mean_tf, size = mean_tfidf))+
+  geom_text(aes(label = word), check_overlap = TRUE, family = "ChulaCharasNew")
+```
+
+
