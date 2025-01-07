@@ -1,0 +1,276 @@
+---
+title: "Week 1: Introduction"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+date: "05-Aug-2024"
+format: 
+    revealjs:
+        slide-number: c/t	
+        controls: true
+        navigation-mode: vertical
+        theme: theme.scss
+        css: my_css.css
+        footer: รายวิชา 2758501 สถิติและสารสนเทศทางการศึกษา
+        logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+---
+
+## {.smaller auto-animate="true"}
+
+:::: {.columns}
+::: {.column width="60%"}
+<br>
+
+### สถิติและวิทยาการข้อมูล? 
+เป็นศาสตร์แขนงหนึ่งมีลักษณะเป็นสหศาสตร์ที่มี <br> การบูรณา
+การองค์ความรู้หลายด้านเข้าด้วยกัน ประกอบด้วย
+
+- คณิตศาสตร์/สถิติ 
+- เทคโนโลยี/วิทยาการคอมพิวเตอร์ 
+- องค์ความรู้ทฤษฎีที่เกี่ยวข้องกับบริบทเป้าหมาย 
+
+โดยมีวัตถุประสงค์หลักเพื่อนำ**ข้อมูล**ในบริบทการทำงานด้านต่าง ๆ มาใช้ให้เกิดประโยชน์ สามารถ**สร้างผลกระทบเชิงบวกต่อผู้เกี่ยวข้องได้อย่างมีนัยสำคัญ**
+:::
+
+
+::: {.column width="40%"}
+<br>
+<br>
+<br>
+
+
+![](img/datascience.png){width="80%"}
+
+
+<div class="caption2">[https://clevertap.com/blog/data-science/](https://clevertap.com/blog/data-science/)  </div>
+
+![](img/learning_analytics_components.jpeg)
+
+:::
+::::
+
+
+## สารสนเทศเชิงลึก (Insights) {.smaller}
+
+ความรู้ความเข้าใจ/องค์ความรู้ที่เป็นผลลัพธ์จากการวิเคราะห์ข้อมูล ที่มีความหมายและมีประโยชน์แก่ผู้เกี่ยวข้องในการทำความเข้าใจ ตัดสินใจ หรือนำไปสู่การดำเนินการเพื่อพัฒนาหรือแก้ปัญหาต่าง ๆ 
+
+![](img/insight.png){width="85%"}
+
+<div class="caption">[Insight Literacy: Why We Need To Clarify What Insights Really Are](https://www.forbes.com/sites/brentdykes/2022/03/08/insight-literacy-why-we-need-to-clarify-what-insights-really-are/?sh=1fe3bfc83fc3)</div>
+
+## สารสนเทศเชิงลึก (Insights) {.smaller}
+
+<center>
+![](img/education.png){width=75%}
+</center>
+
+## {.smaller}
+
+![](img/datascience_process copy.png){width=70%}
+
+<div class ="caption">[Goldstein (2017)](https://medium.com/the-mission/deconstructing-data-science-breaking-the-complex-craft-into-its-simplest-parts-15b15420df21)</div>
+
+
+## Type of Data Analytics {.center}
+
+![](img/typeofanalytic.png)
+
+
+## Use Cases: Business {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+![](https://assets.grab.com/wp-content/uploads/sites/8/2021/12/02175715/MY21GTPDT2GTPASS2021_How-To_GIF_800x800.gif){width=60%}
+
+[![](img/เต่าบิน-2.jpg){width=80%}](https://thestandard.co/tao-bin-a-robotic-barista-suscess/)
+
+:::
+
+::: {.column width="50%"}
+
+
+[![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png){width=100%}](https://medium.com/swlh/netflix-and-the-recommendation-system-e806f062ba74)
+
+- Pricing
+
+- Demand/Supply Analysis
+
+- Customer Behavior Analysis
+
+- Recommendation System
+
+- Social Listening
+
+:::
+
+
+::::
+
+## Use Cases: Medical {.smaller}
+
+
+:::: {.columns}
+
+
+::: {.column width="55%"}
+
+[![](https://activewizards.com/content/blog/Top%207%20Data%20Science%20Use%20Cases%20in%20Healthcare/ai-brain-cancer-neurosciencenews.jpg){width=80%}](https://activewizards.com/blog/top-7-data-science-use-cases-in-healthcare/)
+
+
+[![](img/Apple_WatchSeries6-ECG-alerts-heartrate-atrialfibrillation-longlook_050121_inline.jpg.large.jpg){width=35%}](https://www.youtube.com/watch?v=LAO43KDClDM&t=23s)[![](https://cdsassets.apple.com/live/7WUAS350/images/health/watchos-10-series-8-fall-detection-notification.png){width=30%}](https://support.apple.com/th-th/108896)
+
+:::
+
+::: {.column width="45%"}
+
+<br>
+
+- Medical image analysis
+
+- Virtual assistance for patients and customer support
+
+- Predictive medicine: prognosis and diagnostic accuracy
+
+- Creation of drugs
+
+- ...
+
+:::
+::::
+
+## Data Science in Education (1) {.smaller}
+
+> Data will help solve 
+the big problems of tomorrow.
+Prepare your students today. <br> - DataClassroom Inc. (2022)
+
+
+:::: {.columns}
+::: {.column width="55%"}
+::: {style="font-size: 70%;"}
+
+เก็บรวบรวมและวิเคราะห์ข้อมูลเกี่ยวกับผลการเรียนและพฤติกรรมการเรียนรู้ของนักเรียน เช่น การเข้าเรียน การทำการบ้าน การทบทวนบทเรียน และผลการทดสอบ ช่วยให้ครู (รวมทั้งนักเรียนและผู้เกี่ยวข้อง) ...
+
+- ทราบจุดเด่น ความต้องการในการพัฒนาหรือปัญหาในการเรียนรู้ของนักเรียน 
+
+- วิเคราะห์ปัจจัยที่มีความสัมพันธ์หรือมีผลต่อการเรียนรู้ของนักเรียน
+
+- ออกแบบการจัดประสบการณ์เรียนรู้เฉพาะบุคคล (personalized learning)
+
+- ทำนายแนวโน้มความสำเร็จในการเรียนของผู้เรียน หรือแนวโน้มความเสี่ยงของผู้เรียนแต่ละบุคคล 
+
+- ปรับเปลี่ยน/ออกแบบการจัดการเรียนรู้ของรายวิชา
+
+- ปรับปรุง/พัฒนาหลักสูตร
+
+- Automation
+
+:::
+:::
+
+::: {.column width="45%"}
+![](img/datadriven.png)
+
+<div class="caption">Bolz & Madhavan (2023)</div>
+
+:::
+::::
+
+## Data Science in Education (2) {.smaller}
+
+
+:::: {.columns}
+::: {.column width="35%"}
+<br>
+![](img/ach.png){width="80%"}
+![](img/effect_ach.png){width="100%"}
+
+:::
+::: {.column width="65%"}
+<br>
+![](img/predict.png)
+
+:::
+::::
+
+## Data Science in Education (3) {.smaller}
+
+![](img/speech.png){width="30%"}
+
+![](img/AES.png){width="90%"}
+
+## Data Science in Education (4) {.smaller}
+
+<br>
+<br>
+
+การวิเคราะห์คุณภาพข้อสอบ
+
+:::: {.columns}
+::: {.column width="50%"}
+![](img/itemanalysis.png)
+:::
+::: {.column width="50%"}
+![](img/itemanalysis2.png)
+:::
+::::
+
+
+<div class="caption">สิวะโชติ ศรีสุทธิยากร และคณะ (2567)</div>
+
+## Data Science in Education (5) {.smaller}
+
+![](img/education2.png)
+
+<left>
+<div class="caption2">วรรณี แกมเกตุ และคณะ (2566)</div>
+</left>
+
+<left>
+<div class="caption">ธวัชชัย ขวัญเมือง และสิวะโชติ ศรีสุทธิยากร (2567)</div>
+</left>
+
+- กำกับติดตาม/ประเมินผลการดำเนินงานทางการศึกษา
+
+- สนับสนุนการตัดสินใจเชิงนโยบาย/สร้างข้อเสนอแนะสำหรับการดำเนินงานทางการศึกษา
+
+- บริหารจัดการ/จัดสรรทรัพยากรทางการศึกษา
+
+## ตัวแปร ข้อมูล และค่าสังเกต {.smaller}
+
+
+- **ตัวแปร (variable)** คือ คุณลักษณะของสิ่งต่าง ๆ (คน สัตว์ สิ่งของ) โดยที่คุณลักษณะดังกล่าวมีการแปรเปลี่ยนได้ตามหน่วยของสิ่ง ๆ นั้น (มักเรียกว่า หน่วยข้อมูล)
+
+- **ข้อมูล (data)** คือข้อเท็จจริงหรือค่าที่ใช้สะท้อนสภาพของตัวแปร/คุณลักษณะของหน่วยข้อมูลที่ทำการศึกษา
+
+- **ค่าสังเกต (observation)** คือหน่วยข้อมูลที่ถูกวัดหรือสังเกตค่าของตัวแปร
+
+<center>
+![](img/datatable.png){width=80%}
+</center>
+
+## ประเภทของข้อมูล {.smaller}
+
+- **ข้อมูลเชิงปริมาณ (quantitative data)** คือ ข้อมูลที่มีลักษณะเป็นตัวเลขที่มีความหมาย เช่น น้ำหนัก ส่วนสูง คะแนนสอบ ร้อยละของการส่งการบ้าน จำนวนครั้งที่เข้าเรียน ของนักเรียน
+
+- **ข้อมูลจัดประเภท (categorical data)** คือ ข้อมูลที่ค่าของข้อมูลไม่มีความหมายในเชิงปริมาณ แต่มีความหมายในเชิงการแบ่งกลุ่ม/หมวดหมู่ หรือประเภท เช่น เพศของนักเรียน สาขาวิชาเอกของนิสิต
+
+<center>
+![](img/type_of_data.png){width=85%}
+</center>
+
+##  Plausible data {.smaller}
+
+
+คือ ข้อมูลที่มีความสมเหตุสมผล มีความน่าเชื่อถือ สามารถสะท้อนสภาพของตัวแปรได้ตรงกับการนำไปใช้ประโยชน์
+
+- ข้อมูลที่สามารถยอมรับได้ว่าเป็นจริง มีความเป็นได้หรือมีเหตุผลตามสถานการณ์หรือบริบทที่กำลังศึกษา
+
+- ข้อมูลที่สามารถเชื่อถือได้ว่ามีแหล่งที่มาที่ชัดเจนและถูกต้อง
+
+- ข้อมูลที่สามารถสะท้อนสภาพหรือสถานะของตัวแปรได้อย่างถูกต้องและเหมาะสม
+
+
+
