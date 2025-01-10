@@ -1,0 +1,793 @@
+---
+title: "Week 1: Introduction to Machine Learning"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: today
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "Week 1: Introduction to ML<br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+
+# 1. แนะนำรายวิชา {.smaller}
+
+รายวิชา : 2758623 Machine Learning Principles and Application <br>
+หน่วยกิต : 3.0 (2.0-2.0-8.0)
+
+## Course Outline {.smaller}
+
+<br>
+
+:::: {style="font-size: 80%;"}
+:::: {.columns}
+::: {.column width="50%"}
+
+**Week 1:**
+
+Introduction to ML in Education
+
+**Week 2-3:**
+
+Modelling Process
+
+**Week 4:**
+
+Features and Target Engineering
+
+**Week 5-6:**
+
+Single Learners 
+
+**Week 7-8:**
+
+Ensemble Learning
+
+**Week 9:**
+
+Introduction to Neural Networks
+
+:::
+::: {.column width="50%"}
+
+**Week 10:**
+
+Model Interpretation: XAI
+
+**Week 11-12:**
+
+Unsupervised Learning
+
+**Week 13:**
+
+Model Deployment
+
+**Week 14-15:**
+
+ML Project
+
+:::
+
+::::
+::::
+
+## การวัดประเมินผลการเรียนรู้
+
+
+```{r echo=F, fig.height = 4}
+library(tidyverse)
+mycols <- c("#B44B63", "#4BB49C", "#97B44B")
+
+type <- c("การสอบ",
+          "งานที่มอบหมาย",
+          "Project")
+weight <- c(50,30,20)
+data.frame(type,weight) |> 
+  mutate(type = factor(type, levels=c(type[1],type[2],type[3]))) |> 
+  arrange(weight) |> 
+  mutate(lab.xpos = cumsum(weight) - 0.5*weight) |> 
+  ggplot(aes(x = "", y=weight, fill = type))+
+  geom_col()+
+  geom_text(aes(y = lab.xpos,
+            label = paste0(type,"\n",weight,"%")), angle = 0,
+              family = "ChulaCharasNew", size = 8, fontface = "bold",
+              col = "white", hjust = 0.5,
+              vjust = 0.5)+
+  scale_fill_manual(values = mycols)+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", face = "bold", size = 22),
+        legend.position = "none",
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title = element_blank())+
+  scale_y_continuous(breaks = c(0,20,50,100))+
+  scale_y_reverse()+
+  coord_flip()
+  #coord_polar(theta = "y")
+```
+
+## หนังสือแนะนำ
+
+![](img/books.png)
+
+
+
+## แหล่งการเรียนรู้/แหล่งข้อมูลแนะนำ {.smaller}
+
+:::: {.columns}
+
+::: {.column width="65%"}
+
+<br>
+<br>
+
+- [https://www.kaggle.com/](https://www.kaggle.com)
+
+- [https://www.tidymodels.org/learn/](https://www.tidymodels.org/learn/)
+
+- [https://scikit-learn.org/stable/](https://scikit-learn.org/stable/)
+
+- [https://onlinelibrary.wiley.com/journal/17453992](https://onlinelibrary.wiley.com/journal/17453992)
+
+- [https://ourworldindata.org/charts](https://ourworldindata.org/charts)
+
+:::
+
+::: {.column width="35%"}
+
+![](https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif?cid=790b7611r6cptmsfn8sbp6b5gkexalce4gn5pz8hqftoezl2&ep=v1_gifs_search&rid=giphy.gif&ct=g)
+:::
+::::
+
+# 2. Introduction to ML
+
+- What's ML?
+
+- Why's ML?
+
+- Types of ML
+
+- Modelling Process
+
+- Some Terminology
+
+
+## 2.1 What's ML? {.smaller}
+
+
+<p style="font-size: 24px;">**Machine Learning (ML) หรือ การเรียนรู้ของเครื่อง** คือสาขาหนึ่งของปัญญาประดิษฐ์ (Artificial Intelligence: AI) ที่มุ่งเน้นการสร้างระบบที่สามารถเรียนรู้และตัดสินใจหรือพยากรณ์จากข้อมูล การเรียนรู้ของระบบดังกล่าวอาศัยการบูรณาการกระบวนการทางคอมพิวเตอร์และทฤษฎีทางคณิตศาสตร์และสถิติเข้าด้วยกัน เพื่อสร้างขั้นตอนวิธี (algorithm) ของการดำเนินงานหรือการตัดสินใจที่อาศัยรูปแบบหรือความสัมพันธ์ในข้อมูลจริง การดำเนินงานดังกล่าวมีจุดเด่นคือมีความยืดหยุ่น รองรับความคลาดเคลื่อนในทางสถิติ ทำให้การดำเนินที่ใช้ขั้นตอนวิธีแบบ ML-based มีความสามารถในการปรับตัวและพัฒนาได้ง่ายกว่า rule-based</p>
+
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-744630750.png)
+
+<div class = "caption">Source: https://k21academy.com/datascience-blog/deep-learning/dl-vs-ml/</div>
+
+## Algorithms {.smaller}
+
+**อัลกอริทึม (algorithm)** หมายถึง กระบวนการหรือชุดของขั้นตอนที่กำหนดไว้อย่างชัดเจน เพื่อแก้ปัญหาหรือดำเนินงานให้บรรลุผลสำเร็จในระยะเวลาที่จำกัด โดยแต่ละขั้นตอนสามารถนำไปปฏิบัติได้จริง
+
+คุณสมบัติของอัลกอริทึมที่ดี
+
+- มีความชัดเจนแน่นอน
+
+- มีขั้นตอนการดำเนินงานที่จำกัด
+
+- มีความถูกต้อง 
+
+- มีประสิทธิภาพ
+
+- มีความเป็นนัยทั่วไป
+
+- มีอินพุตและเอาต์พุตที่ชัดเจน
+
+- เป็นอิสระจากโปรแกรมภาษา (เชิง computer science)
+
+
+## Rule-based algorithm 1 {.smaller}
+
+- การทอดไข่เจียวให้ไข่ขาวกรอบ แต่ไข่แดงต้องยังไม่สุกตัดออกมาต้องเยิ้มเป็นลาวา
+
+- การคำนวณค่าเฉลี่ยเลขคณิตของคะแนนความรู้ทางสถิติ
+
+- การสร้าง boxplot เพื่อเปรียบเทียบคะแนนความรู้ทางสถิติระหว่างนิสิตแต่ละตอนเรียน
+  
+![](img/rulebased.png){width=80%}
+
+
+## Rule-based algorithm 2 {.smaller}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+![](https://media.geeksforgeeks.org/wp-content/uploads/20200413202916/Untitled-Diagram-237.png)
+:::
+
+::: {.column width="40%"}
+![](https://media.geeksforgeeks.org/wp-content/uploads/20200413205321/Capture429.png)
+
+:::
+::::
+
+
+<div class="caption">Source: https://www.geeksforgeeks.org/seven-segment-displays/</div>
+
+
+## Rule-based algorithm 3 {.smaller}
+
+
+<center>
+![](img/rulebased.png){width=80%}
+</center>
+
+
+## ML-based 1 {.smaller}
+
+จากปัญหาการอ่านตัวเลขจากป้ายไฟ หากข้อมูลนำเข้าเป็นลายมือจริงของคนดังรูป อัลกอริทึมข้างต้นยังสามารถใช้ได้ดีหรือไม่
+
+<center>
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1795009334.png){width="50%"}
+</center>
+
+<div class="caption">Source: Geron (2019)</div>
+
+
+## ML-based 2 {.smaller}
+
+<center>
+![](img/MLbased.png){width="80%"}
+</center>
+
+## ML-based 3 {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+
+ชุดข้อมูล [train.csv](https://datakruroo.netlify.app/mlcourse/_site/homeworks/datasets/train.csv.zip) และ [test.csv](https://datakruroo.netlify.app/mlcourse/_site/homeworks/datasets/test.csv.zip)
+
+```{r echo = F}
+library(tidyverse)
+#download.file("https://datakruroo.netlify.app/mlcourse/_site/homeworks/datasets/train.csv.zip", destfile = "train.csv")
+train_data <- read_csv("train.csv")
+train_data %>% 
+  slice(8) %>% 
+  select(1:10) %>% 
+  glimpse()
+
+train_data %>% 
+  slice(8) %>% 
+  select(400:410) %>% 
+  glimpse()
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F, fig.width = 8, fig.height = 8}
+library(gridExtra)
+plot_digit <- function(data, index)
+{
+title_lab <- data[index,"label"]
+data %>%
+  slice(index) %>%
+  dplyr::select(starts_with("pixel")) %>%
+  pivot_longer(starts_with("pixel")) %>%
+  mutate(x = rep(1:28,28),
+         y = rep(1:28, each = 28)) %>%
+  ggplot(aes(x = x, y = y))+
+  geom_tile(aes(fill = value))+
+  scale_y_reverse()+
+  scale_fill_gradient(low = "white", high = "black")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        panel.grid = element_blank()
+  )+
+  ggtitle(title_lab)+
+  labs(fill = "Darkness")
+}
+
+p1 <- plot_digit(train_data, 1)
+p2 <- plot_digit(train_data,10)
+p3 <- plot_digit(train_data,20)
+p4 <- plot_digit(train_data,30)
+grid.arrange(p1,p2,p3,p4, ncol=2)
+```
+
+
+
+:::
+
+::::
+
+## ML-based 4 {.smaller}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+confusion matrix
+
+![](https://datakruroo.netlify.app/mlcourse/_site/homeworks/hw03_files/figure-html/unnamed-chunk-13-2.png)
+
+
+:::
+
+::: {.column width="40%"}
+<br>
+
+
+![](img/metrices.png)
+
+:::
+
+::::
+
+## ML-based 5 {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+![](https://datakruroo.netlify.app/mlcourse/_site/homeworks/images/Screenshot%202566-03-04%20at%2010.58.21.png)![](https://datakruroo.netlify.app/mlcourse/_site/homeworks/images/Screenshot%202566-03-04%20at%2018.45.19.png)
+
+:::
+
+::: {.column width="40%"}
+
+```{r eval = F, echo = T} 
+# predict
+predict_val <- rf_fit_final %>%
+  extract_workflow() %>%
+  predict(temp)
+# results!!
+predict_val
+```
+
+![](img/res.png){width="50%"}
+
+:::
+
+::::
+
+## 2.2 Why's ML? {.smaller}
+
+- ช่วยสร้างระบบที่สนับสนุนการตัดสินใจที่แม่นยำ
+
+- มีประสิทธิภาพสูงในการทำงานกับข้อมูลขนาดใหญ่
+
+- สามารถพัฒนาความแม่นยำและความสามารถได้อย่างต่อเนื่อง
+
+- ลดความซับซ้อนในการดำเนินงาน
+
+- มีความยืดหยุ่น
+
+- ขับเคลื่อนการสร้างนวัตกรรม
+
+- สร้างความได้เปรียบในการแข่งขัน
+
+- ลดอคติ สร้างความเป็นธรรม ปกป้องความเป็นส่วนตัว
+
+
+## 2.3 Types of ML {.smaller}
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+
+- Supervised Learning
+
+- Unsupervised Learning
+
+- Reinforcement Learning
+
+:::
+::: {.column width="65%"}
+
+![](img/ML.png){width="100%"}
+
+<div class="caption">Source: [https://towardsdatascience.com/machine-learning-types-2-c1291d4f04b1](https://towardsdatascience.com/machine-learning-types-2-c1291d4f04b1)</div>
+:::
+
+::::
+
+
+
+## Supervised Learning {.smaller}
+
+การเรียนรู้ของเครื่องแบบมีผู้สอน (Supervised Machine Learning) เกี่ยวข้องกับการฝึกโมเดลโดยใช้ชุดข้อมูลที่มีป้ายกำกับ (labeled dataset) ซึ่งแต่ละตัวอย่างประกอบด้วยข้อมูลอินพุตและป้ายกำกับผลลัพธ์ที่สอดคล้องกัน เป้าหมายคือการให้โมเดลเรียนรู้การจับคู่ระหว่างอินพุตและผลลัพธ์ เพื่อให้สามารถทำนายข้อมูลใหม่ที่ไม่เคยเห็นมาก่อนได้อย่างแม่นยำ
+
+- Regression Task
+
+- Classification Task
+
+
+:::: {.columns}
+
+::: {.column width="65%"}
+
+
+![](https://miro.medium.com/v2/format:webp/1*Iz7bCLrPTImnBDOOEyE3LA.png){width="100%" fig-align="right"}
+
+<div class="caption2">Source: https://medium.com/@ngneha090/a-guide-to-supervised-learning-f2ddf1018ee0</div>
+
+:::
+
+::::
+
+
+
+## Regression Task {.smaller}
+
+Regression Task เป็นงานหนึ่งใน Machine Learning ที่มีวัตถุประสงค์คือการทำนายค่าต่อเนื่อง (continuous value) โดยอาศัยความสัมพันธ์ระหว่างตัวแปรต้น (independent variables) และตัวแปรตาม (dependent variable) ในชุดข้อมูล 
+
+```{r echo = F}
+library(tidymodels)
+student_data <- read_csv('/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/งานวิจัย/paper กับ canada/Optimizing_res/full_data.csv')
+
+fit <- lm(research_score ~ . ,data =student_data %>% select(-student_id) %>% drop_na())
+#summary(fit)
+predict(fit) %>% 
+  data.frame() %>% 
+  rename(pred_val = 1) %>% 
+  bind_cols(student_data %>% drop_na()) %>% 
+  rename(actual_val = research_score) %>% 
+  ggplot(aes(x = actual_val, y = pred_val))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)+
+  coord_obs_pred()+
+  theme_light()+
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(family = "ChulaCharasNew"))+
+  ggtitle("\n ทำนายคะแนนสอบรายวิชาวิจัย")
+```
+
+
+## <br> Algorithm พื้นฐาน
+
+- linear regression with regularization/penalization
+
+- polynomial regression
+
+- multivariate adaptive regression spline 
+
+- tree-based models
+
+- support vector machine
+
+- neural networks
+
+
+
+
+## Classification Task {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+
+Classification Task เป็น supervised learning ประเภทหนึ่งที่มีวัตถุประสงค์เพื่อ จำแนกข้อมูล ออกเป็นกลุ่มหรือหมวดหมู่ (categories) ที่กำหนดไว้ล่วงหน้า โดยอาศัยความสัมพันธ์ระหว่างตัวแปรต้น (features) และตัวแปรตาม (target)
+
+- binary classification
+
+- multi-class classification
+
+- multi-label classification
+
+:::
+
+::: {.column width="60%"}
+
+![](img/supervised.png){fig-align="center"}
+
+:::
+
+
+:::: 
+
+## <br> Algorithm พื้นฐาน
+
+- logistic regression with regularization/penalization
+
+- multinomial regression with regularization/penalization
+
+- tree-based models
+
+- support vector machine
+
+- neural networks
+
+
+## Unsupervised Learning {.smaller}
+
+คือการเรียนรู้ของเครื่องที่เรียนรู้จากข้อมูลที่ไม่ได้มีป้ายกำกับหรือคำตอบไว้ล่วงหน้า วัตถุประสงค์หลักของการเรียนรู้ประเภทนี้คือการสำรวจหรือค้นหารูปแบบ ความสัมพันธ์ที่อยู่เบื้องหลังข้อมูล
+
+- Clustering
+
+- Dimensionality Reduction
+
+- Identifying patterns/relationships
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*PaGnLVKs6lCuL3r9p1c2LQ.png){width="100%" fig-align="right"}
+
+<div class="caption2">Source: https://medium.com/@metehankozan/supervised-and-unsupervised-learning-an-intuitive-approach-cd8f8f64b644</div>
+
+:::
+
+::: {.column width="40%"}
+
+:::
+
+::::
+
+
+## Clustering {.smaller}
+
+ค้นหา/ระบุกลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด
+
+![](img/cluster.png)
+
+## Dimensionality Reduction 1 {.smaller}
+
+- กระบวนการลดจำนวนมิติ (features หรือ variables) ในชุดข้อมูลมีขนาดใหญ่ ให้เหลือจำนวนตัวแปรที่น้อยลง แต่ยังสามารถคงสาระสำคัญในข้อมูลต้นฉบับเอาไว้ได้อย่างเพียงพอ
+
+  - ทำความเข้าใจโครงสร้างของข้อมูล
+
+  - บรรยาย/แสดงผลลักษณะของหน่วยข้อมูล
+
+  - ตรวจสอบความผิดปกติ (anomaly detection)
+
+  - preprocessing data ประเภทหนึ่งสำหรับการสร้าง regression/classification models
+
+
+## Dimensionality Reduction 2 {.smaller}
+
+
+สภาพฐานะทางเศรษฐกิจ การศึกษา และสุขภาพของประชากรในแต่ละประเทศเป็นอย่างไร
+
+```{r echo = F}
+country_data <- read_csv("Country-data.csv")
+glimpse(country_data)
+country_data %>% 
+  pivot_longer(cols = -1, names_to = "variable") %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(bins = 20, col = "white", fill = "black")+
+  facet_wrap(~variable, scales = "free_x")+
+  theme_light()
+```
+
+## Dimensionality Reduction 3 {.smaller}
+
+```{r echo = F}
+country_data |> 
+    column_to_rownames("country") |> 
+    ## standardized xs
+    mutate_all(~as.numeric(scale(.))) |>
+    princomp()->pca_fit
+
+pca_fit$loadings[1:9, ] %>% 
+  data.frame() %>% 
+  select(1:3) %>% 
+  rownames_to_column("var_name") %>% 
+  pivot_longer(cols = 2:4) %>% 
+  ggplot(aes(x = name, y=var_name, fill = value))+
+  geom_tile()+
+  geom_text(aes(label = round(value,2)), col = "grey20")+
+  xlab("")+
+  ylab("")+
+  labs(fill = "Loading")+
+  scale_fill_gradient2(low = "orange", high="steelblue", midpoint = 0)+
+  theme_light()
+  
+```
+
+
+## Dimensionality Reduction 4 {.smaller}
+
+![](https://datakruroo.github.io/Programming/dimensionality_reduction/dimensional_reduction_files/figure-revealjs/unnamed-chunk-10-1.png)
+
+
+
+## Dimensionality Reduction 5 {.smaller}
+
+![](img/dimension_reduc.png)
+
+
+## Association rule 1 {.smaller}
+
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*BEFF9cZF92Xn9Frds3XD4g.png)
+
+## Association rule 2 {.smaller}
+
+- เนื้อหาที่เลือกเรียนกับความเชี่ยวชาญ
+
+  - Rule 1: หากนักเรียนเลือกเรียน Algebra และ Geometry → มีโอกาส 90% ที่จะพัฒนาความเชี่ยวชาญในด้าน Math Proficiency
+  - Rule 2: หากนักเรียนเลือกเรียน Programming Basics และ Data Science → มีโอกาส 85% ที่จะพัฒนาความเชี่ยวชาญในด้าน Data Proficiency
+
+
+- พฤติกรรมการเรียนกับผลการเรียน
+  - Rule 1: หากนักเรียนส่งการบ้านครบทุกครั้ง → มีโอกาส 85% ที่คะแนนสอบ > 80
+  - Rule 2: หากนักเรียนเข้าห้องเรียน > 90% → มีโอกาส 75% ที่จะทำกิจกรรมกลุ่มสำเร็จ
+  - Rule 3: หากนักเรียนขาดเรียน > 20% → มีโอกาส 60% ที่จะสอบตก
+
+## ML Process 1
+
+![](img/process.png)
+
+## ML Process 2
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1728379488.png)
+
+
+## Bias and Variance Trade-off {.smaller}
+
+> Model = Signal + Noise
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Bias คือ ความคลาดเคลื่อนแบบมีระบบ (systematic error) เกิดจากการที่โมเดลไม่สามารถจับรูปแบบความสัมพันธ์ได้เพียงพอ กล่่าวคือไม่สามารถจับส่วน signal ได้อย่างเพียงพอ
+
+- Variance คือ ความแปรปรวนหรือความไม่คงที่ในผลลัพธ์ของโมเดล เกิดขึ้นเมื่อโมเดลเรียนรู้ความสัมพันธ์ในข้อมูลฝึกหัดมากเกินไป จนไปจับส่วนที่เป็น noise มารวมกับ signal ทำให้โมเดลขาดคุณสมบัติความเป็นนัยทั่วไป
+
+:::
+
+::: {.column width="50%"}
+
+![](https://scott.fortmann-roe.com/docs/docs/BiasVariance/biasvariance.png)
+
+<div class="caption2">Source: https://scott.fortmann-roe.com/docs/BiasVariance.html
+</div>
+
+:::
+
+::::
+
+
+## Bias and Variance Trade-off {.smaller}
+
+```{r echo = F}
+library(patchwork)
+set.seed(123)
+x<-runif(1000,0,8)
+y<-rnorm(1000, sin(x), 0.5) 
+data <- data.frame(x,y)
+
+x<-runif(200,0,8)
+y<-rnorm(200, sin(0.9*x), 0.6) 
+data_test <- data.frame(x,y)
+
+p1<-data %>% ggplot(aes(x=x, y=y))+
+  geom_point(col="grey80", alpha=0.6)+
+  geom_point(data = data_test, aes(x=x, y=y), col = "steelblue", alpha = 0.9)+
+  geom_smooth(method = "lm", se = F, col = "maroon", linewidth = 1.2)+
+  theme_light()+
+  ggtitle("Bias")
+```
+
+```{r echo = F}
+library(tidymodels)
+rec <- data %>% 
+  recipe(y ~ x)
+
+tree <- decision_tree() %>% 
+  set_mode("regression")
+
+tree_wf <- workflow() %>% 
+  add_recipe(rec) %>% 
+  add_model(tree)
+
+p2 <- tree_wf %>% 
+  fit(data) %>% 
+  predict(data) %>% 
+  bind_cols(data) %>% 
+  ggplot(aes(x = x, y = y))+
+  geom_point(col="grey80", alpha=0.6)+
+  geom_point(data = data_test, aes(x=x, y=y), col = "steelblue", alpha = 0.9)+
+  geom_line(aes(x = x , y= .pred), col = "maroon", linewidth = 1.2)
+```
+
+```{r echo = F}
+rec <- data %>% 
+  recipe(y ~ x)
+
+tree <- decision_tree(tree_depth = 20, cost_complexity = 0) %>% 
+  set_mode("regression")
+
+tree_wf <- workflow() %>% 
+  add_recipe(rec) %>% 
+  add_model(tree)
+
+p3 <- tree_wf %>% 
+  fit(data) %>% 
+  predict(data) %>% 
+  bind_cols(data) %>% 
+  ggplot(aes(x = x, y = y))+
+  geom_point(col="grey80", alpha=0.6)+
+  geom_point(data = data_test, aes(x=x, y=y), col = "steelblue", alpha = 0.9)+
+  geom_line(aes(x = x , y= .pred), col = "maroon", linewidth = 1.2)+
+  ggtitle("Variance")
+```
+
+```{r echo = F, fig.width = 9, fig.height = 4}
+p1+p2+p3
+```
+
+
+## กิจกรรม  {.smaller}
+
+การสร้างโมเดล Regression เพื่อพยากรณ์คะแนนของนักเรียน
+
+1. download ไฟล์ข้อมูลจาก [student.zip](student.zip)
+
+2. กิจกรรมนี้ จะให้นักเรียนแบ่งออกเป็น 3 กลุ่ม โดยแต่ละกลุ่มจะพัฒนาโมเดล Regression สำหรับพยากรณ์คะแนน G3 (คะแนนสุดท้าย) โดยใช้ข้อมูลที่แตกต่างกันดังนี้:
+
+- กลุ่ม A: ใช้ข้อมูลตัวแปรทั้งหมดในชุดข้อมูล ยกเว้น G3 (ผลลัพธ์ที่ต้องพยากรณ์)
+- กลุ่ม B: ใช้ข้อมูลแบบเดียวกับกลุ่ม A แต่ตัด G2 (คะแนนช่วงที่สอง) ออกไป
+- กลุ่ม C: ใช้ข้อมูลแบบเดียวกับกลุ่ม B แต่ตัด G1 (คะแนนช่วงแรก) ออกไป
+
+3. แต่ละกลุ่มให้ดำเนินการจัดการข้อมูลตามโจทย์ที่ได้รับ แบ่งข้อมูลออกเป็น 2 ส่วนได้แก่ training และ test data ด้วยสัดส่วน 80:20 จากนั้นใช้ linear regression เพื่อฝึกโมเดล
+
+4. พิจารณาประสิทธิภาพของโมเดลด้วย RMSE และ R2 
+
+## ตัวอย่างงานวิจัย
+
+- [https://online-journals.org/index.php/i-jep/article/view/48205/14941](https://online-journals.org/index.php/i-jep/article/view/48205/14941)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/jcal.13041](https://onlinelibrary.wiley.com/doi/epdf/10.1111/jcal.13041)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12543](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12543)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12602](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12602)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12470](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12470)
+
+- [https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12544](https://onlinelibrary.wiley.com/doi/epdf/10.1111/emip.12544)
+
+
+
+##
+
+<br>
+<br>
+<br>
+
+
+<center>
+
+![](https://media.giphy.com/media/TgF6xfH8V0mZcUyneP/giphy.gif?cid=ecf05e474f9o45pevyyvhdf9m6m8ppfbrjjgfizgtpg3lf9s&ep=v1_gifs_related&rid=giphy.gif&ct=g)
+
+</center>
+
+## 
+
+
