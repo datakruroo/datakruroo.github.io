@@ -1,0 +1,309 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+
+
+```{r}
+library(tidyverse)
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week02/student/student-mat.csv", delim = ";")
+glimpse(data)
+```
+
+## Data Splitting
+
+- simple random sampling
+
+```{r}
+library(rsample)
+set.seed(123)
+split_srs <- initial_split(data, prop = 0.7)
+train_srs <- training(split_srs)
+test_srs <- testing(split_srs)
+```
+
+- stratified random sampling
+
+```{r}
+set.seed(123)
+split_str <- initial_split(data, prop = 0.7, strata = "G3", breaks = 4)
+train_str <- training(split_str)
+test_str <- testing(split_str)
+```
+
+
+
+```{r echo = F, fig.width = 6}
+library(patchwork)
+p1 <- train_srs %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "black",
+                 bins = 20)+
+  geom_boxplot(aes(y=0), fill = "white", width = 5)+
+  theme_light()+
+  ggtitle("training data (SRS)")+
+  ylim(0,0.2)
+
+p2 <- test_srs %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "steelblue",
+                 bins = 20)+
+  geom_boxplot(aes(y=0), fill = "white", width = 0.5)+
+  theme_light()+
+  ggtitle("test data (SRS)")+
+  ylim(0,0.2)
+
+p1+p2
+```
+
+
+```{r}
+train_srs$G3 %>% summary()
+test_srs$G3 %>% summary()
+```
+
+```{r}
+train_str$G3 %>% summary()
+test_str$G3 %>% summary()
+```
+Komogorov-Smirnov test
+
+H0: X ~ Y
+H1: X !~ Y 
+
+```{r}
+x <- train_srs$G3 + rnorm(length(train_srs$G3), 0, 0.0001)
+y <- test_srs$G3 + rnorm(length(test_srs$G3), 0, 0.0001)
+ks.test(x, y)
+```
+```{r}
+x <- train_str$G3 + rnorm(length(train_str$G3), 0, 0.0001)
+y <- test_str$G3 + rnorm(length(test_str$G3), 0, 0.0001)
+ks.test(x, y)
+```
+
+
+- Exploring Data
+
+สำรวจตัวแปรตาม
+
+```{r}
+summary(train_srs$G3)
+train_str %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "black",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("training data (SRS)")+
+  ylim(0,0.2)
+```
+
+
+สำรวจตัวแปรอิสระ
+
+```{r}
+## จำนวนตัวแปรอิสระจัดประเภท
+train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor) %>% 
+  select_if(is.factor) %>% names()
+
+## จำนวนตัวแปรอิสระเชิงปริมาณ
+train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor) %>% 
+  select_if(is.numeric) %>% names()
+```
+
+
+สำรวจการแจกแจงตัวแปรอิสระจัดประเภท
+
+```{r fig.width = 10}
+train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor) %>% 
+  select_if(is.factor) %>%
+  pivot_longer(cols = everything()) %>% 
+  ggplot(aes(x = value))+
+  geom_bar(fill = "black")+
+  theme_light()+
+  facet_wrap(~name, scale = "free")
+```
+
+```{r}
+train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor) %>% 
+  select_if(is.numeric) %>%
+  select(-G3) %>% 
+  pivot_longer(cols = everything()) %>% 
+  ggplot(aes(x = value))+
+  geom_histogram(fill = "black", col = "white", bins = 20) +
+  theme_light()+
+  facet_wrap(~name, scale = "free")
+```
+
+
+```{r}
+train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor) %>% 
+  ggplot(aes(x = school, y= G3))+
+  geom_boxplot()
+```
+
+
+```{r}
+train2 <- train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor)
+
+
+fit_famrel <- lm(G3 ~ famrel, data = train2) %>% summary()
+fit_famrel$r.squared *100
+```
+
+
+
+
+```{r}
+features <- train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor)
+
+names(features_cont)
+```
+
+```{r}
+features_name <- names(features %>% select(-G3))
+```
+
+```{r}
+# สร้าง tibble ว่างเพื่อเก็บผลลัพธ์
+results <- tibble(
+  predictor = character(),
+  rsq = numeric()
+)
+
+# ใช้ for loop เพื่อวนลูปคำนวณ
+for (x in features_name) {
+  # สร้างสูตรโมเดล
+  formula <- as.formula(paste("G3 ~", x))
+  
+  # เทรนโมเดล
+  model <- lm(formula, data = features)
+  
+  # ดึงค่า R-squared
+  rsq <- summary(model)$r.squared
+  
+  # เพิ่มผลลัพธ์ลงใน tibble
+  results <- results %>%
+    add_row(predictor = x, rsq = rsq)
+}
+
+results %>% 
+  mutate(rsq = rsq*100) %>% 
+  arrange(desc(rsq))
+```
+
+
+
+```{r}
+features_cat <- train_str %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet ,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor) %>% 
+  select_if(~ is.factor(.) || colnames(.)=="G3") %>% 
+  mutate_if(is.numeric, scale)
+
+
+features_cont_name <- names(features_cont %>% select(-G3))
+
+# สร้าง tibble ว่างเพื่อเก็บผลลัพธ์
+results <- tibble(
+  predictor = character(),
+  rsq = numeric()
+)
+
+# ใช้ for loop เพื่อวนลูปคำนวณ
+for (x in features_cont_name) {
+  # สร้างสูตรโมเดล
+  formula <- as.formula(paste("G3 ~", x))
+  
+  # เทรนโมเดล
+  model <- lm(formula, data = features_cont)
+  
+  # ดึงค่า R-squared
+  rsq <- summary(model)$r.squared
+  
+  # เพิ่มผลลัพธ์ลงใน tibble
+  results <- results %>%
+    add_row(predictor = x, rsq = rsq)
+}
+
+results
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

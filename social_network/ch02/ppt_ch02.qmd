@@ -1,0 +1,1305 @@
+---
+title: "2. Mathematical Foundations"
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: today
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color:  #C5705D;
+      }
+      </style>
+---
+
+## Outline {.smaller}
+
+-   Basic Concepts
+
+-   Connectivity and Structure of Graphs
+
+-   Matrices in Network Analysis
+
+# Basic Concepts
+
+- Graphs
+
+- Directed and Undirected Graphs
+
+- Social Relations and Implications
+
+- Multirelational Networks
+
+## Graphs {.smaller}
+
+ในทางคณิตศาสตร์ $G(V,E)$ หมายถึงกราฟที่เป็นโครงสร้างสำหรับแสดงความสัมพันธ์หรือการเชื่อมโยงกันระหว่าง จุดยอดหรือโหนด (vertices หรือ nodes) และ เส้นเชื่อม (edges หรือ links) โดยที่ $V$ คือเซตของจุดยอด (vertices) หรือ โหนด (nodes) และ $E$ คือเซตของเส้นเชื่อม (edges or links or line) เช่น
+
+::::: columns
+::: {.column width="50%"}
+-   $V(G) = \{1,2,3,...,10\}$
+
+-   $E(G) = \{(1,6),(1,8),(4,7),(7,4)... \}$
+
+<p style="font-size:80%">**adjacent node** : โหนดที่เชื่อมต่อกันโดยตรงด้วยเส้นเชื่อมจะเรียกว่า adjacent node</p>
+
+<p style="font-size:80%">**incident** : หมายถึงความสัมพันธ์ระหว่าง จุดยอด (vertices) และ เส้นเชื่อม (edges) ในกราฟ กล่าวคือถ้าเส้นเชื่อม $e$ เชื่อมกับจุดยอด $u$ และ $v$ ในกราฟ จะเรียกว่าเส้นเชื่อมนั้น incident กับจุดยอด $u$ และ $v$</p>
+
+<p style="font-size:80%">**degree** : หมายถึงจำนวนเส้นเชื่อมที่เชื่อมกับจุดยอด</p>
+
+:::
+
+::: {.column width="50%"}
+```{r fig.height=4, fig.width = 4}
+library(igraph)
+set.seed(1234)
+g <- erdos.renyi.game(n=10, p = 0.25, directed = TRUE)
+par(mar=c(0,2,0,0)+.1)
+plot(g, 
+     vertex.color = "grey",
+     vertex.size = 30,
+     vertex.label.cex = 1.5,
+     edge.arrow.width = 0.5,
+     margin = 0)
+```
+:::
+:::::
+
+## Directed vs Undirected Graphs 1 {.smaller}
+
+กราฟอาจจำแนกได้เป็น 2 ประเภทหลัก ได้แก่ กราฟแบบมีทิศทาง และแบบไม่มีทิศทาง ทั้งสองใช้แทนเครือข่ายที่มีลักษณะแตกต่างกัน
+
+```{r}
+par(mar=c(1,0,1,0)+.1, mfrow=c(1,2))
+set.seed(1234)
+g1 <- erdos.renyi.game(n=10, p = 0.25, directed = TRUE)
+plot(g1, 
+     vertex.color = "#D39D55",
+     vertex.size = 30,
+     vertex.label.cex = 1.5,
+     edge.arrow.width = 0.5,
+     margin = 0,
+     main = "Directed Graph")
+set.seed(1234)
+g2 <- erdos.renyi.game(n=10, p = 0.25, directed = FALSE)
+plot(g2, 
+     vertex.color = "skyblue",
+     vertex.size = 30,
+     vertex.label.cex = 1.5,
+     edge.arrow.width = 0.5,
+     margin = 0,
+     main = "Undirected Graph")
+```
+
+## Directed vs Undirected Graphs 2 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+```{r fig.width = 4}
+set.seed(1234)
+g1 <- erdos.renyi.game(n=10, p = 0.25, directed = TRUE)
+par(mar=c(0,0,2,0)+.1)
+plot(g1, 
+     vertex.color = "#D39D55",
+     vertex.size = 30,
+     vertex.label.cex = 1.5,
+     edge.arrow.width = 0.5,
+     margin = 0,
+     main = "Directed graph")
+```
+:::
+
+::: {.column width="50%"}
+<br>
+
+-   ถูกใช้แทนเครือข่ายที่ความสัมพันธ์มีลักษณะของทิศทางแบบเป็นเหตุเป็นผล เช่น
+
+    -   เป็นผู้ปกครองของ...
+
+    -   เป็นที่ปรึกษาของ...
+
+-   ความสัมพันธ์แบบมีทิศทางสามารถมีลักษณะเป็นแบบย้อนกลับ (reciprocated ties ) ซึ่งเป็นไปได้ในเครือข่ายที่โหนดมีลักษณะของการปรึกษาหรือช่วยเหลือซึ่งกันและกัน
+:::
+:::::
+
+## Directed vs Undirected Graphs 3 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+<br>
+
+-   ใช้แทนเครือข่ายของความสัมพันธ์ที่ไม่มีทิศทาง เช่น
+
+    -   การพบเจอกัน
+
+    -   การแต่งงานกัน
+
+    -   การเป็นเพื่อนกัน รู้จักกัน
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 4}
+set.seed(1234)
+par(mar=c(0,0,2,0)+.1)
+plot(g2, 
+     vertex.color = "skyblue",
+     vertex.size = 30,
+     vertex.label.cex = 1.5,
+     edge.arrow.width = 0.5,
+     margin = 0,
+     main = "Undirected Graph")
+```
+:::
+:::::
+
+## Social Relations and Implications {.smaller}
+
+-   ความสัมพันธ์ทางสังคมแต่ละประเภทจะมีโครงสร้าง ความหมาย และผลกระทบที่แตกต่างกันต่อจุดยอดที่เกี่ยวข้อง เช่น
+
+    -   ความสัมพันธ์ในเครือข่ายมิตรภาพ จุดยอดที่มี degree จำนวนมากจะหมายถึงความนิยม
+
+    -   ความสัมพันธ์ในเครือข่ายการนินทา
+
+    -   ความสัมพันธ์ในเครือข่ายความเกลียดชังกัน
+
+-   ผู้วิเคราะห์มักออกแบบ ให้ทุกเส้นเชื่อมในกราฟเป็นความสัมพันธ์แบบเดียวกัน เช่น
+
+    -   $G(V,E)$ เป็นกราฟความสัมพันธ์แบบเพื่อนสนิทในชั้นเรียน
+
+    -   $H(V,A)$ เป็นกราฟความสัมพันธ์ให้คำปรึกษาระหว่างเพื่อน
+
+## Multirelational/Multiplex Networks 1 {.smaller}
+
+-   เครือข่ายที่จุดยอดชุดเดียวกันมีความสัมพันธ์เกิดขึ้นได้หลายประเภท เรียกว่า multirelational หรือ multiplex networks
+
+-   **Isolates** คือจุดยอดที่ไม่มีเส้นเชื่อม หรือ degree = 0
+
+-   **Pendants** คือจุดยอดที่มี degree = 1
+
+```{r}
+library(xUCINET)
+friendship_mat <- Hawthorne_BankWiring$Friendship
+game_mat <- Hawthorne_BankWiring$Game
+
+g3 <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+g4 <- graph_from_adjacency_matrix(game_mat, mode = "undirected")
+g3 <- as_undirected(g3, mode = "collapse")
+g4 <- as_undirected(g4, mode = "collapse")
+```
+
+```{r fig.width = 10}
+set.seed(1234)
+common_layout <- layout_nicely(g3)  # ใช้ layout ของ g3 เป็นหลัก
+
+# วาดกราฟทั้งสองโดยใช้ layout เดียวกัน
+par(mar = c(0, 1, 1.5, 1), mfrow = c(1, 2))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "steelblue",
+     vertex.label.color = "white",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Friendship Network")
+plot(g4, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "grey",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Game Network")
+```
+
+<br>
+
+## Multirelational/Multiplex Networks 2 {.smaller}
+
+ลองพิจารณา indegree ของ w1 และ w6 ในเครือข่ายทั้งสอง ความหมายที่ได้แตกต่างกันอย่างไร
+
+```{r}
+library(xUCINET)
+friendship_mat <- Hawthorne_BankWiring$Friendship
+game_mat <- Hawthorne_BankWiring$Conflict
+
+g3 <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+g4 <- graph_from_adjacency_matrix(game_mat, mode = "undirected")
+g3 <- as_undirected(g3, mode = "collapse")
+g4 <- as_undirected(g4, mode = "collapse")
+```
+
+```{r fig.width = 10}
+set.seed(1234)
+common_layout <- layout_nicely(g3)  # ใช้ layout ของ g3 เป็นหลัก
+
+# วาดกราฟทั้งสองโดยใช้ layout เดียวกัน
+par(mar = c(0, 1, 1.5, 1), mfrow = c(1, 2))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "steelblue",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+plot(g4, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "grey",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Conflict Network")
+```
+
+
+# Connectivity and Structure of Graphs {.smaller}
+
+- Paths, Trials, and Walks
+
+- Geodesic Distances
+
+- Components
+
+- Bridges and Cutpoints
+
+- Cohesion
+
+## Paths 1 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **วิถี (paths)** หมายถึงลำดับของจุดยอดที่เชื่อมต่อกันด้วยเส้นเชื่อม (อาจเรียกว่าเป็นลำดับของ adjacent nodes) ที่ไม่มีการใช้เส้นเชื่อมหรือจุดยอดซ้ำ
+
+-   ลองพิจารณา w1 กับ w7 ด้านล่าง ความสัมพันธ์ของโหนดทั้งสองเป็นอย่างไร?
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = "steelblue",
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Paths 2 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **วิถี (paths)** หมายถึงลำดับของจุดยอดที่เชื่อมต่อกันด้วยเส้นเชื่อม (อาจเรียกว่าเป็นลำดับของ adjacent nodes) ที่ไม่มีการใช้เส้นเชื่อมหรือจุดยอดซ้ำ
+
+-   ลองพิจารณา w1 กับ w7 ด้านล่าง ความสัมพันธ์ของโหนดทั้งสองเป็นอย่างไร?
+
+-   w1-s1-w3-w4-s1-w7 เป็น path หรือไม่?
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W1","S1","W3","W4","S1","W7")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Paths 3 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **วิถี (paths)** หมายถึงลำดับของจุดยอดที่เชื่อมต่อกันด้วยเส้นเชื่อม (อาจเรียกว่าเป็นลำดับของ adjacent nodes) ที่ไม่มีการใช้เส้นเชื่อมหรือจุดยอดซ้ำ
+
+-   ลองพิจารณา w1 กับ w7 ด้านล่าง ความสัมพันธ์ของโหนดทั้งสองเป็นอย่างไร?
+
+-   w1-s1-w3-w4-s1-w7 เป็น path หรือไม่?
+
+-   s4-w9-w8-w7 เป็น path หรือไม่?
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("S4","W9","W8","W7")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Paths 4 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+**คุณสมบัติของ Paths**
+
+1.  จุดเริ่มต้นและสิ้นสุด
+
+-   Open Path: จุดเริ่มต้นและสิ้นสุดต่างกัน
+
+-   Closed Path: จุดเริ่มต้นและสิ้นสุดเหมือนกัน
+
+2.  ไม่มีการใช้จุดยอดและเส้นเชื่อมซ้ำ ยกเว้นกรณี closed path
+
+3.  สำหรับเครือข่ายที่มีทิศทาง วิถีของการเดินจะต้องเป็นไปตามทิศทางของเส้นเชื่อมเท่านั้น
+
+4.  ความยาวของวิถี (path length) = จำนวนเส้นเชื่อมในวิถีนั้น
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes1 <- c("S4","W9","W8","W7")
+path_nodes2 <- c("W1","W4","W3","I1")
+
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes1] <- "orange"
+V(g3)$color[V(g3)$name %in% path_nodes2] <- "maroon"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+text(x = -0.3, y = -0.5, "Closed Path", cex = 0.8, col = "orange")
+text(x = -1, y = 1, "Open Path", cex = 0.8, col = "maroon")
+```
+:::
+:::::
+
+## Paths 5 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **รอยเดิน (trails)** หมายถึงลำดับของ adjacent nodes ที่ใช้จุดยอดซ้ำได้ โดยที่เส้นเชื่อมแต่จะเส้นจะถูกใช้ได้เพียงครั้งเดียว (ไม่มีการใช้เส้นเชื่อมซ้ำ)
+
+-   w1-s1-w3-w4-s1-w7 เป็น trail หรือไม่
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W1","S1","W3","W4","S1","W7")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Trials 1 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **รอยเดิน (trails)** หมายถึงลำดับของ adjacent nodes ที่ใช้จุดยอดซ้ำได้ โดยที่เส้นเชื่อมแต่จะเส้นจะถูกใช้ได้เพียงครั้งเดียว (ไม่มีการใช้เส้นเชื่อมซ้ำ)
+
+-   w1-s1-w3-w4-s1-w7 เป็น trail หรือไม่
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W1","S1","W3","W4","S1","W7")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Trials 2 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **รอยเดิน (trails)** หมายถึงลำดับของ adjacent nodes ที่ใช้จุดยอดซ้ำได้ โดยที่เส้นเชื่อมแต่จะเส้นจะถูกใช้ได้เพียงครั้งเดียว (ไม่มีการใช้เส้นเชื่อมซ้ำ)
+
+-   w1-s1-w3-w4-s1-w7 เป็น trail หรือไม่
+
+-   w8-w7-w9-w8-w7 เป็น trail หรือไม่
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W8","W7","W9")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Trials 3 {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+
+> **รอยเดิน (trails)** หมายถึงลำดับของ adjacent nodes ที่ใช้จุดยอดซ้ำได้ โดยที่เส้นเชื่อมแต่จะเส้นจะถูกใช้ได้เพียงครั้งเดียว (ไม่มีการใช้เส้นเชื่อมซ้ำ)
+
+-   w1-s1-w3-w4-s1-w7 เป็น trail หรือไม่
+
+-   w8-w7-w9-w8-w7 เป็น trail หรือไม่
+
+--- 
+
+
+**คุณสมบัติของ Trails**
+
+1.  ใช้จุดยอดซ้ำได้
+
+2.  ไม่มีการใช้เส้นเชื่อมซ้ำ
+
+3.  มีทั้ง open และ closed trails
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W1","S1","W3","W4","S1","W7")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Walks {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+> **แนวเดิน (walks)** หมายถึงลำดับของ adjacent nodes ที่ไม่มีการจำกัดเงื่อนไขเฉพาะ
+
+**คุณสมบัติของ Walks**
+
+1.  ใช้จุดยอดและเส้นเชื่อมซ้ำได้
+
+2.  มีทั้ง open walks และ closed walks
+
+------------------------------------------------------------------------
+
+-   w8-w7-w9-w8-w7 เป็น walk หรือไม่
+
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W8","W7","W9")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+:::
+:::::
+
+## Paths, Trails, and Walks 1 {.smaller}
+
+แนวคิดของ paths, trails และ walks สามารถนำมาใช้แทนปรากฏการณ์เกี่ยวกับความสัมพันธ์ในเครือข่ายที่ต้องการอธิบายได้ เช่น
+
+- การแพร่กระจายข่าว
+
+- การแพร่กระจายไวรัส
+
+- การโต้ตอบกระทู้ใน discussion board
+
+
+| **คุณสมบัติ**       | **Paths** | **Trails**       | **Walks**          |
+|------------------|-----------|------------------|--------------------|
+| **การใช้จุดยอด**   | ห้ามซ้ำ     | อนุญาตให้จุดยอดซ้ำได้ | อนุญาตให้จุดยอดซ้ำได้   |
+| **การใช้เส้นเชื่อม** | ห้ามซ้ำ     | ห้ามซ้ำ            | อนุญาตให้เส้นเชื่อมซ้ำได้
+
+
+
+
+
+
+## Paths, Trails, and Walks 2 {.smaller}
+
+::::: columns
+
+::: {.column width="50%"}
+
+แนวคิดของ paths, trails และ walks สามารถนำมาใช้แทนปรากฏการณ์เกี่ยวกับความสัมพันธ์ในเครือข่ายที่ต้องการอธิบายได้ เช่น
+
+**การแพร่กระจายข่าว (เชิงนินทา)** : ลองพิจารณาลำดับของ adjacent nodes ต่อไปนี้
+
+$$
+W1 \rightarrow S1 \rightarrow W3 \rightarrow W4 \rightarrow S1 \rightarrow W7
+$$
+
+-   ลำดับข้างต้นเป็นลำดับประเภทไหน?
+
+-   เป็นไปได้หรือไม่ที่การเดินทางของข่าวจะเดินทางในลำดับข้างต้น ?
+:::
+
+::: {.column width="50%"}
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes <- c("W1","S1", "W3", "W4", "S1", "W7")
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+V(g3)$color[V(g3)$name %in% path_nodes] <- "orange"
+
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+
+:::
+
+:::::
+
+
+
+## Paths, Trails, and Walks 3 {.smaller}
+
+**การแพร่ระบาดของเชื้อไวรัส** ที่แพร่กระจายผ่านการมีปฏิสัมพันธ์
+
+-   Walks
+
+-   Trails
+
+-   Paths
+
+![](https://cdn.the-scientist.com/assets/articleNo/67822/hImg/39027/banner-pandemicthreats-x.webp){width="80%"}
+
+
+
+
+## Paths, Trails, and Walks 4{.smaller}
+
+**การโต้ตอบกระทู้ใน discussion board**
+
+-   Walks
+
+-   Trails
+
+-   Paths
+
+![](https://cdn.the-scientist.com/assets/articleNo/67822/hImg/39027/banner-pandemicthreats-x.webp){width="80%"}
+
+
+## Geodesics {.smaller}
+
+
+::::: columns
+
+::: {.column width="50%"}
+
+> **Geodesic distance: ** หรือ distance หมายถึง ระยะทางสั้นที่สุดของแนวเดิน (walk) ที่วัดจากจำนวนเส้นเชื่อมที่ใช้เชื่อมต่อจุดเริ่มต้นและจุดสิ้นสุดของแนวเดินนั้น
+
+พิจารณา path ต่อไปนี้
+
+- w3-w4-s1
+
+- w3-w1-s1
+
+Note: จะเห็นว่า geodesic distance ใช้บ่งชี้หรือสะท้อนการเดินทางของสิ่ง ๆ ใดในเครือข่ายว่าภายใต้สถานการณ์ที่ดีที่สุด การเดินทางของสิ่ง ๆ  นั้นอาจจะต้องใช้เวลา
+
+:::
+
+
+::: {.column width="50%"}
+
+```{r fig.width = 5}
+par(mar = c(0, 0, 1.5, 0))
+path_nodes1 <- c("W3","W4", "S1")
+path_nodes2 <- c("W3","S1", "W7")
+
+path_edges <- get_edge_ids
+V(g3)$color <- "steelblue"  # สีเริ่มต้นสำหรับ nodes
+E(g3)$color <- "gray"
+
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+      vertex.color = V(g3)$color,
+      edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+
+:::
+
+:::::
+
+## Components 1 {.smaller}
+
+
+::::: columns
+
+::: {.column width="50%"}
+
+> **ส่วนประกอบ (components)** หมายถึงกลุ่มของโหนดที่ใหญ่ที่สุด (maximal set) ที่สามารถเชื่อมถึงกันได้ด้วย path อย่างน้อยหนึ่ง path
+
+
+- มี path จาก Holly ไปยัง Brazey หรือไม่?
+
+- $\{Bill, Don, Michael\}$ ถือเป็น Component หรือไม่ เพราะ?
+
+
+- $\{Gery, Russ\}$ เป็น component หรือไม่?
+
+- $\{Carol \}$ เป็น component หรือไม่
+
+- Component ที่ใหญ่ที่สุดมีใครบ้าง?
+
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r fig.width = 10, fig.height = 10}
+attr <- Borgatti_Camp92$Attributes
+relation_mat <- Borgatti_Camp92$MostInteractionsT3
+# ฟังก์ชันเลือก Top 3 ค่าในแต่ละแถว
+binary_matrix <- apply(relation_mat, 1, function(row) {
+  threshold <- sort(row)[3]  # หาเกณฑ์ค่าที่ 3
+  ifelse(row <= threshold, 1, 0)         # เปลี่ยนค่าเป็น 1 ถ้าค่าน้อยกว่าหรือเท่ากับเกณฑ์
+})
+
+diag(binary_matrix)<-0
+binary_matrix <- t(binary_matrix)
+g5 <- graph_from_adjacency_matrix(binary_matrix, mode = "directed")
+#V(g5)$attr <- attr$Role
+#shape_map <- c("2" = "square", "1" = "circle")
+#V(g5)$shape <- shape_map[V(g5)$attr]
+
+#common_layout <- layout_nicely()  # ใช้ layout ของ g3 เป็นหลัก
+set.seed(1234)
+layout_g5 <- layout_with_dh(g5) 
+scale_g5 <- layout_g5*0.05
+par(mar=c(0,0,0,0))
+plot(g5, 
+     layout = scale_g5,
+     vertex.size = 15,
+     vertex.label.cex = 0.8,
+     vertex.label.color = "white",
+     vertex.shapes = 2,
+     vertex.color = "grey20",
+     edge.arrow.width = 0.7,
+     edge.arrow.size = 0.9,
+     rescale = T)
+
+```
+
+
+
+
+:::
+
+::::
+
+
+
+## Components 2 {.smaller}
+
+
+::::: columns
+
+::: {.column width="50%"}
+
+> **ส่วนประกอบ (components)** หมายถึงกลุ่มของโหนดที่ใหญ่ที่สุด (maximal set) ที่สามารถเชื่อมถึงกันได้ด้วย path อย่างน้อยหนึ่ง path
+
+Component อาจจำแนกเป็น 2 ประเภท
+
+- **Weak Connected Component**: กลุ่มของโหนดที่ใหญ่ที่สุดที่สามารถเชื่อมถึงกันได้ผ่าน path โดยไม่สนใจทิศทางของเส้นเชื่อม
+
+- **Strong Connected Component**: กลุ่มของโหนดที่เชื่อมกันด้วย path ที่สนใจทิศทาง
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r fig.width = 10, fig.height = 10}
+
+par(mar=c(0,0,0,0))
+plot(g5, 
+     layout = scale_g5,
+     vertex.size = 15,
+     vertex.label.cex = 0.8,
+     vertex.label.color = "white",
+     vertex.shapes = 2,
+     vertex.color = "grey20",
+     edge.arrow.width = 0.7,
+     edge.arrow.size = 0.9,
+     rescale = T)
+
+```
+
+
+:::
+
+::::
+
+
+## Bridges & Cutpoints 1 {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+> **Bridge** หมายถึง เส้นเชื่อม $e$ ในกราฟ $G$ ที่เมื่อลบเส้นเชื่อมดังกล่าวจากกราฟจะเพิ่มจำนวน components ในกราฟ 
+
+> **Cutpoints** หมายถึง โหนดในกราฟที่เมื่อถูกลบออกไปพร้อมกับเส้นเชื่อมทั้งหมดที่เกี่ยวข้อง จะทำให้เพิ่มจำนวน component ในกราฟ
+
+:::
+
+::: {.column width="50%"}
+
+```{r fig.width=5}
+g3 <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+g4 <- graph_from_adjacency_matrix(game_mat, mode = "undirected")
+g3 <- as_undirected(g3, mode = "collapse")
+g4 <- as_undirected(g4, mode = "collapse")
+
+set.seed(1234)
+common_layout <- layout_with_fr(g3)  # ใช้ layout ของ g3 เป็นหลัก
+
+# วาดกราฟทั้งสองโดยใช้ layout เดียวกัน
+par(mar = c(0, 0, 1.5, 0))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "grey",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Friendship Network")
+```
+
+
+:::
+
+
+::::
+
+
+## Bridges & Cutpoints 2 {.smaller}
+
+- ระบุเส้นเชื่อมที่เป็น Bridges
+
+- ระบุโหนดที่เป็น Cutpoints
+
+
+```{r}
+g3 <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+g4 <- graph_from_adjacency_matrix(game_mat, mode = "undirected")
+g3 <- as_undirected(g3, mode = "collapse")
+g4 <- as_undirected(g4, mode = "collapse")
+```
+
+```{r fig.width = 12, fig.height = 6}
+set.seed(1234)
+common_layout <- layout_with_fr(g3)  # ใช้ layout ของ g3 เป็นหลัก
+
+# วาดกราฟทั้งสองโดยใช้ layout เดียวกัน
+par(mar = c(0, 0, 1.5, 0), mfrow = c(1, 2))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "grey",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Friendship Network")
+plot(g5, 
+     layout = scale_g5,
+     vertex.size = 15,
+     vertex.label.cex = 0.5,
+     vertex.label.color = "white",
+     vertex.shapes = 2,
+     vertex.color = "grey20",
+     edge.arrow.width = 0.7,
+     edge.arrow.size = 0.9,
+     rescale = T,
+     main = "Top 3 friends Network")
+```
+
+## Cohesion 1 {.smaller}
+
+> ระดับของการเชื่อมต่อระหว่างโหนดในกราฟ หรือ ความใกล้ชิดทางโครงสร้างระหว่างกลุ่มของโหนด โดยทั่วไปจะสะท้อนถึงความแน่นแฟ้นของความสัมพันธ์ในเครือข่าย
+
+- Cohesion ระหว่างสองโหนด (dyadic cohesion)
+
+- Cohesion ภายในกลุ่มของโหนด (group cohesion)
+
+. . .
+
+ตัวชี้วัด cohesion มีหลายลักษณะ เช่น
+
+- **Adjacency:** การมีเส้นเชื่อมระหว่างโหนดสองโหนด
+
+- **Geodesic Distance:** ระยะทางสั้นที่สุดระหว่างโหนดสองโหนดในกราฟ
+
+  - ระยะทางสั้นหมายถึงความใกล้ชิดที่เพิ่มขึ้น
+  
+  - มักรายงานเป็นส่วนกลับของระยะทาง $cohesion = 1/d$ แต่บางกรณีอาจเกิดปัญหา?
+  
+- **Component:** โหนดที่อยู่ภายใต้ component เดียวกันถือว่ามี cohesion ต่อกัน
+
+- **Density:** สัดส่วนจำนวนเส้นเชื่อมภายใต้กราฟเทียบกับจำนวนเส้นเชื่อมทั้งหมดที่เป็นไปได้
+
+## Cohesion 2: Adjacency {.smaller}
+
+```{r}
+library(xUCINET)
+friendship_mat <- Hawthorne_BankWiring$Friendship
+game_mat <- Hawthorne_BankWiring$Conflict
+
+g3 <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+g4 <- graph_from_adjacency_matrix(game_mat, mode = "undirected")
+g3 <- as_undirected(g3, mode = "collapse")
+g4 <- as_undirected(g4, mode = "collapse")
+```
+
+```{r fig.width = 10}
+set.seed(1234)
+common_layout <- layout_nicely(g3)  # ใช้ layout ของ g3 เป็นหลัก
+
+# วาดกราฟทั้งสองโดยใช้ layout เดียวกัน
+par(mar = c(0, 1, 1.5, 1), mfrow = c(1, 2))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "steelblue",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+plot(g4, 
+     layout = layout_with_kk,            # ใช้ layout เดียวกัน
+     vertex.color = "grey",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Conflict Network")
+```
+
+
+# Matrices in Social Network analysis
+
+- Adjacency and Distance matrices
+
+- Ways and Modes
+
+- Matrix products
+
+
+## Adjacency Matrices {.smaller}
+
+อีกวิธีการหนึ่งในการทำความเข้าใจเครือข่ายในเชิงคณิตศาสตร์ คือการนิยามเครือข่ายด้วย adjacency matrix
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+> Adjacency matrix: แถวและคอลัมน์ของเมทริกซ์ใช้แทนโหนด และค่าภายใน cell ตำแหน่ง $ij$ ใช้แทนสถานะการเชื่อมต่อระหว่างโหนด $i$ กับ $j$
+
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+friendship_mat
+```
+
+:::
+
+::::
+
+
+
+## Distance Matrix {.smaller}
+
+นอกจากการเก็บค่าเป็น 1, 0 ที่แสดงการเชื่อมโยงระหว่างโหนด เรายังสามารถใช้เมทริกซ์เพื่อเก็บลักษณะการเชื่อมโยงอื่น ๆ เช่น geodesic distance ดังตัวอย่างด้านล่าง
+
+```{r}
+g <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+distances(g4)
+```
+
+## Ways and Modes 1 {.smaller}
+
+- Ways คือจำนวนมิติ (dimension) ของเมทริกซ์
+
+- Modes คือประเภทของหน่วยข้อมูล (type of entities) ที่แถวและคอลัมน์ และมิติที่สูงกว่านั้นของเมทริกซ์ (หรือ array) ใช้แทน
+
+ตัวอย่างด้านล่างแสดง two-way, one-mode matrix
+
+```{r}
+friendship_mat
+dim(friendship_mat)
+```
+
+## Ways and Modes 2 {.smaller}
+
+ตัวอย่างด้านล่างแสดง two-way, two-mode matrix
+
+- แถว คือชื่อของผู้หญิงจำนวน 18 คน
+
+- คอลัมน์ คือกิจกรรมที่ผู้หญิงเข้าร่วม
+
+```{r}
+Davis_SouthernWomen$Attendance
+dim(Davis_SouthernWomen$Attendance)
+```
+
+
+## Ways and Modes 3 {.smaller}
+
+สมมติว่าเรามีเครือข่ายความสัมพันธ์ระหว่างบุคคลในกลุ่มเพื่อน 4 คน: A, B, C, และ D
+เราสนใจว่าใครรู้จักใคร (Friendship Network)
+
+ข้อมูล
+
+- A รู้จัก B และ C
+
+- B รู้จัก A และ D
+
+- C รู้จัก A
+
+- D รู้จัก B
+
+adjacency matrix ในกรณีนี้จะมีลักษณะคือ แถวเป็นผู้ส่งความสัมพันธ์ ส่วนคอลัมน์เป็นผู้รับความสัมพันธ์
+
+```{r}
+mat <- matrix(c(0,1,1,0,
+         1,0,0,1,
+         1,0,0,0,
+         0,1,0,0), nrow = 4)
+rownames(mat)<-LETTERS[1:4]
+colnames(mat)<-LETTERS[1:4]
+mat
+```
+เมทริกซ์ข้างต้นเรียกว่า ?
+
+## Matrix products 1 {.smaller}
+
+กำหนดให้ $A$ และ $B$ เป็นเมทริกซ์ที่สามารถคูณกันได้ ผลคูณระหว่างทั้งสองเมทริกซ์ $C = AB$ สามารถคำนวณได้ตามนิยามดังนี้
+
+$$
+c_{ij} = \sum_{k} a_{ik}b_{kj}
+$$
+
+ผลลัพธ์ที่ได้คือผลรวมเชิงเส้นระหว่างสมาชิกในแถวของ A กับสมาชิกในคอลัมน์ของ B
+
+
+![https://charchithowitzer.medium.com/matrix-multiplication-why-is-it-a-big-deal-cc8ef7490008](https://miro.medium.com/v2/resize:fit:2000/format:webp/1*HjcZkViYtPKg-Wm2o7DFDg.png){width="80%"}
+
+
+## Matrix products 2 {.smaller}
+
+- **ช่วยทำความเข้าใจความสัมพันธ์ที่ลึกซึ้งขึ้น**
+
+- นับจำนวนเส้นทาง
+
+- คำนวณค่าความสำคัญของโหนด
+
+- ตรวจจับกลุ่มย่อยภายในเครือข่าย
+
+- ...
+
+## Matrix products 3 {.smaller}
+
+สมมติว่าเรามีเมทริกซ์ $F$ และ $C$ คือเมทริกซ์เครือข่ายความเป็นเพื่อน และคู่ขัดแย้ง ผลคูณระหว่างเมทริกซ์ทั้งสอง $F \times C$ จะให้เมทริกซ์ที่แสดงจำนวนเพื่อนของ $i$ ที่เป็นคู่ขัดแย้งของ $j$ (คู่ขัดแย้งในกลุ่มเพื่อน)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<p style="font-size:60%">$F$ = เมทริกซ์ความเป็นเพื่อน</p>
+
+<p style="font-size:60%; text-indent:20px;">$F_{ij} = 1$ หมายถึง โหนด $i$ และ $j$ เป็นเพื่อนกัน</p>
+
+<p style="font-size:60%; text-indent:20px;">$F_{ij} = 0$ หมายถึง โหนด $i$ และ $j$ ไม่มีความสัมพันธ์กันแบบเพื่อน</p>
+
+```{r}
+friendship_mat
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+<p style="font-size:60%">$C$ = เมทริกซ์ความเป็นคู่ขัดแย้ง</p>
+
+<p style="font-size:60%; text-indent:20px;">$C_{ij} = 1$ หมายถึง โหนด $i$ และ $j$ เป็นคู่ขัดแย้ง</p>
+
+<p style="font-size:60%; text-indent:20px;">$C_{ij} = 0$ หมายถึง โหนด $i$ และ $j$ ไม่มีความสัมพันธ์แบบคู่ขัดแย้ง</p>
+
+```{r}
+conflict_mat <- Hawthorne_BankWiring$Conflict
+conflict_mat
+```
+
+:::
+
+
+::::
+
+## Matrix products 4 {.smaller}
+
+```{r}
+library(xUCINET)
+friendship_mat <- Hawthorne_BankWiring$Friendship
+game_mat <- Hawthorne_BankWiring$Conflict
+
+g3 <- graph_from_adjacency_matrix(friendship_mat, mode = "undirected")
+g4 <- graph_from_adjacency_matrix(game_mat, mode = "undirected")
+g3 <- as_undirected(g3, mode = "collapse")
+g4 <- as_undirected(g4, mode = "collapse")
+```
+
+```{r fig.width = 10}
+set.seed(1234)
+common_layout <- layout_nicely(g3)  # ใช้ layout ของ g3 เป็นหลัก
+
+# วาดกราฟทั้งสองโดยใช้ layout เดียวกัน
+par(mar = c(0, 1, 1.5, 1), mfrow = c(1, 2))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "steelblue",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+plot(g4, 
+     layout = layout_with_kk,            # ใช้ layout เดียวกัน
+     vertex.color = "grey",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     main = "Conflict Network")
+```
+
+
+## Matrix products 5 {.smaller}
+
+$F \times C$ = จำนวนเพื่อนของ $i$ ที่เป็นคู่ขัดแย้งกับ $j$
+
+- จำนวนเพื่อนของ S1 ที่เป็นคู่ขัดแย้งกับ W7
+
+- จำนวนเพื่อนของ W1 ที่เป็นคู่ขัดแย้งกับ W6
+
+```{r}
+friendship_mat %*% conflict_mat
+
+```
+
+
+## Matrix products 6 {.smaller}
+
+- เมทริกซ์ไม่มีสมบัติสลับที่การคูณ ดังนั้น $FC$ ไม่จำเป็นต้องเท่ากับ $CF$ 
+
+- ตัวอย่างด้านล่างแสดงผลคูณของ $CF$ แปลความหมายได้อย่างไร
+
+```{r}
+conflict_mat %*% friendship_mat
+```
+
+- ถ้า $F$ เป็นความสัมพันธ์แบบเพื่อน และ $B$ เป็นความสัมพันธ์แบบเป็นหัวหน้าของ แล้ว $FB$ แปลว่า?
+
+- $BF$ แปลว่า
+
+## Matrix products 7 {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+- ตัวอย่างด้านล่างแสดงผลคูณ $FF$ แปลว่า
+
+- มองได้มั้ยว่าเป็นจำนวนการเดิน (walks) ที่มีความยาวเท่ากับ 2 หน่วย จากโหนด $i$ ไปยัง $j$
+
+```{r}
+friendship_mat %*% friendship_mat
+```
+
+
+:::
+
+
+::: {.column width="50%"}
+
+```{r fig.width=4}
+par(mar = c(0, 1, 1.5, 1))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "steelblue",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+
+
+:::
+
+::::
+
+
+## Matrix products 8 {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+- ตัวอย่างด้านล่างแสดงผลคูณ $F^3$ แปลว่า
+
+```{r}
+friendship_mat %*% friendship_mat %*% friendship_mat
+```
+
+
+:::
+
+
+::: {.column width="50%"}
+
+```{r fig.width=4}
+par(mar = c(0, 1, 1.5, 1))
+plot(g3, 
+     layout = common_layout,            # ใช้ layout เดียวกัน
+     vertex.color = "steelblue",
+     edge.arrow.size = 0.6,
+     edge.arrow.width = 0.6,
+     vertex.label.color = "white",
+     main = "Friendship Network")
+```
+
+
+:::
+
+::::
+
+
+## Matrix products 9 {.smaller}
+
+> $F^k$ = จำนวนการเดินที่มีความยาว $k$ จากโหนด $i$ ไป $j$
+
+
+- ผลลัพธ์นี้ทำให้ผู้วิเคราะห์สามารถทำความเข้าใจได้ว่าการเชื่อมโยงของแต่ละโหนดมีการเชื่อมโยงกับโหนดที่อยู่ไกลออกไปมากแค่ไหนภายในเครือข่าย
+
+- Concept นี้นำไปสู่การสร้างตัวชี้วัด Beta Centrality
+
+
+## Matrix products 10 {.smaller}
+
+
+> $A \times A^T$ หมายถึงจำนวนโหนดที่มีความสัมพันธ์หรือเชื่อมโยงกับทั้ง $j$ และ $j$
+
+- $F \times F^T$ หมายถึงจำนวนเพื่อนร่วมกันระหว่าง $i$ กับ $j$
+
+- $C \times C^T$ หมายถึงจำนวนคู่ขัดแย้งร่วมกันระหว่าง $i$ กับ $j$
+
+
+ตัวอย่างด้านล่างแสดงผลลัพธ์จาก $F \times F^T$ 
+
+```{r}
+friendship_mat %*% t(friendship_mat)
+```
+
