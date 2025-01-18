@@ -1,0 +1,498 @@
+---
+title: "Week 2: Modelling Process"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 2: 2758623 Machine Learning Principles and Application<br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+## Outline {.smaller}
+
+- data splitting
+
+- creating models
+
+- resampling methods
+
+- bias variance trace-off
+
+- model evaluation
+
+## Modeling Process {.smaller}
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+- Data-driven approaches
+
+- Iterative Procedure
+
+- Trial and Error
+
+:::
+
+::: {.column width="65%"}
+
+![](https://datakruroo.github.io/MachineLearning/week01/img/process.png)
+
+:::
+
+::::
+
+## Frame the Problem {.smaller}
+
+- Regression: ใช้ G3 - final grade (numeric: from 0 to 20) เป็นตัวแปรตาม
+ 
+- Binary Classification: ใช้เกณฑ์ $G3 \geq 10$ หมายถึงสอบผ่าน (pass) 
+
+```{r echo = T}
+library(tidyverse)
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week02/student/student-mat.csv", delim = ";")
+glimpse(data)
+```
+
+## Frame the Problem {.smaller}
+
+- Model A: ใช้ทุกตัวแปรเป็นตัวแปรทำนาย
+
+- Model B: ตัด G2-second period grade (numeric: from 0 to 20) ออกจากตัวแปรทำนาย
+
+- Model C: ตัด G1-first period grade (numeric: from 0 to 20) ออกจากตัวแปรทำนายเพิ่ม
+
+## Data Splitting {.smaller}
+
+เพื่อให้การฝึกสอนและประเมินประสิทธิภาพของโมเดลเป็นไปได้อย่างถูกต้อง ผู้วิเคราะห์จำเป็นต้องแบ่งข้อมูลออกเป็นสองส่วน
+
+- **Training data**: ใช้สำหรับพัฒนาชุดของตัวแปรอิสระ และโมเดลการเรียนรู้ ผลลัพธ์สุดท้ายที่จะได้จากชุดข้อมูลนี้คือ โมเดลการเรียนรู้ที่ดีที่สุด (final models) ที่คาดว่าจะนำไปใช้งานจริง
+
+- **Test data**: ใช้ประเมินประสิทธิภาพของ final models อย่างเป็นกลาง ผลการประเมินที่ได้จากชุดข้อมูลนี้จะสะท้อนคุณสมบัติด้าน generaliability ของโมเดล กล่าวคือ โมเดลการเรียนรู้แต่ละตัวมีความสามารถที่จะนำไปใช้กับข้อมูลใหม่ได้ดีมากน้อยเพียงใด 
+
+สัดส่วนการแบ่งชุดข้อมูลโดยทั่วไปคือ 60:40, 70:30, 80:20 ปัจจัยที่ใช้ประกอบการพิจารณา 
+
+- จำนวนข้อมูลทั้งหมดที่มี
+
+- จำนวนตัวแปรอิสระ
+
+
+## Data Leakage {.smaller}
+
+ปัญหาที่เกิดขึ้นจากการที่ข้อมูลที่ไม่ควรใช้ในกระบวนการพัฒนาโมเดลถูกนำมาใช้โดยไม่ได้ตั้งใจ ส่งผลให้โมเดลมีประสิทธิภาพสูงเกินจริงในขั้นตอนการประเมิน แต่ไม่สามารถนำไปใช้งานจริงได้อย่างน่าเชื่อถือ เช่น
+
+- มีข้อมูลใน test data เข้ามามีส่วนในกระบวนการสร้างโมเดล
+
+- ข้อมูลที่เกี่ยวข้องกับตัวแปรตามหรือเป็นตัวชี้วัดของตัวแปรตามถูกใช้เป็นตัวแปรอิสระ
+
+- การเอา id ของข้อมูลมาเป็นตัวแปรทำนาย
+
+## กิจกรรม 1: Data Splitting {.smaller}
+
+:::: {.columns}
+
+::: {.column width="15%"}
+
+![](img/rsample.png)
+:::
+
+::: {.column width="85%"}
+
+- Simple random sampling
+
+
+```{r echo = T}
+## install.packages("rsample")
+library(rsample)
+## SRS
+set.seed(123)
+srs_split <- initial_split(data = data, prop = 0.7)
+train_srs <- training(srs_split)
+test_srs <- testing(srs_split)
+```
+
+- Stratified random sampling
+
+
+```{r echo = T}
+## Stratified
+set.seed(123)
+strat_split <- initial_split(data = data, prop = 0.7, 
+                           strata = G3, breaks = 4)
+train_strat <- training(strat_split)
+test_strat <- testing(strat_split)
+```
+
+
+:::
+
+::::
+
+## Data Splitting: Distribution Consistency {.smaller}
+
+```{r echo = F, fig.height = 3}
+library(patchwork)
+p1 <- train_srs %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "black",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("training data (SRS)")+
+  ylim(0,0.2)
+
+p2 <- test_srs %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "steelblue",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("test data (SRS)")+
+  ylim(0,0.2)
+
+p1+p2
+```
+
+```{r echo = F , fig.height = 3}
+p1 <- train_strat %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "black",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("training data (STR)")+
+  ylim(0,0.25)
+
+p2 <- test_strat %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "steelblue",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("test data (STR)")+
+  ylim(0,0.25)
+
+p1+p2
+```
+
+## Data Splitting: Class Imbalances {.smaller}
+
+- เกิดขึ้นในปัญหาแบบ classification เมื่อตัวแปรตามมีการแจกแจงที่ไม่สมดุล
+
+- มีผลกระทบสูงต่อประสิทธิภาพการเรียนรู้และการทำนายของโมเดล
+
+```{r eval = F}
+binary_data <- data %>% mutate(result = ifelse(G3>=10,"pass","fail")) %>% select(-G3)
+set.seed(123)
+strat_split <- initial_split(data = binary_data, prop = 0.7, 
+                           strata = result)
+train_strat <- training(strat_split)
+test_strat <- testing(strat_split)
+
+p1 <- train_strat %>% 
+  ggplot(aes(x=result))+geom_bar()+
+  ggtitle("training data")
+
+p2 <- test_strat %>% 
+  ggplot(aes(x=result))+geom_bar()+
+  ggtitle("test data")
+
+p1+p2
+```
+
+## Data Splitting: Class Imbalances {.smaller}
+
+```{r echo = F}
+binary_data <- data %>% mutate(result = ifelse(G3>=10,"pass","fail")) %>% select(-G3)
+set.seed(123)
+strat_split <- initial_split(data = binary_data, prop = 0.7, 
+                           strata = result)
+train_strat_class <- training(strat_split)
+test_strat_class <- testing(strat_split)
+
+p1 <- train_strat_class %>% 
+  ggplot(aes(x=result))+geom_bar()+
+  ggtitle("training data")
+
+p2 <- test_strat_class %>% 
+  ggplot(aes(x=result))+geom_bar()+
+  ggtitle("test data")
+
+p1+p2
+```
+
+## Explore the (Training) Data {.smaller}
+
+- ทำความเข้าใจตัวแปรตาม (target variable)
+
+  - ลักษณะการแจกแจงของตัวแปรตามเป็นอย่างไร
+  
+  - summary stat ของตัวแปรตาม
+  
+  - ความผิดปกติหรือความไม่สมบูรณ์ของข้อมูลตัวแปรตาม
+
+. . .  
+  
+- ทำความเข้าใจตัวแปรอิสระ (features)
+
+  - มีตัวแปรอิสระจำนวนกี่ตัว จำแนกเป็นตัวแปรเชิงปริมาณและจัดประเภทอย่างไร?
+  
+  - การลงรหัสตัวแปรอิสระมีความเหมาะสมแล้วหรือไม่
+  
+  - การแจกแจงของตัวแปรอิสระและ summary stat
+
+## Explore the (Training) Data {.smaller}
+
+- วิเคราะห์ความสัมพันธ์เบื้องต้นระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+  - Scatter plot
+  
+  - Correlation coefficients
+  
+  - Boxplot/Violin plot
+  
+  - ANOVA
+  
+  - Interaction Effects
+
+
+## กิจกรรม 2: สำรวจข้อมูล training data {.smaller}
+
+ขอให่้นิสิตดำเนินการสำรวจข้อมูล training data ประกอบด้วย
+
+- สำรวจตัวแปรตาม (regression task)
+
+- ตัวแปรอิสระ
+
+- ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+ผลการสำรวจเป็นอย่างไร?
+
+
+## Creating Models {.smaller}
+
+- Base library
+
+- tidymodels
+
+- caret
+
+- mlr3
+
+- H2O
+
+- autoML
+
+- scikit-learn
+
+## Tidymodels {.smaller}
+
+
+```{r eval = F}
+## install.packages("tidymodels")
+library(tidymodels)
+```
+
+```{r echo = F}
+library(tidymodels)
+```
+
+![](img/tidymodels.jpeg)
+
+<div class="caption">https://rpubs.com/chenx/tidymodels_tutorial</div>
+
+
+## Tidymodels {.smaller}
+
+<center>
+![](img/tidymodel_functions.png){width="60%"}
+</center>
+
+
+<div class="caption">https://rpubs.com/chenx/tidymodels_tutorial</div>
+
+
+## Tidymodels: parsnip {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="15%"}
+
+![](img/parsnip.png)
+
+:::
+
+::: {.column width="85%"}
+
+ส่วนประกอบจำเป็นสำหรับการระบุโมเดล 
+
+- **model type** อัลกอริทึมที่จะใช้สร้างโมเดลทำนาย
+
+- **engine** เลือก library ที่ใช้สำหรับประมวลผล
+
+- **mode** กำหนดประเภทของโมเดล
+
+นอกจากนี้หลายอัลกอริทึมจะมี hyperparameters ที่ใช้ปรับแต่งลักษณะการเรียนรู้ของโมเดล ซึ่งอาจปรับแต่งอย่างเหมาะสมอาจช่วยเพิ่มประสิทธิภาพของโมเดลได้ (จะกล่าวภายหลัง)
+
+```{r}
+## linear regression model
+lm_spec <- linear_reg() |> 
+  set_engine("lm") |> 
+  set_mode("regression")
+## k-nearest neighbor
+knn_spec <- nearest_neighbor() |> 
+  set_engine("kknn") |> 
+  set_mode("regression")
+```
+
+:::
+
+::::
+
+
+<div class="caption">[https://www.tidymodels.org/find/parsnip/](https://www.tidymodels.org/find/parsnip/)</div>
+
+## Tidymodels: Model Fitting {.smaller}
+
+- `fit()` เป็นฟังก์ชันหลักตัวหนึ่งของ `parsnip` สำหรับ train โมเดลทำนายที่ต้องการด้วยอัลกอริทึมและชุดข้อมูลที่กำหนด
+
+```{r}
+lm_fit <- lm_spec %>% 
+  fit(G3 ~ ., data = train_strat)
+
+knn_fit <- knn_spec %>% 
+  fit(G3 ~ ., data = train_strat)
+```
+
+บางโมเดลมีความสามารถในการอธิบายความสัมพันธ์ในตัวเอง เช่น linear regression หรือ decision tree ผู้วิเคราะห์สามารถดึงผลการประมาณค่าพารามิเตอร์ หรือผลการวิเคราะห์ที่เกี่ยวข้องเพื่อนำไปใช้ได้ เช่น
+
+- `extract_fit_engine()` เป็นฟังก์ชันใน `parsnip` ใช้สำหรับดึง model object จากผลการสร้างโมเดลด้วย `parsnip` หรือ `workflow` ใน tidymodels
+
+ลองพิมพ์คำสั่งต่อไปนี้แล้วพิจารณาผลลัพธ์ที่ได้
+
+```{r eval = F}
+raw_lm_model <- extract_fit_engine(lm_fit)
+summary(raw_lm_model)
+```
+
+## Tidymodels: Model Evaluation {.smaller}
+
+โดยปกติวัตถุประสงค์ของการสร้างโมเดลทำนายคือการทำนาย ดังนั้นการประเมินประสิทธิภาพของโมเดลทำนายจึงเน้นไปที่การตรวจสอบความถูกต้องของการทำนายเป็นหลัก
+
+:::: {.columns}
+
+::: {.column width="50%"}
+- คำนวณค่าทำนายใน test data 
+
+- คำนวณค่าของ evaluation metrices
+
+
+#### Regression models
+
+- MSE
+
+- RMSE
+
+- MAE
+
+- Rsq
+
+:::
+
+::: {.column width="50%"}
+
+#### Classification models
+
+- Confusion Matrix
+
+  - Accuracy (hit rate)
+  
+  - Misclassification rate
+  
+  - Precision
+  
+  - Sensitivity (or recall)
+  
+  - Specificity
+  
+  - AUC
+
+- Brier score
+
+- Cross-entropy
+
+:::
+
+::::
+
+## Tidymodels: Model Evaluation {.smaller}
+
+
+
+การคำนวณค่าประสิทธิภาพของโมเดลทำนายแบบ regression ภายใต้ tidymodels framework สามารถทำได้ง่าย ๆ โดยใช้ฟังก์ชันจาก package yardstick ได้แก่ `rmse()` และ `rsq()`
+
+
+::::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = F, fig.width = 4, fig.height = 4} 
+lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  rename(lm_pred = 1) %>% 
+  bind_cols(test_strat) %>% 
+  select(lm_pred, G3) %>% 
+  ggplot(aes(x = G3, y = lm_pred))+
+  geom_point()+
+  geom_abline(intercept = 0, slope = 1)+
+  theme_light()+
+  coord_obs_pred()
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+test_dataset_lm <- lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  rename(lm_pred = 1) %>% 
+  bind_cols(test_strat)
+
+metric <- metric_set(yardstick::rmse,
+                     yardstick::rsq,
+                     yardstick::mae)
+
+test_dataset_lm %>% 
+  metric(truth = G3, estimate = lm_pred)
+
+```
+
+:::
+
+:::::
+
+
+
+## กิจกรรม
+
+...
