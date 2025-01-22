@@ -282,6 +282,97 @@ p1+p2
 
 ผลการสำรวจเป็นอย่างไร?
 
+## Syntax สำหรับกิจกรรม 2 {.smaller}
+
+#### 1. แปลงข้อมูลจัดประเภทให้เป็น factor
+
+```{r}
+train_str2 <- train_strat %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor)
+```
+
+<br>
+
+#### 2. สำรวจตัวแปรอิสระแบบจัดประเภท
+
+```{r eval = F}
+train_str2 %>% 
+select_if(is.factor) %>%
+  pivot_longer(cols = everything()) %>% 
+  ggplot(aes(x = value))+
+  geom_bar(fill = "black")+
+  theme_light()+
+  facet_wrap(~name, scale = "free")
+```
+
+## Syntax สำหรับกิจกรรม 2 {.smaller}
+
+#### 3. สำรวจความสัมพันธ์ระหว่าง y กับ x
+
+```{r}
+features_name <- names(train_str2 %>% select(-G3))
+
+# สร้าง tibble ว่างเพื่อเก็บผลลัพธ์
+results <- tibble(
+  predictor = character(),
+  rsq = numeric()
+)
+
+# ใช้ for loop เพื่อวนลูปคำนวณ
+for (x in features_name) {
+  # สร้างสูตรโมเดล
+  formula <- as.formula(paste("G3 ~", x))
+  
+  # เทรนโมเดล
+  model <- lm(formula, data = train_strat)
+  
+  # ดึงค่า R-squared
+  rsq <- summary(model)$r.squared
+  
+  # เพิ่มผลลัพธ์ลงใน tibble
+  results <- results %>%
+    add_row(predictor = x, rsq = rsq)
+}
+```
+
+
+## Syntax สำหรับกิจกรรม 2 {.smaller}
+
+#### สำรวจความสัมพันธ์ระหว่าง y กับ x (ต่อ)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+results %>% 
+  arrange(desc(rsq))
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r fig.height = 8}
+results %>% arrange(desc(rsq)) %>% 
+  ggplot(aes(x = rsq, 
+             y= reorder(predictor, rsq)))+
+  geom_col(fill = "black", alpha = 0.8)+
+  theme_light()+
+  theme(text = element_text(size = 20))+
+  ylab("")+ xlab("\n R-Square")
+```
+
+
+:::
+
+::::
 
 ## Creating Models {.smaller}
 

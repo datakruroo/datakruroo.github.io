@@ -604,6 +604,96 @@ $ G3         &lt;dbl&gt; 6, 6, 10, 15, 10, 15, 11, 6, 19, 15, 9, 12, 14, 11, 16,
 <li><p>ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ</p></li>
 </ul>
 <p>ผลการสำรวจเป็นอย่างไร?</p>
+</section><section id="syntax-สำหรบกจกรรม-2" class="slide level2 smaller"><h2>Syntax สำหรับกิจกรรม 2</h2>
+<h4 id="แปลงขอมลจดประเภทใหเปน-factor">1. แปลงข้อมูลจัดประเภทให้เป็น factor</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>train_str2 <span class="ot">&lt;-</span> train_strat <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(school, sex, address, famsize, Pstatus, </span>
+<span id="cb6-3"><a href=""></a>                 Medu, Fedu, Mjob, Fjob, reason, guardian,</span>
+<span id="cb6-4"><a href=""></a>                 traveltime, studytime, schoolsup,</span>
+<span id="cb6-5"><a href=""></a>                 famsup, paid, activities, nursery, higher,internet,</span>
+<span id="cb6-6"><a href=""></a>                 romantic, famrel, freetime, goout, Dalc, Walc, health), </span>
+<span id="cb6-7"><a href=""></a>            factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<h4 id="สำรวจตวแปรอสระแบบจดประเภท">2. สำรวจตัวแปรอิสระแบบจัดประเภท</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>train_str2 <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href=""></a><span class="fu">select_if</span>(is.factor) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value))<span class="sc">+</span></span>
+<span id="cb7-5"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"black"</span>)<span class="sc">+</span></span>
+<span id="cb7-6"><a href=""></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb7-7"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name, <span class="at">scale =</span> <span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="syntax-สำหรบกจกรรม-2-1" class="slide level2 smaller"><h2>Syntax สำหรับกิจกรรม 2</h2>
+<h4 id="สำรวจความสมพนธระหวาง-y-กบ-x">3. สำรวจความสัมพันธ์ระหว่าง y กับ x</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>features_name <span class="ot">&lt;-</span> <span class="fu">names</span>(train_str2 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>G3))</span>
+<span id="cb8-2"><a href=""></a></span>
+<span id="cb8-3"><a href=""></a><span class="co"># สร้าง tibble ว่างเพื่อเก็บผลลัพธ์</span></span>
+<span id="cb8-4"><a href=""></a>results <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-5"><a href=""></a>  <span class="at">predictor =</span> <span class="fu">character</span>(),</span>
+<span id="cb8-6"><a href=""></a>  <span class="at">rsq =</span> <span class="fu">numeric</span>()</span>
+<span id="cb8-7"><a href=""></a>)</span>
+<span id="cb8-8"><a href=""></a></span>
+<span id="cb8-9"><a href=""></a><span class="co"># ใช้ for loop เพื่อวนลูปคำนวณ</span></span>
+<span id="cb8-10"><a href=""></a><span class="cf">for</span> (x <span class="cf">in</span> features_name) {</span>
+<span id="cb8-11"><a href=""></a>  <span class="co"># สร้างสูตรโมเดล</span></span>
+<span id="cb8-12"><a href=""></a>  formula <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"G3 ~"</span>, x))</span>
+<span id="cb8-13"><a href=""></a>  </span>
+<span id="cb8-14"><a href=""></a>  <span class="co"># เทรนโมเดล</span></span>
+<span id="cb8-15"><a href=""></a>  model <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> train_strat)</span>
+<span id="cb8-16"><a href=""></a>  </span>
+<span id="cb8-17"><a href=""></a>  <span class="co"># ดึงค่า R-squared</span></span>
+<span id="cb8-18"><a href=""></a>  rsq <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>r.squared</span>
+<span id="cb8-19"><a href=""></a>  </span>
+<span id="cb8-20"><a href=""></a>  <span class="co"># เพิ่มผลลัพธ์ลงใน tibble</span></span>
+<span id="cb8-21"><a href=""></a>  results <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb8-22"><a href=""></a>    <span class="fu">add_row</span>(<span class="at">predictor =</span> x, <span class="at">rsq =</span> rsq)</span>
+<span id="cb8-23"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="syntax-สำหรบกจกรรม-2-2" class="slide level2 smaller"><h2>Syntax สำหรับกิจกรรม 2</h2>
+<h4 id="สำรวจความสมพนธระหวาง-y-กบ-x-ตอ">สำรวจความสัมพันธ์ระหว่าง y กับ x (ต่อ)</h4>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>results <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(rsq))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 2
+   predictor    rsq
+   &lt;chr&gt;      &lt;dbl&gt;
+ 1 G2        0.801 
+ 2 G1        0.596 
+ 3 failures  0.117 
+ 4 Medu      0.0375
+ 5 Mjob      0.0336
+ 6 romantic  0.0298
+ 7 higher    0.0277
+ 8 age       0.0214
+ 9 reason    0.0168
+10 famsize   0.0156
+# ℹ 22 more rows</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>results <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(rsq)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> rsq, </span>
+<span id="cb11-3"><a href=""></a>             <span class="at">y=</span> <span class="fu">reorder</span>(predictor, rsq)))<span class="sc">+</span></span>
+<span id="cb11-4"><a href=""></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>)<span class="sc">+</span></span>
+<span id="cb11-5"><a href=""></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb11-6"><a href=""></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))<span class="sc">+</span></span>
+<span id="cb11-7"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">""</span>)<span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> R-Square"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 </section><section id="creating-models" class="slide level2 smaller"><h2>Creating Models</h2>
 <ul>
 <li><p>Base library</p></li>
@@ -615,8 +705,8 @@ $ G3         &lt;dbl&gt; 6, 6, 10, 15, 10, 15, 11, 6, 19, 15, 9, 12, 14, 11, 16,
 <li><p>scikit-learn</p></li>
 </ul></section><section id="tidymodels" class="slide level2 smaller"><h2>Tidymodels</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="do">## install.packages("tidymodels")</span></span>
-<span id="cb6-2"><a href=""></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="do">## install.packages("tidymodels")</span></span>
+<span id="cb12-2"><a href=""></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="img/tidymodels.jpeg" class="r-stretch"><div class="caption">
@@ -642,14 +732,14 @@ https://rpubs.com/chenx/tidymodels_tutorial
 </ul>
 <p>นอกจากนี้หลายอัลกอริทึมจะมี hyperparameters ที่ใช้ปรับแต่งลักษณะการเรียนรู้ของโมเดล ซึ่งอาจปรับแต่งอย่างเหมาะสมอาจช่วยเพิ่มประสิทธิภาพของโมเดลได้ (จะกล่าวภายหลัง)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="do">## linear regression model</span></span>
-<span id="cb7-2"><a href=""></a>lm_spec <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
-<span id="cb7-5"><a href=""></a><span class="do">## k-nearest neighbor</span></span>
-<span id="cb7-6"><a href=""></a>knn_spec <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-7"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"kknn"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-8"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="do">## linear regression model</span></span>
+<span id="cb13-2"><a href=""></a>lm_spec <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb13-5"><a href=""></a><span class="do">## k-nearest neighbor</span></span>
+<span id="cb13-6"><a href=""></a>knn_spec <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-7"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"kknn"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-8"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div></div>
 <div class="caption">
@@ -661,11 +751,11 @@ https://rpubs.com/chenx/tidymodels_tutorial
 <code>fit()</code> เป็นฟังก์ชันหลักตัวหนึ่งของ <code>parsnip</code> สำหรับ train โมเดลทำนายที่ต้องการด้วยอัลกอริทึมและชุดข้อมูลที่กำหนด</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>lm_fit <span class="ot">&lt;-</span> lm_spec <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href=""></a>  <span class="fu">fit</span>(G3 <span class="sc">~</span> ., <span class="at">data =</span> train_strat)</span>
-<span id="cb8-3"><a href=""></a></span>
-<span id="cb8-4"><a href=""></a>knn_fit <span class="ot">&lt;-</span> knn_spec <span class="sc">%&gt;%</span> </span>
-<span id="cb8-5"><a href=""></a>  <span class="fu">fit</span>(G3 <span class="sc">~</span> ., <span class="at">data =</span> train_strat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>lm_fit <span class="ot">&lt;-</span> lm_spec <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">fit</span>(G3 <span class="sc">~</span> ., <span class="at">data =</span> train_strat)</span>
+<span id="cb14-3"><a href=""></a></span>
+<span id="cb14-4"><a href=""></a>knn_fit <span class="ot">&lt;-</span> knn_spec <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href=""></a>  <span class="fu">fit</span>(G3 <span class="sc">~</span> ., <span class="at">data =</span> train_strat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>บางโมเดลมีความสามารถในการอธิบายความสัมพันธ์ในตัวเอง เช่น linear regression หรือ decision tree ผู้วิเคราะห์สามารถดึงผลการประมาณค่าพารามิเตอร์ หรือผลการวิเคราะห์ที่เกี่ยวข้องเพื่อนำไปใช้ได้ เช่น</p>
 <ul>
@@ -674,8 +764,8 @@ https://rpubs.com/chenx/tidymodels_tutorial
 </ul>
 <p>ลองพิมพ์คำสั่งต่อไปนี้แล้วพิจารณาผลลัพธ์ที่ได้</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>raw_lm_model <span class="ot">&lt;-</span> <span class="fu">extract_fit_engine</span>(lm_fit)</span>
-<span id="cb9-2"><a href=""></a><span class="fu">summary</span>(raw_lm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>raw_lm_model <span class="ot">&lt;-</span> <span class="fu">extract_fit_engine</span>(lm_fit)</span>
+<span id="cb15-2"><a href=""></a><span class="fu">summary</span>(raw_lm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="tidymodels-model-evaluation" class="slide level2 smaller"><h2>Tidymodels: Model Evaluation</h2>
 <p>โดยปกติวัตถุประสงค์ของการสร้างโมเดลทำนายคือการทำนาย ดังนั้นการประเมินประสิทธิภาพของโมเดลทำนายจึงเน้นไปที่การตรวจสอบความถูกต้องของการทำนายเป็นหลัก</p>
@@ -717,24 +807,24 @@ https://rpubs.com/chenx/tidymodels_tutorial
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-13-1.png" width="384"></p>
+<figure><p><img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-18-1.png" width="384"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>test_dataset_lm <span class="ot">&lt;-</span> lm_fit <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href=""></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> test_strat) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href=""></a>  <span class="fu">rename</span>(<span class="at">lm_pred =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-4"><a href=""></a>  <span class="fu">bind_cols</span>(test_strat)</span>
-<span id="cb10-5"><a href=""></a></span>
-<span id="cb10-6"><a href=""></a>metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(yardstick<span class="sc">::</span>rmse,</span>
-<span id="cb10-7"><a href=""></a>                     yardstick<span class="sc">::</span>rsq,</span>
-<span id="cb10-8"><a href=""></a>                     yardstick<span class="sc">::</span>mae)</span>
-<span id="cb10-9"><a href=""></a></span>
-<span id="cb10-10"><a href=""></a>test_dataset_lm <span class="sc">%&gt;%</span> </span>
-<span id="cb10-11"><a href=""></a>  <span class="fu">metric</span>(<span class="at">truth =</span> G3, <span class="at">estimate =</span> lm_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>test_dataset_lm <span class="ot">&lt;-</span> lm_fit <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href=""></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> test_strat) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">rename</span>(<span class="at">lm_pred =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href=""></a>  <span class="fu">bind_cols</span>(test_strat)</span>
+<span id="cb16-5"><a href=""></a></span>
+<span id="cb16-6"><a href=""></a>metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(yardstick<span class="sc">::</span>rmse,</span>
+<span id="cb16-7"><a href=""></a>                     yardstick<span class="sc">::</span>rsq,</span>
+<span id="cb16-8"><a href=""></a>                     yardstick<span class="sc">::</span>mae)</span>
+<span id="cb16-9"><a href=""></a></span>
+<span id="cb16-10"><a href=""></a>test_dataset_lm <span class="sc">%&gt;%</span> </span>
+<span id="cb16-11"><a href=""></a>  <span class="fu">metric</span>(<span class="at">truth =</span> G3, <span class="at">estimate =</span> lm_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   .metric .estimator .estimate
