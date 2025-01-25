@@ -409,12 +409,13 @@ library(tidymodels)
 
 ## Tidymodels {.smaller}
 
-<center>
+<left>
 ![](img/tidymodel_functions.png){width="60%"}
-</center>
+</left>
 
 
 <div class="caption">https://rpubs.com/chenx/tidymodels_tutorial</div>
+
 
 
 ## Tidymodels: parsnip {.smaller}
@@ -488,6 +489,7 @@ summary(raw_lm_model)
 :::: {.columns}
 
 ::: {.column width="50%"}
+
 - คำนวณค่าทำนายใน test data 
 
 - คำนวณค่าของ evaluation metrices
@@ -578,8 +580,391 @@ test_dataset_lm %>%
 
 :::::
 
+## Classification {.smaller}
+
+Binary Classification: ใช้เกณฑ์ $G3 \geq 10$ หมายถึงสอบผ่าน (pass) 
+
+ขอให้นิสิตดำเนินการต่อไปนี้
+
+1. สร้างตัวแปรตามชื่อ `result` ในชุดข้อมูล `data`
+
+2. แบ่งชุดข้อมูล `train_data` และ `test_data` โดยใช้ `result`
+
+3. สำรวจการแจกแจงของตัวแปร `result` 
+
+4. กำหนด classification model สำหรับจำแนกผลการเรียนของนักเรียน ในที่นี้ให้เลิือกใช้ binary logistic regression 
+
+5. ทดลอง fit model กับข้อมูล มีข้อสังเกตอะไรหรือไม่
+
+6. และคำนวณเกณฑ์สำหรับพิจารณาประสิทธิภาพโมเดล ได้แก่ brier score, confusion matrix, accuracy, misclassification rate, sensitivity (recall), specificity, precision, F1
+
+## Divergent & Perfect Separation Problem {.smaller}
 
 
-## กิจกรรม
+:::: {.columns}
 
-...
+::: {.column width="50%"}
+
+
+```{r echo = F}
+binary_data <- data %>% mutate(result = ifelse(G3>=10,"pass","fail"),
+                               result = fct_relevel(result, "pass")) %>% select(-G3)
+set.seed(123)
+strat_split <- initial_split(data = binary_data, prop = 0.7, 
+                           strata = result)
+train_strat <- training(strat_split)
+test_strat <- testing(strat_split)
+```
+
+
+```{r warning = T}
+## model specification
+logit_mod <- logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification")
+
+## fitting
+fit_logit <- logit_mod %>% 
+  fit(result ~ ., data = train_strat)
+```
+
+
+
+:::
+
+::: {.column width="50%"}
+
+**แนวทางแก้ปัญหา**
+
+
+- เพิ่ม iteration
+
+- ทำ regularization L1/L2
+
+- ตรวจสอบและลบตัวแปรอิสระที่ทำให้เกิด perfect seperation ออก
+
+- แก้ปัญหา Imbalanced class
+
+- แก้ปัญหา outlier
+
+- แก้ปัญหา multicollinearity (สำหรับบางโมเดล)
+
+- ปรับค่า Tolerance
+
+- เปลี่ยนอัลกอริทึม
+
+
+
+:::
+
+::::
+
+## Roc & AUC {.smaller}
+
+ROC (Receiver Operating Characteristic) และ AUC (Area Under the Curve) เป็นเครื่องมือที่ใช้วัดและประเมินประสิทธิภาพของ classification model โดยเฉพาะการจำแนกแบบ binary classification จุดเด่นคือเป็นการพิจารณาความสามารถของโมเดลจากทุก threshold
+ 
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+```{r echo = F} 
+library(ggrepel)
+## model specification
+logit_mod <- logistic_reg() %>% 
+  set_engine("glm",
+             control = list(maxit = 100)) %>% 
+  set_mode("classification")
+
+## fitting
+fit_logit <- logit_mod %>% 
+  fit(result ~ ., data = train_strat)
+```
+
+
+```{r echo = T}
+predicted_value <- fit_logit %>% 
+  predict(new_data = test_strat,
+          type = "prob") %>% 
+  bind_cols(test_strat) %>% 
+  select(.pred_pass, result)
+predicted_value  %>%roc_curve(truth = "result", .pred_pass)
+predicted_value  %>% roc_auc(truth = "result", .pred_pass)
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+```{r echo = F, fig.width = 4.5}
+
+fit_logit %>% 
+  predict(new_data = test_strat,
+          type = "prob") %>% 
+  bind_cols(test_strat) %>% 
+  select(.pred_pass, result) %>% 
+  roc_curve(truth = "result", .pred_pass) %>% 
+  ggplot(aes(x = 1-specificity, y=sensitivity))+
+  geom_path(col = "steelblue", linewidth = 1.5)+
+  geom_abline(slope = 1, intercept = 0, linetype = 2)+
+  geom_point()+
+  geom_text(aes(x = 0.35, y= 0.6, label = "AUC = 0.902"), size = 5)+
+  theme_light()+
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 15))+
+  xlab("\n False Positive Rate")+
+  ylab("True Positive Rate \n")+
+  coord_obs_pred()+
+  ggtitle("ROC")
+```
+
+:::
+
+:::: 
+
+
+## F1 Score {.smaller}
+
+F1 Score เป็นตัวชี้วัดประสิทธิภาพการจำแนกของโมเดล classification โดยพิจารณาด้านความไวและความน่าเชื่อถือไปพร้อมกัน ในเชิงคณิตศาสตร์ F1 เป็นค่าเฉลี่ย Harmonic ระหว่าง sensitivity กับ precision 
+
+$$
+F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+$$
+
+```{r}
+fit_logit %>% 
+  predict(new_data = test_strat,
+          type = "class") %>% 
+  bind_cols(test_strat) %>% 
+  select(.pred_class, result) %>% 
+  f_meas(truth = result, estimate = .pred_class)
+```
+
+## LASSO Regression {.smaller}
+
+Lasso Regression (Least Absolute Shrinkage and Selection Operator) เป็นรูปแบบหนึ่งของ regularized regression ที่ใช้ในการลดความซับซ้อนของโมเดลและป้องกันปัญหา overfitting โดยเพิ่ม penalty term ที่จะเพิ่ม bias อย่างเหมาะสมให้กับโมเดลเพื่อให้ variance ของโมเดลต่ำลงลดการเกิดปัญหา overfitting 
+
+#### regression
+
+$$
+\text{Minimize: } \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij} \right)^2 + \lambda \sum_{j=1}^{p} |\beta_j|
+$$
+
+#### binary logistic regression
+
+$$
+\text{Minimize: } - \frac{1}{n} \sum_{i=1}^{n} \left[ y_i \log(\hat{p}_i) + (1 - y_i) \log(1 - \hat{p}_i) \right] + \lambda \sum_{j=1}^{p} |\beta_j|
+$$
+
+
+## LASSO Regression {.smaller}
+
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+![](img/lasso.png)
+
+:::
+
+::: {.column width="50%"}
+
+```{r echo = F}
+library(tidymodels)
+library(glmnet)
+library(ggplot2)
+
+# สร้างข้อมูลตัวอย่าง
+set.seed(42)
+data <- as_tibble(matrix(rnorm(1000), nrow = 100, ncol = 10))
+colnames(data) <- paste0("X", 1:10)
+data$y <- 2 * data$X1 - 3 * data$X2 + rnorm(100)
+
+
+# แยกข้อมูล Train และ Test
+set.seed(42)
+data_split <- initial_split(data, prop = 0.8)
+train_data <- training(data_split) %>%
+  mutate(y = y + rnorm(n(), mean = 0, sd = 3))  # เพิ่ม noise ให้ชุด train
+test_data <- testing(data_split)
+
+# สร้าง Matrix สำหรับ glmnet
+x_train <- as.matrix(train_data %>% select(-y))
+y_train <- train_data$y
+x_test <- as.matrix(test_data %>% select(-y))
+y_test <- test_data$y
+
+# สร้างโมเดล Lasso ด้วย glmnet
+x_matrix <- as.matrix(data %>% select(-y))
+y_vector <- data$y
+
+lasso_fit <- glmnet(x_train, y_train, alpha = 1, lambda = 10^seq(-3, 1, length = 50))
+
+# ดึงค่า coefficient ออกมา
+coefs <- t(as.matrix(coef(lasso_fit))[-1, ])  # ลบ intercept ออก
+lambda_values <- lasso_fit$lambda
+
+# เปลี่ยนค่า coefficient เป็น dataframe
+coefs_df <- as_tibble(coefs, .name_repair = "unique") %>%
+  mutate(lambda = lambda_values) %>%
+  pivot_longer(-lambda, names_to = "feature", values_to = "coefficient")
+
+# สร้างแผนภาพ
+ggplot(coefs_df, aes(x = lambda, y = coefficient, color = feature)) +
+  geom_line(linewidth = 1.5) +
+  scale_x_log10() +  # ใช้ log scale สำหรับ lambda
+  labs(
+    title = "Path of Coefficients with Increasing Penalty",
+    x = "Lambda (Regularization Strength)",
+    y = "Coefficient Value",
+    color = "Feature"
+  ) +
+  theme_minimal()+
+  theme(text = element_text(size=16))
+
+
+# คำนวณ RMSE สำหรับ Train และ Test
+rmse_results <- tibble(lambda = lambda_values)
+
+rmse_results <- rmse_results %>%
+  mutate(
+    train_rmse = map_dbl(lambda, ~ {
+      preds <- predict(lasso_fit, s = .x, newx = x_train)
+      sqrt(mean((y_train - preds)^2))  # RMSE สำหรับ train
+    }),
+    test_rmse = map_dbl(lambda, ~ {
+      preds <- predict(lasso_fit, s = .x, newx = x_test)
+      sqrt(mean((y_test - preds)^2))  # RMSE สำหรับ test
+    })
+  )
+
+ggplot(rmse_results, aes(x = lambda)) +
+  geom_line(aes(y = train_rmse, color = "Train RMSE"), linewidth = 1.2) +
+  geom_line(aes(y = test_rmse, color = "Test RMSE"), linewidth = 1.2) +
+  scale_x_log10() +  # ใช้ log scale สำหรับ lambda
+  labs(
+    title = "RMSE vs Lambda for Train and Test Sets",
+    x = "Lambda (Regularization Strength)",
+    y = "RMSE",
+    color = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(text = element_text(size = 16))
+```
+
+
+:::
+
+::::
+
+## Validation Approach: K-fold CV {.smaller}
+
+- ชุด training set (ชุดฝึกฝนใหม่)
+
+- ชุด validation set (หรือเรียกว่า holdout set) อย่างไรก็ตามการใช้ validation set เพียงชุดเดียวมีโอกาสสูงที่ผลการประเมินจะขาดความเสถียร มีอคติ ไม่น่าเชื่อถือ
+
+![](img/kfold.png)
+
+## Resampling: Cross-validation {.smaller}
+
+![](img/cv.png)
+
+
+## Validation Approach: K-fold CV {.smaller}
+
+ค่า  k  ใหญ่ขึ้น:
+
+- ความแตกต่างระหว่างประสิทธิภาพที่ประเมินได้และประสิทธิภาพจริงจะลดลง
+
+- เพิ่มทรัพยากรที่ต้องใช้ในการประมวลผล
+
+ค่า  k = 10 :
+
+- มีผลลัพธ์คล้ายกับ Leave-One-Out Cross Validation (LOOCV) ซึ่งเป็นกรณีที่  k = n  (Molinaro et al. ,2005)
+
+- การทำ k-Fold CV ซ้ำ (repeated k-Fold CV) สามารถเพิ่มความแม่นยำของการประเมินผล เช่น ใช้ 10-Fold CV ทำซ้ำ 5-10 ครั้งเพื่อเพิ่มความน่าเชื่อถือ
+
+## Validation Approach: K-fold CV {.smaller}
+
+![](https://www.tmwr.org/premade/proper-workflow.svg)
+
+## Validation Approach: K-fold CV {.smaller}
+
+
+```{r}
+# สร้าง model specification
+logit_mod <- logistic_reg(
+  penalty = tune(),   
+  mixture = 1       
+) %>%
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+
+# สร้าง workflow
+logit_wf <- workflow() %>%
+  add_formula(result ~.) %>%
+  add_model(logit_mod)
+
+# สร้าง resamples สำหรับ Cross-Validation
+set.seed(123)
+cv_folds <- vfold_cv(train_strat, v = 10, repeats = 3)
+
+# สร้าง grid สำหรับ lambda
+lambda_grid <- grid_regular(
+  penalty(range = c(-3, 1)),  # lambda ตั้งแต่ 10^-3 ถึง 10^1
+  levels = 30
+)
+
+# ใช้ tune_grid() เพื่อปรับ lambda
+tune_results <- tune_grid(
+  logit_wf,
+  resamples = cv_folds,
+  grid = lambda_grid,
+  metrics = metric_set(roc_auc, accuracy, sens, spec, precision)
+)
+```
+
+## Validation Approach: K-fold CV {.smaller}
+
+
+```{r fig.height = 6}
+autoplot(tune_results)
+```
+
+## Validation Approach: K-fold CV {.smaller}
+
+- `collect_metrics()` เป็นฟังก์ชันที่ช่วยให้ผู้วิเคราะห์เข้าถึงผลที่ได้จากการทดลอง fit model ในเงื่อนไขต่าง ๆ พร้อมค่าบ่งชี้ประสิทธิภาพ
+
+```{r}
+tune_results %>% collect_metrics()
+```
+
+## Finalized Workflows {.smaller}
+
+```{r}
+## select best
+best_params <- tune_results %>%
+  select_best(metric = "roc_auc")
+
+## finalizing
+final_wf <- logit_wf %>%
+  finalize_workflow(best_params)
+
+## last fit
+final_wf %>%
+  fit(data = train_strat) %>% extract_fit_engine() %>% plot(xvar = "lambda")
+```
+
+## Finalized Workflows {.smaller}
+
+```{r}
+final_wf %>% last_fit(strat_split,
+                       metrics = metric_set(accuracy, roc_auc, 
+                                            sens, spec, precision)) %>% 
+  collect_metrics()
+```
+
+

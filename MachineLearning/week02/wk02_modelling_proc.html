@@ -713,10 +713,8 @@ $ G3         &lt;dbl&gt; 6, 6, 10, 15, 10, 15, 11, 6, 19, 15, 9, 12, 14, 11, 16,
 https://rpubs.com/chenx/tidymodels_tutorial
 </div>
 </section><section id="tidymodels-1" class="slide level2 smaller"><h2>Tidymodels</h2>
-<center>
-<img data-src="img/tidymodel_functions.png" style="width:60.0%">
-</center>
-<div class="caption">
+
+<img data-src="img/tidymodel_functions.png" style="width:60.0%" class="r-stretch"><div class="caption">
 https://rpubs.com/chenx/tidymodels_tutorial
 </div>
 </section><section id="tidymodels-parsnip" class="slide level2 smaller"><h2>Tidymodels: parsnip</h2>
@@ -835,8 +833,252 @@ https://rpubs.com/chenx/tidymodels_tutorial
 </div>
 </div>
 </div></div>
-</section><section id="กจกรรม" class="slide level2"><h2>กิจกรรม</h2>
-<p>…</p>
+</section><section id="classification" class="slide level2 smaller scrollable"><h2>Classification</h2>
+<p>Binary Classification: ใช้เกณฑ์ <span class="math inline">\(G3 \geq 10\)</span> หมายถึงสอบผ่าน (pass)</p>
+<p>ขอให้นิสิตดำเนินการต่อไปนี้</p>
+<ol type="1">
+<li><p>สร้างตัวแปรตามชื่อ <code>result</code> ในชุดข้อมูล <code>data</code></p></li>
+<li><p>แบ่งชุดข้อมูล <code>train_data</code> และ <code>test_data</code> โดยใช้ <code>result</code></p></li>
+<li><p>สำรวจการแจกแจงของตัวแปร <code>result</code></p></li>
+<li><p>กำหนด classification model สำหรับจำแนกผลการเรียนของนักเรียน ในที่นี้ให้เลิือกใช้ binary logistic regression</p></li>
+<li><p>ทดลอง fit model กับข้อมูล มีข้อสังเกตอะไรหรือไม่</p></li>
+<li><p>และคำนวณเกณฑ์สำหรับพิจารณาประสิทธิภาพโมเดล ได้แก่ brier score, confusion matrix, accuracy, misclassification rate, sensitivity (recall), specificity, precision, F1</p></li>
+</ol></section><section id="divergent-perfect-separation-problem" class="slide level2 smaller"><h2>Divergent &amp; Perfect Separation Problem</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="do">## model specification</span></span>
+<span id="cb18-2"><a href=""></a>logit_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb18-5"><a href=""></a></span>
+<span id="cb18-6"><a href=""></a><span class="do">## fitting</span></span>
+<span id="cb18-7"><a href=""></a>fit_logit <span class="ot">&lt;-</span> logit_mod <span class="sc">%&gt;%</span> </span>
+<span id="cb18-8"><a href=""></a>  <span class="fu">fit</span>(result <span class="sc">~</span> ., <span class="at">data =</span> train_strat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong>แนวทางแก้ปัญหา</strong></p>
+<ul>
+<li><p>เพิ่ม iteration</p></li>
+<li><p>ทำ regularization L1/L2</p></li>
+<li><p>ตรวจสอบและลบตัวแปรอิสระที่ทำให้เกิด perfect seperation ออก</p></li>
+<li><p>แก้ปัญหา Imbalanced class</p></li>
+<li><p>แก้ปัญหา outlier</p></li>
+<li><p>แก้ปัญหา multicollinearity (สำหรับบางโมเดล)</p></li>
+<li><p>ปรับค่า Tolerance</p></li>
+<li><p>เปลี่ยนอัลกอริทึม</p></li>
+</ul>
+</div></div>
+</section><section id="roc-auc" class="slide level2 smaller"><h2>Roc &amp; AUC</h2>
+<p>ROC (Receiver Operating Characteristic) และ AUC (Area Under the Curve) เป็นเครื่องมือที่ใช้วัดและประเมินประสิทธิภาพของ classification model โดยเฉพาะการจำแนกแบบ binary classification จุดเด่นคือเป็นการพิจารณาความสามารถของโมเดลจากทุก threshold</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>predicted_value <span class="ot">&lt;-</span> fit_logit <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href=""></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> test_strat,</span>
+<span id="cb21-3"><a href=""></a>          <span class="at">type =</span> <span class="st">"prob"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-4"><a href=""></a>  <span class="fu">bind_cols</span>(test_strat) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-5"><a href=""></a>  <span class="fu">select</span>(.pred_pass, result)</span>
+<span id="cb21-6"><a href=""></a>predicted_value  <span class="sc">%&gt;%</span><span class="fu">roc_curve</span>(<span class="at">truth =</span> <span class="st">"result"</span>, .pred_pass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 3
+   .threshold specificity sensitivity
+        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1 -Inf              0           1    
+2    2.22e-16       0           1    
+3    8.79e- 9       0.846       0.938
+4    3.08e- 3       0.846       0.925
+5    1.00e+ 0       0.872       0.925
+6    1   e+ 0       0.872       0.912
+7  Inf              1           0    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>predicted_value  <span class="sc">%&gt;%</span> <span class="fu">roc_auc</span>(<span class="at">truth =</span> <span class="st">"result"</span>, .pred_pass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary         0.902</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-24-1.png" width="432"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section><section id="f1-score" class="slide level2 smaller"><h2>F1 Score</h2>
+<p>F1 Score เป็นตัวชี้วัดประสิทธิภาพการจำแนกของโมเดล classification โดยพิจารณาด้านความไวและความน่าเชื่อถือไปพร้อมกัน ในเชิงคณิตศาสตร์ F1 เป็นค่าเฉลี่ย Harmonic ระหว่าง sensitivity กับ precision</p>
+<p><span class="math display">\[
+F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>fit_logit <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href=""></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> test_strat,</span>
+<span id="cb25-3"><a href=""></a>          <span class="at">type =</span> <span class="st">"class"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-4"><a href=""></a>  <span class="fu">bind_cols</span>(test_strat) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-5"><a href=""></a>  <span class="fu">select</span>(.pred_class, result) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-6"><a href=""></a>  <span class="fu">f_meas</span>(<span class="at">truth =</span> result, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 f_meas  binary         0.931</code></pre>
+</div>
+</div>
+</section><section id="lasso-regression" class="slide level2 smaller"><h2>LASSO Regression</h2>
+<p>Lasso Regression (Least Absolute Shrinkage and Selection Operator) เป็นรูปแบบหนึ่งของ regularized regression ที่ใช้ในการลดความซับซ้อนของโมเดลและป้องกันปัญหา overfitting โดยเพิ่ม penalty term ที่จะเพิ่ม bias อย่างเหมาะสมให้กับโมเดลเพื่อให้ variance ของโมเดลต่ำลงลดการเกิดปัญหา overfitting</p>
+<h4 id="regression">regression</h4>
+<p><span class="math display">\[
+\text{Minimize: } \frac{1}{n} \sum_{i=1}^{n} \left( y_i - \beta_0 - \sum_{j=1}^{p} \beta_j x_{ij} \right)^2 + \lambda \sum_{j=1}^{p} |\beta_j|
+\]</span></p>
+<h4 id="binary-logistic-regression">binary logistic regression</h4>
+<p><span class="math display">\[
+\text{Minimize: } - \frac{1}{n} \sum_{i=1}^{n} \left[ y_i \log(\hat{p}_i) + (1 - y_i) \log(1 - \hat{p}_i) \right] + \lambda \sum_{j=1}^{p} |\beta_j|
+\]</span></p>
+</section><section id="lasso-regression-1" class="slide level2 smaller"><h2>LASSO Regression</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/lasso.png"></p>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-26-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-26-2.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section><section id="validation-approach-k-fold-cv" class="slide level2 smaller"><h2>Validation Approach: K-fold CV</h2>
+<ul>
+<li><p>ชุด training set (ชุดฝึกฝนใหม่)</p></li>
+<li><p>ชุด validation set (หรือเรียกว่า holdout set) อย่างไรก็ตามการใช้ validation set เพียงชุดเดียวมีโอกาสสูงที่ผลการประเมินจะขาดความเสถียร มีอคติ ไม่น่าเชื่อถือ</p></li>
+</ul>
+
+<img data-src="img/kfold.png" class="r-stretch"></section><section id="resampling-cross-validation" class="slide level2 smaller"><h2>Resampling: Cross-validation</h2>
+
+<img data-src="img/cv.png" class="r-stretch"></section><section id="validation-approach-k-fold-cv-1" class="slide level2 smaller"><h2>Validation Approach: K-fold CV</h2>
+<p>ค่า k ใหญ่ขึ้น:</p>
+<ul>
+<li><p>ความแตกต่างระหว่างประสิทธิภาพที่ประเมินได้และประสิทธิภาพจริงจะลดลง</p></li>
+<li><p>เพิ่มทรัพยากรที่ต้องใช้ในการประมวลผล</p></li>
+</ul>
+<p>ค่า k = 10 :</p>
+<ul>
+<li><p>มีผลลัพธ์คล้ายกับ Leave-One-Out Cross Validation (LOOCV) ซึ่งเป็นกรณีที่ k = n (Molinaro et al.&nbsp;,2005)</p></li>
+<li><p>การทำ k-Fold CV ซ้ำ (repeated k-Fold CV) สามารถเพิ่มความแม่นยำของการประเมินผล เช่น ใช้ 10-Fold CV ทำซ้ำ 5-10 ครั้งเพื่อเพิ่มความน่าเชื่อถือ</p></li>
+</ul></section><section id="validation-approach-k-fold-cv-2" class="slide level2 smaller"><h2>Validation Approach: K-fold CV</h2>
+
+<img data-src="https://www.tmwr.org/premade/proper-workflow.svg" class="r-stretch"></section><section id="validation-approach-k-fold-cv-3" class="slide level2 smaller"><h2>Validation Approach: K-fold CV</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="co"># สร้าง model specification</span></span>
+<span id="cb27-2"><a href=""></a>logit_mod <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>(</span>
+<span id="cb27-3"><a href=""></a>  <span class="at">penalty =</span> <span class="fu">tune</span>(),   </span>
+<span id="cb27-4"><a href=""></a>  <span class="at">mixture =</span> <span class="dv">1</span>       </span>
+<span id="cb27-5"><a href=""></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-6"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-7"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb27-8"><a href=""></a></span>
+<span id="cb27-9"><a href=""></a><span class="co"># สร้าง workflow</span></span>
+<span id="cb27-10"><a href=""></a>logit_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-11"><a href=""></a>  <span class="fu">add_formula</span>(result <span class="sc">~</span>.) <span class="sc">%&gt;%</span></span>
+<span id="cb27-12"><a href=""></a>  <span class="fu">add_model</span>(logit_mod)</span>
+<span id="cb27-13"><a href=""></a></span>
+<span id="cb27-14"><a href=""></a><span class="co"># สร้าง resamples สำหรับ Cross-Validation</span></span>
+<span id="cb27-15"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb27-16"><a href=""></a>cv_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train_strat, <span class="at">v =</span> <span class="dv">10</span>, <span class="at">repeats =</span> <span class="dv">3</span>)</span>
+<span id="cb27-17"><a href=""></a></span>
+<span id="cb27-18"><a href=""></a><span class="co"># สร้าง grid สำหรับ lambda</span></span>
+<span id="cb27-19"><a href=""></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb27-20"><a href=""></a>  <span class="fu">penalty</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">1</span>)),  <span class="co"># lambda ตั้งแต่ 10^-3 ถึง 10^1</span></span>
+<span id="cb27-21"><a href=""></a>  <span class="at">levels =</span> <span class="dv">30</span></span>
+<span id="cb27-22"><a href=""></a>)</span>
+<span id="cb27-23"><a href=""></a></span>
+<span id="cb27-24"><a href=""></a><span class="co"># ใช้ tune_grid() เพื่อปรับ lambda</span></span>
+<span id="cb27-25"><a href=""></a>tune_results <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb27-26"><a href=""></a>  logit_wf,</span>
+<span id="cb27-27"><a href=""></a>  <span class="at">resamples =</span> cv_folds,</span>
+<span id="cb27-28"><a href=""></a>  <span class="at">grid =</span> lambda_grid,</span>
+<span id="cb27-29"><a href=""></a>  <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, accuracy, sens, spec, precision)</span>
+<span id="cb27-30"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="validation-approach-k-fold-cv-4" class="slide level2 smaller"><h2>Validation Approach: K-fold CV</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">autoplot</span>(tune_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-28-1.png" width="960" class="r-stretch"></section><section id="validation-approach-k-fold-cv-5" class="slide level2 smaller"><h2>Validation Approach: K-fold CV</h2>
+<ul>
+<li>
+<code>collect_metrics()</code> เป็นฟังก์ชันที่ช่วยให้ผู้วิเคราะห์เข้าถึงผลที่ได้จากการทดลอง fit model ในเงื่อนไขต่าง ๆ พร้อมค่าบ่งชี้ประสิทธิภาพ</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>tune_results <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 150 × 7
+   penalty .metric   .estimator  mean     n std_err .config              
+     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
+ 1 0.001   accuracy  binary     0.914    30 0.00855 Preprocessor1_Model01
+ 2 0.001   precision binary     0.936    30 0.0130  Preprocessor1_Model01
+ 3 0.001   roc_auc   binary     0.975    30 0.00380 Preprocessor1_Model01
+ 4 0.001   sens      binary     0.937    30 0.0102  Preprocessor1_Model01
+ 5 0.001   spec      binary     0.885    30 0.0194  Preprocessor1_Model01
+ 6 0.00137 accuracy  binary     0.911    30 0.00846 Preprocessor1_Model02
+ 7 0.00137 precision binary     0.934    30 0.0124  Preprocessor1_Model02
+ 8 0.00137 roc_auc   binary     0.975    30 0.00377 Preprocessor1_Model02
+ 9 0.00137 sens      binary     0.933    30 0.0110  Preprocessor1_Model02
+10 0.00137 spec      binary     0.880    30 0.0195  Preprocessor1_Model02
+# ℹ 140 more rows</code></pre>
+</div>
+</div>
+</section><section id="finalized-workflows" class="slide level2 smaller"><h2>Finalized Workflows</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a><span class="do">## select best</span></span>
+<span id="cb31-2"><a href=""></a>best_params <span class="ot">&lt;-</span> tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href=""></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb31-4"><a href=""></a></span>
+<span id="cb31-5"><a href=""></a><span class="do">## finalizing</span></span>
+<span id="cb31-6"><a href=""></a>final_wf <span class="ot">&lt;-</span> logit_wf <span class="sc">%&gt;%</span></span>
+<span id="cb31-7"><a href=""></a>  <span class="fu">finalize_workflow</span>(best_params)</span>
+<span id="cb31-8"><a href=""></a></span>
+<span id="cb31-9"><a href=""></a><span class="do">## last fit</span></span>
+<span id="cb31-10"><a href=""></a>final_wf <span class="sc">%&gt;%</span></span>
+<span id="cb31-11"><a href=""></a>  <span class="fu">fit</span>(<span class="at">data =</span> train_strat) <span class="sc">%&gt;%</span> <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span> <span class="fu">plot</span>(<span class="at">xvar =</span> <span class="st">"lambda"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="wk02_modelling_proc_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section><section id="finalized-workflows-1" class="slide level2 smaller"><h2>Finalized Workflows</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>final_wf <span class="sc">%&gt;%</span> <span class="fu">last_fit</span>(strat_split,</span>
+<span id="cb32-2"><a href=""></a>                       <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, roc_auc, </span>
+<span id="cb32-3"><a href=""></a>                                            sens, spec, precision)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href=""></a>  <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  .metric   .estimator .estimate .config             
+  &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 accuracy  binary         0.933 Preprocessor1_Model1
+2 sens      binary         0.938 Preprocessor1_Model1
+3 spec      binary         0.923 Preprocessor1_Model1
+4 precision binary         0.962 Preprocessor1_Model1
+5 roc_auc   binary         0.979 Preprocessor1_Model1</code></pre>
+</div>
+</div>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">
