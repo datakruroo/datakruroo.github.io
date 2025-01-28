@@ -1492,6 +1492,60 @@ use_data %>%
 
 ## EDA เพื่อสนับสนุนการตัดสินใจ {.smaller}
 
+แกน X เป็นลำดับการส่งงานของผู้เรียน พิจารณาจาก `StatSubmitTime`
+
+แกน Y เป็นจำนวนนิสิตสะสม
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+```{r}
+# สร้าง cumulative distribution
+cumulative_data <- use_data %>%
+  arrange(StatSubmitTime) %>%
+  mutate(rank = row_number()) %>% 
+  select(rank, StatSubmitTime)
+
+cumulative_data
+```
+
+:::
+
+::: {.column width="70%"}
+
+
+```{r}
+# การสร้างกราฟ Cumulative Distribution
+ggplot(cumulative_data, aes(x = StatSubmitTime, y = rank)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_point(color = "darkblue", size= 2) +
+  geom_hline(yintercept = 184, linetype = 2)+
+  geom_vline(xintercept = 168, linetype = 2)+
+  annotate("text", x = 40, y= 190, label = "ร้อยละ 50 ของผู้เรียน", family = "ChulaCharasNew",
+           vjust = -0.5)+
+  annotate("text", x = 100, y= 50, label = "4 วัน", family = "ChulaCharasNew",
+           vjust = -0.5, size = 5)+
+  annotate("text", x = 135, y= 185, label = "6 วัน", family = "ChulaCharasNew",
+           vjust = -0.5, size = 5)+
+  annotate("text", x = 160, y= 345, label = "7 วัน", family = "ChulaCharasNew",
+           vjust = -0.5, size = 5)+
+  labs(
+    title = "Cumulative Distribution of Submission Time",
+    x = "Submission Time (hours)",
+    y = "Number of Students Submitted"
+  ) +
+  theme_minimal() +
+  theme(text = element_text(size = 16, family = "ChulaCharasNew"))+
+  ggtitle("\n โดยเฉลี่ยผู้เรียนส่วนใหญ่ส่งการบ้านก่อนกำหนดประมาณ 1 วัน")
+```
+
+:::
+
+::::
+
+## EDA เพื่อสนับสนุนการตัดสินใจ {.smaller}
+
 - ควรให้เวลาทำการบ้าน/งานที่มอบหมายแก่ผู้เรียนมากขึ้นหรือไม่ ?
 
 - การตอบคำถามนี้อาจลองวิเคราะห์ความสัมพันธ์ระหว่าง StatSubmitTime กับ Performance และผลการเรียนรายวิชาสถิติ
