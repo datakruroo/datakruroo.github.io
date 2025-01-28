@@ -1,0 +1,239 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+
+
+## Relationship
+
+ความสัมพันธ์ หมายถึงการเชื่อมโยงระหว่างตัวแปรสองตัวหรือมากกว่า ซึ่งอาจแสดงในรูปแบบของการเปลี่ยนแปลงร่วมกัน (สหสัมพันธ์) หรือผลกระทบที่ตัวแปรหนึ่งส่งต่ออีกตัวหนึ่ง (ความสัมพันธ์เชิงสาเหตุ) โดยความสัมพันธ์สามารถมีลักษณะเป็นเชิงบวก เชิงลบ หรือไม่มีความสัมพันธ์ ทั้งนี้ การวิเคราะห์ความสัมพันธ์ช่วยทำความเข้าใจลักษณะข้อมูล ตั้งสมมุติฐาน และพยากรณ์ผลลัพธ์ในอนาคต
+  
+  - แผนภาพกล่อง (boxplot) -- เหมาะสำหรับการสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภท
+  
+  - แผนภาพการกระจาย (scatter plot) -- เหมาะสำหรับสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ
+  
+  - สัมประสิทธิ์สหสัมพันธ์ (correlation coefficients) -- ค่าสถิติพื้นฐานที่ถูกพัฒนาขึ้นเพื่อวัดสหสัมพันธ์ระหว่างตัวแปรสองตัว
+
+
+
+
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart LR
+A["PreKnowledge <=50"]--> D["ผู้เรียนที่มีปัญหา 275 คน"]
+
+style A fill:#ffffff, stroke: black, stroke-width: 2px
+```
+
+```{r}
+library(DT)
+
+filtered_data <- use_data %>%
+  filter(PreKnowledge <= 50) %>%
+  arrange(desc(PreKnowledge)) %>% 
+  mutate_if(is.numeric, ~round(., 2))
+
+filtered_data
+```
+
+
+## Analysis Tools {.smaller}
+
+
+
+![](img/chart_choose.png)
+
+
+
+## Statistical Tools {.smaller}
+
+การทำความเข้าใจข้อมูลมักใช้วิธีการทางสถิติที่เน้นการบรรยายสภาพของข้อมูล ซึ่งโดยมากจะอยู่ในกลุ่มสถิติวิเคราะห์เชิงบรรยาย
+
+- การสำรวจการแจกแจงของข้อมูล (frequency distribution)
+
+  - ตารางแจกแจงความถี่ (frequency table)
+  
+  - ฮิสโทแกรมหรือแผนภาพความหนาแน่น (histogram or density plot)
+  
+  - แผนภูมิแท่ง (bar chart) 
+  
+  - แผนภาพกล่อง (boxplot)
+  
+  - แผนภาพการกระจาย (scatter plot) -- bivariate distribution
+
+- การสำรวจแนวโน้มของข้อมูลตามลำดับเวลา
+
+  - กราฟเส้น (line graph)
+  
+  - แผนภูมิแท่ง (bar chart)  
+
+  - แผนภาพกล่อง (boxplot)
+
+## Statistical Tools {.smaller}
+
+การทำความเข้าใจข้อมูลมักใช้วิธีการทางสถิติที่เน้นการบรรยายสภาพของข้อมูล ซึ่งโดยมากจะอยู่ในกลุ่มสถิติวิเคราะห์เชิงบรรยาย
+
+
+
+## Investigative Question 1 :  {.smaller}
+
+### ทำความเข้าใจผู้เรียน
+
+- ผู้เรียนในชั้นเรียนมีพื้นฐานความรู้ในระดับใด
+
+- ผู้เรียนพื้นฐานน้อยในหัวข้อใด
+
+- ภายหลังดำเนินการสอนไประยะหนึ่งแล้ว ผู้เรียนตอบสนองต่อการเรียนรู้ได้ดีหรือไม่
+
+- ผู้เรียนคนใดที่มักจะแก้ปัญหาหรือทำข้อสอบในระดับยากไม่ได้
+
+- มีนิสิตที่มีผลการเรียนหรือพฤติกรรมการเรียนรู้ที่มีความเสี่ยงหรือไม่
+
+- มีผู้เรียนที่มีความเสี่ยงในด้านอารมณ์/สังคมหรือไม่
+
+
+
+## Investigative Question 2 :  {.smaller}
+
+### ค้นหารูปแบบความสัมพันธ์
+
+เป็นคำถามเชิงวิเคราะห์ที่เกี่ยวกับการเปรียบเทียบความแตกต่างระหว่างของผลลัพธ์ที่สนใจกับเงื่อนไข/ปัจจัย ที่ผู้เรียนมีแตกต่างกัน หรือเกี่ยวกับการวิเคราะห์ความสัมพันธ์ระหว่างผลลัพธ์กับปัจจัย
+
+- ผู้เรียนที่พื้นฐานน้อยในชั้นเรียนมีภูมิหลัง หรือ พฤติกรรมการเรียนรู้เป็นอย่างไร
+
+  - ทำความเข้าใจภูมิหลัง/พฤติกรรมการเรียนรู้ของกลุ่มผู้เรียนพื้นฐานน้อย
+  
+  - เปรียบเทียบความแตกต่างของภูมิหลัง/พฤติกรรมการเรียนรู้ของผู้เรียนระหว่างกลุ่มพื้นฐานน้อยกับมีพื้นฐาน
+
+- ปัจจัยใดที่มีความสัมพันธ์หรือเกี่ยวข้องกับผลการเรียนรู้ของผู้เรียน
+
+- ปัจจัยใดที่มีความสัมพันธ์หรือเกี่ยวข้องกับการแก้โจทย์ปัญหาหรือทำข้อสอบระดับยากของผู้เรียน
+
+
+## Collect/Consider the Data {.smaller}
+
+
+
+
+## Example: ทำความเข้าใจผู้เรียน {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร?
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="75%"}
+
+```{r echo = F}
+
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(fill = PreKnowledge > 50, y = after_stat(count)), 
+                 bins = 20,
+                 col = "white", alpha = 0.6)+
+  geom_boxplot(aes(y = 0), width = 5, alpha = 0.5)+
+  geom_rug()+
+  xlim(0,100)+
+  geom_vline(xintercept = 50, linetype = 2)+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "top")
+```
+
+
+:::
+
+::: {.column width="25%"}
+
+<br>
+
+```{r}
+use_data %>% 
+  summarise_at(.vars = vars(PreKnowledge),
+               .funs = list(Mean = mean, SD = sd, 
+                            Min = min,
+                            Q1 = ~ quantile(. ,0.25),
+                            Q2 = ~ quantile(. , 0.5),
+                            Q3 = ~ quantile(. , 0.75),
+                            Max = max)) %>% 
+  t() %>% 
+  data.frame() %>% 
+  rename(PreKnowledge = 1) %>% 
+  mutate(across(PreKnowledge, ~round(., 3)))
+```
+
+:::
+
+::::
+
+
+## Example: ทำความเข้าใจผู้เรียน {.smaller}
+
+ผู้เรียนพื้นฐานน้อยในหัวข้อใด
+
+```{r fig.height = 6}
+library(patchwork)
+
+p1 <- use_data %>% 
+  select(Concepts, Interpret, ChooseMethod) %>% 
+  pivot_longer(cols = everything()) %>% 
+  mutate(name = fct_relevel(name, "Concepts", "Interpret", "ChooseMethod")) %>% 
+  ggplot(aes(x = value))+
+  geom_histogram(aes(fill = value > 50), 
+                 bins = 15,
+                 col = "white", alpha = 0.6)+
+  xlim(0,100)+
+  geom_vline(xintercept = 50, linetype = 2)+
+  facet_wrap(~name)+
+  theme(strip.text = element_text(size = 14))
+
+
+p2 <- use_data %>% 
+  select(Concepts, Interpret, ChooseMethod) %>% 
+  pivot_longer(cols = everything()) %>% 
+  mutate(name = fct_relevel(name, "Concepts", "Interpret", "ChooseMethod")) %>% 
+  ggplot(aes(x = value > 50, fill = value > 50))+
+  geom_bar(alpha = 0.6)+
+  scale_x_discrete(name = "", labels = c("Fail", "Pass")) +
+  facet_wrap(~name)+
+  theme(strip.text = element_text(size = 14))
+
+p1/p2
+```
+
+
+
+## Example: ทำความเข้าใจผู้เรียน {.smaller}
+
+
+
+##
+
+```{r}
+data %>% 
+    group_by(StudentId, Department, ChooseMethod, Concepts, Interpret, SubmitTime, PercentSubmit,
+             LearnPerform, CheatBehavior, StatMidterm, StatAssignment, StatParticipate) %>% 
+    reframe(total = mean(Response)*100) %>% 
+    arrange(StudentId) %>% 
+    count(Department) %>% arrange(desc(n)) %>% 
+    mutate(cumulative_freq = cumsum(n),
+           cumulative_percent = cumulative_freq*100/sum(n))
+```
+
+
+##
+
+
+
+
+
+## EDA as Desciptive Statistics
+
+
+## EDA as
+

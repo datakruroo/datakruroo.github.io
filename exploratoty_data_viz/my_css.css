@@ -1,0 +1,82 @@
+/* custom.css */
+@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Noto+Sans+Thai:wght@100..900&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+
+
+
+
+body {
+  font-family: 'Sarabun', sans-serif; /* ตัวอย่างการตั้งค่าฟอนต์เป็น Arial */
+}
+
+p {
+  font-family: 'Sarabun', sans-serif; /* ตัวอย่างการตั้งค่าฟอนต์เป็น Arial */
+  line-height: 1.3em;
+
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sarabun', serif; /* ตัวอย่างการตั้งค่าฟอนต์หัวข้อเป็น Georgia */
+  color: #C5705D;
+}
+
+
+ol, ul {
+  font-family: 'Sarabun', sans-serif; /* ตัวอย่างการตั้งค่าฟอนต์เป็น Arial */
+}
+
+
+/* กำหนดฟอนต์ให้กับตารางทั้งหมด */
+table {
+    font-family: 'TH Sarabun New', sans-serif;
+
+}
+
+/* กำหนดฟอนต์ให้กับหัวตาราง */
+th {
+    font-family: 'TH Sarabun New', sans-serif;
+    font-weight: bold;
+
+}
+
+/* กำหนดฟอนต์ให้กับข้อมูลในตาราง */
+td {
+    font-family: 'TH Sarabun New', sans-serif;
+
+}
+
+
+.reveal .custom-title {
+  position: absolute;
+  color: #C5705D;
+  font-size: 3em;
+  text-align: right;
+  right: 20px;
+  top: -200px;
+}
+
+
+
+
+.reveal .slide-logo {
+  height: 100px !important;
+  width: 130px !important;
+  max-width: unset !important;
+  max-height: unset !important;
+}
+
+.reveal .caption {
+  text-align: right;
+  color: grey;
+  font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: -1.5em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  margin-right: 3em;
+}
+
+.reveal .caption2 {
+  text-align: left;
+  color: grey;
+  font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: -1.6em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  margin-left: 22em;
+}

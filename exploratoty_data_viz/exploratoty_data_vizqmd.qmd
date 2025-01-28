@@ -1,0 +1,1561 @@
+---
+title: "Week 4: Exploratory Data Analysis and Visualization" 
+subtitle: "2758501 สถิติและสารสนเทศทางการศึกษา"
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: today
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn<br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color: #00589b;
+      }
+      </style>
+---
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/predice_item_response/final_data_20DEC.csv")
+data2 <- data %>% 
+  group_by(StudentId, Department, ChooseMethod, Concepts, Interpret, SubmitTime, PercentSubmit,
+           LearnPerform, CheatBehavior, StatMidterm, StatAssignment, StatParticipate) %>% 
+  reframe(total = mean(Response)*100) %>% 
+  arrange(StudentId) %>% 
+  mutate(basic_concept = (Concepts + Interpret + ChooseMethod)/3) %>% 
+  select(Department, basic_concept, Concepts, Interpret, ChooseMethod,
+         SubmitTime, PercentSubmit, LearnPerform, CheatBehavior,
+         StatMidterm, StatAssignment, StatParticipate,
+         total) %>% 
+  rename(PreKnowledge = basic_concept,
+         ResFinalScore = total ,
+         ResMidterm = StatMidterm,
+         ResAssignment = StatAssignment,
+         ResParticipate = StatParticipate,
+         StatSubmitTime = SubmitTime,
+         StatPercentSubmit = PercentSubmit,
+         StatLearnPerform = LearnPerform,
+         StatCheatBehav = CheatBehavior)
+
+use_data <- data %>% 
+  group_by(StudentId, Department, ChooseMethod, Concepts, Interpret, SubmitTime, PercentSubmit,
+           LearnPerform, CheatBehavior, StatMidterm, StatAssignment, StatParticipate) %>% 
+  reframe(total = mean(Response)*100) %>% 
+  arrange(StudentId) %>% 
+  mutate(basic_concept = (Concepts + Interpret + ChooseMethod)/3) %>% 
+  select(Department, basic_concept, Concepts, Interpret, ChooseMethod,
+         SubmitTime, PercentSubmit, LearnPerform, CheatBehavior,
+         StatMidterm, StatAssignment, StatParticipate,
+         total) %>% 
+  rename(PreKnowledge = basic_concept,
+         ResFinalScore = total ,
+         ResMidterm = StatMidterm,
+         ResAssignment = StatAssignment,
+         ResParticipate = StatParticipate,
+         StatSubmitTime = SubmitTime,
+         StatPercentSubmit = PercentSubmit,
+         StatLearnPerform = LearnPerform,
+         StatCheatBehav = CheatBehavior)
+```
+
+
+
+## Types of Data Analysis
+
+![](https://datakruroo.github.io/IPST/PPT/img/typeofanalytic.png)
+
+
+## Statistical Problem Process
+
+
+![](https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png)
+
+<div class="caption">https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf</div>
+
+## Exploratory Data Analysis (EDA) {.smaller}
+
+เป็นกระบวนการวิเคราะห์สำรวจข้อมูลเบื้องต้น โดยมีวัตถุประสงค์หลักเพื่อ
+
+- **ทำความเข้าใจข้อมูล** ตรวจสอบผู้เรียนที่มีลักษณะเฉพาะ
+
+  - การสำรวจการแจกแจงของข้อมูล (distribution)
+
+  - การเปรียบเทียบข้อมูล (comparison)
+ 
+  - การสำรวจแนวโน้มของข้อมูล (trend)
+  
+  
+- **สำรวจ/ค้นหารูปแบบความสัมพันธ์**
+
+  - การเปรียบเทียบข้อมูล (comparison)
+  
+  - การวิเคราะห์ความสัมพันธ์ (relationship)
+
+- **สนับสนุนการตั้งสมมุติฐานเพื่อนำไปสู่การวิเคราะห์เชิงลึก** เช่น การวิเคราะห์เชิงวินิจฉัย หรือการวิเคราะห์เชิงทำนาย
+
+
+## Exploratory Data Analysis (EDA) {.smaller}
+
+- Statistical Approaches -- มีความเป็นปรนัยสูง แต่ขาดการบรรยายภาพรวมของข้อมูลได้อย่างครอบคลุม และในบางกรณีหากข้อมูลไม่เป็นไปตามข้อตกลงเบื้องต้น ผลการวิเคราะห์ที่ได้อาจมีความคลาดเคลื่อน
+ 
+- Graphical Approaches (Data Visualization) -- ให้สารสนเทศที่เป็นสภาพจริงของข้อมูลมากกว่า แต่อาจขาดความเป็นปรนัยในเชิงของการตีความหมายของผู้รับสาร เพราะไม่ได้มีการแสดงผลในเชิงปริมาณที่ชัดเจน
+
+![](img/levels.png)
+
+
+## Exploratory Data Analysis (EDA) {.smaller}
+
+- **ตัวแปรเดียว** $\rightarrow$ เน้นบรรยายสภาพ/ทำความเข้าใจข้อมูลในมิติเดียว อาจกล่าวว่าเป็นการสำรวจการแจกแจงของข้อมูล **(distribution)**
+
+- **สองตัวแปรหรือมากกว่า** $\rightarrow$ เน้นการสำรวจทำความเข้าใจในมิติที่ครอบคลุมปัจจัยต่าง ๆ มากขึ้น ได้คำตอบที่ลึกขึ้น ได้แก่
+
+  - การเปรียบเทียบ **(comparison)**
+  
+  - การวิเคราะห์ความสัมพันธ์ **(relationship)**
+
+**Note:** ปัจจัยสำคัญที่ควรพิจารณาประกอบการเลือกวิธีการวิเคราะห์ในเบื้องต้นคือ
+
+- ประเภทของตัวแปร : ตัวแปรเชิงปริมาณ หรือ ตัวแปรจัดประเภท หรือมีร่วมกันทั้งสองประเภทในหนึ่งการวิเคราะห์
+
+- ความหมายของผลการวิเคราะห์ที่ได้รับ : สามารถตอบคำถามที่ต้องการได้่ มีความหมายสมเหตุสมผล เข้าใจได้และสามารถนำไปใช้เพื่อสื่อสารได้
+
+
+## ประเภทข้อมูลในชั้นเรียน {.smaller}
+
+- **ผลการเรียน/ผลสัมฤทธิ์ทางการเรียนของผู้เรียน (academic performance data)**
+
+  - คะแนนสอบในอดีต
+  
+  - ผลการสอบเพื่อประเมินพื้นฐาน
+  
+  - ผลการตอบคำถามหรือข้อสอบของนักเรียน
+  
+  - คะแนนสอบปัจจุบัน/เกรดเฉลี่ยสะสม
+  
+
+- **ภูมิหลังของนักเรียน**
+
+  - อายุ เพศ ระดับการศึกษา
+  
+  - สถานภาพของครอบครัว ฐานะทางเศรษฐกิจของครอบครัว
+  
+  - สาขาวิชา เป้าหมายการเรียน
+
+
+## ประเภทข้อมูลในชั้นเรียน {.smaller}
+
+- **พฤติกรรมการเรียนรู้** -- ลักษณะ/รูปแบบการเรียนรู้ของนักเรียน
+
+  - การเข้าชั้นเรียน
+  
+  - การส่งงาน
+  
+  - เวลาที่ใช้ในการทำการบ้าน/งานที่มอบหมาย
+  
+  - การทบทวน/อ่านหนังสือนอกเวลา
+  
+- **ปฏิสัมพันธ์ในชั้นเรียน** -- การสื่อสาร/การมีส่วนร่วมระหว่างนักเรียนกับครู หรือนักเรียนกับนักเรียนในบริบทการเรียนรู้ในชั้นเรียน
+
+  - ความถี่ในการยกมือตอบคำถาม
+  
+  - ความถี่ในการเสนอความคิดเห็นในการอภิปรายภายในกลุ่ม
+  
+  - การร่วมกิจกรรมในชั้นเรียน
+
+
+## ประเภทข้อมูลในชั้นเรียน {.smaller}
+
+- **จิตวิทยาและอารมณ์** -- ช่วยให้ผู้สอนทำความเข้าใจหรือทราบสภาพของผู้เรียนในมิติเชิงอารมณ์/ความรู้สึก เช่น
+
+  - [SDQ (Strengths and Difficulties Questionnaire)](https://youtu.be/HR5SofJQdn0?si=jgus_jfTAbRWJTHr) เป็นแบบสอบถามที่ใช้วัดพฤติกรรม 5 ด้านที่่เป็นจุดแข็งและจุดที่ต้องพัฒนาของนักเรียน  
+  - ความเครียด อาจใช้แบบประเมินความเครียด [ST-5](https://kkhos.moph.go.th/kkhos/data_office/ST5.pdf) หรือ แบบ [STST](https://kkhos.moph.go.th/kkhos/data_office/SPST20.pdf) 
+  
+  - [แบบประเมินภาวะซึมเศร้า](https://catalog.dmh.go.th/dataset/phq9/resource/2cc4ad0e-f33e-446a-82f0-92b3808c7d09)
+  
+  - ความวิตกกังวลอาจใช้แบบประเมิน [GAD-7](https://mhso.dmh.go.th/fileupload/2022031413904066.pdf)
+
+  - ด้านอื่น ๆ  เช่น [แบบวัดสติ](https://dmh.go.th/ebook/Files/Mindfulness_Questionnair(%E0%B8%AB%E0%B8%A1%E0%B8%AD%E0%B8%A2%E0%B8%87%E0%B8%A2%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B9%8C).pdf) แรงจูงใจ ความสุข ความมั่นใจ ...
+
+- ด้านอื่น ๆ  เช่น ทักษะ/ความสามารถ การคิดเชิงเหตุผล ความฉลาดทางอารมณ์ ...
+
+
+
+
+## EDA 1: ทำความเข้าใจสภาพข้อมูล {.smaller}
+
+ตัวอย่างคำถามในชั้นเรียนที่เกี่ยวข้องกับการสำรวจการแจกแจงข้อมูล
+
+- ผู้เรียนในชั้นเรียนมีพื้นฐานความรู้ในระดับใด
+
+- ผู้เรียนพื้นฐานน้อยในหัวข้อใด
+
+- ภายหลังดำเนินการสอนไประยะหนึ่งแล้ว ผู้เรียนตอบสนองต่อการเรียนรู้ได้ดีหรือไม่
+
+- ผู้เรียนคนใดที่มักจะแก้ปัญหาหรือทำข้อสอบในระดับยากไม่ได้
+
+- มีนิสิตที่มีผลการเรียนหรือพฤติกรรมการเรียนรู้ที่มีความเสี่ยงหรือไม่
+
+- มีผู้เรียนที่มีความเสี่ยงในด้านอารมณ์/สังคมหรือไม่
+
+
+## EDA 1: ทำความเข้าใจสภาพข้อมูล {.smaller}
+
+การวิเคราะห์มักเกี่ยวข้องกับการสำรวจลักษณะโดยรวมของการแจกแจงของข้อมูล ขอบเขตของข้อมูล แนวโน้มสู่ส่วนกลาง การกระจาย และตำแหน่งเชิงสัมพัทธ์ของข้อมูล
+ 
+- **การแจกแจงความถี่ (frequency distribution)**
+
+  - ตารางแจกแจงความถี่ (frequency table)
+  
+  - ฮิสโทแกรมหรือแผนภาพความหนาแน่น (histogram or density plot)
+  
+  - แผนภาพกล่อง (boxplot)
+
+  - แผนภูมิแท่ง (bar chart) 
+  
+  
+- **การวิเคราะห์ด้วยสถิติพื้นฐาน หรือ summary statistics**
+
+  - การวัดแนวโน้มสู่ส่วนกลาง เช่น Mean, Median, Mode
+  
+  - การวัดการกระจาย เช่น พิสัย ส่วนเบี่ยงเบนมาตรฐาน
+  
+  - การวัดตำแหน่งข้อมูล เช่น ค่าต่ำสุด/สูงสุด, Percentile, Quartile
+
+## สถานการณ์ตัวอย่าง {.smaller}
+
+อาจารย์ผู้สอนในรายวิชาวิจัยกำลังเตรียมตัวสำหรับการสอนในภาคการศึกษาหน้า ทั้งนี้อาจารย์ได้ลองรวบรวมข้อมูลการเรียนรู้ที่ผ่านมาในรายวิชาสถิติซึ่งเป็นวิชาที่นิสิตกลุ่มนี้ได้ลงทะเบียนในภาคการศึกษาก่อนหน้า 
+
+```{r}
+use_data %>% 
+  mutate(Student_id = 1:dim(use_data)[1], .before = "Department") %>% 
+  select(Student_id:StatCheatBehav) %>% 
+  glimpse()
+```
+
+## Distribution: Quantitative Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร?
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(y = after_stat(count)), 
+                 bins = 20, 
+                 col = "white", alpha = 0)+
+  #geom_boxplot(aes(y = 0), width = 4, alpha = 0.5)+
+  geom_rug()+
+  xlab("\n PreKnowledge")+
+  xlim(0,100)+
+  scale_y_continuous()+
+  ylab("")+
+ #geom_vline(xintercept = c(30.341, 42.424, 54.507), linetype = 2)+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        axis.text.y = element_text(colour = "white"),
+        legend.position = "top",
+        panel.grid = element_blank())
+```
+
+
+
+## Distribution: Quantitative Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร?
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(y = after_stat(count)), 
+                 bins = 20,
+                 col = "white", alpha = 0.6)+
+  #geom_boxplot(aes(y = 0), width = 4, alpha = 0.5)+
+  geom_rug()+
+  xlab("\n PreKnowledge")+
+  xlim(0,100)+
+ #geom_vline(xintercept = c(30.341, 42.424, 54.507), linetype = 2)+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "top",
+        panel.grid = element_blank())
+```
+
+
+
+## Distribution: Quantitative Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร?
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(y = after_stat(count)), 
+                 bins = 20,
+                 col = "white", alpha = 0.2)+
+  geom_density(aes(y = after_stat(count)*6))+
+  geom_rug()+
+  xlab("\n PreKnowledge")+
+  xlim(0,100)+
+ #geom_vline(xintercept = c(30.341, 42.424, 54.507), linetype = 2)+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "top",
+        panel.grid = element_blank())
+```
+
+
+## Distribution: Quantitative Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร?
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(y = after_stat(count)), 
+                 bins = 20,
+                 col = "white", alpha = 0.3)+
+  geom_rug()+
+  xlab("\n PreKnowledge")+
+  xlim(0,100)+
+  geom_vline(xintercept = c(30.341, 42.424, 54.507), linetype = 2)+
+  annotate("text", x = 42.424, y = 10, label = "Mean = 42.4", size = 5, vjust = -1, fontface = "bold") +
+  annotate("segment", x = 42.424, xend = 54.507, y = 10, yend = 10, arrow = arrow(length = unit(0.2, "cm"))) +
+  annotate("segment", x = 42.424, xend = 30.341, y = 10, yend = 10, arrow = arrow(length = unit(0.2, "cm"))) +
+  annotate("text", x = 58, y = 10, label = "54.4", size = 4, vjust = 0.3) +
+  annotate("text", x = 27, y = 10, label = "21.3", size = 4, vjust = 0.3) +
+  annotate("text", x = 48.4655, y = 8, label = "SD = 12.1", size = 3, vjust = 0.5) +
+  annotate("text", x = 36.3825, y = 8, label = "SD", size = 3, vjust = 0.5) +
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "top",
+        panel.grid = element_blank())
+
+```
+
+
+
+## Distribution: Quantitative Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร?
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(y = after_stat(count)), 
+                 bins = 20,
+                 col = "white", alpha = 0.3)+
+  geom_boxplot(aes(y = 0), width = 4, alpha = 0.5)+
+  geom_rug()+
+  geom_vline(xintercept = c(42.424), linetype = 2)+
+  annotate("text", x = 42.424, y = 10, label = "Mean = 42.4", size = 3, vjust = -2, fontface = "bold") +
+  annotate("text", x = 42.424, y = 10, label = "Med = 41.8", size = 4, vjust = 3.2) +
+  annotate("text", x = 54.1, y = 10, label = "Q3 = 50.1", size = 4, vjust = 3.2) +
+  annotate("text", x = 30.1, y = 10, label = "Q1 = 34.1", size = 4, vjust = 3.2) +
+
+  xlab("\n PreKnowledge")+
+  xlim(0,100)+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "top",
+        panel.grid = element_blank())
+
+
+```
+
+
+## Distribution: Categorical Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร :  บางกรณีการกำหนดเกณฑ์มาตรฐานเพื่อใช้ในการประเมิน เป็นวิธีการที่ช่วยให้ผู้วิเคราะห์ทำความเข้าใจข้อมูลได้ง่ายขึ้น
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<br>
+
+```{mermaid}
+%%| echo: false
+
+flowchart LR
+
+A["PreKnowledge \n Score"] --> B["PreKnowledge > 50 ==> Pass"]
+A --> C["PreKnowledge <= 50 ==> Fail"]
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F, fig.width = 5, fig.height = 4}
+
+use_data %>% 
+  ggplot(aes(x = PreKnowledge))+
+  geom_histogram(aes(fill = PreKnowledge > 50, y = after_stat(count)), 
+                 bins = 20,
+                 col = "white", alpha = 0.6)+
+  geom_boxplot(aes(y = 0), width = 5, alpha = 0.5)+
+  geom_rug()+
+  xlim(0,100)+
+  geom_vline(xintercept = 50, linetype = 2)+
+  theme_light()+
+  scale_fill_discrete(name = "PreKnowledge Level" ,labels = c("Fail","Pass"))+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "top",
+        panel.grid = element_blank())
+```
+
+
+:::
+
+::::
+
+
+
+
+## Distribution: Categorical Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร :  บางกรณีการกำหนดเกณฑ์มาตรฐานเพื่อใช้ในการประเมิน เป็นวิธีการที่ช่วยให้ผู้วิเคราะห์ทำความเข้าใจข้อมูลได้ง่ายขึ้น
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<br>
+
+```{mermaid}
+%%| echo: false
+
+flowchart LR
+
+A["PreKnowledge \n Score"] --> B["PreKnowledge > 50 ==> Pass"]
+A --> C["PreKnowledge <= 50 ==> Fail"]
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F, fig.width=5, fig.height = 4}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge > 50, fill = PreKnowledge > 50))+
+  geom_bar(alpha = 0.6)+
+  geom_text(stat = "count", aes(label = ..count..), size = 8, vjust = - 0.5,
+            family = "ChulaCharasNew")+
+  theme_light()+
+  ylim(0,300)+
+  scale_x_discrete(name = "PreKnowledge", labels = c("Fail","Pass"))+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16),
+        legend.position = "none",
+        panel.grid = element_blank())
+```
+
+
+:::
+
+::::
+
+
+
+
+## Distribution: Categorical Data {.smaller}
+
+พื้นฐานความรู้ทางสถิติของผู้เรียนเป็นอย่างไร :  บางกรณีการกำหนดเกณฑ์มาตรฐานเพื่อใช้ในการประเมิน เป็นวิธีการที่ช่วยให้ผู้วิเคราะห์ทำความเข้าใจข้อมูลได้ง่ายขึ้น
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<br>
+
+```{mermaid}
+%%| echo: false
+
+flowchart LR
+
+A["PreKnowledge \n Score"] --> B["PreKnowledge > 75 ==> Good"]
+A --> C["50 < PreKnowledge <= 75 ==> Pass"]
+A --> D["PreKnowledge <= 50 ==> Fail"]
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r echo = F, fig.width=5, fig.height = 4}
+
+use_data %>%
+  mutate(PreKnowledge_Group = cut(
+    PreKnowledge, 
+    breaks = c(-Inf, 50, 75, Inf), 
+    labels = c("Fail", "Pass", "Good")
+  )) %>%
+  ggplot(aes(x = PreKnowledge)) +
+  geom_histogram(aes(fill = PreKnowledge_Group, y = after_stat(count)), 
+                 bins = 20, 
+                 col = "white", alpha = 0.6) +
+  geom_boxplot(aes(y = 0, group = 1), width = 5, alpha = 0.5) + # group = 1 เพื่อแก้ปัญหา boxplot หนึ่งกล่อง
+  geom_rug() +
+  xlim(0, 100) +
+  geom_vline(xintercept = c(50, 75), linetype = 2) +
+  theme_light() +
+  scale_fill_discrete(name = "PreKnowledge Level")+
+  theme(
+    text = element_text(family = "ChulaCharasNew", size = 16),
+    legend.position = "top",
+    panel.grid = element_blank()
+  )
+
+
+```
+
+
+:::
+
+::::
+
+
+## Distribution: Categorical Data {.smaller}
+
+ภูมิหลังของผู้เรียน
+
+```{r}
+use_data %>% 
+  count(Department) %>% 
+  ggplot(aes(y = reorder(Department, n), x = n))+
+  geom_bar(stat = "identity", fill = "#5C7285")+
+  theme_light()+
+  xlab("\n จำนวนผู้เรียน")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ylab("")+
+  ggtitle("\n จำนวนผู้เรียนจำแนกตามสาขาวิชา")
+```
+
+
+## Wrap-up ทำความเข้าใจผู้เรียน 1 {.smaller}
+
+
+```{r}
+library(patchwork)
+
+p1 <- use_data %>% 
+  count(Department) %>% 
+  ggplot(aes(y = reorder(Department, n), x = n))+
+  geom_bar(stat = "identity", fill = "#5C7285")+
+  theme_light()+
+  xlab("\n จำนวนผู้เรียน")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ylab("")+
+  ggtitle("\n จำนวนผู้เรียนจำแนกตามสาขาวิชา")
+
+p2 <- use_data %>%
+  mutate(PreKnowledge_Group = cut(
+    PreKnowledge, 
+    breaks = c(-Inf, 50, 75, Inf), 
+    labels = c("Fail", "Pass", "Good")
+  )) %>%
+  ggplot(aes(x = PreKnowledge_Group)) +
+  geom_bar(aes(fill = PreKnowledge_Group), alpha = 0.7)+
+  geom_text(stat = "count", aes(label = ..count..), size = 3, vjust = - 0.5,
+            family = "ChulaCharasNew")+
+  theme_light()+
+  ylim(0,300)+
+  scale_x_discrete(name = "PreKnowledge", labels = c("Fail","Pass","Good"))+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        panel.grid = element_blank())+
+  ggtitle("ความรู้พื้นฐานด้านสถิติของผู้เรียน")
+
+p3 <- use_data %>% 
+  select(Concepts, Interpret, ChooseMethod) %>% 
+  pivot_longer(cols = everything()) %>% 
+  mutate(name = fct_relevel(name, "Concepts", "Interpret", "ChooseMethod")) %>% 
+  mutate(value_group = cut(
+    value,
+    breaks = c(-Inf, 50, 75, Inf), 
+    labels = c("Fail", "Pass", "Good")
+  )) %>% 
+  ggplot(aes(x = value_group, fill = value_group))+
+  geom_bar(alpha = 0.7, stat = "count")+
+  scale_x_discrete(name = "", labels = c("Fail", "Pass", "Good")) +
+  facet_wrap(~name)+
+  theme_light()+
+  theme(strip.text = element_text(family = "ChulaCharasNew"),
+        text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        panel.grid = element_blank())
+
+
+p1+(p2/p3)
+```
+
+
+Note: พื้นฐานทางสถิติมีความจำเป็นต่อการเรียนรายวิชาวิจัยหรือไม่?
+
+- Experience-based
+
+- Theory-based
+
+- Data-driven
+
+
+## Wrap-up ทำความเข้าใจผู้เรียน 2 {.smaller}
+
+พฤติกรรมการเรียนรู้ของผู้เรียน
+
+
+ระยะเวลาโดยเฉลี่ยที่นักเรียนใช้ทำการบ้าน/งานที่มอบหมาย (ชั่วโมง)
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+```{r}
+use_data %>% 
+  summarise_at(vars(StatSubmitTime), 
+               .funs = list(Mean = mean, SD = sd, 
+                            Min = min,
+                            Q1 = ~ quantile(.,0.25),
+                            Med = ~ quantile(.,0.5),
+                            Q3 = ~ quantile(., 0.75),
+                            Max = max)) %>% 
+  t() %>% 
+  data.frame() %>% 
+  rename(StatSubmitTime = 1)
+```
+
+:::
+
+::: {.column width="70%"}
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = StatSubmitTime))+
+  geom_histogram(fill = "steelblue", alpha = 0.5, col = "white")+
+  geom_vline(xintercept = 168, linetype = 2)+
+  annotate(geom = "text", x=168, y=70, label = "168 ชั่วโมง", 
+           vjust =-2.8,
+           family = "ChulaCharasNew")+
+  annotate(geom = "text", x=80, y=20, label = "ผู้เรียนส่งงานตรงเวลา \n เป็นผู้ที่มี performance ที่ดี?",
+           vjust =0, size = 5, 
+           family = "ChulaCharasNew")+
+  annotate(geom = "text", x=210, y=20, label = "ผู้เรียนส่งงานช้าเพราะ \n ตั้งใจทำงานหรือขาดความรับผิดชอบ?",
+           vjust =0, size = 5, 
+           family = "ChulaCharasNew")+
+  theme_light()+
+  ylim(0,70)+
+  theme(strip.text = element_text(family = "ChulaCharasNew"),
+        text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        panel.grid = element_blank(),
+        plot.margin = margin(20,2,2,2,"pt") )+
+  coord_cartesian(clip = "off")
+```
+
+:::
+
+::::
+
+
+
+Note: ควรให้เวลาทำการบ้าน/งานที่มอบหมายแก่ผู้เรียนมากขึ้นหรือไม่ ?
+
+
+## Wrap-up ทำความเข้าใจผู้เรียน 3 {.smaller}
+
+
+```{r fig.width=10, fig.height = 3}
+library(kableExtra)
+use_data %>% 
+  select(starts_with("Stat")) %>% 
+  select(-StatSubmitTime) %>% 
+  pivot_longer(cols= everything()) %>% 
+  ggplot(aes(x = value))+
+  geom_histogram(col = "white")+
+  facet_wrap(~name, scale = "free")+
+  xlab("")+
+  theme_light()+
+  theme(strip.text = element_text(family = "ChulaCharasNew", size = 16),
+        text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        panel.grid = element_blank())
+
+
+use_data %>% 
+  summarise_at(vars(StatCheatBehav, StatLearnPerform, StatPercentSubmit), 
+               .funs = list(Mean = mean, SD = sd, 
+                            Min = min,
+                            Q1 = ~ quantile(.,0.25),
+                            Med = ~ quantile(.,0.5),
+                            Q3 = ~ quantile(., 0.75),
+                            Max = max)) %>% 
+  t() %>% 
+  data.frame() %>% 
+  rownames_to_column("name") %>% 
+  separate(col = name, into = c("Variable","Stat"), sep = "_") %>% 
+  rename(Value = 3) %>% 
+  pivot_wider(names_from = "Stat",
+              values_from = "Value") %>% 
+  mutate_at(2:8, .funs = ~round(.,2)) %>% 
+  kbl()
+```
+
+## EDA 2: สำรวจรูปแบบ/ความสัมพันธ์ในข้อมูล {.smaller}
+
+
+- ผู้เรียนที่พื้นฐานน้อยในชั้นเรียนมีภูมิหลัง หรือ พฤติกรรมการเรียนรู้เป็นอย่างไร
+
+  - ทำความเข้าใจภูมิหลัง/พฤติกรรมการเรียนรู้ของกลุ่มผู้เรียนพื้นฐานน้อย
+  
+  - เปรียบเทียบความแตกต่างของภูมิหลัง/พฤติกรรมการเรียนรู้ของผู้เรียนระหว่างกลุ่มพื้นฐานน้อยกับมีพื้นฐาน
+  
+  - พฤติกรรมการเรียนใดที่มีแนวโน้มเป็นปัญหาในกลุ่มผู้เรียนพื้นฐานน้อย
+
+</hr>
+
+- พื้นฐานความรู้ทางสถิติมีความสัมพันธ์กับคะแนนสอบ Midterm รายวิชาวิจัยหรือไม่
+
+- ปัจจัยใดที่มีความสัมพันธ์หรือเกี่ยวข้องกับผลการเรียนรู้ของผู้เรียน
+
+- ปัจจัยใดที่มีความสัมพันธ์กับความสามารถในการแก้โจทย์ปัญหาหรือทำข้อสอบระดับยากของผู้เรียน
+
+
+</hr>
+
+- พื้นฐานทางสถิติมีความจำเป็นต่อการเรียนรายวิชาวิจัยหรือไม่?
+
+- ควรให้เวลาทำการบ้าน/งานที่มอบหมายแก่ผู้เรียนมากขึ้นหรือไม่ ?
+
+
+## EDA 2: สำรวจรูปแบบ/ความสัมพันธ์ในข้อมูล {.smaller}
+
+- **การเปรียบเทียบ (comparison)** -- ใช้เครื่องมือเดียวกับการวิเคราะห์ตัวแปรเดียวแต่มีการจำแนกผลการสำรวจ/วิเคราะห์หลักด้วยตัวแปรจัดประเภทอีกตัวหนึ่ง เช่น เปรียบเทียบคะแนนสอบ midterm จำแนกตามพฤติกรรมการส่งงาน (ส่งครบ/ไม่ครบ)
+
+  - ตารางแจกแจงความถี่หลายทาง (multi-way frequency table)
+  
+  - ฮิสโทแกรมหรือแผนภาพความหนาแน่น
+  
+  - แผนภาพกล่อง (boxplot)
+
+  - แผนภูมิแท่งเปรียบเทียบ (sided/grouped bar chart)
+  
+  - แผนภูมิแท่งเชิงซ้อน (stacked bar chart)
+  
+  - สถิติพื้นฐาน เช่น การเปรียบเทียบค่ากลางระหว่างกลุ่มข้อมูล
+
+  - Pareto Chart (เหมาะกับการระบุปัจจัยสำคัญที่คาดว่าจะมีความสัมพันธ์กับปัญหาที่พบ)
+
+## EDA 2: สำรวจรูปแบบ/ความสัมพันธ์ในข้อมูล {.smaller}
+
+- **การวิเคราะห์ความสัมพันธ์ (relationship)** -- ความสัมพันธ์ หมายถึงการเชื่อมโยงระหว่างตัวแปรสองตัวหรือมากกว่า ซึ่งอาจแสดงในรูปแบบของการเปลี่ยนแปลงร่วมกัน (สหสัมพันธ์) หรือผลกระทบที่ตัวแปรหนึ่งส่งต่ออีกตัวหนึ่ง (ความสัมพันธ์เชิงสาเหตุ) โดยความสัมพันธ์สามารถมีลักษณะเป็นเชิงบวก เชิงลบ หรือไม่มีความสัมพันธ์ ทั้งนี้ การวิเคราะห์ความสัมพันธ์ช่วยทำความเข้าใจลักษณะข้อมูล ตั้งสมมุติฐาน และพยากรณ์ผลลัพธ์ในอนาคต
+  
+  - แผนภาพกล่อง (boxplot) -- เหมาะสำหรับการสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภท
+  
+  - แผนภาพการกระจาย (scatter plot) -- เหมาะสำหรับสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ
+  
+  - สัมประสิทธิ์สหสัมพันธ์ (correlation coefficients) -- ค่าสถิติพื้นฐานที่ถูกพัฒนาขึ้นเพื่อวัดสหสัมพันธ์ระหว่างตัวแปรสองตัว
+
+## Comparison: Density plot {.smaller}
+
+Density plot สามารถใช้เปรียบเทียบการแจกแจงของข้อมูลระหว่างกลุ่มต่าง ๆ  เช่น ที่ผ่านมาผู้เรียนที่พื้นฐานน้อยในชั้นเรียนมีพฤติกรรมการเรียนในชั้นเรียนเป็นอย่างไร
+
+```{r}
+use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  pivot_longer(cols = -(PreKnowledge)) %>% 
+  ggplot(aes(x = value, fill = PreKnowledge>50))+
+  geom_density(alpha = 0.5)+
+  facet_wrap(~name, scale = "free")
+```
+
+
+## Comparison: Density plot {.smaller}
+
+จุดเด่นของ Densityplot 
+
+- ช่วยให้เห็นลักษณะการแจกแจงของข้อมูลในแต่ะละกลุ่ม
+
+- ช่วยเปรียบเทียบการแจกแจงของข้อมูลหลายมิติไปพร้อมกัน เช่น ค่ากลาง การกระจาย
+
+- แสดงการซ้อนทับของแต่ละกลุ่ม ซึ่งบ่งชี้ระดับความแตกต่างหรือความใกล้เคียงของข้อมูล
+
+อย่างไรก็ตามการใช้ density plot อาจมีข้อจำกัดดังนี้
+
+- การตีความที่อาจไม่สามารถสร้างข้อสรุปที่มีความเป็นปรนัย
+
+- ไม่เหมาะกับข้อมูลขนาดเล็ก อาจทำให้การประมาณค่าความหนาแน่นคลาดเคลื่อน
+
+- ลักษณะแผนภาพจะเปลี่ยนแปลงไปตามค่า Bandwidth (bw) ที่กำหนด ซึ่งอาจทำให้การตีความคลาดเคลื่อน
+
+Note: ควรใช้ร่วมกับการวิเคราะห์เชิงตัวเลขหรือกราฟอื่น ๆ เพื่อให้ได้ผลลัพธ์ที่น่าเชื่อถือและครอบคลุม
+
+## Comparison: Density plot {.smaller}
+
+
+```{r fig.align="center"}
+library(ggplot2)
+library(patchwork)
+
+# พล็อตแต่ละอันพร้อมซ่อน legend ในบางพล็อต
+p1 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.3, bw = 0.01) +
+  ggtitle("bw = 0.01") +
+  theme(legend.position = "none")
+
+p2 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.05) +
+  ggtitle("bw = 0.05") +
+  theme(legend.position = "none")
+
+p3 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.1) +
+  ggtitle("bw = 0.1") +
+  theme(legend.position = "none")
+
+p4 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.5) +
+  ggtitle("bw = 0.5") +
+  theme(legend.position = "right") # Legend จะถูกเก็บไว้ที่พล็อตนี้
+
+# รวมพล็อตทั้งหมด
+(p1 + p2) / (p3 + p4) + plot_layout(guides = "collect")
+
+
+use_data %>% 
+   mutate(Preknowledge_group = cut(PreKnowledge,
+                                   breaks = c(-Inf, 50, Inf), 
+                                   labels = c("Fail","Pass"))) %>% 
+   group_by(Preknowledge_group) %>% 
+   summarise_at(vars(StatCheatBehav), 
+               .funs = list(Mean = mean, SD = sd, 
+                            Min = min,
+                            Q1 = ~ quantile(.,0.25),
+                            Med = ~ quantile(.,0.5),
+                            Q3 = ~ quantile(., 0.75),
+                            Max = max)) %>% 
+  mutate_at(2:8, .funs = ~round(.,2)) %>% 
+  kbl() %>% 
+   kable_styling(position = "left")  # ตั้งตำแหน่งชิดด้านซ้าย
+```
+
+
+## Comparison: Density plot {.smaller}
+
+
+```{r}
+library(ggplot2)
+library(patchwork)
+
+# พล็อตแต่ละอันพร้อมซ่อน legend ในบางพล็อต
+p1 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.3, bw = 0.01) +
+  ylim(0,7)+
+  ggtitle("bw = 0.01") +
+  theme(legend.position = "none")
+
+p2 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.05) +
+  ylim(0,7)+
+  ggtitle("bw = 0.05") +
+  theme(legend.position = "none")
+
+p3 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.1) +
+  ylim(0,7)+
+  ggtitle("bw = 0.1") +
+  theme(legend.position = "none")
+
+p4 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.5) +
+  ylim(0,7)+
+  ggtitle("bw = 0.5") +
+  theme(legend.position = "right") # Legend จะถูกเก็บไว้ที่พล็อตนี้
+
+# รวมพล็อตทั้งหมด
+(p1 + p2) / (p3 + p4) + plot_layout(guides = "collect")
+
+```
+
+
+## Comparison: Density plot {.smaller}
+
+ในหลายโปรแกรมอาจมี feature ให้ปรับสเกลการแสดงผลของ density plot ซึ่งช่วยให้สามารถเปรียบเทียบการแจกแจงของข้อมูลระหว่างกลุ่มที่จำนวนข้อมูลแตกต่างกันได้ อย่างเหมาะสม
+
+
+```{r}
+p1 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.1, aes( y= after_stat(density))) +
+  ggtitle("Density") +
+  theme(legend.position = "none")
+
+
+p2 <- use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  ggplot(aes(x = StatCheatBehav, fill = PreKnowledge > 50)) +
+  geom_density(alpha = 0.5, bw = 0.1, aes( y= after_stat(count))) +
+  ggtitle("Frequency") +
+  theme(legend.position = "none")
+
+p1+p2
+```
+
+
+
+## Comparison: Boxplot {.smaller}
+
+ที่ผ่านมาผู้เรียนที่พื้นฐานน้อยในชั้นเรียนมีพฤติกรรมการเรียนในชั้นเรียนเป็นอย่างไร
+
+```{r fig.width = 8, fig.height = 6}
+use_data %>% 
+  select(PreKnowledge, StatSubmitTime, StatPercentSubmit, StatLearnPerform, StatCheatBehav) %>% 
+  pivot_longer(cols = -(PreKnowledge)) %>% 
+  ggplot(aes(x = value, fill = PreKnowledge>50, y= PreKnowledge>50))+
+  #geom_violin()+
+  geom_boxplot(alpha = 0.5)+
+  facet_wrap(~name, scale = "free")+
+  scale_y_discrete(labels = c("Fail","Pass")) +
+  scale_fill_discrete(labels = c("Fail","Pass"))+
+  theme(legend.position = "none")+
+  ylab("PreKnowledge \n ")+
+  xlab("")
+
+```
+
+
+
+## Comparison: Boxplot {.smaller}
+
+- Boxplot เปรียบเทียบความแตกต่างของข้อมูลระหว่างกลุ่ม โดยอาศัยค่าสถิติบอกตำแหน่งข้อมูล (ค่าสถิติของ Tukey) จำนวน 5 ค่าได้แก่ ค่าต่ำสุด ควอไทล์ 1, 2, 3 และ ค่าสูงสุด
+
+- การที่ boxplot สร้างจากค่าสถิติดังกล่าวทำให้การเปรียบเทียบข้อมูลมีความเป็นปรนัยมากขึ้น มีความกระชับ สามารถตีความได้ง่ายขึ้นเพราะในแผนภาพมีจุดอ้างอิงตำแหน่งข้อมูลสำหรับเปรียบเทียบความแตกต่าง
+
+- สามารถเปรียบเทียบหลายกลุ่มได้ภายในแผนภาพเดียว
+
+- ช่วยบ่งชี้ข้อมูลที่มีแนวโน้มจะเป็นค่าผิดปกติได้
+
+อย่างไรก็ตาม Boxplot มีข้อจำกัดดังนี้
+
+- ขาดรายละเอียดของการแจกแจง ซึ่งในกรณีที่การแจกแจงมีลักษณะหลายฐานนิยม อาจะทำให้การแปลความหมายผิดพลาดได้
+
+- ไม่แสดงจำนวนข้อมูลในแต่ละกลุ่ม
+
+- ไม่เหมาะกับข้อมูลขนาดเล็ก
+
+- อาจเข้าใจยากสำหรับผู้ที่ไม่คุ้นเคย
+
+## Comparison: Boxplot {.smaller}
+
+เปรียบเทียบข้อมูลหลายกลุ่ม (unsorted)
+
+```{r}
+use_data  %>%
+  ggplot(aes(x = PreKnowledge, y= Department))+
+  #geom_violin()+
+  geom_boxplot(alpha = 0.5, fill = "steelblue", alpha = 0.7)+
+  theme_light()+
+  theme(legend.position = "none")+
+  xlab("\n PreKnowledge")+
+  ylab("")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))
+```
+
+
+## Comparison: Boxplot {.smaller}
+
+เปรียบเทียบข้อมูลหลายกลุ่ม (sorted)
+
+
+```{r}
+use_data  %>%
+  ggplot(aes(x = PreKnowledge, y= reorder(Department,PreKnowledge, FUN = median)))+
+  #geom_violin()+
+  geom_boxplot(alpha = 0.5, fill = "steelblue", alpha = 0.7)+
+  theme_light()+
+  theme(legend.position = "none")+
+  xlab("\n PreKnowledge")+
+  ylab("")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))
+
+```
+
+
+## Comparison: Boxplot {.smaller}
+
+สามารถใช้เปรียบเทียบเพื่อสำรวจแนวโน้มการแจกแจงของข้อมูลตามเวลาได้
+
+![](img/EF.png)
+
+
+## Comparison: Boxplot, Jitter & Violin Plot {.smaller}
+
+ข้อจำกัดหนึ่งของ Boxplot คือการที่สร้างจากค่าสถิติเพียง 5 ค่า ซึ่งอาจไม่เพียงพอที่จะสะท้อนลักษณะการแจกแจงของข้อมูลได้อย่างถูกต้อง
+
+![](img/box_jitter_violin.png)
+
+## Comparison: Boxplot, Jitter & Violin Plot {.smaller}
+
+พื้นฐานด้านสถิติของนิสิตในแต่ละสาขาวิชาเป็นอย่างไร?
+
+```{r fig.height = 10, fig.width = 8}
+use_data  %>%
+  ggplot(aes(x = PreKnowledge, y= reorder(Department,PreKnowledge, FUN = median)))+
+  geom_violin(fill = "steelblue")+
+  geom_boxplot(alpha = 1, fill = "white", width = 0.2, outlier.alpha = 0)+
+  geom_jitter(height = 0.1, alpha = 0.4)+
+  theme_light()+
+  theme(legend.position = "none")+
+  xlab("\n PreKnowledge")+
+  ylab("")+
+  theme(text = element_text(family = "ChulaCharasNew", size = 16))
+
+```
+
+
+
+## Comparison: Pie Chart and Bar Chart
+
+เหมาะสำหรับเปรียบเทียบข้อมูลแบบจัดประเภท
+
+![](img/pie_bar.png)
+
+## Comparison: Pie Chart and Bar Chart {.smaller}
+ 
+- Pie Chart และ Stacked Bar เหมาะสำหรับนำเสนอและเปรียบเทียบสัดส่วน (เปรียบเทียบส่วนย่อยที่สนใจกับทั้งหมด)
+
+- Side Bars เหมาะสำหรับเปรียบเทียบปริมาณระหว่างส่วนย่อย ซึ่งอาจเป็นจำนวน หรือ ค่าสถิติเช่น ค่าเฉลี่ย มัธยฐาน ก็ได้
+
+| วัตถุประสงค์                                                                 | Pie Chart | Stacked Bar | Side Bars |
+|------------------------------------------------------------------------------|-----------|-------------|-----------|
+| เปรียบเทียบส่วนย่อยที่สนใจกับส่วนทั้งหมด                                      | Yes       | Yes         | No        |
+| นำเสนอส่วนย่อยในรูปสัดส่วนอย่างง่าย เช่น 1/2, 1/3, 1/4                      | Yes       | No          | No        |
+| เปรียบเทียบปริมาณระหว่างส่วนย่อยหลาย ๆ ส่วน                                   | No        | No          | Yes       |
+| เปรียบเทียบสัดส่วนหลายชุดตามเวลา                                             | No        | Yes         | No        |
+
+## Comparison: Pie Chart and Bar Chart
+
+![](img/pie1.png)
+
+
+## Comparison: Pie Chart and Bar Chart
+
+![](img/pie2.png)
+
+
+## Comparison: Pie Chart and Bar Chart
+
+Pie Chart ไม่เหมาะสำหรับเปรียบเทียบสัดส่วนระหว่างกลุ่มที่มีจำนวนมาก
+
+```{r}
+use_data %>%
+  count(Department) %>% # สร้างตารางความถี่สำหรับ Department
+  ggplot(aes(x = "", y = n, fill = Department)) +
+  geom_bar(stat = "identity", width = 1) + # ใช้ bar chart สำหรับ pie
+  coord_polar(theta = "y") + # เปลี่ยนเป็น pie chart
+  labs(x = NULL, y = NULL, fill = "Department") + # ตั้งชื่อ legend
+  theme_void() + # ลบแกนและ grid
+  theme(
+    text = element_text(family = "ChulaCharasNew"),
+    legend.position = "right"
+  )+
+  ggtitle("สัดส่วนนิสิตจำแนกตามสาขาวิชา")
+```
+
+
+## Comparison: Stacked Bar Chart
+
+พื้นฐานทางด้านสถิติของนักเรียนในแต่ละสาขาวิชาเป็นอย่างไร
+
+```{r}
+p1 <- use_data %>%
+  mutate(Department = fct_reorder(Department, 
+                                  -PreKnowledge > 50, # จัดลำดับโดยค่าที่ FALSE
+                                  .fun = function(x) sum(!x))) %>%
+  ggplot(aes(fill = PreKnowledge > 50, y = Department)) +
+  geom_bar(position = "stack") + 
+  theme_light() +
+  xlab("\n PreKnowledge") +
+  ylab("") +
+  scale_fill_discrete(name = "PreKnowledge",labels=c("Fail","Pass"))+
+  theme(
+    legend.position = "top",
+    text = element_text(family = "ChulaCharasNew", size = 16)
+  )+
+  ggtitle("Stacked Bar Chart")
+p1
+```
+
+
+## Comparison: 100% Stacked Bar Chart
+
+พื้นฐานทางด้านสถิติของนักเรียนในแต่ละสาขาวิชาเป็นอย่างไร
+
+```{r}
+p2<-use_data %>%
+  mutate(Department = fct_reorder(Department, 
+                                  -PreKnowledge > 50, # จัดลำดับโดยค่าที่ FALSE
+                                  .fun = function(x) sum(!x))) %>%
+  ggplot(aes(fill = PreKnowledge > 50, y = Department)) +
+  geom_bar(position = "fill") + 
+  theme_light() +
+  xlab("\n PreKnowledge") +
+  ylab("") +
+  scale_fill_discrete(name = "PreKnowledge",labels=c("Fail","Pass"))+
+  theme(
+    legend.position = "top",
+    text = element_text(family = "ChulaCharasNew", size = 16)
+  )+
+  ggtitle("100% Stacked Bar Chart")
+
+p2
+```
+
+
+
+## Pareto Chart (0) {.smaller}
+
+
+![https://www.investopedia.com/terms/p/pareto-analysis.asp](https://www.investopedia.com/thmb/ghkkjkMF_jlsEl269OZu5A_dWME=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/ParetoExample2-e075b949a3af4751a329954498103d1b.JPG)
+
+
+## Pareto Chart (1) {.smaller}
+
+> "roughly 80% of consequences come from 20% of causes" 
+
+
+![](https://th.hrnote.asia/storage/2021/01/1.18.jpg)
+
+- เป็นแผนภูมิที่ใช้แสดงการแจกแจงของปัจจัยที่คาดว่าจะสัมพันธ์กับปัญหา
+
+- แนวคิดเบื้องหลังมาจาก Pareto Principle 
+
+
+## Pareto Chart (2) {.smaller}
+
+วัตถุประสงค์ : ระบุปัจจัยที่สำคัญที่สุดที่คาดว่าจะสัมพันธ์กับปัญหานักเรียนบางส่วนมีความเข้าใจในเนื้อหาไม่เพียงพอ
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart LR
+
+A[Data]-->B["คัดกรองนักเรียนที่เป็นปัญหา"]
+B-->C["สร้าง Pareto Chart"]
+C-->D(("ระบุปัจจัยสำคัญ"))
+
+```
+
+ขั้นตอนการสร้าง Pareto Chart
+
+- เก็บรวบรวมข้อมูล case ที่เป็นปัญหา
+
+- เก็บรวบรวมข้อมูลผลลัพธ์และปัจจัยที่คาดว่าจะมีความสัมพันธ์กับปัญหาของ case ข้างต้น
+
+- จัดกระทำข้อมูลปัจจัยที่จะนำมาวิเคราะห์โดยทำให้อยู่ในรูปของความถี่ที่แสดงการดำเนินการหรือพฤติกรรมที่ไม่พึงประสงค์
+
+- จัดเรียงปัจจัยตามความถี่ (ความสำคัญ) จากมากไปน้อย
+
+- คำนวณความถี่ (ร้อยละ) สะสมของปัจจัย
+
+- สร้างแผนภูมิ Pareto 
+
+
+## Pareto Chart (3): พฤติกรรมการเรียนใดที่มีแนวโน้มเป็นปัญหาในกลุ่มผู้เรียนพื้นฐานน้อย {.smaller}
+
+- คัดกรองผู้เรียนที่มีปัญหา
+
+```{mermaid}
+%%| echo: false
+%%| fig-align: "center"
+
+flowchart LR
+A["PreKnowledge <=50"]--> D["ผู้เรียนที่มีปัญหา 275 คน"]
+
+style A fill:#ffffff, stroke: black, stroke-width: 2px
+```
+
+```{r}
+library(DT)
+
+filtered_data <- use_data %>%
+  filter(PreKnowledge <= 50) %>%
+  arrange(desc(PreKnowledge)) %>% 
+  mutate_if(is.numeric, ~round(., 2))
+
+filtered_data
+```
+
+
+## Pareto Chart (4): พฤติกรรมการเรียนใดที่มีแนวโน้มเป็นปัญหาในกลุ่มผู้เรียนพื้นฐานน้อย {.smaller}
+
+- เตรียมข้อมูลปัจจัยที่คาดว่าจะสัมพันธ์กับปัญหา 
+
+  - `StatSubmitTime` > 168  --> `latesubmit`
+
+  - `StatPercentSubmit` < 100 --> `lowsubmit`
+
+  - `StatLearnPerform` < 50 --> `lowperform`
+
+  - `StatCheatBehav` > 0.95 --> `cheat`
+
+```{r}
+use_data2 <- use_data %>%
+  filter(PreKnowledge <= 50) %>% 
+  mutate(
+    latesubmit = StatSubmitTime > 168,       # สร้างตัวแปร latesubmit ตามเงื่อนไข
+    lowsubmit = StatPercentSubmit < 100,    # สร้างตัวแปร lowsubmit ตามเงื่อนไข
+    lowperform = StatLearnPerform < 50,     # สร้างตัวแปร lowperform ตามเงื่อนไข
+    cheat = StatCheatBehav > 0.99           # สร้างตัวแปร cheat ตามเงื่อนไข
+  )
+
+use_data2 %>% select(-starts_with("Res")) %>%  glimpse()
+```
+
+## Pareto Chart (5): พฤติกรรมการเรียนใดที่มีแนวโน้มเป็นปัญหาในกลุ่มผู้เรียนพื้นฐานน้อย {.smaller}
+
+แจกแจงความถี่ปัจจัยที่คาดว่าจะสัมพันธ์กับปัญหา
+
+<left>
+
+```{r}
+use_data2 %>%
+  select(latesubmit, lowsubmit, lowperform, cheat) %>% 
+  pivot_longer(cols = everything(), names_to = "factor", values_to = "problem") %>% 
+  group_by(factor, problem) %>% 
+  count() %>% 
+  filter(problem == TRUE) %>% 
+  arrange(desc(n)) %>%
+  ungroup() %>% 
+  mutate(cumsum = cumsum(n)) %>% 
+  mutate(percent_cumsum = round(cumsum*100/sum(n),2)) %>% 
+  kbl()
+```
+
+</left>
+
+
+## Pareto Chart (6): พฤติกรรมการเรียนใดที่มีแนวโน้มเป็นปัญหาในกลุ่มผู้เรียนพื้นฐานน้อย {.smaller}
+
+> "roughly 80% of consequences come from 20% of causes" 
+
+<div style="font-size: 80%;">
+
+- Vital Few (20%) ปัจจัยจำนวนน้อยที่มีความสำคัญมากที่สุด
+
+- Useful Many (80%) ปัจจัยจำนวนมากที่มีความสำคัญน้อยกว่า อาจพิจารณาให้ความสำคัญเป็นอันดับรองลงมา
+
+</div>
+
+```{r}
+use_data2 %>%
+  select(latesubmit, lowsubmit, lowperform, cheat) %>% 
+  pivot_longer(cols = everything(), names_to = "factor", values_to = "problem") %>% 
+  group_by(factor, problem) %>% 
+  count() %>% 
+  filter(problem == TRUE) %>% 
+  arrange(desc(n)) %>%
+  ungroup() %>% 
+  mutate(cumsum = cumsum(n)) %>% 
+  mutate(percent_cumsum = round(cumsum*100/sum(n),2)) %>% 
+  ggplot(aes(x = reorder(factor, desc(n)), y=n)) +
+  geom_col(aes(fill = percent_cumsum > 60)) +
+  geom_line(aes(y=percent_cumsum, group = 1), col = "orange", linewidth = 1.5) +
+  geom_point(aes(y=percent_cumsum, group = 1), col ="orange", size = 3)+
+  ylab("Frequency \n") +
+  xlab("") +
+  theme_light() +
+  theme(axis.text.x = element_text(angle = 0, size = 6),
+        legend.position = "none") +
+  scale_y_continuous(
+    sec.axis = sec_axis(~. , name = "Cumulative Percentage (%) \n")
+  )
+```
+
+
+
+## Relationship {.smaller}
+
+ความสัมพันธ์ หมายถึงการเชื่อมโยงระหว่างตัวแปรสองตัวหรือมากกว่า ซึ่งอาจแสดงในรูปแบบของการเปลี่ยนแปลงร่วมกัน (สหสัมพันธ์) หรือผลกระทบที่ตัวแปรหนึ่งส่งต่ออีกตัวหนึ่ง (ความสัมพันธ์เชิงสาเหตุ) โดยความสัมพันธ์สามารถมีลักษณะเป็นเชิงบวก เชิงลบ หรือไม่มีความสัมพันธ์ ทั้งนี้ การวิเคราะห์ความสัมพันธ์ช่วยทำความเข้าใจลักษณะข้อมูล ตั้งสมมุติฐาน และพยากรณ์ผลลัพธ์ในอนาคต
+  
+  - แผนภาพกล่อง (boxplot) -- เหมาะสำหรับการสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภท
+  
+  - แผนภาพการกระจาย (scatter plot) -- เหมาะสำหรับสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ
+  
+  - สัมประสิทธิ์สหสัมพันธ์ (correlation coefficients) -- ค่าสถิติพื้นฐานที่ถูกพัฒนาขึ้นเพื่อวัดสหสัมพันธ์ระหว่างตัวแปรสองตัว
+
+
+## Relationship: Scatter plot {.smaller}
+
+ใช้ในการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรสองตัว โดยการวางจุดข้อมูลแต่ละคู่ในกราฟ 2 มิติ ซึ่งแกนนอน (X-axis) และแกนตั้ง (Y-axis) แสดงค่าของตัวแปรแต่ละตัว
+
+
+```{r fig.width = 12, fig.height = 4}
+library(ggplot2)
+library(dplyr)
+
+# สร้างข้อมูลตัวอย่าง
+set.seed(42)
+x <- seq(0, 10, length.out = 100)
+
+# ความสัมพันธ์เชิงบวก
+y_positive <- 2 * x + rnorm(100, sd = 3)
+
+# ความสัมพันธ์เชิงลบ
+y_negative <- -2 * x + rnorm(100, sd = 3)
+
+# ไม่มีความสัมพันธ์
+y_none <- rnorm(100, mean = 10, sd = 5)
+
+# จัดข้อมูลให้อยู่ในรูปแบบ long format
+data <- data.frame(
+  x = rep(x, 3),
+  y = c(y_positive, y_negative, y_none),
+  type = rep(c("Positive Correlation", "Negative Correlation", "No Correlation"), each = 100)
+)
+
+# การสร้างกราฟ
+ggplot(data, aes(x = x, y = y)) +
+  geom_point(alpha = 0.6) +
+  facet_wrap(~type, scales = "free") +
+  labs(
+    title = "Correlation Examples",
+    x = "\n X",
+    y = "Y"
+  ) +
+  theme_minimal()
+```
+
+## Relationship: Scatter plot {.smaller}
+
+พื้นฐานความรู้ทางสถิติมีความสัมพันธ์กับคะแนนสอบ Midterm รายวิชาวิจัยหรือไม่
+
+```{r}
+use_data %>% glimpse()
+```
+
+
+## Relationship: Scatter plot {.smaller}
+
+พื้นฐานความรู้ทางสถิติมีความสัมพันธ์กับคะแนนสอบ Midterm รายวิชาวิจัยหรือไม่
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = PreKnowledge, y = ResMidterm))+
+  geom_point()+
+  theme_light()
+```
+
+
+## Relationship: Scatter plot {.smaller}
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = StatLearnPerform, y = ResMidterm))+
+  geom_point()+
+  theme_light()
+```
+
+## Relationship: Scatter plot vs Boxplot {.smaller}
+
+- ข้อมูลเชิงปริมาณบางชุดอาจไม่เหมาะที่จะใช้ scatter plot นำเสนอความสัมพันธ์   
+
+- บางครั้งการแปลงข้อมูลเป็นแบบจัดประเภทแล้วใช้ boxplot ช่วยอาจนำเสนอความสัมพันธ์ได้ชัดเจนกว่า
+
+
+```{r}
+p1 <- use_data %>% 
+  ggplot(aes(x = StatSubmitTime, y = PreKnowledge))+
+  geom_point()+
+  theme_light()
+
+
+p2 <- use_data %>% 
+  mutate(SubmitTime = cut(StatSubmitTime, 
+                          breaks=c(-Inf, 75, 125, 168, Inf))) %>% 
+  ggplot(aes(x = SubmitTime, y=PreKnowledge))+
+  geom_boxplot()
+
+p1+p2
+```
+
+
+## Relationship: Scatter plot vs Boxplot {.smaller}
+
+ผลการวิเคราะห์ที่ได้แตกต่างหรือเหมือนกับ Pareto Chart ก่อนหน้านี้มั้ย อย่างไร?
+
+
+```{r fig.width = 9, fig.height = 4}
+p1 <- use_data2 %>%
+  select(latesubmit, lowsubmit, lowperform, cheat) %>% 
+  pivot_longer(cols = everything(), names_to = "factor", values_to = "problem") %>% 
+  group_by(factor, problem) %>% 
+  count() %>% 
+  filter(problem == TRUE) %>% 
+  arrange(desc(n)) %>%
+  ungroup() %>% 
+  mutate(cumsum = cumsum(n)) %>% 
+  mutate(percent_cumsum = round(cumsum*100/sum(n),2)) %>% 
+  ggplot(aes(x = reorder(factor, desc(n)), y=n)) +
+  geom_col(aes(fill = percent_cumsum > 60)) +
+  geom_line(aes(y=percent_cumsum, group = 1), col = "orange", linewidth = 1.5) +
+  geom_point(aes(y=percent_cumsum, group = 1), col ="orange", size = 3)+
+  ylab("Frequency \n") +
+  xlab("") +
+  theme_light() +
+  theme(axis.text.x = element_text(angle = 0, size = 6),
+        legend.position = "none") +
+  scale_y_continuous(
+    sec.axis = sec_axis(~. , name = "Cumulative Percentage (%) \n")
+  )
+
+
+p2 <- use_data %>% 
+  mutate(SubmitTime = cut(StatSubmitTime, 
+                          breaks=c(-Inf, 75, 125, 168, Inf))) %>% 
+  ggplot(aes(x = SubmitTime, y=PreKnowledge))+
+  geom_boxplot(fill = "steelblue")+
+  theme_light()
+
+
+p1+p2
+```
+
+## EDA เพื่อสนับสนุนการตัดสินใจ
+
+ควรให้เวลาทำการบ้าน/งานที่มอบหมายแก่ผู้เรียนมากขึ้นหรือไม่ ?
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = StatSubmitTime))+
+  geom_histogram(fill = "steelblue", alpha = 0.5, col = "white")+
+  geom_vline(xintercept = 168, linetype = 2)+
+  annotate(geom = "text", x=168, y=70, label = "168 ชั่วโมง", 
+           vjust =-2.8,
+           family = "ChulaCharasNew")+
+  annotate(geom = "text", x=80, y=20, label = "ผู้เรียนส่งงานตรงเวลา \n เป็นผู้ที่มี performance ที่ดี?",
+           vjust =0, size = 5, 
+           family = "ChulaCharasNew")+
+  annotate(geom = "text", x=210, y=20, label = "ผู้เรียนส่งงานช้าเพราะ \n ตั้งใจทำงานหรือขาดความรับผิดชอบ?",
+           vjust =0, size = 5, 
+           family = "ChulaCharasNew")+
+  theme_light()+
+  ylim(0,70)+
+  theme(strip.text = element_text(family = "ChulaCharasNew"),
+        text = element_text(family = "ChulaCharasNew"),
+        legend.position = "none",
+        panel.grid = element_blank(),
+        plot.margin = margin(20,2,2,2,"pt") )+
+  coord_cartesian(clip = "off")
+```
+
+## EDA เพื่อสนับสนุนการตัดสินใจ {.smaller}
+
+- ควรให้เวลาทำการบ้าน/งานที่มอบหมายแก่ผู้เรียนมากขึ้นหรือไม่ ?
+
+- การตอบคำถามนี้อาจลองวิเคราะห์ความสัมพันธ์ระหว่าง StatSubmitTime กับ Performance และผลการเรียนรายวิชาสถิติ
+
+```{r fig.width = 9, fig.height = 4}
+p1 <- use_data %>% 
+  mutate(SubmitTime = cut(StatSubmitTime, 
+                          breaks=c(-Inf, 75, 125, 168, Inf))) %>% 
+  ggplot(aes(x = SubmitTime, y=PreKnowledge))+
+  geom_violin(fill = "steelblue")+
+  geom_boxplot(width = 0.2, fill = "white")+
+  theme_light()
+
+p2 <- use_data %>% 
+  mutate(SubmitTime = cut(StatSubmitTime, 
+                          breaks=c(-Inf, 75, 125, 168, Inf))) %>% 
+  ggplot(aes(x = SubmitTime, y= StatLearnPerform))+
+ geom_violin(fill = "orange")+
+  geom_boxplot(width = 0.2, fill = "white")+
+  theme_light()
+
+p2+p1
+```
+
+
+## EDA 1: ทำความเข้าใจสภาพข้อมูล {.smaller}
+
+ตัวอย่างคำถามในชั้นเรียนที่เกี่ยวข้องกับการสำรวจการแจกแจงข้อมูล
+
+- ผู้เรียนในชั้นเรียนมีพื้นฐานความรู้ในระดับใด
+
+- ผู้เรียนพื้นฐานน้อยในหัวข้อใด
+
+- ภายหลังดำเนินการสอนไประยะหนึ่งแล้ว ผู้เรียนตอบสนองต่อการเรียนรู้ได้ดีหรือไม่
+
+- ผู้เรียนคนใดที่มักจะแก้ปัญหาหรือทำข้อสอบในระดับยากไม่ได้
+
+- มีนิสิตที่มีผลการเรียนหรือพฤติกรรมการเรียนรู้ที่มีความเสี่ยงหรือไม่
+
+- มีผู้เรียนที่มีความเสี่ยงในด้านอารมณ์/สังคมหรือไม่
+
+## EDA 2: สำรวจรูปแบบ/ความสัมพันธ์ในข้อมูล {.smaller}
+
+
+- ผู้เรียนที่พื้นฐานน้อยในชั้นเรียนมีภูมิหลัง หรือ พฤติกรรมการเรียนรู้เป็นอย่างไร
+
+  - ทำความเข้าใจภูมิหลัง/พฤติกรรมการเรียนรู้ของกลุ่มผู้เรียนพื้นฐานน้อย
+  
+  - เปรียบเทียบความแตกต่างของภูมิหลัง/พฤติกรรมการเรียนรู้ของผู้เรียนระหว่างกลุ่มพื้นฐานน้อยกับมีพื้นฐาน
+  
+  - พฤติกรรมการเรียนใดที่มีแนวโน้มเป็นปัญหาในกลุ่มผู้เรียนพื้นฐานน้อย
+
+</hr>
+
+- พื้นฐานความรู้ทางสถิติมีความสัมพันธ์กับคะแนนสอบ Midterm รายวิชาวิจัยหรือไม่
+
+- ปัจจัยใดที่มีความสัมพันธ์หรือเกี่ยวข้องกับผลการเรียนรู้ของผู้เรียน
+
+- ปัจจัยใดที่มีความสัมพันธ์กับความสามารถในการแก้โจทย์ปัญหาหรือทำข้อสอบระดับยากของผู้เรียน
+
+
+</hr>
+
+- พื้นฐานทางสถิติมีความจำเป็นต่อการเรียนรายวิชาวิจัยหรือไม่?
+
+- ควรให้เวลาทำการบ้าน/งานที่มอบหมายแก่ผู้เรียนมากขึ้นหรือไม่ ?
+
