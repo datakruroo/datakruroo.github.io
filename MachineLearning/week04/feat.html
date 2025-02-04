@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Feature Engineering</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="feat_files/libs/clipboard/clipboard.min.js"></script>
+<script src="feat_files/libs/quarto-html/quarto.js"></script>
+<script src="feat_files/libs/quarto-html/popper.min.js"></script>
+<script src="feat_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="feat_files/libs/quarto-html/anchor.min.js"></script>
+<link href="feat_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="feat_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="feat_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="feat_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="feat_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Feature Engineering</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ความหมายความสำคญของ-feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="ความหมายความสำคญของ-feature-engineering">1. ความหมายความสำคัญของ Feature Engineering</h2>
+<ul>
+<li><p>Feature Engineering คือกระบวนการแปลงหรือปรับแต่งข้อมูลดิบ (raw data) ให้อยู่ในรูปแบบที่เหมาะสมสำหรับการสร้างโมเดลการเรียนรู้ของเครื่อง</p></li>
+<li><p>การสร้างโมเดล ML หากไม่มีการเตรียมข้อมูลที่ดี โมเดลก็อาจไม่สามารถเรียนรู้รูปแบบที่สำคัญจากข้อมูลได้อย่างมีประสิทธิภาพ</p></li>
+<li><p>Feature Engineering มีความสำคัญดังนี้</p></li>
+</ul>
+<ol type="1">
+<li><p>เพิ่มประสิทธิภาพของโมเดล</p></li>
+<li><p>ลดข้อจำกัดของข้อมูล</p></li>
+<li><p>ช่วยให้การแปลความหมายชัดเจนขึ้น เข้าใจได้มากขึ้น หรือช่วยให้เราพบ insight ที่ซ่อนอยู่ในข้อมูล</p></li>
+</ol>
+<ul>
+<li>ควรทำ feature engineering ตอนไหน?</li>
+</ul>
+<section id="หลกการสำคญในการทำ-feature-engineering" class="level3">
+<h3 class="anchored" data-anchor-id="หลกการสำคญในการทำ-feature-engineering">1.1 หลักการสำคัญในการทำ feature engineering</h3>
+<ul>
+<li><p>ทำความเข้าใจข้อมูลเสมอ ได้แก่ ทราบสถานะของข้อมูล ทำความเข้าใจการแจกแจงของข้อมูล เข้าใจความสัมพันธ์เบื้องต้นระหว่างตัวแปร</p></li>
+<li><p>มีเป้าหมายในการดำเนินงานที่ชัดเจน มีตัวชี้วัด</p></li>
+<li><p>ระวังการเกิดปัญหา data leakage : กระบวนการนี้ทำบน training data เท่านั้น</p></li>
+</ul>
+</section>
+</section>
+<section id="เตรยมชดขอมล" class="level2">
+<h2 class="anchored" data-anchor-id="เตรยมชดขอมล">2. เตรียมชุดข้อมูล</h2>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+── Attaching packages ────────────────────────────────────── tidymodels 1.2.0 ──
+
+✔ broom        1.0.6     ✔ rsample      1.2.1
+✔ dials        1.3.0     ✔ tune         1.2.1
+✔ infer        1.0.7     ✔ workflows    1.1.4
+✔ modeldata    1.4.0     ✔ workflowsets 1.1.0
+✔ parsnip      1.2.1     ✔ yardstick    1.3.1
+✔ recipes      1.1.0     
+
+── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ scales::discard() masks purrr::discard()
+✖ dplyr::filter()   masks stats::filter()
+✖ recipes::fixed()  masks stringr::fixed()
+✖ dplyr::lag()      masks stats::lag()
+✖ yardstick::spec() masks readr::spec()
+✖ recipes::step()   masks stats::step()
+• Dig deeper into tidy modeling with R at https://www.tmwr.org
+
+Rows: 395 Columns: 33
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (17): school, sex, address, famsize, Pstatus, Mjob, Fjob, reason, guardi...
+dbl (16): age, Medu, Fedu, traveltime, studytime, failures, famrel, freetime...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="ประเภทของ-feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="ประเภทของ-feature-engineering">3. ประเภทของ Feature Engineering</h2>
+<ul>
+<li><p>Encoding Categorical Variables</p></li>
+<li><p>Transforming Numerical Variables</p></li>
+<li><p>Interaction Terms</p></li>
+<li><p>Handling Missing Data</p></li>
+</ul>
+</section>
+<section id="encoding-categorical-variables" class="level2">
+<h2 class="anchored" data-anchor-id="encoding-categorical-variables">4. Encoding Categorical Variables</h2>
+<p>วัตถุประสงค์คือการแปลงข้อมูลจัดประเภทให้อยู่ในรูปแบบที่สามารถนำไปวิเคราะห์ได้ด้วยโมเดลการเรียนรู้ของเครื่อง</p>
+<p>Note:</p>
+<ul>
+<li><p><code>step_discretize_cart()</code> และ <code>step_discretize_xgb()</code> ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ</p></li>
+<li><p><code>step_lencode_glm()</code> เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้</p></li>
+</ul>
+<ol type="1">
+<li><p>สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor</p></li>
+<li><p>ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ</p></li>
+</ol>
+<ul>
+<li><p><code>step_lencode_bayes()</code> หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ <code>step_lencode_bayes()</code> จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม</p></li>
+<li><p><code>step_lencode_mixed()</code> หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 314 × 33
+   school sex     age address famsize Pstatus Medu  Fedu   Mjob Fjob     reason 
+   &lt;fct&gt;  &lt;fct&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;  
+ 1 GP     F        17 U       GT3     A       4     4      9.82 teacher  home   
+ 2 GP     M        17 U       GT3     T       3     2     11.0  services course 
+ 3 GP     F        15 R       GT3     T       2     4     11.0  health   course 
+ 4 GP     F        16 U       GT3     T       2     2     11.0  services home   
+ 5 GP     F        15 U       GT3     T       2     3      9.82 other    other  
+ 6 GP     F        15 U       LE3     A       4     3      9.82 other    course 
+ 7 GP     F        15 U       GT3     T       4     4     11.0  teacher  other  
+ 8 GP     F        15 R       GT3     T       1     1      9.82 other    reputa…
+ 9 GP     F        16 U       GT3     T       3     4      9.24 other    course 
+10 GP     F        15 U       LE3     T       3     2     11.0  other    reputa…
+# ℹ 304 more rows
+# ℹ 22 more variables: guardian &lt;fct&gt;, traveltime &lt;fct&gt;, studytime &lt;fct&gt;,
+#   failures &lt;dbl&gt;, schoolsup &lt;fct&gt;, famsup &lt;fct&gt;, paid &lt;fct&gt;,
+#   activities &lt;fct&gt;, nursery &lt;fct&gt;, higher &lt;fct&gt;, internet &lt;fct&gt;,
+#   romantic &lt;fct&gt;, famrel &lt;fct&gt;, freetime &lt;fct&gt;, goout &lt;fct&gt;, Dalc &lt;fct&gt;,
+#   Walc &lt;fct&gt;, health &lt;fct&gt;, absences &lt;dbl&gt;, G1 &lt;dbl&gt;, G2 &lt;dbl&gt;, G3 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<ul>
+<li><code>step_woe()</code> ใช้ทำ weight of evidence (WOE) หรือ information value (IV) ในการแปลง factor ให้เป็นตัวเลข วิธีการนี้ใช้กับ binary-classification taskขั้นตอนของวิธีการนี้คือ</li>
+</ul>
+<ol type="1">
+<li><p>คำนวณค่า WOE ซึ่งมีค่าเท่ากับ log(odds) ของการเกิด outcome ที่สนใจจำแนกตาม level ของ factor ที่ต้องการแปลง หากใน level ไหนของ factor ไม่มี event หรือ non-event จะใช้เทคนิค Laplace Smoothing เพื่อเลี่ยงการหารด้วย 0</p></li>
+<li><p>แทน factor level แต่ละตัวด้วย woe value</p></li>
+</ol>
+</section>
+<section id="transforming-numerical-variables" class="level2">
+<h2 class="anchored" data-anchor-id="transforming-numerical-variables">5. Transforming Numerical Variables</h2>
+<p>คือการแปลงคะแนนของตัวแปรเชิงปริมาณให้มีลักษณะการแจกแจงหรืออยู่ในรูปแบบที่เหมาะสำหรับการนำไปวิเคราะห์ด้วยโมเดลการเรียนรู้ของเครื่อง หรือในบางกรณีเป็นการสร้างตัวแปรใหม่เพื่อเพิ่มประสิทธิภาพการเรียนรู้ของโมเดล</p>
+<p>Note:</p>
+<ul>
+<li><code>step_pls()</code> คือ Partial Least Squares (PLS) ซึ่งเป็นเทคนิค supervised dimensionality reduction และ feature extraction เพื่อสร้างตัวแปรใหม่ที่เป็น linear combination ของตัวแปรเดิมที่มีอยู่ (องค์ประกอบ) ที่มีความสัมพันธ์กับ outcome มากที่สุด</li>
+</ul>
+<p>จะใช้ฟังก์ชันนี้ได้จะต้องมี library-mixOmics ติดตั้งก่อน ซึ่ง library ดังกล่าวอยู่ใน Bioconductor server สามารถติดตั้งได้ดังนี้</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 314 × 31
+   school sex   address famsize Pstatus Medu  Fedu  Mjob   Fjob  reason guardian
+   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;   
+ 1 GP     F     U       GT3     A       4     4     other  teac… home   mother  
+ 2 GP     M     U       GT3     T       3     2     servi… serv… course mother  
+ 3 GP     F     R       GT3     T       2     4     servi… heal… course mother  
+ 4 GP     F     U       GT3     T       2     2     servi… serv… home   mother  
+ 5 GP     F     U       GT3     T       2     3     other  other other  father  
+ 6 GP     F     U       LE3     A       4     3     other  other course mother  
+ 7 GP     F     U       GT3     T       4     4     servi… teac… other  father  
+ 8 GP     F     R       GT3     T       1     1     other  other reput… mother  
+ 9 GP     F     U       GT3     T       3     4     at_ho… other course mother  
+10 GP     F     U       LE3     T       3     2     servi… other reput… mother  
+# ℹ 304 more rows
+# ℹ 20 more variables: traveltime &lt;fct&gt;, studytime &lt;fct&gt;, schoolsup &lt;fct&gt;,
+#   famsup &lt;fct&gt;, paid &lt;fct&gt;, activities &lt;fct&gt;, nursery &lt;fct&gt;, higher &lt;fct&gt;,
+#   internet &lt;fct&gt;, romantic &lt;fct&gt;, famrel &lt;fct&gt;, freetime &lt;fct&gt;, goout &lt;fct&gt;,
+#   Dalc &lt;fct&gt;, Walc &lt;fct&gt;, health &lt;fct&gt;, G3 &lt;dbl&gt;, PLS1 &lt;dbl&gt;, PLS2 &lt;dbl&gt;,
+#   PLS3 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<ul>
+<li><code>step_ica()</code> เป็น feature extraction ในทำนองเดียวกับ pca เรียกชื่อเต็มว่า Independent Component Analysis (ICA) เทคนิคนี้จัดอยู่ในกลุ่ม unsupervised learning ในกลุ่ม dimensionality reduction หลักการคร่าว ๆ ของอัลกอริทึมนี้คือ สร้าง linear combination ที่เรียกว่า independent components การสร้าง ICs เหล่านี้จะมีวัตถุประสงค์คือพยายามให้แต่ละ ICs เป็นอิสระต่อกันมากที่สุด</li>
+</ul>
+</section>
+<section id="interaction-terms" class="level2">
+<h2 class="anchored" data-anchor-id="interaction-terms">6. Interaction Terms</h2>
+<p>การเพิ่ม interaction term ในโมเดลมีประโยชน์อย่างมากโดยเฉพาะใน linear model เพราะช่วยเพิ่มโอกาสการพบความสัมพันธ์แบบ non-linear ระหว่างตัวแปร ช่วยเพิ่มประสิทธิภาพการเรียนรู้ของโมเดล และยังช่วยให้สามารถอธิบายความสัมพันธ์ได้ลึกมากขึ้น</p>
+<p>หลักการหา interaction terms สามารถทำได้หลายวิธีการ ตั้งแต่วิธีการที่อิงทฤษฎี (theory-driven) ไปจนถึงวิธีการที่ใช้ข้อมูลเป็นฐาน (data-driven)</p>
+<ol type="1">
+<li>theory-driven: ระบุ interaction term ด้วยทฤษฎี/ความรู้ความเข้าใจใน domain ของปัญหา เช่น การทำนายผลการเรียนของนักเรียน ปฏิสัมพันธ์ระหว่างเวลาที่ใช้ในการทบทวนบทเรียน กับ ความถี่ของการอภิปรายกับเพื่อนหรือครู อาจมีความสำคัญต่อการทำนายผลการเรียนดังกล่าวให้ดีขึ้น</li>
+</ol>
+<p>วิธีการนี้โดยเฉพาะทางการศึกษาจำเป็นที่จะต้องมีทฤษฎีหรือเหตุผลที่แข็งแกร่ง ชัดเจน รองรับการสร้าง interaction term ดังกล่าว</p>
+<ol start="2" type="1">
+<li>ใช้หลักการระบุ interaction (Principle of Interaction Search ของ Wu and Hamada (2011)</li>
+</ol>
+<p>concept หลักของหลักการนี้ได้แก่</p>
+<ul>
+<li><p>interaction hierarchy: interaction ที่มีระดับสูงกว่า (higher degree of interaction) มีโอกาสน้อยลงที่จะอธิบาย variation ในตัวแปรตาม</p></li>
+<li><p>effect sparsity: มีเพียงส่วนน้อยของ effects ที่เป็นไปได้ทั้งหมดเท่านั้นที่อธิบาย variation ในตัวแปรตามได้อย่างมีนัยสำคัญ</p></li>
+<li><p>effect heredity: interaction terms จะถูกพิจารณาต่อเมื่อ terms ที่มีระดับต่ำกว่า (preceding terms) ที่มีผลในการอธิบาย variation ในตัวแปรตามได้อย่างมีนัยสำคัญ</p>
+<ul>
+<li><p>Strong Heredity: interaction term จะถูกนำมาพิจารณาต่อเมื่อ main effects ทั้งหมดของตัวแปรที่เกี่ยวข้องใน interaction นั้น ๆ สามารถอธิบาย variation ได้อย่างมีนัยสำคัญ ตัวอย่างเช่น interaction จะถูกพิจารณาต่อเมื่อ main effect ของ และ มีนัยสำคัญทั้งคู่</p></li>
+<li><p>Weak Heredity: interaction term จะถูกนำมาพิจารณาต่อเมื่อ main effect อย่างน้อยหนึ่งตัวของตัวแปรที่เกี่ยวข้องใน interaction นั้น ๆ สามารถอธิบาย variation ได้อย่างมีนัยสำคัญ</p></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="feat_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="3" type="1">
+<li><p>ใช้โมเดลที่จับ interaction โดยอัตโนมัติ เช่น tree-based model หรือ neural network โดยสามารถใช้ร่วมกับ XAI เช่น Partial Dependence Plot (PDP) หรือ SHAP value ซึ่งจะช่วยให้ผู้วิเคราะห์สามารถหาและแปลความหมาย interaction term ที่สำคัญ ได้โดยใช้ข้อมูลเป็นฐาน</p></li>
+<li><p>อาจใช้ regularized regression เช่น LASSO regression เข้ามาช่วยเลือก interaction term ที่สำคัญได้ วิธีการนี้จะต้องใช้การสร้าง term interaction ทั้งหมดที่คิดว่าจะเป็นไปได้ก่อน จากนั้นใช้ penalized regression ช่วยเลือก</p></li>
+</ol>
+</section>
+<section id="handling-missing-data" class="level2">
+<h2 class="anchored" data-anchor-id="handling-missing-data">7. Handling Missing Data</h2>
+<p>ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ</p>
+<ul>
+<li><p>การจัดการ missing ใน inferential stat</p>
+<ul>
+<li><p>เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย</p></li>
+<li><p>พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน</p></li>
+<li><p>เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI</p></li>
+<li><p>ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล</p></li>
+</ul></li>
+<li><p>ในการสร้าง supevised learning model</p>
+<ul>
+<li><p>เน้นสร้างโมเดลที่มีความแม่นยำ</p></li>
+<li><p>การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด</p></li>
+<li><p>เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด</p></li>
+<li><p>ไม่สนใจเรื่องการอนุมานหรืออธิบายความสัมพันธ์ในประชากร</p></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 387 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): ontime_class, engage, practice
+dbl (2): ach, learning_performance
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<p>ลองสร้างการสูญหายใช้ตัวแปร <code>learning_performance</code></p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 172 rows containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 172 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="feat_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="feat_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="feat_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="แนวทางการทำ-feature-engineering-ทเหมาะสม" class="level2">
+<h2 class="anchored" data-anchor-id="แนวทางการทำ-feature-engineering-ทเหมาะสม">8. แนวทางการทำ feature engineering ที่เหมาะสม</h2>
+<ul>
+<li><p>ป้องกัน data leakage</p>
+<ul>
+<li><p>แยก train/test เสมอ</p></li>
+<li><p>เก็บ test data ไว้สำหรับ final model เท่านั้น</p></li>
+<li><p>ใช้ Cross-validation สำหรับปรับแต่ง hyperparameter ที่เหมาะสม</p></li>
+</ul></li>
+<li><p>ลำดับขั้นของการทำ feauture engineering ที่แตกต่างกันมีผลต่อประสิทธิภาพของโมเดล พิจารณาการดำเนินงานต่อไปนี้ <code>step_interact()</code>, <code>step_lencode_glm()</code>, <code>step_normalized()</code> และ <code>step_impute_knn()</code> ควรดำเนินการลำดับไหนก่อนหลัง</p></li>
+<li><p>ตรวจสอบผลลัพธ์ด้วยวิธีการที่หลากหลาย</p>
+<ul>
+<li><p>Statistical Approached</p></li>
+<li><p>Data Visualization</p></li>
+</ul></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

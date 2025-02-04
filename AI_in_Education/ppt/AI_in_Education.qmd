@@ -1,0 +1,48 @@
+---
+title: "AI in Education"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 02/10/2025
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "หลักสูตร AI in Education Feb 2025"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+
+## Outline
+
+- Introduction
+
+
+# AI in the Modern World
+
+## What is AI? {.smaller}
+
+ศาสตร์ที่ว่าด้วยการจำลองสติปัญญาของมนุษย์ในเครื่องจักร โดยมีวัตถุประสงค์เพื่อให้เครื่องจักรหรือระบบคอมพิวเตอร์มีความสามารถในการคิด เรียนรู้ วิเคราะห์ และตัดสินใจเหมือนกับมนุษย์
+
+```{mermaid}
+%% | echo: false
+flowchart LR
+    A["AI"] --> B["Machine Learning (ML)"]
+    A --> C["Deep Learning (DL)"]
+    A --> D["Natural Language Processing (NLP)"]
+    A --> E["Computer Vision (CV)"]
+    A --> F["Cognitive Computing"]
+```
+

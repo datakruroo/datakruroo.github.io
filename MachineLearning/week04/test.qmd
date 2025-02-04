@@ -1,0 +1,176 @@
+---
+title: "Untitled"
+format: revealjs
+editor: visual
+---
+
+## importing data and spliting data
+
+  
+```{mermaid}
+graph TD;
+    A["First Order"] ---| | X1["x₁"]:::first
+    A ---| | X2["x₂"]
+    A ---| | X3["x₃"]
+
+    B["Second Order"] ---| | X1X2["x₁ × x₂"]:::second
+    B ---| | X1X3["x₁ × x₃"]:::second
+    B ---| | X2X3["x₂ × x₃"]:::third
+
+    classDef first fill:#4169E1,stroke:#000,stroke-width:1px,color:#fff;
+    classDef second fill:#B0C4DE,stroke:#000,stroke-width:1px;
+    classDef third fill:#F4A6A6,stroke:#000,stroke-width:1px;
+    
+    class X1 first;
+    class X1X2,X1X3 second;
+    class X2X3 third;
+```
+
+## 
+
+```{r}
+library(tidyverse)
+library(rsample)
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week02/student/student-mat.csv", delim = ";")
+glimpse(data)
+
+## Stratified
+set.seed(123)
+strat_split <- initial_split(data = data, prop = 0.7, 
+                           strata = G3, breaks = 4)
+train_strat <- training(strat_split)
+test_strat <- testing(strat_split)
+```
+
+## Regression Task
+
+เราจะ fit ข้อมูลนี้ด้วย linear regression
+
+```{r}
+fit_lm <- lm(G3 ~ . ,data= train_strat)
+summary(fit_lm)
+pred <- predict(fit_lm, newdata = test_strat)
+pred %>% 
+  data.frame() %>% 
+  rename(.pred = 1)
+```
+
+1.  ระบุอัลกอริทึมที่จะใช้เรียนรู้ข้อมูลเพื่อสร้างโมเดลทำนาย
+
+```{r}
+## install.packages("tidymodels")
+library(tidymodels)
+tidymodels_prefer()
+```
+
+```{r}
+lm_spec <- linear_reg() %>% 	 ## model type
+  set_engine("lm") %>% ## engine <-- least squares
+  set_mode("regression") ## mode
+
+lm_spec
+```
+
+2.  fit โมเดลกับข้อมูล (train model)
+
+```{r}
+train_strat
+lm_fit <- lm_spec %>% 
+  fit(G3 ~ ., data = train_strat)
+lm_fit
+```
+
+3.  ประเมินประสิทธิภาพของโมเดลทำนาย
+
+การประเมินจะใช้การเปรียบเทียบความแตกต่างระหว่างค่าทำนายกับค่าจริงใน test data
+
+-   graphical approach
+
+-   statistical approach
+
+```{r}
+lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  bind_cols(test_strat) %>% select(.pred, G3) %>% 
+  ggplot(aes(x = G3, y = .pred))+
+  geom_point()+
+  geom_abline(slope = 1, intercept = 0, linetype = 2)+
+  coord_obs_pred()
+```
+
+```{r}
+lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  bind_cols(test_strat) %>% select(.pred, G3) %>% 
+  rmse(truth = G3, estimate = .pred)
+
+lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  bind_cols(test_strat) %>% select(.pred, G3) %>% 
+  rsq(truth = G3, estimate = .pred)
+
+lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  bind_cols(test_strat) %>% select(.pred, G3) %>% 
+  mae(truth = G3, estimate = .pred)
+
+## create a metric set
+my_metric <- yardstick::metric_set(yardstick::rmse, yardstick::mae, yardstick::rsq)
+lm_fit %>% 
+  predict(new_data = test_strat) %>% 
+  bind_cols(test_strat) %>% select(.pred, G3) %>% 
+  my_metric(truth = G3, estimate = .pred)
+```
+
+## classification task
+
+เราจะสร้างโมเดลทำนายความสำเร็จ (pass)
+
+```{r echo = F}
+binary_data <- data %>% mutate(result = ifelse(G3>=10,"pass","fail"),
+                               result = fct_relevel(result, "pass")) %>% select(-G3)
+set.seed(123)
+strat_split <- initial_split(data = binary_data, prop = 0.7, 
+                           strata = result)
+train_strat <- training(strat_split)
+test_strat <- testing(strat_split)
+```
+
+```{r warning = T}
+## model specification
+logit_mod <- logistic_reg() %>% 
+  set_engine("glm",
+             control = list(maxit = 100))
+
+## fitting
+fit_logit <- logit_mod %>% 
+  fit(result ~ ., data = train_strat)
+```
+
+
+
+
+## model evaluation
+
+1.  confusion matrix
+
+```{r}
+conf_matrix <- matrix(
+  c("TP", "FP", "FN", "TN"), 
+  nrow = 2,                  
+  byrow = TRUE               
+)
+
+rownames(conf_matrix) <- c("Predicted: Pass", "Predicted: Fail")
+colnames(conf_matrix) <- c("Truth: Pass", "Truth: Fail")
+
+conf_matrix
+```
+
+
+```{fit_logit %>%}
+  predict(new_data = test_strat) %>% 
+  bind_cols(test_strat) %>% 
+  select(.pred_class, result) %>%
+  conf_mat(truth = result, estimate = .pred_class)
+```

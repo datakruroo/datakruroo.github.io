@@ -202,13 +202,14 @@ features <- train_str %>%
                  traveltime, studytime, schoolsup,
                  famsup, paid, activities, nursery, higher,internet ,
                  romantic, famrel, freetime, goout, Dalc, Walc, health), 
-            factor)
+            factor) %>% 
+  mutate(diff = G3-G1)
 
 names(features_cont)
 ```
 
 ```{r}
-features_name <- names(features %>% select(-G3))
+features_name <- names(features %>% select(-G3, -G2, -G1))
 ```
 
 ```{r}
@@ -221,7 +222,7 @@ results <- tibble(
 # ใช้ for loop เพื่อวนลูปคำนวณ
 for (x in features_name) {
   # สร้างสูตรโมเดล
-  formula <- as.formula(paste("G3 ~", x))
+  formula <- as.formula(paste("diff ~", x))
   
   # เทรนโมเดล
   model <- lm(formula, data = features)
