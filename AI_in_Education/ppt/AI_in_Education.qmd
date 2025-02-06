@@ -3,11 +3,12 @@ title: "AI in Education"
 author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
 institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
 date: 02/10/2025
+bibliography: "reference.bib"
 format:
   revealjs:
     slide-number: c/t
-    footer: "หลักสูตร AI in Education Feb 2025"
-    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    footer: "หลักสูตรปัญญาประดิษฐ์ทางการศึกษา (AI in Education) <br> สำนักงานรับรองมาตรฐานและประเมินคุณภาพการศึกษา (องค์การมหาชน)"
+    logo: https://github.com/datakruroo/datakruroo.github.io/blob/main/AI_in_Education/ppt/img/logo2.png?raw=true
     theme: theme.scss
     css: my_css.css
     scrollable: true
@@ -29,20 +30,358 @@ execute:
 
 - Introduction
 
+- The Role and Significance of AI in Education
 
-# AI in the Modern World
+# Introduction {.smaller}
 
-## What is AI? {.smaller}
+> "การปฏิวัติอุตสาหกรรมครั้งที่ 4 คือ การนำ**เทคโนโลยีดิจิทัล**เข้ามาผสมกับโลกการผลิต เชื่อมโยงเครือข่ายในรูปแบบ IoT รวมไปถึงการใช้งาน**ระบบ AI หรือ Machine Learning** ทำให้การทำงานมีประสิทธิภาพมากขึ้น" [@hrnote2021industrial]
+ 
+
+## What's AI? {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 ศาสตร์ที่ว่าด้วยการจำลองสติปัญญาของมนุษย์ในเครื่องจักร โดยมีวัตถุประสงค์เพื่อให้เครื่องจักรหรือระบบคอมพิวเตอร์มีความสามารถในการคิด เรียนรู้ วิเคราะห์ และตัดสินใจเหมือนกับมนุษย์
 
+- AI ไม่ใช่แค่หุ่นยนต์ แต่ครอบคลุมอัลกอริทึม application และโมเดลที่สามารถคิด วิเคราะห์และตัดสินใจได้เอง
+
+- AI อยู่รอบตัวเราในชีวิตประจำวัน
+
+
+:::
+
+::: {.column width="50%"}
+
+![](img/AI_component.jpg)
+
+:::
+
+::::
+
+## What's AI? {.smaller}
+
+![](img/3_stages_of_ai.png)
+ 
+
+<div style="font-size:90%">
+<div class="caption3">https://www.datakeen.co/what-is-artificial-intelligence-3/ [-@datakeen2020ai]</div>
+</div>
+
+
+
+
+
+
+## What's AI? {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/AI.png)
+
+<div style="font-size:65%">
+<div class="caption">A General Introduction to Artificial Intelligence [-@HuaweiTechnologies_Co_Ltd2023]
+</div>
+</div>
+
+![](img/what_is_ai_summary_chart.png){width="90%"}
+
+<div style="font-size:60%">
+<div class="caption">https://www.datakeen.co/what-is-artificial-intelligence-3/ [-@datakeen2020ai]</div>
+</div>
+
+
+:::
+
+::: {.column width="60%"}
+
+![@HuaweiTechnologies_Co_Ltd2023](https://media.springernature.com/full/springer-static/image/chp%3A10.1007%2F978-981-19-2879-6_1/MediaObjects/513316_1_En_1_Fig8_HTML.png){width="80%"}
+
+<div style="font-size:80%;">
+
+1. Predictive and Analytical AI
+
+2. Language & Conversational AI
+
+3. Generative AI
+
+4. Perception AI
+
+5. Automation & Control AI
+
+6. Recommendation/Decision Support System
+
+</div>
+
+:::
+
+
+
+::::
+
+## AI in the Modern World {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![[](https://www.iplandigital.co.th/ecommerce/temu-ecommerce-success-secrets/)](https://assets.grab.com/wp-content/uploads/sites/8/2021/12/02175715/MY21GTPDT2GTPASS2021_How-To_GIF_800x800.gif){width=40%}[![](img/เต่าบิน-2.jpg){width=40%}](https://thestandard.co/tao-bin-a-robotic-barista-suscess/)
+
+[![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png){width=100%}](https://medium.com/swlh/netflix-and-the-recommendation-system-e806f062ba74){width="20%"}
+
+<div class="caption2">https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png</div>
+
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+![](img/data-driven-decision-making-importance.webp)
+
+<div class="caption2">https://www.rib-software.com/en/blogs/data-driven-decision-making-in-businesses [@ribsoftware2024data]</div>
+
+
+:::
+
+::::
+
+## AI in the Modern World {.smaller}
+
+ <center>
+![](img/paradigm.png){width="80%"}
+</center>
+
+<div style="font-size:90%">
+<div class="caption">[@pyzer-knapp2022accelerating]</div>
+</div>
+
+
+
+
+## AI in the Modern World {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/eyeAI.png){width="60%"}
+
+> <div style="font-size: 50%;">"Using **two types of neural network** - mathematical systems for identifying patterns in images or data - the Al system quickly **learnt to identify ten features of eye disease** from highly complex optical coherence tomography (OCT) scans. **The system was then able to recommend a referral decision based on the most urgent conditions detected.**" ... "Al was able to make the right referral recommendation more than **94% of the time** ..."</div>
+
+
+<div style="font-size: 50%;">
+
+- Diabetic Retinopathy
+
+- Age-related Macular Degeneration
+
+- Glaucoma
+
+- Retinal Detachment
+
+- Optic Neuropathy
+
+</div>
+
+
+<div style="font-size: 70%;">
+</br>
+<div class="caption2">https://www.ucl.ac.uk/ioo/news/2018/aug/artificial-intelligence-equal-experts-detecting-eye-diseases [-@ucl2018ai]</div>
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+Al system for breast cancer screening
+
+![](img/ai_cancer.png){width="80%"}
+![](img/ai_cancer2.png){width="80%"}
+
+
+
+<div style="font-size: 50%;">
+</br>
+<div class="caption3">[@mckinney2020international]</div>
+</div>
+
+:::
+
+::::
+
+
+## AI in the Modern World {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="font-size:60%;">
+
+Molecular Biology Research
+
+</div>
+
+![@jumper2021highly](img/alphafold.png){width="80%"}
+
+
+
+![@srisuttiyakorn2024technical](img/climate.png)
+
+
+:::
+
+::: {.column width="50%"}
+
+
+![@mansfield2020predicting](img/climate3.png){width="100%"}
+
+
+
+
+:::
+
+::::
+
+
+## AI in the Modern World {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+![](img/woebot.png){width="75%"}
+
+<div class="caption2">https://woebothealth.com/[-@woebothealth2025]</div>
+
+
+:::
+
+::: {.column width="40%"}
+
+![](img/vitual_healthcare.png){width="100%"}
+
+<div class="caption3">https://www.youper.ai/how-it-works</div>
+:::
+
+::::
+
 ```{mermaid}
 %% | echo: false
+
 flowchart LR
-    A["AI"] --> B["Machine Learning (ML)"]
-    A --> C["Deep Learning (DL)"]
-    A --> D["Natural Language Processing (NLP)"]
-    A --> E["Computer Vision (CV)"]
-    A --> F["Cognitive Computing"]
+  A["User \n Input"] --> B["Natural Language \n Processing"]
+  B -->|"Emotion & \n Intent Recognition"| C{"Machine \n Learning"}
+  C -->|"Pattern \n Recognition"| D{"Cognitive Behavioral \n Therapy (CBT)"}
+  D -->|"Select Therapy \n Technique"| E["Woebot \n Response"]
+  E -->|"Feedback"| C
 ```
 
+
+## AI in the Modern World {.smaller}
+
+
+![](https://knihovna.utb.cz/wp-content/uploads/2020/11/Desktop-App-1536x1024.png){width="70%"}
+
+<div class="caption3">https://knihovna.utb.cz/en/services/tools/grammarly/</div>
+
+
+
+## AI in the Modern World {.smaller}
+
+
+AI ไม่ได้ถูกใช้เพียงแค่ในการวิเคราะห์ข้อมูลเท่านั้น แต่ยังสามารถ สร้างเนื้อหา ได้ เช่น ข้อความ รูปภาพ เสียง และวิดีโอ
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+![](https://www.xenonstack.com/hs-fs/hubfs/generative-ai-application-landscape.png?width=2560&height=2472&name=generative-ai-application-landscape.png){width="80%"}
+
+<div style="font-size:100%;">
+<br>
+<div class="caption2">https://www.xenonstack.com/blog/generative-ai-applications</div>
+
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+
+![](https://d1eipm3vz40hy0.cloudfront.net/images/AMER/generativeAI-1.jpg){width="90%"}
+<div style="font-size:100%;">
+<br>
+<div class="caption2">https://www.zendesk.com.br/blog/generative-ai-guide/</div>
+
+</div>
+:::
+
+::::
+
+## AI เป็นตัวเร่งให้เกิดการปฏิรูปการศึกษา {.smaller}
+
+- ทำให้เกิด Automation ในภาคแรงงาน $\rightarrow$ การเปลี่ยนแปลงลักษณะงานในอนาคต โดย ทักษะที่เป็นที่ต้องการในตลาดแรงงานมีความซับซ้อนขึ้น
+
+- สร้างความเป็นไปได้และโอกาสในการเรียนรู้ที่หลากหลาย และช่วยให้คนสามารถเรียนรู้พัฒนาทักษะของตนเองได้อย่างต่อเนื่อง ตลอดชีวิต
+
+- ท้าทายบทบาทของครูและโรงเรียน เพราะการพัฒนาของ AI ทำให้การศึกษาไม่ได้จำกัดแค่ "ครูสอน-นักเรียนฟัง" แต่จะกลายเป็น Co-learning & Knowledge Sharing
+
+
+
+## Education 4.0 {.smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+"A Global Framework for Shifting
+Learning Content and Experiences
+Towards the Needs of the Future"
+:::
+
+::: {.column width="50%"}
+
+
+:::
+
+::::
+
+
+
+![@wef2020schools](img/Education4.0.png)
+
+## Role of AI in Education 4.0 {.smaller}
+
+1. สนับสนุนการทำงานของครู 
+
+2. ปรับปรุงการประเมินผลและการวิเคราะห์ผู้เรียน
+
+3. ส่งเสริมทักษะดิจิทัล และ AI Literacy ของผู้เรียน
+
+4. ปรับแต่งการเรียนรู้ให้เหมาะสมกับผู้เรียนแต่ละบุคคล
+
+
+<div style="text-align: right; font-size:70%;">
+@wef2020schools 
+
+@haderer2022education
+</div>
+
+## 
+
+
+
+
+## {.smaller}
+
+ในภาคการศึกษา AI มีประโยชน์หลายด้าน เช่น การเรียนรู้แบบเฉพาะบุคคล (Personalized Learning), การให้ข้อเสนอแนะที่มีประสิทธิภาพ (Effective Feedback), และการเพิ่มประสิทธิภาพในการบริหารจัดการ (Operational Efficiency) อย่างไรก็ตาม AI ก็มี ความเสี่ยง เช่น การเผยแพร่ข้อมูลที่ผิดพลาด (Misinformation) และการลดลงของทักษะการคิดเชิงวิพากษ์ (Loss of Critical Thinking Skills)
+
+
+
+## References

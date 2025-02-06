@@ -30,7 +30,27 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="AI_in_Education_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="my_css.css">
   <link href="AI_in_Education_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -350,38 +370,312 @@
 <section id="outline" class="slide level2">
 <h2>Outline</h2>
 <ul>
-<li>Introduction</li>
+<li><p>Introduction</p></li>
+<li><p>The Role and Significance of AI in Education</p></li>
 </ul>
 </section>
 <section>
-<section id="ai-in-the-modern-world" class="title-slide slide level1 center">
-<h1>AI in the Modern World</h1>
-
+<section id="introduction" class="title-slide slide level1 smaller center">
+<h1>Introduction</h1>
+<blockquote>
+<p>“การปฏิวัติอุตสาหกรรมครั้งที่ 4 คือ การนำ<strong>เทคโนโลยีดิจิทัล</strong>เข้ามาผสมกับโลกการผลิต เชื่อมโยงเครือข่ายในรูปแบบ IoT รวมไปถึงการใช้งาน<strong>ระบบ AI หรือ Machine Learning</strong> ทำให้การทำงานมีประสิทธิภาพมากขึ้น” <span class="citation" data-cites="hrnote2021industrial">(<a href="#/references" role="doc-biblioref" onclick="">HR NOTE Thailand 2021</a>)</span></p>
+</blockquote>
 </section>
-<section id="what-is-ai" class="slide level2 smaller">
-<h2>What is AI?</h2>
+<section id="whats-ai" class="slide level2 smaller">
+<h2>What’s AI?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p>ศาสตร์ที่ว่าด้วยการจำลองสติปัญญาของมนุษย์ในเครื่องจักร โดยมีวัตถุประสงค์เพื่อให้เครื่องจักรหรือระบบคอมพิวเตอร์มีความสามารถในการคิด เรียนรู้ วิเคราะห์ และตัดสินใจเหมือนกับมนุษย์</p>
+<ul>
+<li><p>AI ไม่ใช่แค่หุ่นยนต์ แต่ครอบคลุมอัลกอริทึม application และโมเดลที่สามารถคิด วิเคราะห์และตัดสินใจได้เอง</p></li>
+<li><p>AI อยู่รอบตัวเราในชีวิตประจำวัน</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/AI_component.jpg"></p>
+</div></div>
+</section>
+<section id="whats-ai-1" class="slide level2 smaller">
+<h2>What’s AI?</h2>
+
+<img data-src="img/3_stages_of_ai.png" class="r-stretch"><div style="font-size:90%">
+<div class="caption3">
+https://www.datakeen.co/what-is-artificial-intelligence-3/ <span class="citation" data-cites="datakeen2020ai">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span>
+</div>
+</div>
+</section>
+<section id="whats-ai-2" class="slide level2 smaller scrollable">
+<h2>What’s AI?</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="img/AI.png"></p>
+<div style="font-size:65%">
+<div class="caption">
+<p>A General Introduction to Artificial Intelligence <span class="citation" data-cites="HuaweiTechnologies_Co_Ltd2023">(<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></p>
+</div>
+</div>
+<p><img data-src="img/what_is_ai_summary_chart.png" style="width:90.0%"></p>
+<div style="font-size:60%">
+<div class="caption">
+https://www.datakeen.co/what-is-artificial-intelligence-3/ <span class="citation" data-cites="datakeen2020ai">(<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="https://media.springernature.com/full/springer-static/image/chp%3A10.1007%2F978-981-19-2879-6_1/MediaObjects/513316_1_En_1_Fig8_HTML.png" style="width:80.0%"></p>
+<figcaption><span class="citation" data-cites="HuaweiTechnologies_Co_Ltd2023"><span>“A General Introduction to Artificial Intelligence”</span> (<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></figcaption>
+</figure>
+</div>
+<div style="font-size:80%;">
+<ol type="1">
+<li><p>Predictive and Analytical AI</p></li>
+<li><p>Language &amp; Conversational AI</p></li>
+<li><p>Generative AI</p></li>
+<li><p>Perception AI</p></li>
+<li><p>Automation &amp; Control AI</p></li>
+<li><p>Recommendation/Decision Support System</p></li>
+</ol>
+</div>
+</div></div>
+</section>
+<section id="ai-in-the-modern-world" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://assets.grab.com/wp-content/uploads/sites/8/2021/12/02175715/MY21GTPDT2GTPASS2021_How-To_GIF_800x800.gif" style="width:40.0%" alt=""><a href="https://thestandard.co/tao-bin-a-robotic-barista-suscess/"><img data-src="img/เต่าบิน-2.jpg" style="width:40.0%"></a></p>
+<p><a href="https://medium.com/swlh/netflix-and-the-recommendation-system-e806f062ba74" width="20%"><img data-src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png" style="width:100.0%"></a></p>
+<div class="caption2">
+https://miro.medium.com/v2/resize:fit:1400/format:webp/1*QKQA8ylu1lCtOkJaa_gGaw.png
+</div>
+</div><div class="column" style="width:50%;">
+<p><br></p>
+<p><img data-src="img/data-driven-decision-making-importance.webp"></p>
+<div class="caption2">
+https://www.rib-software.com/en/blogs/data-driven-decision-making-in-businesses <span class="citation" data-cites="ribsoftware2024data">(<a href="#/references" role="doc-biblioref" onclick="">RIB Software 2024</a>)</span>
+</div>
+</div></div>
+</section>
+<section id="ai-in-the-modern-world-1" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+<center>
+<img data-src="img/paradigm.png" style="width:80.0%">
+</center>
+<div style="font-size:90%">
+<div class="caption">
+<span class="citation" data-cites="pyzer-knapp2022accelerating">(<a href="#/references" role="doc-biblioref" onclick="">Pyzer-Knapp et al. 2022</a>)</span>
+</div>
+</div>
+</section>
+<section id="ai-in-the-modern-world-2" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/eyeAI.png" style="width:60.0%"></p>
+<blockquote>
+<div style="font-size: 50%;">
+“Using <strong>two types of neural network</strong> - mathematical systems for identifying patterns in images or data - the Al system quickly <strong>learnt to identify ten features of eye disease</strong> from highly complex optical coherence tomography (OCT) scans. <strong>The system was then able to recommend a referral decision based on the most urgent conditions detected.</strong>” … “Al was able to make the right referral recommendation more than <strong>94% of the time</strong> …”
+</div>
+</blockquote>
+<div style="font-size: 50%;">
+<ul>
+<li><p>Diabetic Retinopathy</p></li>
+<li><p>Age-related Macular Degeneration</p></li>
+<li><p>Glaucoma</p></li>
+<li><p>Retinal Detachment</p></li>
+<li><p>Optic Neuropathy</p></li>
+</ul>
+</div>
+<div style="font-size: 70%;">
+<br>
+<div class="caption2">
+https://www.ucl.ac.uk/ioo/news/2018/aug/artificial-intelligence-equal-experts-detecting-eye-diseases <span class="citation" data-cites="ucl2018ai">(<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>Al system for breast cancer screening</p>
+<p><img data-src="img/ai_cancer.png" style="width:80.0%"> <img data-src="img/ai_cancer2.png" style="width:80.0%"></p>
+<div style="font-size: 50%;">
+<br>
+<div class="caption3">
+<span class="citation" data-cites="mckinney2020international">(<a href="#/references" role="doc-biblioref" onclick="">McKinney et al. 2020</a>)</span>
+</div>
+</div>
+</div></div>
+</section>
+<section id="ai-in-the-modern-world-3" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div style="font-size:60%;">
+<p>Molecular Biology Research</p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/alphafold.png" style="width:80.0%"></p>
+<figcaption><span class="citation" data-cites="jumper2021highly">Jumper et al. (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span></figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/climate.png"></p>
+<figcaption><span class="citation" data-cites="srisuttiyakorn2024technical">Srisuttiyakorn et al. (<a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/climate3.png" style="width:100.0%"></p>
+<figcaption><span class="citation" data-cites="mansfield2020predicting">Mansfield et al. (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="ai-in-the-modern-world-4" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/woebot.png" style="width:75.0%"></p>
+<div class="caption2">
+https://woebothealth.com/<span class="citation" data-cites="woebothealth2025">(<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span>
+</div>
+</div><div class="column" style="width:40%;">
+<p><img data-src="img/vitual_healthcare.png" style="width:100.0%"></p>
+<div class="caption3">
+https://www.youper.ai/how-it-works
+</div>
+</div></div>
 <div class="cell" data-reveal="true" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
-    A["AI"] --&gt; B["Machine Learning (ML)"]
-    A --&gt; C["Deep Learning (DL)"]
-    A --&gt; D["Natural Language Processing (NLP)"]
-    A --&gt; E["Computer Vision (CV)"]
-    A --&gt; F["Cognitive Computing"]
+  A["User \n Input"] --&gt; B["Natural Language \n Processing"]
+  B --&gt;|"Emotion &amp; \n Intent Recognition"| C{"Machine \n Learning"}
+  C --&gt;|"Pattern \n Recognition"| D{"Cognitive Behavioral \n Therapy (CBT)"}
+  D --&gt;|"Select Therapy \n Technique"| E["Woebot \n Response"]
+  E --&gt;|"Feedback"| C
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
+</section>
+<section id="ai-in-the-modern-world-5" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+
+<img data-src="https://knihovna.utb.cz/wp-content/uploads/2020/11/Desktop-App-1536x1024.png" style="width:70.0%" class="r-stretch"><div class="caption3">
+https://knihovna.utb.cz/en/services/tools/grammarly/
+</div>
+</section>
+<section id="ai-in-the-modern-world-6" class="slide level2 smaller">
+<h2>AI in the Modern World</h2>
+<p>AI ไม่ได้ถูกใช้เพียงแค่ในการวิเคราะห์ข้อมูลเท่านั้น แต่ยังสามารถ สร้างเนื้อหา ได้ เช่น ข้อความ รูปภาพ เสียง และวิดีโอ</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://www.xenonstack.com/hs-fs/hubfs/generative-ai-application-landscape.png?width=2560&amp;height=2472&amp;name=generative-ai-application-landscape.png" style="width:80.0%"></p>
+<div style="font-size:100%;">
+<br>
+<div class="caption2">
+https://www.xenonstack.com/blog/generative-ai-applications
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<img data-src="https://d1eipm3vz40hy0.cloudfront.net/images/AMER/generativeAI-1.jpg" style="width:90.0%">
+<div style="font-size:100%;">
+<br>
+<div class="caption2">
+https://www.zendesk.com.br/blog/generative-ai-guide/
+</div>
+</div>
+</div></div>
+</section>
+<section id="ai-เปนตวเรงใหเกดการปฏรปการศกษา" class="slide level2 smaller">
+<h2>AI เป็นตัวเร่งให้เกิดการปฏิรูปการศึกษา</h2>
+<ul>
+<li><p>ทำให้เกิด Automation ในภาคแรงงาน <span class="math inline">\(\rightarrow\)</span> การเปลี่ยนแปลงลักษณะงานในอนาคต โดย ทักษะที่เป็นที่ต้องการในตลาดแรงงานมีความซับซ้อนขึ้น</p></li>
+<li><p>สร้างความเป็นไปได้และโอกาสในการเรียนรู้ที่หลากหลาย และช่วยให้คนสามารถเรียนรู้พัฒนาทักษะของตนเองได้อย่างต่อเนื่อง ตลอดชีวิต</p></li>
+<li><p>ท้าทายบทบาทของครูและโรงเรียน เพราะการพัฒนาของ AI ทำให้การศึกษาไม่ได้จำกัดแค่ “ครูสอน-นักเรียนฟัง” แต่จะกลายเป็น Co-learning &amp; Knowledge Sharing</p></li>
+</ul>
+</section>
+<section id="education-4.0" class="slide level2 smaller">
+<h2>Education 4.0</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>“A Global Framework for Shifting Learning Content and Experiences Towards the Needs of the Future”</p>
+</div><div class="column" style="width:50%;">
+
+</div></div>
+
+<img data-src="img/Education4.0.png" class="r-stretch quarto-figure-center"><p class="caption"><span class="citation" data-cites="wef2020schools">World Economic Forum (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></p></section>
+<section id="role-of-ai-in-education-4.0" class="slide level2 smaller scrollable">
+<h2>Role of AI in Education 4.0</h2>
+<ol type="1">
+<li><p>สนับสนุนการทำงานของครู</p></li>
+<li><p>ปรับปรุงการประเมินผลและการวิเคราะห์ผู้เรียน</p></li>
+<li><p>ส่งเสริมทักษะดิจิทัล และ AI Literacy ของผู้เรียน</p></li>
+<li><p>ปรับแต่งการเรียนรู้ให้เหมาะสมกับผู้เรียนแต่ละบุคคล</p></li>
+</ol>
+<div style="text-align: right; font-size:70%;">
+<p><span class="citation" data-cites="wef2020schools">World Economic Forum (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></p>
+<p><span class="citation" data-cites="haderer2022education">Haderer and Ciolacu (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span></p>
+</div>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+</section>
+<section id="section-1" class="slide level2 smaller">
+<h2></h2>
+<p>ในภาคการศึกษา AI มีประโยชน์หลายด้าน เช่น การเรียนรู้แบบเฉพาะบุคคล (Personalized Learning), การให้ข้อเสนอแนะที่มีประสิทธิภาพ (Effective Feedback), และการเพิ่มประสิทธิภาพในการบริหารจัดการ (Operational Efficiency) อย่างไรก็ตาม AI ก็มี ความเสี่ยง เช่น การเผยแพร่ข้อมูลที่ผิดพลาด (Misinformation) และการลดลงของทักษะการคิดเชิงวิพากษ์ (Loss of Critical Thinking Skills)</p>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
 <div class="quarto-auto-generated-content">
-<p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
+<p><img src="https://github.com/datakruroo/datakruroo.github.io/blob/main/AI_in_Education/ppt/img/logo2.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">
-<p>หลักสูตร AI in Education Feb 2025</p>
+<p>หลักสูตรปัญญาประดิษฐ์ทางการศึกษา (AI in Education) <br> สำนักงานรับรองมาตรฐานและประเมินคุณภาพการศึกษา (องค์การมหาชน)</p>
+</div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-HuaweiTechnologies_Co_Ltd2023" class="csl-entry" role="listitem">
+<span>“A General Introduction to Artificial Intelligence.”</span> 2023. In <em>Artificial Intelligence Technology</em>, 1–41. Singapore: Springer Nature Singapore. <a href="https://doi.org/10.1007/978-981-19-2879-6_1">https://doi.org/10.1007/978-981-19-2879-6_1</a>.
+</div>
+<div id="ref-datakeen2020ai" class="csl-entry" role="listitem">
+Gaël. 2020. <span>“What Is Artificial Intelligence?”</span> <a href="https://www.datakeen.co/what-is-artificial-intelligence-3/">https://www.datakeen.co/what-is-artificial-intelligence-3/</a>.
+</div>
+<div id="ref-haderer2022education" class="csl-entry" role="listitem">
+Haderer, Bernhard, and Monica Ciolacu. 2022. <span>“Education 4.0: Artificial Intelligence Assisted Task- and Time Planning System.”</span> <em>Procedia Computer Science</em> 200: 1328–37. <a href="https://doi.org/10.1016/j.procs.2022.01.334">https://doi.org/10.1016/j.procs.2022.01.334</a>.
+</div>
+<div id="ref-hrnote2021industrial" class="csl-entry" role="listitem">
+HR NOTE Thailand. 2021. <span>“รู้จักยุค 4IR: อุตสาหกรรม 4.0 คืออะไรและมีผลกระทบอย่างไรต่อการทำงาน?”</span> <a href="https://th.hrnote.asia/tips/industrial-revolution-4ir-210618/?t">https://th.hrnote.asia/tips/industrial-revolution-4ir-210618/?t</a>.
+</div>
+<div id="ref-jumper2021highly" class="csl-entry" role="listitem">
+Jumper, John, Richard Evans, Alexander Pritzel, et al. 2021. <span>“Highly Accurate Protein Structure Prediction with AlphaFold.”</span> <em>Nature</em> 596: 583–89. <a href="https://doi.org/10.1038/s41586-021-03819-2">https://doi.org/10.1038/s41586-021-03819-2</a>.
+</div>
+<div id="ref-mansfield2020predicting" class="csl-entry" role="listitem">
+Mansfield, Lucy A., Peer J. Nowack, Mehran Kasoar, et al. 2020. <span>“Predicting Global Patterns of Long-Term Climate Change from Short-Term Simulations Using Machine Learning.”</span> <em>Npj Climate and Atmospheric Science</em> 3: 44. <a href="https://doi.org/10.1038/s41612-020-00148-5">https://doi.org/10.1038/s41612-020-00148-5</a>.
+</div>
+<div id="ref-mckinney2020international" class="csl-entry" role="listitem">
+McKinney, Scott M., Marcin Sieniek, Varun Godbole, et al. 2020. <span>“International Evaluation of an AI System for Breast Cancer Screening.”</span> <em>Nature</em> 577: 89–94. <a href="https://doi.org/10.1038/s41586-019-1799-6">https://doi.org/10.1038/s41586-019-1799-6</a>.
+</div>
+<div id="ref-pyzer-knapp2022accelerating" class="csl-entry" role="listitem">
+Pyzer-Knapp, Edward O., Jeffrey W. Pitera, Peter W. J. Staar, et al. 2022. <span>“Accelerating Materials Discovery Using Artificial Intelligence, High Performance Computing and Robotics.”</span> <em>Npj Computational Materials</em> 8: 84. <a href="https://doi.org/10.1038/s41524-022-00765-z">https://doi.org/10.1038/s41524-022-00765-z</a>.
+</div>
+<div id="ref-ribsoftware2024data" class="csl-entry" role="listitem">
+RIB Software. 2024. <span>“Data-Driven Decision Making in Businesses.”</span> <a href="https://www.rib-software.com/en/blogs/data-driven-decision-making-in-businesses">https://www.rib-software.com/en/blogs/data-driven-decision-making-in-businesses</a>.
+</div>
+<div id="ref-srisuttiyakorn2024technical" class="csl-entry" role="listitem">
+Srisuttiyakorn, Siwachoat, Kanit Sriklaub, Prapasiri Ratchaprapapornkul, and Watinee Amornpaisarnlert. 2024. <span>“Technical Assistance for Mapping Education Data to Thailand Child-Sensitive Climate Change Risk.”</span> Research Report. UNICEF.
+</div>
+<div id="ref-ucl2018ai" class="csl-entry" role="listitem">
+UCL Institute of Ophthalmology. 2018. <span>“Artificial Intelligence Equal to Experts in Detecting Eye Diseases.”</span> <a href="https://www.ucl.ac.uk/ioo/news/2018/aug/artificial-intelligence-equal-experts-detecting-eye-diseases">https://www.ucl.ac.uk/ioo/news/2018/aug/artificial-intelligence-equal-experts-detecting-eye-diseases</a>.
+</div>
+<div id="ref-woebothealth2025" class="csl-entry" role="listitem">
+Woebot Health. 2025. <span>“Woebot Health: Scalable Enterprise Solution for Mental Health.”</span> <a href="https://woebothealth.com/">https://woebothealth.com/</a>.
+</div>
+<div id="ref-wef2020schools" class="csl-entry" role="listitem">
+World Economic Forum. 2020. <span>“Schools of the Future: Defining New Models of Education for the Fourth Industrial Revolution.”</span> Geneva, Switzerland: World Economic Forum. <a href="https://www.weforum.org/reports/schools-of-the-future-defining-new-models-of-education-for-the-fourth-industrial-revolution">https://www.weforum.org/reports/schools-of-the-future-defining-new-models-of-education-for-the-fourth-industrial-revolution</a>.
 </div>
 </div>
 </section></section>

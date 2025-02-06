@@ -29,7 +29,7 @@ $selection-color: #508C9B;
 
 .reveal .slide-logo {
     height: 100px !important;
-    width: 130px !important;
+    width: 140px !important;
     max-width: unset !important;
     max-height: unset !important;
   }
@@ -71,7 +71,9 @@ details>summary {
 
 .small {
   font-size: 0.75em;
+  line-height: 2em;
 }
+
 
 .reveal .slide .in-out {
   margin-top: 0.5em;
