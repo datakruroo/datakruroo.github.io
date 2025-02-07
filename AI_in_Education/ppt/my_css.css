@@ -21,4 +21,17 @@
     margin-top: -2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
     margin-left: 50em;
   }
-
+  
+.reveal::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    height: 60%;
+    background: url('img/logo1.png') no-repeat center center;
+    background-size: contain;
+    opacity: 0.05; /* ปรับค่าความโปร่งใส */
+    transform: translate(-50%, -50%);
+    z-index: -1; /* ทำให้ลายน้ำอยู่ด้านหลังเนื้อหา */
+}
