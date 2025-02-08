@@ -30,6 +30,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
     /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
@@ -931,21 +996,16 @@ AI สามารถเข้ามามีบทบาทสำคัญใ�
 <div class="caption3">
 <span class="citation" data-cites="unesco2024studentAI">UNESCO (<a href="#/references" role="doc-biblioref" onclick="">2024a</a>)</span>
 </div>
-</section></section><section><section id="ai-in-education" class="title-slide slide level1 smaller center"><h1>AI in Education</h1>
-<ul>
-<li><p>ส่งเสริมการเรียนรู้เฉพาะบุคคล</p></li>
-<li><p>ปรับปรุงคุณภาพการเรียนรู้</p></li>
-<li><p>สนับสนุนการจัดการระบบการศึกษา</p></li>
-<li><p>เพิ่มโอกาสการเข้าถึงการศึกษา</p></li>
-<li><p>พัฒนาทักษะสำหรับอนาคต</p></li>
-</ul></section><section id="สงเสรมการเรยนรแบบสวนบคคล-และปรบปรงคณภาพการเรยนร" class="slide level2"><h2>ส่งเสริมการเรียนรู้แบบส่วนบุคคล และปรับปรุงคุณภาพการเรียนรู้</h2>
+</section><section id="ai-powered-data-driven-classroom" class="slide level2"><h2>AI-Powered Data-Driven Classroom</h2>
 <div style="font-size:70%;">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img data-src="img/personalized.png" style="width:80.0%"></p>
 <figcaption><span class="citation" data-cites="bolz2023datadriven">Bolz and Madhavan (<a href="#/references" role="doc-biblioref" onclick="">2023</a>)</span></figcaption></figure>
 </div>
 </div>
-</section><section id="intentional-assessment" class="slide level2 smaller"><h2>Intentional Assessment</h2>
+</section></section><section><section id="intentional-assessment" class="title-slide slide level1 smaller center"><h1>Intentional Assessment</h1>
+
+</section><section id="intentional-assessment-1" class="slide level2 smaller"><h2>Intentional Assessment</h2>
 <ul>
 <li><p><strong>Purpose-Driven:</strong> เชื่อมโยงการประเมินกับเป้าหมายของการเรียนรู้ที่ชัดเจน</p></li>
 <li>
@@ -964,7 +1024,7 @@ AI สามารถเข้ามามีบทบาทสำคัญใ�
 <li><p>การมีส่วนร่วมในชั้นเรียน</p></li>
 </ul>
 </li>
-</ul></section><section id="intentional-assessment-1" class="slide level2 smaller"><h2>Intentional Assessment</h2>
+</ul></section><section id="intentional-assessment-2" class="slide level2 smaller"><h2>Intentional Assessment</h2>
 <ul>
 <li>
 <p><strong>Proactive Prevention:</strong> ตรวจสอบตัวตน/ป้องกันการคัดลอก/วิเคราะห์รูปแบบ</p>
@@ -1001,7 +1061,7 @@ AI สามารถเข้ามามีบทบาทสำคัญใ�
 <li><p>ให้ส่งต้นฉบับหลายเวอร์ชัน</p></li>
 <li><p>ให้ตอบคำถามเกี่ยวกับงานของตัวเอง</p></li>
 <li><p>ให้เขียนงานในชั้นเรียน</p></li>
-</ul></ul></section><section id="การใช-gen-ai-เพอสนบสนน-intentional-assessment" class="slide level2 smaller"><h2>การใช้ Gen AI เพื่อสนับสนุน Intentional Assessment</h2>
+</ul></ul></section><section id="ai-enhanced-intentional-assessment" class="slide level2 smaller"><h2>AI-Enhanced Intentional Assessment</h2>
 <ul>
 <li>
 <p><strong>สร้างโจทย์ที่หลากหลายปรับความยากได้ตามระดับของผู้เรียน</strong></p>
@@ -1101,7 +1161,7 @@ D["Fine-Tuning"]-.-&gt;G
 </div><div class="column" style="width:60%;">
 <p><a href="https://chatgpt.com/share/67a75303-dacc-8003-bef6-a4b5317be522"><img data-src="img/prompt_design_gpt2.png" style="width:100.0%"></a></p>
 </div></div>
-</section><section id="การใช-gen-ai-เพอสนบสนน-intentional-assessment-1" class="slide level2 smaller"><h2>การใช้ Gen AI เพื่อสนับสนุน Intentional Assessment</h2>
+</section><section id="ai-enhanced-intentional-assessment-1" class="slide level2 smaller"><h2>AI-Enhanced Intentional Assessment</h2>
 <ul>
 <li>
 <p><strong>สร้างโจทย์ที่หลากหลายปรับความยากได้ตามระดับของผู้เรียน</strong></p>
@@ -1115,7 +1175,7 @@ D["Fine-Tuning"]-.-&gt;G
 <li><p><strong>สร้าง/ปรับเกณฑ์การประเมินชิ้นงานให้เหมาะสมกับเป้าหมายของการประเมิน</strong></p></li>
 <li><p><strong>การประเมินและให้คะแนนอัตโนมัติ</strong></p></li>
 <li><p><strong>ให้ feedback เฉพาะบุคคล</strong> ทั้งในเชิงเนื้อหา และสามารถปรับ mood &amp; tone ของ feedback ให้เหมาะกับกลุ่มเป้าหมายหรือความต้องการเฉพาะบุคคล</p></li>
-</ul></section><section id="generative-ai-quizproblem-generator" class="slide level2 smaller scrollable"><h2>Generative AI: Quiz/Problem Generator</h2>
+</ul></section><section id="quizproblem-generator" class="slide level2 smaller scrollable"><h2>Quiz/Problem Generator</h2>
 <p><strong>แนวทางการเขียน prompt สำหรับสร้างข้อสอบ</strong></p>
 <div style="font-size:75%;">
 <ol type="1">
@@ -1145,7 +1205,7 @@ D["Fine-Tuning"]-.-&gt;G
 </li>
 </ol>
 </div>
-</section><section id="generative-ai-quizproblem-generator-1" class="slide level2 smaller"><h2>Generative AI: Quiz/Problem Generator</h2>
+</section><section id="quizproblem-generator-1" class="slide level2 smaller"><h2>Quiz/Problem Generator</h2>
 <div class="colomns">
 <div class="column" style="width:50%;">
 <p><br></p>
@@ -1198,7 +1258,7 @@ D) -2 ถึง 2
 </div><div class="column" style="width:50%;">
 <p><a href="https://chatgpt.com/share/67a798a1-705c-8003-96f7-2f32a76255b2"><img data-src="img/quiz_generator.png" style="width:70.0%"></a></p>
 </div></div>
-</section><section id="generative-ai-differentiated-problems" class="slide level2 smaller"><h2>Generative AI: Differentiated Problems</h2>
+</section><section id="differentiated-problems" class="slide level2 smaller"><h2>Differentiated Problems</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><img data-src="img/math_inequality.png"></p>
@@ -1210,7 +1270,7 @@ http://www.pccm.ac.th/tinymce/home/articles/2018103101/Teacher-Share-Set-M4.pdf
 </div><div id="hidden-column" class="column" style="display: none;">
 
 </div></div>
-</section><section id="generative-ai-differentiated-problems-1" class="slide level2 smaller"><h2>Generative AI: Differentiated Problems</h2>
+</section><section id="differentiated-problems-1" class="slide level2 smaller"><h2>Differentiated Problems</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><img data-src="img/math_inequality.png"></p>
@@ -1222,7 +1282,7 @@ http://www.pccm.ac.th/tinymce/home/articles/2018103101/Teacher-Share-Set-M4.pdf
 </div><div class="column" style="width:50%;">
 <p><img data-src="img/claude1.png"></p>
 </div></div>
-</section><section id="generative-ai-differentiated-problems-2" class="slide level2 smaller"><h2>Generative AI: Differentiated Problems</h2>
+</section><section id="differentiated-problems-2" class="slide level2 smaller"><h2>Differentiated Problems</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><img data-src="img/claude2.png" style="width:100.0%"></p>
@@ -1230,14 +1290,14 @@ http://www.pccm.ac.th/tinymce/home/articles/2018103101/Teacher-Share-Set-M4.pdf
 </div><div class="column" style="width:50%;">
 <p><img data-src="img/claude4.png" style="width:100.0%"></p>
 </div></div>
-</section><section id="generative-ai-differentiated-problems-3" class="slide level2 smaller"><h2>Generative AI: Differentiated Problems</h2>
+</section><section id="differentiated-problems-3" class="slide level2 smaller"><h2>Differentiated Problems</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p><img data-src="img/claude5.png"></p>
 </div><div class="column" style="width:50%;">
 <p><img data-src="img/claude6.png"></p>
 </div></div>
-</section><section id="generative-ai-creativeauthentic-tasks" class="slide level2"><h2>Generative AI: Creative/Authentic Tasks</h2>
+</section><section id="creativeauthentic-tasks" class="slide level2"><h2>Creative/Authentic Tasks</h2>
 <div style="font-size:70%">
 <pre><code>สร้าง Assignment สำหรับนิสิตในรายวิชา Machine Learning โดยมีรายละเอียดดังนี้:
 
@@ -1259,14 +1319,14 @@ http://www.pccm.ac.th/tinymce/home/articles/2018103101/Teacher-Share-Set-M4.pdf
 <p><br></p>
 <p><a href="https://chatgpt.com/canvas/shared/67a79cb6b35881918195dc330ee736b7">คลิกดูผลลัพธ์ที่ได้</a></p>
 </div>
-</section><section id="generative-ai-rubric-generator" class="slide level2 smaller"><h2>Generative AI: Rubric Generator</h2>
+</section><section id="rubric-generator" class="slide level2 smaller"><h2>Rubric Generator</h2>
 <p><a href="https://chatgpt.com/share/67a76476-2840-8003-8532-8d33b0b44271"><img data-src="img/rubric.png" style="width:65.0%"></a></p>
-</section><section id="generative-ai-automated-scoring" class="slide level2 smaller"><h2>Generative AI: Automated Scoring</h2>
+</section><section id="automated-scoring" class="slide level2 smaller"><h2>Automated Scoring</h2>
 <div class="r-stack">
 <p><img data-src="img/check_answer_all.png" style="width:75.0%"></p>
 <p><img data-src="img/check_answer5.png" class="fragment" style="width:60.0%"></p>
 </div>
-</section><section id="generative-ai-automate-essay-scoring" class="slide level2 smaller"><h2>Generative AI: Automate Essay Scoring</h2>
+</section><section id="automate-essay-scoring" class="slide level2 smaller"><h2>Automate Essay Scoring</h2>
 <div class="r-stack">
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -1278,9 +1338,121 @@ http://www.pccm.ac.th/tinymce/home/articles/2018103101/Teacher-Share-Set-M4.pdf
 </div></div>
 <p><img data-src="img/automate_essay2.png" class="fragment" style="width:60.0%"></p>
 </div>
-</section><section id="data-analysis-interpretation" class="slide level2 smaller"><h2>Data Analysis &amp; Interpretation</h2>
+</section></section><section><section id="data-analysis-interpretation" class="title-slide slide level1 smaller center"><h1>Data Analysis &amp; Interpretation</h1>
 
-<img data-src="img/typeofanalytic.png" class="r-stretch"></section><section id="section" class="slide level2"><h2></h2>
+</section><section id="data-analysis-interpretation-1" class="slide level2 smaller"><h2>Data Analysis &amp; Interpretation</h2>
+
+<img data-src="img/typeofanalytic.png" class="r-stretch"></section><section id="statistical-problem-process" class="slide level2"><h2>Statistical Problem Process</h2>
+
+<img data-src="https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png" class="r-stretch"><div class="caption">
+https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf
+</div>
+</section><section id="ประเภทขอมลในชนเรยน" class="slide level2 smaller"><h2>ประเภทข้อมูลในชั้นเรียน</h2>
+<ul>
+<li>
+<p><strong>ผลการเรียน/ผลสัมฤทธิ์ทางการเรียนของผู้เรียน (academic performance data)</strong></p>
+<ul>
+<li><p>คะแนนสอบในอดีต</p></li>
+<li><p>ผลการสอบเพื่อประเมินพื้นฐาน</p></li>
+<li><p>ผลการตอบคำถามหรือข้อสอบของนักเรียน</p></li>
+<li><p>คะแนนสอบปัจจุบัน/เกรดเฉลี่ยสะสม</p></li>
+</ul>
+</li>
+<li>
+<p><strong>ภูมิหลังของนักเรียน</strong></p>
+<ul>
+<li><p>อายุ เพศ ระดับการศึกษา</p></li>
+<li><p>สถานภาพของครอบครัว ฐานะทางเศรษฐกิจของครอบครัว</p></li>
+<li><p>สาขาวิชา เป้าหมายการเรียน</p></li>
+</ul>
+</li>
+</ul></section><section id="ประเภทขอมลในชนเรยน-1" class="slide level2 smaller"><h2>ประเภทข้อมูลในชั้นเรียน</h2>
+<ul>
+<li>
+<p><strong>พฤติกรรมการเรียนรู้</strong> – ลักษณะ/รูปแบบการเรียนรู้ของนักเรียน</p>
+<ul>
+<li><p>การเข้าชั้นเรียน</p></li>
+<li><p>การส่งงาน</p></li>
+<li><p>เวลาที่ใช้ในการทำการบ้าน/งานที่มอบหมาย</p></li>
+<li><p>การทบทวน/อ่านหนังสือนอกเวลา</p></li>
+</ul>
+</li>
+<li>
+<p><strong>ปฏิสัมพันธ์ในชั้นเรียน</strong> – การสื่อสาร/การมีส่วนร่วมระหว่างนักเรียนกับครู หรือนักเรียนกับนักเรียนในบริบทการเรียนรู้ในชั้นเรียน</p>
+<ul>
+<li><p>ความถี่ในการยกมือตอบคำถาม</p></li>
+<li><p>ความถี่ในการเสนอความคิดเห็นในการอภิปรายภายในกลุ่ม</p></li>
+<li><p>การร่วมกิจกรรมในชั้นเรียน</p></li>
+</ul>
+</li>
+</ul></section><section id="ประเภทขอมลในชนเรยน-2" class="slide level2 smaller"><h2>ประเภทข้อมูลในชั้นเรียน</h2>
+<ul>
+<li>
+<p><strong>จิตวิทยาและอารมณ์</strong> – ช่วยให้ผู้สอนทำความเข้าใจหรือทราบสภาพของผู้เรียนในมิติเชิงอารมณ์/ความรู้สึก เช่น</p>
+<ul>
+<li><p><a href="https://www.u-thong.ac.th/web1/new2019/data2019/%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%A1%E0%B8%B4%E0%B8%99SDQ/%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%A1%E0%B8%B4%E0%B8%99Sdq%E0%B8%89%E0%B8%9A%E0%B8%B1%E0%B8%9A%E0%B8%84%E0%B8%A3%E0%B8%B9%20%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%9B%E0%B8%81%E0%B8%84%E0%B8%A3%E0%B8%AD%E0%B8%87%20%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99.pdf">SDQ (Strengths and Difficulties Questionnaire)</a> เป็นแบบสอบถามที่ใช้วัดพฤติกรรม 5 ด้านที่่เป็นจุดแข็งและจุดที่ต้องพัฒนาของนักเรียน<br></p></li>
+<li><p>ความเครียด อาจใช้แบบประเมินความเครียด <a href="https://kkhos.moph.go.th/kkhos/data_office/ST5.pdf">ST-5</a> หรือ แบบ <a href="https://kkhos.moph.go.th/kkhos/data_office/SPST20.pdf">STST</a></p></li>
+<li><p><a href="https://catalog.dmh.go.th/dataset/phq9/resource/2cc4ad0e-f33e-446a-82f0-92b3808c7d09">แบบประเมินภาวะซึมเศร้า</a></p></li>
+<li><p>ความวิตกกังวลอาจใช้แบบประเมิน <a href="https://mhso.dmh.go.th/fileupload/2022031413904066.pdf">GAD-7</a></p></li>
+<li><p>ด้านอื่น ๆ เช่น <a href="https://dmh.go.th/ebook/Files/Mindfulness_Questionnair(%E0%B8%AB%E0%B8%A1%E0%B8%AD%E0%B8%A2%E0%B8%87%E0%B8%A2%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B9%8C).pdf">แบบวัดสติ</a> แรงจูงใจ ความสุข ความมั่นใจ …</p></li>
+</ul>
+</li>
+<li><p>ด้านอื่น ๆ เช่น ทักษะ/ความสามารถ การคิดเชิงเหตุผล ความฉลาดทางอารมณ์ …</p></li>
+</ul></section><section id="ประเภทขอมลจำแนกตามลกษณะ" class="slide level2 smaller"><h2>ประเภทข้อมูลจำแนกตามลักษณะ</h2>
+
+<img data-src="img/typeofdata.png" class="r-stretch"></section><section id="สถานการณตวอยาง" class="slide level2 smaller"><h2>สถานการณ์ตัวอย่าง</h2>
+<p>อาจารย์ผู้สอนในรายวิชาวิจัยกำลังเตรียมตัวสำหรับการสอนในภาคการศึกษาหน้า ทั้งนี้อาจารย์ได้ลองรวบรวมข้อมูลการเรียนรู้ที่ผ่านมาในรายวิชาสถิติซึ่งเป็นวิชาที่นิสิตกลุ่มนี้ได้ลงทะเบียนในภาคการศึกษาก่อนหน้า</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>Rows<span class="sc">:</span> <span class="dv">367</span></span>
+<span id="cb3-2"><a href=""></a>Columns<span class="sc">:</span> <span class="dv">10</span></span>
+<span id="cb3-3"><a href=""></a><span class="sc">$</span> Student_id        <span class="sc">&lt;</span>int<span class="sc">&gt;</span> <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">15</span>, <span class="dv">1</span>…</span>
+<span id="cb3-4"><a href=""></a><span class="sc">$</span> Department        <span class="sc">&lt;</span>chr<span class="sc">&gt;</span> <span class="st">"ไทยสังคม"</span>, <span class="st">"ภาษาอังกฤษ"</span>, <span class="st">"การศึกษาปฐมวัย"</span>, <span class="st">"การศึกษาปฐมวั…</span></span>
+<span id="cb3-5"><a href=""></a><span class="st">$ StatKnowledge     &lt;dbl&gt; 57.79762, 42.79762, 53.51852, 51.29630, 52.40741, 29…</span></span>
+<span id="cb3-6"><a href=""></a><span class="st">$ Concepts          &lt;dbl&gt; 57.14286, 57.14286, 75.00000, 58.33333, 58.33333, 25…</span></span>
+<span id="cb3-7"><a href=""></a><span class="st">$ Interpret         &lt;dbl&gt; 56.25000, 31.25000, 55.55556, 55.55556, 38.88889, 33…</span></span>
+<span id="cb3-8"><a href=""></a><span class="st">$ ChooseMethod      &lt;dbl&gt; 60, 40, 30, 40, 60, 30, 20, 30, 70, 50, 30, 20, 50, …</span></span>
+<span id="cb3-9"><a href=""></a><span class="st">$ StatSubmitTime    &lt;dbl&gt; 156.41160, 145.08406, 145.92416, 128.12002, 139.8148…</span></span>
+<span id="cb3-10"><a href=""></a><span class="st">$ StatPercentSubmit &lt;dbl&gt; 66.66667, 100.00000, 100.00000, 100.00000, 100.00000…</span></span>
+<span id="cb3-11"><a href=""></a><span class="st">$ StatLearnPerform  &lt;dbl&gt; 95.00000, 73.33333, 82.50000, 73.75000, 78.75000, 78…</span></span>
+<span id="cb3-12"><a href=""></a><span class="st">$ StatCheatBehav    &lt;dbl&gt; 0.9143358, 0.5934895, 1.0000000, 0.5159800, 0.641961…</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="ตวอยางการวเคราะหขอมล" class="slide level2"><h2>ตัวอย่างการวิเคราะห์ข้อมูล</h2>
+
+<img data-src="img/stat_question.png" class="r-stretch"></section><section id="claude" class="slide level2 smaller"><h2>Claude</h2>
+<details><summary>
+คลิกเพื่อดูรายละเอียด
+</summary><pre><code>1. จากข้อมูลที่ให้ขอให้สร้าง histogram เพื่อนำเสนอการแจกแจงของ StatSubmitTime หน่อย ข้อมูลดังกล่าวเป็นจำนวนชั่วโมงโดยเฉลี่ยที่นักเรียนใช้ในการทำงานที่ได้รับมอบหมาย ให้สร้างเส้นตรง x = 168 เป็นเส้นประไว้ด้วยเพื่อเป็นจุดอ้างอิงระยะเวลา deadline ของการส่งงานแต่ละชิ้น (7 วัน)
+
+2. ช่วยคำนวณสถิติพื้นฐานของตัวแปร StatSubmitTime หน่อย ได้แก่ ความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด Q1, Q2, Q3 และ ค่าสูงสุด โดยจำแนกตามกลุ่มของนักเรียนที่ส่งงานตรงเวลาและส่งงานช้า
+
+3. มีนักเรียนเสนอว่าควรขยายเวลาการส่งงานจาก 7 วันเป็น 10 วัน ทั้งนี้เป็นเพราะเชื่อว่าการมีเวลามากขึ้นจะทำให้งานดีขึ้น และผลการเรียนจะดีขึ้นด้วย ผมอยากวิเคราะห์ข้อมูลเพื่อตรวจสอบสมมุติฐานนี้ ทำยังไงได้บ้างจากข้อมูลที่มี ลองเสนอทางเลือกหน่อย
+
+4. ลองสร้างแผนภาพการกระจาย โดยที่ให้แกน y เป็น StatKnowledge และ แกน x เป็น StatSubmitTime พร้อมทั้งสร้าง smooth line regression เพื่อแสดงแนวโน้มความสัมพันธ์ด้วย
+
+5. ขอให้ hover label ใน scatter plot แสดง student_id ด้วย และปรับแกน x ให้เป็นจำนวนเต็ม ไม่มีจุดทศนิยมด้วย
+
+6. ขอ scatter plot แบบนี้แต่เปลี่ยนแกน y เป็น StatPercentSubmit
+
+7. ให้แกน y เป็น StatPercentSubm เหมือนเดิม แต่ลองปรับแกน x ให้เป็นตัวแปรจัดประเภทกำหนด cutoff ที่ 75, 125 และ 168 แล้วปรับแผนภาพเป็น boxplot แทน
+  </code></pre>
+</details>
+<img data-src="img/claude_analysis.png" style="width:80.0%" class="r-stretch"></section><section id="claude-1" class="slide level2"><h2>Claude</h2>
+<div class="r-stack">
+<p><img data-src="img/claude_analysis2.png" style="width:90.0%"></p>
+<p><img data-src="img/claude_analysis3.png" class="fragment" style="width:50.0%" data-align="center"></p>
+</div>
+</section><section id="qualitative-data-analysis" class="slide level2 smaller"><h2>Qualitative Data Analysis</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Generative AI มีความสามารถในการวิเคราะห์ข้อมูลเชิงคุณภาพ โดยเฉพาะข้อมูลที่มีลักษณะเป็น essay ได้ดี จุดเด่นนี้ทำให้ครูและผู้เกี่ยวข้องสามารถนำข้อมูลที่เป็นลักษณะข้อความเข้ามาวิเคราะห์เพื่อสร้างสารสนเทศเชิงลึกของผู้เรียนได้</p>
+<ul>
+<li><p><a href="https://docs.google.com/document/d/1Zmtc2qQCtYHI5ZGR3fwY8lnCGLGZeIsN/edit?usp=sharing&amp;ouid=118010069578157348024&amp;rtpof=true&amp;sd=true">สถานการณ์ตัวอย่าง</a></p></li>
+<li><p><a href="https://chatgpt.com/share/67a7c1b1-1c68-8003-ae6f-fc0415db40b1">ผลการวิเคราะห์ด้วย chatgpt</a></p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="img/diagram.png" style="width:70.0%"></p>
+</div></div>
+</section><section id="section" class="slide level2"><h2></h2>
 <p>ทด ๆ</p>
 <p>ในภาคการศึกษา AI มีประโยชน์หลายด้าน เช่น การเรียนรู้แบบเฉพาะบุคคล (Personalized Learning), การให้ข้อเสนอแนะที่มีประสิทธิภาพ (Effective Feedback), และการเพิ่มประสิทธิภาพในการบริหารจัดการ (Operational Efficiency) อย่างไรก็ตาม AI ก็มี ความเสี่ยง เช่น การเผยแพร่ข้อมูลที่ผิดพลาด (Misinformation) และการลดลงของทักษะการคิดเชิงวิพากษ์ (Loss of Critical Thinking Skills)</p>
 </section><section id="references" class="slide level2 smaller scrollable"><h2>References</h2>

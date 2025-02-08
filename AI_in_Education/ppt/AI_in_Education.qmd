@@ -692,24 +692,13 @@ student_ai_competency %>%
 <div class="caption3">@unesco2024studentAI</div>
 
 
-# AI in Education {.smaller}
-
-- ส่งเสริมการเรียนรู้เฉพาะบุคคล
-
-- ปรับปรุงคุณภาพการเรียนรู้
-
-- สนับสนุนการจัดการระบบการศึกษา
-
-- เพิ่มโอกาสการเข้าถึงการศึกษา
-
-- พัฒนาทักษะสำหรับอนาคต
-
-
-## ส่งเสริมการเรียนรู้แบบส่วนบุคคล และปรับปรุงคุณภาพการเรียนรู้
+## AI-Powered Data-Driven Classroom
 
 <div style="font-size:70%;">
 ![@bolz2023datadriven](img/personalized.png){width="80%"}
 </div>
+
+# Intentional Assessment {.smaller}
 
 ## Intentional Assessment {.smaller}
 
@@ -784,7 +773,7 @@ student_ai_competency %>%
 
 
 
-## การใช้ Gen AI เพื่อสนับสนุน Intentional Assessment {.smaller}
+## AI-Enhanced Intentional Assessment {.smaller}
 
 - **สร้างโจทย์ที่หลากหลายปรับความยากได้ตามระดับของผู้เรียน**
 
@@ -943,7 +932,7 @@ Note: ถึงแม้ว่า Prompt บางตัวจะขาดอง
 
 
 
-## การใช้ Gen AI เพื่อสนับสนุน Intentional Assessment {.smaller}
+## AI-Enhanced Intentional Assessment {.smaller}
 
 - **สร้างโจทย์ที่หลากหลายปรับความยากได้ตามระดับของผู้เรียน**
 
@@ -962,8 +951,7 @@ Note: ถึงแม้ว่า Prompt บางตัวจะขาดอง
 - **ให้ feedback เฉพาะบุคคล** ทั้งในเชิงเนื้อหา และสามารถปรับ mood & tone ของ feedback ให้เหมาะกับกลุ่มเป้าหมายหรือความต้องการเฉพาะบุคคล
 
 
-
-## Generative AI: Quiz/Problem Generator {.smaller}
+## Quiz/Problem Generator {.smaller}
 
 
 **แนวทางการเขียน prompt สำหรับสร้างข้อสอบ**
@@ -990,7 +978,7 @@ Note: ถึงแม้ว่า Prompt บางตัวจะขาดอง
 </div>
 
 
-## Generative AI: Quiz/Problem Generator {.smaller}
+## Quiz/Problem Generator {.smaller}
 
 
 :::: {.colomns}
@@ -1059,7 +1047,7 @@ D) -2 ถึง 2
 
 ::::
 
-## Generative AI: Differentiated Problems {.smaller}
+## Differentiated Problems {.smaller}
 
 :::: {.columns}
 
@@ -1081,7 +1069,7 @@ D) -2 ถึง 2
 ::::
 
 
-## Generative AI: Differentiated Problems {.smaller}
+## Differentiated Problems {.smaller}
 
 :::: {.columns}
 
@@ -1104,7 +1092,7 @@ D) -2 ถึง 2
 ::::
 
 
-## Generative AI: Differentiated Problems {.smaller}
+## Differentiated Problems {.smaller}
 
 :::: {.columns}
 
@@ -1123,7 +1111,7 @@ D) -2 ถึง 2
 :::
 ::::
 
-## Generative AI: Differentiated Problems {.smaller}
+## Differentiated Problems {.smaller}
 
 
 :::: {.columns}
@@ -1142,7 +1130,7 @@ D) -2 ถึง 2
 
 ::::
 
-## Generative AI: Creative/Authentic Tasks
+## Creative/Authentic Tasks
 
 <div style="font-size:70%">
 
@@ -1171,13 +1159,13 @@ D) -2 ถึง 2
 </div>
 
 
-## Generative AI: Rubric Generator {.smaller}
+## Rubric Generator {.smaller}
 
 [![](img/rubric.png){width="65%"}](https://chatgpt.com/share/67a76476-2840-8003-8532-8d33b0b44271)
 
 
 
-## Generative AI: Automated Scoring {.smaller}
+## Automated Scoring {.smaller}
 
 ::: {.r-stack}
 
@@ -1190,7 +1178,7 @@ D) -2 ถึง 2
 
 
 
-## Generative AI: Automate Essay Scoring {.smaller}
+## Automate Essay Scoring {.smaller}
 
 ::: {.r-stack}
 
@@ -1218,15 +1206,175 @@ D) -2 ถึง 2
 
 :::
 
+
+
+
+# Data Analysis & Interpretation {.smaller}
+
+
 ## Data Analysis & Interpretation {.smaller}
 
 ![](img/typeofanalytic.png)
 
+## Statistical Problem Process
 
 
+![](https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png)
+
+<div class="caption">https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf</div>
+
+
+## ประเภทข้อมูลในชั้นเรียน {.smaller}
+
+- **ผลการเรียน/ผลสัมฤทธิ์ทางการเรียนของผู้เรียน (academic performance data)**
+
+  - คะแนนสอบในอดีต
+  
+  - ผลการสอบเพื่อประเมินพื้นฐาน
+  
+  - ผลการตอบคำถามหรือข้อสอบของนักเรียน
+  
+  - คะแนนสอบปัจจุบัน/เกรดเฉลี่ยสะสม
+  
+
+- **ภูมิหลังของนักเรียน**
+
+  - อายุ เพศ ระดับการศึกษา
+  
+  - สถานภาพของครอบครัว ฐานะทางเศรษฐกิจของครอบครัว
+  
+  - สาขาวิชา เป้าหมายการเรียน
+
+
+## ประเภทข้อมูลในชั้นเรียน {.smaller}
+
+- **พฤติกรรมการเรียนรู้** -- ลักษณะ/รูปแบบการเรียนรู้ของนักเรียน
+
+  - การเข้าชั้นเรียน
+  
+  - การส่งงาน
+  
+  - เวลาที่ใช้ในการทำการบ้าน/งานที่มอบหมาย
+  
+  - การทบทวน/อ่านหนังสือนอกเวลา
+  
+- **ปฏิสัมพันธ์ในชั้นเรียน** -- การสื่อสาร/การมีส่วนร่วมระหว่างนักเรียนกับครู หรือนักเรียนกับนักเรียนในบริบทการเรียนรู้ในชั้นเรียน
+
+  - ความถี่ในการยกมือตอบคำถาม
+  
+  - ความถี่ในการเสนอความคิดเห็นในการอภิปรายภายในกลุ่ม
+  
+  - การร่วมกิจกรรมในชั้นเรียน
+
+
+## ประเภทข้อมูลในชั้นเรียน {.smaller}
+
+- **จิตวิทยาและอารมณ์** -- ช่วยให้ผู้สอนทำความเข้าใจหรือทราบสภาพของผู้เรียนในมิติเชิงอารมณ์/ความรู้สึก เช่น
+
+  - [SDQ (Strengths and Difficulties Questionnaire)](https://www.u-thong.ac.th/web1/new2019/data2019/แบบประเมินSDQ/แบบประเมินSdqฉบับครู%20ผู้ปกครอง%20นักเรียน.pdf) เป็นแบบสอบถามที่ใช้วัดพฤติกรรม 5 ด้านที่่เป็นจุดแข็งและจุดที่ต้องพัฒนาของนักเรียน  
+  - ความเครียด อาจใช้แบบประเมินความเครียด [ST-5](https://kkhos.moph.go.th/kkhos/data_office/ST5.pdf) หรือ แบบ [STST](https://kkhos.moph.go.th/kkhos/data_office/SPST20.pdf) 
+  
+  - [แบบประเมินภาวะซึมเศร้า](https://catalog.dmh.go.th/dataset/phq9/resource/2cc4ad0e-f33e-446a-82f0-92b3808c7d09)
+  
+  - ความวิตกกังวลอาจใช้แบบประเมิน [GAD-7](https://mhso.dmh.go.th/fileupload/2022031413904066.pdf)
+
+  - ด้านอื่น ๆ  เช่น [แบบวัดสติ](https://dmh.go.th/ebook/Files/Mindfulness_Questionnair(%E0%B8%AB%E0%B8%A1%E0%B8%AD%E0%B8%A2%E0%B8%87%E0%B8%A2%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B9%8C).pdf) แรงจูงใจ ความสุข ความมั่นใจ ...
+
+- ด้านอื่น ๆ  เช่น ทักษะ/ความสามารถ การคิดเชิงเหตุผล ความฉลาดทางอารมณ์ ...
+
+## ประเภทข้อมูลจำแนกตามลักษณะ {.smaller}
+
+![](img/typeofdata.png)
+
+## สถานการณ์ตัวอย่าง {.smaller}
+
+อาจารย์ผู้สอนในรายวิชาวิจัยกำลังเตรียมตัวสำหรับการสอนในภาคการศึกษาหน้า ทั้งนี้อาจารย์ได้ลองรวบรวมข้อมูลการเรียนรู้ที่ผ่านมาในรายวิชาสถิติซึ่งเป็นวิชาที่นิสิตกลุ่มนี้ได้ลงทะเบียนในภาคการศึกษาก่อนหน้า
+
+```{r eval = F}
+Rows: 367
+Columns: 10
+$ Student_id        <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…
+$ Department        <chr> "ไทยสังคม", "ภาษาอังกฤษ", "การศึกษาปฐมวัย", "การศึกษาปฐมวั…
+$ StatKnowledge     <dbl> 57.79762, 42.79762, 53.51852, 51.29630, 52.40741, 29…
+$ Concepts          <dbl> 57.14286, 57.14286, 75.00000, 58.33333, 58.33333, 25…
+$ Interpret         <dbl> 56.25000, 31.25000, 55.55556, 55.55556, 38.88889, 33…
+$ ChooseMethod      <dbl> 60, 40, 30, 40, 60, 30, 20, 30, 70, 50, 30, 20, 50, …
+$ StatSubmitTime    <dbl> 156.41160, 145.08406, 145.92416, 128.12002, 139.8148…
+$ StatPercentSubmit <dbl> 66.66667, 100.00000, 100.00000, 100.00000, 100.00000…
+$ StatLearnPerform  <dbl> 95.00000, 73.33333, 82.50000, 73.75000, 78.75000, 78…
+$ StatCheatBehav    <dbl> 0.9143358, 0.5934895, 1.0000000, 0.5159800, 0.641961…
+
+```
+
+
+## ตัวอย่างการวิเคราะห์ข้อมูล
+
+![](img/stat_question.png)
+
+## Claude {.smaller}
+
+
+<details>
+  <summary>คลิกเพื่อดูรายละเอียด</summary>
+```
+1. จากข้อมูลที่ให้ขอให้สร้าง histogram เพื่อนำเสนอการแจกแจงของ StatSubmitTime หน่อย ข้อมูลดังกล่าวเป็นจำนวนชั่วโมงโดยเฉลี่ยที่นักเรียนใช้ในการทำงานที่ได้รับมอบหมาย ให้สร้างเส้นตรง x = 168 เป็นเส้นประไว้ด้วยเพื่อเป็นจุดอ้างอิงระยะเวลา deadline ของการส่งงานแต่ละชิ้น (7 วัน)
+
+2. ช่วยคำนวณสถิติพื้นฐานของตัวแปร StatSubmitTime หน่อย ได้แก่ ความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด Q1, Q2, Q3 และ ค่าสูงสุด โดยจำแนกตามกลุ่มของนักเรียนที่ส่งงานตรงเวลาและส่งงานช้า
+
+3. มีนักเรียนเสนอว่าควรขยายเวลาการส่งงานจาก 7 วันเป็น 10 วัน ทั้งนี้เป็นเพราะเชื่อว่าการมีเวลามากขึ้นจะทำให้งานดีขึ้น และผลการเรียนจะดีขึ้นด้วย ผมอยากวิเคราะห์ข้อมูลเพื่อตรวจสอบสมมุติฐานนี้ ทำยังไงได้บ้างจากข้อมูลที่มี ลองเสนอทางเลือกหน่อย
+
+4. ลองสร้างแผนภาพการกระจาย โดยที่ให้แกน y เป็น StatKnowledge และ แกน x เป็น StatSubmitTime พร้อมทั้งสร้าง smooth line regression เพื่อแสดงแนวโน้มความสัมพันธ์ด้วย
+
+5. ขอให้ hover label ใน scatter plot แสดง student_id ด้วย และปรับแกน x ให้เป็นจำนวนเต็ม ไม่มีจุดทศนิยมด้วย
+
+6. ขอ scatter plot แบบนี้แต่เปลี่ยนแกน y เป็น StatPercentSubmit
+
+7. ให้แกน y เป็น StatPercentSubm เหมือนเดิม แต่ลองปรับแกน x ให้เป็นตัวแปรจัดประเภทกำหนด cutoff ที่ 75, 125 และ 168 แล้วปรับแผนภาพเป็น boxplot แทน
+  
+```
+</details>
+
+
+![](img/claude_analysis.png){width="80%"}
+
+## Claude
+
+::: {.r-stack}
+
+
+![](img/claude_analysis2.png){width="90%"}
+
+![](img/claude_analysis3.png){.fragment width="50%" align="center"}
+
+:::
+
+
+## Qualitative Data Analysis {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Generative AI มีความสามารถในการวิเคราะห์ข้อมูลเชิงคุณภาพ โดยเฉพาะข้อมูลที่มีลักษณะเป็น essay ได้ดี จุดเด่นนี้ทำให้ครูและผู้เกี่ยวข้องสามารถนำข้อมูลที่เป็นลักษณะข้อความเข้ามาวิเคราะห์เพื่อสร้างสารสนเทศเชิงลึกของผู้เรียนได้
+
+
+- [สถานการณ์ตัวอย่าง](https://docs.google.com/document/d/1Zmtc2qQCtYHI5ZGR3fwY8lnCGLGZeIsN/edit?usp=sharing&ouid=118010069578157348024&rtpof=true&sd=true)
+
+- [ผลการวิเคราะห์ด้วย chatgpt](https://chatgpt.com/share/67a7c1b1-1c68-8003-ae6f-fc0415db40b1)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/diagram.png){width="70%"}
+
+:::
+
+::::
 
 
 ##
+
 ทด ๆ 
 
 ในภาคการศึกษา AI มีประโยชน์หลายด้าน เช่น การเรียนรู้แบบเฉพาะบุคคล (Personalized Learning), การให้ข้อเสนอแนะที่มีประสิทธิภาพ (Effective Feedback), และการเพิ่มประสิทธิภาพในการบริหารจัดการ (Operational Efficiency) อย่างไรก็ตาม AI ก็มี ความเสี่ยง เช่น การเผยแพร่ข้อมูลที่ผิดพลาด (Misinformation) และการลดลงของทักษะการคิดเชิงวิพากษ์ (Loss of Critical Thinking Skills)
