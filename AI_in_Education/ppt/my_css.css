@@ -17,9 +17,9 @@
 
 .reveal .caption3 {
     color: #C5705D;
+    text-align: right;
     font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
-    margin-top: -2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
-    margin-left: 50em;
+    margin-top: 0.1em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
   }
   
 .reveal::before {
