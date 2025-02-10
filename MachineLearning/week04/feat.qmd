@@ -101,7 +101,7 @@ library(tidymodels)
 ## 1. การสร้าง data preprocessing model ด้วย recipe
 lm_rec <- recipe(formula = G3 ~ ., data = train) %>% 
   step_normalize(absences) %>% 
-  step_dummy(school) 
+  step_dummy(all_nominal_predictors()) 
 
 ## 2. regression model
 lm_mod <- linear_reg() %>% 
@@ -113,6 +113,18 @@ lm_wf <- workflow() %>%
   add_recipe(lm_rec) %>% 
   add_model(lm_mod)
 ```
+
+
+```{r}
+v <- vfold_cv(train, v=5, repeats = 3, strata = G3)
+
+lm_resample <- lm_wf %>% 
+  fit_resamples(resamples = v, control = control_resamples(save_pred = TRUE))
+
+lm_resample %>% collect_metrics(summarize = F)
+lm_resample %>% collect_predictions()
+```
+
 
 
 ## 4. Encoding Categorical Variables
@@ -269,6 +281,7 @@ Note:
 # install.packages("pak")
 pak::pak("mixOmics")
 ```
+
 
 
 ```{r}
