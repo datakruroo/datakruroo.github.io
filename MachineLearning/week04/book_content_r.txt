@@ -1,0 +1,613 @@
+
+
+
+Preface
+
+1
+Introduction
+1.1
+A Simple Example
+
+1.2
+Important Concepts
+1.2.1
+Overfitting
+
+1.2.2
+Supervised and Unsupervised Procedures
+
+1.2.3
+No Free Lunch
+
+1.2.4
+The Model versus the Modeling Process
+
+1.2.5
+Model Bias and Variance
+
+1.2.6
+Experience-Driven Modeling and Empirically Driven Modeling
+
+1.2.7
+Big Data
+
+
+1.3
+A More Complex Example
+
+1.4
+Feature Selection
+
+1.5
+An Outline of the Book
+
+1.6
+Computing
+
+
+2
+Illustrative Example: Predicting Risk of Ischemic Stroke
+2.1
+Splitting
+
+2.2
+Preprocessing
+
+2.3
+Exploration
+
+2.4
+Predictive Modeling Across Sets
+
+2.5
+Other Considerations
+
+2.6
+Computing
+
+
+3
+A Review of the Predictive Modeling Process
+3.1
+Illustrative Example: OkCupid Profile Data
+
+3.2
+Measuring Performance
+3.2.1
+Regression Metrics
+
+3.2.2
+Classification Metrics
+
+3.2.3
+Context-Specific Metrics
+
+
+3.3
+Data Splitting
+
+3.4
+Resampling
+3.4.1
+
+V
+-Fold Cross-Validation and Its Variants
+
+3.4.2
+Monte Carlo Cross-Validation
+
+3.4.3
+The Bootstrap
+
+3.4.4
+Rolling Origin Forecasting
+
+3.4.5
+Validation Sets
+
+3.4.6
+Variance and Bias in Resampling
+
+3.4.7
+What Should Be Included Inside of Resampling?
+
+
+3.5
+Tuning Parameters and Overfitting
+
+3.6
+Model Optimization and Tuning
+
+3.7
+Comparing Models Using the Training Set
+
+3.8
+Feature Engineering Without Overfitting
+
+3.9
+Summary
+
+3.10
+Computing
+
+
+4
+Exploratory Visualizations
+4.1
+Introduction to the Chicago Train Ridership Data
+
+4.2
+Visualizations for Numeric Data: Exploring Train Ridership Data
+4.2.1
+Box Plots, Violin Plots, and Histograms
+
+4.2.2
+Augmenting Visualizations through Faceting, Colors, and Shapes
+
+4.2.3
+Scatter Plots
+
+4.2.4
+Heatmaps
+
+4.2.5
+Correlation Matrix Plots
+
+4.2.6
+Line Plots
+
+4.2.7
+Principal Components Analysis
+
+
+4.3
+Visualizations for Categorical Data: Exploring the OkCupid Data
+4.3.1
+Visualizing Relationships between Outcomes and Predictors
+
+4.3.2
+Exploring Relationships Between Categorical Predictors
+
+
+4.4
+Post Modeling Exploratory Visualizations
+
+4.5
+Summary
+
+4.6
+Computing
+
+
+5
+Encoding Categorical Predictors
+5.1
+Creating Dummy Variables for Unordered Categories
+
+5.2
+Encoding Predictors with Many Categories
+
+5.3
+Approaches for Novel Categories
+
+5.4
+Supervised Encoding Methods
+
+5.5
+Encodings for Ordered Data
+
+5.6
+Creating Features from Text Data
+
+5.7
+Factors versus Dummy Variables in Tree-Based Models
+
+5.8
+Summary
+
+5.9
+Computing
+
+
+6
+Engineering Numeric Predictors
+6.1
+1:1 Transformations
+
+6.2
+1:Many Transformations
+6.2.1
+Nonlinear Features via Basis Expansions and Splines
+
+6.2.2
+Discretize Predictors as a Last Resort
+
+
+6.3
+Many:Many Transformations
+6.3.1
+Linear Projection Methods
+
+6.3.2
+Autoencoders
+
+6.3.3
+Spatial Sign
+
+6.3.4
+Distance and Depth Features
+
+
+6.4
+Summary
+
+6.5
+Computing
+
+
+7
+Detecting Interaction Effects
+7.1
+Guiding Principles in the Search for Interactions
+
+7.2
+Practical Considerations
+
+7.3
+The Brute-Force Approach to Identifying Predictive Interactions
+7.3.1
+Simple Screening
+
+7.3.2
+Penalized Regression
+
+
+7.4
+Approaches when Complete Enumeration is Practically Impossible
+7.4.1
+Guiding Principles and Two-stage Modeling
+
+7.4.2
+Tree-based Methods
+
+7.4.3
+The Feasible Solution Algorithm
+
+
+7.5
+Other Potentially Useful Tools
+
+7.6
+Summary
+
+7.7
+Computing
+
+
+8
+Handling Missing Data
+8.1
+Understanding the Nature and Severity of Missing Information
+
+8.2
+Models that are Resistant to Missing Values
+
+8.3
+Deletion of Data
+
+8.4
+Encoding Missingness
+
+8.5
+Imputation methods
+
+8.6
+Special Cases
+
+8.7
+Summary
+
+8.8
+Computing
+
+
+9
+Working with Profile Data
+9.1
+Illustrative Data: Pharmaceutical Manufacturing Monitoring
+
+9.2
+What are the Experimental Unit and the Unit of Prediction?
+
+9.3
+Reducing Background
+
+9.4
+Reducing Other Noise
+
+9.5
+Exploiting Correlation
+
+9.6
+Impacts of Data Processing on Modeling
+
+9.7
+Summary
+
+9.8
+Computing
+
+
+10
+Feature Selection Overview
+10.1
+Goals of Feature Selection
+
+10.2
+Classes of Feature Selection Methodologies
+
+10.3
+Effect of Irrelevant Features
+
+10.4
+Overfitting to Predictors and External Validation
+
+10.5
+A Case Study
+
+10.6
+Next Steps
+
+10.7
+Computing
+
+
+11
+Greedy Search Methods
+11.1
+Illustrative Data: Predicting Parkinson’s Disease
+
+11.2
+Simple Filters
+11.2.1
+Simple Filters Applied to the Parkinson’s Disease Data
+
+
+11.3
+Recursive Feature Elimination
+
+11.4
+Stepwise Selection
+
+11.5
+Summary
+
+11.6
+Computing
+
+
+12
+Global Search Methods
+12.1
+Naive Bayes Models
+
+12.2
+Simulated Annealing
+12.2.1
+Selecting Features without Overfitting
+
+12.2.2
+Application to Modeling the OkCupid Data
+
+12.2.3
+Examining Changes in Performance
+
+12.2.4
+Grouped Qualitative Predictors Versus Indicator Variables
+
+12.2.5
+The Effect of the Initial Subset
+
+
+12.3
+Genetic Algorithms
+12.3.1
+External Validation
+
+12.3.2
+Coercing Sparsity
+
+
+12.4
+Test Set Results
+
+12.5
+Summary
+
+12.6
+Computing
+
+
+References
+
+Errata and Version History
+
+
+
+
+
+
+Feature Engineering and Selection: A Practical Approach for Predictive Models
+
+
+
+
+
+
+8.5
+Imputation methods
+
+Another approach to handling missing values is to
+impute
+or estimate them. Missing value imputation has a long history in statistics and has been thoroughly researched. Good places to start are
+Little and Rubin (
+2014
+)
+,
+Van Buuren (
+2012
+)
+and
+Allison (
+2001
+)
+. In essence, imputation uses information and relationships among the non-missing predictors to provide an estimate to fill in the missing value.
+
+Historically, statistical methods for missing data have been concerned with the impact on
+inferential models
+. In this situation, the characteristics and quality of the imputation strategy have focused on the test statistics that are produced by the model. The goal of these techniques is to ensure that the statistical distributions are tractable and of good enough quality to support subsequent hypothesis testing. The primary approach in this scenario is to use multiple imputations; several variations of the data set are created with different estimates of the missing values. The variations of the data sets are then used as inputs to models and the test statistic replicates are computed for each imputed data set. From these replicate statistics, appropriate hypothesis tests can be constructed and used for decision making.
+
+There are several differences between inferential and predictive models that impact this process:
+
+In many predictive models, there is no notion of distributional assumptions (or they are often intractable). For example, when constructing
+most
+tree-based models, the algorithm does not require any specification of a probability distribution to the predictors. As such, many predictive models are incapable of producing inferential results even if that were a primary goal
+73
+. Given this, traditional multiple imputation methods may not have relevance for these models.
+
+Many predictive models are computationally expensive. Repeated imputation would greatly exacerbate computation time and overhead. However, there is an interest in capturing the benefit (or detriment) caused by an imputation procedure. To ensure that the variation imparted by the imputation is captured in the training process, we recommend that imputation be performed within the resampling process.
+
+Since predictive models are judged on their ability to accurately predict yet-to-be-seen samples (including the test set and new unknown samples), as opposed to statistical appropriateness, it is critical that the imputed values be as close as possible to their true (unobserved) values.
+
+The general focus of inferential models is to thoroughly understand the relationships between the predictor and response for the available data. Conversely, the focus of predictive models is to understand the relationships between the predictors and the response that are generalizable to yet-to-be-seen samples. Multiple imputation methods do not keep the imputation generator after the missing data have been estimated which provides a challenge for applying these techniques to new samples.
+
+The last point underscores the main objective of imputation with machine learning models: produce the most accurate prediction of the missing data point. Some other important characteristics that a predictive imputation method should have are:
+
+Within a sample data point, other variables may also be missing. For this reason, an imputation method should be tolerant of other missing data.
+
+Imputation creates a model embedded within another model. There is a prediction equation associated with every predictor in the training set that might have missing data. It is desirable for the imputation method to be fast and have a compact prediction equation.
+
+Many data sets often contain both numeric and qualitative predictors. Rather than generating dummy variables for qualitative predictors, a useful imputation method would be able to use predictors of various types as inputs.
+
+The model for predicting missing values should be relatively (numerically) stable and not be overly influenced by outlying data points.
+
+Virtually any predictive model could be used to impute the data. Here, the focus will be on several that are good candidates to consider.
+
+Imputation does beg the question of how much missing data are too much to impute? Although not a general rule in any sense, 20% missing data within a column might be a good “line of dignity” to observe. Of course, this depends on the situation and the patterns of missing values in the training set.
+
+It is also important to consider that imputation is probably the first step in any preprocessing sequence. Imputing qualitative predictors prior to creating indicator variables so that the binary nature of the resulting imputations can be preserved is a good idea. Also, imputation should usually occur prior to other steps that involve parameter estimation. For example, if centering and scaling is performed on data prior to imputation, the resulting means and standard deviations will inherit the potential biases and issues incurred from data deletion.
+
+
+K-Nearest Neighbors
+
+When the training set is small or moderate in size,
+\(K\)
+-nearest neighbors can be a quick and effective method for imputing missing values
+(Eskelson et al.
+2009
+; Tutz and Ramzan
+2015
+)
+. This procedure identifies a sample with one or more missing values. Then it identifies the
+\(K\)
+most similar samples in the training data that are complete (i.e., have no missing values in some columns). Similarity of samples for this method is defined by a distance metric. When all of the predictors are numeric, standard Euclidean distance is commonly used as the similarity metric. After computing the distances, the
+\(K\)
+closest samples to the sample with the missing value are identified and the average value of the predictor of interest is calculated. This value is then used to replace the missing value of the sample.
+
+Often, however, data sets contain both numeric and categorical predictors. If this is the case, then Euclidean distance is not an appropriate metric. Instead, Gower’s distance is a good alternative
+(Gower
+1971
+)
+. This metric uses a separate specialized distance metric for both the qualitative and quantitative predictors. For a qualitative predictor, the distance between two samples is 1 if the samples have the same value and 0 otherwise. For a quantitative predictor
+\(x\)
+, the distance between samples
+\(i\)
+and
+\(j\)
+is defined as
+
+\[d(x_i, x_j) = 1- \frac{|x_i-x_j|}{R_x}\]
+
+where
+\(R_x\)
+is the range of the predictor. The distance measure is computed for each predictor and the average distance is used as the overall distance. Once the
+\(K\)
+neighbors are found, their values are used to impute the missing data. The mode is used to impute qualitative predictors and the average or median is used to impute quantitative predictors.
+\(K\)
+can be a tunable parameter, but values around 5–10 are a sensible default.
+
+For the animal scat data, Figure
+8.7
+shows the same data from Figure
+8.2
+but with the missing values filled in using 5 neighbors based on Gower’s distance. The new values mostly fall around the periphery of these two dimensions but are within the range of the samples with complete data.
+
+
+Figure 8.7: A comparison of the
+\(K\)
+-Nearest Neighbors and bagged tree imputation techniques for the animal scat data. The rugs on the two axes show where that variable’s values occurred when the predictor on the other axis was missing.
+
+
+
+
+Trees
+
+Tree-based models are a reasonable choice for an imputation technique since a tree can be constructed in the presence of other missing data
+74
+. In addition, trees generally have good accuracy and will not extrapolate values beyond the bounds of the training data. While a single tree could be used as an imputation technique, it is known to produce results that have low bias but high variance. Ensembles of trees, however, provide a low-variance alternative. Random forests is one such technique and has been studied for this purpose
+(Stekhoven and Buhlmann
+2011
+)
+. However, there are a couple of notable drawbacks when using this technique in a predictive modeling setting. First and foremost, the random selection of predictors at each split necessitates a large number of trees (500 to 2000) to achieve a stable, reliable model. Each of these trees is unpruned and the resulting model usually has a large computational footprint. This can present a challenge as the number of predictors with missing data increases since a separate model must be built and retained for each predictor. A good alternative that has a smaller computational footprint is a bagged tree. A bagged tree is constructed in a similar fashion to a random forest. The primary difference is that in a bagged model, all predictors are evaluated at each split in each tree. The performance of a bagged tree using 25–50 trees is generally in the ballpark of the performance of a random forest model. And the smaller number of trees is a clear advantage when the goal is to find reasonable imputed values for missing data.
+
+Figure
+8.7
+illustrates the imputed values for the scat data using a bagged ensemble of 50 trees. When imputing the diameter predictor was the goal, the estimated RMSE of the model was 4.16 (or an
+\(R^2\)
+of 13.6%). Similarly, when imputing the mass predictor was the goal, the estimated RMSE was 8.56 (or an
+\(R^2\)
+of 28.5%). The RMSE and
+\(R^2\)
+metrics are not terribly impressive. However, these imputations from the bagged models produce results that are reasonable, are within the range of the training data, and allow the predictors to be retained for modeling (as opposed to case-wise deletion).
+
+
+
+Linear Methods
+
+When a complete predictor shows a strong linear relationship with a predictor that requires imputation, a straightforward linear model may be the best approach. Linear models can be computed very quickly and have very little retained overhead. While a linear model does require complete predictors for the imputation model, this is not a fatal flaw since the model coefficients (i.e., slopes) use all of the data for estimation. Linear regression can be used for a numeric predictor that requires imputation. Similarly, logistic regression is appropriate for a categorical predictor that requires imputation.
+
+The Chicago train ridership data will be used to illustrate the usefulness of a simple technique like linear regression for imputation. It is conceivable that one or more future ridership values might be missing in random ways from the complete data set. To simulate potential missing data, missing values have been induced for ridership at the Halsted stop. As illustrated previously in Figure
+4.8
+, the 14-day lag in ridership within a stop is highly correlated with the current day’s ridership. Figure
+8.8
+(a) displays the relationship between these predictors for the Halsted stop in 2010 with the missing values of the current day highlighted on the x-axis. The majority of the data displays a linear relationship between these predictors, with a handful of days having values that are away from the overall trend. The fit of a robust linear model to these data is represented by the dashed line. Figure
+8.8
+(b) compares the imputed values with the original true ridership values. The robust linear model performs adequately at imputing the missing values, with the exception of one day. This day had unusual ridership because it was a holiday. Including holiday as a predictor in the robust model would help improve the imputation.
+
+
+Figure 8.8: An example of linear imputation for ridership at the Halsted stop. (a) 14-day lag ridership versus current-day ridership. (b) Imputed values based on a robust linear model compared to original values.
+
+
+The concept of linear imputation can be extended to high-dimensional data.
+Audigier, Husson, and Josse (
+2016
+)
+, for example, have developed methodology to impute missing data based on similarity measures and principal components analysis.
+
+
+
+
+Obviously, there are exceptions such as linear and logistic regression, Naive Bayes models, etc.
+↩
+
+However, many implementations do not have this property.
+↩
+
+
+
+
+
+
+
+
+

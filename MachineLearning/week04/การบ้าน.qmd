@@ -1,0 +1,277 @@
+---
+title: "Assignment I"
+format: html
+editor: visual
+message: false
+warning: false
+---
+
+วัตถุประสงค์ของงานชิ้นนี้คือการพัฒนาโมเดลเพื่อจำแนกผลสัมฤทธิ์ของนักเรียนจากชุดข้อมูล student-mat.csv โดยใช้ tidymodels ใน R โดยที่นิสิตจะต้องดำเนินการต่อไปนี้:
+
+ดำเนินการทำ feature engineering โดยใช้แนวทางการจัดการข้อมูล 3 แบบ
+
+ฝึกสอนโมเดลการเรียนรู้ของเครื่อง 3 โมเดล ได้แก่ Linear Regression, Lasso Regression และ Ridge Regression
+
+ประเมินประสิทธิภาพของโมเดลจำแนกโดยใช้ Accuracy, Sensitivity, Specificity, F-measure และ AUC
+
+เปรียบเทียบประสิทธิภาพของวิธีการจัดการข้อมูลที่แตกต่างกันและโมเดลที่แตกต่างกัน
+
+สรุปและแปลความหมายผลลัพธ์
+
+## 1. เรียก library ที่จำเป็น
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+```
+
+## 2. นำเข้าข้อมูล
+
+```{r}
+data <- read_delim("student-mat.csv", delim = ";")
+data <- data %>% mutate(G3 = ifelse(G3 >= 10, 1, 0)) %>% 
+  mutate(G3 = factor(G3, levels=c(1,0), labels=c("Success", "Fail")))
+```
+
+## 3. แบ่งชุดข้อมูลออกเป็นสองส่วน
+
+```{r}
+#set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = "G3")
+train <- training(split)
+test <- testing(split)
+
+library(patchwork)
+train %>% ggplot(aes(x = G3)) + geom_bar(aes(y = after_stat(count/sum(count)))) +
+  labs(title = "Train") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+test %>% ggplot(aes(x = G3)) + geom_bar(aes(y = after_stat(count/sum(count)))) +
+  labs(title = "Test") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## 4. EDA + Feature Engineering
+
+ปกติการสำรวจและการทำ feature engineering เป็นกระบวนการที่ไม่ได้แยกกันขาด แต่จะดำเนินการสลับไปมาเพื่อหา solution ที่เหมาะสมมากที่สุดโดยใช้ข้อมูลเป็นฐาน
+
+- ทำความเข้าใจข้อมูล
+
+- ตรวจสอบประเภทของตัวแปร
+
+- ตรวจสอบ missing value
+
+- สำรวจการแจกแจงและตรวจสอบค่าผิดปกติ
+
+- สำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+- สำรวจความสัมพันธ์ระหว่างตัวแปรอิสระ 
+
+โดยปกติเราจะไม่รีบแก้ปัญหาที่พบตามข้อสังเกต เราควรดำเนินการสร้าง baseline model อาจเป็น linear regression หรือ decision tree ง่าย ๆ เพื่อดูประสิทธิภาพคร่าว 
+
+- ถ้าพบว่าประสิทธิภาพยังไม่ดี จะวิเคราะห์สาเหตุที่เป็นไปได้จากนั้นลองทำ feature engineering เพื่อแก้ปัญหาแล้วจึงไปใช้ในโมเดลที่มีการปรับแต่งค่า hyperparameter ซึ่งก็อาจจะต้องมีการปรับแต่งไปมาอีกระยะหนึ่ง
+
+- ถ้าพบว่าประสิทธิภาพดีแล้ว อาจจะพิจารณาว่าเราสามารถปรับแต่ง feature ในลักษณะไหนได้อีกบ้างเพื่อให้มีประสิทธิภาพดีขึ้น หรือในกรณีที่ต้องการอธิบายความสัมพันธ์ระหว่างตัวแปรอาจพิจารณาปรับแต่ง feature ให้มีความหมายที่เหมาะสมกับการอธิบาย จากนั้นจึงนำข้อมูลไปใช้ในโมเดลที่มีการปรับแต่ง hyperparameter ซึ่งก็อาจจะต้องมีการปรับแต่งไปมาเช่นเดียวกัน
+
+### 4.1 สำรวจข้อมูลเบื้องต้น
+
+```{r}
+train %>% 
+  glimpse()
+```
+
+ปรับเปลี่ยนสถานะของตัวแปรให้ถูกประเภท คราวนี้เราจะทำทุกอย่างภายใต้ recipe เพื่อสร้าง pipeline ที่ใช้ในการปรับแต่งข้อมูลให้สามารถใช้ในกรณีทั่วไปได้
+
+```{r}
+train_preproced <- recipe(G3 ~. , data = train) %>% 
+  ## ?step_mutate_at()
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = ~factor(.)) %>% 
+  prep() %>% 
+  juice()
+```
+
+จากนั้นเราลองสำรวจ distribution ของตัวแปรอิสระทุกตัวคร่าว ๆ ก่อน โดยจำแนกเป็นตัวแปรเชิงปริมาณและตัวแปรจัดประเภท
+
+
+note: 
+
+1. absences เบ้ขวามาก ควรแก้ปัญหา เช่น แปลงด้วย power function หรือทำ discretization
+
+2. age มีค่าที่เป็นไปได้น้อย อาจปรับเป็นตัวแปรจัดประเภท เช่น เด็กมัธยมต้น/ปลาย อะไรแนวนี้ แต่ก็ดูอีกที
+
+3. failures สังเกตว่ามี majority อยู่กลุ่มเดียวอาจทำให้ตัวแปรนี้มีความแปรปรวนต่ำ ถ้ารันรอบแรกไม่ work อาจลองแบ่งเป็นสองกลุ่มคือ ไม่เคยสอบตก กับสอบตก แต่ก็ดูอีกทีเหมือนกัน
+
+4. G2 กับ G3 ดูโอเค
+
+
+```{r}
+train_preproced %>% 
+  select_if(is.numeric) %>% 
+  pivot_longer(cols = everything()) %>%
+  ggplot(aes(x = value)) + geom_histogram() +
+  facet_wrap(~name, scale = "free")
+```
+
+สำหรับตัวแปรจัดประเภทพบว่ามีตัวแปรหลายตัวที่การแจกแจงไม่สมดุล ซึ่งสะท้อนว่ามี variance ต่ำ และไม่มีความสามารถในการทำนาย เราอาจจะ screen หาตัวแปรพวกนี้เอาไว้เบื้องต้นก่อน
+
+
+```{r}
+train_preproced %>% 
+  select_if(is.factor) %>% 
+  pivot_longer(cols = everything()) %>%
+  ggplot(aes(x = value)) + geom_bar() +
+  facet_wrap(~name, scale = "free")
+```
+
+
+ใน recipe มีฟังก์ชัน `step_zv()` และ `step_nzv()` ช่วยในการคัดเลือกตัวแปรที่มีความแปรปรวนต่ำ ๆ ออกไป ซึ่งเป็นการคัดเลือกตัวแปรที่มีความสำคัญน้อย ๆ ออกไป
+
+```{r}
+recipe(G3 ~. , data = train) %>% 
+  ## ?step_mutate_at()
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = ~factor(.)) %>% 
+  ## step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  prep() %>% tidy(2)
+```
+
+เราสามารถคำนวณ freq_ration ได้เองด้วยง่าย ๆ 
+
+```{r}
+train %>%
+  mutate_at(vars(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health), 
+            factor)  %>% 
+  select_if(is.factor) %>% 
+  pivot_longer(cols = everything()) %>%
+  group_by(name, value) %>% 
+  summarise(p = n()/nrow(train)) %>% 
+  slice_max(p, n = 2) %>% 
+  group_by(name) %>% 
+  ## calculate the frequency ratio
+  mutate(freq_ratio = max(p)/min(p)) %>% 
+  ungroup() %>% 
+  select(name, freq_ratio) %>% 
+  unique() %>%
+  slice_max(freq_ratio, n=5) %>% 
+  ungroup() -> nzv_vars
+
+nzv_vars
+```
+
+### 4.2 ลองสำรวจ missing value
+
+```{r}
+train %>% 
+  select_if(~any(is.na(.)))
+```
+
+### 4.3 การตรวจสอบค่าผิดปกติ
+
+การตรวจสอบค่าผิดปกติเป็นกระบวนการที่ควรทำทั้งก่อนและภายหลังการสร้างโมเดล
+
+- ก่อนการสร้างโมเดลเราสามารถตรวจสอบจากการแจกแจงของข้อมูลโดยตรงว่ามีค่าผิดปกติในเชิงที่เป็นไปไม่ได้มั้ย? หรือมีค่าผิดปกติที่เป็นค่าสุดโต่งในตัวแปรไหนบ้าง?
+
+- หลังการสร้างโมเดล เราสามารถตรวจสอบได้ว่ามีค่าสังเกตใดที่อยู่นอกเหนือแนวโน้มการทำนายของโมเดลอย่างผิดปกติบ้าง และค่าสังเกตนั้นมีอิทธิพลต่อการเรียนรู้ของโมเดลหรือไม่อย่างไร
+
+### 4.4 ตรวจสอบความสัมพันธ์ระหว่างตัวแปรตามและตัวแปรอิสระ
+
+```{r}
+## install.packages("vip")
+library(vip)
+```
+
+
+"lm/glm - In (generalized) linear models, variable importance is typically based on the absolute value of the corresponding t-statistics (Bring, 1994). For such models, the sign of the original coefficient is also returned. By default, type = "stat" is used; however, if the inputs have been appropriately standardized then the raw coefficients can be used with type = "raw". Note that Bring (1994) provides motivation for using the absolute value of the associated t-statistics."
+
+$$
+VIP_j = |\frac{\beta_j}{SE(\beta_j)}|
+$$
+
+```{r}
+baseline_rec <- recipe(G3 ~. , data = train) %>% 
+  ## ?step_mutate_at()
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = ~factor(.)) %>% 
+  prep() %>% juice()
+
+library(vip)
+simple_logit <- function(data, x) {
+  library(vip)
+  fit_glm <- glm(as.formula(paste("G3 ~", x)), data = data, family = "binomial")
+  vi(fit_glm) 
+}
+
+vips <- map_df(.x = names(baseline_rec %>% select(-G3)), 
+        .f = ~ simple_logit(data = baseline_rec %>% mutate(G3 = 1-(as.numeric(G3) - 1)), 
+                            x = .x))
+vips %>% 
+  arrange(desc(Importance))
+```
+
+พิจารณาว่าจะเกิดปัญหา multicollinearity มั้ย
+
+```{r}
+baseline_rec %>% 
+  select(Walc)
+fit_all <- glm(G3 ~ ., data = baseline_rec %>% mutate(G3 = 1-(as.numeric(G3) - 1)))
+
+library(car)
+vif(fit_all) %>%
+  data.frame() %>% 
+  rownames_to_column() %>% 
+  arrange(desc(GVIF))
+```
+
+```{r}
+vif(fit_all) %>%
+  data.frame() %>% 
+  rownames_to_column() %>% 
+  arrange(desc(GVIF)) %>% 
+  filter(GVIF > 4) %>% 
+  pull(rowname) -> multi_features
+multi_features
+```
+
+```{r}
+fit_all %>% 
+  predict() %>%
+  data.frame() %>% 
+  rename(pred_prob = 1) %>% 
+  mutate(pred_class = ifelse(pred_prob > 0.5, 1, 0)) %>% 
+  mutate(pred_class = factor(pred_class, levels = c(1, 0), labels = c("Success", "Fail"))) %>%
+  bind_cols(baseline_rec %>% select(G3))  %>% 
+  conf_mat(truth = G3, estimate = pred_class)
+```
+
+
+## 5. ทดลอง train โมเดล
+
+
+
+
+
+
+
+
+
+
+
