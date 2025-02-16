@@ -1,0 +1,491 @@
+---
+title: "assignment1"
+format: html
+editor: visual
+---
+
+obj: จะสร้างโมเดลจำแนก (classification model)
+
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+
+data <- read_delim("student-mat.csv", delim = ";")
+data <- data %>% 
+  mutate(G3 = ifelse(G3 >=10, "pass","fail"))
+data$G3 %>% table()
+dim(data)
+```
+
+ลองเปรียบเทียบถ้าทำ regression
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.7, strata = G3)
+split
+train <- training(split)
+test <- testing(split)
+
+library(patchwork)
+train %>% 
+  ggplot(aes(x=G3)) + geom_histogram(bins=20) +
+test %>% 
+  ggplot(aes(x=G3)) + geom_histogram(bins=20)
+```
+
+
+## 1. Data Splitting
+
+แบ่งข้อมูลออกเป็นสองส่วน
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = G3)
+split
+train <- training(split)
+test <- testing(split)
+
+train %>% 
+  ggplot(aes(x=G3)) + geom_bar() +
+test %>% 
+  ggplot(aes(x=G3)) + geom_bar()
+```
+
+
+## 2. EDA + Feature Engineering
+
+- ทำความเข้าใจข้อมูลก่อน
+
+- สำรวจ/ปรับเปลี่ยนสถานะของตัวแปรในชุดข้อมูล
+
+- สำรวจการแจกแจงของข้อมูล
+
+- สำรวจ missing value
+
+- สำรวจ outlier
+
+- สำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+- สำรวจความสัมพันธ์ระหว่างตัวแปรอิสระด้วยกัน (เฉพาะที่ใช้ตระกูล linear model)
+
+```{r}
+baseline_rec <- recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  prep() %>% 
+  juice()
+```
+
+
+### 2.1 การสำรวจการแจกแจงของข้อมูล
+
+```{r}
+baseline_rec %>% 
+  select_if(is.numeric) %>% 
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram()+
+  theme_light()+
+  facet_wrap(~name, scale = "free")
+
+baseline_rec %>% 
+  select_if(is.numeric) %>% 
+  count(age)
+```
+note:
+
+1. ตัวแปร `absences` มีลักษณะเบ้ขวามาก ๆ เลย อาจมี outliers อาจจะต้องแก้ปัญหาด้วยการ transform โดยใช้ power function หรือเราอาจจะแปลงตัวแปรนี้เป็นตัวแปรจัดประเภท (discretization)
+
+2. ตัวแปร `age` กับ `failure` มีค่าที่เป็นไปได้ค่อนข้างน้อย ดังนั้นเราอาจพิจารณาปรับให้เป็นตัวแปรจัดประเภท ก็ได้
+
+
+```{r}
+recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x=age, fill = G3))+
+  geom_bar(position = "fill")+
+  ggtitle("100% Stacked Bar plot")
+```
+
+
+```{r}
+baseline_rec %>% 
+  select_if(is.factor) %>% 
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x=value))+
+  geom_bar()+
+  theme_light()+
+  facet_wrap(~name, scale = "free")
+```
+
+
+ใน recipe มีฟังก์ชันสองตัว
+
+- `step_zv()` ใช้คัดเลือกตัวแปรที่มี variance = 0 ออกจากชุดข้อมูล <-- ตัวแปรนั้นจะมีค่าสังเกตเพียง 1 แบบ
+
+- `step_nzv()` ใช้คัดเลือกตัวแปรที่มี variance ใกล้ 0 ออกจากชุดข้อมูล
+
+```{r}
+baseline_rec <- recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  prep() %>% 
+  juice()
+```
+
+
+
+### 2.2 การสำรวจ missing value --- ไม่มี
+
+### 2.3 การสำรวจ outlier
+
+### 2.4 การสำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+- ใช้ visualization ระหว่าง y กับ x
+
+- ใช้ simple logistic regression ดูความสัมพันธ์ระหว่างคู่ของตัวแปรตามกับอิสระ
+
+แนะนำ library-vip
+
+```{r}
+## install.packages("vip")
+library(vip)
+fit_glm <- glm(G3 ~ absences, data = baseline_rec, family= "binomial")
+vi(fit_glm)
+```
+
+$$
+VIP_j = |\frac{b_j}{SE(b_j)}|
+$$
+
+```{r}
+## สร้างฟังก์ชันในการหา vi ก่อน
+vi_calculator <- function(data, x){
+  fit_glm <- glm(as.formula(paste0("G3 ~", x)),  ## สร้างสูตรการทำนายในโมเดล
+                 data = data, family= "binomial")
+  vi(fit_glm)
+}
+
+feature_list <- names(baseline_rec %>% select(-G3))
+
+vip_data <- map_df(.x = feature_list,
+       .f = ~vi_calculator(baseline_rec, .x)) %>% 
+  arrange(desc(Importance)) %>% 
+  filter(Importance > 2)
+
+vip_data
+```
+
+สำรวจความสัมพันธ์ระหว่างตัวแปรอิสระด้วยกัน
+
+```{r}
+fit_all <- glm(G3 ~ . ,data = baseline_rec, 
+               family = "binomial",
+               control = list(maxit = 50))
+library(car)
+vif(fit_all) %>% 
+  data.frame() %>% 
+  rownames_to_column() %>%
+  arrange(desc(GVIF)) %>% 
+  filter(GVIF > 4)
+```
+
+ประสิทธิภาพของ baseline model
+
+```{r}
+test_preproced <- recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  prep() %>% 
+  bake(new_data = test)
+
+test_preproced %>% glimpse()
+
+fit_all %>% 
+  predict(newdata = test_preproced,
+          type = "response") %>% 
+  data.frame() %>% 
+  rename(pred_prob = 1) %>% 
+  mutate(pred_class =ifelse(pred_prob > 0.5 ,1,0)) %>%
+  mutate(pred_class = factor(pred_class, 
+                             levels=c(0,1),
+                             labels=c("fail","pass"))) %>% 
+  bind_cols(test_preproced %>% select(G3)) %>% 
+  conf_mat(truth = G3, estimate = pred_class)
+
+fit_all %>% 
+  predict(newdata = test_preproced,
+          type = "response") %>% 
+  data.frame() %>% 
+  rename(pred_prob = 1) %>% 
+  mutate(pred_class =ifelse(pred_prob > 0.5 ,1,0)) %>%
+  mutate(pred_class = factor(pred_class, 
+                             levels=c(0,1),
+                             labels=c("fail","pass"))) %>% 
+  bind_cols(test_preproced %>% select(G3)) %>% 
+  conf_mat(truth = G3, estimate = pred_class) %>% 
+  summary()
+```
+
+
+## 3. Train model
+
+
+```{r}
+### preprocessing model
+basic_rec <- recipe(G3 ~. ,data= train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors())
+
+
+### basic_preproc + feature selection
+select_features <- vip_data %>% pull(Variable)
+
+basic_selected_rec <- recipe(G3 ~. ,data= train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>%
+  step_select(G3, G1, G2, failures, higher,guardian,age, Fjob, romantic) %>%
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) 
+
+```
+
+
+ระบุโมเดลการเรียนรู้
+
+
+```{r}
+# logistic regression
+log_reg <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+## lasso regression
+lasso_reg <- logistic_reg(penalty = tune(), mixture = 1) %>%
+  set_engine("glmnet") %>%
+  set_mode("classification")
+
+## ridge regression
+ridge_reg <- logistic_reg(penalty = tune(), mixture = 0) %>%
+  set_engine("glmnet") %>%
+  set_mode("classification")
+```
+
+
+
+### 3.1 สร้าง workflow ของ logistic regression 
+
+```{r}
+log_wf <- workflow() %>% 
+  add_recipe(basic_rec) %>% 
+  add_model(log_reg)
+
+lof_wf_selected <- workflow() %>% 
+  add_recipe(basic_selected_rec) %>% 
+  add_model(log_reg)
+```
+
+สร้าง 10 folds ทำซ้ำ 3 รอบ
+
+```{r}
+set.seed(123)
+my_folds <- vfold_cv(data = train,
+                     v = 10,
+                     repeats = 3,
+                     strata = G3)
+##   fit() ## จะfit ได้กับข้อมูลแค่ 1 ชุดเท่านั้น
+##   fit_resamples()
+##   tune_grid()
+
+### allin
+log_res <- log_wf %>%
+  fit_resamples(
+    resamples = my_folds,
+    metrics = metric_set(accuracy, roc_auc, precision, recall, spec, f_meas),
+    control = control_resamples(save_pred = TRUE)
+  )
+## selected var
+log_selected_res <- lof_wf_selected %>%
+  fit_resamples(
+    resamples = my_folds,
+    metrics = metric_set(accuracy, roc_auc, precision, recall, spec, f_meas),
+    control = control_resamples(save_pred = TRUE)
+  )
+
+log_res %>% collect_metrics()
+log_selected_res %>% collect_metrics()
+
+log_res %>% collect_metrics(summarize = FALSE) %>% 
+  mutate(model = "log_res") %>% 
+  bind_rows(
+  log_selected_res %>% collect_metrics(summarize = FALSE) %>% 
+    mutate(model = "log_selected_res")
+  ) %>% 
+  ggplot(aes(y = .estimate, x= .metric))+
+  geom_boxplot()+
+  geom_jitter(width = 0.1)+
+  ylim(0,1)+
+  facet_wrap(~model)
+```
+
+
+```{r}
+log_res %>% 
+  collect_predictions() %>% 
+  group_by(id2) %>% 
+  roc_curve(truth = G3, .pred_fail) %>% 
+  ggplot(aes(x=1-specificity, y=sensitivity))+
+  geom_path(aes(col = id2))+
+  geom_abline(slope =1, intercept = 0, linetype = 2)+
+  theme_light()+
+  coord_obs_pred()
+```
+
+
+
+### 3.2 สร้าง workflow ของ lasso logistic regression 
+
+
+```{r}
+lasso_wf <- workflow() %>% 
+  add_recipe(basic_rec) %>% 
+  add_model(lasso_reg)
+
+# กำหนด grid ของ parameters
+penalty_grid <- grid_regular(
+  penalty(range = c(-4, 0), trans = log10_trans()),
+  levels = 50
+)
+
+### regular grid
+# หรือระบุค่าโดยตรง:
+# penalty_grid <- tibble(penalty = c(0.0001, 0.001, 0.01, 0.1, 1))
+
+# ทำ tuning
+set.seed(123)
+log_tune_res <- lasso_wf %>%
+  tune_grid(
+    resamples = my_folds,
+    metrics = metric_set(accuracy, roc_auc, precision, recall, spec, f_meas),
+    grid = penalty_grid,
+    control = control_grid(save_pred = TRUE)
+  )
+
+log_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(.metric == "roc_auc") %>% 
+  ggplot(aes(x = penalty, y=mean))+
+  geom_line()+
+  geom_point()
+
+log_tune_res %>% show_best(metric = "roc_auc", n =1)
+log_tune_res %>% show_best(metric = "f_meas", n =1)
+
+best_lasso <- log_tune_res %>% select_best(metric = "roc_auc")
+```
+
+### 3.3 Finalized workflow
+
+```{r}
+last_fit <- lasso_wf %>%
+  finalize_workflow(best_lasso) %>% 
+  fit(data = train)
+
+last_fit %>% 
+  predict(new_data = test) %>% 
+  bind_cols(test %>% select(G3)) %>% 
+  mutate(G3 = factor(G3)) %>% 
+  conf_mat(truth = G3, estimate = .pred_class) %>% 
+  summary() %>% 
+  mutate(model = "lasso")
+```
+
+
+```{r}
+last_fit <- lasso_wf %>%
+  finalize_workflow(best_lasso) %>% 
+  last_fit(split,metrics = metric_set(accuracy, roc_auc, precision, recall, spec, f_meas))
+## test data performance
+last_fit %>% collect_metrics() %>% 
+  mutate(model = "lasso")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

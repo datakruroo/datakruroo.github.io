@@ -1,0 +1,291 @@
+---
+title: "4. Social Network Data Management"
+bibliography: bib.bib
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: today
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color:  #C5705D;
+      }
+      </style>
+---
+
+
+## {.smaller}
+
+```{r echo TRUE}
+## install.packages("xUNINET")
+## install.packages("igraph")
+library(xUCINET)
+library(igraph)
+```
+
+
+## R library {.smaller}
+
+- `xUCINET` รองรับการวิเคราะห์เครือข่ายที่มีโครงสร้างซับซ้อน
+
+- `igraph` รองรับการวิเคราะห์เครือข่ายและสร้าง visualization ของเครือข่าย
+
+- `statnet` library ที่มีฟังก์ชันเชิงสถิติสำเร็จรูปของเครือข่าย
+
+- `Rsiena` ใช้วิเคราะห์ dynamic network analysis
+
+
+## Data Storage {.smaller}
+
+CSV หรือ Spreadsheet เป็นรูปแบบทั่วไปที่ใช้เก็บข้อมูลประเภทเครือข่าย
+
+- ควรจัดเก็บข้อมูลแต่ละเครือข่ายเป็นไฟล์ CSV แยกกัน หรือถ้าเป็น Excel Spreadsheet ก็ควรเก็บแยก sheet
+
+- ควรมีไฟล์สำหรับเก็บ attribute data ของ node แยกต่างหาก
+
+- รูปแบบข้อมูลเครือข่าย อาจมี 3 รูปแบบ
+
+  - Adjacency matrix
+  
+  - Edgelist
+  
+  - Nodelist
+
+## Data Storage {.smaller}
+
+- การตั้งชื่อไฟล์ควรมีรูปแบบการตั้งชื่อที่รัดกุมเพื่อป้องกันความสับสน เช่น ชื่อของไฟล์อาจประกอบด้วย
+
+  - ชื่อแหล่งข้อมูล (ถ้ามี)
+  
+  - ชื่อ Project
+  
+  - ชื่อเครือข่าย
+  
+  - รูปแบบการเก็บข้อมูลเครือข่าย เช่น AM, Edge, Node
+
+
+## Adjacency Matrix Format {.smaller}
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r echo = T}
+Hawthorne_BankWiring$Conflict
+```
+
+
+เป็นเมทริกซ์สมมาตรหรือไม่ ?
+
+```{r echo = T}
+isSymmetric(Hawthorne_BankWiring$Conflict)
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+
+
+```{r echo = T}
+Hawthorne_BankWiring$Friendship
+```
+
+เป็นเมทริกซ์สมมาตรหรือไม่ ?
+
+```{r echo = T}
+isSymmetric(Hawthorne_BankWiring$Friendship)
+```
+
+
+:::
+
+::::
+
+
+
+## Adjacency Matrix Format {.smaller}
+
+```{r echo = T}
+Baker_Journals$CoCitations
+```
+
+เป็นเมทริกซ์สมมาตรหรือไม่ ?
+
+```{r echo = T}
+isSymmetric(Baker_Journals$CoCitations)
+```
+
+## Checklist สำหรับ adjacency matrix 1 {.smaller}
+
+- **ข้อมูลเป็นแบบ one-mode หรือไม่** ถ้าใช่
+
+  - adjacency matrix ต้องเป็น square matrix
+  
+  - ให้ตรวจสอบสมาชิกในแนวทแยงมุมของเมทริกซ์
+
+- **Network Direction** เครือข่ายเป็นแบบไหน ถ้าเป็นแบบ undirected network แล้ว adjacency matrix เป็นเมทริกซ์สมมาตรหรือไม่
+
+
+- **Labels** ชื่อที่ใช้เป็น label ให้กับ node มีความซ้ำซ้อนกันหรือไม่ ระวังเรื่องการใช้อักขระพิเศษ และหากเป็น one-mode network รายชื่อตามแถวและคอลัมน์เหมือนกันหรือไม่
+
+  - หากต้องการใช้ label เป็นตัวเลข ควรใส่ตัวอักษไว้หน้าตัวเลขด้วย เช่น `a1, a2, ...`
+  
+  - ไม่แนะนำให้ใช้อักขระพิเศษใน label
+  
+  - ไม่ควรเว้นช่องว่างใน label หากจำเป็นต้องมีควรใช้เครื่องหมาย `_` คั่นกลางระหว่างคำ
+  
+  - label ที่เป็นตัวอักษรจะต้องสะกดให้เหมือนกันทุกครั้งในทุกไฟล์ข้อมูล ระวังเรื่องอักษรตัวเล็ก/ใหญ่
+
+
+## Checklist สำหรับ adjacency matrix 2 {.smaller}
+
+- **มีปัญหา missing value หรือไม่** ถ้ามีตรวจสอบอีกครั้งว่า missing ที่เกิดขึ้นเป็นเพราะปัญหา non-response หรือเกิดจากการบันทึกหรือจัดการข้อมูล
+
+  - node missing -- ไม่ได้ข้อมูลของผู้ตอบหรือ node มาทั้งชุด กรณีนี้ควรรวม node ที่หายไปใน adjacency matrix และแทนที่ missing value ทั้งหมดใน matrix ด้วย `NA` หรือสัญลักษณ์อื่นที่เหมาะสม
+  
+  - edge missing -- ข้อมูลที่เก็บรวบรวมมาไม่สมบูรณ์ เช่น อาจมีหน่วยข้อมูลบางหน่วยไม่ตอบแบบสอบถาม หรือความผิดพลาดระหว่างกระบวนการเก็บรวบรวม บันทึก หรือจัดกระทำข้อมูล
+  
+
+
+- **มีค่าผิดปกติใน matrix หรือไม่** เช่น binary matrix ควรมีค่า 0, 1 หรือ `NA` ที่ใช้แทน missing value การมีค่าอื่นนอกเหนือจากนี้เป็นไปได้หรือไม่
+
+
+
+## Edgelist format 1 {.smaller}
+
+ชุดข้อมูลเครือข่ายแบบ edgelist ประกอบด้วยตารางข้อมูลที่มีแถวจำนวน n แถว และมีคอลัมน์จำนวนอย่างน้อย 2 คอลัมน์
+
+- แต่ละแถวแทนคู่ความสัมพันธ์ระหว่าง node ภายใต้เครือข่าย
+
+- สำหรับ directed network คอลัมน์แรกคือ sender และคอลัมน์ที่สองคือ receiver
+
+- เราสามารถใส่น้ำหนักหรือค่า attribute ของเส้นเชื่อมในคอลัมน์ที่ 3 ได้
+
+
+
+## Edgelist format 2 {.smaller}
+
+ตัวอย่างการเก็บข้อมูล `Hawthorne_BankWiring$Conflict` บน edgelist
+
+```{r echo = T}
+library(tidyverse)
+Hawthorne_BankWiring$Conflict %>% data.frame() %>% 
+  rownames_to_column("node1") %>% 
+  pivot_longer(cols = -node1, names_to = "node2", values_to = "tie") %>% 
+  filter(tie > 0) %>% 
+  select(-tie)
+```
+
+
+
+## Edgelist format 3 {.smaller}
+
+ตัวอย่างการเก็บข้อมูล `Hawthorne_BankWiring$Conflict` บน edgelist
+
+```{r echo = T}
+library(tidyverse)
+Baker_Journals$CoCitations %>% 
+  data.frame() %>% 
+  rownames_to_column("node1") %>% 
+  pivot_longer(cols = -node1, names_to = "node2", values_to = "num_citation") %>% 
+  filter(num_citation > 0)
+```
+
+
+## Checklist สำหรับ edgelist {.smaller}
+
+- **รูปแบบ**
+
+  - จะอยู่ในรูปแบบ long format โดยมีคอลัมน์อย่างน้อย 2 คอลัมน์
+
+  - ตรวจสอบกรณีที่มีคู่ความสัมพันธ์เดียวกันปรากฎหลายครั้งในชุดข้อมูล ซึ่งอาจเป็นความผิดพลาด หรืออาจเป็นเพราะยังไม่ได้ preprocess ข้อมูล
+  
+- **Isolate note** การเก็บข้อมูลในรูปแบบ edgelist จะไม่ปรากฏ node ที่เป็น isolate รวมทั้ง missing node ด้วย เนื่องจาก edgelist จะบันทึกเฉพาะคู่ความสัมพันธ์ (ties) เท่านั้น
+
+  - สำหรับ one-mode data คือใส่ self tie ด้วยค่าเท่ากับ 0 ในคอลัมน์ที่ 3
+  
+  - เพิ่ม node ที่เป็น isolate ตอนนำข้อมูลเข้าภายหลัง
+  
+- **สำหรับ missing data** ให้เพิ่มแถวของคู่สัมพันธ์ที่หายไป แล้วใส่ `NA` ในคอลัมน์ที่ 3
+
+- **undirected or directed network?** หากเป็น undirected ลำดับของคู่สัมพันธ์จะไม่มีความแตกต่างกัน ดังนั้นควรปรากฏคู่สัมพันธ์เพียงครั้งเดียว
+
+## Nodelist format  {.smaller}
+
+```{r echo = T, eval = F}
+nodelist <- Hawthorne_BankWiring$Conflict %>% data.frame() %>% 
+  rownames_to_column("node1") %>% 
+  pivot_longer(cols = -node1, names_to = "node2", values_to = "tie") %>% 
+  filter(tie > 0) %>% 
+  select(-tie) %>% 
+  group_by(node1) %>% 
+  summarise(node2 = list(node2), .groups = "drop")
+
+all_nodes <- tibble(node1 = rownames(Hawthorne_BankWiring$Conflict))
+nodelist <- left_join(all_nodes, nodelist, by = "node1") %>%
+  mutate(node2 = replace_na(node2, list(character(0)))) 
+
+library(purrr)
+nodelist %>%
+  mutate(node2_str = map_chr(node2, ~ paste(.x, collapse = ", "))) %>%
+  select(node1, node2_str)
+```
+
+
+## Nodelist format  {.smaller}
+
+- ประหยัดพื้นที่มากที่สุด
+
+- ชื่อแรกแสดงโหนดที่ส่งความสัมพันธ์หรือ ego และชื่อที่ตามมาคือโหนดที่รับความสัมพันธ์หรือ alter
+
+- เป็นรูปแบบที่รองรับ Isolate -- มีชื่อในคอลัมน์แรกและว่างในคอลัมน์ถัดไป
+
+- เหมาะกับเครือข่ายแบบ binary แต่หากเป็น value network ควรบันทึกค่าความสัมพันธ์แยกไว้อีกไฟล์
+
+```{r}
+nodelist <- Hawthorne_BankWiring$Conflict %>% data.frame() %>% 
+  rownames_to_column("node1") %>% 
+  pivot_longer(cols = -node1, names_to = "node2", values_to = "tie") %>% 
+  filter(tie > 0) %>% 
+  select(-tie) %>% 
+  group_by(node1) %>% 
+  summarise(node2 = list(node2), .groups = "drop")
+
+all_nodes <- tibble(node1 = rownames(Hawthorne_BankWiring$Conflict))
+nodelist <- left_join(all_nodes, nodelist, by = "node1") %>%
+  mutate(node2 = replace_na(node2, list(character(0)))) 
+
+library(purrr)
+nodelist %>%
+  mutate(node2_str = map_chr(node2, ~ paste(.x, collapse = ", "))) %>%
+  select(node1, node2_str)
+```
+
+
+

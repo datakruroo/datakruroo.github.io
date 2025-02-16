@@ -5,38 +5,35 @@ editor: visual
 echo: false
 ---
 
-
 ## 1. ความหมายความสำคัญของ Feature Engineering
 
-- Feature Engineering คือกระบวนการแปลงหรือปรับแต่งข้อมูลดิบ (raw data) ให้อยู่ในรูปแบบที่เหมาะสมสำหรับการสร้างโมเดลการเรียนรู้ของเครื่อง 
+-   Feature Engineering คือกระบวนการแปลงหรือปรับแต่งข้อมูลดิบ (raw data) ให้อยู่ในรูปแบบที่เหมาะสมสำหรับการสร้างโมเดลการเรียนรู้ของเครื่อง
 
-- การสร้างโมเดล ML หากไม่มีการเตรียมข้อมูลที่ดี โมเดลก็อาจไม่สามารถเรียนรู้รูปแบบที่สำคัญจากข้อมูลได้อย่างมีประสิทธิภาพ
+-   การสร้างโมเดล ML หากไม่มีการเตรียมข้อมูลที่ดี โมเดลก็อาจไม่สามารถเรียนรู้รูปแบบที่สำคัญจากข้อมูลได้อย่างมีประสิทธิภาพ
 
-- Feature Engineering มีความสำคัญดังนี้
+-   Feature Engineering มีความสำคัญดังนี้
 
-1. เพิ่มประสิทธิภาพของโมเดล
+1.  เพิ่มประสิทธิภาพของโมเดล
 
-2. ลดข้อจำกัดของข้อมูล
+2.  ลดข้อจำกัดของข้อมูล
 
-3. ช่วยให้การแปลความหมายชัดเจนขึ้น เข้าใจได้มากขึ้น หรือช่วยให้เราพบ insight ที่ซ่อนอยู่ในข้อมูล
+3.  ช่วยให้การแปลความหมายชัดเจนขึ้น เข้าใจได้มากขึ้น หรือช่วยให้เราพบ insight ที่ซ่อนอยู่ในข้อมูล
 
+-   ควรทำ feature engineering ตอนไหน?
 
-- ควรทำ feature engineering ตอนไหน?
+1.  ก่อนที่จะ train model
 
-1. ก่อนที่จะ train model
+2.  ระหว่างที่ train model
 
-2. ระหว่างที่ train model
-
-3. หลังจากที่ train model แล้ว
-
+3.  หลังจากที่ train model แล้ว
 
 ### 1.1 หลักการสำคัญในการทำ feature engineering
 
-- ทำความเข้าใจข้อมูลเสมอ ได้แก่ ทราบสถานะของข้อมูล ทำความเข้าใจการแจกแจงของข้อมูล เข้าใจความสัมพันธ์เบื้องต้นระหว่างตัวแปร
+-   ทำความเข้าใจข้อมูลเสมอ ได้แก่ ทราบสถานะของข้อมูล ทำความเข้าใจการแจกแจงของข้อมูล เข้าใจความสัมพันธ์เบื้องต้นระหว่างตัวแปร
 
-- มีเป้าหมายในการดำเนินงานที่ชัดเจน มีตัวชี้วัด
+-   มีเป้าหมายในการดำเนินงานที่ชัดเจน มีตัวชี้วัด
 
-- ระวังการเกิดปัญหา data leakage : กระบวนการนี้ทำบน training data เท่านั้น
+-   ระวังการเกิดปัญหา data leakage : กระบวนการนี้ทำบน training data เท่านั้น
 
 ## 2. เตรียมชุดข้อมูล
 
@@ -62,13 +59,13 @@ glimpse(train)
 
 ## 3. ประเภทของ Feature Engineering
 
-- Encoding Categorical Variables
+-   Encoding Categorical Variables
 
-- Transforming Numerical Variables
+-   Transforming Numerical Variables
 
-- Interaction Terms
+-   Interaction Terms
 
-- Handling Missing Data
+-   Handling Missing Data
 
 การทำ feature engineering ใน tidymodels จะใช้ library-{recipe}
 
@@ -94,7 +91,6 @@ lm_rec_trained %>%
   bake(new_data =test)
 ```
 
-
 ```{r}
 library(tidymodels)
 
@@ -114,7 +110,6 @@ lm_wf <- workflow() %>%
   add_model(lm_mod)
 ```
 
-
 ```{r}
 v <- vfold_cv(train, v=5, repeats = 3, strata = G3)
 
@@ -124,8 +119,6 @@ lm_resample <- lm_wf %>%
 lm_resample %>% collect_metrics(summarize = F)
 lm_resample %>% collect_predictions()
 ```
-
-
 
 ## 4. Encoding Categorical Variables
 
@@ -148,14 +141,11 @@ recipe(G3 ~. ,data= train) %>%
   count(Mjob)
 ```
 
-
 ```{r}
 train %>% 
   mutate(G1_intervel = cut(G1, breaks = 5)) %>%
   select(G1, G1_intervel)
 ```
-
-
 
 ```{r}
 ## install.packages("embed")
@@ -198,23 +188,19 @@ recipe(romantic ~ ., data= train) %>%
 
 ```
 
+Note:
 
-Note: 
+-   `step_discretize_cart()` และ `step_discretize_xgb()` ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ
 
-- `step_discretize_cart()` และ `step_discretize_xgb()` ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ
+-   `step_lencode_glm()` เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้
 
+1.  สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor
 
-- `step_lencode_glm()` เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้
+2.  ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ
 
-1. สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor 
+-   `step_lencode_bayes()` หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ `step_lencode_bayes()` จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม
 
-2. ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ
-
-- `step_lencode_bayes()` หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ `step_lencode_bayes()` จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม
-
-- `step_lencode_mixed()` หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data 
-
-
+-   `step_lencode_mixed()` หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data
 
 ```{r}
 library(embed)
@@ -224,12 +210,11 @@ recipe(G3 ~ ., data = train) %>%
   juice()
 ```
 
-- `step_woe()` ใช้ทำ weight of evidence (WOE) หรือ information value (IV) ในการแปลง factor ให้เป็นตัวเลข วิธีการนี้ใช้กับ binary-classification taskขั้นตอนของวิธีการนี้คือ
+-   `step_woe()` ใช้ทำ weight of evidence (WOE) หรือ information value (IV) ในการแปลง factor ให้เป็นตัวเลข วิธีการนี้ใช้กับ binary-classification taskขั้นตอนของวิธีการนี้คือ
 
-1. คำนวณค่า WOE ซึ่งมีค่าเท่ากับ log(odds) ของการเกิด outcome ที่สนใจจำแนกตาม level ของ factor ที่ต้องการแปลง หากใน level ไหนของ factor ไม่มี event หรือ non-event จะใช้เทคนิค Laplace Smoothing เพื่อเลี่ยงการหารด้วย 0
+1.  คำนวณค่า WOE ซึ่งมีค่าเท่ากับ log(odds) ของการเกิด outcome ที่สนใจจำแนกตาม level ของ factor ที่ต้องการแปลง หากใน level ไหนของ factor ไม่มี event หรือ non-event จะใช้เทคนิค Laplace Smoothing เพื่อเลี่ยงการหารด้วย 0
 
-2. แทน factor level แต่ละตัวด้วย woe value
-
+2.  แทน factor level แต่ละตัวด้วย woe value
 
 ## 5. Transforming Numerical Variables
 
@@ -245,8 +230,6 @@ recipe(G3 ~ . ,data= train) %>%
   ggplot(aes(x = absences))+
   geom_histogram()
 ```
-
-
 
 ```{r eval = F}
 
@@ -270,10 +253,9 @@ recipe(G3 ~ . ,data= train) %>%
 ?step_pls()
 ```
 
+Note:
 
-Note: 
-
-- `step_pls()` คือ Partial Least Squares (PLS) ซึ่งเป็นเทคนิค supervised dimensionality reduction และ feature extraction เพื่อสร้างตัวแปรใหม่ที่เป็น linear combination ของตัวแปรเดิมที่มีอยู่ (องค์ประกอบ) ที่มีความสัมพันธ์กับ outcome มากที่สุด 
+-   `step_pls()` คือ Partial Least Squares (PLS) ซึ่งเป็นเทคนิค supervised dimensionality reduction และ feature extraction เพื่อสร้างตัวแปรใหม่ที่เป็น linear combination ของตัวแปรเดิมที่มีอยู่ (องค์ประกอบ) ที่มีความสัมพันธ์กับ outcome มากที่สุด
 
 จะใช้ฟังก์ชันนี้ได้จะต้องมี library-mixOmics ติดตั้งก่อน ซึ่ง library ดังกล่าวอยู่ใน Bioconductor server สามารถติดตั้งได้ดังนี้
 
@@ -282,8 +264,6 @@ Note:
 pak::pak("mixOmics")
 ```
 
-
-
 ```{r}
 recipe(G3 ~ ., data = train) %>% 
   step_pls(all_numeric_predictors(), num_comp = 3, outcome = "G3") %>% 
@@ -291,8 +271,7 @@ recipe(G3 ~ ., data = train) %>%
   juice()
 ```
 
-- `step_ica()` เป็น feature extraction ในทำนองเดียวกับ pca เรียกชื่อเต็มว่า Independent Component Analysis (ICA) เทคนิคนี้จัดอยู่ในกลุ่ม unsupervised learning ในกลุ่ม dimensionality reduction หลักการคร่าว ๆ ของอัลกอริทึมนี้คือ สร้าง linear combination ที่เรียกว่า independent components การสร้าง ICs เหล่านี้จะมีวัตถุประสงค์คือพยายามให้แต่ละ ICs เป็นอิสระต่อกันมากที่สุด
-
+-   `step_ica()` เป็น feature extraction ในทำนองเดียวกับ pca เรียกชื่อเต็มว่า Independent Component Analysis (ICA) เทคนิคนี้จัดอยู่ในกลุ่ม unsupervised learning ในกลุ่ม dimensionality reduction หลักการคร่าว ๆ ของอัลกอริทึมนี้คือ สร้าง linear combination ที่เรียกว่า independent components การสร้าง ICs เหล่านี้จะมีวัตถุประสงค์คือพยายามให้แต่ละ ICs เป็นอิสระต่อกันมากที่สุด
 
 ## 6. Interaction Terms
 
@@ -302,29 +281,26 @@ recipe(G3 ~ ., data = train) %>%
 ?step_interact()
 ```
 
-
 หลักการหา interaction terms สามารถทำได้หลายวิธีการ ตั้งแต่วิธีการที่อิงทฤษฎี (theory-driven) ไปจนถึงวิธีการที่ใช้ข้อมูลเป็นฐาน (data-driven)
 
-
-1. theory-driven: ระบุ interaction term ด้วยทฤษฎี/ความรู้ความเข้าใจใน domain ของปัญหา เช่น การทำนายผลการเรียนของนักเรียน ปฏิสัมพันธ์ระหว่างเวลาที่ใช้ในการทบทวนบทเรียน กับ ความถี่ของการอภิปรายกับเพื่อนหรือครู อาจมีความสำคัญต่อการทำนายผลการเรียนดังกล่าวให้ดีขึ้น
+1.  theory-driven: ระบุ interaction term ด้วยทฤษฎี/ความรู้ความเข้าใจใน domain ของปัญหา เช่น การทำนายผลการเรียนของนักเรียน ปฏิสัมพันธ์ระหว่างเวลาที่ใช้ในการทบทวนบทเรียน กับ ความถี่ของการอภิปรายกับเพื่อนหรือครู อาจมีความสำคัญต่อการทำนายผลการเรียนดังกล่าวให้ดีขึ้น
 
 วิธีการนี้โดยเฉพาะทางการศึกษาจำเป็นที่จะต้องมีทฤษฎีหรือเหตุผลที่แข็งแกร่ง ชัดเจน รองรับการสร้าง interaction term ดังกล่าว
 
-2. ใช้หลักการระบุ interaction (Principle of Interaction Search ของ Wu and Hamada (2011)
+2.  ใช้หลักการระบุ interaction (Principle of Interaction Search ของ Wu and Hamada (2011)
 
-concept หลักของหลักการนี้ได้แก่ 
+concept หลักของหลักการนี้ได้แก่
 
-- interaction hierarchy: interaction ที่มีระดับสูงกว่า (higher degree of interaction) มีโอกาสน้อยลงที่จะอธิบาย variation ในตัวแปรตาม
+-   interaction hierarchy: interaction ที่มีระดับสูงกว่า (higher degree of interaction) มีโอกาสน้อยลงที่จะอธิบาย variation ในตัวแปรตาม
 
-- effect sparsity: มีเพียงส่วนน้อยของ effects ที่เป็นไปได้ทั้งหมดเท่านั้นที่อธิบาย variation ในตัวแปรตามได้อย่างมีนัยสำคัญ
+-   effect sparsity: มีเพียงส่วนน้อยของ effects ที่เป็นไปได้ทั้งหมดเท่านั้นที่อธิบาย variation ในตัวแปรตามได้อย่างมีนัยสำคัญ
 
-- effect heredity: interaction terms จะถูกพิจารณาต่อเมื่อ terms ที่มีระดับต่ำกว่า (preceding terms) ที่มีผลในการอธิบาย variation ในตัวแปรตามได้อย่างมีนัยสำคัญ
+-   effect heredity: interaction terms จะถูกพิจารณาต่อเมื่อ terms ที่มีระดับต่ำกว่า (preceding terms) ที่มีผลในการอธิบาย variation ในตัวแปรตามได้อย่างมีนัยสำคัญ
 
-  - Strong Heredity: interaction term จะถูกนำมาพิจารณาต่อเมื่อ main effects ทั้งหมดของตัวแปรที่เกี่ยวข้องใน interaction นั้น ๆ สามารถอธิบาย variation ได้อย่างมีนัยสำคัญ ตัวอย่างเช่น interaction   จะถูกพิจารณาต่อเมื่อ main effect ของ  และ  มีนัยสำคัญทั้งคู่
-  
-  - Weak Heredity: interaction term จะถูกนำมาพิจารณาต่อเมื่อ main effect อย่างน้อยหนึ่งตัวของตัวแปรที่เกี่ยวข้องใน interaction นั้น ๆ สามารถอธิบาย variation ได้อย่างมีนัยสำคัญ
-  
-  
+    -   Strong Heredity: interaction term จะถูกนำมาพิจารณาต่อเมื่อ main effects ทั้งหมดของตัวแปรที่เกี่ยวข้องใน interaction นั้น ๆ สามารถอธิบาย variation ได้อย่างมีนัยสำคัญ ตัวอย่างเช่น interaction จะถูกพิจารณาต่อเมื่อ main effect ของ และ มีนัยสำคัญทั้งคู่
+
+    -   Weak Heredity: interaction term จะถูกนำมาพิจารณาต่อเมื่อ main effect อย่างน้อยหนึ่งตัวของตัวแปรที่เกี่ยวข้องใน interaction นั้น ๆ สามารถอธิบาย variation ได้อย่างมีนัยสำคัญ
+
 ```{r}
 df <- data.frame(
   x = c(1, 2, 3, 1.5, 2.5, 2),
@@ -347,39 +323,34 @@ ggplot(df, aes(x, y)) +
   theme_void()+
   ggtitle("Principle of Interaction Search")
 ```
-  
 
+3.  ใช้โมเดลที่จับ interaction โดยอัตโนมัติ เช่น tree-based model หรือ neural network โดยสามารถใช้ร่วมกับ XAI เช่น Partial Dependence Plot (PDP) หรือ SHAP value ซึ่งจะช่วยให้ผู้วิเคราะห์สามารถหาและแปลความหมาย interaction term ที่สำคัญ ได้โดยใช้ข้อมูลเป็นฐาน
 
-3. ใช้โมเดลที่จับ interaction โดยอัตโนมัติ เช่น tree-based model หรือ neural network โดยสามารถใช้ร่วมกับ XAI เช่น Partial Dependence Plot (PDP) หรือ SHAP value ซึ่งจะช่วยให้ผู้วิเคราะห์สามารถหาและแปลความหมาย interaction term ที่สำคัญ ได้โดยใช้ข้อมูลเป็นฐาน
-
-
-4. อาจใช้ regularized regression เช่น LASSO regression เข้ามาช่วยเลือก interaction term ที่สำคัญได้ วิธีการนี้จะต้องใช้การสร้าง term interaction ทั้งหมดที่คิดว่าจะเป็นไปได้ก่อน จากนั้นใช้ penalized regression ช่วยเลือก
- 
+4.  อาจใช้ regularized regression เช่น LASSO regression เข้ามาช่วยเลือก interaction term ที่สำคัญได้ วิธีการนี้จะต้องใช้การสร้าง term interaction ทั้งหมดที่คิดว่าจะเป็นไปได้ก่อน จากนั้นใช้ penalized regression ช่วยเลือก
 
 ## 7. Handling Missing Data
 
 ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ
 
-- การจัดการ missing ใน inferential stat
+-   การจัดการ missing ใน inferential stat
 
-  - เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย
-  
-  - พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน
-  
-  - เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI
-  
-  - ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล
+    -   เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย
 
-- ในการสร้าง supevised learning model
+    -   พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน
 
-  - เน้นสร้างโมเดลที่มีความแม่นยำ
-  
-  - การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด
-  
-  - เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด 
-  
-  - ไม่สนใจเรื่องการอนุมานหรืออธิบายความสัมพันธ์ในประชากร
+    -   เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI
 
+    -   ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล
+
+-   ในการสร้าง supervised learning model
+
+    -   เน้นสร้างโมเดลที่มีความแม่นยำ
+
+    -   การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด
+
+    -   เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด
+
+    -   ไม่สนใจเรื่องการอนุมานหรืออธิบายความสัมพันธ์ในประชากร
 
 ```{r eval = F}
 ?step_naomit() ## listwise deletion
@@ -430,8 +401,6 @@ train_missing <- training(split_missing)
 test_missing <- testing(split_missing)
 ```
 
-
-
 ```{r}
 recipe(ach ~ ., data = train_missing) %>% 
   step_rm(learning_performance) %>% 
@@ -454,20 +423,18 @@ recipe(ach ~ ., data = train_missing) %>%
 
 ## 8. แนวทางการทำ feature engineering ที่เหมาะสม
 
-- ป้องกัน data leakage
+-   ป้องกัน data leakage
 
-  - แยก train/test เสมอ
-  
-  - เก็บ test data ไว้สำหรับ final model เท่านั้น
-  
-  - ใช้ Cross-validation สำหรับปรับแต่ง hyperparameter ที่เหมาะสม
-  
-- ลำดับขั้นของการทำ feauture engineering ที่แตกต่างกันมีผลต่อประสิทธิภาพของโมเดล  พิจารณาการดำเนินงานต่อไปนี้ `step_interact()`, `step_lencode_glm()`, `step_normalized()` และ `step_impute_knn()` ควรดำเนินการลำดับไหนก่อนหลัง
+    -   แยก train/test เสมอ
 
-- ตรวจสอบผลลัพธ์ด้วยวิธีการที่หลากหลาย
+    -   เก็บ test data ไว้สำหรับ final model เท่านั้น
 
-  - Statistical Approached
-  
-  - Data Visualization
-  
+    -   ใช้ Cross-validation สำหรับปรับแต่ง hyperparameter ที่เหมาะสม
 
+-   ลำดับขั้นของการทำ feauture engineering ที่แตกต่างกันมีผลต่อประสิทธิภาพของโมเดล พิจารณาการดำเนินงานต่อไปนี้ `step_interact()`, `step_lencode_glm()`, `step_normalized()` และ `step_impute_knn()` ควรดำเนินการลำดับไหนก่อนหลัง
+
+-   ตรวจสอบผลลัพธ์ด้วยวิธีการที่หลากหลาย
+
+    -   Statistical Approached
+
+    -   Data Visualization

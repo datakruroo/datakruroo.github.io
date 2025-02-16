@@ -1,0 +1,452 @@
+---
+title: " Social Network Data Management"
+format: html
+editor: visual
+---
+
+## 1. Social Network Data Format
+
+### **ความจำเป็น**
+
+การจัดเก็บข้อมูลเครือข่ายในรูปแบบที่เหมาะสมช่วยให้สามารถนำข้อมูลไปวิเคราะห์ได้อย่างมีประสิทธิภาพ ลดข้อผิดพลาดในการจัดการข้อมูล และรองรับการใช้งานที่หลากหลาย
+
+### **การนำไปใช้**
+
+- ใช้ในการเก็บข้อมูลเครือข่ายสังคม เช่น เครือข่ายมิตรภาพ เครือข่ายธุรกิจ
+- ใช้เป็นข้อมูลป้อนเข้า (input) สำหรับการวิเคราะห์โครงสร้างเครือข่าย
+- ช่วยให้นักวิเคราะห์สามารถใช้เครื่องมือทางสถิติและ machine learning เพื่อสรุปผลได้ง่ายขึ้น
+
+
+## 2. Adjacency Matrix
+
+Adjacency Matrix เหมาะกับเครือข่ายที่มีขนาดเล็กถึงปานกลาง และเครือข่ายที่มีความหนาแน่นสูง (Dense Network) เนื่องจากใช้พื้นที่จัดเก็บมากกว่ารูปแบบ edgelist แต่สามารถคำนวณทางคณิตศาสตร์ได้ง่ายกว่า เช่น การหาเส้นทางสั้นสุด (Shortest Path) หรือการคำนวณค่า Centrality
+
+ลักษณะของ adjacency matrix
+
+- มีขนาด $n \times n$ โดยที่ \(n\) คือจำนวนโหนด
+
+- ค่าของแต่ละช่องระบุว่ามีขอบเชื่อมต่อระหว่างโหนดสองตัวหรือไม่
+
+- อาจเป็น binary network (มีเฉพาะค่า 0/1) หรือ weighted network (มีค่าต่าง ๆ แสดงระดับความสัมพันธ์)
+
+- กรณีของเครือข่าย undirected ค่าในเมทริกซ์จะสมมาตร (symmetric) และกรณีของเครือข่าย directed ค่าในเมทริกซ์ไม่จำเป็นต้องสมมาตร
+
+```{r}
+# ตัวอย่าง Adjacency Matrix
+library(xUCINET)
+adj_matrix <- ASNR_Fig06x3
+adj_matrix
+```
+
+### การตรวจสอบความถูกต้องของ Adjacency Matrix
+
+**โครงสร้างของ Adjacency Matrix**
+
+- Dimension ของเมทริกซ์ถูกต้องหรือไม่ (จำนวนแถวและคอลัมน์ควรเท่ากับจำนวนโหนด) → หากจำนวนแถวและคอลัมน์ไม่เท่ากัน อาจเกิดจากการนำเข้าข้อมูลผิดพลาด หรืออาจสะท้อนว่าเครือข่ายเป็น two-mode network ซึ่งมีโหนดสองประเภทที่แตกต่างกัน
+
+- Label ของแถวและคอลัมน์ถูกต้องหรือไม่ (ไม่มี label ซ้ำซ้อน และระวังอักขระพิเศษ) → หาก label ซ้ำกันอาจทำให้การอ้างอิงโหนดผิดพลาด
+
+- เป็น directed หรือ undirected network (สามารถตรวจสอบได้จาก isSymmetric()) → เครือข่าย directed และ undirected มีพฤติกรรมการเชื่อมโยงต่างกัน ต้องเลือกให้เหมาะสมกับการวิเคราะห์
+
+
+**ข้อมูลคู่สัมพันธ์ในเมทริกซ์**
+
+- เป็น binary หรือ weighted network (ค่ามีเฉพาะ 0/1 หรือมีค่าอื่น ๆ) → หากเป็น weighted network ต้องตรวจสอบว่าค่าตัวเลขสะท้อนความสัมพันธ์ที่ถูกต้องหรือไม่
+
+- มี self-tie หรือไม่ (ค่าในแนวทแยงของเมทริกซ์ควรเป็น 0 หากไม่มีการเชื่อมโยงตัวเอง) → หากพบ self-tie ต้องพิจารณาว่ามีความหมายหรือเป็นข้อผิดพลาด
+
+- มี missing values หรือไม่ (ค่าศูนย์ควรตรวจสอบว่าเป็นค่าขาดหายหรือไม่มีความสัมพันธ์จริง ๆ) → หากพบ NA หรือช่องว่าง ต้องเติมค่าที่เหมาะสม
+
+- มีค่าผิดปกติหรือไม่ (ค่าในเมทริกซ์มีค่าที่สูงผิดปกติหรือไม่สอดคล้องกับประเภทของเครือข่าย) → ตรวจสอบว่าค่าความสัมพันธ์มีช่วงค่าที่สมเหตุสมผล
+
+
+## 3. Edge List
+
+Edgelist เหมาะกับเครือข่ายที่มีขนาดใหญ่และเครือข่ายที่มีความหนาแน่นต่ำ (Sparse Network) เนื่องจากใช้พื้นที่จัดเก็บน้อยกว่า Adjacency Matrix และสามารถจัดการข้อมูลได้มีประสิทธิภาพมากขึ้นในการวิเคราะห์เครือข่ายขนาดใหญ่
+
+ลักษณะของ edge list
+
+- เป็นรายการของขอบที่เชื่อมต่อระหว่างโหนด
+
+- รูปแบบข้อมูลทั่วไปมี 2 คอลัมน์ ได้แก่ source และ target
+
+- สามารถเพิ่มคอลัมน์เพิ่มเติมเพื่อเก็บข้อมูลเชิงลึก (attribute) ของขอบ
+
+
+### การตรวจสอบความถูกต้องของ Edge List
+
+1.  **โครงสร้างของ edgelist ถูกต้องหรือไม่**
+
+-   คอลัมน์แรกและคอลัมน์ที่สองใช้เพื่อระบุ node ที่เชื่อมโยงกัน และคอลัมน์ที่สามใช้เพื่อระบุค่า attribute ของเส้นเชื่อม (ถ้ามี)
+
+-   ตรวจสอบความซ้ำซ้อนของคู่สัมพันธ์ เช่น มีคู่สัมพันธ์เดียวกันเกิดขึ้นมากกว่าหนึ่งครั้งมั้ย การเกิดขึ้นซ้ำนี้เป็นไปได้หรือไม่ เช่น A-B กับ B-A
+
+2.  **Isolate และ Missing**
+
+Edgelist จะไม่ได้เก็บ isolate nodes ให้โดยอัตโนมัติ
+
+-   ผู้วิเคราะห์จะต้องใส่ข้อมูลของ node ภายหลัง
+
+-   หากการขาดหายไปของคู่สัมพันธ์เป็น missing value ผู้วิเคราะห์จะต้องเพิ่มแถวของคู่สัมพันธ์นั้นแล้วใส่ `NA` ในคอลัมน์ที่ 3 ก็เป็นวิธีหนึ่งที่ใช้แก้ปัญหาได้
+
+ตัวอย่างเครือข่ายกรรมการสอบวิทยานิพนธ์
+
+```{r}
+library(readxl)
+library(tidyverse)
+thesis_data <- read_excel("data_AJ suchada.xlsx")
+
+thesis_data  <- thesis_data %>% 
+  mutate(commitee1 = str_replace(commitee1,"วรรณี  แกมเกตุ", "วรรณี แกมเกตุ")) %>%
+  mutate(commitee1 = str_replace(commitee1,"วราภรณ์  บวรศิริ", "วราภรณ์ บวรศิริ")) %>%
+  mutate(commitee1 = str_replace(commitee1,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>%
+  mutate(commitee1 = str_replace(commitee1,"สุวิมล  ว่องวาณิช", "สุวิมล ว่องวาณิช")) %>%
+  mutate(commitee2 = str_replace(commitee2,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>%
+  mutate(commitee2 = str_replace(commitee2,"เอมอร จังศิริพรปกรณ์", "โชติกา ภาษีผล")) %>%
+  mutate(commitee3 = str_replace(commitee3,"เอมอร จังศิริพรปกรณ์", "โชติกา ภาษีผล")) %>% 
+  mutate(commitee3 = str_replace(commitee3,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา"))
+
+glimpse(thesis_data)
+## ตรวจสอบความถูกต้องของ thesis_data 
+## ลองแปลงข้อมูล edgelist ให้เป็น adjacency matrix
+```
+
+ตัวอย่างเครือข่าย Marvel
+
+```{r}
+# โหลด edge list จากไฟล์ CSV
+library(igraph)
+marvel_edges <- read_csv("marvel-unimodal-edges.csv")
+
+# ตรวจสอบโครงสร้างของข้อมูล
+head(marvel_edges)
+```
+
+
+
+---
+
+
+
+
+
+## 4. การสร้างข้อมูลเครือข่ายด้วย `igraph`
+
+`igraph` เป็น library พื้นฐานที่ใช้สำหรับการจัดการข้อมูลเครือข่าย สามารถใช้สร้างเครือข่ายจากข้อมูล edgelist หรือ adjacency matrix และใช้ในการวิเคราะห์โครงสร้างเครือข่ายได้
+
+การใช้ `igraph` จำเป็นต้องมีแปลงข้อมูล adjacency matrix หรือ edgelist ที่ไม่ว่าจะอยู่ในรูปแบบ matrix หรือ data frame ให้ igraph object ก่อน
+
+```{r}
+library(igraph)
+?graph_from_adjacency_matrix
+?graph_from_biadjacency_matrix
+?graph_from_edgelist
+?graph_from_data_frame
+```
+
+
+```{r}
+g1 <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
+g1
+V(g1)
+E(g1)
+plot(g1)
+```
+
+```{r}
+g2 <- graph_from_edgelist(marvel_edges %>% select(1:2) %>% as.matrix(), directed = TRUE)
+?as_adjacency_matrix
+?as_biadjacency_matrix
+```
+
+ลองตรวจสอบความถูกต้องของข้อมูลเครือข่ายตาม checklist โดยใช้ igraph object
+
+
+## 5. การดำเนินการบทเครือข่าย
+
+- การดึง subgraph
+
+- การลบและเพิ่มจุดยอด/เส้นเชื่อม
+
+- การรวมเครือข่่าย
+
+```{r}
+### การดึง subgraph จากจุดยอดที่กำหนด
+?induced_subgraph
+?subgraph_from_edges
+induced_subgraph(g1, c(1,4,6,7,9)) %>% plot()
+```
+
+เราสามารถลบและเพิ่มจุดยอดหรือเส้นเชื่อมไปยัง igraph object ได้โดยตรง
+
+```{r}
+?vertices()
+?edges()
+h1 <- induced_subgraph(g1, c(1,4,6,7,9))
+h2<- h1 - vertices(c(1,4))
+h1<- h2 + vertices("a","g")
+h1<- h1 + edges("a","g")+
+          edges("a","f")
+V(h1)
+plot(h1)
+
+h3 <- induced_subgraph(g1, c(2,4,6,8))
+plot(h3)
+union(h1,h3) %>% plot()
+```
+
+## 6. การปรับเปลี่ยนข้อมูลเครือข่าย
+
+### 6.1 Dichotomizing
+
+### 6.2 การทำ Symmetrizing
+
+```{r}
+?as_undirected()
+?as_directed()
+```
+
+
+### 6.3 การทดแทนค่าสูญหาย
+
+ค่าสูญหายสามารถเกิดขึ้นได้หลายระดับ หลายลักษณะ ได้แก่
+
+- missing nodes กล่าวคือ ควรมีโหนด/บุคคลอยู่ในเครือข่ายแต่ไม่มีข้อมูล การสูญหายลักษณะนี้จะทำให้เครือข่ายไม่สมบูรณ์และอาจบิดเบือนโครงสร้างของเครือข่าย
+
+- missing edges กล่าวคือ มีโหนดหรือบุคคลอยู่ในเครือข่ายแต่ข้อมูลความสัมพันธ์หรือเส้นเชื่อมระหว่างโหนดดังกล่าวหาย 
+
+- missing attributes เป็นการสูญหายในข้อมูลคุณลักษณะของโหนดหรือเส้นเชื่อม
+
+การสูญหายแต่ละแบบจะมีการแก้ไขปัญหาที่แตกต่างกัน และโดยเฉพาะการสูญหายสองแบบแรกที่จะมีวิธีการเฉพาะในการสำรวจและแก้ไขปัญหา
+
+[https://cs.stanford.edu/~jure/pubs/kronEM-sdm11.pdf](https://cs.stanford.edu/~jure/pubs/kronEM-sdm11.pdf)
+
+[https://cdn.aaai.org/ojs/8094/8094-13-11621-1-2-20201228.pdf](https://cdn.aaai.org/ojs/8094/8094-13-11621-1-2-20201228.pdf)
+
+ส่วนการสูญหายใน attribute สามารถใช้วิธีการแก้ปัญหาทั่วไปได้
+
+### 6.4 การรวมโหนดที่คล้ายกัน (aggregating data)
+
+การรวมโหนดที่คล้ายกัน (aggregating data) คือการรวมข้อมูลของโหนดที่มีคุณลักษณะคล้ายกันซึ่งได้จัดกลุ่มเอาไว้ก่อนแล้วเข้าด้วยกัน 
+
+```{r}
+# สร้างกราฟ
+g1 <- graph_from_edgelist(matrix(c("A", "B", "B", "C", "C", "D", "E", "F", "F", "G", "G", "E"), byrow = TRUE, ncol = 2), directed = FALSE)
+plot(g1)
+# กำหนดกลุ่มของโหนดที่ต้องการรวม (เช่น A กับ B)
+V(g1)$group <- c(1, 1, 2, 2, 3, 3, 3)  # A-B เป็นกลุ่มเดียวกัน, C-D กลุ่มเดียวกัน
+
+# รวมโหนดตามกลุ่ม
+g1_combined <- contract(g1, V(g1)$group, vertex.attr.comb = "first")  # รวมโหนดตามกลุ่ม
+plot(g1_combined)
+```
+
+`vertex.attr.comb`
+
+- "first" จะเลือกค่าของ attribute จากโหนดแรกในกลุ่ม
+
+- "last" จะเลือกค่าของ attribute จากโหนดสุดท้ายในกลุ่ม
+
+- "mean" จะเลือกค่าเฉลี่ยของ attribute จากโหนดในกลุ่ม
+
+- "sum" จะเลือกค่าผลรวมของ attribute จากโหนดในกลุ่ม
+
+
+มีวิธีการหลายวิธีที่สามารถใช้ในการจัดกลุ่มของโหนด ซึ่งจะกล่าวภายหลัง เช่น
+
+- community detection
+
+- centrality
+
+- cluster coefficient
+
+- การ transpose
+
+
+## 7. การสำรวจโครงสร้างพื้นฐานของเครือข่าย
+
+### 7.1 Subgraphs
+
+เราทราบว่าจุดยอดที่อยู่ติดกันเรียกว่า adjacent vertices หรือ เพื่อนบ้าน (neighbors)
+
+```{r eval = F}
+V(g)
+## adjacency ของดวงกมล
+neighbors(g, 1)
+neighbors(g, 3)
+make_ego_graph(g, order = 2, nodes = 3)[[1]] %>% 
+  plot(vertex.label.family = "ChulaCharasNew",
+       vertex.label.cex = 0.8)
+```
+
+### 7.2 Degree
+
+Degree เป็นคุณลักษณะของจุดยอดในเครือข่าย มีค่าเท่ากับจำนวนเส้นเชื่อมที่เชื่อมกับแต่ละจุดยอด
+
+- in degree
+
+- out degree
+
+- total degree
+
+```{r eval = F}
+degree(g, mode = "out") %>% as.table() %>% data.frame() %>% 
+  arrange(desc(Freq))
+```
+
+### 7.3 Edge Density
+
+Edge density คือ ค่าที่บ่งบอกถึงความหนาแน่นของเครือข่าย คือ ค่าเฉลี่ยของจำนวนเส้นเชื่อมที่มีในเครือข่าย หารด้วยจำนวนเส้นเชื่อมที่เป็นไปได้ทั้งหมด
+
+```{r eval = F}
+edge_density(g)
+```
+
+
+### 7.4 Connectivity
+
+- จุดยอด v จะถูกเรียกว่าสามารถเข้าถึงได้จากจุดยอด u (reachable) ถ้ามี walk จาก u ไปยัง v
+
+- กราฟ g จะเรียกว่า connected graph หรือ connected network ถ้าทุกจุดยอดสามารถเดินทางถึงกันได้
+
+```{r eval = F}
+is_connected(g, mode = "strong")
+```
+
+### 7.5 Components
+
+กลุ่มของโหนดที่ใหญ่ที่สุด (maximal set) ที่สามารถเชื่อมถึงกันได้ด้วย path อย่างน้อยหนึ่ง path
+
+```{r eval = F}
+plot(h)
+components(h, mode = "weak")
+components(h, mode = "strong")
+```
+### 7.6 Geodesic Distance
+
+Geodesic distance คือ ความยาวของ shortest path ระหว่างจุดยอด u และ v
+
+```{r eval = F}
+distances(g) ## สร้าง geodesic distance matrix
+diameter(g, weight = NULL, directed = TRUE)
+```
+
+
+
+## 8. Attribute Data
+
+เราสามารถเพิ่มข้อมูลเชิงลึก (attribute) ให้กับจุดยอดหรือเส้นเชื่อมใน igraph object ได้
+
+### 8.1 Vertex Attributes
+
+คือตัวแปรที่ใช้แสดงคุณลักษณะของจุดยอด เช่น อายุ เพศ วิธีการจัดการเรียนรู้ที่ได้รับ ผลการเรียนรู้ หรืออื่น ๆ ใน igraph สามารถเพิ่ม vertex attributes ได้โดยใช้ `V()` หรือ `vertex_attr()`
+
+```{r eval = F}
+V(h)
+vertex_attr(h)
+```
+
+
+### 8.2 Edge Attributes
+
+คือตัวแปรที่ใช้แสดงคุณลักษณะของเส้นเชื่อม อาจเป็น ประเภทของความสัมพันธ์ ระดับความสัมพันธ์ ความถี่ในการติดต่อสื่อสาร ทิศทางของความสัมพันธ์ ...
+
+```{r eval = F}
+E(g)
+edge_attr(g)
+```
+
+### 8.3 graph_from_dataframe()
+
+ใน igraph ผู้วิเคราะห์สามารถสร้าง igraph object หรือข้อมูลเครือข่ายจาก data.frame ที่มีลักษณะการเก็บข้อมูลเป็น edgelist และ attribute ของจุดยอดหรือเส้นเชื่อมได้โดยไม่ต้องป้อนข้อมูลทีละส่วน ฟังก์ชันที่ใช้คือ `graph_from_data_frame()`
+
+ลองนำ thesis_data เข้าสู่ igraph object โดยให้มี attribute เป็นระดับการศึกษา และ role ของคณะกรรมการ
+
+
+## 9. Visualizing Network Data
+
+### 9.1 basic plot
+
+```{r eval = F}
+plot(g,
+     vertex.label = NA)
+
+plot(g,
+     vertex.label = NA,
+     layout = layout_with_dh)
+
+par(mar=c(0,0,0,0))
+V(g)$shape <- "circle"
+V(g)[5]$shape <- "rectangle"
+V(g)$col <- "steelblue"
+V(g)[5]$col <- "orange"
+plot(g, vertex.label = NA,
+     vertex.shape = V(g)$shape,
+     vertex.color = V(g)$col)
+```
+
+### 9.2 Layout
+
+การเลือก layout ของ network มีความสำคัญมาก โดยเฉพาะเมื่อ network มีขนาดใหญ่ การวาง layout ที่ดีของ network ควรมีลักษณะต่อไปนี้
+
+มีการทับซ้อนกันของ edge ให้น้อยที่สุดเท่าที่เป็นไปได้
+
+vertices ไม่ควรมีการซ้อนทับกัน
+
+ความยาวของ edge ควรเท่า ๆ กัน เท่าที่เป็นไปได้
+
+network ควรมีความสมมาตรให้มากที่สุด
+
+จุดยอดที่มีอิทธิพล (influential node) มากใน network ก็ควรอยู่ใกล้กับส่วนกลางของ network
+
+Layouts จาก igraph: 
+
+- layout_nicely 
+
+- layout_randomly 
+
+- layout_in_circle 
+
+- layout_on_grid 
+
+- layout_as_tree
+
+- layout_with_fr (Force-directed layout โดยใช้ Fruchterman-Reingold algorithm)
+
+- layout_with_kk (Kamada-Kawai algorithm) 
+
+- layout_with_drl (Distributed Recursive Layout algorithm) 
+
+- layout_with_lgl (Large Graph Layout algorithm) 
+
+- layout_with_dh (Davidson-Harel algorithm) 
+
+- layout_with_gem (Graph Embedder algorithm) 
+
+- layout_with_mds (Multidimensional Scaling)
+
+
+```{r fig.height = 10, eval = F}
+par(mfrow=c(2,2), mar = c(0,0,5,0))
+set.seed(1234)
+plot(g, layout = layout_with_fr(g),
+     vertex.label.family = "ChulaCharasNew", main = "Fruchterman-Reingold")
+plot(g, layout = layout_in_circle(g),
+     vertex.label.family = "ChulaCharasNew", main = "Circle")
+plot(g, layout =layout_as_tree(g),
+     vertex.label.family = "ChulaCharasNew", main = "Tree")
+plot(g, layout =layout_with_dh(g),
+     vertex.label.family = "ChulaCharasNew", main = "Davidson-Harel")
+```
+
+เราสามารถปรับตำแหน่งของโหนดใน layout ได้โดยตรง
+
+1. สร้าง data.frame ของ layout และปรับปรุงตามต้องการ
+
+2. ใช้ data.frame ดังกล่าวเป็น layout ของ network
+
+```{r eval = F}
+layout <- layout_with_dh(g)
+layout
+```
+

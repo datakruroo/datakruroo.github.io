@@ -1,0 +1,888 @@
+---
+title: "Social Network Data Managament"
+output: html_document
+editor: visual
+---
+
+## 1. Social Network Data Format
+
+การบันทึกข้อมูลดังกล่าวสามารถเก็บได้หลากหลายประเภทไฟล์ แต่โดยปกติเรามักจะเก็บบันทึกข้อมูลให้อยู่ในรูปแบบที่พร้อมนำไปวิเคราะห์ เช่น Spreadsheet
+
+-   CSV หรือ .xlsx เป็นรูปแบบทั่วไปสำหรับเก็บบันทึกข้อมูลเครือข่าย
+
+-   ในกลุ่มเป้าหมายเดียวกันหากมีข้อมูลหลายเครือข่ายควรเก็บแยกไฟล์กัน หรือแยก spreadsheet กัน
+
+-   ควรแยกไฟล์สำหรับเก็บ attribute ของโหนดไว้ต่างหาก
+
+รายละเอียดมีดังนี้
+
+## 2. ไฟล์ข้อมูลเครือข่าย
+
+ข้อมูลเครือข่ายสามารถเก็บบันทึกได้หลายรูปแบบได้แก่
+
+-   adjacency matrix
+
+-   edgelist
+
+-   nodelist
+
+รายละเอียดมีดังนี้
+
+```{r}
+library(xUCINET)
+```
+
+
+### 2.1 Adjacency Matrix
+
+เป็นรูปแบบการเก็บข้อมูลในลักษณะเมทริกซ์ที่ แถวและคอลัมน์แทนโหนดของกราฟ และค่าของเซลล์แทนความสัมพันธ์ระหว่างโหนดที่แถวและคอลัมน์นั้นๆ ตัวอย่างของ adjacency matrix
+
+
+```{r}
+library(tidyverse)
+write_csv(Hawthorne_BankWiring$Conflict %>% 
+            data.frame() %>% 
+            rownames_to_column("id"), file = "Hawthorne_BankWiring_Conflict.csv")
+```
+
+ตัวอย่างข้อมูลเครือข่ายข้างต้น
+
+-   มิติของเมทริกซ์นี้เป็นเท่าไหร่ และมีความหมายอย่างไร
+
+-   เป็นแบบ directed หรือ undirected network
+
+```{r}
+isSymmetric(Hawthorne_BankWiring$Conflict)
+isSymmetric(Hawthorne_BankWiring$TradeJobs)
+```
+
+-   เป็น binary หรือ valued network
+
+-   แนว diagnonal ของเมทริกซ์มีการเชื่อมโยงหรือไม่่ และเป็นไปได้หรือไม่ที่จะมีการเชื่อมโยงดังกล่าวในแนว diagonal
+
+```{r}
+Hawthorne_BankWiring$Conflict %>% diag() %>% sum()
+```
+
+-   ค่า 0 ในเมทริกซ์เป็นเพราะไม่มีการเชื่อมโยงกัน หรือว่าเป็น missing data
+
+```{r}
+Baker_Journals$CoCitations
+```
+
+
+จากตัวอย่างข้างต้นจะเห็นว่ามีประเด็นเกี่ยวกับความถูกต้อง ความน่าเชื่อถือของ adjacency matrix ก่อนที่จะนำไปดำเนินการวิเคราะห์ ผู้วิเคราะห์จึงควรดำเนินการตรวจสอบความถูกต้องดังกล่าวก่อน โดยอาจพิจารณาจาก checklist ต่อไปนี้
+
+1.  **โครงสร้างของ adjacency matrix ถูกต้องหรือไม่**
+
+-   dimension ของเมทริกซ์ถูกต้องหรือไม่
+
+-   มีการให้ label กับ row และ column หรือยัง ตรวจสอบด้วยว่าการใช้ label ดังกล่าวมีความซ้ำซ้อนหรือไม่ ระวังเรื่องการใช้อักขระพิเศษหรือช่องว่างในการตั้งชื่อ และระมัดระวังเรื่องการใช้ตัวเลขแทนชื่อ การวิเคราะห์ใน R เป็น case-sensitive ดังนั้นต้องระวังเรื่องตัวอักษรเล็ก-ใหญ่ด้วย
+
+-   node ใน row และ column ตรงกันหรือไม่ (สำหรับ one-mode)
+
+```{r}
+### การพิจารณาว่าความสัมพันธ์นี้เป็น one-mode ใช่มั้ย
+Hawthorne_BankWiring$Conflict %>% dim()
+row_name <- Hawthorne_BankWiring$Conflict %>% rownames()
+col_name <- Hawthorne_BankWiring$Conflict %>% colnames()
+
+## ตรวจสอบความซ้ำซ้อน
+duplicated(row_name) %>% table()
+duplicated(col_name) %>% table()
+
+## สำหรับ one-mode ตรวจสอบ row == col มั้ย
+test  <- row_name == col_name
+test %>% table()
+```
+
+
+2.  **ข้อมูลคู่สัมพันธ์ภายในเมทริกซ์ถูกต้องหรือไม่**
+
+-   เครือข่ายเป็น binary หรือ valued/weighted network ถ้าเป็น binary network ค่าในเมทริกซ์จะต้องเป็น 0 หรือ 1 เท่านั้น และถ้าเป็น valued network ค่าในเมทริกซ์สามารถเป็นตัวเลขอื่นได้
+
+```{r}
+c(Hawthorne_BankWiring$Conflict) %>% table()
+```
+
+
+-   ค่าในแนวทแยงมุมเป็น 0 ทั้งหมดหรือไม่ใช่ การที่แนวทแยงมุมมีค่าไม่ใช่ 0 ทั้งหมดแสดงว่าเครือข่ายนี้กำหนดจะมี self-ties เป็นไปได้ใช่มั้ย หรือเป็นไปไม่ได้
+
+```{r}
+diag(Hawthorne_BankWiring$Conflict) %>% table()
+```
+
+
+-   Missing values ประเด็นนี้ซับซ้อน จะต้องพิจารณาว่า missing value ที่เกิดขึ้นเป็นเพราะปัญหา non-response จริง ๆ หรือว่าเกิดจากความผิดพลาดของการบันทึกหรือจัดการข้อมูล
+
+    -   ถ้าเป็น non-response แบบที่ไม่ได้ข้อมูลทั้งชุด แสดงว่า node นี้จะหายไปจากเครือข่าย ผู้วิเคราะห์จะต้องรวม node ดังกล่าวนี้เข้ามาใน adjacency matrix แล้วแทนค่าด้วย `NA` ไม่ใช่ `0`
+
+    -   ถ้่าเป็น non-response แบบที่มีข้อมูลบางส่วนหายบางส่วน เช่นผู้ให้ข้อมูลอาจไม่ตอบเฉพาะข้อมูลเครือข่ายบางส่วน ในกรณีนี้จะเกิดค่าสูญหายในเส้นเชื่อม ให้แทน `NA` ในเมทริกซ์ด้วย
+
+Note: อย่าลืมว่าการแทนด้วย 0 หมายถึงไม่มีความเชื่อมโยง แต่การแทนด้วย `NA` หมายถึงข้อมูลหายไป ความหมายแตกต่างกัน
+
+-   มีค่าผิดปกติใน matrix หรือไม่
+
+ตัวอย่างของข้อมูลเครือข่ายอื่น ๆ
+
+#### กิจกรรม
+
+สร้าง adjacency matrix จากข้อมูลเครือข่ายที่ให้มา
+
+```{r}
+## install.packages("readxl")
+library(readxl)
+thesis_data <- read_excel('data_AJ suchada.xlsx')
+glimpse(thesis_data)
+glimpse(thesis_data %>% select(advisor:commitee3))
+
+thesis_data %>% count(advisor)
+```
+```{r}
+df_long <- thesis_data %>% select(advisor:commitee3) %>% 
+  pivot_longer(
+    cols = c(co_advisor, commitee1, commitee2, commitee3),  # ระบุคอลัมน์ที่เป็น alter
+    names_to = "role",       
+    values_to = "alter"      
+  ) %>%
+  rename(ego = advisor) %>% 
+  filter(!is.na(alter))     
+
+adj_matrix <- table(df_long$ego, df_long$alter)
+adj_matrix  %>% dim()
+```
+
+
+
+### 2.2 Edgelist Format
+
+ชุดข้อมูลเครือข่ายแบบ edgelist ประกอบด้วยตารางข้อมูลที่มีแถวจำนวน n แถว และมีคอลัมน์จำนวนอย่างน้อย 2 คอลัมน์ (บางกรณีอาจมีคอลัมน์ที่ 3 สำหรับใส่ค่าน้ำหนักของข้อมูลของ ties)
+
+-   แต่ละแถวแทนคู่ความสัมพันธ์ระหว่าง node ภายใต้เครือข่าย
+
+-   สำหรับ directed network คอลัมน์แรกคือ sender และคอลัมน์ที่สองคือ receiver
+
+-   เราสามารถใส่น้ำหนักหรือค่า attribute ของเส้นเชื่อมในคอลัมน์ที่ 3 ได้
+
+```{r}
+library(igraph)
+par(mar=c(0,0,0,0))
+Hawthorne_BankWiring$Conflict %>% 
+  igraph::graph_from_adjacency_matrix(mode = "undirected", 
+                                      diag = FALSE) %>%
+  plot()
+```
+
+#### การสร้าง edgelist ในคำสั่งด้านล่างมีข้อสังเกตอะไรหรือไม่ ?
+
+ทดลองสร้าง edgelist ด้วย syntax ด้านล่าง จากนั้นสังเกตโครงสร้างของชุดข้อมูลที่ได้
+
+```{r}
+Hawthorne_Conflict_Edgelist <- Hawthorne_BankWiring$Conflict %>% 
+  data.frame() %>% 
+  rownames_to_column("node1") %>% 
+  pivot_longer(cols = -node1, names_to = "node2", values_to = "tie") %>% 
+  filter(tie > 0) %>% 
+  select(-tie)
+
+Baker_Journals$CoCitations %>% 
+  data.frame() %>% 
+  rownames_to_column("node1") %>% 
+  pivot_longer(cols = -node1, names_to = "node2", values_to = "num_citation") %>% 
+  filter(num_citation > 0)
+```
+
+
+```{r}
+library(igraph)
+
+par(mar=c(0,0,0,0), mfrow=c(1,2))
+Hawthorne_BankWiring$Conflict %>% 
+  graph_from_adjacency_matrix(mode = "undirected",
+                              diag = FALSE) %>% plot()
+
+Hawthorne_Conflict_Edgelist %>% 
+  as.matrix() %>% 
+  graph_from_edgelist(directed = FALSE) %>% 
+  plot()
+```
+
+
+
+```{r}
+par(mar=c(0,0,0,0))
+Hawthorne_Conflict_Edgelist %>% 
+  graph_from_data_frame(directed = F) %>% 
+  plot()
+```
+
+จากตัวอย่างข้างต้นจะเห็นว่ามีประเด็นเกี่ยวกับความถูกต้อง ความน่าเชื่อถือของ edgelist ก่อนที่จะนำไปดำเนินการวิเคราะห์ ผู้วิเคราะห์จึงควรดำเนินการตรวจสอบความถูกต้องดังกล่าวก่อน โดยอาจพิจารณาจาก checklist ต่อไปนี้
+
+1.  **โครงสร้างของ edgelist ถูกต้องหรือไม่**
+
+-   คอลัมน์แรกและคอลัมน์ที่สองใช้เพื่อระบุ node ที่เชื่อมโยงกัน และคอลัมน์ที่สามใช้เพื่อระบุค่า attribute ของเส้นเชื่อม (ถ้ามี)
+
+-   ตรวจสอบความซ้ำซ้อนของคู่สัมพันธ์ เช่น มีคู่สัมพันธ์เดียวกันเกิดขึ้นมากกว่าหนึ่งครั้งมั้ย การเกิดขึ้นซ้ำนี้เป็นไปได้หรือไม่ เช่น A-B กับ B-A
+
+2.  **Isolate และ Missing**
+
+Edgelist จะไม่ได้เก็บ isolate nodes ให้โดยอัตโนมัติ
+
+-   ผู้วิเคราะห์จะต้องใส่ข้อมูลของ node ภายหลัง
+
+-   หากการขาดหายไปของคู่สัมพันธ์เป็น missing value ผู้วิเคราะห์จะต้องเพิ่มแถวของคู่สัมพันธ์นั้นแล้วใส่ `NA` ในคอลัมน์ที่ 3 ก็เป็นวิธีหนึ่งที่ใช้แก้ปัญหาได้
+
+```{r}
+par(mfrow=c(1,2), mar=c(0,0,0,0))
+
+### ใช้ graph from edgelist
+Hawthorne_Conflict_Edgelist %>% 
+  as.matrix() %>% 
+  graph_from_edgelist(directed = FALSE) %>% 
+  plot()
+
+## ใช้ graph_from_dataframe
+node <- data.frame(rownames(Hawthorne_BankWiring$Conflict))
+Hawthorne_Conflict_Edgelist %>% 
+  graph_from_data_frame(directed = FALSE, vertices = node) %>% 
+  plot()
+```
+
+3.  **ตรวจสอบ label ของ node**
+
+-   ชื่อที่ใช้ควรสั้นและไม่ซ้ำซ้อนกัน หลีกเลี่ยงการใช้อักขระพิเศษ
+
+-   ระวัง case-sensitive ในการตั้งชื่อ
+
+-   หลายกรณีชื่อของ node ที่นำเข้ามาอาจยาวเกินไป เช่น เราอาจให้ผู้ตอบกรอกชื่อนามสกุลจริงของเพื่อน แต่การนำชื่อทั้งหมดมาวิเคราะห์นอกจากจะเกินความจำเป็นอาจเป็นการละเมิดความเป็นส่วนตัวด้วย
+
+```{r}
+network_data <- tibble(
+  respondent = c("สมชาย ใจดี", "วรรณา ศรีสุข", "กิตติพงษ์ สมบูรณ์"),
+  referred_to = c("วรรณา ศรีสุข", "สมชาย ใจดี", "ปิยะพงษ์ อารีย์")
+)
+
+all_names <- unique(c(network_data$respondent, network_data$referred_to))
+name_id_map <- tibble(
+  real_name = all_names,
+  anon_id = paste0("S", sample(1000:9999, length(all_names), replace = FALSE))
+)
+
+network_anonymized <- network_data %>%
+  left_join(name_id_map, by = c("respondent" = "real_name")) %>%
+  rename(anon_respondent = anon_id) %>%
+  left_join(name_id_map, by = c("referred_to" = "real_name")) %>%
+  rename(anon_referred_to = anon_id) %>%
+  select(anon_respondent, anon_referred_to)
+```
+
+### 2.3 Nodelist Format
+
+```{r}
+thesis_data %>% select(advisor:commitee3)
+```
+
+
+-   Nodelist เป็นหนึ่งในรูปแบบการเก็บข้อมูลเครือข่ายที่ใช้กันอย่างแพร่หลาย โดยเน้นการเก็บข้อมูลเกี่ยวกับโหนด (nodes) และความสัมพันธ์ (ties) ของโหนดนั้น ๆ จุดเด่นของ nodelist คือมีความกระชับมากกว่าการบันทึกข้อมูลในรูปแบบอื่น
+
+-   Nodelist จะอยู่ใน รูปแบบตาราง (long format) ซึ่งแต่ละแถวแทน หนึ่งโหนด (ego) และรายชื่อของโหนดที่มีความสัมพันธ์กับ ego ดังกล่าว เรียกว่า alter
+
+|     |        |        |        |     |
+|-----|--------|--------|--------|-----|
+| ego | alter1 | alter2 | alter3 | ... |
+| A   | B      | C      | D      |     |
+| B   | A      | E      |        |     |
+| C   | A      | D      |        |     |
+| D   | A      | C      |        |     |
+| E   | B      |        |        |     |
+
+-   จะเห็นว่าโครงสร้างการเก็บข้อมูลแบบนี้แต่ละ ego จะปรากฏในตารางเพียงครั้งเดียว
+
+ทำนองเดียวกันการเก็บข้อมูลแบบ nodelist มีประเด็นเกี่ยวกับความถูกต้อง ความน่าเชื่อถือของ nodelist ก่อนที่จะนำไปดำเนินการวิเคราะห์ ผู้วิเคราะห์จึงควรดำเนินการตรวจสอบความถูกต้องดังกล่าวก่อน โดยอาจพิจารณาจาก checklist ต่อไปนี้
+
+1.  **โครงสร้างของ nodelist ถูกต้องหรือไม่**
+
+-   ตารางข้อมูลควรประกอบด้วยอย่างน้อย 2 คอลัมน์
+
+-   ไม่จำเป็นต้องมีค่าครบทุกเซลล์
+
+2.  **Isolate และ Missing value**
+
+-   isolate จะอยู่ใน nodelist โดยมีเฉพาะ ego ไม่มี alter
+
+-   แต่ missing value ผู้วิเคราะห์ต้องเพิ่มชุดข้อมูลของ missing แยกลงใน dataset อีกชุดหนึ่ง ที่มีโครงสร้างตรงกับเครือข่ายหลัก
+
+3.  **เครือข่ายเป็นแบบ binary หรือ weighted**
+
+-   ถ้าเป็น binary สามารถเก็บข้อมูลตามตัวอย่างข้างต้นได้เลย
+
+-   ถ้าเป็น weighted จะต้องแยก dataset อีกชุดที่มีโครงสร้างเดียวกันเพื่อเก็บค่าของ tie
+
+|     |        |        |        |     |
+|-----|--------|--------|--------|-----|
+| ego | alter1 | alter2 | alter3 | ... |
+| A   | 1      | 3      | 2      |     |
+| B   | 3      | 2      |        |     |
+| C   | 1      | 1      |        |     |
+| D   | 2      | 1      |        |     |
+| E   | 3      |        |        |     |
+
+4.  **undirected vs directed** ถ้าเป็น undirected จะต้องไม่มี alter ที่เป็น ego ในตารางเดียวกัน แต่ถ้าเป็น directed network เป็นไปได้ที่ alter จะเป็น ego และในทางกลับกัน ego ก็อาจเป็น alter ได้ภายในตารางเดียวกัน
+
+5.  **ตรวจสอบ label ของ node** ในทำนองเดียวกับรูปแบบก่อนหน้า
+
+6.  **สำหรับ two-mode data** ตรวจสอบว่า mode แรกจะต้องมีรายชื่ออยู่ในคอลัมน์แรกเท่านั้น ส่วนคอลัมน์อื่น ๆ ควรจะต้องเป็นรายชื่อของ mode ที่สอง
+
+## 3. ข้อมูล attribute
+
+-   โดยปกติงานวิจัยเครือข่ายจะไม่ได้เก็บรวบรวมข้อมูลเฉพาะเครือข่ายเท่านั้น แต่ยังเก็บข้อมูล attribute ของโหนดด้วย เช่น ข้อมูลส่วนตัว ข้อมูลทางสังคม หรือข้อมูลอื่น ๆ ที่เกี่ยวข้อง
+
+-   ชุดข้อมูล attribute มีโครงสร้างเป็น tidydata ปกติเหมือนกับข้อมูลทั่วไป อย่างไรก็ตามควรมีคอลัมน์ที่ระบุ node id หรือชื่อของโหนด เพื่อให้สามารถจับคู่กับข้อมูลเครือข่ายได้อย่างถูกต้อง
+
+ตัวอย่าง attribute data
+
+```{r}
+## friendship network
+## note: 3=good friend, 2=friend, and 1=acquaintance
+friendship_network <- matrix(
+  c(0, 2, 1, 3, 2,
+    1, 0, 3, 1, 3,
+    3, 1, 0, 2, 1,
+    2, 1, 2, 0, 1,
+    3, 2, 1, 1, 0), 
+  nrow = 5, byrow = TRUE
+)
+rownames(friendship_network) <- c("Ana", "Ella", "Isra", "Petr", "Sam")
+colnames(friendship_network) <- c("Ana", "Ella", "Isra", "Petr", "Sam")
+
+
+## attribute data
+attribute_data <- data.frame(
+  id = c("Ana", "Ella", "Isra", "Petr", "Sam"),
+  Age = c(23, 67, 45, 28, 33),
+  Gender = c(1, 1, 1, 2, 2),
+  Music = c("Reggae", "Rock", "Pop", "Reggae", "Pop"),
+  stringsAsFactors = FALSE
+)
+attribute_data
+```
+
+## 4. ติดตั้ง library-xUCINET
+
+```{r}
+library(xUCINET)
+```
+
+## 5. Importing Network and Attribute Data
+
+การเก็บบันทึกข้อมูล network และ attribute สามารถออกแบบได้หลากหลาย และมีหลายวิธีการซึ่งขึ้นอยู่กับ library ที่เลือกใช้ด้วย ใน R มี library หลัก ๆ ที่ใช้สำหรับการวิเคราะห์ข้อมูลเครือข่ายหลายตัว แต่ละตัวมีลักษณะการจัดเก็บข้อมูลหรือ requiement ของข้อมูลนำเข้าที่แตกต่างกัน
+
+พิจารณา matrix ของข้อมูลต่อไปนี้
+
+```{r}
+## friendship network
+## note: 3=good friend, 2=friend, and 1=acquaintance
+friendship_network <- matrix(
+  c(0, 2, 1, 3, 2,
+    1, 0, 3, 1, 3,
+    3, 1, 0, 2, 1,
+    2, 1, 2, 0, 1,
+    3, 2, 1, 1, 0), 
+  nrow = 5, byrow = TRUE
+)
+rownames(friendship_network) <- c("Ana", "Ella", "Isra", "Petr", "Sam")
+colnames(friendship_network) <- c("Ana", "Ella", "Isra", "Petr", "Sam")
+
+## communication network
+communication_matrix <- matrix(
+  c(0, 1, 0, 1, 1,
+    1, 0, 0, 1, 0,
+    0, 0, 0, 1, 0,
+    1, 1, 1, 0, 1,
+    1, 0, 0, 1, 0), 
+  nrow = 5, byrow = TRUE
+)
+
+# กำหนดชื่อแถวและคอลัมน์
+rownames(communication_matrix) <- c("Ana", "Ella", "Isra", "Petr", "Sam")
+colnames(communication_matrix) <- c("Ana", "Ella", "Isra", "Petr", "Sam")
+
+
+## attribute data
+attribute_data <- data.frame(
+  id = c("Ana", "Ella", "Isra", "Petr", "Sam"),
+  Age = c(23, 67, 45, 28, 33),
+  Gender = c(1, 1, 1, 2, 2),
+  Music = c("Reggae", "Rock", "Pop", "Reggae", "Pop"),
+  stringsAsFactors = FALSE
+)
+
+write_csv(friendship_network %>% data.frame() %>% 
+            rownames_to_column("id"), "friendship_network.csv")
+write_csv(communication_matrix %>% data.frame() %>% 
+            rownames_to_column("id"), "communication_matrix.csv")
+write_csv(attribute_data %>% data.frame(), "attribute_data.csv")
+```
+
+#### 5.1 สร้าง project
+
+1.  สร้าง project ข้อมูลเครือข่าย friendship โดยใช้ข้อมูล `friendship_network.csv`
+
+```{r}
+FirstProject <- xCreateProject(GeneralDescription="This is a small study among 5 people.",
+               NetworkName="Friendship_Network",
+               NETFILE= "friendship_network.csv",
+               FileType="csv",
+               InFormatType="AdjMat",
+               NetworkDescription="Friendship networks among 5 people with 3=Good friend, 2=Friend and 1=Acquaintance",
+               Mode=c("People"),
+               Directed=TRUE, 
+               Loops=FALSE,
+               Values="Ordinal",
+               Class="matrix",
+               References="No references")
+FirstProject
+```
+
+2.  เพิ่ม attribute data ของโหนดใน project ด้วยข้อมูล `attribute_data.csv`
+
+```{r}
+FirstProject <- xAddAttributesToProject(
+  ProjectName = FirstProject,
+  ATTFILE1 = "attribute_data.csv",
+  FileType = "csv",
+  Mode = "People",
+  AttributesDescription = c("Age in years", "Gender (1 = Male, 2 = Female)", "Favorite music genre")
+)
+FirstProject$Attributes
+```
+
+#### 5.2 เพิ่ม network data ลงใน project
+
+```{r}
+FirstProject <- xAddToProject(
+  ProjectName = FirstProject,
+  NetworkName = "Communication",
+  NETFILE1 = "communication_matrix.csv",
+  FileType = "csv",
+  NetworkDescription = "Communication network among 5 people",
+  Mode = "People",
+  Directed = FALSE
+)
+FirstProject
+```
+
+## 6. Data Transformation
+
+เมื่อนำเข้าข้อมูลเข้าสู่ R แล้ว อาจต้องมีการ ปรับเปลี่ยนข้อมูลพื้นฐาน (Basic Transformations) ก่อนนำไปวิเคราะห์ หรือเพิ่มเข้าไปในโปรเจกต์
+
+ในส่วนนี้ เราจะกล่าวถึงตัวอย่างการปรับเปลี่ยนข้อมูลที่ใช้บ่อยระหว่างการวิเคราะห์เครือข่าย ได้แก่
+
+-   Dichotomizing → เปลี่ยนเครือข่ายที่มีค่าน้ำหนัก (weighted) เป็นเครือข่ายที่มีเฉพาะ 0/1 (binary)
+
+-   Combining relations → รวมเครือข่ายหลายชุดเข้าด้วยกัน
+
+-   Transposing matrices → สลับแถวและคอลัมน์ของเมทริกซ์
+
+-   Symmetrizing → ทำให้เครือข่ายเป็น undirected โดยการทำให้ adjacency matrix มีค่าเท่ากันทั้งสองทิศทาง
+
+-   Imputing missing values → เติมค่าที่ขาดหายไปในข้อมูลเครือข่าย
+
+-   Combining nodes → รวมโหนดที่คล้ายกันหรือต้องการรวมกลุ่ม
+
+-   Extracting subgraphs → ดึงเครือข่ายย่อยออกมาจากเครือข่ายหลัก
+
+### 6.1 Dichotomizing
+
+เป็นการเปลี่ยน weighted network ให้เป็น binary network ซึ่งโดยปกติจะมีการกำหนด threshold หรือคะแนนจุดตัด เพื่อแปลงข้อมูลดังกล่าว เช่น
+
+```{r}
+friendship_network
+ifelse(friendship_network >=2, 1,0)
+ifelse(friendship_network >=1, 1,0)
+```
+
+-   ความหมายของความสัมพันธ์ตามคำถามวิจัย
+
+-   ข้อจำกัดของบางวิธีการวิเคราะห์
+
+-   ต้องการควบคุมความหนาแน่นของเครือข่าย
+
+Note: cut-off ไม่ได้มีกฎเกณฑ์ในการกำหนดตายตัว ดังนั้นต้องทดลองหลาย ๆ solution แล้วเปรียบเทียบผลการวิเคราะห์ที่ได้
+
+หากเราใช้ library-`xUCINET` สามารถใช้ฟังก์ชัน `xDichotomize()` ในการดำเนินการแทนการใช้ `ifelse()` ได้
+
+```{r}
+xDichotomize(FirstProject$Friendship_Network,
+             Value = 1, Type = "GT")
+xDichotomize(FirstProject$Friendship_Network,
+             Value = 0, Type = "GT")
+```
+
+เกณฑ์การพิจารณา cut-off ที่เหมาะสมมีหลายวิธีการ
+
+-   พิจารณาจาก density ของ network
+
+-   พิจารณาจาก correlation ระหว่าง weighted network กับ binary network (ฺBorgatti-Quintane, 2018)
+
+#### พิจารณาจาก density
+
+```{r}
+Burkhardt_GovernmentAgency$AdviceGivingT1 %>% xDensity() 
+Burkhardt_GovernmentAgency$AdviceGivingT1 %>% xDichotomize(Value = 0, Type = "GT") %>% xDensity()
+Burkhardt_GovernmentAgency$AdviceGivingT1 %>% xDichotomize(Value = 1, Type = "GT") %>% xDensity()
+Burkhardt_GovernmentAgency$AdviceGivingT1 %>% xDichotomize(Value = 2, Type = "GT") %>% xDensity()
+```
+
+เราสามารถใช้การวนลูปช่วยได้
+
+```{r}
+library(purrr)
+map_dbl(.x = 0:10, 
+        .f = ~Burkhardt_GovernmentAgency$AdviceGivingT1 %>% 
+          xDichotomize(Value = .x, Type = "GT") %>% xDensity()
+        ) %>% 
+  data.frame() %>% 
+  rename(density = 1) %>% 
+  mutate(cutoff = 1:11) %>% 
+  ggplot(aes(x = cutoff, y = density))+
+  geom_point()+
+  geom_line()+
+  theme_light()
+```
+
+#### พิจารณาจาก correlation
+
+```{r}
+## weighted network (original)
+BGAT1<-Burkhardt_GovernmentAgency$AdviceGivingT1
+diag(BGAT1) <- NA
+BGAT1_GT0 <- xDichotomize(BGAT1, Value = 0, Type = "GT")
+BGAT1_GT1 <- xDichotomize(BGAT1, Value = 1, Type = "GT")
+
+cor(c(BGAT1_GT0), c(BGAT1), use = "pairwise.complete.obs")
+cor(c(BGAT1_GT1), c(BGAT1), use = "pairwise.complete.obs")
+
+```
+
+ทำนองเดียวกัน เราสามารถวนลูปได้เหมือนกัน
+
+```{r}
+BGAT1<-Burkhardt_GovernmentAgency$AdviceGivingT1
+map_dbl(.x = 0:10, ~ {
+  dicho <- xDichotomize(NET1 = BGAT1, Value = .x, Type = "GT")
+  cor(c(dicho), c(BGAT1), use = "pairwise.complete.obs")
+}) %>% 
+  data.frame() %>% 
+  rename(correlation = 1) %>% 
+  mutate(cutoff = 1:11) %>% 
+  ggplot(aes(x = cutoff, y = correlation))+
+  geom_point()+
+  geom_line()+
+  theme_light()+
+  scale_x_continuous(breaks = 1:11)
+```
+
+```{r}
+library(igraph)
+graph_original <- BGAT1 %>% graph_from_adjacency_matrix(mode = "undirected", diag = FALSE)
+graph_dicho <- xDichotomize(BGAT1, Value = 6, Type = "GT") %>% graph_from_adjacency_matrix(mode = "undirected", diag = FALSE)
+par(mfrow=c(1,2), mar=c(0,0,0,0))
+plot(graph_original)
+plot(graph_dicho)
+```
+
+### 6.2 Combining relations
+
+หลายกรณีเราอาจจะมีความสัมพันธ์หลายประเภทของชุดข้อมูลโหนดเดียวกัน และในบางกรณีการร่วม tie ของความสัมพันธ์หลายประเภทอาจจะได้ความหมายที่ตรงกับความต้องการในบางคำถามวิจัย เช่น
+
+1.  ในรายวิชานี้ หากนิสิตมีปัญหาในการเรียน นิสิตมีแนวโน้มหรือคิดว่าจะขอคำปรึกษา/แลกเปลี่ยนความคิดเห็นกับเพื่อนคนใด
+
+2.  นิสิตคิดว่าเพื่อนคนใดในชั้นเรียนที่มีความสามารถในการอธิบายหรือสอนเนื้อหายาก ๆ ได้ดี
+
+3.  นิสิตคิดว่าเพื่อนคนใดที่มีอิทธิพลต่อวิธีคิด หรือการตัดสินใจของนิสิตในรายวิชานี้
+
+การรวมเครือข่ายทั้ง 3 เข้าด้วยกันอาจได้ความสัมพันธ์ในภาพกว้างเกี่ยวกับอะไร ?
+
+วิธีการรวมเครือข่ายสามารถทำได้หลายแบบ ได้แก่
+
+1.  ใช้ผลรวมของค่าความสัมพันธ์ของเครือข่ายแบบ binary ที่ต้องการรวมกัน อาจแสดงถึงความแข็งแรงของความสัมพันธ์ในเชิงมิติความสัมพันธ์ที่มีหลายประเภท
+
+2.  ใช้ผลรวมของค่าความสัมพันธ์ของเครือข่ายแบบ weighted ที่ต้องการรวมกัน ผลลัพธ์ที่ได้จะสะท้อนความแข็งแรงของความสัมพันธ์ในเชิงระดับความสัมพันธ์
+
+3.  การทำ dichotomize เพื่อให้เป็นเครือข่ายใหม่ กล่าวคือสร้างเครือข่ายใหม่แบบ binary จากสองเครือข่ายเดิม โดยมีการกำหนดเงื่อนไข เช่น ต้องพบความสัมพันธ์พร้อมกันทั้งสองเครือข่ายจะให้เป็น 1 ถ้าไม่พบให้เป็น 0
+
+4.  บางกรณีเรามีเครือข่ายจำนวนมาก เราอาจพิจารณายุบรวมเครือข่ายต่าง ๆ เข้าด้วยกันโดยอิงจากผลการวิเคราะห์เชิงสถิติ เช่น correlation analysis หรือ factor analysis
+
+```{r}
+?xCombineTies()
+```
+
+### 6.3 Transpose
+
+Transpose หมายถึงการสลับตำแหน่งระหว่าง sender กับ reciever การสลับตำแหน่งดังกล่าวช่วยให้ได้เครือข่ายที่มีความหมายในมุมกลับ เช่น
+
+"ในรายวิชานี้ หากนิสิตมีปัญหาในการเรียน นิสิตมีแนวโน้มหรือคิดว่าจะขอคำปรึกษา/แลกเปลี่ยนความคิดเห็นกับเพื่อนคนใด"
+
+หาก transpose ความสัมพันธ์นี้จะได้ ...
+
+```{r}
+?xTranspose()
+```
+
+### 6.4 Symmetrizing
+
+Symmetrizing หมายถึง การทำให้เครือข่ายที่มีทิศทาง (directed network) กลายเป็นเครือข่ายที่ไม่มีทิศทาง (undirected network) โดย ทำให้ทุกเส้นเชื่อมโยง (tie) มีการตอบสนองซึ่งกันและกัน (reciprocated ties)
+
+-   บางการวิเคราะห์เช่น MDS ต้องการ undirected network
+
+-   ช่วยในกระบวนการทำความสะอาดข้อมูลในบางเครือข่าย เช่น เครือข่ายการสื่อสาร ที่จะต้องเป็น undirected network โดยธรรมชาติ
+
+-   ใช้เพื่อวิเคราะห์ความสัมพันธ์เบื้องหลัง เช่น เราอาจมีการสังเกตความสัมพันธ์ด้านการขอคำปรึกษา โดยเราอาจมองว่าความสัมพันธ์ดังกล่าวสะท้อนความร่วมมือหรือความสนิทระหว่างบุคคลได้
+
+การทำ Symmetrizing มี 2 วิธีการ ได้แก่
+
+-   Union -- ขอให้มีอย่างน้อย 1 การระบุความสัมพันธ์ ก็จะถือว่ามี tie ระหว่างโหนด 2 โหนดนั้น
+
+-   Intersection -- ต้องมีการระบุความสัมพันธ์ทั้งสองฝ่าย จึงจะถือว่ามี tie ระหว่างโหนด 2 โหนด
+
+```{r}
+?xSymmetrize()
+```
+
+### 6.5 Imputing missing values
+
+-   ข้อมูลสูญหายเป็นปัญหาหนึ่งที่มักพบบ่อย และอาจส่งผลกระทบรุนแรงต่อการวิเคราะห์เครือข่าย
+
+-   กรณีที่พบได้บ่อยคือ ผู้ให้ข้อมูลเลือกที่จะไม่ตอบคำถาม โดยเป็นไปได้ทั้งไม่ตอบทั้งฉบับ และบางคำถาม ซึ่งส่งผลให้คู่ความสัมพันธ์บางคู่ (หรือแถวในเมทริกซ์) ขาดหายไป
+
+```{r}
+## complete dataset
+friendship_network 
+
+### missing value dataset
+friendship_network_missing <- friendship_network
+friendship_network_missing[4,1] <- NA
+friendship_network_missing[1,3] <- NA
+friendship_network_missing[3,1] <- NA
+friendship_network_missing
+
+## listwise deletion
+friendship_network_missing %>% xUCINET::xImputeMissingData()
+
+par(mfrow=c(1,2), mar=c(3,3,3,0))
+friendship_network %>% 
+  graph_from_adjacency_matrix(mode = "undirected") %>% 
+  plot(main ="complete network")
+friendship_network_missing %>% 
+  graph_from_adjacency_matrix(mode = "undirected") %>% 
+  plot(main = "missing network")
+```
+
+#### ทำความเข้าใจลักษณะการสูญหาย
+
+```{r analyze_missing_pattern}
+## ฟังก์ชันสำรวจค่าสูญหายใน  adjacency matrix
+analyze_missing_pattern <- function(adj_matrix) {
+  # หาตำแหน่งที่มีค่าสูญหาย
+  n_missing <- sum(is.na(adj_matrix))
+  missing_pattern <- which(is.na(adj_matrix), arr.ind = TRUE)
+  
+  # สร้าง data frame จากตำแหน่งที่สูญหาย
+  missing_df <- data.frame(
+    row = rownames(adj_matrix)[missing_pattern[,"row"]],
+    col = colnames(adj_matrix)[missing_pattern[,"col"]]
+  )
+  
+  # วิเคราะห์แต่ละคู่ที่สูญหาย
+  missing_pairs <- list()
+  symmetric_count <- 0
+  asymmetric_count <- 0
+  
+  for(i in 1:nrow(missing_df)) {
+    node1 <- missing_df$row[i]
+    node2 <- missing_df$col[i]
+    
+    # ตรวจสอบว่าคู่ตรงข้ามสูญหายด้วยหรือไม่
+    reverse_missing <- is.na(adj_matrix[node2, node1])
+    
+    if(reverse_missing) {
+      if(paste(node2, node1, sep="-") %in% names(missing_pairs)) {
+        next  # ข้ามถ้าเคยนับคู่นี้แล้ว
+      }
+      missing_pairs[[paste(node1, node2, sep="-")]] <- "symmetric"
+      symmetric_count <- symmetric_count + 1
+    } else {
+      missing_pairs[[paste(node1, node2, sep="-")]] <- "asymmetric"
+      asymmetric_count <- asymmetric_count + 1
+    }
+  }
+  
+  # สรุปผล
+  return(list(
+    total_missing = n_missing,
+    missing_positions = missing_df,
+    missing_patterns = missing_pairs,
+    summary = list(
+      symmetric_pairs = symmetric_count,
+      asymmetric_missing = asymmetric_count,
+      total_pairs = length(missing_pairs)
+    )
+  ))
+}
+```
+
+```{r}
+analyze_missing_pattern(friendship_network_missing)
+```
+
+#### วิธีการแก้ปัญหาค่าสูญหาย
+
+1.  ตัดค่าสูญหายออกไป (ถือว่าไม่มีความสัมพันธ์นั้น) ผลกระทบที่ตามมาคือทำให้โหนดในแถวนั้นหายไปจากการวิเคราะห์ทั้งหมด (ข้อมูลสูญหายที่พบนี้สามารถละเลยได้จริง ๆ หรือไม่)
+
+2.  Symmetrical Imputation: สำหรับ undirected network เราสามารถเติมข้อมูลที่สูญหายในแถวจากข้อมูลแนวคอลัมน์ที่สอดคล้องกันได้
+
+-   เครือข่ายต้องเป็นแบบ undirected
+
+-   ถ้าค่าที่หายคือ a\[i,j\] แล้ว a\[j,i\] มีค่า ให้เติมค่า a\[j,i\] แทน
+
+```{r}
+symmetrical_impute <- function(adj_matrix) {
+  n <- nrow(adj_matrix)
+  imputed <- adj_matrix
+  
+  for(i in 1:n) {
+    for(j in 1:n) {
+      if(is.na(imputed[i,j]) && !is.na(imputed[j,i])) {
+        imputed[i,j] <- imputed[j,i]
+      }
+    }
+  }
+  return(imputed)
+}
+
+imputed1 <- symmetrical_impute(friendship_network_missing)
+```
+
+3.  Local Density-based Imputation: ใช้ความหนาแน่นของเครือข่ายในละแวกที่แวดล้อมค่าสูญหายเป็นข้อมูลเพื่อทดแทนค่าสูญหาย
+
+```{r local_density_impute}
+local_density_impute <- function(adj_matrix, k = 2, directed = TRUE) {
+  n <- nrow(adj_matrix)
+  imputed <- adj_matrix
+  
+  for(i in 1:n) {
+    for(j in 1:n) {
+      if(is.na(imputed[i,j])) {
+        if(directed) {
+          # สำหรับ Directed Network
+          # หา outgoing neighbors ของ node i
+          i_out_neighbors <- which(!is.na(adj_matrix[i,]))
+          # หา incoming neighbors ของ node j
+          j_in_neighbors <- which(!is.na(adj_matrix[,j]))
+          
+          # แยกคำนวณ density ตามทิศทาง
+          out_density <- mean(adj_matrix[i, i_out_neighbors], na.rm = TRUE)
+          in_density <- mean(adj_matrix[j_in_neighbors, j], na.rm = TRUE)
+          
+          # ให้น้ำหนักทั้งสองทิศทาง
+          local_density <- (out_density + in_density) / 2
+          
+        } else {
+          # สำหรับ Undirected Network
+          # หา neighbors ของทั้ง node i และ j
+          i_neighbors <- which(!is.na(adj_matrix[i,] | !is.na(adj_matrix[,i])))
+          j_neighbors <- which(!is.na(adj_matrix[j,] | !is.na(adj_matrix[,j])))
+          
+          # คำนวณ density จากทั้ง neighborhood
+          common_submatrix <- adj_matrix[c(i_neighbors), c(j_neighbors)]
+          local_density <- mean(common_submatrix, na.rm = TRUE)
+        }
+        
+        imputed[i,j] <- local_density
+      }
+    }
+  }
+  return(imputed)
+}
+```
+
+```{r}
+friendship_network
+local_density_impute(imputed1, k = 1, directed = TRUE)
+xImputeMissingData(friendship_network_missing, Type = "Density", Loops = FALSE)
+```
+
+4.  Structural Equivalence-based Imputation: ใช้ความสัมพันธ์ระหว่างโหนดที่มีความสัมพันธ์กันเป็นข้อมูลเพื่อทดแทนค่าสูญหาย
+
+```{r structural_equivalence_impute}
+structural_equivalence_impute <- function(adj_matrix) {
+  n <- nrow(adj_matrix)
+  imputed <- adj_matrix
+  
+  # คำนวณ structural equivalence
+  se_matrix <- matrix(0, n, n)
+  for(i in 1:n) {
+    for(j in 1:n) {
+      if(i != j) {
+        # เปรียบเทียบรูปแบบการเชื่อมต่อ
+        row_i <- adj_matrix[i,]
+        row_j <- adj_matrix[j,]
+        se_matrix[i,j] <- cor(row_i, row_j, use = "pairwise.complete.obs")
+      }
+    }
+  }
+  
+  # ใช้ structural equivalence ในการ impute
+  for(i in 1:n) {
+    for(j in 1:n) {
+      if(is.na(imputed[i,j])) {
+        # หา nodes ที่มี structural equivalence สูง
+        similar_nodes <- which(se_matrix[i,] > 0.7)
+        if(length(similar_nodes) > 0) {
+          # ใช้ค่าเฉลี่ยจาก similar nodes
+          imputed[i,j] <- mean(adj_matrix[similar_nodes, j], na.rm = TRUE)
+        }
+      }
+    }
+  }
+  return(imputed)
+}
+```
+
+```{r}
+friendship_network
+structural_equivalence_impute(imputed1)
+```
+
+-   มีแนวคิดว่า โหนดที่มีรูปแบบการเชื่อมต่อกับโหนดอื่น ๆ ที่คล้ายกันจะมีคุณสมบัติหรือบทบาทในเครือข่ายที่ใกล้เคียงกัน
+
+-   เมื่อพบค่าที่ขาดหายไปในโหนด i สำหรับความสัมพันธ์กับ j เราจะหาโหนดอื่น ๆ ที่มี structural equivalence กับ i สูง (เกณฑ์ที่ตั้งไว้คือ \> 0.7 ) แล้วใช้ค่าเฉลี่ยจากโหนดเหล่านั้นในคอลัมน์ j มาแทนที่ค่า NA
+
+## 6.6 Normalization
+
+ใน weighted network บางกรณีผู้วิเคราะห์อาจต้องการเปรียบเทียบความสัมพันธ์ที่อยู่ระหว่างแถว แต่ก็มีความเป็นไปได้ว่าผู้ตอบจะประเมินคะแนนด้วยมาตรฐานที่แตกต่างกัน
+
+-   บางคนอาจประเมินด้วยสเกลที่ค่อนไปทางสูง
+
+-   บางคนค่อนต่ำ
+
+ดังนั้นการเปรียบเทียบระดับความสัมพันธ์ระหว่างแถวหรือบุคคลอาจทำได้ไม่ดีนัก การแก้ปัญหาสามารถใช้การ normalization ได้
+
+1.  คำนวณ Z-score สำหรับแต่ละแถว
+
+2.  หารแต่ละแถวด้วยค่าสูงสุดในแถวนั้น
+
+นอกจากนี้ยังมีวิธีการอื่น ๆ อีก
+
+```{r}
+xNormalize(friendship_network, Type = "Max")
+```
+
+## 6.7 Geodesic Distance
+
+Geodesic Distance หมายถึง ระยะทางที่สั้นที่สุดระหว่างโหนด 2 โหนดใด ๆ ในเครือข่าย
+
+```{r}
+xGeodesicDistance(friendship_network)
+```
