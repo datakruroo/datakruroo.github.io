@@ -1,0 +1,294 @@
+---
+title: "Feature Selection"
+format: html
+editor: visual
+---
+
+บทเรียนนี้จะกล่าวถึงวิธีการคัดเลือกตัวแปรอิสระเข้าสู่โมเดลทำนาย เราอาจจำแนกประเภทของวิธีการคัดเลือกตัวแปรอิสระเป็น 3 กลุ่มได้แก่
+
+- filter methods เราจะใช้ค่าสถิติที่สะท้อนความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ เช่น correlation หรือ R2 มาสำรวจก่อน จากนั้นก็คัดเลือกตัวแปรอิสระที่มีความสัมพันธ์กับตัวแปรตามไปใช้ในโมเดล
+
+- wrapper methods 
+
+- embedded methods 
+
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+
+data <- read_delim("student-mat.csv", delim = ";")
+data <- data %>% 
+  mutate(G3 = ifelse(G3 >=10, "pass","fail"))
+```
+
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.7, strata = G3)
+split
+train <- training(split)
+test <- testing(split)
+```
+
+
+```{r}
+baseline_rec <- recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  prep() %>% 
+  juice()
+```
+
+
+
+## Filter methods
+
+```{r}
+## สร้างฟังก์ชันในการหา vi ก่อน
+vi_calculator <- function(data, x){
+  library(vip)
+  fit_glm <- glm(as.formula(paste0("G3 ~", x)),  ## สร้างสูตรการทำนายในโมเดล
+                 data = data, family= "binomial")
+  vi(fit_glm)
+}
+
+feature_list <- names(baseline_rec %>% select(-G3))
+
+vip_data <- map_df(.x = feature_list,
+       .f = ~vi_calculator(baseline_rec, .x)) %>% 
+  arrange(desc(Importance)) %>% 
+  filter(Importance >2)
+
+vip_data
+selected_feautures <- vip_data %>% pull(Variable)
+```
+เราจะใช้ principle of interaction search + strong heredity เข้ามากำหนดเทอมปฏิสัมพันธ์ที่เราจะนำไปใช้ในโมเดล
+
+
+```{r}
+recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  step_mutate(guardianother = case_when(
+    guardian == "other" ~ 1,
+    .default = 0
+  )) %>% 
+  step_mutate(agemiddle = case_when(
+    age == "middle" ~ 1,
+    .default = 0
+  )) %>%
+  step_select(all_of(selected_feautures)) %>%
+  prep() %>% 
+  juice() %>% glimpse()
+```
+
+ฝึกสอนโมเดลโดยใช้ recipe สูตรที่มีปฏิสัมพันธ์
+
+
+```{r}
+interaction_rec <- recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  ## คัดเลือกตัวแปร main effect ที่ได้จากวิธีการ filter method
+  step_mutate(guardianother = case_when(
+    guardian == "other" ~ 1,
+    .default = 0
+  )) %>% 
+  step_mutate(agemiddle = case_when(
+    age == "middle" ~ 1,
+    .default = 0
+  )) %>%
+  step_select(G3, all_of(selected_feautures)) %>%
+  step_interact(terms = ~ all_of(selected_feautures):all_of(selected_feautures))
+
+
+
+lasso_interaction_rec <- recipe(G3 ~. ,data = train) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_mutate(age = case_when(
+    age <= 16 ~ "young",
+    age > 16 & age <= 19 ~ "middle",
+    age > 19 ~ "old"
+  )) %>%
+  step_mutate(age = factor(age, levels=c("young", "middle", "old"))) %>%
+  step_zv(all_predictors()) %>% 
+  step_nzv(all_predictors()) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_interact(terms = ~ all_predictors():all_predictors())
+```
+
+
+ระบุโมเดลที่จะทำการวิเคราะห์
+
+```{r}
+glm_spec <- logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification")
+
+
+lasso_spec <- logistic_reg(penalty = tune(), mixture = 0) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+```
+
+
+train model
+
+```{r}
+tidymodels_prefer()
+set.seed(123)
+my_folds <- vfold_cv(train, v = 10, repeats = 3, strata = G3)
+my_metrices <- yardstick::metric_set(yardstick::roc_auc, 
+                                     yardstick::accuracy, 
+                                     yardstick::f_meas, 
+                                     yardstick::sens, 
+                                     yardstick::spec, 
+                                     yardstick::precision)
+glm_wf <- workflow() %>% 
+  add_recipe(interaction_rec) %>% 
+  add_model(glm_spec)
+
+glm_wf <- workflow() %>% 
+  add_recipe(interaction_rec) %>% 
+  add_model(glm_spec) %>% 
+  fit_resamples(
+    resamples = my_folds,
+    metrics = my_metrices,
+    control = control_resamples(save_pred = TRUE)
+  )
+
+glm_wf %>% collect_metrics()
+```
+
+```{r}
+penalty_grid <- grid_regular(penalty(), levels = 20)
+
+lasso_wf1 <- workflow() %>% 
+  add_recipe(lasso_interaction_rec) %>% 
+  add_model(lasso_spec) 
+
+lasso_wf <- workflow() %>% 
+  add_recipe(lasso_interaction_rec) %>% 
+  add_model(lasso_spec) %>% 
+  tune_grid(
+    resamples = my_folds,
+    grid = penalty_grid,
+    metrics = my_metrices,
+    control = control_resamples(save_pred = TRUE)
+  )
+
+lasso_wf %>% select_best(metric = "roc_auc")
+
+lasso_wf %>% collect_metrics() %>% 
+  filter(.config == "Preprocessor1_Model01") %>% 
+  mutate(model = "lasso") %>% 
+  bind_rows(
+    glm_wf %>% collect_metrics() %>% 
+      mutate(model = "glm")
+  ) %>% 
+  ggplot(aes(x = .metric, y= mean))+
+  geom_bar(stat = "identity", aes(fill = model), position = "dodge")+
+  theme_light()
+```
+
+
+```{r}
+glm_wf  %>% 
+  last_fit(split,
+           metrics = my_metrices) %>% 
+  collect_metrics()
+
+lasso_wf1 %>% 
+  finalize_workflow(lasso_wf %>% select_best(metric = "roc_auc")) %>% 
+  last_fit(split, metrics = my_metrices) %>% 
+  collect_metrics()
+
+
+lasso_lastfit <- lasso_wf1 %>% 
+  finalize_workflow(lasso_wf %>% select_best(metric = "roc_auc")) %>% 
+  fit(data = train)
+```
+
+```{r}
+glm_lastfit <- glm_wf  %>% 
+  fit(data = train)
+glm_lastfit  %>% extract_fit_engine() %>%summary()
+```
+
+
+```{r}
+library(vip)
+lasso_lastfit %>% vip::vi()
+```
+
+## Wrapper methods
+
+
+
+
+```{r}
+baseline_rec1 <- baseline_rec %>% 
+  mutate(G3 = ifelse(G3 == "pass",1,0))
+
+null_model <- glm(G3 ~ absences, data = baseline_rec1)
+full_model <- glm(G3 ~ ., 
+                 data = baseline_rec1)
+
+forword_selection <- stats::step(null_model,
+                          direction = "both",
+                          scope = formula(full_model))
+
+forword_selection %>% extractAIC()
+forword_selection$anova[,1]
+forword_selection$anova %>% 
+  mutate(Step = factor(Step, levels=forword_selection$anova[,1])) %>% 
+  ggplot(aes(x = Step, y=Deviance))+
+  geom_bar(stat = "identity")+
+  geom_point(aes(y = cumsum(abs(Df))), col = "steelblue")
+```
+
+

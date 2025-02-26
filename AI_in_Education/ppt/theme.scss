@@ -17,6 +17,16 @@ $selection-color: #8D493A;
 
 /*-- scss:rules --*/
 
+#title-slide {
+
+  .subtitle {
+    font-size: 1.2em;
+    font-weight: strong;
+  color: #E75B2B;  }
+
+}
+
+
 .reveal .custom-title {
   position: absolute;
   color: #E75B2B;
@@ -24,6 +34,15 @@ $selection-color: #8D493A;
   text-align: right;
   right: 20px;
   top: -200px;
+}
+
+.reveal .title-slide .subtitle {
+  position: absolute;   /* ตั้งค่าตำแหน่งให้เป็น absolute */
+  color: #E75B2B;       /* เปลี่ยนสี subtitle เป็นสีส้ม */
+  font-size: 2em;       /* ปรับขนาดตัวอักษร */
+  text-align: right;    /* จัด subtitle ชิดขวา */
+  right: 20px;          /* ห่างจากขอบขวา 20px */
+  top: -50px;           /* ปรับตำแหน่งขึ้นด้านบน */
 }
 
 

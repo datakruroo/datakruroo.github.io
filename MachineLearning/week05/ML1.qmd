@@ -1,0 +1,396 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Introduction
+
+บทเรียนนี้จะกล่าวถึงการเรียนรู้ของเครื่องพื้นฐาน ได้แก่
+
+- Regularized regression
+
+- Principal Component and Partial Least Square regression
+
+- K-Nearest Neighbors (KNN)
+
+- Multinomial logistic regression
+
+- Decision Tree
+
+## 1. Regularized Regression
+
+Regularized Regression คือเทคนิคการวิเคราะห์เชิงสถิติที่เพิ่มเงื่อนไขลงในฟังก์ชันวัดความคลาดเคลื่อน (loss function) หรือฟังก์ชันวัตถุประสงค์ เพื่อควบคุมขนาดของค่าสัมประสิทธิ์ในโมเดล ซึ่งช่วยในการประมาณค่าพารามิเตอร์ในโมเดลทำได้ดีขึ้น มีความเสถียรขึ้น ลดปัญหา overfitting และเพิ่มความสามารถในการทำนายข้อมูลใหม่
+
+โดยหลักการนี้จะมีการเพิ่ม “penalty term” เข้าไปในสมการการหาค่าสัมประสิทธิ์ ทำให้ค่าที่ได้ไม่สามารถมีค่าใหญ่เกินไปและลดความผันผวนในแบบจำลอง นอกจากนี้เทคนิคนี้ยังช่วยจัดการกับปัญหา multicollinearity ในกรณีที่มีตัวแปรอิสระจำนวนมาก
+
+รูปแบบหลักในการทำ regularization
+
+- **L1 regularization (Lasso regression)** หรืออาจะเรียกว่า penalized regression ใช้การลงโทษโดยใช้ค่าปริมาณสัมบูรณ์ของค่าสัมประสิทธิ์ ซึ่งบางครั้งอาจทำให้ค่าสัมประสิทธิ์บางตัวถูกลดลงเป็นศูนย์ ช่วยในการคัดเลือกตัวแปร
+
+$$
+\text{minimize} \left( \text{RSS} + \lambda \sum_{j=1}^{p} |\beta_j| \right)
+$$
+
+- **L2 regularization (Ridge regression)** ใช้การลงโทษโดยใช้ค่ากำลังสองของค่าสัมประสิทธิ์ ซึ่งจะทำให้ค่าสัมประสิทธิ์ถูกหดลงสม่ำเสมอแต่ไม่ลดลงเป็นศูนย์
+
+$$
+\text{minimize} \left( \text{RSS} + \lambda \sum_{j=1}^{p} \beta_j^2 \right)
+$$
+
+- **Elastic Net** คือการผสมระหว่าง L1 และ L2 regularization โดยใช้ค่าเพิ่มเติม $\alpha$ (เรียกว่า mixture parameter) เพื่อควบคุมการใช้ L1 และ L2 regularization
+
+$$
+\text{minimize} \left( \text{RSS} + \lambda \left( \alpha \sum_{j=1}^{p} |\beta_j| + (1-\alpha) \sum_{j=1}^{p} \beta_j^2 \right) \right)
+$$
+
+
+```{r eval = F}
+library(tidymodels)
+
+rec <- recipe(y~. ,data = train) %>% 
+  step_normalize(all_numeric_predictors())
+
+## lasso regression
+ridge_spec <- linear_reg(penalty = tune(), mixture = 1) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+
+## ridge regression
+ridge_spec <- linear_reg(penalty = tune(), mixture = 0) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+
+## elastic-net regression
+elasticnet_spec <- linear_reg(penalty = tune(), mixture = tune()) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+```
+
+
+## 2. Principal Component Regression (PCR)
+
+PCA + Linear Regression
+
+Principal Component Regression (PCR) เป็นวิธีที่ผสมผสานระหว่างการวิเคราะห์องค์ประกอบหลัก (PCA) และการถดถอยเชิงเส้น (linear regression) โดยมีเป้าหมายหลักเพื่อลดปัญหา multicollinearity ที่เกิดจากตัวแปรอิสระที่มีความสัมพันธ์สูงกันและเพื่อลดมิติของข้อมูล
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+data <- read_csv("student_data_complete.csv")
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = gpax.y2)
+train <- training(split)
+test <- testing(split)
+
+## recipe
+recipe(gpax.y2 ~ ., data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = 11) %>% 
+  prep() %>% 
+  tidy(2, type = "variance") %>% 
+  filter(terms == "cumulative percent variance") %>% 
+  ggplot(aes(x=component, y=value))+
+  geom_col(fill = "steelblue")+
+  theme_light()+
+  ggtitle("Scree plot")+
+  scale_x_continuous(breaks = 1:40)+
+  theme(panel.grid = element_blank())+
+  geom_hline(yintercept = 70, linetype =2)
+  
+  
+recipe(gpax.y2 ~ ., data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = 11) %>% 
+  prep() %>% 
+  tidy(2, type = "coef") %>% 
+  filter(component %in% paste0("PC",1:3)) %>% 
+  ggplot(aes(x = value, y = terms))+
+  geom_bar(stat = "identity", aes(fill = value >0 ))+
+  facet_wrap(~component)+
+  theme_light()
+  
+  
+  filter(terms == "cumulative percent variance") %>% 
+  ggplot(aes(x=component, y=value))+
+  geom_col(fill = "steelblue")+
+  theme_light()+
+  ggtitle("Scree plot")+
+  scale_x_continuous(breaks = 1:40)+
+  theme(panel.grid = element_blank())+
+  geom_hline(yintercept = 70, linetype =2)
+```
+
+```{r}
+## ทำ PCR
+pcr_rec <- recipe(gpax.y2 ~ ., data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = tune())
+
+reg_spec <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+
+reg_wf <- workflow() %>% 
+  add_recipe(pcr_rec) %>% 
+  add_model(reg_spec)
+
+## train pcr โดยการทำ CV
+set.seed(123)
+myfolds <- vfold_cv(train, v=5, repeats = 3, strata = gpax.y2)
+my_metrics <- metric_set(rsq, rmse)
+mygrid <- grid_regular(num_comp(range=c(6,10)), levels = 5)
+
+pcr_tune_res <- reg_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE, verbose = TRUE)
+  )
+
+pcr_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(num_comp == 7)
+pcr_tune_res %>% autoplot()
+```
+
+Root Mean Square Error
+
+```{r}
+train %>% 
+  ggplot(aes(gpax.y2))+
+  geom_histogram()
+```
+
+
+
+**หลักการของ PCR**
+
+- ลดมิติข้อมูล : PCR ใช้ PCA เพื่อแปลงตัวแปรอิสระที่มีความสัมพันธ์กันให้กลายเป็นชุดขององค์ประกอบหลัก (principal components) ซึ่งแต่ละองค์ประกอบเป็นการผสมผสานของตัวแปรต้นฉบับและมีความแปรปรวนไม่ซ้ำกัน โดยองค์ประกอบหลักที่ได้จะเรียงตามระดับความแปรปรวนที่อธิบายข้อมูล
+
+- เลือกองค์ประกอบหลัก : โดยทั่วไปจะเลือกเฉพาะองค์ประกอบหลักบางส่วนที่อธิบายความแปรปรวนของข้อมูลในระดับที่เพียงพอ (เช่น 70-95%) เพื่อใช้เป็น predictors ในการถดถอย เมื่อเลือกองค์ประกอบหลักที่ลดทอนมิติของข้อมูลลงแล้วก็จะนำมาทดแทนตัวแปรต้นฉบับในขั้นตอนการถดถอย
+
+- การวิเคราะห์การถดถอย : เมื่อได้องค์ประกอบหลักแล้วจะนำองค์ประกอบหลักดังกล่าวมาเป็นตัวแปรอิสระใน linear regression เพื่อทำนายตัวแปรตาม
+
+[PCR concept](https://claude.site/artifacts/82168d5b-b030-4e11-a389-4d703de77206)
+
+การทำ PCR ใน tidymodels สามารถทำได้ผ่าน recipe เพื่อแปลงตัวแปรอิสระให้เป็นองค์ประกอบหลักก่อน
+
+```{r eval = F}
+pcr_rec <- recipe(y~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = 3)
+
+pcr_spec <- linear_reg() %>% 
+  set_engine("lm")
+
+pcr_workflow <- workflow() %>%
+  add_recipe(pcr_rec) %>%
+  add_model(pcr_spec)
+```
+
+Note:
+
+1. กระบวนการ PCR ข้างต้นมี 2 ขั้นตอนใหญ่ ทั้งสองขั้นตอนแยกกันโดยอิสระ ดังนั้นการเลือกองค์ประกอบหลักในโมเดลจึงเป็นการพิจารณาจากความแปรปรวนของตัวแปรอิสระเท่านั้น ไม่ได้มีการคำนึงถึงความสัมพันธ์ระหว่างองค์ประกอบกับตัวแปรตามเลย  แนวคิดนี้จึงอาจไม่เหมาะสมเพราะองค์ประกอลหลักที่มีความแปรปรวนสูงไม่ได้จำเป็นต้องเหมาะสมเสมอไป องค์ประกอบเล็กที่มีความแปรปรวนต่ำอาจมีความสัมพันธ์กับตัวแปรตามได้มากกว่า
+
+2. PCR ทำให้การแปลความหมายทำได้ยาก ทั้งนี้เพราะองค์ประกอบหลักเป็นผลรวมเชิงเส้นของตัวแปรอิสระต้นฉบับ การนำโมเดล PCR ไปใช้ทำให้ยากต่ออธิบายความหมายให้กับผู้เกี่ยวข้อง โมเดลอาจทำหน้าที่ทำนายได้ดี แต่ไม่สามารถให้คำอธิบายหรือข้อมูลป้อนกลับได้ดีมากนัก
+
+3. ความไวต่อสเกลของข้อมูล -- PCA มีความไวต่อสเกลหรือหน่วยของข้อมูล จึงมีความจำเป็นที่ผู้วิเคราะห์จะต้องแปลงข้อมูลต้นฉบับให้เป็นคะแนนมาตรฐานก่อน
+
+4. missing data -- PCR ไม่สามารถจัดการกับข้อมูลที่ขาดหายได้โดยอัตโนมัติ จึงต้องมีการจัดการข้อมูลที่ขาดหายก่อนการวิเคราะห์
+
+5. สมมุติฐานด้าน linearity -- PCA ใน PCR จะรวมข้อมูลให้เป็นองค์ประกอบตามความสัมพันธ์เชิงเส้นของข้อมูล ในกรณีที่องค์ประกอบมีรูปแบบความสัมพันธ์กับข้อมูลที่ไม่ใช้่เชิงเส้น ควรเปลี่ยนวิธีการวิเคราะห์องค์ประกอบหลักเป็นวิธีอื่น เช่น Kernel PCA, Autoencoder, t-SNE, UMAP หรืออื่น ๆ  
+
+6. Loss of Information -- การลดมิติด้วย PCA ทำให้สูญเสียข้อมูลบางส่วนไปจากการวิเคราะห์
+
+7. Overfitting -- ถึงแม้ PCR จะถูกเคลมว่าช่วยแก้ปัญหา multicollinerity ซึ่งนำไปสู่การลดโอกาสการเกิดปัญหา overfitting ด้วย แต่หากเลือกจำนวนองค์ประกอบหลักมากเกินไปก็สามารถเพิ่มโอกาสการเกิดปัญหา overfitting ได้เช่นกัน
+
+8. PCR ไม่ใช่ Feature Selection แต่เป็น Feature Extraction technique ตัวแปรอิสระต้นฉบับทั้งหมดยังคงมีส่วนร่วมในการสร้างโมเดลทำนาย แต่ไม่สามารถตีความได้โดยตรง
+
+
+## 3. Partial Least Square regression
+
+Partial Least Squares Regression (PLSR) เป็นเทคนิคทางสถิติที่ใช้สำหรับการสร้างโมเดลเชิงเส้นระหว่างชุดของตัวแปรอิสระ (predictors) กับชุดของตัวแปรตาม (responses) โดยการลดมิติของข้อมูลและการสกัดตัวแปรแฝง (latent variables) ที่อธิบายความสัมพันธ์ร่วมกันระหว่าง X และ Y ด้วยกัน
+
+
+[PLSR concept](https://claude.site/artifacts/a66aa74a-0962-4a7f-84e7-7410a9c89716)
+
+การทำ PLSR ใน tidymodels สามารถทำได้ดังนี้
+
+```{r}
+## install.pacages("BiocManager")
+BiocManager::install("mixOmics")
+```
+
+Parsimonious
+
+
+```{r eval = F}
+plsr_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pls(all_numeric_predictors(), 
+           num_comp = tune(), 
+           outcome = "gpax.y2")
+
+reg_spec <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+
+reg_wf <- workflow() %>% 
+  add_recipe(plsr_rec) %>% 
+  add_model(reg_spec)
+
+## train pcr โดยการทำ CV
+set.seed(123)
+myfolds <- vfold_cv(train, v=5, repeats = 3, strata = gpax.y2)
+my_metrics <- metric_set(rsq, rmse)
+mygrid <- grid_regular(num_comp(range=c(2,10)), levels = 10)
+
+plsr_tune_res <- reg_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE)
+  )
+plsr_tune_res %>% autoplot()
+
+plsr_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(num_comp == 7)
+
+
+plsr_tune_res %>% 
+  collect_predictions() %>% 
+  filter(num_comp == 7) %>% 
+  ggplot(aes(x = .pred, y = gpax.y2))+
+  geom_point(alpha = 0.2)+
+  geom_abline(intercept = 0, slope = 1, linetype = 2)+
+  coord_obs_pred()+
+  theme_light()
+  
+```
+
+
+Note: 
+
+1. PLSR สามารถรับมือกับปัญหา multicollinearity ได้ดี
+
+2. เน้นการอธิบายความสัมพันธ์ระหว่าง X กับ Y โดยตรง ทำให้องค์ประกอบหลักที่ได้มีความสัมพันธ์กับตัวแปรตามมากกว่า PCR
+
+3. มีปัญหาเดียวกับ PCR คือการแปลความหมายขององค์ประกอบหลักที่ได้ เนื่องจากองค์ประกอบหลักก็สร้างจากรวมกันของข้อมูลตัวแปรต้นฉบับทั้งหมด
+
+
+## 4. K-Nearest Neighbors (KNN)
+
+K-Nearest Neighbors (KNN) เป็นอัลกอริทึมการเรียนรู้แบบมีผู้สอน (supervised learning) ที่ใช้สำหรับทั้งงานจำแนกประเภท (classification) และการพยากรณ์ (regression) โดยอาศัยหลักการที่ว่า “จุดข้อมูลที่ใกล้กันมักจะมีความเหมือนกัน”
+
+หลักการของ KNN
+
+- KNN เป็นอัลกอริทึม “lazy learning” ซึ่งหมายความว่ามันไม่สร้างโมเดลในขั้นตอนการฝึก (training) แต่เก็บข้อมูลการฝึกไว้อย่างครบถ้วนและใช้ข้อมูลเหล่านั้นในการทำนายเมื่อมีข้อมูลใหม่เข้ามา
+
+- สำหรับการทำนายค่าของข้อมูลใหม่ KNN จะคำนวณระยะห่างระหว่างจุดข้อมูลใหม่กับทุกจุดในชุดข้อมูลฝึก โดยมักใช้ระยะทางแบบ Euclidean เป็นหลัก (สามารถใช้วิธีอื่นได้ขึ้นอยู่กับปัญหา)
+
+- ค่า k เป็นจำนวนจุดข้อมูลที่ใกล้ที่สุด (neighbors) ที่จะนำมาพิจารณาในการทำนาย ค่านี้ส่งผลโดยตรงต่อประสิทธิภาพของอัลกอริทึม หาก k มีค่าน้อยเกินไปอาจทำให้มีความไวต่อ noise ในข้อมูล ในขณะที่ k ที่มีค่ามากเกินไปอาจทำให้โมเดล smooth เกินไปจนไม่สามารถทำนายข้อมูลได้ดี
+
+- สำหรับงานจำแนกประเภท KNN จะใช้วิธี “majority voting” ในการตัดสินใจว่าจุดข้อมูลใหม่จะอยู่ในกลุ่มไหน โดยการนับจำนวนของคลาสที่เป็นไปได้จาก k จุดข้อมูลที่ใกล้ที่สุด และเลือกคลาสที่มีจำนวนมากที่สุด
+
+การทำ KNN ใน tidymodels สามารถทำได้ดังนี้
+
+```{r}
+knn_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pls(all_numeric_predictors(), 
+           num_comp = 5, 
+           outcome = "gpax.y2")
+
+knn_spec <- nearest_neighbor(
+  neighbors = tune(),
+  dist_power = tune(),
+  weight_func = "optimal"
+) %>% 
+  set_engine("kknn") %>% 
+  set_mode("regression")
+
+knn_wf <- workflow() %>% 
+  add_recipe(knn_rec) %>% 
+  add_model(knn_spec)
+
+## train pcr โดยการทำ CV
+set.seed(123)
+myfolds <- vfold_cv(train, v=5, repeats = 3, strata = gpax.y2)
+my_metrics <- metric_set(rsq, rmse)
+mygrid <- grid_regular(
+  dials::neighbors(range = c(1,10)),
+  dist_power(range=c(1,2)),
+  levels = 10
+)
+
+mygrid %>% 
+  ggplot(aes(x=neighbors, y=dist_power))+
+  geom_point()
+```
+
+
+```{r}
+knn_tune_res <- knn_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE)
+  )
+knn_tune_res %>% autoplot()
+
+knn_tune_res %>% collect_metrics(summarize = TRUE)
+
+knn_tune_res %>% collect_predictions() %>% 
+  filter(neighbors == 10, dist_power == 1) %>% 
+  ggplot(aes(x = .pred, y = gpax.y2))+
+  geom_point(alpha = 0.2)+
+  geom_abline(intercept = 0, slope = 1, linetype = 2)+
+  coord_obs_pred()+
+  theme_light()
+  
+knn_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(.metric == "rsq") %>% 
+  ggplot(aes(x=neighbors, y=dist_power))+
+  geom_tile(aes(fill = mean))+
+  theme_light()+
+  scale_fill_viridis_c(option = "A")
+```
+
+Note:
+
+- KNN เป็นอัลกอริทึมที่เข้าใจง่าย ใช้งานง่ายเพราะไม่มีข้อตกลงเบื้องต้นเกี่ยวกับการแจกแจงข้อมูลเหมือนกับ linear regression
+
+- สามารถใช้ได้ทั้ง regression และ classification
+
+- เนื่องจากการเรียนรู้แบบ lazy learning ทำให้ KNN จะมีปัญหากับข้อมูลขนาดใหญ่เนื่องจากจำเป็นต้องใช้ทรัพยากรจำนวนมากในการคำนวณระยะทาง
+
+- ความแม่นยำขึ้นอยู่กับ hyperparameter k ที่เหมาะสม
+
+- Data Preprocessing สำหรับ KNN
+
+  - การปรับสเกลของข้อมูล (Scaling/Normalization)
+  
+  - การจัดการกับ missing data
+  
+  - การกำจัด Outliers และ Noise
+
+  - การลดมิติ (Dimensionality Reduction) หรือ Feature Selection
+  
+  - การเข้ารหัส (Encoding) สำหรับข้อมูลจัดประเภท
+  
+  
+
+
+```{r}
+?multinom_reg()
+```
+
+
+
+
+
+
