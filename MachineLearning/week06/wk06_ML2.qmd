@@ -147,6 +147,60 @@ $$
 Regularized \ Error = \text{Impurity} + \alpha \times \text{Tree Depth}
 $$
 
+## Parallel Computing {.smaller}
+
+```{r eval = F, echo = T}
+library(tidymodels)
+library(future)
+
+# ตั้งค่า parallel processing
+plan(multisession, workers = 10)
+
+# สร้าง cross-validation folds
+cv_folds <- vfold_cv(train_data, v = 5, repeats = 3, strata = "research_score")
+
+# สร้างโมเดล Decision Tree พร้อมกำหนดพารามิเตอร์ให้ปรับค่าได้ (tune)
+dt_model <- decision_tree(
+  cost_complexity = tune(),  # ควบคุมการ pruning
+  tree_depth = tune(),       # ความลึกของต้นไม้
+  min_n = tune()             # จำนวนตัวอย่างขั้นต่ำต่อโหนด
+) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+# กำหนด recipe
+dt_recipe <- recipe(research_score ~ ., data = train_data) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+
+# สร้าง workflow
+dt_workflow <- workflow() %>%
+  add_model(dt_model) %>%
+  add_recipe(dt_recipe)
+
+# กำหนด grid ของ hyperparameters สำหรับ tuning
+dt_grid <- grid_regular(
+  cost_complexity(range = c(-5, 0), trans = log10_trans()),  # ใช้ log-scale เพื่อครอบคลุมช่วงที่กว้างขึ้น
+  tree_depth(range = c(1, 20)),  # ความลึกของต้นไม้ตั้งแต่ 1 ถึง 20
+  min_n(range = c(2, 30)),  # จำนวนตัวอย่างขั้นต่ำต่อโหนด
+  levels = 5
+)
+
+# ตั้งค่าการควบคุมการ tuning
+ctrl <- control_grid(save_pred = TRUE, parallel_over = "everything")
+
+# ปรับค่าพารามิเตอร์โดยใช้ tune_grid()
+dt_tuned_results <- tune_grid(
+  dt_workflow,
+  resamples = cv_folds,
+  grid = dt_grid,
+  metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+  control = ctrl
+)
+
+# ตรวจสอบผลลัพธ์
+dt_tuned_results
+```
 
 
 ## Linear Discriminant {.smaller}
