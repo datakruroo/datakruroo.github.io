@@ -7,6 +7,8 @@ warning: false
 editor: visual
 ---
 
+
+
 # Linear Discriminant Analysis (LDA)
 
 -   เป็นหนึ่งในเทคนิคการจำแนกประเภทที่ใช้ในการวิเคราะห์ข้อมูลที่มีลักษณะเป็นเชิงเส้น โดยมีจุดประสงค์เพื่อแยกแยะกลุ่มหรือคลาสของข้อมูลตามคุณลักษณะของข้อมูล (features)
@@ -35,6 +37,8 @@ editor: visual
 
 # Example
 
+
+
 ```{r}
 library(tidyverse)
 library(tidymodels)
@@ -42,7 +46,11 @@ data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniver
 glimpse(data)
 ```
 
+
+
 # Exploring data using PCA and PLS
+
+
 
 ```{r}
 ## compoent loading
@@ -82,7 +90,11 @@ new_data <- data |>
                                  labels=c("success","fail")))
 ```
 
+
+
 ## Data Spliting
+
+
 
 ```{r}
 library(tidymodels)
@@ -94,7 +106,11 @@ train_data <- training(split)
 test_data <- testing(split)
 ```
 
+
+
 ## Specifing model
+
+
 
 ```{r}
 lda_spec_MASS <- discrim_linear() %>%
@@ -110,7 +126,11 @@ qda_spec_MASS <- discrim_quad() %>%
   set_mode("classification")
 ```
 
+
+
 ## Recipe
+
+
 
 ```{r}
 train_data %>% count(research_score)
@@ -128,7 +148,11 @@ lda_rec <- recipe(research_score ~. ,data=train_data) %>%
 lda_rec %>% prep() %>% juice() %>% count(research_score)
 ```
 
+
+
 ## create workflowset
+
+
 
 ```{r}
 lda_wfset <- 
@@ -144,7 +168,11 @@ lda_wfset %>%
 extract_workflow(id = "base_rec_lda_lda_mda")
 ```
 
+
+
 ## Tune hyperparameter
+
+
 
 ```{r}
 library(future)
@@ -217,6 +245,8 @@ tuned_results_wfset %>%
 
 ```
 
+
+
 # Support Vector Machine (SVM)
 
 การจำแนกข้อมูลแบบ SVM ใช้หลักการสร้าง เส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นสองกลุ่มได้อย่างเหมาะสมมากที่สุด
@@ -263,6 +293,8 @@ SVM แก้ปัญหานี้ด้วยการใช้ kernel trick
 
 ## Specifing model
 
+
+
 ```{r}
 svm_linear_spec <- svm_linear(cost = tune()) %>%
   set_engine("kernlab") %>%
@@ -277,7 +309,11 @@ svm_rbf_spec <- svm_rbf(rbf_sigma = tune(), cost = tune()) %>%
   set_mode("classification")
 ```
 
+
+
 ## Recipe
+
+
 
 ```{r}
 library(themis)
@@ -291,7 +327,11 @@ svm_rec <- recipe(research_score ~. ,data=train_data) %>%
 svm_rec %>% prep() %>% juice() %>% count(research_score)
 ```
 
+
+
 ## create workflowset
+
+
 
 ```{r}
 wfset_all <- 
@@ -325,7 +365,11 @@ all_tuned_results_wfset %>% collect_metrics() %>%
   arrange(.config)
 ```
 
+
+
 ดังนั้นเราสามารถสร้าง visualization เพื่อเปรียบเทียบประสิทธิภาพได้เลย
+
+
 
 ```{r}
 all_tuned_results_wfset %>% collect_metrics() %>% 
@@ -348,7 +392,11 @@ all_tuned_results_wfset %>% collect_metrics() %>%
   coord_flip()
 ```
 
+
+
 ## Extract workflow results from workflowset
+
+
 
 ```{r}
 all_tuned_results_wfset %>% 
@@ -397,3 +445,4 @@ all_tuned_results_wfset %>%
   filter(.config == "Preprocessor1_Model40") %>% 
   spec(truth = research_score, estimate = .pred_class)
 ```
+
