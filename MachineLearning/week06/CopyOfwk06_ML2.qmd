@@ -1,0 +1,291 @@
+---
+title: "Week 6: Supervised Learning 2"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 2: 2758623 Machine Learning Principles and Application<br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+## Outline
+
+
+- Decision Tree
+
+- C5.0 Tree
+
+- Linear Discrimination
+
+- Naive Bayes
+
+- Support Vector Machine
+
+
+## Decision Tree {.smaller}
+
+- decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree จัดเป็นอัลกอริทึมที่อยู่ในกลุ่ม nonparametric ซึ่งแตกต่างจาก linear regression
+
+- ารเรียนรู้ของ decision tree มีลักษณะเป็นการสร้างกฎเกณฑ์ในการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกันภายใต้ feature space จากคุณลักษณะดังกล่าวทำให้ decision tree เป็นอัลกอริทึมที่มีความยืดหยุ่นมากกว่า linear regression และสามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ดีกว่า regression
+
+- อย่างไรก็ตามด้วยความที่ decision tree มีความยืดหยุ่นสูง ย่อมทำให้ความเสี่ยงที่จะประสบปัญหา overfitting สูงขึ้น ซึ่งสามารถแก้ไขได้โดยการใช้เทคนิคต่างๆ เช่น pruning ผ่านการ tune hyperparameters อีกวิธีการหนึ่งคือการใช้ ensemble learning ซึ่งจะถูกกล่าวถึงในบทเรียนถัดไป
+
+## Decision Tree: Structure {.smaller}
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-549379503.png){width="70%"}
+
+## Classification and Regression Trees (CART) {.smaller}
+
+- CART เป็นการสร้างพื้นที่ปิดล้อมรูปสี่เหลี่ยมที่ไม่ทับซ้อนกันเพื่อแบ่งส่วนของข้อมูลภายใน feature space ออกเป็นส่วนย่อย ๆ โดยการแบ่งแต่ละครั้งจะทำให้เกิดส่วนย่อยใหม่ขึ้น 2 ส่วน และดำเนินการแบ่งพื้นที่ดังกล่าวทวนซ้ำไปเรื่อย ๆ จนกว่าจะถึงจุดที่หยุดกระบวนการ เรียกกระบวนการแบ่งส่วนของพื้นที่ดังกล่าวว่า binary recursive partitioning
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-2146096965.png){width="70%"}
+
+
+## Classification Trees (CART) {.smaller}
+
+
+Impurity ที่มักใช้ในการคำนวณคือ Gini Impurity และ Entropy
+
+$$
+\text{Gini Impurity} = \sum_{i=1}^{k}p_i(1-p_i)  = 1 - \sum_{i=1}^{k} p_i^2
+$$ 
+
+$$
+\text{Entropy} = -\sum_{i=1}^{k}p_i\log_2(p_i)
+$$
+
+โดยที่ $p_i$ คือความน่าจะเป็นของคลาส $i$ ในพื้นที่นั้นหรือสัดส่วนของคลาส $i$ ในพื้นที่นั้น
+
+## Classification Trees (CART) {.smaller}
+
+สมมุติว่าผู้วิเคราะห์ต้องการทำนาย deposit โดยใช้ตัวแปรอิสระจำนวน 3 ตัวได้แก่ default, housing และ loan ขั้นแรกของการพัฒนา decision tree คือการกำหนด root node ที่เหมาะสม คำถามคือ ควรใช้ตัวแปรอิสระตัวใดเป็น root node ดีเพราะเหตุใด?
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1262716711.png)
+
+## Classification Trees (CART) {.smaller}
+
+สมมุติว่าผู้วิเคราะห์ต้องการทำนาย deposit โดยใช้ตัวแปรอิสระจำนวน 3 ตัวได้แก่ default, housing และ loan ขั้นแรกของการพัฒนา decision tree คือการกำหนด root node ที่เหมาะสม คำถามคือ ควรใช้ตัวแปรอิสระตัวใดเป็น root node ดีเพราะเหตุใด?
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1755337911.png){width="70%"}
+
+## Classification Trees (CART) {.smaller}
+
+รูปด้านล่างแสดงการเปรียบเทียบ impurity ของตัวแปรตาม (deposit) ที่เกิดขึ้นจากการแบ่งส่วนข้อมูลภายใต้เงื่อนไขที่ Housing = Yes จากรูปจะเห็นว่าเมื่อใช้ Default เป็นตัวแบ่งจะได้ค่า impurity เท่ากับ 0.1731 แต่ถ้าใช้ Loan เป็นตัวแบ่งจะได้ค่า impurity เป็น 0.1420 ระหว่างตัวแปรอิสระสองตัวนี้ผู้อ่านคิดว่าควรเลือกตัวแปรอิสระใดมาเป็น internal node ในตำแหน่งดังกล่าว
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1494665973.png)
+
+
+## Regression Trees (CART) {.smaller}
+
+การสร้าง regression tree จะใช้วิธีการเดียวกันกับ classification tree แต่จะใช้ค่า SSE แทนค่า impurity ที่ใช้ในการคำนวณค่าของตัวแปรและจุดแบ่งที่เหมาะสม
+
+$$
+\text{SSE} = \sum_{i=1}^{n}(y_i - \hat{y})^2
+$$ 
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
+
+
+## Regression Trees (CART) {.smaller}
+
+เป้าหมายของอัลกอริทึม decision tree คือการจุดตัดที่ทำให้ค่า Total SSE ดังกล่าวมีค่าต่ำที่สุด ซึ่งจะหมายความว่าการแบ่งส่วนย่อยนั้นสามารถสร้าง decision tree ที่ทำนายค่าของตัวแปรตามได้ใกล้เคียงค่าจริงมากที่สุดเท่าที่จะเป็นไปได้
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-3-1.png)
+
+
+## Regression Trees (CART) {.smaller}
+
+การแบ่งที่มีประสิทธิภาพสูงสุดคือ x = 2.7 (ทำไมนะ) ผลลัพธ์ในขั้นตอนนี้จะได้ต้นไม้ในลักษณะดังรูป
+
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-1.png)
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-2.png)
+
+
+## Regression Trees (CART) {.smaller}
+
+จากนั้นทำการหาจุดแบ่งต่อจำแนกตามฝั่งซ้ายและฝั่งขวาของจุดตัดแรก
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-5-1.png)
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-5-2.png)
+
+## Regression Trees (CART) {.smaller}
+
+การดำเนินการตามอัลกอริทึมข้างต้นจะดำเนินการทวนซ้ำไปเรื่อย ๆ จนกระทั่งค่า information gain ที่ได้จะมีค่าน้อยลู่เข้าสู่ 0 ซึ่งหมายความว่าโมเดลไม่สามารถเรียนรู้สารสนเทศใด ๆ จากข้อมูลได้เพิ่มเติมแล้ว รูปด้านล่างแสดงโมเดลทำนายภายหลังจากอัลกอริทึมดังกล่าวหยุดการดำเนินการทวนซ้ำแล้ว จะเห็นว่าการแบ่งส่วนย่อยตามอัลกอริทึม recursive binary partitioning ดังกล่าวทำให้ได้โมเดลทำนายที่สามารถเรียนรู้ความสัมพันธ์เชิงเส้นโค้งที่พบในข้อมูลได้อย่างมีประสิทธิภาพ
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-6-1.png)
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-6-2.png)
+
+## Hyperparameters สำหรับ decision tree {.smaller}
+
+1.  `tree_depth`: จำนวนระดับของ decision tree นับตั้งแต่ root note ถึง leaf node
+
+2.  `min_n`: จำนวนตัวอย่างขั้นต่ำที่ต้องมีใน terminal node
+
+3.  `cost_complexity`: ค่า penalty ที่ใช้ชดเชย impurity หรือ Total SSE ของ decision tree การทำ penaty ใน tree จะช่วยลดความเสี่ยงที่จะเกิด overfitting
+
+$$
+Regularized \ Error = \text{Impurity} + \alpha \times \text{Tree Depth}
+$$
+
+## Parallel Computing {.smaller}
+
+```{r eval = F, echo = T}
+library(tidymodels)
+library(future)
+
+# ตั้งค่า parallel processing
+plan(multisession, workers = 10)
+
+# สร้าง cross-validation folds
+cv_folds <- vfold_cv(train_data, v = 5, repeats = 3, strata = "research_score")
+
+# สร้างโมเดล Decision Tree พร้อมกำหนดพารามิเตอร์ให้ปรับค่าได้ (tune)
+dt_model <- decision_tree(
+  cost_complexity = tune(),  # ควบคุมการ pruning
+  tree_depth = tune(),       # ความลึกของต้นไม้
+  min_n = tune()             # จำนวนตัวอย่างขั้นต่ำต่อโหนด
+) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+# กำหนด recipe
+dt_recipe <- recipe(research_score ~ ., data = train_data) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_dummy(all_nominal_predictors())
+
+# สร้าง workflow
+dt_workflow <- workflow() %>%
+  add_model(dt_model) %>%
+  add_recipe(dt_recipe)
+
+# กำหนด grid ของ hyperparameters สำหรับ tuning
+dt_grid <- grid_regular(
+  cost_complexity(range = c(-5, 0), trans = log10_trans()),  # ใช้ log-scale เพื่อครอบคลุมช่วงที่กว้างขึ้น
+  tree_depth(range = c(1, 20)),  # ความลึกของต้นไม้ตั้งแต่ 1 ถึง 20
+  min_n(range = c(2, 30)),  # จำนวนตัวอย่างขั้นต่ำต่อโหนด
+  levels = 5
+)
+
+# ตั้งค่าการควบคุมการ tuning
+ctrl <- control_grid(save_pred = TRUE, parallel_over = "everything")
+
+# ปรับค่าพารามิเตอร์โดยใช้ tune_grid()
+dt_tuned_results <- tune_grid(
+  dt_workflow,
+  resamples = cv_folds,
+  grid = dt_grid,
+  metrics = metric_set(roc_auc, f_meas, sens, spec, precision),
+  control = ctrl
+)
+
+# ตรวจสอบผลลัพธ์
+dt_tuned_results
+```
+
+
+## Linear Discriminant {.smaller}
+
+- เป็นหนึ่งในเทคนิคการจำแนกประเภทที่ใช้ในการวิเคราะห์ข้อมูลที่มีลักษณะเป็นเชิงเส้น โดยมีจุดประสงค์เพื่อแยกแยะกลุ่มหรือคลาสของข้อมูลตามคุณลักษณะของข้อมูล (features)
+
+- หลักพื้นฐานของ LDA คือพยายามหาเส้นแบ่งข้อมูล ที่ทำให้ความแตกต่างของกลุ่มข้อมูลมากที่สุด ภายใต้ข้อตกลงเบื้องต้นว่าข้อมูลในแต่ละ class มีการแจกแจงแบบปกติที่มีคุณสมบัติ homogeneity of covariance matrices
+
+- การหาเส้นแบ่งข้อมูลด้วย LDA จะใช้หลักการลดมิติข้อมูล (เหมือน PCA) แต่แตกต่างกันตรงที่พยายามสกัดองค์ประกอบที่ทำให้ distribution ของข้อมูลแตกต่างกันมากที่สุด (maximize the ratio of between-class variance to within-class variance) เรียกสเกลองค์ประกอบที่สร้างขึ้นนี้ว่า discrimination function
+
+- จากนั้นจะสร้างจุดแบ่ง class จาก discrimination function ที่ได้ โดยจุดแบ่งนี้จะเป็นเส้นตรงที่ทำให้ค่าเฉลี่ยของ discrimination score ระหว่างสองกลุ่มมีค่าสูงสุด
+
+## Linear Discriminant {.smaller}
+
+หา eigenvector ที่เป็นคำตอบของสมการ Eigenvalue ของ  $S_W^{-1} S_B$
+ซึ่งทำให้การแยกกลุ่มของข้อมูลสูงสุด
+
+
+![](https://sebastianraschka.com/images/blog/2014/linear-discriminant-analysis/lda_1.png){width="90%"}
+
+
+## Quardratic Discriminant Analysis (QDA) {.smaller}
+
+- Quadratic Discriminant Analysis (QDA) เป็นรูปแบบหนึ่งของ Discriminant Analysis ที่คล้ายกับ LDA แต่ ไม่สมมติว่าข้อมูลในแต่ละคลาสมี covariance matrix ที่เหมือนกัน และ QDA จะสร้างเส้นแบ่งที่มีลักษณะเป็น quadratic (ไม่เชิงเส้น) เพื่อจำแนกข้อมูลระหว่างกลุ่มต่าง ๆ
+
+- QDA ยังสมมุติการแจกแจงแบบปกติของข้อมูลในแต่ละ class อยู่ แต่ไม่สมมุติว่า covariance matrix ของข้อมูลในแต่ละ class เหมือนกันแล้ว
+
+- เมื่อการแจกแจงมีการกระจายที่แตกต่างกันเส้นแบ่งระหว่าง class จึงมีลักษณะเป็นเส้นโค้ง
+
+## Quardratic Discriminant Analysis (QDA) {.smaller}
+
+
+![](https://mathformachines.com/images/quadratic-linear.png)
+
+
+## Support Vector Machine (SVM) {.smaller}
+
+- Support Vector Machine (SVM) เป็น supervised learning algorithm ที่ใช้สำหรับการจำแนกประเภท (classification) และการวิเคราะห์การถดถอย (regression) หลักการทำงานคร่าว ๆ ของ SVM คือการสร้างเส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นกลุ่ม/คลาสต่าง ๆ ในพื้นที่ P มิติให้ได้ดีที่สุด โดยที่ P คือจำนวน Features
+
+- อย่างไรก็ตามการสร้างเส้นแบ่งดังกล่าวเป็นสิ่งที่โมเดลการเรียนรู้ต่าง ๆ ก็ทำเหมือนกัน ดังรูปด้านขวา จะเห็นเส้นแบ่งที่ดีที่สุดจากแต่ละอัลกอริทึม
+
+
+![](img/HMC.png)
+
+
+## Support Vector Machine (SVM) {.smaller}
+
+support vector machine มีหลักการเบื้องต้นคล้ายกับ classifier แบบ linear อย่างไรก็ตามการหาเส้นแบ่งของ SVM จะพิจารณาจาก support vector ที่เป็นข้อมูลที่อยู่ใกล้ขอบเขตการจำแนกข้อมูลมากที่สุดด้วย (มี contraint เพิ่มเติม) กล่าวคือ SVM จะพยายามหาเส้นแบ่งที่ทำให้ระยะห่างระหว่าง support vector กับเส้นแบ่งมีค่ามากที่สุด ดังรูป
+
+![](img/SVM1.png){width="60%"}
+
+## Support Vector Machine (SVM) {.smaller}
+
+การจำแนกข้อมูลด้วยอัลกอริทึมตามหลักข้างต้นจะเรียกว่า hard margin classification อย่างไรก็ตามอัลกอริทึมประเภทนี้มีข้อจำกัดในบางกรณี เช่น
+
+![](img/outlier.png){width="60%"}
+
+## Support Vector Machine (SVM) {.smaller}
+
+
+- การแก้ปัญหาดังกล่าวคือการปรับให้โมเดลมีความยืดหยุ่นมากขึ้น โดยใช้ soft margin classification ซึ่งจะให้ความผิดพลาดได้มากขึ้น แต่ก็จะลดความเสี่ยงที่เกิดจากข้อมูลผิดปกติ 
+
+- แนวคิดดังกล่าวคือการเพิ่ม hyperparameter อีกตัวหนึ่งขึ้นมาเขียนแทนด้วย C (penalty term) ที่ใช้ควบคุมระยะห่างระหว่าง hyperplan กับข้อมูลที่ใกล้ที่สุดจากทั้งสองกลุ่ม (support vector)
+
+
+![](img/SMC.png)
+
+## Support Vector Machine (SVM): Kernel Trick {.smaller}
+
+
+หลายกรณีความสัมพันธ์ระหว่างตัวแปรอาจมีความซับซ้อนทำให้เส้นแบ่งที่เป็นเส้นตรงไม่สามารถจำแนกข้อมูลได้ดี กรณีเช่นนี้ linear classifier ทั้งหลายอาจจะให้ประสิทธิภาพที่ต่ำ
+
+SVM แก้ปัญหานี้ด้วยการใช้ kernel trick ซึ่งเป็นการแปลงข้อมูลเป็นมิติสูงขึ้นเพื่อที่จะสามารถใช้เส้นตรง (hyperplane) แบ่งข้อมูลในมิติสูงอย่างมีประสิทธิภาพ
+
+![](img/nonlinearSVM.png)
+
+## Support Vector Machine (SVM): Kernel Trick {.smaller}
+
+
+-   Linear Kernel
+
+-   Polynomial Kernel
+
+-   Radial Basis Function (RBF) Kernel (Gaussian Kernel)
+
+-   Sigmoid Kernel
+
+

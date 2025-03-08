@@ -272,7 +272,9 @@ decision tree จะเลือกตัวแปรและจุดแบ่
 
 $$
 \text{SSE} = \sum_{i=1}^{n}(y_i - \hat{y})^2
-$$ ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
+$$ 
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
 
 เป้าหมายของอัลกอริทึม decision tree คือการจุดตัดที่ทำให้ค่า Total SSE ดังกล่าวมีค่าต่ำที่สุด ซึ่งจะหมายความว่าการแบ่งส่วนย่อยนั้นสามารถสร้าง decision tree ที่ทำนายค่าของตัวแปรตามได้ใกล้เคียงค่าจริงมากที่สุดเท่าที่จะเป็นไปได้
 

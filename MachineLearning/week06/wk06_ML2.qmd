@@ -26,25 +26,23 @@ execute:
 
 ## Outline
 
+-   Decision Tree
 
-- Decision Tree
+-   C5.0 Tree
 
-- C5.0 Tree
+-   Linear Discrimination
 
-- Linear Discrimination
+-   Naive Bayes
 
-- Naive Bayes
-
-- Support Vector Machine
-
+-   Support Vector Machine
 
 ## Decision Tree {.smaller}
 
-- decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree จัดเป็นอัลกอริทึมที่อยู่ในกลุ่ม nonparametric ซึ่งแตกต่างจาก linear regression
+-   decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree จัดเป็นอัลกอริทึมที่อยู่ในกลุ่ม nonparametric ซึ่งแตกต่างจาก linear regression
 
-- ารเรียนรู้ของ decision tree มีลักษณะเป็นการสร้างกฎเกณฑ์ในการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกันภายใต้ feature space จากคุณลักษณะดังกล่าวทำให้ decision tree เป็นอัลกอริทึมที่มีความยืดหยุ่นมากกว่า linear regression และสามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ดีกว่า regression
+-   ารเรียนรู้ของ decision tree มีลักษณะเป็นการสร้างกฎเกณฑ์ในการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกันภายใต้ feature space จากคุณลักษณะดังกล่าวทำให้ decision tree เป็นอัลกอริทึมที่มีความยืดหยุ่นมากกว่า linear regression และสามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ดีกว่า regression
 
-- อย่างไรก็ตามด้วยความที่ decision tree มีความยืดหยุ่นสูง ย่อมทำให้ความเสี่ยงที่จะประสบปัญหา overfitting สูงขึ้น ซึ่งสามารถแก้ไขได้โดยการใช้เทคนิคต่างๆ เช่น pruning ผ่านการ tune hyperparameters อีกวิธีการหนึ่งคือการใช้ ensemble learning ซึ่งจะถูกกล่าวถึงในบทเรียนถัดไป
+-   อย่างไรก็ตามด้วยความที่ decision tree มีความยืดหยุ่นสูง ย่อมทำให้ความเสี่ยงที่จะประสบปัญหา overfitting สูงขึ้น ซึ่งสามารถแก้ไขได้โดยการใช้เทคนิคต่างๆ เช่น pruning ผ่านการ tune hyperparameters อีกวิธีการหนึ่งคือการใช้ ensemble learning ซึ่งจะถูกกล่าวถึงในบทเรียนถัดไป
 
 ## Decision Tree: Structure {.smaller}
 
@@ -52,19 +50,17 @@ execute:
 
 ## Classification and Regression Trees (CART) {.smaller}
 
-- CART เป็นการสร้างพื้นที่ปิดล้อมรูปสี่เหลี่ยมที่ไม่ทับซ้อนกันเพื่อแบ่งส่วนของข้อมูลภายใน feature space ออกเป็นส่วนย่อย ๆ โดยการแบ่งแต่ละครั้งจะทำให้เกิดส่วนย่อยใหม่ขึ้น 2 ส่วน และดำเนินการแบ่งพื้นที่ดังกล่าวทวนซ้ำไปเรื่อย ๆ จนกว่าจะถึงจุดที่หยุดกระบวนการ เรียกกระบวนการแบ่งส่วนของพื้นที่ดังกล่าวว่า binary recursive partitioning
+-   CART เป็นการสร้างพื้นที่ปิดล้อมรูปสี่เหลี่ยมที่ไม่ทับซ้อนกันเพื่อแบ่งส่วนของข้อมูลภายใน feature space ออกเป็นส่วนย่อย ๆ โดยการแบ่งแต่ละครั้งจะทำให้เกิดส่วนย่อยใหม่ขึ้น 2 ส่วน และดำเนินการแบ่งพื้นที่ดังกล่าวทวนซ้ำไปเรื่อย ๆ จนกว่าจะถึงจุดที่หยุดกระบวนการ เรียกกระบวนการแบ่งส่วนของพื้นที่ดังกล่าวว่า binary recursive partitioning
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-2146096965.png){width="70%"}
 
-
 ## Classification Trees (CART) {.smaller}
-
 
 Impurity ที่มักใช้ในการคำนวณคือ Gini Impurity และ Entropy
 
 $$
 \text{Gini Impurity} = \sum_{i=1}^{k}p_i(1-p_i)  = 1 - \sum_{i=1}^{k} p_i^2
-$$ 
+$$
 
 $$
 \text{Entropy} = -\sum_{i=1}^{k}p_i\log_2(p_i)
@@ -90,17 +86,15 @@ $$
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1494665973.png)
 
-
 ## Regression Trees (CART) {.smaller}
 
 การสร้าง regression tree จะใช้วิธีการเดียวกันกับ classification tree แต่จะใช้ค่า SSE แทนค่า impurity ที่ใช้ในการคำนวณค่าของตัวแปรและจุดแบ่งที่เหมาะสม
 
 $$
 \text{SSE} = \sum_{i=1}^{n}(y_i - \hat{y})^2
-$$ 
+$$
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
-
 
 ## Regression Trees (CART) {.smaller}
 
@@ -108,16 +102,13 @@ $$
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-3-1.png)
 
-
 ## Regression Trees (CART) {.smaller}
 
 การแบ่งที่มีประสิทธิภาพสูงสุดคือ x = 2.7 (ทำไมนะ) ผลลัพธ์ในขั้นตอนนี้จะได้ต้นไม้ในลักษณะดังรูป
 
-
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-1.png)
 
 ![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-2.png)
-
 
 ## Regression Trees (CART) {.smaller}
 
@@ -202,49 +193,341 @@ dt_tuned_results <- tune_grid(
 dt_tuned_results
 ```
 
+## Linear Discriminant {.smaller}
+
+-   เป็นหนึ่งในเทคนิคการจำแนกประเภทที่ใช้ในการวิเคราะห์ข้อมูลที่มีลักษณะเป็นเชิงเส้น โดยมีจุดประสงค์เพื่อแยกแยะกลุ่มหรือคลาสของข้อมูลตามคุณลักษณะของข้อมูล (features)
+
+-   หลักพื้นฐานของ LDA คือพยายามหาเส้นแบ่งข้อมูล ที่ทำให้ความแตกต่างของกลุ่มข้อมูลมากที่สุด ภายใต้ข้อตกลงเบื้องต้นว่าข้อมูลในแต่ละ class มีการแจกแจงแบบปกติที่มีคุณสมบัติ homogeneity of covariance matrices
+
+-   การหาเส้นแบ่งข้อมูลด้วย LDA จะใช้หลักการลดมิติข้อมูล (เหมือน PCA) แต่แตกต่างกันตรงที่พยายามสกัดองค์ประกอบที่ทำให้ distribution ของข้อมูลแตกต่างกันมากที่สุด (maximize the ratio of between-class variance to within-class variance) เรียกสเกลองค์ประกอบที่สร้างขึ้นนี้ว่า discrimination function
+
+-   จากนั้นจะสร้างจุดแบ่ง class จาก discrimination function ที่ได้ โดยจุดแบ่งนี้จะเป็นเส้นตรงที่ทำให้ค่าเฉลี่ยของ discrimination score ระหว่างสองกลุ่มมีค่าสูงสุด
 
 ## Linear Discriminant {.smaller}
 
-- เป็นหนึ่งในเทคนิคการจำแนกประเภทที่ใช้ในการวิเคราะห์ข้อมูลที่มีลักษณะเป็นเชิงเส้น โดยมีจุดประสงค์เพื่อแยกแยะกลุ่มหรือคลาสของข้อมูลตามคุณลักษณะของข้อมูล (features)
-
-- หลักพื้นฐานของ LDA คือพยายามหาเส้นแบ่งข้อมูล ที่ทำให้ความแตกต่างของกลุ่มข้อมูลมากที่สุด ภายใต้ข้อตกลงเบื้องต้นว่าข้อมูลในแต่ละ class มีการแจกแจงแบบปกติที่มีคุณสมบัติ homogeneity of covariance matrices
-
-- การหาเส้นแบ่งข้อมูลด้วย LDA จะใช้หลักการลดมิติข้อมูล (เหมือน PCA) แต่แตกต่างกันตรงที่พยายามสกัดองค์ประกอบที่ทำให้ distribution ของข้อมูลแตกต่างกันมากที่สุด (maximize the ratio of between-class variance to within-class variance) เรียกสเกลองค์ประกอบที่สร้างขึ้นนี้ว่า discrimination function
-
-- จากนั้นจะสร้างจุดแบ่ง class จาก discrimination function ที่ได้ โดยจุดแบ่งนี้จะเป็นเส้นตรงที่ทำให้ค่าเฉลี่ยของ discrimination score ระหว่างสองกลุ่มมีค่าสูงสุด
-
-## Linear Discriminant {.smaller}
-
-หา eigenvector ที่เป็นคำตอบของสมการ Eigenvalue ของ  $S_W^{-1} S_B$
-ซึ่งทำให้การแยกกลุ่มของข้อมูลสูงสุด
-
+หา eigenvector ที่เป็นคำตอบของสมการ Eigenvalue ของ $S_W^{-1} S_B$ ซึ่งทำให้การแยกกลุ่มของข้อมูลสูงสุด
 
 ![](https://sebastianraschka.com/images/blog/2014/linear-discriminant-analysis/lda_1.png){width="90%"}
 
-
 ## Quardratic Discriminant Analysis (QDA) {.smaller}
 
-- Quadratic Discriminant Analysis (QDA) เป็นรูปแบบหนึ่งของ Discriminant Analysis ที่คล้ายกับ LDA แต่ ไม่สมมติว่าข้อมูลในแต่ละคลาสมี covariance matrix ที่เหมือนกัน และ QDA จะสร้างเส้นแบ่งที่มีลักษณะเป็น quadratic (ไม่เชิงเส้น) เพื่อจำแนกข้อมูลระหว่างกลุ่มต่าง ๆ
+-   Quadratic Discriminant Analysis (QDA) เป็นรูปแบบหนึ่งของ Discriminant Analysis ที่คล้ายกับ LDA แต่ ไม่สมมติว่าข้อมูลในแต่ละคลาสมี covariance matrix ที่เหมือนกัน และ QDA จะสร้างเส้นแบ่งที่มีลักษณะเป็น quadratic (ไม่เชิงเส้น) เพื่อจำแนกข้อมูลระหว่างกลุ่มต่าง ๆ
 
-- QDA ยังสมมุติการแจกแจงแบบปกติของข้อมูลในแต่ละ class อยู่ แต่ไม่สมมุติว่า covariance matrix ของข้อมูลในแต่ละ class เหมือนกันแล้ว
+-   QDA ยังสมมุติการแจกแจงแบบปกติของข้อมูลในแต่ละ class อยู่ แต่ไม่สมมุติว่า covariance matrix ของข้อมูลในแต่ละ class เหมือนกันแล้ว
 
-- เมื่อการแจกแจงมีการกระจายที่แตกต่างกันเส้นแบ่งระหว่าง class จึงมีลักษณะเป็นเส้นโค้ง
+-   เมื่อการแจกแจงมีการกระจายที่แตกต่างกันเส้นแบ่งระหว่าง class จึงมีลักษณะเป็นเส้นโค้ง
 
 ## Quardratic Discriminant Analysis (QDA) {.smaller}
-
 
 ![](https://mathformachines.com/images/quadratic-linear.png)
 
+## Grid Search & Imbalanced Class Problem {.smaller}
+
+ทดลอง fit multunomial logistic regression กับข้อมูลต่อไปนี้ กำหนดให้ตัวแปรตามคือ ผลการเรียนที่มี 4 ระดับ คือ fail, poor, moderate และ good ส่วนตัวแปรที่เหลือเป็นตัวแปรอิสระ
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week05/student_data_missing.csv")
+
+data <- data %>% 
+  mutate(ach = case_when(
+    gpax.y2 < 1.5 ~ "fail",
+    gpax.y2 >= 1.5 & gpax.y2 < 2.5 ~ "poor",
+    gpax.y2 >= 2.5 & gpax.y2 < 3.5 ~ "moderate",
+    gpax.y2 >= 3.5 ~ "good"
+  )) %>% 
+  select(-gpax.y2)
+
+glimpse(data)
+```
+
+ดำเนินการแบ่งข้อมูลออกเป็นสองส่วน เมื่อพิจารณาแผนภาพด้านล่างจะเห็นว่าการแจกแจงของตัวแปรตามมีลักษณะที่ไม่สมดุลอย่างมาก สภาพดังกล่าวอาจส่งผลให้โมเดลการเรียนรู้ของเครื่องมีตัวอย่างในกลุ่ม good และ fail น้่อยกว่ากลุ่ม moderate และ poor ซึ่งทำให้โมเดลมีประสิทธิภาพในการจำแนกกลุ่มดังกล่าวต่ำ
+
+```{r}
+library(patchwork)
+set.seed(123)
+split <- initial_split(data, prop = 0.7, strata = ach)
+train_data <- training(split)
+test_data <- testing(split)
+
+train_data %>% 
+  ggplot(aes(x=ach))+
+  geom_bar()+
+  ggtitle("train_data") +
+test_data %>% 
+  ggplot(aes(x=ach))+
+  geom_bar()+
+  ggtitle("test_data")
+```
+
+## ทดลองวิเคราะห์โดยไม่แก้ปัญหา
+
+ขั้นแรกเราจะลองดำเนินการสร้างโมเดลทำนายโดยไม่แก้ปัญหา imbalanced class ด้วย multinomial logistic regression
+
+1.  สร้าง recipe ของการทำ data preprocessing
+
+```{r eval = F} 
+rec <- recipe(ach~. , data = train_data) %>% 
+  step_mutate(infect = factor(infect, levels=c(1,2), labels=c("yes","no"))) %>% 
+  step_mutate(pre_read = rowMeans(across(starts_with("pre.read")))) %>% 
+  step_mutate(post_read = rowMeans(across(starts_with("post.read")))) %>%
+  step_mutate(stress = rowMeans(across(starts_with("stress")))) %>%
+  step_mutate(stu_engage = rowMeans(across(starts_with("stu.engage")))) %>%
+  step_mutate(gender = factor(gender, levels=c(1,2), labels=c("M","F"))) %>% 
+  step_mutate(t_exp = factor(t.exp, levels=c(1,2,3), labels=c("low","moderate","high"))) %>%
+  step_mutate(stu_itcap = factor(stu.itcap , levels=c(1,2,3), labels=c("low","moderate","high"))) %>%
+  step_mutate(t_itcap = factor(t.itcap, levels=c(1,2,3), labels=c("low","moderate","high"))) %>%
+  step_mutate(climate = rowMeans(across(starts_with("climate")))) %>%
+  step_mutate(t_mode = factor(t.mode, levels=c(1,2,3), labels=c("online","onsite","hybrid"))) %>% 
+  step_mutate(internet = factor(internet, levels=c(1,2), labels=c("yes", "no"))) %>% 
+  step_rm(starts_with("pre.read"), starts_with("post.read"), 
+          starts_with("stress."), starts_with("stu.engage"), 
+          starts_with("climate."),
+          t.exp, stu.itcap,t.itcap, t.mode) %>%
+  ### --- 
+  #step_unknown(all_nominal_predictors()) %>% 
+  step_impute_bag(all_predictors()) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) 
+
+```
+
+2.  ระบุ model และ workflow
+
+```{r eval = F}
+multinom_spec <- multinom_reg(penalty = tune(), mixture = tune()) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+
+multinom_wf <- workflow() %>% 
+  add_recipe(rec) %>% 
+  add_model(multinom_spec)
+```
+
+3.  สร้าง grid ของ hyperparameters สำหรับ tuning
+
+Grid Search เป็นวิธีการปรับจูนค่าพารามิเตอร์ของโมเดล (Hyperparameter Tuning) โดยการสร้างชุดของค่าพารามิเตอร์ที่เป็นไปได้ในรูปแบบตารางหรือกริด และทดลองฝึกโมเดลด้วยค่าพารามิเตอร์ทุกชุดในกริดนั้น จากนั้นประเมินประสิทธิภาพของโมเดลแต่ละชุดเพื่อหาค่าที่ให้ผลลัพธ์ดีที่สุด
+
+การปรับจูนพารามิเตอร์มีความสำคัญเพราะพารามิเตอร์เหล่านี้ส่งผลต่อประสิทธิภาพและความสามารถของโมเดลในการทำนายผลลัพธ์ การใช้ Grid Search ช่วยให้เราสามารถค้นหาค่าพารามิเตอร์ที่เหมาะสมที่สุดสำหรับปัญหาของเรา
+
+-   สร้าง grid แบบ manual --\> regular grid
+
+-   `grid_regular()`: สร้างกริดของค่าพารามิเตอร์แบบทุกค่าที่เป็นไปได้
+
+-   `grid_random()` : สร้างกริดของค่าพารามิเตอร์แบบสุ่ม\<-- simple random sampling
+
+-   `grid_max_entropy()`: เหมาะกับปัญหาที่ต้องการ hyperparameters ที่มีค่าแตกต่างกันมากที่สุด กระจายไปทั่ว grid space มากที่สุด
+
+-   `grid_latin_hypercube()`: เหมาะกับกรณีที่มี hyperparameters หลายตัว และต้องการให้กระจายอย่างสม่ำเสมอใน grid space
+
+วิธีการอื่นนอกเหนือจาก `grid_regular()` ถูกพัฒนาขึ้นเพื่อแก้ไขข้อจำกัดของการทำ manual grid search ที่ใช้ทรัพยากรในการประมวลผลมากเกินไปในหลายกรณี โดย `grid_random()` ใช้วิธีสุ่มค่าพารามิเตอร์แบบ simple random sampling จาก grid space ซึ่งช่วยลดการใช้ทรัพยากรในการประมวลผลลงได้ อย่างไรก็ตามวิธีการอาจมีความเสี่ยงที่จะสุ่มไปยังค่าที่ไม่ได้มีประสิทธิภาพสูงสุด
+
+```{r eval = F}
+p <- parameters(penalty(range=c(-10,0)), 
+                mixture(range=c(0,1)))
+set.seed(1234)
+regular_grid <- grid_regular(x = p, levels = 10)
+random_grid <- grid_random(x = p, size = 20)
+maxentropy_grid <- grid_max_entropy(x = p, size = 20)
+latin_grid <- grid_latin_hypercube(x = p, size = 20)
+
+p1<-regular_grid %>% 
+  ggplot(aes(x=penalty, y=mixture))+
+  geom_point()+
+  scale_x_log10()+
+  theme(legend.position = "none")+
+  ggtitle("Regular Grid")
+
+
+p2<-random_grid %>%
+  ggplot(aes(x=penalty, y=mixture))+
+  geom_point()+
+  scale_x_log10()+
+  theme(legend.position = "none")+
+  ggtitle("Random Grid")
+
+p3 <- maxentropy_grid %>%
+  ggplot(aes(x=penalty, y=mixture))+
+  geom_point()+
+  scale_x_log10()+
+  theme(legend.position = "none")+
+  ggtitle("Max Entropy Grid")
+
+p4 <- latin_grid %>%
+  ggplot(aes(x=penalty, y=mixture))+
+  geom_point()+
+  scale_x_log10()+
+  theme(legend.position = "none")+
+  ggtitle("Latin Hypercube Grid")
+
+(p1+p2)/(p3+p4)
+```
+
+4.  hyperparameter tuning
+
+```{r eval = F}
+library(future)
+availableCores() ##-- ตรวจสอบจำนวน cores
+plan(multisession, workers = 12)
+### -------
+cv_folds <- vfold_cv(train_data, v = 5, repeats = 3, strata = "ach")
+ctrl <- control_grid(save_pred = TRUE, parallel_over = "everything")
+
+regular_tune <- multinom_wf %>% 
+                tune_grid(resamples = cv_folds, 
+                          grid = regular_grid, 
+                          control = ctrl)
+
+random_tune <- multinom_wf %>%
+                tune_grid(resamples = cv_folds, 
+                          grid = random_grid, 
+                          control = ctrl)
+
+maxentropy_tune <- multinom_wf %>%
+                tune_grid(resamples = cv_folds, 
+                          grid = maxentropy_grid, 
+                          control = ctrl)
+
+latin_tune <- multinom_wf %>%
+                tune_grid(resamples = cv_folds, 
+                          grid = latin_grid, 
+                          control = ctrl)
+
+
+p1 <- regular_tune %>% collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  ggplot(aes(x = penalty, y = mixture))+
+  geom_tile(aes(fill = mean))+
+  scale_x_log10()+
+  scale_fill_viridis_c(option = "A")+
+  theme_light()
+  
+p2 <- random_tune %>% collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  ggplot(aes(x = penalty, y = mixture))+
+  geom_tile(aes(fill = mean))+
+  scale_x_log10()+
+  scale_fill_viridis_c(option = "A")+
+  theme_light()
+
+  
+# รวมค่าพยากรณ์จากทั้ง 4 grid search
+results <- bind_rows(
+  regular_tune %>% collect_metrics() %>% mutate(method = "regular"),
+  random_tune %>% collect_metrics() %>% mutate(method = "random"),
+  maxentropy_tune %>% collect_metrics() %>% mutate(method = "max_entropy"),
+  latin_tune %>% collect_metrics() %>% mutate(method = "latin_hypercube")
+)
+
+results %>% 
+  filter(.metric == "roc_auc") %>% 
+  ggplot(aes(x = method, y = mean, fill = method)) +
+  geom_boxplot() +
+  theme_minimal()
+```
+
+ลองเอาผลการ tune จาก `latin_tune` มาวิเคราะห์เพิ่มเติม
+
+```{r eval = F}
+best_latin <- latin_tune %>% select_best(metric = "roc_auc")
+
+final_multinom <- multinom_wf %>% 
+  finalize_workflow(best_latin) %>%
+  fit(data = train_data)
+
+
+final_multinom  %>% 
+  predict(new_data = test_data) %>% 
+  bind_cols(test_data %>% select(ach))  %>% 
+  mutate(.pred_class = fct_relevel(.pred_class, "fail","poor","moderate","good")) %>% 
+  mutate(ach = fct_relevel(ach, "fail","poor","moderate","good")) %>% 
+  group_by(ach) %>% 
+  sens(truth = ach, estimate = .pred_class)
+
+final_multinom  %>% 
+  predict(new_data = test_data) %>% 
+  bind_cols(test_data %>% select(ach))  %>% 
+  mutate(.pred_class = fct_relevel(.pred_class, "fail","poor","moderate","good")) %>% 
+  mutate(ach = fct_relevel(ach, "fail","poor","moderate","good")) %>% 
+  group_by(ach) %>% 
+  precision(truth = ach, estimate = .pred_class)
+```
+
+## Imbalance Class Problem Solving {.smaller}
+
+ข้อมูลไม่สมดุลเกิดขึ้นเมื่อการกระจายตัวของคลาสเป้าหมายในชุดข้อมูลมีความแตกต่างกันอย่างมาก โดยคลาสส่วนน้อย (Minority Class) มักมีตัวอย่างน้อยกว่าคลาสส่วนมาก (Majority Class) เช่น 5 เท่า หรือ 10 เท่า
+
+จากตัวอย่างข้างต้นจะเห็นว่า ปัญหาข้อมูลไม่สมดุล (imbalance class) อาจส่งผลให้การจำแนกของโมเดลในบางคลาสมีประสิทธิภาพที่ต่ำ การแก้ปัญหาดังกล่าวสามารถทำได้หลายวิธีการ เช่น
+
+-   แบ่งคลาสใหม่ ในกรณีที่คลาสถูกสร้างขึ้นจากตัวแปรต่อเนื่อง
+
+-   การใช้การปรับน้ำหนักของคลาสในโมเดล
+
+-   ในเทคนิคการสุ่มซ้ำข้อมูลในคลาสที่มีจำนวนน้อย
+
+ใน R มี library-themis ที่ช่วยแก้ปัญหาดังกล่าวและสามารถทำงานร่วมกับ tidymodels ได้
+
+```{r eval = F}
+## install.packages("themis")
+library(themis)
+```
+
+ใน library มีวิธีการแก้ปัญหา 3 แนวทางหลัก ได้แก่
+
+1.  Undersampling
+
+2.  Oversampling
+
+3.  Hybrid
+
+## Undersampling {.smaller}
+
+-   สุ่มลบตัวอย่างใน majority class จนได้อัตราส่วนที่ต้องการ `step_downsample()`
+
+-   สุ่มลบ/เลือกตัวอย่างแบบมีกลยุทธ์ มี 2 วิธีการได้แก่
+
+    -   `step_nearmiss()` -- เลือกลบตัวอย่างใน majority class ที่มีระยะห่างเฉลี่ยกับ minority class น้อยที่สุด
+
+    -   `step_tomek()` -- Tomek link คือคู่ของตัวอย่างที่มีคลาสต่างกันและอยู่ใกล้กันมากที่สุด วิธีการนี้คือการลบตัวอย่างที่เป็น Tomek link ออกจาก majority class
+
+## Oversampling {.smaller}
+
+-   `step_smote()` -- Synthetic Minority Over-sampling Technique สร้างตัวอย่างสังเคราะห์ใน minority class โดยใช้การ interpolation ระหว่างตัวอย่างจริงที่มีอยู่ หลักการคร่าว ๆ คือ (1) เลือกตัวอย่างใน minority class แบบสุ่ม (2) หาเพื่อนบ้านที่ใกล้ที่สุด k ตัวจากตัวอย่างที่เลือกมา (3) สุ่มเลือก 1 เส้นทางระหว่างตัวอย่างที่เลือกกับเพื่อนบ้านมา (4) สร้างตัวอย่างใหม่โดยใช้ interpolation ระหว่างตัวอย่างที่เลือกกับเพื่อนบ้านที่ใกล้สุดดังกล่าว
+
+$$
+X_{syn} = X_{real} + \lambda(X_{neighbor-X_{real}}) \ \ ; \ \ \lambda \in [0,1]
+$$
+
+-   `step_bsmote()` -- Borderline SMOTE แก้ปัญหา SMOTE แบบดั้งเดิมที่อาจไปสร้างตัวอย่างใหม่ในพื้นที่ที่ไม่มีข้อมูลจริงมากเกินไป โดย BSMOTE จะเน้นสร้างตัวอย่างสังเคราะห์ที่อยู่ใกล้กับ decision boundary ระหว่าง minority class กับ majority class
+
+-   `step_adasyn()` -- Adaptive Synthetic Sampling ปรับปรุง SMOTE โดย เพิ่มข้อมูลเฉพาะจุดที่มีปัญหาความไม่สมดุลสูงที่สุด หมายความว่า จุดที่อยู่ใกล้ majority class มากเกินไป จะได้รับการ oversampling มากขึ้น
+
+-   `step_rose()` -- Random Over-Sampling Examples สร้างตัวอย่างใหม่ทั้งใน minority และ majority class โดยการสุ่มจาก kernal density estimation (KDE) โดยปกติใช้ normal distribution ผลลัพธ์ที่ได้จะได้ตัวอย่างใหม่รอบ ๆ ตัวอย่างที่เลือกมาเดิม ทั้งนี้จะมีการกำหนดอัตราส่วนระหว่างคลาส และการกระจายของการสุ่มตัวอย่างใหม่ เป็น hyperparameter ของอัลกอริทึม
+
+## Hybrid {.smaller}
+
+การผสมผสานระหว่าง undersampling และ oversampling ในบางกรณีช่วยให้การแก้ปัญหา imbalance class มีประสิทธิภาพมากขึ้นได้ แนวทาง hybrid มีหลายวิธีการดังนี้
+
+**SMOTE + Tomek Links**
+
+-   ใช้ SMOTE เพิ่มตัวอย่างใหม่ใน minority class
+
+-   ใช้ Tomek link ลบตัวอย่างใน majority class ที่อยู่ใกล้กับ minority มากเกินไป
+
+**ANDASYN + NearMiss**
+
+-   ใช้ ADASYN เพิ่มตัวอย่างใหม่ใน minority class โดยเน้นจุดที่มีความไม่สมดุลสูง
+
+-   ใช้ Nearmiss เพื่อลบตัวอย่าง majority class ที่อยู่ใกล้ minority class มากที่สุดty
 
 ## Support Vector Machine (SVM) {.smaller}
 
-- Support Vector Machine (SVM) เป็น supervised learning algorithm ที่ใช้สำหรับการจำแนกประเภท (classification) และการวิเคราะห์การถดถอย (regression) หลักการทำงานคร่าว ๆ ของ SVM คือการสร้างเส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นกลุ่ม/คลาสต่าง ๆ ในพื้นที่ P มิติให้ได้ดีที่สุด โดยที่ P คือจำนวน Features
+-   Support Vector Machine (SVM) เป็น supervised learning algorithm ที่ใช้สำหรับการจำแนกประเภท (classification) และการวิเคราะห์การถดถอย (regression) หลักการทำงานคร่าว ๆ ของ SVM คือการสร้างเส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นกลุ่ม/คลาสต่าง ๆ ในพื้นที่ P มิติให้ได้ดีที่สุด โดยที่ P คือจำนวน Features
 
-- อย่างไรก็ตามการสร้างเส้นแบ่งดังกล่าวเป็นสิ่งที่โมเดลการเรียนรู้ต่าง ๆ ก็ทำเหมือนกัน ดังรูปด้านขวา จะเห็นเส้นแบ่งที่ดีที่สุดจากแต่ละอัลกอริทึม
-
+-   อย่างไรก็ตามการสร้างเส้นแบ่งดังกล่าวเป็นสิ่งที่โมเดลการเรียนรู้ต่าง ๆ ก็ทำเหมือนกัน ดังรูปด้านขวา จะเห็นเส้นแบ่งที่ดีที่สุดจากแต่ละอัลกอริทึม
 
 ![](img/HMC.png)
-
 
 ## Support Vector Machine (SVM) {.smaller}
 
@@ -260,16 +543,13 @@ support vector machine มีหลักการเบื้องต้นค
 
 ## Support Vector Machine (SVM) {.smaller}
 
+-   การแก้ปัญหาดังกล่าวคือการปรับให้โมเดลมีความยืดหยุ่นมากขึ้น โดยใช้ soft margin classification ซึ่งจะให้ความผิดพลาดได้มากขึ้น แต่ก็จะลดความเสี่ยงที่เกิดจากข้อมูลผิดปกติ
 
-- การแก้ปัญหาดังกล่าวคือการปรับให้โมเดลมีความยืดหยุ่นมากขึ้น โดยใช้ soft margin classification ซึ่งจะให้ความผิดพลาดได้มากขึ้น แต่ก็จะลดความเสี่ยงที่เกิดจากข้อมูลผิดปกติ 
-
-- แนวคิดดังกล่าวคือการเพิ่ม hyperparameter อีกตัวหนึ่งขึ้นมาเขียนแทนด้วย C (penalty term) ที่ใช้ควบคุมระยะห่างระหว่าง hyperplan กับข้อมูลที่ใกล้ที่สุดจากทั้งสองกลุ่ม (support vector)
-
+-   แนวคิดดังกล่าวคือการเพิ่ม hyperparameter อีกตัวหนึ่งขึ้นมาเขียนแทนด้วย C (penalty term) ที่ใช้ควบคุมระยะห่างระหว่าง hyperplan กับข้อมูลที่ใกล้ที่สุดจากทั้งสองกลุ่ม (support vector)
 
 ![](img/SMC.png)
 
 ## Support Vector Machine (SVM): Kernel Trick {.smaller}
-
 
 หลายกรณีความสัมพันธ์ระหว่างตัวแปรอาจมีความซับซ้อนทำให้เส้นแบ่งที่เป็นเส้นตรงไม่สามารถจำแนกข้อมูลได้ดี กรณีเช่นนี้ linear classifier ทั้งหลายอาจจะให้ประสิทธิภาพที่ต่ำ
 
@@ -279,7 +559,6 @@ SVM แก้ปัญหานี้ด้วยการใช้ kernel trick
 
 ## Support Vector Machine (SVM): Kernel Trick {.smaller}
 
-
 -   Linear Kernel
 
 -   Polynomial Kernel
@@ -288,4 +567,12 @@ SVM แก้ปัญหานี้ด้วยการใช้ kernel trick
 
 -   Sigmoid Kernel
 
+## Naive Bayes {.smaller}
 
+-- ดูเนื้อหาคลิปวิดิโอ —
+
+```{r eval = F}
+nb_spec <- naive_Bayes(smoothness = tune(), Laplace = tune()) %>%  
+  set_engine("klaR") %>%  
+  set_mode("classification")
+```

@@ -541,7 +541,321 @@ Regularized \ Error = \text{Impurity} + \alpha \times \text{Tree Depth}
 <li><p>เมื่อการแจกแจงมีการกระจายที่แตกต่างกันเส้นแบ่งระหว่าง class จึงมีลักษณะเป็นเส้นโค้ง</p></li>
 </ul></section><section id="quardratic-discriminant-analysis-qda-1" class="slide level2 smaller"><h2>Quardratic Discriminant Analysis (QDA)</h2>
 
-<img data-src="https://mathformachines.com/images/quadratic-linear.png" class="r-stretch"></section><section id="support-vector-machine-svm" class="slide level2 smaller"><h2>Support Vector Machine (SVM)</h2>
+<img data-src="https://mathformachines.com/images/quadratic-linear.png" class="r-stretch"></section><section id="grid-search-imbalanced-class-problem" class="slide level2 smaller"><h2>Grid Search &amp; Imbalanced Class Problem</h2>
+<p>ทดลอง fit multunomial logistic regression กับข้อมูลต่อไปนี้ กำหนดให้ตัวแปรตามคือ ผลการเรียนที่มี 4 ระดับ คือ fail, poor, moderate และ good ส่วนตัวแปรที่เหลือเป็นตัวแปรอิสระ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb2-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-3"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week05/student_data_missing.csv"</span>)</span>
+<span id="cb2-4"><a href=""></a></span>
+<span id="cb2-5"><a href=""></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">ach =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-7"><a href=""></a>    gpax.y2 <span class="sc">&lt;</span> <span class="fl">1.5</span> <span class="sc">~</span> <span class="st">"fail"</span>,</span>
+<span id="cb2-8"><a href=""></a>    gpax.y2 <span class="sc">&gt;=</span> <span class="fl">1.5</span> <span class="sc">&amp;</span> gpax.y2 <span class="sc">&lt;</span> <span class="fl">2.5</span> <span class="sc">~</span> <span class="st">"poor"</span>,</span>
+<span id="cb2-9"><a href=""></a>    gpax.y2 <span class="sc">&gt;=</span> <span class="fl">2.5</span> <span class="sc">&amp;</span> gpax.y2 <span class="sc">&lt;</span> <span class="fl">3.5</span> <span class="sc">~</span> <span class="st">"moderate"</span>,</span>
+<span id="cb2-10"><a href=""></a>    gpax.y2 <span class="sc">&gt;=</span> <span class="fl">3.5</span> <span class="sc">~</span> <span class="st">"good"</span></span>
+<span id="cb2-11"><a href=""></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-12"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>gpax.y2)</span>
+<span id="cb2-13"><a href=""></a></span>
+<span id="cb2-14"><a href=""></a><span class="fu">glimpse</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 990
+Columns: 41
+$ infect        &lt;dbl&gt; 1, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 2, 2,…
+$ read.amt      &lt;dbl&gt; 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 2,…
+$ pre.readf1    &lt;dbl&gt; NA, 1, 3, NA, 1, 1, 2, 3, NA, 2, NA, 1, 1, 1, 1, 1, 1, 1…
+$ pre.readf2    &lt;dbl&gt; 3, 2, 2, 3, 4, 1, 3, 3, 3, 3, 4, 3, 1, 3, 3, 4, 1, 3, 2,…
+$ pre.readf3    &lt;dbl&gt; 1, 4, 1, 4, 4, 4, 3, 4, 1, 2, 2, 4, 1, 4, 2, 4, 4, 1, 3,…
+$ pre.readf4    &lt;dbl&gt; 2, 1, 3, 1, 1, 1, 1, 3, 4, 1, 2, 2, 1, 1, 2, 2, 1, 2, 2,…
+$ pre.readf5    &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ pre.readf6    &lt;dbl&gt; 2, 2, 3, 2, 1, 1, 4, 2, 1, 4, 1, 2, 1, 1, 2, 1, 1, 3, 1,…
+$ post.readf1   &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1,…
+$ post.readf2   &lt;dbl&gt; 4, 1, 3, 2, 1, 3, 4, 3, 2, 4, 2, 2, 1, 2, 4, 2, 2, 4, 4,…
+$ post.readf3   &lt;dbl&gt; 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 4, 3, 4, 4, 4, 4, 4, 4, 4,…
+$ post.readf4   &lt;dbl&gt; 4, 2, 4, 4, 4, 4, 4, 4, 3, 1, 3, 4, 3, 4, 3, 4, 3, 4, 4,…
+$ post.readf5   &lt;dbl&gt; 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ post.readf6   &lt;dbl&gt; NA, 2, 4, NA, 2, 4, 3, 4, NA, 4, NA, 2, 4, 4, 4, 4, 4, 4…
+$ stress.1      &lt;dbl&gt; NA, 2, 5, NA, 2, 4, 3, 4, NA, 4, NA, 2, 3, 3, 5, 3, 1, 3…
+$ stress.2      &lt;dbl&gt; 2, 2, 5, 2, 1, 2, 2, 4, 1, 5, 3, 2, 2, 2, 3, 2, 1, 2, 4,…
+$ stress.3      &lt;dbl&gt; 3, 3, 5, 3, 2, 4, 3, 4, 1, 4, 4, 2, 3, 4, 5, 3, 1, 3, 4,…
+$ stress.4      &lt;dbl&gt; 2, 1, 5, 2, 1, 3, 2, 3, 1, 5, 4, 2, 2, 3, 5, 2, 1, 2, 5,…
+$ stress.5      &lt;dbl&gt; 2, 1, 5, 3, 1, 3, 1, 4, 1, 5, 3, 1, 1, 3, 4, 1, 1, 1, 5,…
+$ stu.engage.1  &lt;dbl&gt; 5, 5, 2, 3, 5, 4, 5, 3, 5, 3, 2, 4, 5, 3, 3, 4, 5, 5, 3,…
+$ stu.engage.2  &lt;dbl&gt; 4, 4, 1, 3, 5, 4, 4, 2, 5, 3, 1, 3, 5, 2, 2, 4, 5, 5, 1,…
+$ stu.engage.3  &lt;dbl&gt; 5, 4, 2, 3, 5, 4, 4, 3, 5, 2, 1, 4, 5, 3, 3, 3, 5, 5, 1,…
+$ stu.engage.4  &lt;dbl&gt; 5, 5, 2, 2, 5, 5, 4, 2, 5, 3, 1, 4, 5, 3, 2, 4, 5, 5, 2,…
+$ stu.itcap     &lt;dbl&gt; 2, 3, 1, 2, 3, 2, 3, 1, 3, 1, 1, 2, 3, 1, 1, 3, 3, 3, 1,…
+$ learn.per1    &lt;dbl&gt; NA, 11.6, 11.2, NA, 16.2, 11.6, 6.3, 8.3, NA, 10.9, NA, …
+$ learn.per2    &lt;dbl&gt; NA, 18.30, 0.33, NA, 17.91, 8.90, 15.25, 1.86, NA, 4.85,…
+$ gpax.y1       &lt;dbl&gt; NA, 3.21, 2.51, NA, 2.87, 2.89, 2.27, 2.71, NA, 3.01, NA…
+$ gender        &lt;dbl&gt; 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2,…
+$ t.exp         &lt;dbl&gt; 2, 1, 2, 1, 2, 3, 3, 2, 2, 1, 3, 3, 1, 3, 3, 2, 2, 2, 2,…
+$ t.itcap       &lt;dbl&gt; NA, 3, 3, NA, 3, 2, 2, 2, NA, 2, NA, 1, 2, 1, 2, 3, 3, 2…
+$ climate.pro.1 &lt;dbl&gt; NA, 3, 3, NA, 5, 5, 4, 4, NA, 3, NA, 4, 1, 1, 5, 5, 5, 1…
+$ climate.pro.2 &lt;dbl&gt; 1, 1, 1, 2, 5, 4, 3, 3, 3, 3, 1, 1, 1, 1, 5, 5, 5, 1, 5,…
+$ climate.pro.3 &lt;dbl&gt; 3, 2, 2, 3, 5, 5, 3, 3, 5, 3, 1, 3, 2, 2, 5, 5, 5, 3, 5,…
+$ climate.pro.4 &lt;dbl&gt; 2, 4, 1, 3, 5, 5, 4, 3, 1, 4, 1, 3, 1, 1, 5, 5, 5, 3, 5,…
+$ climate.pro.5 &lt;dbl&gt; 1, 3, 2, 3, 5, 5, 5, 4, 3, 2, 1, 5, 2, 1, 5, 5, 5, 2, 5,…
+$ climate.pro.6 &lt;dbl&gt; NA, 1, 1, NA, 5, 5, 5, 2, NA, 1, NA, 4, 1, 1, 5, 5, 5, 2…
+$ t.mode        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ location      &lt;chr&gt; "กลาง", "กลาง", "กลาง", "กลาง", "กลาง", "กลาง", "กลาง", …
+$ internet      &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,…
+$ it.equip      &lt;dbl&gt; 2, 2, 0, 1, 1, 1, 1, 1, 3, 0, 0, 1, 1, 1, 0, 1, 3, 2, 0,…
+$ ach           &lt;chr&gt; "moderate", "moderate", "fail", "poor", "moderate", "poo…</code></pre>
+</div>
+</div>
+<p>ดำเนินการแบ่งข้อมูลออกเป็นสองส่วน เมื่อพิจารณาแผนภาพด้านล่างจะเห็นว่าการแจกแจงของตัวแปรตามมีลักษณะที่ไม่สมดุลอย่างมาก สภาพดังกล่าวอาจส่งผลให้โมเดลการเรียนรู้ของเครื่องมีตัวอย่างในกลุ่ม good และ fail น้่อยกว่ากลุ่ม moderate และ poor ซึ่งทำให้โมเดลมีประสิทธิภาพในการจำแนกกลุ่มดังกล่าวต่ำ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb4-2"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-3"><a href=""></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data, <span class="at">prop =</span> <span class="fl">0.7</span>, <span class="at">strata =</span> ach)</span>
+<span id="cb4-4"><a href=""></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb4-5"><a href=""></a>test_data <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span>
+<span id="cb4-6"><a href=""></a></span>
+<span id="cb4-7"><a href=""></a>train_data <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>ach))<span class="sc">+</span></span>
+<span id="cb4-9"><a href=""></a>  <span class="fu">geom_bar</span>()<span class="sc">+</span></span>
+<span id="cb4-10"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"train_data"</span>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href=""></a>test_data <span class="sc">%&gt;%</span> </span>
+<span id="cb4-12"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>ach))<span class="sc">+</span></span>
+<span id="cb4-13"><a href=""></a>  <span class="fu">geom_bar</span>()<span class="sc">+</span></span>
+<span id="cb4-14"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"test_data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="wk06_ML2_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section><section id="ทดลองวเคราะหโดยไมแกปญหา" class="slide level2 scrollable"><h2>ทดลองวิเคราะห์โดยไม่แก้ปัญหา</h2>
+<p>ขั้นแรกเราจะลองดำเนินการสร้างโมเดลทำนายโดยไม่แก้ปัญหา imbalanced class ด้วย multinomial logistic regression</p>
+<ol type="1">
+<li>สร้าง recipe ของการทำ data preprocessing</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(ach<span class="sc">~</span>. , <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">infect =</span> <span class="fu">factor</span>(infect, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"yes"</span>,<span class="st">"no"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">pre_read =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"pre.read"</span>)))) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">post_read =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"post.read"</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">stress =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"stress"</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">stu_engage =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"stu.engage"</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">gender =</span> <span class="fu">factor</span>(gender, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"M"</span>,<span class="st">"F"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">t_exp =</span> <span class="fu">factor</span>(t.exp, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"low"</span>,<span class="st">"moderate"</span>,<span class="st">"high"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">stu_itcap =</span> <span class="fu">factor</span>(stu.itcap , <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"low"</span>,<span class="st">"moderate"</span>,<span class="st">"high"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">t_itcap =</span> <span class="fu">factor</span>(t.itcap, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"low"</span>,<span class="st">"moderate"</span>,<span class="st">"high"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">climate =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"climate"</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">t_mode =</span> <span class="fu">factor</span>(t.mode, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"online"</span>,<span class="st">"onsite"</span>,<span class="st">"hybrid"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-13"><a href=""></a>  <span class="fu">step_mutate</span>(<span class="at">internet =</span> <span class="fu">factor</span>(internet, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-14"><a href=""></a>  <span class="fu">step_rm</span>(<span class="fu">starts_with</span>(<span class="st">"pre.read"</span>), <span class="fu">starts_with</span>(<span class="st">"post.read"</span>), </span>
+<span id="cb5-15"><a href=""></a>          <span class="fu">starts_with</span>(<span class="st">"stress."</span>), <span class="fu">starts_with</span>(<span class="st">"stu.engage"</span>), </span>
+<span id="cb5-16"><a href=""></a>          <span class="fu">starts_with</span>(<span class="st">"climate."</span>),</span>
+<span id="cb5-17"><a href=""></a>          t.exp, stu.itcap,t.itcap, t.mode) <span class="sc">%&gt;%</span></span>
+<span id="cb5-18"><a href=""></a>  <span class="do">### --- </span></span>
+<span id="cb5-19"><a href=""></a>  <span class="co">#step_unknown(all_nominal_predictors()) %&gt;% </span></span>
+<span id="cb5-20"><a href=""></a>  <span class="fu">step_impute_bag</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-21"><a href=""></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-22"><a href=""></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="1">
+<li>ระบุ model และ workflow</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>multinom_spec <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(), <span class="at">mixture =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb6-4"><a href=""></a></span>
+<span id="cb6-5"><a href=""></a>multinom_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-6"><a href=""></a>  <span class="fu">add_recipe</span>(rec) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-7"><a href=""></a>  <span class="fu">add_model</span>(multinom_spec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="3" type="1">
+<li>สร้าง grid ของ hyperparameters สำหรับ tuning</li>
+</ol>
+<p>Grid Search เป็นวิธีการปรับจูนค่าพารามิเตอร์ของโมเดล (Hyperparameter Tuning) โดยการสร้างชุดของค่าพารามิเตอร์ที่เป็นไปได้ในรูปแบบตารางหรือกริด และทดลองฝึกโมเดลด้วยค่าพารามิเตอร์ทุกชุดในกริดนั้น จากนั้นประเมินประสิทธิภาพของโมเดลแต่ละชุดเพื่อหาค่าที่ให้ผลลัพธ์ดีที่สุด</p>
+<p>การปรับจูนพารามิเตอร์มีความสำคัญเพราะพารามิเตอร์เหล่านี้ส่งผลต่อประสิทธิภาพและความสามารถของโมเดลในการทำนายผลลัพธ์ การใช้ Grid Search ช่วยให้เราสามารถค้นหาค่าพารามิเตอร์ที่เหมาะสมที่สุดสำหรับปัญหาของเรา</p>
+<ul>
+<li><p>สร้าง grid แบบ manual –&gt; regular grid</p></li>
+<li><p><code>grid_regular()</code>: สร้างกริดของค่าพารามิเตอร์แบบทุกค่าที่เป็นไปได้</p></li>
+<li><p><code>grid_random()</code> : สร้างกริดของค่าพารามิเตอร์แบบสุ่ม&lt;– simple random sampling</p></li>
+<li><p><code>grid_max_entropy()</code>: เหมาะกับปัญหาที่ต้องการ hyperparameters ที่มีค่าแตกต่างกันมากที่สุด กระจายไปทั่ว grid space มากที่สุด</p></li>
+<li><p><code>grid_latin_hypercube()</code>: เหมาะกับกรณีที่มี hyperparameters หลายตัว และต้องการให้กระจายอย่างสม่ำเสมอใน grid space</p></li>
+</ul>
+<p>วิธีการอื่นนอกเหนือจาก <code>grid_regular()</code> ถูกพัฒนาขึ้นเพื่อแก้ไขข้อจำกัดของการทำ manual grid search ที่ใช้ทรัพยากรในการประมวลผลมากเกินไปในหลายกรณี โดย <code>grid_random()</code> ใช้วิธีสุ่มค่าพารามิเตอร์แบบ simple random sampling จาก grid space ซึ่งช่วยลดการใช้ทรัพยากรในการประมวลผลลงได้ อย่างไรก็ตามวิธีการอาจมีความเสี่ยงที่จะสุ่มไปยังค่าที่ไม่ได้มีประสิทธิภาพสูงสุด</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="fu">parameters</span>(<span class="fu">penalty</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">0</span>)), </span>
+<span id="cb7-2"><a href=""></a>                <span class="fu">mixture</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)))</span>
+<span id="cb7-3"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb7-4"><a href=""></a>regular_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(<span class="at">x =</span> p, <span class="at">levels =</span> <span class="dv">10</span>)</span>
+<span id="cb7-5"><a href=""></a>random_grid <span class="ot">&lt;-</span> <span class="fu">grid_random</span>(<span class="at">x =</span> p, <span class="at">size =</span> <span class="dv">20</span>)</span>
+<span id="cb7-6"><a href=""></a>maxentropy_grid <span class="ot">&lt;-</span> <span class="fu">grid_max_entropy</span>(<span class="at">x =</span> p, <span class="at">size =</span> <span class="dv">20</span>)</span>
+<span id="cb7-7"><a href=""></a>latin_grid <span class="ot">&lt;-</span> <span class="fu">grid_latin_hypercube</span>(<span class="at">x =</span> p, <span class="at">size =</span> <span class="dv">20</span>)</span>
+<span id="cb7-8"><a href=""></a></span>
+<span id="cb7-9"><a href=""></a>p1<span class="ot">&lt;-</span>regular_grid <span class="sc">%&gt;%</span> </span>
+<span id="cb7-10"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>penalty, <span class="at">y=</span>mixture))<span class="sc">+</span></span>
+<span id="cb7-11"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb7-12"><a href=""></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb7-13"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)<span class="sc">+</span></span>
+<span id="cb7-14"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"Regular Grid"</span>)</span>
+<span id="cb7-15"><a href=""></a></span>
+<span id="cb7-16"><a href=""></a></span>
+<span id="cb7-17"><a href=""></a>p2<span class="ot">&lt;-</span>random_grid <span class="sc">%&gt;%</span></span>
+<span id="cb7-18"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>penalty, <span class="at">y=</span>mixture))<span class="sc">+</span></span>
+<span id="cb7-19"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb7-20"><a href=""></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb7-21"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)<span class="sc">+</span></span>
+<span id="cb7-22"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"Random Grid"</span>)</span>
+<span id="cb7-23"><a href=""></a></span>
+<span id="cb7-24"><a href=""></a>p3 <span class="ot">&lt;-</span> maxentropy_grid <span class="sc">%&gt;%</span></span>
+<span id="cb7-25"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>penalty, <span class="at">y=</span>mixture))<span class="sc">+</span></span>
+<span id="cb7-26"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb7-27"><a href=""></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb7-28"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)<span class="sc">+</span></span>
+<span id="cb7-29"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"Max Entropy Grid"</span>)</span>
+<span id="cb7-30"><a href=""></a></span>
+<span id="cb7-31"><a href=""></a>p4 <span class="ot">&lt;-</span> latin_grid <span class="sc">%&gt;%</span></span>
+<span id="cb7-32"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>penalty, <span class="at">y=</span>mixture))<span class="sc">+</span></span>
+<span id="cb7-33"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb7-34"><a href=""></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb7-35"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)<span class="sc">+</span></span>
+<span id="cb7-36"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"Latin Hypercube Grid"</span>)</span>
+<span id="cb7-37"><a href=""></a></span>
+<span id="cb7-38"><a href=""></a>(p1<span class="sc">+</span>p2)<span class="sc">/</span>(p3<span class="sc">+</span>p4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="4" type="1">
+<li>hyperparameter tuning</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(future)</span>
+<span id="cb8-2"><a href=""></a><span class="fu">availableCores</span>() <span class="do">##-- ตรวจสอบจำนวน cores</span></span>
+<span id="cb8-3"><a href=""></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> <span class="dv">12</span>)</span>
+<span id="cb8-4"><a href=""></a><span class="do">### -------</span></span>
+<span id="cb8-5"><a href=""></a>cv_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train_data, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">3</span>, <span class="at">strata =</span> <span class="st">"ach"</span>)</span>
+<span id="cb8-6"><a href=""></a>ctrl <span class="ot">&lt;-</span> <span class="fu">control_grid</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>, <span class="at">parallel_over =</span> <span class="st">"everything"</span>)</span>
+<span id="cb8-7"><a href=""></a></span>
+<span id="cb8-8"><a href=""></a>regular_tune <span class="ot">&lt;-</span> multinom_wf <span class="sc">%&gt;%</span> </span>
+<span id="cb8-9"><a href=""></a>                <span class="fu">tune_grid</span>(<span class="at">resamples =</span> cv_folds, </span>
+<span id="cb8-10"><a href=""></a>                          <span class="at">grid =</span> regular_grid, </span>
+<span id="cb8-11"><a href=""></a>                          <span class="at">control =</span> ctrl)</span>
+<span id="cb8-12"><a href=""></a></span>
+<span id="cb8-13"><a href=""></a>random_tune <span class="ot">&lt;-</span> multinom_wf <span class="sc">%&gt;%</span></span>
+<span id="cb8-14"><a href=""></a>                <span class="fu">tune_grid</span>(<span class="at">resamples =</span> cv_folds, </span>
+<span id="cb8-15"><a href=""></a>                          <span class="at">grid =</span> random_grid, </span>
+<span id="cb8-16"><a href=""></a>                          <span class="at">control =</span> ctrl)</span>
+<span id="cb8-17"><a href=""></a></span>
+<span id="cb8-18"><a href=""></a>maxentropy_tune <span class="ot">&lt;-</span> multinom_wf <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href=""></a>                <span class="fu">tune_grid</span>(<span class="at">resamples =</span> cv_folds, </span>
+<span id="cb8-20"><a href=""></a>                          <span class="at">grid =</span> maxentropy_grid, </span>
+<span id="cb8-21"><a href=""></a>                          <span class="at">control =</span> ctrl)</span>
+<span id="cb8-22"><a href=""></a></span>
+<span id="cb8-23"><a href=""></a>latin_tune <span class="ot">&lt;-</span> multinom_wf <span class="sc">%&gt;%</span></span>
+<span id="cb8-24"><a href=""></a>                <span class="fu">tune_grid</span>(<span class="at">resamples =</span> cv_folds, </span>
+<span id="cb8-25"><a href=""></a>                          <span class="at">grid =</span> latin_grid, </span>
+<span id="cb8-26"><a href=""></a>                          <span class="at">control =</span> ctrl)</span>
+<span id="cb8-27"><a href=""></a></span>
+<span id="cb8-28"><a href=""></a></span>
+<span id="cb8-29"><a href=""></a>p1 <span class="ot">&lt;-</span> regular_tune <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-30"><a href=""></a>  <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"roc_auc"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-31"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> penalty, <span class="at">y =</span> mixture))<span class="sc">+</span></span>
+<span id="cb8-32"><a href=""></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">fill =</span> mean))<span class="sc">+</span></span>
+<span id="cb8-33"><a href=""></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb8-34"><a href=""></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"A"</span>)<span class="sc">+</span></span>
+<span id="cb8-35"><a href=""></a>  <span class="fu">theme_light</span>()</span>
+<span id="cb8-36"><a href=""></a>  </span>
+<span id="cb8-37"><a href=""></a>p2 <span class="ot">&lt;-</span> random_tune <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-38"><a href=""></a>  <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"roc_auc"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-39"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> penalty, <span class="at">y =</span> mixture))<span class="sc">+</span></span>
+<span id="cb8-40"><a href=""></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">fill =</span> mean))<span class="sc">+</span></span>
+<span id="cb8-41"><a href=""></a>  <span class="fu">scale_x_log10</span>()<span class="sc">+</span></span>
+<span id="cb8-42"><a href=""></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"A"</span>)<span class="sc">+</span></span>
+<span id="cb8-43"><a href=""></a>  <span class="fu">theme_light</span>()</span>
+<span id="cb8-44"><a href=""></a></span>
+<span id="cb8-45"><a href=""></a>  </span>
+<span id="cb8-46"><a href=""></a><span class="co"># รวมค่าพยากรณ์จากทั้ง 4 grid search</span></span>
+<span id="cb8-47"><a href=""></a>results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb8-48"><a href=""></a>  regular_tune <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"regular"</span>),</span>
+<span id="cb8-49"><a href=""></a>  random_tune <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"random"</span>),</span>
+<span id="cb8-50"><a href=""></a>  maxentropy_tune <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"max_entropy"</span>),</span>
+<span id="cb8-51"><a href=""></a>  latin_tune <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"latin_hypercube"</span>)</span>
+<span id="cb8-52"><a href=""></a>)</span>
+<span id="cb8-53"><a href=""></a></span>
+<span id="cb8-54"><a href=""></a>results <span class="sc">%&gt;%</span> </span>
+<span id="cb8-55"><a href=""></a>  <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"roc_auc"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-56"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> mean, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb8-57"><a href=""></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb8-58"><a href=""></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ลองเอาผลการ tune จาก <code>latin_tune</code> มาวิเคราะห์เพิ่มเติม</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>best_latin <span class="ot">&lt;-</span> latin_tune <span class="sc">%&gt;%</span> <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb9-2"><a href=""></a></span>
+<span id="cb9-3"><a href=""></a>final_multinom <span class="ot">&lt;-</span> multinom_wf <span class="sc">%&gt;%</span> </span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">finalize_workflow</span>(best_latin) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href=""></a>  <span class="fu">fit</span>(<span class="at">data =</span> train_data)</span>
+<span id="cb9-6"><a href=""></a></span>
+<span id="cb9-7"><a href=""></a></span>
+<span id="cb9-8"><a href=""></a>final_multinom  <span class="sc">%&gt;%</span> </span>
+<span id="cb9-9"><a href=""></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> test_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-10"><a href=""></a>  <span class="fu">bind_cols</span>(test_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(ach))  <span class="sc">%&gt;%</span> </span>
+<span id="cb9-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">.pred_class =</span> <span class="fu">fct_relevel</span>(.pred_class, <span class="st">"fail"</span>,<span class="st">"poor"</span>,<span class="st">"moderate"</span>,<span class="st">"good"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-12"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">ach =</span> <span class="fu">fct_relevel</span>(ach, <span class="st">"fail"</span>,<span class="st">"poor"</span>,<span class="st">"moderate"</span>,<span class="st">"good"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-13"><a href=""></a>  <span class="fu">group_by</span>(ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-14"><a href=""></a>  <span class="fu">sens</span>(<span class="at">truth =</span> ach, <span class="at">estimate =</span> .pred_class)</span>
+<span id="cb9-15"><a href=""></a></span>
+<span id="cb9-16"><a href=""></a>final_multinom  <span class="sc">%&gt;%</span> </span>
+<span id="cb9-17"><a href=""></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> test_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-18"><a href=""></a>  <span class="fu">bind_cols</span>(test_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(ach))  <span class="sc">%&gt;%</span> </span>
+<span id="cb9-19"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">.pred_class =</span> <span class="fu">fct_relevel</span>(.pred_class, <span class="st">"fail"</span>,<span class="st">"poor"</span>,<span class="st">"moderate"</span>,<span class="st">"good"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-20"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">ach =</span> <span class="fu">fct_relevel</span>(ach, <span class="st">"fail"</span>,<span class="st">"poor"</span>,<span class="st">"moderate"</span>,<span class="st">"good"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-21"><a href=""></a>  <span class="fu">group_by</span>(ach) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-22"><a href=""></a>  <span class="fu">precision</span>(<span class="at">truth =</span> ach, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="imbalance-class-problem-solving" class="slide level2 smaller scrollable"><h2>Imbalance Class Problem Solving</h2>
+<p>ข้อมูลไม่สมดุลเกิดขึ้นเมื่อการกระจายตัวของคลาสเป้าหมายในชุดข้อมูลมีความแตกต่างกันอย่างมาก โดยคลาสส่วนน้อย (Minority Class) มักมีตัวอย่างน้อยกว่าคลาสส่วนมาก (Majority Class) เช่น 5 เท่า หรือ 10 เท่า</p>
+<p>จากตัวอย่างข้างต้นจะเห็นว่า ปัญหาข้อมูลไม่สมดุล (imbalance class) อาจส่งผลให้การจำแนกของโมเดลในบางคลาสมีประสิทธิภาพที่ต่ำ การแก้ปัญหาดังกล่าวสามารถทำได้หลายวิธีการ เช่น</p>
+<ul>
+<li><p>แบ่งคลาสใหม่ ในกรณีที่คลาสถูกสร้างขึ้นจากตัวแปรต่อเนื่อง</p></li>
+<li><p>การใช้การปรับน้ำหนักของคลาสในโมเดล</p></li>
+<li><p>ในเทคนิคการสุ่มซ้ำข้อมูลในคลาสที่มีจำนวนน้อย</p></li>
+</ul>
+<p>ใน R มี library-themis ที่ช่วยแก้ปัญหาดังกล่าวและสามารถทำงานร่วมกับ tidymodels ได้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="do">## install.packages("themis")</span></span>
+<span id="cb10-2"><a href=""></a><span class="fu">library</span>(themis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ใน library มีวิธีการแก้ปัญหา 3 แนวทางหลัก ได้แก่</p>
+<ol type="1">
+<li><p>Undersampling</p></li>
+<li><p>Oversampling</p></li>
+<li><p>Hybrid</p></li>
+</ol></section><section id="undersampling" class="slide level2 smaller"><h2>Undersampling</h2>
+<ul>
+<li><p>สุ่มลบตัวอย่างใน majority class จนได้อัตราส่วนที่ต้องการ <code>step_downsample()</code></p></li>
+<li>
+<p>สุ่มลบ/เลือกตัวอย่างแบบมีกลยุทธ์ มี 2 วิธีการได้แก่</p>
+<ul>
+<li><p><code>step_nearmiss()</code> – เลือกลบตัวอย่างใน majority class ที่มีระยะห่างเฉลี่ยกับ minority class น้อยที่สุด</p></li>
+<li><p><code>step_tomek()</code> – Tomek link คือคู่ของตัวอย่างที่มีคลาสต่างกันและอยู่ใกล้กันมากที่สุด วิธีการนี้คือการลบตัวอย่างที่เป็น Tomek link ออกจาก majority class</p></li>
+</ul>
+</li>
+</ul></section><section id="oversampling" class="slide level2 smaller"><h2>Oversampling</h2>
+<ul>
+<li>
+<code>step_smote()</code> – Synthetic Minority Over-sampling Technique สร้างตัวอย่างสังเคราะห์ใน minority class โดยใช้การ interpolation ระหว่างตัวอย่างจริงที่มีอยู่ หลักการคร่าว ๆ คือ (1) เลือกตัวอย่างใน minority class แบบสุ่ม (2) หาเพื่อนบ้านที่ใกล้ที่สุด k ตัวจากตัวอย่างที่เลือกมา (3) สุ่มเลือก 1 เส้นทางระหว่างตัวอย่างที่เลือกกับเพื่อนบ้านมา (4) สร้างตัวอย่างใหม่โดยใช้ interpolation ระหว่างตัวอย่างที่เลือกกับเพื่อนบ้านที่ใกล้สุดดังกล่าว</li>
+</ul>
+<p><span class="math display">\[
+X_{syn} = X_{real} + \lambda(X_{neighbor-X_{real}}) \ \ ; \ \ \lambda \in [0,1]
+\]</span></p>
+<ul>
+<li><p><code>step_bsmote()</code> – Borderline SMOTE แก้ปัญหา SMOTE แบบดั้งเดิมที่อาจไปสร้างตัวอย่างใหม่ในพื้นที่ที่ไม่มีข้อมูลจริงมากเกินไป โดย BSMOTE จะเน้นสร้างตัวอย่างสังเคราะห์ที่อยู่ใกล้กับ decision boundary ระหว่าง minority class กับ majority class</p></li>
+<li><p><code>step_adasyn()</code> – Adaptive Synthetic Sampling ปรับปรุง SMOTE โดย เพิ่มข้อมูลเฉพาะจุดที่มีปัญหาความไม่สมดุลสูงที่สุด หมายความว่า จุดที่อยู่ใกล้ majority class มากเกินไป จะได้รับการ oversampling มากขึ้น</p></li>
+<li><p><code>step_rose()</code> – Random Over-Sampling Examples สร้างตัวอย่างใหม่ทั้งใน minority และ majority class โดยการสุ่มจาก kernal density estimation (KDE) โดยปกติใช้ normal distribution ผลลัพธ์ที่ได้จะได้ตัวอย่างใหม่รอบ ๆ ตัวอย่างที่เลือกมาเดิม ทั้งนี้จะมีการกำหนดอัตราส่วนระหว่างคลาส และการกระจายของการสุ่มตัวอย่างใหม่ เป็น hyperparameter ของอัลกอริทึม</p></li>
+</ul></section><section id="hybrid" class="slide level2 smaller"><h2>Hybrid</h2>
+<p>การผสมผสานระหว่าง undersampling และ oversampling ในบางกรณีช่วยให้การแก้ปัญหา imbalance class มีประสิทธิภาพมากขึ้นได้ แนวทาง hybrid มีหลายวิธีการดังนี้</p>
+<p><strong>SMOTE + Tomek Links</strong></p>
+<ul>
+<li><p>ใช้ SMOTE เพิ่มตัวอย่างใหม่ใน minority class</p></li>
+<li><p>ใช้ Tomek link ลบตัวอย่างใน majority class ที่อยู่ใกล้กับ minority มากเกินไป</p></li>
+</ul>
+<p><strong>ANDASYN + NearMiss</strong></p>
+<ul>
+<li><p>ใช้ ADASYN เพิ่มตัวอย่างใหม่ใน minority class โดยเน้นจุดที่มีความไม่สมดุลสูง</p></li>
+<li><p>ใช้ Nearmiss เพื่อลบตัวอย่าง majority class ที่อยู่ใกล้ minority class มากที่สุดty</p></li>
+</ul></section><section id="support-vector-machine-svm" class="slide level2 smaller"><h2>Support Vector Machine (SVM)</h2>
 <ul>
 <li><p>Support Vector Machine (SVM) เป็น supervised learning algorithm ที่ใช้สำหรับการจำแนกประเภท (classification) และการวิเคราะห์การถดถอย (regression) หลักการทำงานคร่าว ๆ ของ SVM คือการสร้างเส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นกลุ่ม/คลาสต่าง ๆ ในพื้นที่ P มิติให้ได้ดีที่สุด โดยที่ P คือจำนวน Features</p></li>
 <li><p>อย่างไรก็ตามการสร้างเส้นแบ่งดังกล่าวเป็นสิ่งที่โมเดลการเรียนรู้ต่าง ๆ ก็ทำเหมือนกัน ดังรูปด้านขวา จะเห็นเส้นแบ่งที่ดีที่สุดจากแต่ละอัลกอริทึม</p></li>
@@ -569,7 +883,13 @@ Regularized \ Error = \text{Impurity} + \alpha \times \text{Tree Depth}
 <li><p>Polynomial Kernel</p></li>
 <li><p>Radial Basis Function (RBF) Kernel (Gaussian Kernel)</p></li>
 <li><p>Sigmoid Kernel</p></li>
-</ul>
+</ul></section><section id="naive-bayes" class="slide level2 smaller"><h2>Naive Bayes</h2>
+<p>– ดูเนื้อหาคลิปวิดิโอ —</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>nb_spec <span class="ot">&lt;-</span> <span class="fu">naive_Bayes</span>(<span class="at">smoothness =</span> <span class="fu">tune</span>(), <span class="at">Laplace =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span>  </span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">set_engine</span>(<span class="st">"klaR"</span>) <span class="sc">%&gt;%</span>  </span>
+<span id="cb11-3"><a href=""></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <div class="quarto-auto-generated-content">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">

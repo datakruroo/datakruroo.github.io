@@ -1,0 +1,163 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## importing data
+
+```{r}
+library(tidymodels)
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week05/student_data_missing.csv")
+
+data <- data %>% 
+  mutate(ach = ifelse(gpax.y2 > 2.5, "pass","fail")) %>% 
+  select(-gpax.y2)
+```
+
+## data spliting
+
+```{r}
+library(patchwork)
+set.seed(123)
+split <- initial_split(data, prop = 0.7, strata = ach)
+train_data <- training(split)
+test_data <- testing(split)
+
+train_data %>% 
+  ggplot(aes(x=ach))+
+  geom_bar()+
+  ggtitle("train_data") +
+test_data %>% 
+  ggplot(aes(x=ach))+
+  geom_bar()+
+  ggtitle("test_data")
+```
+
+
+## tree model
+
+```{r}
+dt_rec1 <- recipe(ach ~ . , data = train_data)
+#dt_rec2 <- recipe(ach ~ . , data = train_data) %>% 
+#  step_normalize(all_numeric_predictors()) %>% 
+#  step_impute_knn(all_predictors(), neighbors = 5)
+
+dt_rec3 <- recipe(ach ~ . , data = train_data) %>% 
+  step_impute_bag(all_predictors(), trees = 25)
+```
+
+
+```{r}
+dt_spec <- decision_tree(cost_complexity = tune()) %>% 
+  set_engine("rpart") %>% 
+  set_mode("classification")
+```
+
+
+
+```{r}
+tidymodels_prefer()
+my_folds <- vfold_cv(train_data, v = 5, repeats = 3,  strata = ach)
+dt_grid <- grid_regular(cost_complexity(), levels = 10) 
+my_metrics <- metric_set(roc_auc, accuracy, f_meas, sens, spec, precision)
+
+dt_wf1 <- workflow() %>% 
+  add_recipe(dt_rec1) %>% 
+  add_model(dt_spec)
+
+dt_wf3 <- workflow() %>%
+  add_recipe(dt_rec3) %>% 
+  add_model(dt_spec)
+```
+
+
+```{r}
+library(future)
+plan(multisession, workers = 10)
+dt1_tuneres <- dt_wf1 %>% 
+  tune_grid(
+    resamples = my_folds,
+    grid = dt_grid,
+    metrics = my_metrics,
+    control = control_grid(save_pred = TRUE, 
+                           parallel_over = "everything")
+  )
+
+dt2_tuneres <- dt_wf3 %>% 
+  tune_grid(
+    resamples = my_folds,
+    grid = dt_grid,
+    metrics = my_metrics,
+    control = control_grid(save_pred = TRUE, 
+                           parallel_over = "everything")
+  )
+```
+
+
+
+```{r}
+dt1_tuneres %>% collect_metrics() %>% 
+  filter(.metric == "sens") %>% 
+  arrange(desc(mean))
+dt2_tuneres %>% collect_metrics() %>% 
+  filter(.metric == "sens") %>% 
+  arrange(desc(mean))
+
+```
+
+
+
+```{r}
+best <- dt2_tuneres %>% 
+  select_best(metric = "roc_auc")
+
+ dt_wf3  %>% 
+   finalize_workflow(best) %>% 
+   last_fit(split) %>% 
+   collect_metrics()
+ 
+ 
+final_dt <- dt_wf3  %>% 
+   finalize_workflow(best) %>% 
+   fit(data = train_data)
+
+library(rpart.plot)
+dt_rpart <- final_dt %>% 
+  extract_fit_engine()
+dt_rpart  %>% rpart.plot(type = 5, extra = 1)
+```
+
+
+
+
+
+รันเพิ่ม
+
+- linear discriminant 2 โมเดล MASS, mda
+
+- quardratic discriminant 1 โมเดล MASS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
