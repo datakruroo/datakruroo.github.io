@@ -1,0 +1,63 @@
+/* custom.css */
+
+table td:first-child {
+    text-align: left; /* ชิดซ้าย */
+    vertical-align: top; /* ชิดบน */
+    width: 400px; /* กำหนดความกว้างของคอลัมน์แรก */
+
+}
+
+/* ปรับขนาดฟอนต์ทั้งตาราง */
+table {
+   text-align: left; /* ชิดซ้าย */
+    vertical-align: top; /* ชิดบน */
+    font-size: 20px; /* ขนาดฟอนต์สำหรับข้อมูลในเซลล์ */
+    table-layout: fixed; /* ใช้การกำหนดความกว้างคอลัมน์แบบคงที่ */
+}
+
+
+/* ปรับขนาดฟอนต์ในหัวตาราง */
+table th {
+ text-align: left; /* ชิดซ้าย */
+    vertical-align: top; /* ชิดบน */
+    font-size: 12px; /* ขนาดฟอนต์สำหรับหัวตาราง */
+    font-weight: bold; /* ทำให้ตัวอักษรหนาขึ้น (ถ้าต้องการ) */
+}
+
+/* ปรับขนาดฟอนต์ในเซลล์ข้อมูล */
+table td {
+ text-align: left; /* ชิดซ้าย */
+    vertical-align: top; /* ชิดบน */
+    font-size: 20px; /* ขนาดฟอนต์สำหรับข้อมูลในเซลล์ */
+    width: 400px; /* กำหนดความกว้างของคอลัมน์แรก */
+
+}
+
+
+.reveal .caption {
+  text-align: center;
+  color: #C5705D;
+  font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: -0.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+}
+
+.reveal .caption2 {
+  text-align: right;
+  color: #C5705D;
+  font-size: 0.8em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: 1em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  margin-right: 2em;
+}
+
+.reveal .caption3 {
+    text-align: right;
+    color: #C5705D;
+    font-size: 0.4em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+    margin-top: -0.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+    margin-left: 3em;
+  }
+
+
+  .reveal .slide.title-slide .footnote {
+    display: none;
+  }

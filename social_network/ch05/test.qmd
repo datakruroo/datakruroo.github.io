@@ -1,0 +1,256 @@
+---
+title: "multivariate"
+format: html
+editor: visual
+---
+
+เทคนิคการวิเคราะห์หลายตัวแปรหลายตัวถูกนำมาใช้เป็นส่วนสำคัญในกระบวนการวิเคราะห์เครือข่าย
+
+-   multidimensional scaling (MDS)
+
+-   correspondence analysis (CA)
+
+-   hierarchical clustering
+
+รายละเอียดมีดังนี้
+
+## 1. เทคนิคการปรับสเกลหลายมิติ (multidimensional scaling)
+
+-   วัตถุประสงค์ของ MDS คือการสร้างทัศนภาพข้อมูลที่แสดงรูปแบบความคล้ายคลึง หรือความใกล้ชิด (proximities) ระหว่างหน่วยข้อมูลหรือโหนดในเครือข่าย
+
+-   ในเชิงเทคนิค proximities หมายถึงเมทริกซ์สมมาตรที่มีสมาชิกเป็นค่าความคล้ายคลึงกัน หรือความแตกต่าง หรือระยะทาง ระหว่างหน่วยข้อมูล
+
+-   เป้าหมายของ MDS คือการคงสภาพตำแหน่งของหน่วยข้อมูลบนมิติสูงให้อยู่บนมิติที่ต่ำกว่าให้ได้มากที่สุด ดังนั้นหน่วยข้อมูลที่มีความใกล้เคียงหรือคล้ายกันในมิติสูงก็จะมีตำแหน่งที่ใกล้เคียงกันในมิติที่ต่ำกว่า ในทางกลับกันหน่วยข้อมูลที่มีความแตกต่างกันในมิติสูง ก็จะมีแนวโน้มอยู่ห่างกันในมิติต่ำด้วย
+
+ยกตัวอย่างเช่น
+
+สมมติว่าเรามี 3 เมือง (A, B, C) และรู้ว่าระยะทางระหว่างเมืองเป็นแบบนี้:
+
+-   A ↔ B = 5 กิโลเมตร
+
+-   B ↔ C = 5 กิโลเมตร
+
+-   A ↔ C = 10 กิโลเมตร
+
+จากเงื่อนไขนี้เราสามารถกำหนดตำแหน่งเชิงสัมพัทธ์ของเมืองให้อยู่ในปริภูมิ 1 มิติได้โดยไม่มีการบิดเบือน
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+coord1 <- data.frame(
+  city = c("A","B","C"),
+  position = c(0, 5, 10) 
+)
+dist_mat <- outer(coord1$position, coord1$position, FUN = function(x, y) abs(x - y))
+rownames(dist_mat) <- coord1$city
+colnames(dist_mat) <- coord1$city
+dist_mat 
+```
+
+ทัศนภาพของตำแหน่งเมือง A, B, C ใน 1 มิติ
+
+ตัวอย่างที่ 2 สมมุติว่าเรามี 4 เมือง (A, B, C, D) และรู้ว่าระยะทางระหว่างเมืองเป็นแบบนี้:
+
+-   A ↔ B = 5 กิโลเมตร
+
+-   B ↔ C = 5 กิโลเมตร
+
+-   A ↔ C = 10 กิโลเมตร
+
+-   A ↔ D = 5 กิโลเมตร
+
+-   B ↔ D = 5 กิโลเมตร
+
+**กิจกรรม** : ลองพยายามวางตำแหน่งให้กับเมืองทั้ง 4 บนปริภูมิ 1 มิติ ทำได้หรือไม่ ??
+
+<iframe src="https://claude.site/artifacts/14392d02-8047-40af-94bb-22d3d85e7333" width="500px" height="500px" style="border: 1px solid #ccc" frameborder="0">
+
+</iframe>
+
+ยกตัวอย่างเช่น ชุดข้อมูล `Borgatti_Cities` ประกอบด้วยระยะทางระหว่างเมือง 10 แห่งในสหรัฐอเมริกา
+
+```{r}
+library(xUCINET)
+Borgatti_Cities$Distance
+```
+
+การทำ MDS สามารถทำได้หลายวิธีการ โดยทั่วไปจำแนกออกเป็น 3 ประเภทหลัก คือ
+
+1.  Classic MDS - ใช้ eigen decomposition ของเมทริกซ์ระยะห่างเพื่อสกัดเป็น configuration ของหน่วยข้อมูลในมิติที่ต่ำลง
+
+2.  Nonmetric Multidimensional Scaling
+
+## 1. Classic Multidimensional Scaling
+
+-   MDS เป็นเทคนิคการลดมิติข้อมูล หลัก ๆ MDS จะแปลงเมทริกซ์ความคล้ายคลึงหรือเมทริกซ์ของระยะห่างระหว่างโหนดในเครือข่ายให้เป็นเซตของคู่อันดับบนปริภูมิที่มีมิติต่ำลง
+
+-   เป้าหมายของ MDS คือการคงสภาพตำแหน่งของหน่วยข้อมูลบนมิติสูงให้อยู่บนมิติที่ต่ำกว่าให้ได้มากที่สุด ดังนั้นหน่วยข้อมูลที่มีความใกล้เคียงหรือคล้ายกันในมิติสูงก็จะมีตำแหน่งที่ใกล้เคียงกันในมิติที่ต่ำกว่า ในทางกลับกันหน่วยข้อมูลที่มีความแตกต่างกันในมิติสูง ก็จะมีแนวโน้มอยู่ห่างกันในมิติต่ำด้วย
+
+-   MDS ถูกประยุกต์ใช้งานอย่างหลากหลายทั้งในเชิงการวิเคราะห์ข้อมูลเชิงสำรวจ การจัดกลุ่ม การจำแนก และการสร้างทัศนภาพข้อมูล
+
+### 1.1 หลักการทำงานของ MDS
+
+ข้อมูลนำเข้าของ MDS คือเมทริกซ์ความคล้ายคลึงหรือเมทริกซ์ระยะห่างระหว่างหน่วยข้อมูล
+
+การสร้างเมทริกซ์ดังกล่าวสามารถทำได้หลายวิธีการขึ้นอยู่กับการนิยาม สามารถสร้างได้จากทัั้งข้อมูลดิบของหน่วยข้อมูล และจากข้อมูลเครือข่ายที่ผ่านการประมวลผลมาแล้ว
+
+เมทริกซ์ดังกล่าวสามารถเป็นได้ทั้ง symmetric และ asymmetric ขึ้นอยู่กับว่าเครือข่ายที่ทำการวิเคราะห์เป็นเครรอข่ายที่ไม่มีทิศทางหรือเป็นเครือข่ายที่มีทิศทาง
+
+ข้อมูลนำเข้าดังกล่าวจะถูกนำไปประมวลผลในกระบวนการ optimization ที่มีฟังก์ชันวัตถุประสงค์เป็น stress function อัลกอริทึมดังกล่าวพยายามที่จะหา solution ที่ทำให้ stress function มีค่าต่ำที่สุด โดย stress function เป็นเมทริกซ์ที่ใช้วัดความแตกต่าง (discrepancy matrix) ระหว่างเมทริกซ์ความคล้ายคลึงจากต้นฉบับกับเมทริกซ์ความคล้ายคลึงที่ถูกลดมิติแล้ว
+
+ผลลัพธ์ที่ได้จาก MDS คือ เซตของคู่อันดับของหน่วยข้อมูลแต่ละหน่วยภายใต้ปริภูมิที่มีมิติต่ำลง โดยมากมักจะเป็น 2 มิติ หรือ 3 มิติ และสามารถนำไปสร้างกราฟที่แสดงความสัมพันธ์ระหว่างหน่วยข้อมูลได้
+
+```{r}
+library(xUCINET)
+## ระยะทางระหว่างเมือง
+Borgatti_Cities$Distance
+```
+
+```{r}
+library(tidyverse)
+mds_res <- cmdscale(Borgatti_Cities$Distance, k = 2, eig = TRUE) 
+
+mds_res$points %>% data.frame() %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x = X1, y = X2)) +
+  geom_text(aes(label = rowname),size = 3)
+```
+
+การตรวจสอบประสิทธิภาพ/ความน่าเชื่อถือของผลลัพธ์ที่ได้จาก MDS จะใช้การเปรียบเทียบผ่าน discrepancy matrix ระหว่างเมทริกซ์ความคล้ายคลึงจากต้นฉบับกับเมทริกซ์ความคล้ายคลึงที่ถูกลดมิติแล้ว โดย stress function จะถูกใช้เป็นเครื่องมือในการวัดความแตกต่างระหว่างเมทริกซ์ทั้งสอง
+
+stress function ก็มีได้หลาย version ตัวอย่างด้านล่างเป็นสูตรหนึ่งที่นิยมใช้ทั่วไปซึ่งเป็นสูตร Kruskal's stress formula 1
+
+$$
+\text{stress1} = \frac{\sum_{i,j} (d_{ij} - \delta_{ij})^2}{\sum_{i,j} d_{ij}^2}
+$$
+
+โดยที่ $d_{ij}$ คือ ระยะทางระหว่างจุด $i$ กับจุด $j$ ในเมทริกซ์ความคล้ายคลึงจากต้นฉบับ และ $\delta_{ij}$ คือ ระยะทางระหว่างจุด $i$ กับจุด $j$ ในเมทริกซ์ความคล้ายคลึงที่ถูกลดมิติแล้ว
+
+อีกสูตรคือ Kruskal's stress formula 2 ดังนี้
+
+$$
+\text{stress2} = \sqrt{\frac{\sum_{i,j} (d_{ij} - \delta_{ij})^2}{\sum_{i,j} (\delta_{ij}-\overline{\delta})^2}}
+$$
+
+```{r}
+
+mds_tune <- function(dim, distance){
+## calculate stress function  
+stress <- function(true_dist, model_dist) {
+  sum((as.matrix(true_dist) - as.matrix(model_dist))^2) / sum(as.matrix(true_dist)^2)
+}
+mds_res <- cmdscale(distance, k = dim, eig = TRUE) 
+model_points <- mds_res$points
+model_dist <- dist(model_points)
+true_dist <- distance
+data.frame(dimension = dim,
+stress_fn = stress(true_dist, model_dist),
+g1 = mds_res$GOF[1],
+g2 = mds_res$GOF[2]
+)
+}
+
+map_df(.x = 1:5, .f = ~mds_tune(dim = .x, distance = Borgatti_Cities$Distance)) %>% 
+  pivot_longer(cols = -dimension, names_to = "metric", values_to = "value") %>%
+  ggplot(aes(dimension, value))+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~metric, scales = "free_y")
+```
+
+### 1.2 การประยุกต์ใช้ในการวิเคราะห์เครือข่าย
+
+```{r}
+library(readxl)
+Baker_Journals$CoCitations
+```
+
+`cmdscale()` เป็นการทำ mds แบบ classic ซึ่งต้องใช้ distance matrix เท่านั้น ดังนั้นการนำ co-citation matrix มาใช้ต้องทำการแปลงให้เป็น distance matrix ก่อน
+
+1.  Inverse Similarity เรียกง่าย ๆ ว่ากลับสเกล เช่น $D_{ij} = max(S)-S_{ij}$ หรือ $D_{ij} = \frac{1}{S_{ij}+1}$
+
+2.  Cosine Distance
+
+```{r}
+## install.packages("proxy")
+library(proxy)
+library(MASS)
+
+co_citation <- Baker_Journals$CoCitations
+distance_Baker <- max(co_citation) - co_citation
+distance_Baker <- 1/(co_citation + 1)
+distance_Baker <- proxy::dist(co_citation, method = "cosine")
+distance_Baker <- proxy::dist(co_citation, method = "Jaccard")
+
+map_df(.x = 1:9, .f = ~mds_tune(dim = .x, distance = distance_Baker)) %>% 
+  pivot_longer(cols = -dimension, names_to = "metric", values_to = "value") %>%
+  ggplot(aes(dimension, value))+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~metric, scales = "free_y")
+
+cmdscale(distance_Baker, k = 5, eig = TRUE)$points %>% 
+  data.frame() %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x = X1, y = X2, col = X3 > 0))+
+  geom_text_repel(aes(label = rowname), size = 3)
+```
+
+## 2. Nonmetric Multidimensional Scaling
+
+วัตถุประสงค์ของ NMDS เหมือนกับ MDS ปกติ แต่มีความแตกต่างคือจะใช้อันดับของความแตกต่างระหว่างหน่วยข้อมูลแทนความแตกต่างที่แท้จริง วิธีการนี้จึงเรียกว่า non-metric หรือ ordinal MDS
+
+1.  รับข้อมูลนำเข้าเป็น distance หรือ similarity matrix ก็ได้่
+
+2.  แปลง distance matrix ให้เป็น rank matrix โดยการใช้ rank transformation หรือ isotonic regression
+
+3.  iterative optimization โดยใช้ stress function เป็นฟังก์ชันวัตถุประสงค์ อัลกอริทึมจะพยายามหา solution ที่ทำให้ stress function มีค่าต่ำสุด
+
+```{r}
+library(MASS)
+isomds_res <- isoMDS(Borgatti_Cities$Distance, k = 2)
+isomds_res$points %>% data.frame() %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x = X1, y = X2)) +
+  geom_text(aes(label = rowname),size = 3)
+```
+
+## 3. Correspondence Analysis
+
+CA เป็นเทคนิคลดมิติของข้อมูลจากตารางการแจกแจงความถี่ (contingency table) หรือเมทริกซ์ความสัมพันธ์ โดยมีวัตถุประสงค์เพื่อสำรวจหรือนำเสนอความสัมพันธ์ระหว่าง category ของตัวแปรใน row และ column ของตารางการแจกแจงความถี่
+
+**Dimensionality Reduction & Ordination**
+
+-   CA แปลงข้อมูลความสัมพันธ์เช่น adjacency matrix ให้เป็นแกนขององค์ประกอบหลัก (principal axes) ที่สามารถอธิบายความแปรปรวนของข้อมูลได้มากที่สุด \<-- หลักการเหมือน PCA
+
+-   โหนดที่มีความคล้ายคลึงกันมากในเชิงโครงสร้างของเครือข่ายจะถูกจัดวางให้อยู่ใกล้กันในมิติที่ลดลง ดังนั้น โหนดที่อยู่ใกล้กันแสดงว่ามีความสัมพันธ์เชิงเครือข่ายที่สูง ในทางกลับกันโหนดที่อยู่ห่างกันแสดงว่ามีความสัมพันธ์เชิงเครือข่ายที่ต่ำ
+
+-   เนื่องจากแกนองค์ประกอบถูกสร้างจากแนวคิดเดียวกับ PCA จึงอาจแสดงถึงตัวแปรแฝงที่สำคัญในเครือข่าย
+
+```{r}
+library(factoextra)
+library(FactoMineR)
+
+co_citation <- Baker_Journals$CoCitations
+
+## สร้างตารางการแจกแจงความถี่
+co_citation <- as.data.frame(co_citation)
+
+## สร้าง CA
+ca_res <- CA(co_citation, graph = FALSE, ncp = 5)
+fviz_eig(ca_res)
+
+fviz_ca_biplot(ca_res, repel = TRUE)
+```
+
+ในบริบทของการวิเคราะห์เครือข่าย CA สามารถใช้เพื่อ
+
+-   ลดมิติของข้อมูลเครือข่ายให้อยู่บนแผนภาพ 2D หรือ 3D
+
+-   แสดง nodes และ edges บนแผนภาพที่ช่วยให้ทำความเข้าใจเกี่ยวกับความสัมพันธ์ได้ดีขึ้น
+
+-   ตรวจจับกลุ่มที่มีความสัมพันธ์กัน
+
+-   วิเคราะห์โครงสร้างความสัมพันธ์ใน two-modes network เช่น ความสัมพันธ์ระหว่างผู้เรียนกับกิจกรรม
+
+### 3.1

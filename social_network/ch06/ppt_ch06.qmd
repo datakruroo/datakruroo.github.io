@@ -1,0 +1,490 @@
+---
+title: "7. Local Node-Level Measures"
+bibliography: bib.bib
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: today
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color:  #C5705D;
+      }
+      </style>
+---
+
+## Outline {.smaller}
+
+บทเรียนนี้จะกล่าวถึงตัวชี้วัดคุณลักษณะของเครือข่ายระดับบุคคล (local-level measures)
+
+-   **Ego-network measures (local measures)** -- ทำความเข้าใจคุณลักษณะของเครือข่ายรอบโหนด/บุคคล
+
+-   Centrality measures -- การวัดตำแหน่งของโหนดเชิงศูนย์กลาง
+
+## 1. Ego-network measures {.smaller}
+
+-   Social Capital -- คุณลักษณะของโหนดหรือความสัมพันธ์ในเครือข่ายช่วยสร้างโอกาสหรือความได้เปรียบในการประสบความสำเร็จ อย่างไร
+
+-   Social Influence -- โหนดแต่ละโหนดได้รับอิทธิพลจาก Alters อย่างไรในเชิงของความเชื่อ ทัศนคติ บรรทัดฐานทางสังคม พฤติกรรม แนวปฏิบัติ หรือเงื่อนไขต่าง ๆ
+
+ตัวชี้วัด local node-level ทำหน้าที่เป็นได้ทั้ง ตัวแปรอิสระเพื่อทำนายผลลัพธ์ที่สนใจ และถูกวิเคราะห์เป็นตัวแปรตามก็ได้ เพื่ออธิบาย/ค้นหาตัวแปรอิสระที่มีความสัมพันธ์หรือเป็นสาเหตุของคุณลักษณะของเครือข่ายระดับโหนดนี้
+
+-   โหนดที่มีเครือข่ายกว้างขวาง (popularity สูง) —\> ประสบความสำเร็จสูง
+
+-   มีปัจจัยใดที่ทำให้บุคคล/โหนดมีความ popularity สูง?
+
+## 1. Ego-network measures {.smaller}
+
+-   Egonet – เครือข่ายย่อยที่เป็นส่วนหนึ่งของเครือข่ายทั้งหมด ประกอบด้วย โหนดที่เรียกว่า ego และโหนดอื่น ๆ ที่เชื่อมโยงกับ ego โดยตรง เรียกว่า alters
+
+-   การเก็บรวบรวมข้อมูลของ egonet สามารถทำได้ 2 ลักษณะ
+
+    -   personal-network research design
+
+    -   whole-network research design
+
+```{r echo = F}
+# ติดตั้งและโหลดแพ็กเกจที่จำเป็น
+library(igraph)
+
+# สร้างกราฟตัวอย่าง (Graph)
+set.seed(42)  # กำหนดค่า seed เพื่อให้ผลลัพธ์เหมือนกันทุกครั้ง
+g <- erdos.renyi.game(10, p = 0.3, directed = FALSE)  # สร้างกราฟแบบสุ่ม (Erdős-Rényi model)
+
+# กำหนดชื่อโหนด (Label)
+V(g)$name <- paste("Node", 1:vcount(g))
+
+par(mfrow=c(1,2))
+# แสดงโครงสร้างของเครือข่ายเต็ม (Whole Network)
+plot(g, vertex.size = 30, vertex.label.cex = 0.8, main = "Whole Network")
+
+# เลือกโหนดเป้าหมาย (Ego)
+ego_node <- 3  # กำหนดให้ Node 3 เป็น Ego
+
+# ดึงเครือข่ายอีโก้ของโหนดที่เลือก
+ego_net <- make_ego_graph(g, order = 1, nodes = ego_node)[[1]]
+
+# เปลี่ยนสีของโหนดเพื่อให้เห็นความแตกต่างระหว่าง Ego และ Alters
+V(ego_net)$color <- ifelse(V(ego_net)$name == V(g)$name[ego_node], "skyblue", "steelblue")
+
+# แสดงเครือข่ายอีโก้
+plot(ego_net, vertex.size = 30, vertex.label.cex = 0.8, 
+     main = paste("Ego Network of", V(g)$name[ego_node]))
+```
+
+## 1. Ego-network measures {.smaller}
+
+-   **Tie composition** — ลักษณะความสัมพันธ์ที่ ego มีกับ alters
+
+    -   จำนวน/สัดส่วนของความสัมพันธ์แต่ละประเภทของ ego
+
+    -   ค่าเฉลี่ย/ค่าสูงสุด/มัธยฐานของระดับความสัมพันธ์/ระยะเวลาความสัมพันธ์
+
+-   **Alter composition** — คุณลักษณะของ alters ที่ ego ไปมีความสัมพันธ์ด้วย
+
+    -   จำนวน/สัดส่วนของ alter แต่ละประเภทที่ ego มี
+
+    -   ค่าเฉลี่ย/ค่าสูงสุด/มัธยฐานของคุณลักษณะเชิงปริมาณของ alter
+
+## 1. Ego-network measures {.smaller}
+
+-   **Ego-alter similarity** — ความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของคุณลักษณะที่สนใจ
+
+    -   selection: ego สร้างความสัมพันธ์กับบุคลที่มีคุณลักษณะคล้ายกับตัวเองตั้งแต่แรก
+
+    -   inflluence: ego มีปฏิสัมพันธ์กับ alter ไประยะเวลาหนึ่งทำให้เกิดการเปลี่ยนแปลงตนเองให้คล้ายกับ alter มากขึ้น
+
+        -   เพศ สาขาวิชา กิจกรรมที่ชอบเข้าร่วม รายวิชาเลือกที่ลงทะเบียน/ชอบ —\> แนวโน้ม/จำนวนของ ties ของ ego กับ alters ที่มีคุณลักษณะเหมือนกัน
+
+        -   ค่าเฉลี่ย/summary stat ของความคล้ายคลึงระหว่างคุณลักษณะของ ego กับ alters เช่น ค่าเฉลี่ยความแตกต่างของอายุ /จำนวนชั่วโมงการอ่านหนังสือ ระหว่าง ego กับ alter
+
+        -   correlation ระหว่างการมี/ไม่มี ties กับความคล้ายคลึงหรือความแตกต่างของคุณลักษณะ
+
+## 1. Ego-network measures {.smaller}
+
+-   **Ego-network structure** — เน้นอธิบายรูปร่าง (shape) และความเชื่อมโยงกัน (cohesiveness) ของเครือข่ายรอบ ego
+
+    -   structural hole
+
+    -   bridging between alters
+
+    -   ตัวชี้วัดสำหรับ whole network หลายตัวก็สามารถนำมาประยุกต์ใช้ได้ เช่น density, centralization, number of components, average distance
+
+## 2. Tie Composition: Degree {.smaller}
+
+-   ประเภทและระดับความสัมพันธ์ระหว่าง ego กับ alters
+
+-   Binary network data: กำหนดให้ $x_{ijq}$ แทนความสัมพันธ์ q ระหว่าง ego ที่ i กับ alter ที่ j โดยที่ $x_{ijq} = 1$ หมายถึงมีความสัมพันธ์ จำนวนความสัมพันธ์แต่ละประเภทที่ ego i มี สามารถเขียนได้ดังนี้ **(จำนวนความสัมพันธ์ของ node นี้เรียกว่า degree ของ ego)**
+
+$$
+d_{iq} = \sum_{j} x_{ijq}
+$$
+
+```{r}
+library(tidyverse)
+library(xUCINET)
+library(igraph)
+library(DT)
+
+data.frame(
+outdegree_game = Hawthorne_BankWiring$Game %>% 
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_conflict = Hawthorne_BankWiring$Conflict %>% 
+  graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_friendship = Hawthorne_BankWiring$Friendship %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_antagonistic = Hawthorne_BankWiring$Antagonistic %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_help = Hawthorne_BankWiring$Help %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_trade = Hawthorne_BankWiring$TradeJobs %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out")
+
+) %>% 
+  rownames_to_column("node") %>% 
+  mutate_at(vars(-node), scale) %>% 
+  pivot_longer(cols = -node, names_to = "Tie", values_to = "Outdegree") %>% 
+  ggplot(aes(x = Tie, y= reorder(node, Outdegree), fill = Outdegree)) +
+  geom_tile()+
+  ylab("")+
+  xlab("")+
+  scale_fill_viridis_c(option = "A")
+  
+```
+
+## 2. Tie Composition: Agresti's index {.smaller}
+
+-   วัดระดับของความแตกต่าง (heterogeneity) ของความสัมพันธ์ที่แต่ละ ego มี
+
+-   มีค่าอยู่ในช่วง 0-1 ใกล้ 1 แสดงว่าเครือข่ายของ ego มีความหลากหลายสูง
+
+$$
+IQV = \frac{1-\sum_{q=1}^{Q} p_{iq}^{2}}{1-\frac{1}{Q}}
+$$ โดยที่ $p_{iq}$ คือ สัดส่วนของความสัมพันธ์แบบ q ที่ ego i มี กล่าวคือเท่ากับ จำนวน degree หารด้วยผลรวมของ degree ทั้งหมดของ ego i ในทุกความสัมพันธ์ ส่วน $Q$ คือจำนวนประเภทของความสัมพันธ์ทั้งหมด
+
+```{r echo=T}
+### calculate ego IQV: รับ data.frame ของ degree
+### คอลัมน์แรกต้องเป็น node name
+### คอลัมน์ที่เหลือเป็น degree ของ ego แต่ละประเภท
+ego_iqv <- function(degree_df) {
+  degree_df %>%
+    pivot_longer(cols = -1, names_to = "Tie", values_to = "Outdegree") %>%
+    group_by(node) %>%
+    mutate(Q = length(Outdegree),
+           p = Outdegree / sum(Outdegree),
+           ) %>% 
+    summarise(
+              IQV = (1 - sum(p^2)) / (1 - 1/Q), .groups = "drop") %>% 
+    unique()
+}
+```
+
+## 2. Tie Composition: Agresti's index {.smaller}
+
+::::: columns
+```{r echo = T}
+degree_df <- data.frame(
+outdegree_game = Hawthorne_BankWiring$Game %>% 
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_conflict = Hawthorne_BankWiring$Conflict %>% 
+  graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_friendship = Hawthorne_BankWiring$Friendship %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_antagonistic = Hawthorne_BankWiring$Antagonistic %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_help = Hawthorne_BankWiring$Help %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_trade = Hawthorne_BankWiring$TradeJobs %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out")
+
+)
+```
+
+::: {.column width="30%"}
+```{r}
+degree_df %>% 
+  rownames_to_column("node") %>% 
+  ego_iqv()
+  
+```
+:::
+
+::: {.column width="70%"}
+```{r}
+degree_df %>% 
+  rownames_to_column("node") %>% 
+  ego_iqv() %>% 
+  ggplot(aes(x = IQV))+
+  geom_histogram(bins = 10, fill = "black", col = "white")+
+  theme_light()
+  
+```
+:::
+:::::
+
+## 3. Valued Tie Composition {.smaller}
+
+-   กรณีที่เรามีข้อมูลความสัมพันธ์ที่มีค่าเชิงปริมาณ (valued tie data) ตัวชี้วัดระดับ/ความแข็งแรงของความสัมพันธ์ที่ ego มีต่อ alters สามารถทำได้โดยใช้ summary stat ของค่าความสัมพันธ์ดังกล่าว เช่น ค่าเฉลี่ย หรือมัธยฐาน หรือปริมาณอื่น ๆ ที่สะท้อนความสัมพันธ์หรือการสื่อสารทั้งหมดที่ ego มีกับ alters
+
+```{r echo = T}
+# ฟังก์ชันสร้างตารางสรุปสำหรับแต่ละโหนด
+create_summary_table <- function(graph) {
+  # ดึงค่าทั้งหมดของ strength (น้ำหนักรวมของเส้นเชื่อมแต่ละโหนด)
+  node_strengths <- strength(graph, mode = "all", weights = E(graph)$weight)
+  
+  # ดึง alter ของแต่ละโหนด (degree)
+  num_alters <- degree(graph, mode = "all")
+
+  # ดึงน้ำหนักของเส้นเชื่อม (tie strengths) เป็นรายการของแต่ละโหนด
+  tie_strength_list <- lapply(V(graph), function(v) {
+    incident_edges <- E(graph)[incident(graph, v, mode = "all")]
+    edge_weights <- incident_edges$weight
+    if (length(edge_weights) == 0) return(NA) # กรณีโหนดไม่มี edge
+    return(edge_weights)
+  })
+  
+  # สร้าง DataFrame
+  summary_df <- data.frame(
+    Node = V(graph)$name,  
+    Number_of_alters = num_alters,
+    Sum_of_tie_strengths = node_strengths,
+    Average_tie_strength = sapply(tie_strength_list, mean, na.rm = TRUE),
+    SD_tie_strength = sapply(tie_strength_list, sd, na.rm = TRUE),
+    Median_tie_strength = sapply(tie_strength_list, median, na.rm = TRUE),
+    Minimum_tie_strength = sapply(tie_strength_list, min, na.rm = TRUE),
+    Maximum_tie_strength = sapply(tie_strength_list, max, na.rm = TRUE),
+    Range_of_tie_strength = sapply(tie_strength_list, function(x) max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+  )
+  
+  return(summary_df)
+}
+```
+
+## 3. Valued Tie Composition {.smaller}
+
+```{r fig.width = 8, fig.height = 8, echo = T}
+Zachary_KarateClub$Strength %>% 
+  graph_from_adjacency_matrix(mode = "undirected", weight = TRUE) %>% 
+  plot()
+```
+
+## 3. Valued Tie Composition {.smaller}
+
+```{r echo = T}
+## strength dataset
+valued_g <- Zachary_KarateClub$Strength %>% 
+  graph_from_adjacency_matrix(mode = "undirected", weight = TRUE)
+
+create_summary_table(valued_g) %>%  glimpse(80)
+```
+
+## 3. Valued Tie Composition {.smaller}
+
+```{r fig.width=8, fig.height=6, echo = T}
+a26_g <- valued_g %>% make_ego_graph(order = 1, nodes = "A26")
+a26_g[[1]] %>% 
+  plot(
+    edge.width = E(a26_g[[1]])$weight,
+  )
+```
+
+```{r echo = T}
+create_summary_table(valued_g) %>% 
+  pivot_longer(cols = -Node, names_to = "type", values_to = "value") %>%
+  ggplot(aes(x=value, y=0))+
+  geom_boxplot(outlier.alpha = 0)+
+  geom_jitter(height = 0.1, aes(col = factor(ifelse(Node == "A26",1,0))))+
+  facet_wrap(~type, scales = "free")+
+  theme(legend.position = "none")
+```
+
+## 3. Valued Tie Composition {.smaller}
+
+```{r fig.width=8, fig.height=6}
+a34_g <- valued_g %>% make_ego_graph(order = 1, nodes = "A34")
+a34_g[[1]] %>% 
+  plot(
+    edge.width = E(a34_g[[1]])$weight,
+  )
+```
+
+```{r}
+create_summary_table(valued_g) %>% 
+  pivot_longer(cols = -Node, names_to = "type", values_to = "value") %>%
+  ggplot(aes(x=value, y=0))+
+  geom_boxplot(outlier.alpha = 0)+
+  geom_jitter(height = 0.1, aes(col = factor(ifelse(Node == "A34",1,0))))+
+  facet_wrap(~type, scales = "free")+
+  theme(legend.position = "none")
+```
+
+## 4. Alter Composition {.smaller}
+
+ตัวชี้วัดกลุ่มนี้มีวัตถุประสงค์เพื่อทำความเข้าใจว่า ego แต่ละตัวมีการเชื่อมโยง/สัมพันธ์กับ alters ประเภทไหนบ้าง
+
+-   categorical attributes
+
+-   continuous attributes
+
+### categorical attributes
+
+ตัวอย่างเครือข่ายความเป็นเพื่อนในบริษัท เรามีวัตถุประสงค์ต้องการวิเคราะห์ว่า ego แต่ละคนมีเพื่อนอยู่ในแผนกใดบ้างของบริษัท
+
+```{r}
+## Attribute
+attr <- Krackhardt_HighTech$Attributes
+ego_data <- attr %>% 
+  rownames_to_column("ego") %>% 
+  select(ego, Department)
+
+## network data
+Krackhardt_HighTech$Friendship %>% 
+   data.frame() %>% 
+   rownames_to_column("ego") %>% 
+   pivot_longer(cols = -ego, names_to = "alter", values_to = "tie") %>% 
+   ## department ของ ego
+    left_join(ego_data, by = "ego") %>% 
+   ## department ของ alter
+   left_join(ego_data, by = join_by("alter" == "ego")) %>% 
+    rename(Department_ego = 4,
+           Department_alter = 5) %>% 
+  filter(ego != alter) %>% 
+  group_by(ego, Department_ego, Department_alter) %>% 
+  reframe(freq = sum(tie)) %>% 
+  ungroup() %>% 
+  group_by(ego, Department_ego) %>% 
+  mutate(prop = freq/sum(freq)) %>% 
+  mutate(IQV = (1 - sum(prop^2)) / (1 - 1/n())) %>% 
+  pivot_wider(names_from = Department_alter, values_from = c(freq,prop), values_fill = 0)
+```
+
+### continuous attribute
+
+แนวทางข้างต้นสามารถนำมาใช้กับ attribute แบบต่อเนื่องได้ เช่น ระยะเวลาทำงานในองค์กร (tenue)
+
+-   จำนวนระยะเวลาทำงานโดยเฉลี่ยของ alter (เพื่อนร่วมงาน) ของแต่ละ ego \<--- ระยะเวลาทำงานของ alter สะท้อนแหล่งทรัพยากร/ระดับความเชี่ยวชาญของผู้เชี่ยวชาญที่ ego สามารถเข้าถึงได้
+
+```{r}
+ego_data2 <- attr %>% 
+  rownames_to_column("ego") %>% 
+  select(ego, Tenure)
+
+
+Krackhardt_HighTech$Friendship %>% 
+   data.frame() %>% 
+   rownames_to_column("ego") %>% 
+   pivot_longer(cols = -ego, names_to = "alter", values_to = "tie") %>% 
+  left_join(ego_data2, by = join_by("alter"=="ego")) %>% 
+  filter(ego != alter,
+         tie > 0) %>% 
+  group_by(ego) %>%
+  summarise(degree = sum(tie),
+            sum_tenure = sum(Tenure, na.rm = T),
+            mean_tenure = mean(Tenure, na.rm = T),
+            sd_tenure = sd(Tenure, na.rm = T),
+            min_tenure = min(Tenure, na.rm = T),
+            max_tenure = max(Tenure, na.rm = T),
+            range_tenure = max(Tenure, na.rm = T)-min(Tenure, na.rm = T))
+
+```
+
+## 5. Ego-alter similarity {.smaller}
+
+-   วัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของคุณลักษณะที่สนใจ
+
+-   categorical attributes
+
+-   continuous attributes
+
+### categorical attributes
+
+-   สมมุติว่าวัตถุแประสงค์คือการวัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของแผนกงานที่ทำงาน
+
+-   การวัดความคล้ายคลึงระหว่าง ego กับ alter สำหรับตัวแปรแบบจัดประเภท สามารถทำได้หลายวิธีการ
+
+    -   จำนวนเพื่อนร่วมงานที่อยู่ใน department เดียวกับ ego
+
+    -   จำนวนเพื่อนร่วมงานที่อยู่คนละ department กับ ego
+
+    -   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่ department เดียวกับ ego
+
+    -   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่คนละ department กับ ego
+
+    -   สัดส่วน alter ที่อยู่ในกลุ่มเดียวกับ ego (proportion same: S measure)
+
+    -   EI index
+
+$$
+EI = \frac{E-I}{E+I}
+$$
+
+-   โดยที่ $E$ จำนวน tie ไปยัง alter ที่อยู่ต่างกลุ่มกับ ego และ $I$ จำนวน tie ไปยัง alter ที่อยู่ในกลุ่มเดียวกับ ego
+
+-   EI มีค่าเข้าใกล้ 1 หมายถึง ego มีแนวโน้มเป็นเพื่อนหรือมีความสัมพันธ์กับ alter ที่มีความแตกต่างจากตัวเองมาก
+
+```{r}
+
+
+```
+
+### continuous attributes
+
+ในทำนองเดียวกัน วัดความคล้ายคลึงระหว่าง ego-alter สำหรับตัวแปรต่อเนื่อง เช่น
+
+-   ความแตกต่างสัมบูรณ์ระหว่าง ego กับ mean ของ alter
+
+-   $I_{ij} = 1-\frac{|X_i-X_j|}{max(X)-min(X)}$
+
+-   correlation coefficients
+
+    -   คำนวณค่าความแตกต่างระหว่าง ego กับ alter เป็นรายคู่ โดยทำให้เป็นเครื่องหมายบวกเสมอ เช่น อาจใช้ค่าสัมบูรณ์ หรือกำลังสองของค่าความแตกต่าง เขียนแทนด้วย $D_{ij} = |X_i-X_j|$, $D_{ij} = (X_i-X_j)^2$
+
+    -   คำนวณ correlation ระหว่างผลต่างดังกล่าวกับข้อมูล ties (1 = มี, 0 = ไม่มีความสัมพันธ์) \<-- เรียกว่า point-biserial correlation
+
+    -   ค่าสหสัมพันธ์เชิงลบที่สูง หมายความว่า Ego มักสร้างความสัมพันธ์กับ alter ที่มีคุณลักษณะใกล้เคียงกัน
+
+    -   ค่าสหสัมพันธ์เชิงบวกที่สูง หมายความว่า Ego มักสร้างความสัมพันธ์กับ alter ที่มีคุณลักษณะแตกต่างกัน
+

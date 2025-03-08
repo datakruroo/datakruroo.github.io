@@ -221,11 +221,13 @@ plot(g3,
      edge.arrow.width = 0.6,
      main = "Friendship Network")
 plot(g4, 
-     layout = common_layout,            # ใช้ layout เดียวกัน
+     layout = layout_components,            # ใช้ layout เดียวกัน
      vertex.color = "grey",
      edge.arrow.size = 0.6,
      edge.arrow.width = 0.6,
      main = "Game Network")
+
+components(g4)
 ```
 
 <br>

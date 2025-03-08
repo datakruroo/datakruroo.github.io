@@ -1,0 +1,596 @@
+---
+title: "multivariate"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+เทคนิคการวิเคราะห์หลายตัวแปรหลายตัวถูกนำมาใช้เป็นส่วนสำคัญในกระบวนการวิเคราะห์เครือข่าย
+
+-   multidimensional scaling (MDS)
+
+-   correspondence analysis (CA)
+
+-   hierarchical clustering (HC)
+
+รายละเอียดมีดังนี้
+
+## 1. เทคนิคการปรับสเกลหลายมิติ (multidimensional scaling)
+
+-   วัตถุประสงค์ของ MDS คือการสร้างทัศนภาพข้อมูลที่แสดงรูปแบบความคล้ายคลึง หรือความใกล้ชิด (proximities) ระหว่างหน่วยข้อมูลหรือโหนดในเครือข่าย
+
+-   ในเชิงเทคนิค proximities หมายถึงเมทริกซ์สมมาตรที่มีสมาชิกเป็นค่าความคล้ายคลึงกัน หรือความแตกต่าง หรือระยะทาง ระหว่างหน่วยข้อมูล
+
+-   เป้าหมายของ MDS คือการคงสภาพตำแหน่งของหน่วยข้อมูลบนมิติสูงให้อยู่บนมิติที่ต่ำกว่าให้ได้มากที่สุด ดังนั้นหน่วยข้อมูลที่มีความใกล้เคียงหรือคล้ายกันในมิติสูงก็จะมีตำแหน่งที่ใกล้เคียงกันในมิติที่ต่ำกว่า ในทางกลับกันหน่วยข้อมูลที่มีความแตกต่างกันในมิติสูง ก็จะมีแนวโน้มอยู่ห่างกันในมิติต่ำด้วย
+
+ยกตัวอย่างเช่น
+
+ตัวอย่างที่ 1: สมมติว่าเรามี 3 เมือง (A, B, C) และรู้ว่าระยะทางระหว่างเมืองเป็นแบบนี้:
+
+-   A ↔ B = 5 กิโลเมตร
+
+-   B ↔ C = 5 กิโลเมตร
+
+-   A ↔ C = 10 กิโลเมตร
+
+จากเงื่อนไขนี้เราสามารถกำหนดตำแหน่งเชิงสัมพัทธ์ของเมืองให้อยู่ในปริภูมิ 1 มิติได้โดยไม่มีการบิดเบือน
+
+```{r}
+coord1 <- data.frame(
+  city = c("A","B","C"),
+  position = c(0, 5, 10) 
+)
+dist_mat <- outer(coord1$position, coord1$position, FUN = function(x, y) abs(x - y))
+rownames(dist_mat) <- coord1$city
+colnames(dist_mat) <- coord1$city
+dist_mat 
+```
+
+[ทัศนภาพของตำแหน่งเมือง A, B, C ใน 1 มิติ](https://claude.site/artifacts/de0c415b-c183-448d-b210-9118cd81f6d7)
+
+ตัวอย่างที่ 2 สมมุติว่าเรามี 4 เมือง (A, B, C, D) และรู้ว่าระยะทางระหว่างเมืองเป็นแบบนี้:
+
+-   A ↔ B = 5 กิโลเมตร
+
+-   B ↔ C = 5 กิโลเมตร
+
+-   A ↔ C = 10 กิโลเมตร
+
+-   A ↔ D = 5 กิโลเมตร
+
+-   B ↔ D = 5 กิโลเมตร
+
+**กิจกรรม** : ลองพยายามวางตำแหน่งให้กับเมืองทั้ง 4 บนปริภูมิ 1 มิติ ทำได้หรือไม่ ??
+
+[ทัศนภาพของตำแหน่งเมือง A, B, C, D ใน 2 มิติ](https://claude.site/artifacts/14392d02-8047-40af-94bb-22d3d85e7333)
+
+
+ตัวอย่างที่ 3 ระยะห่างระหว่างจังหวัด
+
+```{r}
+# รายชื่อจังหวัด
+provinces <- c("Bangkok", "Chiang Mai", "Khon Kaen", "Nakhon Ratchasima", 
+               "Ubon Ratchathani", "Chonburi", "Surat Thani", "Songkhla", 
+               "Kanchanaburi", "Phetchabun")
+
+# ระยะทาง (กิโลเมตร) ระหว่างจังหวัด
+dist_matrix <- matrix(c(
+    0,  700, 450, 260, 615,  80,  640,  950, 140, 340,  # Bangkok
+  700,    0, 580, 560, 960, 780, 1200, 1500, 900, 360,  # Chiang Mai
+  450,  580,   0, 180, 300, 450,  900, 1300, 650, 400,  # Khon Kaen
+  260,  560, 180,   0, 420, 240,  780, 1100, 450, 280,  # Nakhon Ratchasima
+  615,  960, 300, 420,   0, 690,  850, 1000, 800, 580,  # Ubon Ratchathani
+   80,  780, 450, 240, 690,   0,  630,  950, 230, 380,  # Chonburi
+  640, 1200, 900, 780, 850, 630,    0,  380, 850, 900,  # Surat Thani
+  950, 1500,1300,1100,1000, 950,  380,    0,1200,1250,  # Songkhla
+  140,  900, 650, 450, 800, 230,  850, 1200,   0, 420,  # Kanchanaburi
+  340,  360, 400, 280, 580, 380,  900, 1250, 420,   0   # Phetchabun
+), nrow = 10, byrow = TRUE)
+
+# ตั้งชื่อแถวและคอลัมน์
+rownames(dist_matrix) <- provinces
+colnames(dist_matrix) <- provinces
+
+# แสดงผลลัพธ์
+dist_matrix 
+```
+
+```{r}
+province_mds <- cmdscale(d = dist_matrix,
+         k = 2,
+         eig = TRUE)
+province_mds$eig %>% 
+  plot(type = "b")
+
+province_mds$points %>% 
+  data.frame() %>% 
+  rownames_to_column("province") %>% 
+  ggplot(aes(x = X1, y=X2))+
+  geom_point()+
+  geom_text(aes(label = province))
+```
+
+
+
+
+
+```{r}
+
+
+p1<-cmdscale(dist_matrix, k = 2) %>% 
+  data.frame() %>% 
+  rownames_to_column() %>%
+  rename(city = 1, x = 2, y = 3) %>% 
+  ggplot(aes(x,y))+
+  geom_point(shape = 16, size = 3)+
+  geom_text_repel(aes(label = city))+
+  theme_light()+
+  ggtitle("Stress = 0.01598632")
+p1
+```
+
+
+การทำ MDS สามารถทำได้หลายวิธีการ โดยทั่วไปจำแนกออกเป็น 3 ประเภทหลัก คือ
+
+1. Classic MDS - ใช้ eigen decomposition ของเมทริกซ์ระยะห่างเพื่อสกัดเป็น configuration ของหน่วยข้อมูลในมิติที่ต่ำลง วิธีการนี้เหมาะสำหรับ proximities ที่มีคุณสมบัติใกล้เคียงกับ euclidean distance
+
+2. Metric MDS - มีพื้นฐานคล้ายกับ MDS โดยเน้นคงสภาพระยะทางจริงจากข้อมูลต้นฉบับ โดยใช้การประมาณค่าแบบทวนซ้ำที่มีฟังก์ชันวัตถุประสงค์ที่เรียกว่า stress function โดยที่ stress function คือ discrepancy matrix ระหว่างเมทริกซ์ความคล้ายคลึงจากต้นฉบับกับเมทริกซ์ความคล้ายคลึงที่ถูกลดมิติแล้ว
+
+3. Nonmetric MDS - ใช้การปรับสเกลข้อมูลในรูปของ rank matrix หรือ isotonic regression โดยใช้ iterative optimization โดยใช้ stress function เป็นฟังก์ชันวัตถุประสงค์ อัลกอริทึมจะพยายามหา solution ที่ทำให้ stress function มีค่าต่ำสุด
+
+การประเมินคุณภาพของ MDS สามารถใช้ stress function
+
+- ค่า stress < 0.2 เป็น rule of thumb ถือว่าพอใช้ได้ (สำหรับ classic และ metric MDS)
+
+- ค่า stress < 0.12 ถือว่ายอมรับได้ สำหรับ nonmetric MDS
+
+stress function ก็มีได้หลาย version ตัวอย่างด้านล่างเป็นสูตรหนึ่งที่นิยมใช้ทั่วไปซึ่งเป็นสูตร Kruskal's stress formula 1
+
+$$
+\text{stress1} = \frac{\sum_{i,j} (d_{ij} - \delta_{ij})^2}{\sum_{i,j} d_{ij}^2}
+$$
+
+โดยที่ $d_{ij}$ คือ ระยะทางระหว่างจุด $i$ กับจุด $j$ ในเมทริกซ์ความคล้ายคลึงจากต้นฉบับ และ $\delta_{ij}$ คือ ระยะทางระหว่างจุด $i$ กับจุด $j$ ในเมทริกซ์ความคล้ายคลึงที่ถูกลดมิติแล้ว
+
+อีกสูตรคือ Kruskal's stress formula 2 ดังนี้
+
+$$
+\text{stress2} = \sqrt{\frac{\sum_{i,j} (d_{ij} - \delta_{ij})^2}{\sum_{i,j} (\delta_{ij}-\overline{\delta})^2}}
+$$
+
+จากตัวอย่างระยะทางระหว่างจังหวัด จะมีค่า stress เท่ากับ
+
+```{r}
+stress <- function(true_dist, model_dist) {
+  sum((as.matrix(true_dist) - as.matrix(model_dist))^2) / sum(as.matrix(true_dist)^2)
+}
+dist_model <- stats::dist(cmdscale(dist_matrix, k = 2), method = "euclidean")
+stress(dist_matrix, dist_model)
+```
+
+
+### Classic MDS
+
+การตรวจสอบความเหมาะสม
+
+
+```{r fig.height = 4, fig.width = 9}
+province_mds <- cmdscale(d = dist_matrix,
+         k = 2,
+         eig = TRUE)
+
+stress <- function(true_dist, model_dist) {
+  sum((as.matrix(true_dist) - as.matrix(model_dist))^2) / sum(as.matrix(true_dist)^2)
+}
+
+## สร้าง distance matrix ของทั้งสองตัว
+true_distance <- dist_matrix 
+mds2_distance <- stats::dist(province_mds$points)
+stress(true_dist = true_distance , model_dist = mds2_distance)
+```
+
+```{r}
+
+mds_tune <- function(dim, distance){
+## calculate stress function  
+stress <- function(true_dist, model_dist) {
+  sum((as.matrix(true_dist) - as.matrix(model_dist))^2) / sum(as.matrix(true_dist)^2)
+}
+
+
+
+mds_res <- cmdscale(distance, k = dim, eig = TRUE) 
+model_points <- mds_res$points
+model_dist <- dist(model_points)
+true_dist <- distance
+data.frame(dimension = dim,
+stress_fn = stress(true_dist, model_dist),
+g1 = mds_res$GOF[1],
+g2 = mds_res$GOF[2]
+)
+}
+
+map_df(.x = 1:5, .f = ~mds_tune(dim = .x, distance = dist_matrix)) %>% 
+  pivot_longer(cols = -dimension, names_to = "metric", values_to = "value") %>%
+  ggplot(aes(dimension, value))+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~metric, scales = "free_y")
+```
+
+### Metric MDS
+
+- แพ็คเกจ smacof ใน R เป็นหนึ่งในเครื่องมือที่ครอบคลุมสำหรับการทำ Multidimensional Scaling (MDS) โดยเฉพาะโดยใช้หลักการ majorization algorithm ในการลดค่า stress (ความคลาดเคลื่อนระหว่างระยะห่างที่สังเกตกับระยะห่างใน configuration) ให้น้อยที่สุด 
+
+- `smacof` รองรับการทำ metric MDS รวมทั้ง non-metric บน dissimilarity matrix หรือ similarity matrix โดยใช้หลักการ majorization algorithm ในการลดค่า stress ให้น้อยที่สุด
+
+- มีเครื่องมือช่วยประเมินความเหมาะสมของ configuration ที่ได้ มีฟังก์ชันช่วยประเมิน goodness-of-fit เช่น การคำนวณค่า stress, การทำ permutation tests, jackknife หรือ bootstrap analysis เพื่อตรวจสอบว่าคำตอบที่ได้เสถียรและไม่ติดอยู่ใน local minima มากเกินไป
+
+```{r}
+library(smacof)
+mds_metric <- smacofSym(delta = dist_matrix, ndim = 2,
+          type = "ratio")
+mds_metric$stress
+mds_metric$conf
+mds_metric$confdist
+
+## configuration
+mds_metric$conf 
+## stress values
+mds_metric$stress
+```
+
+ทัศนภาพข้อมูลของผลลัพธ์
+
+```{r fig.width = 9, fig.height = 4}
+library(patchwork)
+p2 <- mds_metric$conf %>% 
+  data.frame() %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x = D1, y = D2)) +
+  geom_point(shape = 16, size = 3)+
+  geom_text_repel(aes(label = rowname))+
+  theme_light()+
+  ggtitle("Stress = 0.07629163")
+p1+p2
+```
+
+
+### Non-metric MDS
+
+```{r}
+mds_nonmetric <- smacofSym(delta = dist_matrix, ndim = 2,
+          type = "ordinal")
+## configuration
+mds_nonmetric$conf 
+## stress values
+mds_nonmetric$stress
+```
+
+```{r fig.width = 12, fig.height = 4}
+library(patchwork)
+p3 <- mds_nonmetric$conf %>% 
+  data.frame() %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x = D1, y = D2)) +
+  geom_point(shape = 16, size = 3)+
+  geom_text_repel(aes(label = rowname))+
+  theme_light()+
+  ggtitle("Stress = 0.01907696")
+p1+p2+p3
+```
+
+
+### การตรวจสอบความน่าเชื่อถือของ MDS
+
+MDS เป็นเทคนิคที่จัดอยู่ในกลุ่ม unsupervised learning การประเมินความน่าเชื่อถือจึงเป็นการพิจารณาความเสถียรของ configuration ที่ได้ โดยการเปรียบเทียบผ่าน discrepancy matrix ระหว่างเมทริกซ์ความคล้ายคลึงจากต้นฉบับกับเมทริกซ์ความคล้ายคลึงที่ถูกลดมิติแล้ว
+
+#### การตรวจสอบความสม่ำเสมอโดยการเปลี่ยนค่าเริ่มต้น
+
+เนื่องจากการลดมิติด้วย smacof เป็นการหา configuration ด้วยอัลกอริทึมที่จะหาจุดที่ stress function ต่ำที่สุดจากกระบวนการทวนซ้ำ จุดอ่อนของอัลกอริทึมนี้คือมีความเป็นไปได้ที่อัลกอริทึมจะให้ผลลัพธ์ที่ติดอยู่ในจุด local minima ดังนั้นการประมวลผลหลายครั้งด้วยค่าเริ่มต้นที่แตกต่างกันจะช่วยให้สามารถตรวจสอบความน่าเชื่อถือของ configuration ดังกล่าวได้
+
+```{r}
+# รัน smacof ด้วยการกำหนดค่าเริ่มต้นแบบสุ่ม
+res1 <- smacofSym(dist_matrix, ndim = 2, 
+                  type = "ratio",
+                  init = "random")
+res2 <- smacofSym(dist_matrix, ndim = 2, 
+                  type = "ratio",
+                  init = "random")
+res3 <- smacofSym(dist_matrix, ndim = 2, 
+                  type = "ratio",
+                  init = "torgerson")
+## install.packages("vegan")
+library(vegan)
+protest(res1$conf, res2$conf)
+protest(res1$conf, res3$conf)
+protest(res2$conf, res3$conf)
+
+```
+
+#### การใช้ Jackknife
+
+- Jackknife เป็นเทคนิคการสุ่มซ้ำประเภทหนึ่งเหมือนกับ bootstraping แต่มีความแตกต่างคือ Jackknife จะทำการลบข้อมูลหนึ่งตัวออกไปแล้วคำนวณค่าที่สนใจ จากนั้นทำซ้ำไปเรื่อย ๆ จนครบทุกตัว 
+
+- ผลลัพธ์ที่ได้จะมีจำนวน solution เท่ากับจำนวนข้อมูล โดยที่แต่ละ solution จะประมวลผลจากข้อมูลจำนวน n-1 ตัว จากนั้นสามารถใช้เพื่อประเมินความน่าเชื่อถือของ configuration ที่ได้
+
+- วิธีการนี้เหมาะในกรณีที่ผู้วิเคราะห์ไม่ได้มีข้อมูลดิบสำหรับการทำ bootstraping
+
+```{r}
+jk <- jackmds(res1, itmax = 100)
+jk
+```
+- stability = ค่าเฉลี่ยของ Procrustes Correlation
+
+- cross validity = corr(actual, model)
+
+- dispersion = ค่าเฉลี่ยความคลาดเคลื่อนระหว่าง replicate กับ full configuration
+
+
+```{r}
+Hawthorne_BankWiring$Game %>% 
+  data.frame() %>% 
+    write_csv(file = "game.csv")
+
+data.frame(Baker_Journals$CoCitations) %>% 
+  write_csv(file = "cocitation.csv")
+```
+
+
+## 2. Correspondence Analysis
+
+Correspondence Analysis (CA) เป็นเทคนิคทางสถิติที่ใช้วิเคราะห์ ตารางข้อมูลแบบสองโหมด (เช่น สาขาวิชา × ปีที่ได้รับปริญญาเอก) เพื่อให้เข้าใจ ความสัมพันธ์ ระหว่างแถว (row) และคอลัมน์ (column) โดยการลดมิติโดยใช้ Singular Value Decomposition (SVD)
+
+```{r}
+library(xUCINET)
+Greenacre_DoctoratesByYearAndField %>% data.frame() %>% 
+  write_csv(file = "dortor.csv")
+```
+
+ผลลัพธ์หลักของ CA เป็นเซตของ coordinate ในปริภูมิหลายมิติของหน่วยข้อมูลใน row และ column ของตารางการแจกแจงความถี่ ซึ่งสามารถใช้เพื่อสร้างกราฟแสดงความสัมพันธ์ระหว่าง category ของตัวแปร
+
+```{r}
+library(factoextra)
+library(FactoMineR)
+library(ca)
+
+Greenacre <- Greenacre_DoctoratesByYearAndField
+
+## สร้าง CA
+ca_res <- ca::ca(Greenacre)
+ca_res %>% summary()
+fviz_eig(ca_res)
+fviz_ca_biplot(ca_res, repel = TRUE)
+```
+
+ผลการวิเคราะห์สำคัญของ CA
+
+### Eigenvalues และ Variance Explained
+
+```{r}
+get_eig(ca_res)
+fviz_eig(ca_res)
+```
+
+### Proximity Analysis
+
+ตำแหน่งและความใกล้ชิดระหว่างแถว ความใกล้ชิดระหว่างคอลัมน์ และความสัมพันธ์ระหว่างแถวและคอลัมน์
+
+```{r fig.width = 8, fig.height = 4}
+row_coord <- get_ca_row(ca_res)
+
+col_coord <- get_ca_col(ca_res)
+
+p1<-row_coord$coord %>% data.frame() %>% 
+  rownames_to_column("discipline") %>%
+  dplyr::select(1:3) %>% 
+  pivot_longer(cols = -1) %>% 
+  ggplot(aes(x = value, y=reorder(discipline, value)))+
+  geom_bar(stat = "identity", aes(fill = value > 0))+
+  facet_wrap(~name, scales = "free_y")
+
+p2<-col_coord$coord %>% data.frame() %>% 
+  rownames_to_column("year") %>%
+  dplyr::select(1:3) %>% 
+  pivot_longer(cols = -1) %>% 
+  ggplot(aes(x = value, y=reorder(year, value)))+
+  geom_bar(stat = "identity", aes(fill = value > 0))+
+  facet_wrap(~name, scales = "free_y")
+p2
+
+fviz_ca_biplot(ca_res)
+```
+
+```{r}
+Greenacre
+```
+
+
+### การประยุกต์ใช้ CA ในการวิเคราะห์เครือข่าย
+
+นอกจากการวิเคราะห์ความสัมพันธ์ระหว่างโหนดแล้ว CA ยังช่วยวิเคราะห์รูปแบบของเครือข่ายจากตัวแปรเครือข่าย (network variables) ยกตัวอย่างเช่น
+
+```{r fig.width=6, fig.height=6}
+set.seed(123)
+
+ASNR_Fig06x3 %>% data.frame() %>% write_csv(file = "exam.csv")
+ASNR_Fig06x3 %>% isSymmetric()
+g <- ASNR_Fig06x3 %>% graph_from_adjacency_matrix(mode = "undirected") 
+
+
+
+my_layout <- layout_with_fr(g)
+g %>% plot(
+    layout = my_layout
+  )
+```
+```{r fig.width=6, fig.height =6}
+set.seed(123)
+my_layout<- layout_with_dh(g)
+
+par(mfrow=c(1,2))
+plot(g,
+     vertex.color = "grey20",
+     vertex.frame.color = "white",
+     vertex.shape = "square",
+     vertex.label.family = "ChulaCharasNew",
+     vertex.label.cex = 1,
+     vertex.label.color = "white",
+     edge.color = "black",
+     layout = my_layout
+     )
+
+my_layout[1,1] <- 100 
+plot(g,
+     vertex.color = "grey20",
+     vertex.frame.color = "white",
+     vertex.shape = "square",
+     vertex.label.family = "ChulaCharasNew",
+     vertex.label.cex = 1,
+     vertex.label.color = "white",
+     edge.color = "black",
+     layout = my_layout
+     )
+```
+
+
+```{r}
+# คำนวณค่า Centrality ต่าง ๆ
+centrality_df <- data.frame(
+  degree = degree(g, mode = "all"),  # คำนวณ Degree Centrality
+  closeness = closeness(g, normalized = TRUE),  # คำนวณ Closeness Centrality
+  betweenness = betweenness(g, normalized = TRUE),  # คำนวณ Betweenness Centrality
+  eigenvector = eigen_centrality(g)$vector  # คำนวณ Eigenvector Centrality
+) %>% 
+  rownames_to_column("node")
+centrality_df
+```
+
+
+```{r}
+ca_res <- ca::ca(centrality_df %>% column_to_rownames("node"))
+ca_res %>% get_eig()
+ca_res %>% fviz_eig()
+
+ca_res %>% fviz_ca_biplot()
+```
+
+
+
+```{r}
+library(readxl)
+library(tidyverse)
+thesis_data <- read_excel("~/Documents/GitHub/social network/social_network/ch04/data_AJ suchada.xlsx")
+
+thesis_data  <- thesis_data %>% 
+  mutate(commitee1 = str_replace(commitee1,"วรรณี  แกมเกตุ", "วรรณี แกมเกตุ")) %>%
+  mutate(commitee1 = str_replace(commitee1,"วราภรณ์  บวรศิริ", "วราภรณ์ บวรศิริ")) %>%
+  mutate(commitee1 = str_replace(commitee1,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>%
+  mutate(commitee1 = str_replace(commitee1,"สุวิมล  ว่องวาณิช", "สุวิมล ว่องวาณิช")) %>%
+  mutate(commitee2 = str_replace(commitee2,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>%
+  mutate(commitee2 = str_replace(commitee2,"เอมอร จังศิริพรปกรณ์", "โชติกา ภาษีผล")) %>%
+  mutate(commitee3 = str_replace(commitee3,"เอมอร จังศิริพรปกรณ์", "โชติกา ภาษีผล")) %>% 
+  mutate(commitee3 = str_replace(commitee3,"สุวัฒนา สุวรรณเขตนิคม", "สิริพันธุ์ สุวรรณมรรคา")) %>% 
+  mutate(advisor = str_replace(advisor, "ปทีป  เมธาคุณวุฒิ",
+                               "ปทีป เมธาคุณวุฒิ"))
+
+thesis_edgelist <- thesis_data %>% dplyr::select(code, advisor:commitee3) %>% 
+  pivot_longer(cols = co_advisor:commitee3 , names_to = "role",values_to = "alter") %>% 
+  rename(ego = 2) %>% 
+  dplyr::select(code, ego, alter ,role) %>% 
+  filter(!is.na(alter)) %>% 
+  group_by(ego, alter) %>% 
+  count() %>% 
+  arrange(ego) %>% 
+  rename(weight = n)
+```
+
+```{r}
+g <- thesis_edgelist %>% graph_from_data_frame(directed = T)
+
+# คำนวณค่า Centrality ต่าง ๆ
+centrality_df <- data.frame(
+  degree = degree(g, mode = "out"),  # คำนวณ Degree Centrality
+  closeness = closeness(g, normalized = TRUE, mode = "all"),  # คำนวณ Closeness Centrality
+  betweenness = betweenness(g, normalized = TRUE, directed = F),  # คำนวณ Betweenness Centrality
+  eigenvector = eigen_centrality(g)$vector  # คำนวณ Eigenvector Centrality
+) %>% 
+  rownames_to_column("node")
+
+centrality_df <- centrality_df %>%
+  mutate(across(everything(), ~ ifelse(is.nan(.), 0, .)))
+
+```
+
+
+
+```{r}
+ca_res <- CA(centrality_df %>% column_to_rownames("node"), graph = F)
+ca_res %>% get_eig()
+ca_res %>% fviz_eig()
+
+row_df <- ca_res$row$coord %>% data.frame() %>% rownames_to_column("node") 
+col_df <- ca_res$col$coord %>% data.frame() %>% rownames_to_column("node")
+
+ggplot(data = row_df, aes(x=Dim.1, y=Dim.2))+
+  #geom_point(col = "maroon")+
+  geom_text_repel(aes(label = node), col = "maroon", check_overlap = TRUE,
+                  family= "ChulaCharasNew", size = 2)+
+  geom_point(data = col_df, col = "steelblue")+
+  geom_text(data = col_df, aes(label = node), col = "steelblue",
+                 family= "ChulaCharasNew", size = 4)+
+  theme_light()
+```
+
+```{r fig.width = 8, fig.height = 8}
+plot(g,
+  vertex.size = 0.3,
+  vertex.label.family = "ChulaCharasNew"
+)
+
+sub_g3 <- induced_subgraph(g, vids = ego(g, order = 2, nodes = 6)[[1]])
+plot(sub_g3,
+       vertex.label.family = "ChulaCharasNew")
+```
+
+
+## 3. Hierarchical Clustering
+
+การวิเคราะห์กลุ่ม (Cluster analysis) เป็นชุดของเทคนิคที่ใช้ในการจัดวัตถุให้อยู่ในกลุ่มหรือคลาสตามความคล้ายคลึงกันหรือระยะห่างระหว่างกัน โดยทั่วไป กลุ่มเหล่านี้จะไม่ทับซ้อนกัน และประกอบกันเป็นการแบ่งกลุ่มที่ชัดเจน
+
+หลักการทำ hierarchical clustering
+
+1. เริ่มต้นด้วยกำหนดให้แต่ละหน่วยข้อมูลถือเป็นกลุ่ม ดังนั้นเริ่มต้นจะมีกลุ่มเท่ากับ n กลุ่ม
+
+2. คำนวณระยะห่างระหว่างกลุ่มทุกคู่ที่เป็นไปได้จากนั้นรวมกลุ่มที่มีระยะห่างน้อยที่สุด ในขั้นตอนนี้จำนวนกลุ่มจะเหลือ n-1 กลุ่ม
+
+3. ทำซ้ำข้อ 2 จนกระทั่งเหลือจำนวนกลุ่มเท่ากับ 1 กลุ่ม
+
+```{r}
+## 1. นำเข้าข้อมูล
+Baker_Journals$CoCitations
+
+## 2. หา distance matrix
+dist_mat <- stats::dist(Baker_Journals$CoCitations, method = "euclidean")
+
+## 3. ทำ hierarchical clustering
+hc <- hclust(dist_mat, method = "ward.D")
+
+## 4. วาด Dendrogram
+plot(hc, xlab= " ", sub = " ", hang = -2)
+rect.hclust(hc, k = 4, border = c("red", "blue", "green"))
+## 5. ตัด dendrogram ออกตามกลุ่ม
+clusters <- cutree(hc, k = 3)
+
+data.frame(
+  node = rownames(Baker_Journals$CoCitations),
+  cluster = clusters
+)
+```
+
+
+

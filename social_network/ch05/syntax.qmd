@@ -1,0 +1,166 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(igraph)
+network_df <- read_csv("network_data.csv")
+attr_df <- read_csv("attr_data.csv")
+attr_df %>% count(stat_att)
+network_df %>% head()
+```
+
+
+## 0. กิจกรรมสร้างชุดข้อมูลเครือข่าย
+
+เอา network data ที่ให้มา สร้างเป็น igraph data ดี ๆ ด้วย
+
+```{r}
+network_df
+```
+
+```{r}
+# แปลงจาก wide format เป็น long format
+edges_df <- network_df %>%
+  pivot_longer(cols = starts_with("alter_name"), names_to = "alter_type", values_to = "alter_name") %>%
+  filter(!is.na(alter_name)) %>%  # เอาเฉพาะที่มีการเชื่อมโยง
+  select(ego_name, alter_name)
+```
+
+
+```{r}
+## isolate หายไป
+edges_df
+```
+
+
+```{r}
+## สร้าง igraph จาก edgelist df
+g <- graph_from_data_frame(edges_df, directed = TRUE)
+g
+```
+
+
+
+```{r}
+## สร้างรายชื่อ node ทั้งหมด ego+alters
+all_nodes <- unique(c(network_df$ego_name, edges_df$alter_name))
+
+# เพิ่ม isolates ที่ไม่มีการเชื่อมต่อ
+isolates <- setdiff(all_nodes, V(g)$name)
+g <- add_vertices(g, nv = length(isolates), name = isolates)
+# แสดงข้อมูลโหนดและเส้นเชื่อมโยง
+g
+```
+```{r fig.width = 8, fig.height=8}
+plot(g,
+     vertex.label = NA,
+     vertex.size = 2,
+     edge.arrow.size = 0.1)
+```
+
+## 1. Multidimensional Scaling
+
+Geodesic distance
+
+```{r}
+dist_mat <- distances(g, mode = "out")
+```
+
+
+
+```{r}
+## สร้าง geodesic distance matrix
+dist_mat 
+
+## แทนค่า inf ด้วย max(distance) + 1
+dist_mat[is.infinite(dist_mat)] <- max(dist_mat[is.infinite(dist_mat)==F], na.rm = TRUE)+1
+
+library(smacof)
+library(ggrepel)
+library(purrr)
+mds <- smacofSym(dist_mat, ndim = 2, type = "ordinal")
+mds$stress
+
+stress <- map_dbl(.x = 1:5, .f = ~{
+  smacofSym(dist_mat, ndim = .x, type = "ordinal")$stress
+  })
+plot(1:5, stress, ylim=c(0,0.2))
+abline(h = 0.2, lty=2)
+#jk <- jackmds(mds, itmax = 100)
+#jk
+
+degree_df <- data.frame(
+  node = V(g)$name,
+  in_degree = degree(g, mode = "in"),
+  out_degree = degree(g, mode = "out")
+)  
+
+
+mds$conf %>% 
+  data.frame() %>% 
+  rownames_to_column("node") %>%
+  left_join(attr_df, by = join_by("node" == "Hash_Name")) %>% 
+  left_join(degree_df, by = "node") %>% 
+  ggplot(aes(D1, D2))+
+  geom_jitter(data = . %>% filter(in_degree <= 2),
+              width = 0.1, height = 0.1, alpha =0.5)+
+  ## วาง centrality
+  geom_jitter(data = . %>% filter(in_degree > 2),
+              size = 5, aes(col = Score > 5),
+              width = 0.1, height = 0.1, alpha =0.5)+
+  ggtitle("เครือข่ายของการไปขอความช่วยเหลือ")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+
+## 2. Correspondence Analysis
+ 
+สร้างตารางแจกแจงความถี่ระหว่าง `premath_ach` กับ `stat_att`
+
+```{r}
+library(ca)
+library(factoextra)
+library(FactoMineR)
+
+tab <- table(attr_df$premath_ach, attr_df$stat_att)
+
+ca_res <- ca(tab)
+ca_res <- CA(tab, graph = F)
+ca_res$eig
+ca_res %>% fviz_eig()
+
+
+
+ca_res %>% 
+  fviz_ca_biplot(
+    font.family = "ChulaCharasNew"
+  ) +
+  xlim(-0.8, 0.8) +   # ปรับขอบเขตของแกน X
+  ylim(-0.2, 0.8)     # ปรับขอบเขตของแกน Y
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,103 @@
+---
+title: "Hierarchical Clustering in R"
+format: html
+execute:
+  echo: true
+---
+
+```{r}
+## โหลดแพ็กเกจที่จำเป็น
+library(tidyverse)  # ใช้สำหรับ data manipulation
+library(cluster)     # ใช้สำหรับ clustering algorithms
+library(factoextra)  # ใช้สำหรับการวิเคราะห์และ visualize clustering
+```
+
+
+```{r}
+## โหลดข้อมูลตัวอย่าง และทำการ scale ข้อมูล
+## ข้อมูลที่ใช้คือตัวอย่าง USArrests ที่มากับ R
+## ใช้ scale() เพื่อนำข้อมูลไป standardized
+
+data("USArrests")
+df <- na.omit(scale(USArrests))
+```
+
+
+```{r}
+## คำนวณระยะทาง (Distance Matrix)
+## ใช้ Euclidean distance ซึ่งเป็น metric ที่นิยมใช้
+
+dist_matrix <- dist(df, method = "euclidean")
+```
+
+
+```{r}
+## สร้าง Hierarchical Clustering Model
+## ใช้วิธี Ward's method เพื่อให้ได้กลุ่มที่ compact และ homogeneous
+
+hc_model <- hclust(dist_matrix, method = "ward.D2")
+```
+
+
+```{r}
+## เลือกจำนวนกลุ่มที่เหมาะสม
+## 1. Elbow Method
+
+fviz_nbclust(df, FUN = hcut, method = "wss")
+```
+
+
+```{r}
+## 2. Silhouette Method
+
+fviz_nbclust(df, FUN = hcut, method = "silhouette")
+```
+
+
+```{r}
+## 3. Gap Statistic
+
+set.seed(123)
+gap_stat <- clusGap(df, FUN = hcut, K.max = 10, B = 50)
+fviz_gap_stat(gap_stat)
+```
+
+
+
+
+```{r}
+## ตัด dendrogram ตามจำนวนกลุ่มที่เหมาะสม
+## สมมติว่าเลือก 4 กลุ่มจากการวิเคราะห์ข้างต้น
+
+k_optimal <- 4  # เลือกจากผลลัพธ์ที่ได้
+clusters <- cutree(hc_model, k = k_optimal)
+
+## ดูจำนวนสมาชิกในแต่ละกลุ่ม
+
+table(clusters)
+```
+
+
+```{r}
+## Visualize Hierarchical Clustering
+## วาด Dendrogram และแสดงขอบเขตของคลัสเตอร์
+
+plot(hc_model, cex = 0.6, hang = -1, main = "Dendrogram of Hierarchical Clustering")
+rect.hclust(hc_model, k = k_optimal, border = "red")
+
+## แสดงผลลัพธ์ของ clustering ในรูปแบบ Scatter plot
+
+fviz_cluster(list(data = df, cluster = clusters), ellipse.type = "convex")
+```
+
+```{r}
+## วิเคราะห์ผลลัพธ์
+## ตรวจสอบค่าเฉลี่ยของแต่ละตัวแปรในแต่ละคลัสเตอร์
+
+aggregate(df, by = list(cluster = clusters), mean)
+
+## คำนวณและ visualize Silhouette Score
+
+silhouette_score <- silhouette(clusters, dist_matrix)
+fviz_silhouette(silhouette_score)
+```
