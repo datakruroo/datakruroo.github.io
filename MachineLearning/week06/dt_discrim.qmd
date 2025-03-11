@@ -12,7 +12,12 @@ library(tidyverse)
 data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week05/student_data_missing.csv")
 
 data <- data %>% 
-  mutate(ach = ifelse(gpax.y2 > 2.5, "pass","fail")) %>% 
+  mutate(ach = case_when(
+    gpax.y2 < 1.5 ~ "fail",
+    gpax.y2 >= 1.5 & gpax.y2 < 2.5 ~ "poor",
+    gpax.y2 >= 2.5 & gpax.y2 < 3.5 ~ "moderate",
+    gpax.y2 >= 3.5 ~ "good"
+  )) %>% 
   select(-gpax.y2)
 ```
 

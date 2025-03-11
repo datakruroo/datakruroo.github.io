@@ -267,6 +267,33 @@ test_data %>%
 
 1.  สร้าง recipe ของการทำ data preprocessing
 
+```{r}
+rec <- recipe(ach~. , data = train_data) %>% 
+  step_mutate(infect = factor(infect, levels=c(1,2), labels=c("yes","no"))) %>% 
+  step_mutate(pre_read = rowMeans(across(starts_with("pre.read")))) %>% 
+  step_mutate(post_read = rowMeans(across(starts_with("post.read")))) %>%
+  step_mutate(stress = rowMeans(across(starts_with("stress")))) %>%
+  step_mutate(stu_engage = rowMeans(across(starts_with("stu.engage")))) %>%
+  step_mutate(gender = factor(gender, levels=c(1,2), labels=c("M","F"))) %>% 
+  step_mutate(t_exp = factor(t.exp, levels=c(1,2,3), labels=c("low","moderate","high"))) %>%
+  step_mutate(stu_itcap = factor(stu.itcap , levels=c(1,2,3), labels=c("low","moderate","high"))) %>%
+  step_mutate(t_itcap = factor(t.itcap, levels=c(1,2,3), labels=c("low","moderate","high"))) %>%
+  step_mutate(climate = rowMeans(across(starts_with("climate")))) %>%
+  step_mutate(t_mode = factor(t.mode, levels=c(1,2,3), labels=c("online","onsite","hybrid"))) %>% 
+  step_mutate(internet = factor(internet, levels=c(1,2), labels=c("yes", "no"))) %>% 
+  step_rm(starts_with("pre.read"), starts_with("post.read"), 
+          starts_with("stress."), starts_with("stu.engage"), 
+          starts_with("climate."),
+          t.exp, stu.itcap,t.itcap, t.mode)
+
+rec %>% prep() %>% 
+  juice() %>% 
+  summary()
+```
+
+
+
+
 ```{r eval = F} 
 rec <- recipe(ach~. , data = train_data) %>% 
   step_mutate(infect = factor(infect, levels=c(1,2), labels=c("yes","no"))) %>% 
@@ -324,52 +351,68 @@ Grid Search เป็นวิธีการปรับจูนค่าพ�
 วิธีการอื่นนอกเหนือจาก `grid_regular()` ถูกพัฒนาขึ้นเพื่อแก้ไขข้อจำกัดของการทำ manual grid search ที่ใช้ทรัพยากรในการประมวลผลมากเกินไปในหลายกรณี โดย `grid_random()` ใช้วิธีสุ่มค่าพารามิเตอร์แบบ simple random sampling จาก grid space ซึ่งช่วยลดการใช้ทรัพยากรในการประมวลผลลงได้ อย่างไรก็ตามวิธีการอาจมีความเสี่ยงที่จะสุ่มไปยังค่าที่ไม่ได้มีประสิทธิภาพสูงสุด
 
 ```{r eval = F}
-p <- parameters(penalty(range=c(-10,0)), 
+grid_space <- parameters(penalty(range=c(-10,0)), 
                 mixture(range=c(0,1)))
-set.seed(1234)
-regular_grid <- grid_regular(x = p, levels = 10)
-random_grid <- grid_random(x = p, size = 20)
-maxentropy_grid <- grid_max_entropy(x = p, size = 20)
-latin_grid <- grid_latin_hypercube(x = p, size = 20)
+```
 
+
+```{r}
+set.seed(1234)
+grid_regular(penalty(range=c(-10,0)),levels=10)
+regular_grid <- grid_regular(x = grid_space, levels = 10)
 p1<-regular_grid %>% 
   ggplot(aes(x=penalty, y=mixture))+
   geom_point()+
   scale_x_log10()+
   theme(legend.position = "none")+
   ggtitle("Regular Grid")
+```
 
-
+```{r}
+set.seed(1234)
+random_grid <- grid_random(x = grid_space, size = 20) ## ทำ simple random sampling grid จาก grid space
 p2<-random_grid %>%
   ggplot(aes(x=penalty, y=mixture))+
   geom_point()+
   scale_x_log10()+
   theme(legend.position = "none")+
   ggtitle("Random Grid")
+```
 
-p3 <- maxentropy_grid %>%
+```{r fig.width =8, fig.height = 8}
+set.seed(1234)
+maxentropy_grid <- grid_max_entropy(x = grid_space, size = 20)
+p3<-maxentropy_grid %>%
   ggplot(aes(x=penalty, y=mixture))+
   geom_point()+
   scale_x_log10()+
   theme(legend.position = "none")+
   ggtitle("Max Entropy Grid")
 
-p4 <- latin_grid %>%
+set.seed(1234)
+latin_grid <- grid_latin_hypercube(x = grid_space, size = 20)
+p4<- latin_grid %>%
   ggplot(aes(x=penalty, y=mixture))+
   geom_point()+
   scale_x_log10()+
   theme(legend.position = "none")+
   ggtitle("Latin Hypercube Grid")
 
+
 (p1+p2)/(p3+p4)
 ```
+
 
 4.  hyperparameter tuning
 
 ```{r eval = F}
 library(future)
 availableCores() ##-- ตรวจสอบจำนวน cores
-plan(multisession, workers = 12)
+plan(multisession, workers = 13)
+```
+
+
+```{r}
 ### -------
 cv_folds <- vfold_cv(train_data, v = 5, repeats = 3, strata = "ach")
 ctrl <- control_grid(save_pred = TRUE, parallel_over = "everything")
@@ -393,25 +436,23 @@ latin_tune <- multinom_wf %>%
                 tune_grid(resamples = cv_folds, 
                           grid = latin_grid, 
                           control = ctrl)
+```
 
 
+```{r}
 p1 <- regular_tune %>% collect_metrics() %>% 
   filter(.metric == "roc_auc") %>%
   ggplot(aes(x = penalty, y = mixture))+
   geom_tile(aes(fill = mean))+
+  geom_text(aes(label = round(mean,2)))+
   scale_x_log10()+
   scale_fill_viridis_c(option = "A")+
   theme_light()
-  
-p2 <- random_tune %>% collect_metrics() %>% 
-  filter(.metric == "roc_auc") %>%
-  ggplot(aes(x = penalty, y = mixture))+
-  geom_tile(aes(fill = mean))+
-  scale_x_log10()+
-  scale_fill_viridis_c(option = "A")+
-  theme_light()
+p1
+```
 
-  
+
+```{r}
 # รวมค่าพยากรณ์จากทั้ง 4 grid search
 results <- bind_rows(
   regular_tune %>% collect_metrics() %>% mutate(method = "regular"),
@@ -425,11 +466,16 @@ results %>%
   ggplot(aes(x = method, y = mean, fill = method)) +
   geom_boxplot() +
   theme_minimal()
+
 ```
 
 ลองเอาผลการ tune จาก `latin_tune` มาวิเคราะห์เพิ่มเติม
 
 ```{r eval = F}
+latin_tune %>% collect_metrics() %>% 
+  filter(.metric == "roc_auc") %>%
+  arrange(desc(mean))
+
 best_latin <- latin_tune %>% select_best(metric = "roc_auc")
 
 final_multinom <- multinom_wf %>% 
@@ -442,6 +488,22 @@ final_multinom  %>%
   bind_cols(test_data %>% select(ach))  %>% 
   mutate(.pred_class = fct_relevel(.pred_class, "fail","poor","moderate","good")) %>% 
   mutate(ach = fct_relevel(ach, "fail","poor","moderate","good")) %>% 
+  conf_mat(truth = ach, estimate = .pred_class)
+```
+
+```{r}
+final_multinom  %>% 
+  predict(new_data = test_data) %>% 
+  bind_cols(test_data %>% select(ach))  %>% 
+  mutate(.pred_class = fct_relevel(.pred_class, "fail","poor","moderate","good")) %>% 
+  mutate(ach = fct_relevel(ach, "fail","poor","moderate","good")) %>% 
+  group_by(ach) %>%
+  spec(truth = ach, estimate = .pred_class)
+```
+
+
+
+```{r}
   group_by(ach) %>% 
   sens(truth = ach, estimate = .pred_class)
 
@@ -479,7 +541,16 @@ library(themis)
 
 2.  Oversampling
 
-3.  Hybrid
+3.  Hybrid sampling
+
+
+```{r}
+train_data %>% 
+  ggplot(aes(x=ach))+
+  geom_bar()+
+  ggtitle("train_data") 
+```
+
 
 ## Undersampling {.smaller}
 
@@ -503,9 +574,34 @@ $$
 
 -   `step_adasyn()` -- Adaptive Synthetic Sampling ปรับปรุง SMOTE โดย เพิ่มข้อมูลเฉพาะจุดที่มีปัญหาความไม่สมดุลสูงที่สุด หมายความว่า จุดที่อยู่ใกล้ majority class มากเกินไป จะได้รับการ oversampling มากขึ้น
 
+
 -   `step_rose()` -- Random Over-Sampling Examples สร้างตัวอย่างใหม่ทั้งใน minority และ majority class โดยการสุ่มจาก kernal density estimation (KDE) โดยปกติใช้ normal distribution ผลลัพธ์ที่ได้จะได้ตัวอย่างใหม่รอบ ๆ ตัวอย่างที่เลือกมาเดิม ทั้งนี้จะมีการกำหนดอัตราส่วนระหว่างคลาส และการกระจายของการสุ่มตัวอย่างใหม่ เป็น hyperparameter ของอัลกอริทึม
 
-## Hybrid {.smaller}
+
+```{r fig.width=8, fig.height=6}
+library(themis)
+
+## no smote
+p1<-rec %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x=gpax.y1, y=learn.per2, col =ach))+
+  geom_point()
+
+## smote
+p2<-rec %>% 
+  step_smote(ach, over_ratio = 1,
+             neighbors = 5) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x=gpax.y1, y=learn.per2, col =ach))+
+  geom_point()
+
+
+(p1+p2)
+```
+
+## Hybrid Sampling {.smaller}
 
 การผสมผสานระหว่าง undersampling และ oversampling ในบางกรณีช่วยให้การแก้ปัญหา imbalance class มีประสิทธิภาพมากขึ้นได้ แนวทาง hybrid มีหลายวิธีการดังนี้
 
@@ -515,11 +611,50 @@ $$
 
 -   ใช้ Tomek link ลบตัวอย่างใน majority class ที่อยู่ใกล้กับ minority มากเกินไป
 
+```{r}
+rec %>% 
+  step_smote(ach, over_ratio = 0.7,
+             neighbors = 5) %>% 
+  step_tomek(ach) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = ach))+
+  geom_bar()
+```
+
+
 **ANDASYN + NearMiss**
 
 -   ใช้ ADASYN เพิ่มตัวอย่างใหม่ใน minority class โดยเน้นจุดที่มีความไม่สมดุลสูง
 
 -   ใช้ Nearmiss เพื่อลบตัวอย่าง majority class ที่อยู่ใกล้ minority class มากที่สุดty
+
+```{r}
+rec %>% 
+  step_adasyn(ach, over_ratio = 0.7,
+             neighbors = 5) %>% 
+  step_nearmiss(ach) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = ach))+
+  geom_bar()
+```
+
+
+
+## กิจกรรม
+
+สร้างโมเดลจำแนกผลการเรียนดังนี้
+
+1. โมเดล baseline ไม่ต้องแก้ปัญหา imbalance class
+
+2. โมเดลที่แก้ปัญหา imbalance class ด้วย  undersampling 1 โมเดล
+
+3. โมเดลที่แก้ปัญหา imbalance class ด้วย  oversampling 2 โมเดล
+
+4. โมเดลที่แก้ปัญหา imbalance class ด้วย  hybrid sampling 1 โมเดล
+
+
 
 ## Support Vector Machine (SVM) {.smaller}
 
