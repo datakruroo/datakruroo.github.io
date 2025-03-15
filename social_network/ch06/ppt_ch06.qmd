@@ -34,6 +34,10 @@ include-in-header:
       </style>
 ---
 
+```{r}
+library(KruRooSocNet)
+```
+
 ## Outline {.smaller}
 
 บทเรียนนี้จะกล่าวถึงตัวชี้วัดคุณลักษณะของเครือข่ายระดับบุคคล (local-level measures)
@@ -345,7 +349,7 @@ Zachary_KarateClub$Strength %>%
 
 ```{r echo = T}
 ## strength dataset
-g <- Zachary_KarateClub$Strength %>% 
+valued_g <- Zachary_KarateClub$Strength %>% 
   graph_from_adjacency_matrix(mode = "undirected", weight = TRUE)
 
 create_summary_table(g)
@@ -354,7 +358,7 @@ create_summary_table(g)
 ## 3. Valued Tie Composition {.smaller}
 
 ```{r fig.width=8, fig.height=6, echo = T}
-a26_g <- g %>% make_ego_graph(order = 1, nodes = "A26")
+a26_g <- valued_g %>% make_ego_graph(order = 1, nodes = "A26")
 a26_g[[1]] %>% 
   plot(
     edge.width = E(a26_g[[1]])$weight,
@@ -464,60 +468,332 @@ Krackhardt_HighTech$Friendship %>%
 
 ## 5. Ego-alter similarity {.smaller}
 
--   วัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของคุณลักษณะที่สนใจ
+วัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของคุณลักษณะที่สนใจ เช่น การวิเคราะห์ความคล้ายในเชิงของข้อมูลภูมิหลัง บุคลิกภาพ ทัศนคติ พฤติกรรม หรือผลการเรียน จุดที่แตกต่างกันระหว่างการวิเคราะห์ประเภทนี้กับการวิเคราะห์ที่ผ่านมาคือ การวิเคราะห์ความคล้ายคลึงจะต้องใช้ข้อมูลคุณลักษณะของทั้ง ego กับ alter มาวิเคราะห์ร่วมกััน
 
--   categorical attributes
+กระบวนการเชิงสังคมที่ทำให้เกิดความคล้ายคลึงระหว่าง ego กับ alter อาจเกิดจากสองกระบวนการหลัก ได้แก่ 
 
--   continuous attributes
+- Social selection : หมายถึงกระบวนการที่ ego เลือกสร้างความสัมพันธ์กับ alter ที่มีลักษณะคล้ายตัวเอง เช่น เพศ เชื้อชาติ ระดับการศึกษา ศาสนา หรืออื่น ๆ ปรากฏการณ์นี้เรียกว่า homophily (การคบหาคนที่เหมือนตนเอง)
 
-### categorical attributes
+- Social influence : หมายถึงกระบวนการที่ ego และ alters มีแนวโน้มที่จะปรับเปลี่ยนพฤติกรรม หรือคุณลักษณะต่าง ๆ ให้คล้ายคลึงกันมากขึ้นเมื่ออยู่ร่วมกันไปนาน ๆ เช่น แฟนกันมักมีพฤติกรรมที่คล้ายกันมากขึ้นเมื่ออยู่ร่วมกันไปนาน ๆ หรือเพื่อนร่วมห้องเรียนเดียวกันที่อาจมีพฤติกรรมบางประการที่เปลี่ยนให้เหมือนกัน
 
--   สมมุติว่าวัตถุแประสงค์คือการวัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของแผนกงานที่ทำงาน
+ในทำนองเดียวกับการวิเคราะห์ส่วนอื่น ความคล้ายคลึงดังกล่าวจำแนกการวิเคราะห์ตามประเภทของข้อมูลดังนี้
 
--   การวัดความคล้ายคลึงระหว่าง ego กับ alter สำหรับตัวแปรแบบจัดประเภท สามารถทำได้หลายวิธีการ
+-   Categorical attributes
 
-    -   จำนวนเพื่อนร่วมงานที่อยู่ใน department เดียวกับ ego
+-   Continuous attributes
 
-    -   จำนวนเพื่อนร่วมงานที่อยู่คนละ department กับ ego
 
-    -   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่ department เดียวกับ ego
+## 5.1 categorical attributes {.smaller}
 
-    -   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่คนละ department กับ ego
+มีหลายตัวชี้วัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของตัวแปรจัดประเภท ได้แก่
 
-    -   สัดส่วน alter ที่อยู่ในกลุ่มเดียวกับ ego (proportion same: S measure)
+-   จำนวนเพื่อนร่วมงานที่อยู่ใน department เดียวกับ ego (a)
 
-    -   EI index
+-   จำนวนเพื่อนร่วมงานที่อยู่คนละ department กับ ego (b)
+
+-   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่ department เดียวกับ ego (c)
+
+-   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่คนละ department กับ ego (d)
+
+-   สัดส่วน alter ที่อยู่ในกลุ่มเดียวกับ ego (proportion same: S measure)
+
+-   EI index
+
+-   Odds ratio & Log odds ratio
+
+-   Yule's Q
+
+```{r echo = T}
+## จำนวนเพื่อนร่วมงานแต่ละรูปแบบ
+Krackhardt_HighTech$Friendship %>%
+  data.frame() %>%
+  rownames_to_column("ego") %>%
+  pivot_longer(cols= -ego, names_to = "alter", values_to = "tie") |> 
+  left_join(y = ego_data, by = "ego") |> 
+  rename(department_ego = 4) |> 
+  left_join(y = ego_data, by = join_by("alter" == "ego")) |> 
+  rename(department_alter = 5) |> 
+  filter(ego != alter) |> 
+  group_by(ego,tie,department_ego, department_alter) |> count() |> 
+  mutate(type = case_when(
+    tie >0 & department_ego == department_alter ~ "a",
+    tie >0 & department_ego != department_alter ~ "b",
+    tie  == 0 & department_ego == department_alter ~ "c",
+    tie == 0 & department_ego != department_alter ~ "d",
+  ))
+```
+
+## 5.1 categorical attributes {.smaller}
+
+
+- สัดส่วนความคล้าย (proportion same: S)
+
+$$
+S = \frac{ego \cap alter}{Total}
+$$
+
+
+- E-I Index (Krackhardt & Stern, 1988) เป็นตัวชี้วัดที่ตรงข้ามกับ homophily โดยค่าที่มากขึ้นหมายถึง heterophily สูงขึ้น
 
 $$
 EI = \frac{E-I}{E+I}
 $$
 
--   โดยที่ $E$ จำนวน tie ไปยัง alter ที่อยู่ต่างกลุ่มกับ ego และ $I$ จำนวน tie ไปยัง alter ที่อยู่ในกลุ่มเดียวกับ ego
-
--   EI มีค่าเข้าใกล้ 1 หมายถึง ego มีแนวโน้มเป็นเพื่อนหรือมีความสัมพันธ์กับ alter ที่มีความแตกต่างจากตัวเองมาก
-
-```{r}
+โดยที่ E = จำนวน ties ไปยัง alters ที่อยู่ต่างกลุ่มกับ ego (external ties) และI = จำนวน ties ไปยัง alters ที่อยู่ในกลุ่มเดียวกับ ego (internal ties)
 
 
+ดังนั้นถ้า EI = -1 หมายถึง ego มีความสัมพันธ์กับ alter ที่เหมือนกับตัวเอง 100%, EI = 0 หมายถึง ego มีความสัมพันธ์กับ alter ที่สมดุลระหว่างคนที่เหมือนกับแตกต่างกับตนเอง ส่วน EI = 1 หมายถึง ego มีความสัมพันธ์กับ alter ที่แตกต่างกับตนเอง
+
+
+## 5.1 categorical attributes {.smaller}
+
+สมมุติว่าวัตถุประสงค์คือการวัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของแผนกงานที่ทำงาน การคำนวณค่าสัดส่วนความคล้ายสามารถดำเนินการได้ง่าย ๆ ดังนี้ การคำนวณดัชนีต่าง ๆ สามารถทำได้ผ่าน `KruRooSocNet` ดังนี้
+
+```{r echo = T}
+analyze_categorical_similarity(
+    adj_matrix = Krackhardt_HighTech$Friendship,
+  node_attributes = ego_data,
+  category_col = "Department"
+) |> glimpse()
 ```
 
-### continuous attributes
 
-ในทำนองเดียวกัน วัดความคล้ายคลึงระหว่าง ego-alter สำหรับตัวแปรต่อเนื่อง เช่น
 
--   ความแตกต่างสัมบูรณ์ระหว่าง ego กับ mean ของ alter
+## Realized Homophily = Availability + Preference Homophily {.smaller}
 
--   $I_{ij} = 1-\frac{|X_i-X_j|}{max(X)-min(X)}$
+- Availability Homophily = ความคล้ายคลึงระหว่าง ego กับ alters ที่เกิดขึ้นจากโครงสร้างของเครือข่าย (โอกาสในธรรมชาติ) ไม่ได้เกิดขึ้นจากการเลือกของ ego แต่เกิดขึ้นจากสัดส่วนของประชากรที่มีอยู่ในเครือข่าย
 
--   correlation coefficients
+- Preference Homophily = ระดับของ Ego-Alter Similarity ที่เกิดขึ้นจาก ความชอบส่วนตัวของ Ego ในการเลือก Alters
 
-    -   คำนวณค่าความแตกต่างระหว่าง ego กับ alter เป็นรายคู่ โดยทำให้เป็นเครื่องหมายบวกเสมอ เช่น อาจใช้ค่าสัมบูรณ์ หรือกำลังสองของค่าความแตกต่าง เขียนแทนด้วย $D_{ij} = |X_i-X_j|$, $D_{ij} = (X_i-X_j)^2$
 
-    -   คำนวณ correlation ระหว่างผลต่างดังกล่าวกับข้อมูล ties (1 = มี, 0 = ไม่มีความสัมพันธ์) \<-- เรียกว่า point-biserial correlation
+ปัญหาคือเราจะสามารถวัด Preference Homophily ได้อย่างไร เพราะในความเป็นจริง Availability Homophily อาจเป็นตัวแปรแทรกซ้อนที่ทำให้ไม่สามารถสังเกต Preference Homophily ได้อย่างถูกต้อง
 
-    -   ค่าสหสัมพันธ์เชิงลบที่สูง หมายความว่า Ego มักสร้างความสัมพันธ์กับ alter ที่มีคุณลักษณะใกล้เคียงกัน
+- เปรียบเทียบความถี่ประเภท alter: a, b, c และ d กับ expected frequency ทางทฤษฎี --> เทียบเท่ากับการทำ contingency table ระหว่างการเป็นเพื่อนกัน กับ การเป็นบุคคลประเภทเดียวกัน
 
-    -   ค่าสหสัมพันธ์เชิงบวกที่สูง หมายความว่า Ego มักสร้างความสัมพันธ์กับ alter ที่มีคุณลักษณะแตกต่างกัน
-    
-    
+- เปรียบเทียบอัตราส่วนการเป็นเพื่อนกับบุคคลประเภทหนึ่ง กับ อัตราส่วนการไม่เป็นเพื่อนกับบุคคลประเภทนั้น --> [a/b]/[c/d] ค่านี้เรียกว่า Odd Ratio
+
+## Odd Ratio {.smaller}
+
+
+$$
+OR = \frac{a/b}{c/d} = \frac{a \times d}{b \times c}
+$$
+
+-   จำนวนเพื่อนร่วมงานที่อยู่ใน department เดียวกับ ego (a)
+
+-   จำนวนเพื่อนร่วมงานที่อยู่คนละ department กับ ego (b)
+
+-   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่ department เดียวกับ ego (c)
+
+-   จำนวนคนที่ไม่ใช่เพื่อนร่วมงานแต่อยู่คนละ department กับ ego (d)
+
+การแปลความหมาย
+
+- OR = 1 แปลว่าไม่มีความสัมพันธ์ระหว่างการเป็นเพื่อนกันในเครือข่ายกับการมีคุณลักษณะเดียวกันในเครือข่าย
+
+- OR > 1 แสดงว่า ego มีแนวโน้มเลือก alter ที่มีคุณลักษณะเหมือนกับตัวเอง
+
+- 0 < OR < 1 แสดงว่า ego มีแนวโน้มเลือก alter ที่มีคุณลักษณะแตกต่างจากตัวเอง
+
+```{r}
+analyze_categorical_similarity(
+    adj_matrix = Krackhardt_HighTech$Friendship,
+  node_attributes = ego_data,
+  category_col = "Department"
+) 
+```
+
+## Yule's Q coefficient {.smaller}
+
+$$
+Q = \frac{ad-bc}{ad+bc}
+$$
+
+
+- Q = 1 หมายความว่า ego มีความสัมพันธ์กับ alter ที่มีคุณลักษณะเฉพาะเหมือนกับตนเอง
+
+- Q = 0 หมายความว่า ego มีแนวโน้มที่จะมีความสัมพันธ์กับ alter อย่างสมดุล ระหว่าง alter ที่มีคุณลักษณะเหมือนและแตกต่างกับ ego
+
+- Q = -1 ....
+
+```{r echo = T}
+analyze_categorical_similarity(
+    adj_matrix = Krackhardt_HighTech$Friendship,
+  node_attributes = ego_data,
+  category_col = "Department"
+) |> 
+select(node, 11)
+```
+
+## Yule's Q coefficient {.smaller}
+
+
+ลองพิจารณาเปรียบเทียบความคล้ายขอ A03  กับ alter และ  A08 กับ alter
+
+```{r echo = T}
+analyze_categorical_similarity(
+    adj_matrix = Krackhardt_HighTech$Friendship,
+  node_attributes = ego_data,
+  category_col = "Department") |> 
+  filter(node %in% c("A03", "A08")) %>% 
+  select(node, a, b, c, d,11)
+```
+
+```{r fig.width=8, fig.height=6, eval = F}
+full_g <- Krackhardt_HighTech$Friendship |> graph_from_adjacency_matrix(mode = "directed")
+V(full_g)$department <- ego_data$Department
+a03 <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A03")])
+add_a03 <- setdiff(V(full_g), V(a03))
+a03 <- add_vertices(a03, nv = length(add_a03), 
+                    name = paste0("A", add_a03),
+                    attr = list(department = V(full_g)$department[add_a03]))
+
+a08 <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A08")])
+add_a08 <- setdiff(V(full_g), V(a08))
+a08 <- add_vertices(a08, nv = length(add_a08), 
+                    name = paste0("A", add_a08),
+                    attr = list(department = V(full_g)$department[add_a08]))
+
+par(mfrow=c(1,2), mar=c(0,0,0,0))
+plot(a03,
+edge.arrow.size = 0.1,
+edge.arrow.width =0.1,
+vertex.color = ifelse(V(a03)$department == V(a03)$department[1], 
+                      "steelblue","maroon")
+)
+plot(a08,
+edge.arrow.size = 0.1,
+edge.arrow.width =0.1,
+vertex.color = ifelse(V(a08)$department == V(a03)$department[1], 
+                      "steelblue","maroon")
+)
+```
+
+## Ego & Alter Similarity {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r fig.width=6, fig.height=6, echo = F}
+full_g <- Krackhardt_HighTech$Friendship |> graph_from_adjacency_matrix(mode = "directed")
+V(full_g)$department <- ego_data$Department
+a03 <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A03")])
+add_a03 <- setdiff(V(full_g), V(a03))
+a03 <- add_vertices(a03, nv = length(add_a03), 
+                    name = paste0("A", add_a03),
+                    attr = list(department = V(full_g)$department[add_a03]))
+
+a08 <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A08")])
+add_a08 <- setdiff(V(full_g), V(a08))
+a08 <- add_vertices(a08, nv = length(add_a08), 
+                    name = paste0("A", add_a08),
+                    attr = list(department = V(full_g)$department[add_a08]))
+
+par(mar=c(0,1,1,0))
+plot(a03,
+edge.arrow.size = 0.1,
+edge.arrow.width =0.1,
+vertex.color = ifelse(V(a03)$department == V(a03)$department[1], 
+                      "steelblue","maroon"),
+main = "S = 1, EI = -1, OR = Inf, Yule = 1"
+)
+```
+
+:::
+
+::: {.column width="50%"}
+```{r fig.width=6, fig.height=6}
+par(mar=c(0,1,1,0))
+plot(a08,
+edge.arrow.size = 0.1,
+edge.arrow.width =0.1,
+vertex.color = ifelse(V(a08)$department == V(a08)$department[2], 
+                      "steelblue","maroon"),
+main = "S = 0, EI = 1, OR = 0, Yule = 1"
+)
+```
+
+:::
+
+::::
+
+
+## Ego & Alter Similarity {.smaller}
+
+```{r fig.width=6, fig.height=6}
+
+a06 <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A06")])
+add_a06 <- setdiff(V(full_g), V(a06))
+a06 <- add_vertices(a06, nv = length(add_a06), 
+                    name = paste0("A", add_a06),
+                    attr = list(department = V(full_g)$department[add_a06]))
+par(mar=c(0,1,1,0))
+plot(a06,
+edge.arrow.size = 0.1,
+edge.arrow.width =0.1,
+vertex.color = ifelse(V(a06)$department == V(a06)$department[2], 
+                      "steelblue","maroon"),
+main = "S = 0.5, EI = 0, OR = 13, Yule = 0.86"
+)
+```
+
+## 5.2 continuous attributes {.smaller}
+
+เราสามารถใช้แนวทางที่คล้ายกับการวัด Ego-Alter Similarity สำหรับตัวแปรเชิงหมวดหมู่ (Categorical) มาประยุกต์ใช้กับตัวแปรเชิงต่อเนื่อง (Continuous) เช่น อายุ หรือประสบการณ์ทำงาน
+
+- ค่า absolute difference ระหว่างคุณลักษณะของ ego กับ alter แนวคิดนี้คล้าย ๆ S measure ใน categorical attribute โดยค่าเท่ากับ 0 หมายถึงไม่มีความแตกต่างระหว่าง ego กับ alter ในคุณลักษณะนั้น
+
+- ปัญหาของการวัดด้วยวิธีการนี้ัคือเป็นการเปรียบเทียบความแตกต่างระหว่าง ego กับ alter แต่ละคู่ตรง ๆ แต่ไม่ได้พิจารณาแนวโน้มโดยรวมของเครือข่ายว่ามีการแจกแจงอย่างไร ดังนั้นความแตกต่างระหว่าง ego กับ alter ที่มีคุณลักษณะที่พิจารณาต่ำสุดและสูงสุดของกลุ่ม ก็จะมีค่า absolute difference สูงเสมอ
+
+## 5.2 continuous attributes {.smaller}
+
+- วิธีการที่น่าจะปลอดภัยกว่าในการวัดความคล้ายคลึงระหว่าง ego กับ alter ในเชิงของคุณลักษณะที่เป็นเชิงปริมาณคือการพิจารณาทั้งกลุ่มที่ ego เลือกเป็นเพื่อน และกลุ่มที่ ego ไม่ได้เลือกเป็นเพื่อน ขั้นตอนวิธีมีดังนี้
+
+- สร้างคะแนนตัวชี้วัดความแตกต่างระหว่าง ego กับ โหนดอื่น ๆ ซึ่งมีทั้งเพื่อนและไม่ใช่เพื่อนในเครือข่ายของ ego
+
+  - absolute difference
+  
+  - squared difference
+  
+  - $I_{ij} = 1-\frac{|X_i-X_j|}{max(X)-min(X)}$ <-- ความหมายจะเป็นความคล้ายคลึงแทน
+
+  
+- จัดการข้อมูลออกเป็น 2 คอลัมน์ คอลัมน์แรกเป็นคะแนนตัวชี้วัด และคอลัมน์ที่สองเป็นสถานะของ tie ระหว่าง ego และ alter น้ัน ๆ
+
+- คำนวณ correlation ระหว่างตัวแปรทั้งสอง (เราเรียก correlation นี้ว่า point-biserial correlation)
+
+การแปลผลวิธีการนี้จะคล้ายกับ EI Index ถ้า correlation มีค่าเป็นบวกมาก แสดงว่ามีความสัมพันธ์ระหว่างการเป็นเพื่อนกับความแตกต่าง/ความคล้ายของคุณลักษณะที่พิจารณา แสดงว่า ego มีแนวโน้มเลือกคบเพื่อนที่มีคุณลักษณะที่แตกต่างจากตนเอง (heterophily)
+
+## 5.2 continuous attributes {.smaller}
+
+การคำนวณค่าดัชนีดังกล่าวทำได้ค่อนข้างยากหากเขียน script เอง ดังนั้นเราสามารถใช้ฟังก์ชันใน `KruRooSocNet` ช่วยได้
+
+```{r}
+analyze_continuous_similarity(
+    adj_matrix = Krackhardt_HighTech$Friendship,
+  node_attributes = attr %>% rownames_to_column("ego"),
+  attribute_col = "Age"
+) %>% 
+  arrange(Node) %>% 
+  glimpse()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
