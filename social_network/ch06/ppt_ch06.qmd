@@ -147,7 +147,10 @@ library(xUCINET)
 library(igraph)
 library(DT)
 
-data.frame(
+load("Hawthorne_BankWiring_list.Rdata")
+
+
+degree_df <- data.frame(
 outdegree_game = Hawthorne_BankWiring$Game %>% 
    graph_from_adjacency_matrix(mode = "directed") %>% 
   igraph::degree(mode = "out"),
@@ -172,7 +175,11 @@ outdeg_trade = Hawthorne_BankWiring$TradeJobs %>%
    graph_from_adjacency_matrix(mode = "directed") %>% 
   igraph::degree(mode = "out")
 
-) %>% 
+) 
+
+
+
+degree_df %>% 
   rownames_to_column("node") %>% 
   mutate_at(vars(-node), scale) %>% 
   pivot_longer(cols = -node, names_to = "Tie", values_to = "Outdegree") %>% 
@@ -192,7 +199,9 @@ outdeg_trade = Hawthorne_BankWiring$TradeJobs %>%
 
 $$
 IQV = \frac{1-\sum_{q=1}^{Q} p_{iq}^{2}}{1-\frac{1}{Q}}
-$$ โดยที่ $p_{iq}$ คือ สัดส่วนของความสัมพันธ์แบบ q ที่ ego i มี กล่าวคือเท่ากับ จำนวน degree หารด้วยผลรวมของ degree ทั้งหมดของ ego i ในทุกความสัมพันธ์ ส่วน $Q$ คือจำนวนประเภทของความสัมพันธ์ทั้งหมด
+$$ 
+
+โดยที่ $p_{iq}$ คือ สัดส่วนของความสัมพันธ์แบบ q ที่ ego i มี กล่าวคือเท่ากับ จำนวน degree หารด้วยผลรวมของ degree ทั้งหมดของ ego i ในทุกความสัมพันธ์ ส่วน $Q$ คือจำนวนประเภทของความสัมพันธ์ทั้งหมด
 
 ```{r echo=T}
 ### calculate ego IQV: รับ data.frame ของ degree
@@ -205,10 +214,16 @@ ego_iqv <- function(degree_df) {
     mutate(Q = length(Outdegree),
            p = Outdegree / sum(Outdegree),
            ) %>% 
-    summarise(
-              IQV = (1 - sum(p^2)) / (1 - 1/Q), .groups = "drop") %>% 
+    reframe(
+              IQV = (1 - sum(p^2)) / (1 - 1/Q)) %>%
+    ungroup() %>% 
     unique()
 }
+
+degree_df %>% 
+  rownames_to_column("node") %>% 
+  ego_iqv() %>% 
+  bind_cols(degree_df)
 ```
 
 ## 2. Tie Composition: Agresti's index {.smaller}
@@ -271,6 +286,7 @@ degree_df %>%
 
 ```{r echo = T}
 # ฟังก์ชันสร้างตารางสรุปสำหรับแต่ละโหนด
+### ข้อมูลนำเข้า `graph` ต้องเป็น weight igraph object
 create_summary_table <- function(graph) {
   # ดึงค่าทั้งหมดของ strength (น้ำหนักรวมของเส้นเชื่อมแต่ละโหนด)
   node_strengths <- strength(graph, mode = "all", weights = E(graph)$weight)
@@ -305,26 +321,40 @@ create_summary_table <- function(graph) {
 
 ## 3. Valued Tie Composition {.smaller}
 
+```{r}
+data()
+load("Zachary_KarateClub.Rdata")
+Zachary_KarateClub$Strength %>% 
+  graph_from_adjacency_matrix(mode = "undirected",
+                              weighted = TRUE) %>% 
+  create_summary_table()
+```
+
 ```{r fig.width = 8, fig.height = 8, echo = T}
+g <- Zachary_KarateClub$Strength %>% 
+  graph_from_adjacency_matrix(mode = "undirected", weight = TRUE)
+
 Zachary_KarateClub$Strength %>% 
   graph_from_adjacency_matrix(mode = "undirected", weight = TRUE) %>% 
-  plot()
+  plot(
+    edge.width = E(.)$weight > 4
+    )
 ```
 
 ## 3. Valued Tie Composition {.smaller}
 
 ```{r echo = T}
 ## strength dataset
-valued_g <- Zachary_KarateClub$Strength %>% 
+g <- Zachary_KarateClub$Strength %>% 
   graph_from_adjacency_matrix(mode = "undirected", weight = TRUE)
 
-create_summary_table(valued_g) %>%  glimpse(80)
+create_summary_table(g)
 ```
 
 ## 3. Valued Tie Composition {.smaller}
 
 ```{r fig.width=8, fig.height=6, echo = T}
-a26_g <- valued_g %>% make_ego_graph(order = 1, nodes = "A26")
+a26_g <- g %>% make_ego_graph(order = 1, nodes = "A26")
 a26_g[[1]] %>% 
   plot(
     edge.width = E(a26_g[[1]])$weight,
@@ -374,6 +404,7 @@ create_summary_table(valued_g) %>%
 ตัวอย่างเครือข่ายความเป็นเพื่อนในบริษัท เรามีวัตถุประสงค์ต้องการวิเคราะห์ว่า ego แต่ละคนมีเพื่อนอยู่ในแผนกใดบ้างของบริษัท
 
 ```{r}
+load("Krackhardt_HighTech.Rdata")
 ## Attribute
 attr <- Krackhardt_HighTech$Attributes
 ego_data <- attr %>% 
@@ -387,18 +418,18 @@ Krackhardt_HighTech$Friendship %>%
    pivot_longer(cols = -ego, names_to = "alter", values_to = "tie") %>% 
    ## department ของ ego
     left_join(ego_data, by = "ego") %>% 
+    rename(department_ego = 4) %>% 
    ## department ของ alter
    left_join(ego_data, by = join_by("alter" == "ego")) %>% 
-    rename(Department_ego = 4,
-           Department_alter = 5) %>% 
+    rename(department_alter = 5) %>% 
   filter(ego != alter) %>% 
-  group_by(ego, Department_ego, Department_alter) %>% 
+  group_by(ego, department_ego, department_alter) %>% 
   reframe(freq = sum(tie)) %>% 
-  ungroup() %>% 
-  group_by(ego, Department_ego) %>% 
+ # ungroup() %>% 
+  group_by(ego, department_ego) %>% 
   mutate(prop = freq/sum(freq)) %>% 
   mutate(IQV = (1 - sum(prop^2)) / (1 - 1/n())) %>% 
-  pivot_wider(names_from = Department_alter, values_from = c(freq,prop), values_fill = 0)
+  pivot_wider(names_from = department_alter, values_from = c(freq,prop), values_fill = 0)
 ```
 
 ### continuous attribute
@@ -421,7 +452,7 @@ Krackhardt_HighTech$Friendship %>%
   filter(ego != alter,
          tie > 0) %>% 
   group_by(ego) %>%
-  summarise(degree = sum(tie),
+  summarise(num_friend = sum(tie),
             sum_tenure = sum(Tenure, na.rm = T),
             mean_tenure = mean(Tenure, na.rm = T),
             sd_tenure = sd(Tenure, na.rm = T),
@@ -487,4 +518,6 @@ $$
     -   ค่าสหสัมพันธ์เชิงลบที่สูง หมายความว่า Ego มักสร้างความสัมพันธ์กับ alter ที่มีคุณลักษณะใกล้เคียงกัน
 
     -   ค่าสหสัมพันธ์เชิงบวกที่สูง หมายความว่า Ego มักสร้างความสัมพันธ์กับ alter ที่มีคุณลักษณะแตกต่างกัน
+    
+    
 

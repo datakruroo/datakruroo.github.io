@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="สิวะโชติ ศรีสุทธิยากร">
+<meta name="dcterms.date" content="2025-03-15">
+
+<title>KruRooSocNet</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="manual_files/libs/clipboard/clipboard.min.js"></script>
+<script src="manual_files/libs/quarto-html/quarto.js"></script>
+<script src="manual_files/libs/quarto-html/popper.min.js"></script>
+<script src="manual_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="manual_files/libs/quarto-html/anchor.min.js"></script>
+<link href="manual_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="manual_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="manual_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="manual_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="manual_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">KruRooSocNet</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>สิวะโชติ ศรีสุทธิยากร </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 15, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p><code>KroRooSocNet</code> เป็น library สำหรับวิเคราะห์​social network ตามแนวทางที่สอนในรายวิชา social network analytic หลักสูตรสถิติและวิทยาการข้อมูลการศึกษา วัตถุประสงค์หลักเพื่อใช้เป็นเครื่องมือประกอบการเรียนรู้ในรายวิชาช่วยลดขั้นตอนการเขียน syntax จำนวนมากให้กับนิสิตในบางการวิเคราะห์</p>
+<p>library ถูกออกแบบให้ทำงานร่วมกับ <code>tidyverse</code> ได้ทำให้การดำเนินงานของนิสิตสามารถทำได้ง่ายขึ้น ตอนนี้ library มีเครื่องมือสนับสนุนการเรียนในบทเรียน Local Node-Level Measures โดยมีฟังก์ชันสำคัญดังนี้</p>
+<ul>
+<li><p><code>calculate_degree()</code></p></li>
+<li><p><code>calculate_iqv()</code></p></li>
+<li><p><code>calculate_ei_index()</code></p></li>
+<li><p><code>calculate_similarity()</code></p></li>
+<li><p><code>summarize_valued_ties()</code></p></li>
+<li><p><code>analyze_categorical_composition()</code></p></li>
+<li><p><code>analyze_continuous_composition()</code></p></li>
+</ul>
+<p>จะเห็นว่าฟังก์ชันถูกพัฒนาขึ้นล้อกับเนื้อหาในรายวิชา รายละเอียดส่วนต่อไปจะกล่าวถึงการติดตั้งและแสดงตัวอย่างการใช้งาน รายละเอียดมีดังนี้</p>
+</section>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ติดตั้งจาก GitHub</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## devtools::install_github("username/KruRooSocNet")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># โหลดแพ็กเกจ</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(KruRooSocNet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="ขอกำหนดเบองตน-prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="ขอกำหนดเบองตน-prerequisites">ข้อกำหนดเบื้องต้น (Prerequisites)</h3>
+<p>KruRooSocNet ต้องการแพ็กเกจต่อไปนี้:</p>
+<ul>
+<li><p><code>igraph</code>: สำหรับการจัดการและวิเคราะห์กราฟเครือข่าย</p></li>
+<li><p><code>tidyverse</code>: สำหรับการจัดการข้อมูล และการสร้างทัศนภาพข้อมูล</p></li>
+</ul>
+</section>
+</section>
+<section id="การใชงานฟงกชนหลก" class="level2">
+<h2 class="anchored" data-anchor-id="การใชงานฟงกชนหลก">การใช้งานฟังก์ชันหลัก</h2>
+<section id="tie-composition-degree" class="level3">
+<h3 class="anchored" data-anchor-id="tie-composition-degree">1. Tie Composition: Degree</h3>
+<p>ในคาบเรียนเรามีเครือข่ายหลายประเภทจากกลุ่มเป้าหมายเดียวกัน การคำนวณ degree centrality ของโหนดจากแต่ละเครือข่ายเราใช้ <code>igraph</code> มาช่วยในการคำนวณ ซึ่งต้องเขียน syntax ยาวประมาณนึง ดังตัวอย่างด้านล่าง ที่เราพยายามจะสร้างชุดข้อมูลของ degree จากเครือข่าย <code>Hawthorne_BankWiring</code> ซึ่งเป็นข้อมูลเครือข่ายใน library-<code>xUCINET</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xUCINET)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>degree_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">outdegree_game =</span> Hawthorne_BankWiring<span class="sc">$</span>Game <span class="sc">%&gt;%</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"directed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">degree</span>(<span class="at">mode =</span> <span class="st">"out"</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">outdeg_conflict =</span> Hawthorne_BankWiring<span class="sc">$</span>Conflict <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"directed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">degree</span>(<span class="at">mode =</span> <span class="st">"out"</span>),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">outdeg_friendship =</span> Hawthorne_BankWiring<span class="sc">$</span>Friendship <span class="sc">%&gt;%</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"directed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">degree</span>(<span class="at">mode =</span> <span class="st">"out"</span>),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="at">outdeg_antagonistic =</span> Hawthorne_BankWiring<span class="sc">$</span>Antagonistic <span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>   <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"directed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">degree</span>(<span class="at">mode =</span> <span class="st">"out"</span>),</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="at">outdeg_help =</span> Hawthorne_BankWiring<span class="sc">$</span>Help <span class="sc">%&gt;%</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>   <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"directed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">degree</span>(<span class="at">mode =</span> <span class="st">"out"</span>),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="at">outdeg_trade =</span> Hawthorne_BankWiring<span class="sc">$</span>TradeJobs <span class="sc">%&gt;%</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>   <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"directed"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">degree</span>(<span class="at">mode =</span> <span class="st">"out"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>degree_df <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>(<span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 14
+Columns: 6
+$ outdegree_game      &lt;dbl&gt; 4, 0, 6, 5, 6, 6, 5, 3, 5, 4, 4, 5, 0, 3
+$ outdeg_conflict     &lt;dbl&gt; 0, 0, 0, 0, 0, 4, 3, 7, 5, 5, 5, 5, 0, 4
+$ outdeg_friendship   &lt;dbl&gt; 1, 0, 3, 0, 4, 3, 0, 0, 3, 3, 3, 4, 0, 2
+$ outdeg_antagonistic &lt;dbl&gt; 2, 7, 0, 4, 0, 1, 8, 3, 4, 3, 3, 1, 1, 1
+$ outdeg_help         &lt;dbl&gt; 0, 0, 3, 3, 1, 3, 1, 4, 1, 3, 1, 1, 1, 2
+$ outdeg_trade        &lt;dbl&gt; 0, 0, 2, 16, 0, 0, 7, 2, 2, 20, 0, 0, 0, 0</code></pre>
+</div>
+</div>
+<p>ใน library-<code>KruRooSocNet</code> มีฟังก์ชัน <code>calculate_degree()</code> ที่ช่วยในการคำนวณ degree ของโหนดจากหลายเครือข่ายโดยเขียน syntax น้อยกว่า แต่ผู้ใช้จำเป็นต้องเตรียมข้อมูลนำเข้าในลักษณะ list ของ adjacency matrix ดังตัวอย่างต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## สร้าง list ของ adjacency matrix ของ network</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>network_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">Game =</span> Hawthorne_BankWiring<span class="sc">$</span>Game,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">Conflict =</span> Hawthorne_BankWiring<span class="sc">$</span>Conflict,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">Friendship =</span> Hawthorne_BankWiring<span class="sc">$</span>Friendship,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">Antagonistic =</span> Hawthorne_BankWiring<span class="sc">$</span>Antagonistic,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">Help =</span> Hawthorne_BankWiring<span class="sc">$</span>Help,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">TradeJobs =</span> Hawthorne_BankWiring<span class="sc">$</span>TradeJobs</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>degree_df <span class="ot">&lt;-</span> <span class="fu">calculate_degree</span>(network_list, <span class="at">directed =</span> <span class="cn">TRUE</span>, <span class="at">mode =</span> <span class="st">"out"</span>) </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>degree_df <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 14
+Columns: 7
+$ node                &lt;chr&gt; "I1", "I3", "W1", "W2", "W3", "W4", "W5", "W6", "W…
+$ degree_Game         &lt;dbl&gt; 4, 0, 6, 5, 6, 6, 5, 3, 5, 4, 4, 5, 0, 3
+$ degree_Conflict     &lt;dbl&gt; 0, 0, 0, 0, 0, 4, 3, 7, 5, 5, 5, 5, 0, 4
+$ degree_Friendship   &lt;dbl&gt; 1, 0, 3, 0, 4, 3, 0, 0, 3, 3, 3, 4, 0, 2
+$ degree_Antagonistic &lt;dbl&gt; 2, 7, 0, 4, 0, 1, 8, 3, 4, 3, 3, 1, 1, 1
+$ degree_Help         &lt;dbl&gt; 0, 0, 3, 3, 1, 3, 1, 4, 1, 3, 1, 1, 1, 2
+$ degree_TradeJobs    &lt;dbl&gt; 0, 0, 2, 16, 0, 0, 7, 2, 2, 20, 0, 0, 0, 0</code></pre>
+</div>
+</div>
+</section>
+<section id="tie-composition-agrestis-index-iqv" class="level3">
+<h3 class="anchored" data-anchor-id="tie-composition-agrestis-index-iqv">2. Tie Composition: Agresti’s index (IQV)</h3>
+<p>เป็นตัวชี้วัดที่ใช้วัดความหลากหลายหรือความแตกต่างกันหรือ heterogeneity ของข้อมูลเชิงคุณภาพ (categorical data) ในบริบทของ tie composition ในเครือข่าย</p>
+<p>เราสามารถใช้ IQV เพื่อบ่งชี้ความหลากหลายของ tie composition ในแต่ละ node โดยถ้าค่า IQV ใกล้ 1 หมายความว่า tie ของ node นั้นมีความหลากหลายสูง (ไม่มีการกระจุกตัวอยู่ในประเภทใดประเภทหนึ่ง) แต่ถ้าค่า IQV ใกล้ 0 แสดงว่าการเชื่อมโยงส่วนใหญ่จะอยู่ในประเภทเดียวกัน</p>
+<p>ในคาบเรียนเราคำนวณ IQV โดยการเขียน script เฉพาะสำหรับคำนวณ IQV ขึ้นมาดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">### calculate ego IQV: รับ data.frame ของ degree</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">### คอลัมน์แรกต้องเป็น node name</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">### คอลัมน์ที่เหลือเป็น degree ของ ego แต่ละประเภท</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ego_iqv <span class="ot">&lt;-</span> <span class="cf">function</span>(degree_df) {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  degree_df <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">names_to =</span> <span class="st">"Tie"</span>, <span class="at">values_to =</span> <span class="st">"Outdegree"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(node) <span class="sc">%&gt;%</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Q =</span> <span class="fu">length</span>(Outdegree),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">p =</span> Outdegree <span class="sc">/</span> <span class="fu">sum</span>(Outdegree),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>           ) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">IQV =</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>(p<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span>Q), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unique</span>()</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>degree_df <span class="sc">%&gt;%</span> <span class="fu">ego_iqv</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+dplyr 1.1.0.
+ℹ Please use `reframe()` instead.
+ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+  always returns an ungrouped data frame and adjust accordingly.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+   node    IQV
+   &lt;chr&gt; &lt;dbl&gt;
+ 1 I1    0.686
+ 2 I3    0    
+ 3 S1    0.881
+ 4 S2    0.6  
+ 5 S4    0.917
+ 6 W1    0.845
+ 7 W2    0.732
+ 8 W3    0.674
+ 9 W4    0.905
+10 W5    0.892
+11 W6    0.911
+12 W7    0.96 
+13 W8    0.811
+14 W9    0.919</code></pre>
+</div>
+</div>
+<p>ข้อจำกัดของการใช้ script คือต้องเขียน script ใหม่ทุกครั้งที่ต้องการคำนวณ IQV จากข้อมูลใหม่ ซึ่งอาจไม่สะดวกในการดำเนินการจริงที่มีความซับซ้อนและต้องทำซ้ำหลายครั้ง library-KriRooSocNet มีฟังก์ชัน <code>calculate_iqv()</code> ที่ช่วยในการคำนวณ IQV จากข้อมูลเครือข่ายที่อยู่ในลักษณะของ data.frame โดยแต่ละคอลัมน์เป็นสัดส่วนคุณลักษณะของ alter ของ ego ในแต่ละแถว</p>
+<p>จากตัวอย่างก่อนหน้านี้ เรามี <code>degree_df</code> เป็น data.frame ของ degree ของ alter ที่มีความสัมพันธ์กับ ego ในแต่ละเครือข่าย ซึ่งเราสามารถใช้ฟังก์ชัน <code>calculate_iqv()</code> ในการคำนวณ IQV ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>degree_df <span class="sc">%&gt;%</span> <span class="fu">calculate_iqv</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+   node    IQV
+   &lt;chr&gt; &lt;dbl&gt;
+ 1 I1    0.686
+ 2 I3    0    
+ 3 S1    0.881
+ 4 S2    0.6  
+ 5 S4    0.917
+ 6 W1    0.845
+ 7 W2    0.732
+ 8 W3    0.674
+ 9 W4    0.905
+10 W5    0.892
+11 W6    0.911
+12 W7    0.96 
+13 W8    0.811
+14 W9    0.919</code></pre>
+</div>
+</div>
+<p>การคำนวณไม่ได้จำกัดเฉพาะกับข้อมูล degree เท่านั้น แต่สามารถใช้กับชุดข้อมูลอื่น ๆ ได้โดยให้มีโครงสร้างตามที่ระบุไว้ข้างต้น</p>
+</section>
+<section id="valued-tie-composition-summary-stat" class="level3">
+<h3 class="anchored" data-anchor-id="valued-tie-composition-summary-stat">3. Valued Tie Composition: Summary Stat</h3>
+<p>กรณีที่เรามีข้อมูลความสัมพันธ์ที่มีค่าเชิงปริมาณ (valued tie data) ตัวชี้วัดระดับ/ความแข็งแรงของความสัมพันธ์ที่ ego มีต่อ alters สามารถทำได้โดยใช้ summary stat ของค่าความสัมพันธ์ดังกล่าว เช่น ค่าเฉลี่ย หรือมัธยฐาน หรือปริมาณอื่น ๆ ที่สะท้อนความสัมพันธ์หรือการสื่อสารทั้งหมดที่ ego มีกับ alters</p>
+<p>ทำนองเดียวกับ IQV ในคาบผมเขียน script สำหรับคำนวณ summary stat ของ valued tie data ขึ้นมาดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ฟังก์ชันสร้างตารางสรุปสำหรับแต่ละโหนด</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>create_summary_table <span class="ot">&lt;-</span> <span class="cf">function</span>(graph) {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ดึงค่าทั้งหมดของ strength (น้ำหนักรวมของเส้นเชื่อมแต่ละโหนด)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  node_strengths <span class="ot">&lt;-</span> <span class="fu">strength</span>(graph, <span class="at">mode =</span> <span class="st">"all"</span>, <span class="at">weights =</span> <span class="fu">E</span>(graph)<span class="sc">$</span>weight)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ดึง alter ของแต่ละโหนด (degree)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  num_alters <span class="ot">&lt;-</span> <span class="fu">degree</span>(graph, <span class="at">mode =</span> <span class="st">"all"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ดึงน้ำหนักของเส้นเชื่อม (tie strengths) เป็นรายการของแต่ละโหนด</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  tie_strength_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">V</span>(graph), <span class="cf">function</span>(v) {</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    incident_edges <span class="ot">&lt;-</span> <span class="fu">E</span>(graph)[<span class="fu">incident</span>(graph, v, <span class="at">mode =</span> <span class="st">"all"</span>)]</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    edge_weights <span class="ot">&lt;-</span> incident_edges<span class="sc">$</span>weight</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(edge_weights) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="cn">NA</span>) <span class="co"># กรณีโหนดไม่มี edge</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(edge_weights)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># สร้าง DataFrame</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  summary_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Node =</span> <span class="fu">V</span>(graph)<span class="sc">$</span>name,  </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Number_of_alters =</span> num_alters,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Sum_of_tie_strengths =</span> node_strengths,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">Average_tie_strength =</span> <span class="fu">sapply</span>(tie_strength_list, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD_tie_strength =</span> <span class="fu">sapply</span>(tie_strength_list, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median_tie_strength =</span> <span class="fu">sapply</span>(tie_strength_list, median, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">Minimum_tie_strength =</span> <span class="fu">sapply</span>(tie_strength_list, min, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Maximum_tie_strength =</span> <span class="fu">sapply</span>(tie_strength_list, max, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">Range_of_tie_strength =</span> <span class="fu">sapply</span>(tie_strength_list, <span class="cf">function</span>(x) <span class="fu">max</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">min</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(summary_df)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="do">## อย่าลืมตั้ง weight = TRUE เพื่อให้ igraph รู้ว่าเรามี valued tie data</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>valued_g <span class="ot">&lt;-</span> Zachary_KarateClub<span class="sc">$</span>Strength <span class="sc">%&gt;%</span> </span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">graph_from_adjacency_matrix</span>(<span class="at">mode =</span> <span class="st">"undirected"</span>, <span class="at">weight =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="fu">create_summary_table</span>(valued_g) <span class="sc">%&gt;%</span>  <span class="fu">glimpse</span>(<span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 34
+Columns: 9
+$ Node                  &lt;chr&gt; "A01", "A02", "A03", "A04", "A05", "A06", "A07",…
+$ Number_of_alters      &lt;dbl&gt; 16, 9, 10, 6, 3, 4, 4, 4, 5, 2, 3, 1, 2, 5, 2, 2…
+$ Sum_of_tie_strengths  &lt;dbl&gt; 42, 29, 33, 18, 8, 14, 13, 13, 17, 3, 8, 3, 4, 1…
+$ Average_tie_strength  &lt;dbl&gt; 2.625000, 3.222222, 3.300000, 3.000000, 2.666667…
+$ SD_tie_strength       &lt;dbl&gt; 0.9574271, 1.6414763, 1.6363917, 0.0000000, 0.57…
+$ Median_tie_strength   &lt;dbl&gt; 2.5, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.5, 3.0, 1.5…
+$ Minimum_tie_strength  &lt;dbl&gt; 1, 1, 1, 3, 2, 3, 2, 2, 2, 1, 2, 3, 1, 3, 2, 3, …
+$ Maximum_tie_strength  &lt;dbl&gt; 5, 6, 6, 3, 3, 5, 5, 4, 5, 2, 3, 3, 3, 5, 3, 4, …
+$ Range_of_tie_strength &lt;dbl&gt; 4, 5, 5, 0, 1, 2, 3, 2, 3, 1, 1, 0, 2, 2, 1, 1, …</code></pre>
+</div>
+</div>
+<p>สำหรับ <code>KruRooSocNet</code> มีฟังก์ชัน <code>summarize_valued_ties()</code> ข้อมูลนำเข้าคือ igraph object ที่มีค่าเชิงปริมาณ (valued tie data) ซึ่งเราสามารถใช้ฟังก์ชันนี้ในการคำนวณ summary stat ของ valued tie data ได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarize_valued_ties</span>(valued_g, <span class="at">weight_attr =</span> <span class="st">"weight"</span>, <span class="at">mode =</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>(<span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 34
+Columns: 9
+$ node                 &lt;chr&gt; "A01", "A02", "A03", "A04", "A05", "A06", "A07", …
+$ number_of_alters     &lt;dbl&gt; 16, 9, 10, 6, 3, 4, 4, 4, 5, 2, 3, 1, 2, 5, 2, 2,…
+$ sum_of_tie_strengths &lt;dbl&gt; 42, 29, 33, 18, 8, 14, 13, 13, 17, 3, 8, 3, 4, 17…
+$ average_tie_strength &lt;dbl&gt; 2.625000, 3.222222, 3.300000, 3.000000, 2.666667,…
+$ sd_tie_strength      &lt;dbl&gt; 0.9574271, 1.6414763, 1.6363917, 0.0000000, 0.577…
+$ median_tie_strength  &lt;dbl&gt; 2.5, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.5, 3.0, 1.5,…
+$ min_tie_strength     &lt;dbl&gt; 1, 1, 1, 3, 2, 3, 2, 2, 2, 1, 2, 3, 1, 3, 2, 3, 3…
+$ max_tie_strength     &lt;dbl&gt; 5, 6, 6, 3, 3, 5, 5, 4, 5, 2, 3, 3, 3, 5, 3, 4, 3…
+$ range_tie_strength   &lt;dbl&gt; 4, 5, 5, 0, 1, 2, 3, 2, 3, 1, 1, 0, 2, 2, 1, 1, 0…</code></pre>
+</div>
+</div>
+</section>
+<section id="alter-composition" class="level3">
+<h3 class="anchored" data-anchor-id="alter-composition">4. Alter Composition</h3>
+<p>เรายังสามารถดำเนินการวิเคราะห์เพื่อทำความเข้าใจว่า ego มีการเชื่อมโยง/สัมพันธ์กับ alters ประเภทไหนบ้าง การดำเนินการดังกล่าวสามารถทำโดยการวิเคราะห์ว่า ego แต่ละคนไปเชื่อมโยงกับ alter ที่มีคุณลักษณะอย่างไร แปลว่าเราจะวิเคราะห์คุณลักษณะของ alter จำแนกตาม ego แต่ละคน</p>
+<p>การวิเคราะห์ดังกล่าวมีความแตกต่างกันไปตามประเภทของคุณลักษณะของ alter ซึ่งอาจจำแนกเป็น 2 ประเภท ได้แก่</p>
+<ul>
+<li><p>categorical attributes</p></li>
+<li><p>continuous attributes</p></li>
+</ul>
+<section id="categorical-attributes" class="level4">
+<h4 class="anchored" data-anchor-id="categorical-attributes">4.1 Categorical Attributes</h4>
+<p>ในห้องเรียนเรายกตัวอย่างการวิเคราะห์ alter composition ของเครือข่าย <code>Krackhardt_HighTech</code> มีวัตถุประสงค์ต้องการวิเคราะห์ว่า ego แต่ละคนมีเพื่อนอยู่ในแผนกใดบ้างของบริษัท</p>
+<p>สำหรับการเขียน syntax ในห้องจะเห็นว่ามีความซับซ้อนมากพอสมควร</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Attribute data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>attr <span class="ot">&lt;-</span> Krackhardt_HighTech<span class="sc">$</span>Attributes</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>ego_data <span class="ot">&lt;-</span> attr <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"ego"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ego, Department)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="do">## network data</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>Krackhardt_HighTech<span class="sc">$</span>Friendship <span class="sc">%&gt;%</span> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rownames_to_column</span>(<span class="st">"ego"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>ego, <span class="at">names_to =</span> <span class="st">"alter"</span>, <span class="at">values_to =</span> <span class="st">"tie"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>   <span class="do">## department ของ ego</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(ego_data, <span class="at">by =</span> <span class="st">"ego"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">department_ego =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>   <span class="do">## department ของ alter</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>   <span class="fu">left_join</span>(ego_data, <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"alter"</span> <span class="sc">==</span> <span class="st">"ego"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">department_alter =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ego <span class="sc">!=</span> alter) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ego, department_ego, department_alter) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="at">freq =</span> <span class="fu">sum</span>(tie)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a> <span class="co"># ungroup() %&gt;% </span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ego, department_ego) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> freq<span class="sc">/</span><span class="fu">sum</span>(freq)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">IQV =</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>(prop<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">n</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> department_alter, <span class="at">values_from =</span> <span class="fu">c</span>(freq,prop), <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 13
+# Groups:   ego, department_ego [21]
+   ego   department_ego     IQV freq_0 freq_1 freq_2 freq_3 freq_4  prop_0
+   &lt;chr&gt;          &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;   &lt;dbl&gt;
+ 1 A01                4   0.6        0      2      0      0      3   0    
+ 2 A02                4   0.833      0      1      0      1      1   0    
+ 3 A03                2   0          0      0      2      0      0   0    
+ 4 A04                4   0.625      0      3      0      0      3   0    
+ 5 A05                2   0.867      0      2      3      1      1   0    
+ 6 A06                1   0.833      1      3      1      0      1   0.167
+ 7 A07                0 NaN          0      0      0      0      0   0    
+ 8 A08                1   0          0      0      0      0      1   0    
+ 9 A09                2 NaN          0      0      0      0      0 NaN    
+10 A10                3   0.714      0      2      4      0      1   0    
+# ℹ 11 more rows
+# ℹ 4 more variables: prop_1 &lt;dbl&gt;, prop_2 &lt;dbl&gt;, prop_3 &lt;dbl&gt;, prop_4 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>ใน library-<code>KruRooSocNet</code> มีฟังก์ชัน <code>analyze_alter_composition()</code> ที่ช่วยในการวิเคราะห์ alter composition ของ ego ในเครือข่าย โดยให้ข้อมูลนำเข้าเป็น igraph object และ data.frame ของ attribute ของ ego และ alter ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>network_adj <span class="ot">&lt;-</span> Krackhardt_HighTech<span class="sc">$</span>Friendship </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>attr <span class="ot">&lt;-</span>Krackhardt_HighTech<span class="sc">$</span>Attributes <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"ego"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ego, Department,Tenure, Age)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_categorical_composition</span>(<span class="at">adj_matrix =</span> network_adj, </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">node_attributes =</span> attr, </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">category_col =</span> <span class="st">"Department"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                          <span class="at">directed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 21
+Columns: 11
+Groups: ego, category_ego [21]
+$ ego          &lt;chr&gt; "A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "…
+$ category_ego &lt;int&gt; 4, 4, 2, 4, 2, 1, 0, 1, 2, 3, 3, 1, 2, 2, 2, 4, 1, 3, 2, …
+$ IQV          &lt;dbl&gt; 0.9583333, 0.9866667, 0.9600000, 0.8400000, 0.9166667, 1.…
+$ frequency_1  &lt;int&gt; 2, 3, 1, 3, 1, 1, 2, 1, 2, 1, 1, 3, 0, 1, 1, 1, 3, 1, 1, …
+$ frequency_2  &lt;int&gt; 2, 2, 2, 0, 3, 1, 1, 0, 2, 0, 5, 1, 0, 4, 2, 0, 1, 1, 3, …
+$ frequency_3  &lt;int&gt; 1, 2, 2, 1, 2, 0, 0, 2, 2, 0, 0, 2, 1, 0, 1, 1, 1, 1, 1, …
+$ frequency_4  &lt;int&gt; 3, 3, 0, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 1, 0, …
+$ proportion_1 &lt;dbl&gt; 0.2500000, 0.3000000, 0.2000000, 0.6000000, 0.1666667, 0.…
+$ proportion_2 &lt;dbl&gt; 0.2500000, 0.2000000, 0.4000000, 0.0000000, 0.5000000, 0.…
+$ proportion_3 &lt;dbl&gt; 0.1250000, 0.2000000, 0.4000000, 0.2000000, 0.3333333, 0.…
+$ proportion_4 &lt;dbl&gt; 0.3750000, 0.3000000, 0.0000000, 0.2000000, 0.0000000, 0.…</code></pre>
+</div>
+</div>
+</section>
+<section id="continuous-attributes" class="level4">
+<h4 class="anchored" data-anchor-id="continuous-attributes">4.2 Continuous Attributes</h4>
+<p>ในคาบเรียน เราจะต้องไปคัดตัวแปรออกมาก่อน แล้วเขียน syntax ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ego_data2 <span class="ot">&lt;-</span> attr <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ego, Tenure)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>Krackhardt_HighTech<span class="sc">$</span>Friendship <span class="sc">%&gt;%</span> </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rownames_to_column</span>(<span class="st">"ego"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>ego, <span class="at">names_to =</span> <span class="st">"alter"</span>, <span class="at">values_to =</span> <span class="st">"tie"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ego_data2, <span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"alter"</span><span class="sc">==</span><span class="st">"ego"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ego <span class="sc">!=</span> alter,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>         tie <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ego) <span class="sc">%&gt;%</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">num_friend =</span> <span class="fu">sum</span>(tie),</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">sum_tenure =</span> <span class="fu">sum</span>(Tenure, <span class="at">na.rm =</span> T),</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_tenure =</span> <span class="fu">mean</span>(Tenure, <span class="at">na.rm =</span> T),</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_tenure =</span> <span class="fu">sd</span>(Tenure, <span class="at">na.rm =</span> T),</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">min_tenure =</span> <span class="fu">min</span>(Tenure, <span class="at">na.rm =</span> T),</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_tenure =</span> <span class="fu">max</span>(Tenure, <span class="at">na.rm =</span> T),</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">range_tenure =</span> <span class="fu">max</span>(Tenure, <span class="at">na.rm =</span> T)<span class="sc">-</span><span class="fu">min</span>(Tenure, <span class="at">na.rm =</span> T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 19 × 8
+   ego   num_friend sum_tenure mean_tenure sd_tenure min_tenure max_tenure
+   &lt;chr&gt;      &lt;int&gt;      &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+ 1 A01            5       52.0       10.4       5.67       4.67       19.6
+ 2 A02            3       30.9       10.3       1.90       9.08       12.5
+ 3 A03            2       15.3        7.63      3.95       4.83       10.4
+ 4 A04            6       66.2       11.0       4.96       4.67       19.6
+ 5 A05            7       92.2       13.2       7.86       4.83       27  
+ 6 A06            6       88.8       14.8       8.80       5.42       30  
+ 7 A08            1        7.5        7.5      NA          7.5         7.5
+ 8 A10            7       58.1        8.30      3.81       3.33       12.8
+ 9 A11           13      113.         8.71      4.86       0.25       19.6
+10 A12            4       41.8       10.4       2.45       7.5        12.5
+11 A13            2       30.3       15.2      16.7        3.33       27  
+12 A14            2       38.4       19.2      15.3        8.42       30  
+13 A15            8      101.        12.6       9.69       3.33       28  
+14 A16            2       28.9       14.5       7.25       9.33       19.6
+15 A17           18      225.        12.5       8.20       3.33       30  
+16 A18            1       19.6       19.6      NA         19.6        19.6
+17 A19            9      111.        12.4       6.97       3.33       27  
+18 A20            2       36.1       18.0      12.7        9.08       27  
+19 A21            4       50         12.5       4.99       8.92       19.6
+# ℹ 1 more variable: range_tenure &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>สำหรับใน library-<code>KruRooSocNet</code> มีฟังก์ชัน <code>analyze_continuous_composition()</code> ที่ช่วยในการวิเคราะห์ alter composition ของ ego ในเครือข่าย โดยให้ข้อมูลนำเข้าเป็น igraph object และ data.frame ของ attribute ของ ego และ alter ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_continuous_composition</span>(<span class="at">adj_matrix =</span> network_adj, </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">node_attributes =</span> attr, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">attribute_col =</span> <span class="st">"Age"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">category_col =</span> <span class="st">"Department"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">directed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 21
+Columns: 14
+$ ego                 &lt;chr&gt; "A01", "A02", "A03", "A04", "A05", "A06", "A07", "…
+$ ego_category        &lt;int&gt; 4, 4, 2, 4, 2, 1, 0, 1, 2, 3, 3, 1, 2, 2, 2, 4, 1,…
+$ ego_attribute_value &lt;int&gt; 33, 42, 40, 33, 32, 59, 55, 34, 62, 37, 46, 34, 48…
+$ num_alters          &lt;int&gt; 8, 10, 5, 5, 6, 2, 3, 5, 6, 1, 6, 8, 1, 5, 4, 4, 6…
+$ sum_attribute       &lt;int&gt; 284, 361, 185, 177, 233, 70, 132, 179, 244, 30, 22…
+$ mean_attribute      &lt;dbl&gt; 35.50000, 36.10000, 37.00000, 35.40000, 38.83333, …
+$ median_attribute    &lt;dbl&gt; 33.5, 33.0, 37.0, 34.0, 38.5, 35.0, 43.0, 33.0, 38…
+$ sd_attribute        &lt;dbl&gt; 6.502747, 9.456920, 6.403124, 6.148170, 7.277820, …
+$ var_attribute       &lt;dbl&gt; 42.28571, 89.43333, 41.00000, 37.80000, 52.96667, …
+$ min_attribute       &lt;int&gt; 27, 27, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 46…
+$ max_attribute       &lt;int&gt; 46, 59, 46, 46, 48, 40, 59, 46, 59, 30, 48, 59, 46…
+$ range_attribute     &lt;int&gt; 19, 32, 16, 16, 18, 10, 29, 16, 29, 0, 18, 29, 0, …
+$ weighted_mean       &lt;dbl&gt; 35.50000, 36.10000, 37.00000, 35.40000, 38.83333, …
+$ abs_diff_from_ego   &lt;dbl&gt; 5.00000, 10.10000, 5.40000, 3.60000, 7.50000, 24.0…</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

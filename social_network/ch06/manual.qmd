@@ -1,0 +1,307 @@
+---
+title: "KruRooSocNet"
+author: สิวะโชติ ศรีสุทธิยากร
+date: today
+format: html
+editor: visual
+---
+
+## Introduction
+
+`KroRooSocNet` เป็น library สำหรับวิเคราะห์​social network ตามแนวทางที่สอนในรายวิชา social network analytic หลักสูตรสถิติและวิทยาการข้อมูลการศึกษา วัตถุประสงค์หลักเพื่อใช้เป็นเครื่องมือประกอบการเรียนรู้ในรายวิชาช่วยลดขั้นตอนการเขียน syntax จำนวนมากให้กับนิสิตในบางการวิเคราะห์
+
+library ถูกออกแบบให้ทำงานร่วมกับ `tidyverse` ได้ทำให้การดำเนินงานของนิสิตสามารถทำได้ง่ายขึ้น ตอนนี้ library มีเครื่องมือสนับสนุนการเรียนในบทเรียน Local Node-Level Measures โดยมีฟังก์ชันสำคัญดังนี้
+
+
+- `calculate_degree()`
+
+- `calculate_iqv()`  
+
+- `calculate_ei_index()` 
+
+- `calculate_similarity()` 
+
+- `summarize_valued_ties()`
+
+- `analyze_categorical_composition()`
+
+- `analyze_continuous_composition()`
+
+
+จะเห็นว่าฟังก์ชันถูกพัฒนาขึ้นล้อกับเนื้อหาในรายวิชา รายละเอียดส่วนต่อไปจะกล่าวถึงการติดตั้งและแสดงตัวอย่างการใช้งาน รายละเอียดมีดังนี้
+
+## Installation
+
+```{r}
+# ติดตั้งจาก GitHub
+## devtools::install_github("username/KruRooSocNet")
+
+# โหลดแพ็กเกจ
+library(KruRooSocNet)
+```
+
+### ข้อกำหนดเบื้องต้น (Prerequisites)
+
+KruRooSocNet ต้องการแพ็กเกจต่อไปนี้:
+
+- `igraph`: สำหรับการจัดการและวิเคราะห์กราฟเครือข่าย
+
+- `tidyverse`: สำหรับการจัดการข้อมูล และการสร้างทัศนภาพข้อมูล
+
+
+## การใช้งานฟังก์ชันหลัก
+
+### 1. Tie Composition: Degree
+
+ในคาบเรียนเรามีเครือข่ายหลายประเภทจากกลุ่มเป้าหมายเดียวกัน การคำนวณ degree centrality ของโหนดจากแต่ละเครือข่ายเราใช้ `igraph` มาช่วยในการคำนวณ ซึ่งต้องเขียน syntax ยาวประมาณนึง ดังตัวอย่างด้านล่าง ที่เราพยายามจะสร้างชุดข้อมูลของ degree จากเครือข่าย `Hawthorne_BankWiring` ซึ่งเป็นข้อมูลเครือข่ายใน library-`xUCINET`
+
+```{r message = F}
+library(tidyverse)
+library(xUCINET)
+library(igraph)
+library(DT)
+
+
+degree_df <- data.frame(
+outdegree_game = Hawthorne_BankWiring$Game %>% 
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_conflict = Hawthorne_BankWiring$Conflict %>% 
+  graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_friendship = Hawthorne_BankWiring$Friendship %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_antagonistic = Hawthorne_BankWiring$Antagonistic %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_help = Hawthorne_BankWiring$Help %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out"),
+
+outdeg_trade = Hawthorne_BankWiring$TradeJobs %>%
+   graph_from_adjacency_matrix(mode = "directed") %>% 
+  igraph::degree(mode = "out")
+
+) 
+degree_df %>% glimpse(80)
+```
+
+ใน library-`KruRooSocNet` มีฟังก์ชัน `calculate_degree()` ที่ช่วยในการคำนวณ degree ของโหนดจากหลายเครือข่ายโดยเขียน syntax น้อยกว่า แต่ผู้ใช้จำเป็นต้องเตรียมข้อมูลนำเข้าในลักษณะ list ของ adjacency matrix ดังตัวอย่างต่อไปนี้
+
+```{r}
+## สร้าง list ของ adjacency matrix ของ network
+network_list <- list(
+Game = Hawthorne_BankWiring$Game,
+Conflict = Hawthorne_BankWiring$Conflict,
+Friendship = Hawthorne_BankWiring$Friendship,
+Antagonistic = Hawthorne_BankWiring$Antagonistic,
+Help = Hawthorne_BankWiring$Help,
+TradeJobs = Hawthorne_BankWiring$TradeJobs
+)
+degree_df <- calculate_degree(network_list, directed = TRUE, mode = "out") 
+degree_df %>% glimpse()
+```
+
+
+### 2. Tie Composition: Agresti’s index (IQV)
+
+เป็นตัวชี้วัดที่ใช้วัดความหลากหลายหรือความแตกต่างกันหรือ heterogeneity ของข้อมูลเชิงคุณภาพ (categorical data)  ในบริบทของ tie composition ในเครือข่าย 
+
+เราสามารถใช้ IQV เพื่อบ่งชี้ความหลากหลายของ tie composition ในแต่ละ node โดยถ้าค่า IQV ใกล้ 1 หมายความว่า tie ของ node นั้นมีความหลากหลายสูง (ไม่มีการกระจุกตัวอยู่ในประเภทใดประเภทหนึ่ง) แต่ถ้าค่า IQV ใกล้ 0 แสดงว่าการเชื่อมโยงส่วนใหญ่จะอยู่ในประเภทเดียวกัน
+
+
+ในคาบเรียนเราคำนวณ IQV โดยการเขียน script เฉพาะสำหรับคำนวณ IQV ขึ้นมาดังนี้
+
+```{r}
+### calculate ego IQV: รับ data.frame ของ degree
+### คอลัมน์แรกต้องเป็น node name
+### คอลัมน์ที่เหลือเป็น degree ของ ego แต่ละประเภท
+ego_iqv <- function(degree_df) {
+  degree_df %>%
+    pivot_longer(cols = -1, names_to = "Tie", values_to = "Outdegree") %>%
+    group_by(node) %>%
+    mutate(Q = length(Outdegree),
+           p = Outdegree / sum(Outdegree),
+           ) %>% 
+    summarise(
+              IQV = (1 - sum(p^2)) / (1 - 1/Q), .groups = "drop") %>% 
+    unique()
+}
+```
+
+
+```{r}
+degree_df %>% ego_iqv()
+```
+
+ข้อจำกัดของการใช้ script คือต้องเขียน script ใหม่ทุกครั้งที่ต้องการคำนวณ IQV จากข้อมูลใหม่ ซึ่งอาจไม่สะดวกในการดำเนินการจริงที่มีความซับซ้อนและต้องทำซ้ำหลายครั้ง library-KriRooSocNet มีฟังก์ชัน `calculate_iqv()` ที่ช่วยในการคำนวณ IQV จากข้อมูลเครือข่ายที่อยู่ในลักษณะของ data.frame โดยแต่ละคอลัมน์เป็นสัดส่วนคุณลักษณะของ alter ของ ego ในแต่ละแถว 
+
+จากตัวอย่างก่อนหน้านี้ เรามี `degree_df` เป็น data.frame ของ degree ของ alter ที่มีความสัมพันธ์กับ ego ในแต่ละเครือข่าย ซึ่งเราสามารถใช้ฟังก์ชัน `calculate_iqv()` ในการคำนวณ IQV ได้ดังนี้
+
+```{r}
+degree_df %>% calculate_iqv()
+```
+
+
+การคำนวณไม่ได้จำกัดเฉพาะกับข้อมูล degree เท่านั้น แต่สามารถใช้กับชุดข้อมูลอื่น ๆ ได้โดยให้มีโครงสร้างตามที่ระบุไว้ข้างต้น
+
+
+### 3. Valued Tie Composition: Summary Stat
+
+กรณีที่เรามีข้อมูลความสัมพันธ์ที่มีค่าเชิงปริมาณ (valued tie data) ตัวชี้วัดระดับ/ความแข็งแรงของความสัมพันธ์ที่ ego มีต่อ alters สามารถทำได้โดยใช้ summary stat ของค่าความสัมพันธ์ดังกล่าว เช่น ค่าเฉลี่ย หรือมัธยฐาน หรือปริมาณอื่น ๆ ที่สะท้อนความสัมพันธ์หรือการสื่อสารทั้งหมดที่ ego มีกับ alters
+
+ทำนองเดียวกับ IQV ในคาบผมเขียน script สำหรับคำนวณ summary stat ของ valued tie data ขึ้นมาดังนี้
+
+```{r}
+# ฟังก์ชันสร้างตารางสรุปสำหรับแต่ละโหนด
+create_summary_table <- function(graph) {
+  # ดึงค่าทั้งหมดของ strength (น้ำหนักรวมของเส้นเชื่อมแต่ละโหนด)
+  node_strengths <- strength(graph, mode = "all", weights = E(graph)$weight)
+  
+  # ดึง alter ของแต่ละโหนด (degree)
+  num_alters <- degree(graph, mode = "all")
+
+  # ดึงน้ำหนักของเส้นเชื่อม (tie strengths) เป็นรายการของแต่ละโหนด
+  tie_strength_list <- lapply(V(graph), function(v) {
+    incident_edges <- E(graph)[incident(graph, v, mode = "all")]
+    edge_weights <- incident_edges$weight
+    if (length(edge_weights) == 0) return(NA) # กรณีโหนดไม่มี edge
+    return(edge_weights)
+  })
+  
+  # สร้าง DataFrame
+  summary_df <- data.frame(
+    Node = V(graph)$name,  
+    Number_of_alters = num_alters,
+    Sum_of_tie_strengths = node_strengths,
+    Average_tie_strength = sapply(tie_strength_list, mean, na.rm = TRUE),
+    SD_tie_strength = sapply(tie_strength_list, sd, na.rm = TRUE),
+    Median_tie_strength = sapply(tie_strength_list, median, na.rm = TRUE),
+    Minimum_tie_strength = sapply(tie_strength_list, min, na.rm = TRUE),
+    Maximum_tie_strength = sapply(tie_strength_list, max, na.rm = TRUE),
+    Range_of_tie_strength = sapply(tie_strength_list, function(x) max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+  )
+  
+  return(summary_df)
+}
+
+## อย่าลืมตั้ง weight = TRUE เพื่อให้ igraph รู้ว่าเรามี valued tie data
+valued_g <- Zachary_KarateClub$Strength %>% 
+  graph_from_adjacency_matrix(mode = "undirected", weight = TRUE)
+
+create_summary_table(valued_g) %>%  glimpse(80)
+```
+
+สำหรับ `KruRooSocNet` มีฟังก์ชัน `summarize_valued_ties()` ข้อมูลนำเข้าคือ igraph object ที่มีค่าเชิงปริมาณ (valued tie data) ซึ่งเราสามารถใช้ฟังก์ชันนี้ในการคำนวณ summary stat ของ valued tie data ได้ดังนี้
+
+```{r}
+summarize_valued_ties(valued_g, weight_attr = "weight", mode = "all") %>% 
+  glimpse(80)
+```
+
+### 4. Alter Composition
+
+เรายังสามารถดำเนินการวิเคราะห์เพื่อทำความเข้าใจว่า ego มีการเชื่อมโยง/สัมพันธ์กับ alters ประเภทไหนบ้าง การดำเนินการดังกล่าวสามารถทำโดยการวิเคราะห์ว่า ego แต่ละคนไปเชื่อมโยงกับ alter ที่มีคุณลักษณะอย่างไร แปลว่าเราจะวิเคราะห์คุณลักษณะของ alter จำแนกตาม ego แต่ละคน 
+
+การวิเคราะห์ดังกล่าวมีความแตกต่างกันไปตามประเภทของคุณลักษณะของ alter ซึ่งอาจจำแนกเป็น 2 ประเภท ได้แก่
+
+- categorical attributes
+
+- continuous attributes
+
+
+#### 4.1 Categorical Attributes
+
+ในห้องเรียนเรายกตัวอย่างการวิเคราะห์ alter composition ของเครือข่าย `Krackhardt_HighTech` มีวัตถุประสงค์ต้องการวิเคราะห์ว่า ego แต่ละคนมีเพื่อนอยู่ในแผนกใดบ้างของบริษัท
+
+สำหรับการเขียน syntax ในห้องจะเห็นว่ามีความซับซ้อนมากพอสมควร
+
+
+```{r}
+## Attribute data
+attr <- Krackhardt_HighTech$Attributes
+ego_data <- attr %>% 
+  rownames_to_column("ego") %>% 
+  select(ego, Department)
+
+## network data
+Krackhardt_HighTech$Friendship %>% 
+   data.frame() %>% 
+   rownames_to_column("ego") %>% 
+   pivot_longer(cols = -ego, names_to = "alter", values_to = "tie") %>% 
+   ## department ของ ego
+    left_join(ego_data, by = "ego") %>% 
+    rename(department_ego = 4) %>% 
+   ## department ของ alter
+   left_join(ego_data, by = join_by("alter" == "ego")) %>% 
+    rename(department_alter = 5) %>% 
+  filter(ego != alter) %>% 
+  group_by(ego, department_ego, department_alter) %>% 
+  reframe(freq = sum(tie)) %>% 
+ # ungroup() %>% 
+  group_by(ego, department_ego) %>% 
+  mutate(prop = freq/sum(freq)) %>% 
+  mutate(IQV = (1 - sum(prop^2)) / (1 - 1/n())) %>% 
+  pivot_wider(names_from = department_alter, values_from = c(freq,prop), values_fill = 0)
+```
+
+
+ใน library-`KruRooSocNet` มีฟังก์ชัน `analyze_alter_composition()` ที่ช่วยในการวิเคราะห์ alter composition ของ ego ในเครือข่าย โดยให้ข้อมูลนำเข้าเป็น igraph object และ data.frame ของ attribute ของ ego และ alter ดังนี้
+
+```{r}
+network_adj <- Krackhardt_HighTech$Friendship 
+attr <-Krackhardt_HighTech$Attributes %>% 
+  rownames_to_column("ego") %>% 
+  select(ego, Department,Tenure, Age)
+
+analyze_categorical_composition(adj_matrix = network_adj, 
+                          node_attributes = attr, 
+                          category_col = "Department",
+                          directed = TRUE) %>% glimpse()
+```
+
+#### 4.2 Continuous Attributes
+
+ในคาบเรียน เราจะต้องไปคัดตัวแปรออกมาก่อน แล้วเขียน syntax ดังนี้
+
+```{r}
+ego_data2 <- attr %>% 
+  select(ego, Tenure)
+
+
+Krackhardt_HighTech$Friendship %>% 
+   data.frame() %>% 
+   rownames_to_column("ego") %>% 
+   pivot_longer(cols = -ego, names_to = "alter", values_to = "tie") %>% 
+  left_join(ego_data2, by = join_by("alter"=="ego")) %>% 
+  filter(ego != alter,
+         tie > 0) %>% 
+  group_by(ego) %>%
+  summarise(num_friend = sum(tie),
+            sum_tenure = sum(Tenure, na.rm = T),
+            mean_tenure = mean(Tenure, na.rm = T),
+            sd_tenure = sd(Tenure, na.rm = T),
+            min_tenure = min(Tenure, na.rm = T),
+            max_tenure = max(Tenure, na.rm = T),
+            range_tenure = max(Tenure, na.rm = T)-min(Tenure, na.rm = T))
+```
+
+
+
+สำหรับใน library-`KruRooSocNet` มีฟังก์ชัน `analyze_continuous_composition()` ที่ช่วยในการวิเคราะห์ alter composition ของ ego ในเครือข่าย โดยให้ข้อมูลนำเข้าเป็น igraph object และ data.frame ของ attribute ของ ego และ alter ดังนี้
+
+```{r}
+analyze_continuous_composition(adj_matrix = network_adj, 
+                          node_attributes = attr, 
+                          attribute_col = "Age",
+                          category_col = "Department",
+                          directed = TRUE) %>% glimpse()
+```
+
+
+
