@@ -844,12 +844,18 @@ plot(a06_ego,
 
 ```{r}
 par(family = "ChulaCharasNew", mar=c(0,0,1,0))
-a06_ego <- make_ego_graph(full_g, V(full_g)["A06"])
+a06_ego <- make_ego_graph(full_g, V(full_g)["A06"],
+                          order=1,
+                          mode="out")
+layout <- layout_in_circle(a06_ego[[1]])
+rownames(layout) <- V(a06_ego[[1]])$name
+layout["A06",]<-c(0,0)
 plot(a06_ego[[1]],
      vertex.size = 30,
      vertex.color = ifelse(V(a06_ego[[1]])$name=="A06","steelblue","orange"),
      vertex.frame.color = "white",
-     edge.arrow.size = 0.5)
+     edge.arrow.size = 0.5,
+     layout = layout)
 ```
 
 
