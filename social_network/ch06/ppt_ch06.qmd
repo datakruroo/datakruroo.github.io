@@ -639,7 +639,7 @@ analyze_categorical_similarity(
   select(node, a, b, c, d,11)
 ```
 
-```{r fig.width=8, fig.height=6, eval = F}
+```{r fig.width=6, fig.height=6, eval = F}
 full_g <- Krackhardt_HighTech$Friendship |> graph_from_adjacency_matrix(mode = "directed")
 V(full_g)$department <- ego_data$Department
 a03 <- subgraph_from_edges(full_g, 
@@ -677,7 +677,7 @@ vertex.color = ifelse(V(a08)$department == V(a03)$department[1],
 
 ::: {.column width="50%"}
 
-```{r fig.width=6, fig.height=6, echo = F}
+```{r fig.width=5, fig.height=5, echo = F}
 full_g <- Krackhardt_HighTech$Friendship |> graph_from_adjacency_matrix(mode = "directed")
 V(full_g)$department <- ego_data$Department
 a03 <- subgraph_from_edges(full_g, 
@@ -700,14 +700,14 @@ edge.arrow.size = 0.1,
 edge.arrow.width =0.1,
 vertex.color = ifelse(V(a03)$department == V(a03)$department[1], 
                       "steelblue","maroon"),
-main = "S = 1, EI = -1, OR = Inf, Yule = 1"
+main = "S = 1, EI = -1, OR = Inf, Yule = -1"
 )
 ```
 
 :::
 
 ::: {.column width="50%"}
-```{r fig.width=6, fig.height=6}
+```{r fig.width=5, fig.height=5, echo = T}
 par(mar=c(0,1,1,0))
 plot(a08,
 edge.arrow.size = 0.1,
@@ -725,7 +725,7 @@ main = "S = 0, EI = 1, OR = 0, Yule = 1"
 
 ## Ego & Alter Similarity {.smaller}
 
-```{r fig.width=6, fig.height=6}
+```{r fig.width=6, fig.height=6, echo = T}
 
 a06 <- subgraph_from_edges(full_g, 
                            E(full_g)[.from("A06")])
@@ -774,15 +774,529 @@ main = "S = 0.5, EI = 0, OR = 13, Yule = 0.86"
 
 การคำนวณค่าดัชนีดังกล่าวทำได้ค่อนข้างยากหากเขียน script เอง ดังนั้นเราสามารถใช้ฟังก์ชันใน `KruRooSocNet` ช่วยได้
 
-```{r}
+```{r echo = T}
 analyze_continuous_similarity(
     adj_matrix = Krackhardt_HighTech$Friendship,
-  node_attributes = attr %>% rownames_to_column("ego"),
+  node_attributes = Krackhardt_HighTech$Attributes %>% rownames_to_column("node"),
+  attribute_col = "Age"
+) %>% glimpse(80)
+
+analyze_continuous_similarity(
+    adj_matrix = Krackhardt_HighTech$Friendship,
+  node_attributes = Krackhardt_HighTech$Attributes %>% rownames_to_column("node"),
   attribute_col = "Age"
 ) %>% 
-  arrange(Node) %>% 
-  glimpse()
+arrange(node)
 ```
+
+
+
+## 6. Ego-Network Structural Shape Measures {.smaller}
+
+ตัวชี้วัด local node-level กลุ่มสุดท้ายคือการวัดลักษณะโครงสร้างของเครือข่าย
+
+- **Structure Holes** หมายถึง เครือข่ายที่ alters ภายใน ego network ไม่มีความสัมพันธ์กัน หรือมีความสัมพันธ์กันน้อยจนเกิดเป็นช่องว่างในการแลกเปลี่ยน/สื่อสารระหว่าง alters
+  
+
+- **Whole-Network measures** เช่น density, centralization, number of component, average distance ทั้งหมดนี้ช่วยอธิบายว่า ego มีอิทธิพลมากน่้อยแค่ไหนใน local network
+  
+
+
+## 6.1 Structure Holes Measures {.smaller}
+
+เครือข่ายที่มี structural holes คือเครือข่ายของ ego ที่ alters ไม่ได้มีความสัมพันธ์ซึ่งกันและกัน หรือมีความสัมพันธ์กันน้อย
+
+- ในกรณีดังกล่าว ego จะมีบทบาทเป็นตัวกลางที่เรียกว่า Bridge หรือ Broker ที่เชื่อมโยง alters เข้าด้วยกัน
+  
+- เครือข่ายของ ego ลักษณะดังกล่าวมีแนวโน้มที่ ego จะมีความสำคัญมากในเครือข่าย เพราะสามารถเข้าถึงข้อมูลและทรัพยากรที่หลากหลาย และมีอำนาจการควบคุมการไหลของข้อมูลและทรัพยากรในเครือข่ายได้สูง
+
+เครือข่ายของ ego ที่มี structural holes จำนวนมากมีลักษณะสำคัญ 2 ลักษณะได้แก่
+
+- มีขนาดใหญ่ (มี alters จำนวนมาก)
+
+- มีความหนาแน่นต่ำ (alters มีความสัมพันธ์ซึ่งกันและกันน้อย)
+
+
+
+
+## 6.1 Structure Holes Measures {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+```{r}
+par(family = "ChulaCharasNew", mar=c(0,0,1,0))
+a06_ego <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A06")])
+plot(a06_ego,
+     vertex.size = 30,
+     vertex.color = ifelse(V(a06_ego)$name=="A06","steelblue","orange"),
+     vertex.frame.color = "white",
+     edge.arrow.size = 0.5,
+     main = "ตัวอย่างสมมุติเครือข่ายแบบ structural holes")
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+par(family = "ChulaCharasNew", mar=c(0,0,1,0))
+a06_ego <- make_ego_graph(full_g, V(full_g)["A06"])
+plot(a06_ego[[1]],
+     vertex.size = 30,
+     vertex.color = ifelse(V(a06_ego[[1]])$name=="A06","steelblue","orange"),
+     vertex.frame.color = "white",
+     edge.arrow.size = 0.5)
+```
+
+
+:::
+
+::::
+
+่ีตัวชี้วัดสำคัญ 2 ตัวที่สามารถใช้บ่งชี้ Structure Holes 
+
+- Effect Size (ES), Normalized Effect Size (NES)
+
+- Constraint
+
+## 6.1 Structure Holes: Effect Size {.smaller}
+
+
+$$
+ES_i = \sum_{j}(1-\sum_{k} p_{ik}m_{kj})
+$$
+โดยที
+
+- i คือ ego, j คือ alters, k คือ alters ที่เชื่อมโยงกับ alters j
+
+- $p_{ik}$ คือ row total-normalized tie strength ได้จาก adjacency matrix (วัดความสัมพันธ์ระหว่าง ego กับ alter j)
+
+- $m_{kj}$ คือ row max-normalized tie strength ได้จาก adjacency matrix (วัดความสัมพันธ์ระหว่าง alter j กับ alter k)
+
+ดังนั้นถ้า effect size สูง แสดงว่า เครือข่าย ego มีโครงสร้างแบบช่องว่างมาก ego มีแนวโน้มมีบทบาทเป็น bridge หรือ broker ในเครือข่าย
+
+## 6.1 Structure Holes: Constraint {.smaller}
+
+Burt’s Constraint ใช้สำหรับวัดข้อจำกัดของ ego ในการควบคุมหรือเข้าถึงทรัพยากรภายในเครือข่าย หรือ ข้อจำกัดในการเป็นตัวกลางของ ego ดังนั้นตัวชี้วัดนี้จึงเป็นสเกลกลับด้านของ effect size ดังนั้น ถ้า constraint มาก แสดงว่า เครือข่ายมีแนวโน้มที่จะมี structural holes น้อยลง
+
+- pairwise constraint: ตัวชี้วัดว่า alter j มีความสามารถในการจำกัดอิทธิพลของ ego i มากน้อยแค่ไหน 
+
+$$
+c_{ij} = \left( p_{ij} + \sum_{k} p_{ik} \cdot p_{kj} \right)^2
+$$
+
+โดยที่ $p_{ij}$ คือ row total-normalized tie strength ระหว่าง ego i กับ alter j ส่วน $p_{ij} \cdot p_{kj}$ คือ ความสัมพันธ์ทางอ้อมที่เชื่อมโยง ego i กับ alter j ผ่าน alter k
+
+
+## 6.1 Structure Holes: Constraint {.smaller}
+
+Burt’s Constraint ใช้สำหรับวัดข้อจำกัดของ ego ในการควบคุมหรือเข้าถึงทรัพยากรภายในเครือข่าย หรือ ข้อจำกัดในการเป็นตัวกลางของ ego ดังนั้นตัวชี้วัดนี้จึงเป็นสเกลกลับด้านของ effect size ดังนั้น ถ้า constraint มาก แสดงว่า เครือข่ายมีแนวโน้มที่จะมี structural holes น้อยลง
+
+- total constraint: ผลรวมของ pairwise constraint ของ alter j ทุกคน ใน ego i แสดงปริมาณข้อจำกัดในภาพรวม
+
+$$
+c_i = \sum_{j} c_{ij}
+$$
+
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+การคำนวณค่า effect size และ constraint สามารถทำได้ด้วย `KruRooSocNet` โดยใช้ฟังก์ชัน `calculate_effect_size()` และ `calculate_constraint()` ดังตัวอย่าง
+
+```{r echo = T}
+calculate_effect_size(
+  adj_matrix = full_g %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix(),
+  weight = F,
+  directed = TRUE
+) %>% head(10)
+```
+
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+การคำนวณค่า effect size และ constraint สามารถทำได้ด้วย `KruRooSocNet` โดยใช้ฟังก์ชัน `calculate_effect_size()` และ `calculate_constraint()` ดังตัวอย่าง
+
+
+```{r echo = T}
+calculate_constraint(
+  adj_matrix = full_g %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix()
+)
+```
+
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = T}
+a06_ego <- subgraph_from_edges(full_g, 
+                           E(full_g)[.from("A06")])
+calculate_effect_size(
+  adj_matrix = a06_ego %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix()) %>% 
+filter(node == "A06")
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+
+calculate_constraint(
+  adj_matrix = a06_ego %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix()) %>% 
+filter(ego == "A06")
+
+```
+
+
+:::
+
+::::
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+```{r echo = F}
+par(family = "ChulaCharasNew")
+a06_ego %>% 
+  plot(main = "Size = 6, Effect Size = 6, Constraint = 0.03",
+       vertex.color = ifelse(V(a06_ego)$name == "A06", "steelblue", "orange"),
+       vertex.size = 30,
+       vertex.frame.color = "white")
+```
+
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo = T}
+
+a06_ego <- make_ego_graph(
+  full_g, V(full_g)["A06"],
+  mode = "out") 
+calculate_effect_size(
+  adj_matrix = a06_ego[[1]] %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix()) %>% 
+filter(node == "A06")
+
+```
+
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r echo = T}
+
+calculate_constraint(
+  adj_matrix = a06_ego[[1]] %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix()) %>% 
+filter(ego == "A06")
+
+```
+
+
+
+:::
+
+::::
+
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+```{r echo = F}
+
+# ใช้ layout_in_circle พร้อม order
+layout <- layout_in_circle(a06_ego[[1]])
+
+# แก้ตำแหน่ง A06 ให้อยู่ตรงกลาง
+layout[6, ] <- c(0, 0)  # A06 (โหนดแรก) อยู่กลางวงที่ (0,0)
+
+par(family = "ChulaCharasNew", 
+    mar=c(0,0,1,0))
+# วาดกราฟ
+plot(a06_ego[[1]],
+     layout = layout,
+     vertex.size = 30,
+     vertex.color = ifelse(V(a06_ego[[1]])$name == "A06", "steelblue", "orange"),
+     vertex.frame.color = "white",
+     edge.arrow.size = 0.5,
+     main = "Size = 6, Effect Size = 4.17, Constraint = 0.29")
+```
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+```{r echo = T, eval = F}
+library(ggrepel)
+calculate_effect_size(
+  adj_matrix = full_g %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix(),
+  weight = F,
+  directed = TRUE
+) %>% 
+  bind_cols(
+    calculate_constraint(
+      adj_matrix = full_g %>% 
+        as_adjacency_matrix() %>% 
+        as.matrix()
+    ) %>% 
+      filter(alter == "total")
+  ) %>% 
+  bind_cols(
+    out_degree = degree(full_g, mode = "out")
+  ) %>% 
+  mutate(norm_ES = ifelse(out_degree ==0 , effect_size,
+    effect_size / out_degree)) %>%
+  ggplot(aes(x = effect_size, y = constraint))+
+  geom_text_repel(aes(label = node, size = out_degree))
+```
+
+## 6.1 Structure Holes: ES, Constraint {.smaller}
+
+```{r echo = F}
+library(ggrepel)
+calculate_effect_size(
+  adj_matrix = full_g %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix(),
+  weight = F,
+  directed = TRUE
+) %>% 
+  bind_cols(
+    calculate_constraint(
+      adj_matrix = full_g %>% 
+        as_adjacency_matrix() %>% 
+        as.matrix()
+    ) %>% 
+      filter(alter == "total")
+  ) %>% 
+  bind_cols(
+    out_degree = degree(full_g, mode = "out")
+  ) %>% 
+  mutate(norm_ES = ifelse(out_degree ==0 , effect_size,
+    effect_size / out_degree)) %>%
+  ggplot(aes(x = norm_ES, y = constraint))+
+  geom_text_repel(aes(label = node, size = out_degree))
+```
+
+## 6.1 Structure Holes: Shadow Ego {.smaller}
+
+shadow ego คือ โหนดที่เชื่อมโยงกับ alters ใน ego network แต่ไม่ได้เป็น alters ของ ego โดยตรง โดย shadow ego มีความสำคัญในการเชื่อมโยงเครือข่ายของ ego และเครือข่ายอื่น ๆ ดังนั้น shadow ego มีบทบาทเป็น bridge หรือ broker ในเครือข่าย
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r echo = T}
+calculate_constraint(
+      adj_matrix = full_g %>% 
+        as_adjacency_matrix() %>% 
+        as.matrix()
+    ) %>% 
+  filter(ego == "A17") %>% 
+  arrange(desc(constraint))
+
+```
+
+
+:::
+
+::: {.column width="60%"}
+
+```{r}
+
+a08_ego <- make_ego_graph(
+  full_g, V(full_g)["A17"], 
+  order = 1,
+  mode = "out")
+V(a08_ego[[1]])$degree <- degree(a08_ego[[1]], mode = "out")
+layout <- layout_in_circle(a08_ego[[1]])
+rownames(layout) <- V(a08_ego[[1]])$name
+layout["A17",] <- c(-0.5,0) 
+layout["A11",] <- c(0.5,0) 
+par(mar=c(0,0,0,0))
+plot(a08_ego[[1]],
+     vertex.color = 
+       ifelse(V(a08_ego[[1]])$name %in% c("A17", "A11"), 
+              "steelblue", "orange"),
+     vertex.size = V(a08_ego[[1]])$degree*2,
+     edge.color = ifelse(E(a08_ego[[1]]) %in% 
+                           E(a08_ego[[1]])[.from("A11")], "black","grey80"),
+     edge.arrow.size = 0.4,
+     edge.curved = 0.2,
+     layout = layout)
+```
+
+:::
+
+::::
+
+
+
+
+
+
+
+## 6.2 Whole-Network Measures {.smaller}
+
+ใช้หลักการเดียวกับการวัดคุณลักษณะของเครือข่ายในระดับโครงสร้างของเครือข่ายทั้งหมด แต่การคำนวณจะคำนวณบนเครือข่าย ego และมีการลบ ego ออกก่อนการคำนวณ
+
+
+- Density: ความหนาแน่นของเครือข่าย หมายถึง สัดส่วนของ alters ที่มีความเชื่อมโยงถึงกัน โดยคำนวณจาก จำนวนเส้นเชื่อมโยงจริงระหว่าง alters หารด้วยจำนวนเส้นเชื่อมโยงที่เป็นไปได้ทั้งหมด เครือข่ายของ ego ที่มีค่า density สูงแสดงว่า alters มีความสัมพันธ์กันมาก ซึ่งแนวคิดนี้มีความสอดคล้องกับแนวคิดของ constraint
+
+
+- Centralization: คือการวัดว่า อิทธิพลหรือความสัมพันธ์ในเครือข่ายของ ego ถูกกระจุกอยู่ที่ alter ตัวใดตัวหนึ่งหรือไม่ ผ่านการพิจารณาการกระจายของ centrality index ภายใน ego network (ไม่นับรวม ego) โดยปกติค่า centrality จะถูก normalized ให้อยู่ในช่วง [0,1] โดยถ้ามีค่าใกล้ 1 แสดงว่า  alters ส่วนใหญ่เชื่อมโยงกับ alter เดียว
+
+
+- จำนวน ของ Component (เครือข่ายย่อยที่มีการเชื่อมโยงภายในแต่ไม่เชื่อมโยงกับกลุ่มอื่น): การที่ ego network มีจำนวน component มาก บ่งชี้ว่า ego มีความสัมพันธ์กับ alter ที่มีบริบททางสังคมที่แตกต่างกัน ซึ่งสะท้อนว่า ego มีแนวโน้มเป็นตัวกลางในการเชื่อมโยงกลุ่มต่าง ๆ ในเครือข่าย
+
+## 6.2 Whole-Network Measures {.smaller}
+
+
+- ขนาดของ component ที่ใหญ่ที่สุด : เป็นอีกตัวชี้วัดที่บ่งชี้อิทธิพลของ ego ได้ทางหนึ่ง กล่าวคือ หากขนาดของ component ใน ego network มีขนาดใหญ่ แสดงว่า alters หลายคนสามารถเชื่อมโยงกันเองได้แม้ไม่มี ego 
+
+- average reciprocal distance หรือ compactness สามารถหาได้จาก geodesic distance ดังนี้
+
+  - คำนวณ geodesic distance ระหว่าง alters ทุกคู่ใน ego network
+  
+  - หาส่วนกลับของระยะทางดังกล่าว (หากไม่มีเส้นเชื่อมโยงกำหนดให้ reciprocal = 0)
+  
+  - คำนวณค่าเฉลี่ยของค่าทั้งหมด ถ้ามีค่าสูงแสดงว่า alter ใน ego network มีความกระชับกันมาก
+
+
+
+## 6.2 Whole-Network Measures {.smaller}
+
+
+
+```{r echo = TRUE}
+calculate_ego_structure(
+ adj_matrix = full_g %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix(),
+ directed = TRUE,
+ centralization_type = "degree",
+ degree_mode = "out") %>% glimpse(80)
+```
+
+
+## 6.2 Whole-Network Measures {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+library(igraph)
+# สร้าง edge ตามภาพ
+edges_w1 <- c("W1", "S1", 
+              "W1", "W3", 
+              "W1", "W4", 
+              "S1", "W3", 
+              "S1", "W4", 
+              "W3", "W4")
+
+# สร้างกราฟ undirected
+g_w1 <-make_graph(edges_w1, directed = FALSE)
+layout <- layout_in_circle(g_w1)
+layout[1,] <- c(-0.3,0)
+# วาดกราฟ
+plot(g_w1,
+     layout = layout,
+     vertex.size = 30,
+     vertex.label.color = "black",
+     edge.width = 2,
+     layout = layout_in_circle)
+
+```
+
+
+```{r}
+library(igraph)
+# สร้าง edge ตามภาพ
+edges_w1 <- c("W1", "S1", 
+              "W1", "W3", 
+              "W1", "W4", 
+              "W3", "W4")
+
+# สร้างกราฟ undirected
+g_w1 <-make_graph(edges_w1, directed = FALSE)
+layout <- layout_in_circle(g_w1)
+layout[1,] <- c(-0.3,0)
+# วาดกราฟ
+plot(g_w1,
+     layout = layout,
+     vertex.size = 30,
+     vertex.label.color = "black",
+     edge.width = 2,
+     layout = layout_in_circle)
+
+```
+
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+```{r}
+calculate_ego_structure(
+ adj_matrix = g_w1 %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix(),
+ directed = FALSE,
+ centralization_type = "degree",
+ degree_mode = "all") %>%
+ filter(ego == "W1") %>% 
+glimpse()
+```
+<br>
+<br>
+
+```{r}
+calculate_ego_structure(
+ adj_matrix = g_w1 %>% 
+    as_adjacency_matrix() %>% 
+    as.matrix(),
+ directed = FALSE,
+ centralization_type = "degree",
+ degree_mode = "all") %>%
+ filter(ego == "W1") %>% 
+glimpse()
+```
+
+:::
+
+::::
+
+
+
+
+
+
+
+
 
 
 
