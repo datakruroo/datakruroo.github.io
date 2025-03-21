@@ -1,0 +1,29 @@
+/* custom.scss */
+
+.reveal {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5em;
+  background-color: #ffffff;
+  color: #222;
+}
+
+.reveal section {
+  padding: 4em 8em;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reveal h2 {
+  font-size: 2.5em;
+  margin-bottom: 0.5em;
+}
+
+.reveal p, .reveal li {
+  line-height: 1.6;
+}
+
+.reveal img {
+  width: 100%;
+  border-radius: 8px;
+  margin: 2em 0;
+}

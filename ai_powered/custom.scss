@@ -1,0 +1,72 @@
+/*-- scss:defaults --*/
+// Base document colors
+$body-bg: #fff;
+$body-color: #333;
+$link-color: #0056b3;
+$presentation-heading-color: #005299;
+
+// Code blocks
+$code-block-bg: #f8f9fa;
+
+/*-- scss:rules --*/
+.reveal .slide-number {
+  font-size: 0.8em;
+}
+
+.reveal .title-slide {
+  background-color: #f5f5f5;
+}
+
+.center {
+  text-align: center;
+}
+
+.reveal h1 {
+  font-size: 2.5em;
+  font-weight: 700;
+}
+
+.reveal h2 {
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.reveal h3 {
+  font-size: 1.4em;
+  font-weight: 500;
+}
+
+.reveal .slide blockquote {
+  border-left: 4px solid $presentation-heading-color;
+  padding-left: 1em;
+  font-style: italic;
+}
+
+.reveal .slide table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reveal .slide table th {
+  background-color: lighten($presentation-heading-color, 50%);
+}
+
+.reveal .slide table th,
+.reveal .slide table td {
+  padding: 0.5em;
+  border: 1px solid #ddd;
+}
+
+.reveal .slide ul {
+  list-style-type: square;
+}
+
+// Custom scrollytelling styles
+.scrolly-overlay .step {
+  transition: background-color 250ms ease-in-out;
+}
+
+.scrolly-overlay .step.is-active {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-left: 5px solid $presentation-heading-color;
+}

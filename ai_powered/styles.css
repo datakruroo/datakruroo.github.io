@@ -1,0 +1,108 @@
+/* Additional styles for scrollytelling */
+.scrolly {
+  position: relative;
+  display: flex;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  margin: 2em 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.scrolly-overlay {
+  flex: 1;
+  min-width: 30%;
+  padding: 1em;
+  z-index: 10;
+}
+
+.scrolly-graph {
+  flex: 2;
+  position: sticky;
+  top: 20vh;
+  height: 60vh;
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step {
+  margin-bottom: 80vh;
+  padding: 1.5em;
+  border-left: 3px solid #007bff;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.step:last-child {
+  margin-bottom: 10vh;
+}
+
+.step h3 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+.step.is-active {
+  border-left-width: 5px;
+  border-left-color: #0056b3;
+  transform: translateX(5px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scrolly {
+    flex-direction: column;
+  }
+  
+  .scrolly-overlay {
+    min-width: 100%;
+  }
+  
+  .scrolly-graph {
+    position: relative;
+    height: 50vh;
+    width: 100%;
+    top: 0;
+  }
+  
+  .step {
+    margin-bottom: 5vh;
+  }
+}
+
+/* Header and footer styling */
+header, footer {
+  font-size: 0.8em;
+  color: #666;
+  padding: 0.5em;
+}
+
+/* Center content */
+.center {
+  text-align: center;
+}
+
+/* Other utility classes */
+.highlight {
+  background-color: #ffffcc;
+  padding: 0.2em;
+}
+
+.text-primary {
+  color: #007bff;
+}
+
+.text-success {
+  color: #28a745;
+}
+
+.text-warning {
+  color: #ffc107;
+}
+
+.text-danger {
+  color: #dc3545;
+}

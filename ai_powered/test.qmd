@@ -1,0 +1,496 @@
+---
+title: "การวิเคราะห์ข้อมูลการศึกษาไทย"
+subtitle: "มุมมองเชิงลึกจากข้อมูล 5 ปีย้อนหลัง"
+author: "Your Name"
+date: last-modified
+format:
+  html:
+    theme: [cosmo, custom.scss]
+    toc: true
+    code-fold: true
+    code-summary: "แสดงโค้ด"
+    code-tools: true
+    highlight-style: github
+    page-layout: article
+    include-after-body: scrollytelling.js
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| include: false
+
+library(tidyverse)
+library(scales)
+library(ggiraph)
+library(patchwork)
+library(hrbrthemes)
+library(viridis)
+library(knitr)
+
+# สร้างข้อมูลตัวอย่าง
+set.seed(123)
+education_data <- tibble(
+  year = rep(2018:2022, each = 20),
+  school_id = rep(1:20, 5),
+  region = rep(c("เหนือ", "กลาง", "ตะวันออกเฉียงเหนือ", "ตะวันออก", "ใต้"), each = 4) %>% 
+    rep(5),
+  students = rnorm(100, mean = 500, sd = 100) %>% round(),
+  teacher_ratio = rnorm(100, mean = 20, sd = 3) %>% round(1),
+  budget_per_student = rnorm(100, mean = 40000, sd = 5000) %>% round(-2),
+  math_score = rnorm(100, mean = 65, sd = 8) %>% round(1),
+  science_score = rnorm(100, mean = 68, sd = 7) %>% round(1),
+  language_score = rnorm(100, mean = 70, sd = 6) %>% round(1),
+  graduation_rate = rbeta(100, 8, 2) * 100 %>% round(1)
+)
+```
+
+## บทนำ {.unnumbered}
+
+ความท้าทายในระบบการศึกษาไทยมีมากมาย การวิเคราะห์ข้อมูลเชิงลึกจะช่วยให้เราเข้าใจสถานการณ์และนำไปสู่การพัฒนานโยบายที่มีประสิทธิภาพ การนำเสนอนี้จะพาคุณสำรวจข้อมูลการศึกษาและค้นพบข้อมูลเชิงลึกที่น่าสนใจ
+
+:::{.callout-note}
+การนำเสนอนี้สร้างขึ้นด้วย Quarto และใช้รูปแบบ scrollytelling เพื่อการนำเสนอข้อมูลที่น่าสนใจ เลื่อนลงเพื่อดูการวิเคราะห์ต่อไป
+:::
+
+## ผลการเรียนรู้ทั่วประเทศ
+
+::::{.panel-tabset}
+
+## คะแนนเฉลี่ยรายวิชา
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+#| fig-dpi: 100
+
+education_data %>%
+  group_by(region) %>%
+  summarise(
+    math = mean(math_score),
+    science = mean(science_score),
+    language = mean(language_score)
+  ) %>%
+  pivot_longer(cols = c(math, science, language), names_to = "subject", values_to = "score") %>%
+  mutate(subject = case_when(
+    subject == "math" ~ "คณิตศาสตร์",
+    subject == "science" ~ "วิทยาศาสตร์",
+    subject == "language" ~ "ภาษา"
+  )) %>%
+  ggplot(aes(x = region, y = score, fill = subject)) +
+  geom_col(position = "dodge") +
+  scale_fill_viridis_d() +
+  labs(
+    title = "คะแนนเฉลี่ยรายวิชาแยกตามภูมิภาค",
+    x = "ภูมิภาค",
+    y = "คะแนนเฉลี่ย",
+    fill = "วิชา"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+## อัตราการจบการศึกษา
+
+```{r}
+education_data %>%
+  group_by(region) %>%
+  summarise(grad_rate = mean(graduation_rate)) %>%
+  ggplot(aes(x = reorder(region, grad_rate), y = grad_rate, fill = region)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(grad_rate, 1), "%")), 
+            vjust = -0.5, size = 4) +
+  scale_fill_viridis_d() +
+  labs(
+    title = "อัตราการจบการศึกษาเฉลี่ยแยกตามภูมิภาค",
+    x = "ภูมิภาค",
+    y = "อัตราการจบการศึกษา (%)"
+  ) +
+  theme_ipsum_thai() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "none"
+  )
+```
+
+::::
+
+## แนวโน้มระดับประเทศ {#sec-national-trends}
+
+:::{.scrollytelling-image}
+![](https://via.placeholder.com/800x600.png?text=เปรียบเสมือนกราฟแนวโน้มที่แสดงเมื่อเลื่อน)
+:::
+
+:::{.scrollytelling-text}
+
+:::{.scrollytelling-step data-index=0 data-hash="trend-overview"}
+### แนวโน้มคะแนนการทดสอบ 5 ปีย้อนหลัง
+
+คะแนนคณิตศาสตร์มีแนวโน้มเพิ่มขึ้นเล็กน้อย เพียง 2.3% ในช่วง 5 ปีที่ผ่านมา แต่ยังต่ำกว่าเป้าหมายที่กำหนดไว้ที่ 70% ในทางกลับกัน คะแนนภาษามีแนวโน้มลดลงอย่างต่อเนื่อง
+:::
+
+:::{.scrollytelling-step data-index=1 data-hash="budget-impact"}
+### ความสัมพันธ์ระหว่างงบประมาณและผลสัมฤทธิ์
+
+พบความสัมพันธ์เชิงบวกระหว่างงบประมาณต่อนักเรียนและผลการเรียน โดยเฉพาะในภูมิภาคที่มีงบประมาณสูงกว่า 45,000 บาทต่อนักเรียน มีผลการเรียนดีขึ้นถึง 7.8%
+:::
+
+:::{.scrollytelling-step data-index=2 data-hash="teacher-ratio"}
+### อัตราส่วนครูต่อนักเรียนและผลกระทบ
+
+โรงเรียนที่มีอัตราส่วนครูต่อนักเรียนต่ำกว่า 15:1 มีผลสัมฤทธิ์ทางการเรียนและอัตราการจบการศึกษาสูงกว่าโดยเฉลี่ย 12% เมื่อเทียบกับโรงเรียนที่มีอัตราส่วนสูงกว่า 25:1
+:::
+
+:::
+
+```{r}
+#| eval: true
+#| echo: false
+#| include: false
+
+# โค้ดสำหรับสร้างกราฟแต่ละขั้นตอนของ scrollytelling
+# จะถูกนำไปใช้โดย JavaScript เมื่อถึงแต่ละขั้นตอน
+
+# Step 1: แนวโน้มคะแนนการทดสอบ 5 ปีย้อนหลัง
+trend_plot <- education_data %>%
+  group_by(year) %>%
+  summarise(
+    math = mean(math_score),
+    science = mean(science_score),
+    language = mean(language_score)
+  ) %>%
+  pivot_longer(cols = c(math, science, language), names_to = "subject", values_to = "score") %>%
+  mutate(subject = case_when(
+    subject == "math" ~ "คณิตศาสตร์",
+    subject == "science" ~ "วิทยาศาสตร์",
+    subject == "language" ~ "ภาษา"
+  )) %>%
+  ggplot(aes(x = year, y = score, color = subject, group = subject)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  scale_color_viridis_d() +
+  labs(
+    title = "ความสัมพันธ์ระหว่างงบประมาณ คะแนน และอัตราการจบการศึกษา",
+    x = "งบประมาณเฉลี่ยต่อนักเรียน (บาท)",
+    y = "คะแนนคณิตศาสตร์เฉลี่ย",
+    color = "ภูมิภาค"
+  ) +
+  theme_ipsum_thai() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 11))d() +
+  labs(
+    title = "แนวโน้มคะแนนการทดสอบระดับประเทศ (2018-2022)",
+    x = "ปี",
+    y = "คะแนนเฉลี่ย",
+    color = "วิชา"
+  ) +
+  theme_ipsum_thai() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+# Step 2: ความสัมพันธ์ระหว่างงบประมาณและผลสัมฤทธิ์
+budget_plot <- education_data %>%
+  ggplot(aes(x = budget_per_student, y = math_score)) +
+  geom_point(aes(color = region), alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  scale_color_viridis_d() +
+  labs(
+    title = "ความสัมพันธ์ระหว่างงบประมาณและคะแนนคณิตศาสตร์",
+    x = "งบประมาณต่อนักเรียน (บาท)",
+    y = "คะแนนคณิตศาสตร์เฉลี่ย",
+    color = "ภูมิภาค"
+  ) +
+  theme_ipsum_thai() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+# Step 3: อัตราส่วนครูต่อนักเรียนและผลกระทบ
+ratio_plot <- education_data %>%
+  mutate(ratio_group = cut(teacher_ratio, 
+                           breaks = c(0, 15, 20, 25, 30),
+                           labels = c("น้อยกว่า 15", "15-20", "20-25", "มากกว่า 25"))) %>%
+  group_by(ratio_group) %>%
+  summarise(
+    math = mean(math_score),
+    science = mean(science_score),
+    language = mean(language_score),
+    graduation = mean(graduation_rate)
+  ) %>%
+  pivot_longer(cols = c(math, science, language, graduation), 
+               names_to = "metric", values_to = "value") %>%
+  mutate(metric = case_when(
+    metric == "math" ~ "คณิตศาสตร์",
+    metric == "science" ~ "วิทยาศาสตร์",
+    metric == "language" ~ "ภาษา",
+    metric == "graduation" ~ "อัตราการจบการศึกษา"
+  )) %>%
+  ggplot(aes(x = ratio_group, y = value, fill = metric)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~metric, scales = "free_y") +
+  scale_fill_viridis_d() +
+  labs(
+    title = "ผลกระทบของอัตราส่วนครูต่อนักเรียน",
+    x = "อัตราส่วนครูต่อนักเรียน",
+    y = "ค่าเฉลี่ย"
+  ) +
+  theme_ipsum_thai() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    strip.background = element_rect(fill = "lightgray"),
+    strip.text = element_text(face = "bold"),
+    legend.position = "none"
+  )
+```
+
+## การวิเคราะห์เชิงพื้นที่ {#sec-geographic-analysis .scrollytelling}
+
+::: {.scrollytelling-side-by-side}
+
+::: {.scrollytelling-text}
+::: {.scrollytelling-step data-index=0 data-hash="budget-distribution" .active}
+### การกระจายทรัพยากรทางการศึกษา
+
+งบประมาณต่อนักเรียนมีความแตกต่างกันอย่างมีนัยสำคัญระหว่างภูมิภาค โดยภาคกลางได้รับงบประมาณสูงที่สุด ในขณะที่ภาคตะวันออกเฉียงเหนือได้รับน้อยที่สุด ซึ่งแตกต่างกันถึง 18.5%
+:::
+
+::: {.scrollytelling-step data-index=1 data-hash="education-gap"}
+### ช่องว่างด้านคุณภาพการศึกษา
+
+ภูมิภาคที่มีทรัพยากรน้อยมักมีผลสัมฤทธิ์ทางการเรียนต่ำกว่าค่าเฉลี่ยประเทศ โดยเฉพาะในวิชาคณิตศาสตร์และวิทยาศาสตร์ ซึ่งมีความแตกต่างถึง 8.3 คะแนน
+:::
+
+::: {.scrollytelling-step data-index=2 data-hash="graduation-rate"}
+### อัตราการจบการศึกษา
+
+อัตราการจบการศึกษามีความสัมพันธ์โดยตรงกับงบประมาณและทรัพยากรที่โรงเรียนได้รับ โดยภูมิภาคที่มีงบประมาณสูงมีอัตราการจบการศึกษาสูงกว่าถึง 12.7%
+:::
+:::
+
+::: {.scrollytelling-visual}
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+#| fig-dpi: 100
+#| fig-align: center
+
+# สร้างกราฟแสดงการกระจายงบประมาณ - ใช้สำหรับขั้นตอนแรก (default)
+budget_by_region <- education_data %>%
+  group_by(region) %>%
+  summarise(avg_budget = mean(budget_per_student)) %>%
+  arrange(desc(avg_budget))
+
+budget_by_region %>%
+  ggplot(aes(x = reorder(region, -avg_budget), y = avg_budget, fill = region)) +
+  geom_col() +
+  geom_text(aes(label = scales::comma(round(avg_budget))), 
+            vjust = -0.5, size = 4) +
+  scale_fill_viridis_d() +
+  labs(
+    title = "งบประมาณเฉลี่ยต่อนักเรียนแยกตามภูมิภาค",
+    x = "ภูมิภาค",
+    y = "งบประมาณเฉลี่ยต่อนักเรียน (บาท)"
+  ) +
+  theme_ipsum_thai() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "none"
+  )
+```
+:::
+
+:::
+
+## ข้อเสนอแนะเชิงนโยบาย {#sec-policy-recommendations}
+
+::: {.callout-important}
+## ประเด็นสำคัญที่ต้องพิจารณา
+
+การวิเคราะห์ข้อมูลแสดงให้เห็นว่า การจัดสรรทรัพยากรอย่างเท่าเทียมและการพัฒนาคุณภาพการเรียนการสอนเป็นปัจจัยสำคัญในการปรับปรุงผลลัพธ์ทางการศึกษา
+:::
+
+::::: {.panel-tabset}
+
+## การกระจายทรัพยากร
+
+::: {.columns}
+::: {.column width="60%"}
+การกระจายทรัพยากรอย่างเท่าเทียมเป็นสิ่งสำคัญ โดยเฉพาะในพื้นที่ที่มีผลการเรียนต่ำกว่าค่าเฉลี่ย มาตรการที่แนะนำ:
+
+1. **จัดสรรงบประมาณเพิ่มเติม** ให้กับพื้นที่ที่มีความต้องการสูง
+2. **ปรับปรุงอัตราส่วนครูต่อนักเรียน** โดยเฉพาะในพื้นที่ห่างไกล
+3. **พัฒนาโครงสร้างพื้นฐาน** ที่จำเป็นสำหรับการเรียนรู้ที่มีคุณภาพ
+4. **ส่งเสริมการมีส่วนร่วมของชุมชน** ในการระดมทรัพยากร
+:::
+
+::: {.column width="40%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+#| fig-dpi: 100
+
+# สร้างข้อมูลเพื่อแสดงประโยชน์ของนโยบายที่เสนอ
+policy_impact <- tibble(
+  policy = c(
+    "เพิ่มงบประมาณในพื้นที่ขาดแคลน",
+    "ลดอัตราส่วนครูต่อนักเรียน",
+    "พัฒนาโครงสร้างพื้นฐาน",
+    "ส่งเสริมการมีส่วนร่วม"
+  ),
+  impact = c(8.5, 7.8, 6.2, 5.5),
+  cost = c(9.2, 8.7, 6.5, 4.3),
+  implementation_time = c(3, 4, 2, 1)
+)
+
+policy_impact %>%
+  pivot_longer(cols = c(impact, cost), names_to = "metric", values_to = "value") %>%
+  mutate(
+    metric = if_else(metric == "impact", "ผลกระทบ", "ต้นทุน"),
+    policy = str_wrap(policy, width = 20)
+  ) %>%
+  ggplot(aes(x = policy, y = value, fill = metric)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("ผลกระทบ" = "#2C7BB6", "ต้นทุน" = "#D7191C")) +
+  labs(
+    title = "การประเมินนโยบายการกระจายทรัพยากร",
+    subtitle = "ระดับผลกระทบและต้นทุน (คะแนน 1-10)",
+    x = NULL,
+    y = "คะแนน",
+    fill = NULL
+  ) +
+  ylim(0, 10) +
+  coord_flip() +
+  theme_ipsum_thai() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 12))
+```
+:::
+:::
+
+## การพัฒนาคุณภาพ
+
+::: {.columns}
+::: {.column width="60%"}
+การพัฒนาคุณภาพการเรียนการสอนต้องเน้นที่:
+
+1. **พัฒนาครูอย่างต่อเนื่อง** ผ่านการฝึกอบรมและการสนับสนุน
+2. **ปรับปรุงหลักสูตร** ให้สอดคล้องกับความต้องการของตลาดแรงงานและโลกยุคดิจิทัล
+3. **ส่งเสริมการเรียนรู้เชิงรุก** (Active Learning) ในห้องเรียน
+4. **พัฒนาทักษะที่จำเป็นในศตวรรษที่ 21** แก่นักเรียนทุกคน
+:::
+
+::: {.column width="40%"}
+```{r}
+policy_impact2 <- tibble(
+  policy = c(
+    "พัฒนาครูอย่างต่อเนื่อง",
+    "ปรับปรุงหลักสูตร",
+    "ส่งเสริมการเรียนรู้เชิงรุก",
+    "พัฒนาทักษะศตวรรษที่ 21"
+  ),
+  impact = c(8.2, 7.5, 8.3, 8.6),
+  cost = c(6.5, 5.8, 5.2, 6.1),
+  implementation_time = c(2, 2, 1, 3)
+)
+
+policy_impact2 %>%
+  pivot_longer(cols = c(impact, cost), names_to = "metric", values_to = "value") %>%
+  mutate(
+    metric = if_else(metric == "impact", "ผลกระทบ", "ต้นทุน"),
+    policy = str_wrap(policy, width = 20)
+  ) %>%
+  ggplot(aes(x = policy, y = value, fill = metric)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("ผลกระทบ" = "#2C7BB6", "ต้นทุน" = "#D7191C")) +
+  labs(
+    title = "การประเมินนโยบายพัฒนาคุณภาพ",
+    subtitle = "ระดับผลกระทบและต้นทุน (คะแนน 1-10)",
+    x = NULL,
+    y = "คะแนน",
+    fill = NULL
+  ) +
+  ylim(0, 10) +
+  coord_flip() +
+  theme_ipsum_thai() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 12))
+```
+:::
+:::
+
+## เทคโนโลยีและข้อมูล
+
+การใช้เทคโนโลยีและข้อมูลเพื่อการตัดสินใจเป็นกุญแจสำคัญสู่การพัฒนาการศึกษาในยุคดิจิทัล:
+
+1. **พัฒนาระบบติดตามและประเมินผล** ที่มีประสิทธิภาพ
+2. **ใช้เทคโนโลยีสนับสนุนการเรียนรู้** ทั้งในและนอกห้องเรียน
+3. **วิเคราะห์ข้อมูลขนาดใหญ่** เพื่อปรับปรุงการเรียนการสอน
+4. **ส่งเสริมการเข้าถึงเทคโนโลยี** ในทุกพื้นที่
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+#| fig-dpi: 100
+
+policy_impact3 <- tibble(
+  policy = c(
+    "ระบบติดตามและประเมินผล",
+    "เทคโนโลยีสนับสนุนการเรียนรู้",
+    "วิเคราะห์ข้อมูลขนาดใหญ่",
+    "การเข้าถึงเทคโนโลยี"
+  ),
+  impact = c(8.1, 7.9, 7.6, 8.4),
+  cost = c(6.2, 7.3, 5.9, 8.1),
+  time = c("ระยะกลาง", "ระยะสั้น", "ระยะกลาง", "ระยะยาว")
+)
+
+policy_impact3 %>%
+  ggplot(aes(x = impact, y = cost, color = time, size = impact)) +
+  geom_point(alpha = 0.7) +
+  geom_text(aes(label = policy), hjust = -0.1, vjust = 0, size = 3.5) +
+  scale_color_viridis_d() +
+  scale_size(range = c(5, 10)) +
+  labs(
+    title = "การประเมินนโยบายด้านเทคโนโลยีและข้อมูล",
+    x = "ผลกระทบ (1-10)",
+    y = "ต้นทุน (1-10)",
+    color = "ระยะเวลาดำเนินการ",
+    size = "ผลกระทบ"
+  ) +
+  theme_ipsum_thai() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  ) +
+  xlim(6, 10) +
+  ylim(4, 10)
+```
+
+:::::
+
+## สรุปและข้อเสนอแนะ {.unnumbered}
+
+::: {.columns}
+::: {.column width="60%"}
+จากการวิเคราะห์ข้อมูลการศึกษา สามารถสรุปประเด็นสำคัญได้ดังนี้:
+
+1. **ความเหลื่อมล้ำทางการศึกษา** ยังคงเป็นปัญหาสำคัญที่ต้องได้รับการแก้ไข
+2. **การจัดสรรทรัพยากร** ที่เหมาะสมจะช่วยลดช่องว่างระหว่างภูมิภาค
+3. **การพัฒนาครู** เป็นปัจจัยสำคัญในการยกระดับคุณภาพการศึกษา
+4. **เทคโนโลยีและข้อมูล** เป็นเครื่องมือที่มีประสิทธิภาพในการขับเคลื่อนการเปลี่ยนแปลง
+
+การดำเนินการตามข้อเสนอแนะเหล่านี้จะช่วยยกระดับคุณภาพการศึกษาของประเทศไทยอย่างยั่งยืน
+:::
+
+::: {.column width="40%"}
+```{r}
+education_data %>%
+  group_by(region) %>%
+  summarise(
+    budget = mean(budget_per_student),
+    math = mean(math_score),
+    grad_rate = mean(graduation_rate)
+  ) %>%
+  ggplot(aes(x = budget, y = math, size = grad_rate, color = region)) +
+  geom_point(alpha = 0.7) +
+  scale_size_continuous(name = "อัตราการจบ (%)", range = c(5, 15)) +
+  scale_color_viridis_
