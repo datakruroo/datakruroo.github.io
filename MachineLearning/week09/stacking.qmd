@@ -1,0 +1,598 @@
+---
+title: "Stacking"
+format: html
+---
+
+```{r message = F}
+library(tidyverse)
+library(tidymodels)
+library(stacks)
+library(themis)
+tidymodels_prefer()
+```
+
+Ensemble learning เป็นวิธีการเรียนรู้ของเครื่องที่มีจุดเด่นคือ เป็นการรวมการเรียนรู้แบบโมเดลเดียวหลาย ๆ ตัวเข้าด้วยกัน เพื่อสร้างการทำนายที่มีประสิทธิภาพสูง เราทราบมาก่อนแล้วว่า วิธีการทั่วไปสำหรับการรวมโมเดลมี 3 วิธีการหลัก
+
+- Bagging & Random Forest
+
+- Boosting
+
+- Stacking
+
+บทเรียนนี้จะกล่าวถึงวิธีการสุดท้าย แต่เป็นวิธีการที่เรียกได้ว่าเก่าแก่ที่สุดในการสร้าง ensemble learning คือการทำ model stacking 
+
+Model Stacking หรือ Stacked Ensemble คือเทคนิคการรวมโมเดลหลายตัวเข้าด้วยกันในลักษณะ “ซ้อนชั้น” โดยมีวัตถุประสงค์เพื่อเพิ่มความแม่นยำของการพยากรณ์ แนวคิดหลักคือ การนำ ผลลัพธ์ที่ได้จากโมเดลย่อยหลาย ๆ ตัว (base models) มาสร้างเป็นชุดข้อมูลฝึกหัดตัวใหม่ แล้วใช้ โมเดลอีกตัวหนึ่งที่เรียกว่า meta-model หรือ blending model เรียนรู้จากข้อมูลใหม่นี้ เพื่อทำนายผลลัพธ์สุดท้าย
+
+หลักการสำคัญที่อยู่เบื้องหลังวิธีการนี้คือ
+
+- single learner แต่ละตัวมีจุดแข็งและข้อจำกัดที่แตกต่างกัน แต่หากมีการออกแบบและนำมารวมกันอย่างเหมาะสม ผลลัพธ์หรือค่าทำนายที่ได้จะมีความแม่นยำและคงเส้นคงวามากขึ้น
+
+- meta-model จะเป็นผู้เรียนรู้และเลือกว่า โมเดลย่อยตัวไหนที่ควรมีน้ำหนักมากในการทำนาย และในทางกลับกันโมเดลย่อยตัวไหนควรมีน้ำหนักน้อยในการทำนาย
+
+
+
+![](https://github.com/tidymodels/stacks/blob/main/inst/figs/outline.png?raw=true)
+
+
+ขั้นตอนการทำ model stacking
+
+1. ฝึกโมเดลย่อยหลาย ๆ ตัว เช่น linear regression, random forest, knn, svm ทั้งนี้ควรเลือกโมเดลที่มีความหลากหลายในการเรียนรู้ เพื่อให้การรวมโมเดลสามารถสร้างข้อสรุปผลที่ดีขึ้น นอกจากนี้ควรตรวจสอบประสิทธิภาพของ single learner แต่ละตัวก่อนว่ามีประสิทธิภาพที่ดีในระดับหนึ่ง
+
+2. ใช้เทคนิค cross-validation เพื่อสร้างค่าทำนายจาก single learner ในขั้นที่ 1. แบบ out-of-sample
+
+3. สร้าง meta-training data จาก out-of-sample prediction ในขั้นตอนที่ 2. ผลลัพธ์ที่ได้ในขั้นตอนนี้จะเป็นชุดข้อมูลใหม่ที่แต่ละคอลัมน์เป็นค่าทำนายจากโมเดลย่อยแต่ละตัว และแต่ละแถวคือหน่วยข้อมูลที่ถูกทำนาย
+
+4. สร้าง meta-model จาก meta-training data โดยปกติมักใช้ regularized regression เป็นโมเดลสำหรับรวมค่าทำนายจากโมเดลย่อยนี้เข้าด้วยกัน แต่ในกรณีทั่วไปสามารถเลือกใช้ machine learning ตัวอื่นได้
+
+5. นำโมเดลไปใช้
+
+ชุดข้อมูลตัวอย่าง
+
+```{r}
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv",
+delim = ";")
+data <- data |> 
+    mutate(G3 = ifelse(G3 > 10, "pass", "fail")) |> 
+    mutate(G3 = fct_relevel(G3, "pass","fail"))
+split <- initial_split(data, prop = 0.8, strata = "G3")
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+ลองสำรวจข้อมูลเบื้องต้นก่อน
+
+```{r}
+train_data |> 
+    recipe(G3 ~. ,data = train_data) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_pls(all_numeric_predictors(), outcome = "G3") |> 
+    prep() |> 
+    juice() |> 
+    ggplot(aes(x = PLS1, y= PLS2))+
+    geom_point(aes(color = G3))
+```
+
+
+## 1. ทดลอง fit base model
+
+สร้าง preprocessing pipeline ก่อน
+
+```{r}
+rec_linear <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_normalize(all_numeric_predictors()) |> 
+    step_novel(all_nominal_predictors()) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_zv(all_predictors())
+
+rec_knn <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_novel(all_nominal_predictors()) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_normalize(all_numeric_predictors()) |> 
+    step_zv()
+
+
+rec_svm <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_zv(all_predictors())
+```
+
+
+กำหนด model specification ในที่นี้เราจะทดลอง 3 โมเดล
+
+```{r}
+knn_spec <- nearest_neighbor(neighbors = tune("k")) |>
+    set_mode("classification") |> 
+    set_engine("kknn")
+
+linear_spec <- logistic_reg(penalty = tune()) |> 
+    set_mode("classification") |> 
+    set_engine("glmnet")
+
+svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune("sigma")) |> 
+    set_mode("classification") |> 
+    set_engine("kernlab")
+```
+
+
+
+
+```{r}
+set.seed(123)
+myfolds <- vfold_cv(train_data , v=5)
+my_metrics <- metric_set(accuracy, roc_auc, f_meas, sens, spec, precision)
+```
+
+
+```{r}
+library(future)
+plan(multisession, workers = 12)
+```
+
+## `tune_race_anova()`
+
+ตัวอย่างนี้เราจะหาค่าที่ดีที่สุดของ hyperparameters ผ่านเทคนิคการ finetune ที่เรียกว่า [racing](https://finetune.tidymodels.org/reference/tune_race_anova.html) วิธีการนี้มีจุดเด่นมาก ๆ ที่ความเร็วในการ fine-tuning เพราะเป็นวิธีที่หาค่าที่ดีที่สุดแบบแพ้คัดออก กล่าวคือ ชุดของ hyperparameters ไหนที่มี performance แย่กว่าจะถูกตัดออกไปไม่นำมาเทรนต่อแล้ว
+
+1. เริ่ม train จาก hyperparameters ทั้งหมด โดยเริ่ม train ไปทีละ fold
+
+2. พอ train ไประยะหนึ่ง (> 1 folds) อัลกอริทึมจะนำค่าเฉลี่ยของ performance จาก hyperparameters แต่ละชุดมาเปรียบเทียบกันตามแนวคิดของ ANOVA ผลลัพธ์จะทำให้ทราบว่าชุดของ hyperparameters ไหนที่แย่ที่สุด จะถูกตัดออกจากการ train
+ 
+3. ทำ 1-2 ซ้ำจนกระทั่งครบ resamples
+
+```{r}
+wf_linear <- workflow() |> 
+    add_recipe(rec_linear) |> 
+    add_model(linear_spec)
+
+wf_svm <- workflow() |> 
+    add_recipe(rec_svm) |> 
+    add_model(svm_spec)
+```
+
+```{r}
+
+start <- Sys.time()
+test_grid <- wf_svm |> tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = 50,
+    control = control_grid(
+        verbose = FALSE,
+        save_pred = TRUE, 
+        parallel_over = "everything"))
+
+use_grid <- Sys.time() - start 
+
+start <- Sys.time()
+test_race <- wf_svm |> tune_race_anova(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = 50,
+    control = control_race(
+        burn_in = 3,
+        verbose = FALSE,
+        save_pred = TRUE, 
+        parallel_over = "everything"))
+
+use_race <- Sys.time() - start 
+
+
+
+data.frame(
+race_time = use_race,
+grid_time = use_grid) |> 
+glimpse()
+```
+
+
+
+```{r}
+test_race |>
+    collect_metrics() |> 
+    filter(.metric == "f_meas") |> 
+    arrange(desc(mean))
+
+test_grid |> 
+    collect_metrics() |> 
+    filter(.metric == "f_meas") |> 
+    arrange(desc(mean))
+```
+
+## Workflowset
+
+ต่อไปเราจะทดลองสำรวจประสิทธิภาพของ base model แต่ละตัวก่อน ทั้งนี้เราจะดำเนินการผ่าน workflowset รายละเอียดมีดังนี้
+
+```{r}
+wf_set <- workflow_set(
+    preproc = list(linearrec = rec_linear, knnrrec = rec_knn, svmrec = rec_svm), ## กำหนดชุดของ preprocessor ที่ใช้
+    model = list(linear_spec, knn_spec, svm_spec),
+    cross = FALSE
+    )
+wf_set
+```
+
+จะเห็นว่า `wf_set` เป็น object ที่รวบรวม workflow หลายตัวเข้าไว้ด้วยกัน คราวนี้เราจะดำเนินการฝึกโมเดลทั้งหมดในแต่ละ workflow พร้อมกัน
+
+```{r}
+wf_results_grid <- wf_set |> 
+    workflow_map("tune_grid",
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = 30,
+    control = control_grid(
+        verbose = FALSE,
+        save_pred = TRUE, 
+        parallel_over = "everything"))
+wf_results_grid |> autoplot()
+```
+
+
+```{r}
+wf_results_race <- wf_set |> 
+    workflow_map("tune_race_anova",
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = 10,
+    control = control_race(
+        parallel_over = "everything"))
+wf_results_race
+```
+
+
+## 2. สร้างชุดข้อมูลฝึกหัดสำหรับ meta-model
+
+ัขั้นตอนแรกของการทำ model stacking คือการกำหนด specification ของ single learner ในลักษณะของ workflow ดังนี้
+
+```{r}
+rec_linear <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_normalize(all_numeric_predictors()) |> 
+    step_novel(all_nominal_predictors()) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_zv(all_predictors())
+
+rec_knn <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_novel(all_nominal_predictors()) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_normalize(all_numeric_predictors()) |> 
+    step_zv()
+
+
+rec_svm <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_zv(all_predictors())
+```
+
+
+```{r}
+knn_spec <- nearest_neighbor(neighbors = tune("k")) |>
+    set_mode("classification") |> 
+    set_engine("kknn")
+
+linear_spec <- logistic_reg(penalty = tune()) |> 
+    set_mode("classification") |> 
+    set_engine("glmnet")
+
+svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune("sigma")) |> 
+    set_mode("classification") |> 
+    set_engine("kernlab")
+```
+
+
+```{r}
+logistic_wf <- workflow() |> 
+    add_recipe(rec_linear) |> 
+    add_model(linear_spec)
+
+knn_wf <- workflow() |> 
+    add_recipe(rec_other) |> 
+    add_model(knn_spec)
+
+svm_wf <- workflow() |> 
+    add_recipe(rec_other) |> 
+    add_model(svm_spec)
+```
+
+- ส่วนสำคัญของการทำ model stacking คือผู้วิเคราะห์จะต้องเก็บค่าทำนายของ single learner แต่ละตัวในแต่ละชุดของ hyperparameter เพื่อเอาไปสร้างเป็นชุดข้อมูลฝึกหัดสำหรับ meta-learner
+
+- ดังนั้นระหว่างการ fine-tune ผู้วิเคราะห์จะต้องตั้งค่าใน `control` เป็น `save_pred = TRUE` และ `save_workflow = TRUE` อย่างไรก็ตามใน `stacks` มีฟังก์ชัน `control_stack_grid()` หรือ `control_stack_resamples()` เพื่ออำนวยความสะดวกในการดำเนินการดังกล่าว ลองพิจารณาตัวอย่างดังนี้
+
+```{r}
+logistic_res <- logistic_wf |> 
+    tune_grid(
+        resamples = myfolds,
+        metrics = my_metrics,
+        grid = 10,
+        control = control_stack_grid()
+    )
+logistic_res 
+```
+
+
+```{r}
+logistic_res <- logistic_wf |> 
+    tune_grid(
+        resamples = myfolds,
+        metrics = my_metrics,
+        grid = 10,
+        control = control_grid(
+            save_pred = TRUE,
+            save_workflow = TRUE
+        )
+    )
+logistic_res
+```
+
+
+```{r}
+knn_res <- knn_wf |> 
+    tune_grid(
+        resamples = myfolds,
+        metrics = my_metrics,
+        grid = 10,
+        control = control_stack_grid()
+    )
+
+svm_res <- svm_wf |> 
+     tune_grid(
+        resamples = myfolds,
+        metrics = my_metrics,
+        grid = 10,
+        control = control_stack_grid()
+    )
+```
+
+
+พิจารณาผลลัพธ์ที่ได้ในขั้นตอนนี้
+
+```{r}
+logistic_res
+knn_res
+svm_res
+```
+
+
+## 3. รวมค่าทำนายจากทุกโมเดลเข้าด้วยกัน
+
+การสร้างชุดข้อมูลฝึกหัดให้กับ meta-learner ทำได้โดยการสร้าง object ที่เรียกว่า `data_stack` ที่เป็น tibble ประเภทหนึ่งที่ประกอบด้วย ค่าทำนายจาก validation dataset ใน CV ก่อนหน้าของแต่ละ single learner เราจะเรียกแต่ละคอลัมน์ในชุดข้อมูลนี้ว่า candidate
+
+```{r}
+stacks()
+```
+
+สร้าง `data_stack` โดยใช้ piping operators ดังนี้
+
+
+```{r}
+meta_training <- 
+    stacks() |> 
+    add_candidates(logistic_res) |> 
+    add_candidates(knn_res) |> 
+    add_candidates(svm_res)
+
+meta_training |> as_tibble() |> 
+    glimpse()
+```
+
+## 4. train meta-learner
+
+ผลลัพธ์ที่ได้จากแต่ละ single learner มักมีความสัมพันธ์ซึ่งกันและกันสูง ดังนั้น meta learner จำเป็นต้องแก้ปัญหาดังกล่าวได้ด้วย วิธีการหนึ่งที่ใช้ได้ดีและมีประสิทธิภาพคือการใช้ regularization ดังนี้
+
+
+```{r}
+meta_model <- meta_training |> 
+    blend_predictions(
+        penalty = 10^seq(-6, -1, length.out = 10),
+        mixture = 1,  # หรือ 0.5 สำหรับ elastic net
+        metric = metric_set(f_meas),
+        control = control_grid(verbose = TRUE, parallel_over = "everything"),
+        times = 25
+    )
+meta_model
+```
+
+
+```{r}
+meta_model |> autoplot(type = "members")
+meta_model |> autoplot(type = "weights")
+```
+
+
+## 5. รวมค่าทำนายจาก candidates ทั้งหมดเข้าด้วยกัน
+
+
+```{r}
+meta_model_fit <- meta_model |> 
+    fit_members()
+```
+
+```{r}
+meta_model_fit |> 
+    collect_parameters("svm_res")
+
+meta_model_fit |> 
+    collect_parameters("knn_res")
+
+meta_model_fit |> 
+    collect_parameters("logistic_res")
+```
+
+
+ลองเอาไปทำนาย
+
+```{r}
+options(contrasts = c("contr.treatment", "contr.poly"))
+meta_model_fit |> 
+    predict(new_data = test_data) |> 
+    bind_cols(test_data |> select(G3)) |> 
+    conf_mat(truth = "G3", estimate = ".pred_class") |> 
+    summary()
+```
+
+
+```{r}
+logistic_wf |> 
+    finalize_workflow(
+    logistic_res |> 
+    select_best(metric = "f_meas")
+    ) |> 
+last_fit(split, 
+metrics = metric_set(f_meas, sens, spec, precision)) |> 
+    collect_metrics()
+
+svm_wf |> 
+    finalize_workflow(
+    svm_res |> 
+    select_best(metric = "f_meas")
+    ) |> 
+last_fit(split, 
+metrics = metric_set(f_meas, sens, spec, precision)) |> 
+    collect_metrics()
+knn_wf |> 
+    finalize_workflow(
+    knn_res |> 
+    select_best(metric = "f_meas")
+    ) |> 
+last_fit(split, 
+metrics = metric_set(f_meas, sens, spec, precision)) |> 
+    collect_metrics()
+```
+
+
+## กิจกรรม : ทดลองทำ regression task
+
+แนะนำ CUBIST Rule เป็นอัลกอริทึมการเรียนรู้ของเครื่องที่ถูกออกแบบมาสำหรับ regression task พัฒนาต่อยอดมาจาก regression tree (decision tree) โดยมีวัตถุประสงค์เพื่อสร้างโมเดลทำนายที่มีความยืดหยุ่นและแม่นยำสูง
+
+
+> โมเดลนี้เป็นการผสมผสานระหว่าง decision tree + linear regression
+
+
+หลักการทำงาน
+
+1. แบ่งข้อมูลด้วย rule-based คล้ายกับการทำ decision tree
+
+2. แนวคิดของวิธีการนี้คือเชื่อว่า แต่ละ rule อาจจะมีความสัมพันธ์เชิงเส้นระหว่างตัวแปรเฉพาะภายในกลุ่มนั้น ๆ ดังนั้นค่าทำนายจึงไม่ควรใช้แค่ค่าเฉลี่ยของ leaf node แบบใน decision tree
+
+3.  rule จะมีการสร้าง linear regression ของตนเอง เมื่อข้อมูลใหม่เข้ากับ rule ไหน จะใช้ linear model ของ rule นั้นเพื่อทำนาย โดยจะใช้ตัวแปรอิสระที่ไม่ได้ใช้ใน rule เท่านั้น
+
+![1 committee](https://opendatascience.com/wp-content/uploads/2019/11/cube_image.png)
+
+้hyperparameter ของอัลกอริทึมมีจำนวน 3 ตัวได้แก่
+
+- `committees` เพิ่มความแม่นยำ ความเสถียรของค่าทำนาย หากกำหนดมากกว่า 1 แสดงว่าโมเดลนี้จะเป็น ensemble learning แบบนึง
+
+- `neighbors` ปรับค่าทำนายจาก linear regression โดยใช้ค่าเฉลี่ยถ่วงน้ำหนักกับเพื่อนบ้านที่ใกล้กับค่าทำนาย k ตัวภายในแต่ละ ----------
+
+- `max_rules` จำนวน rule ที่จะสร้าง
+
+
+```{r}
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv",
+delim = ";")
+split <- initial_split(data, prop = 0.8, strata = "G3")
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+ลองสำรวจข้อมูลเบื้องต้นก่อน
+
+```{r}
+train_data |> 
+    recipe(G3 ~. ,data = train_data) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_pls(all_numeric_predictors(), outcome = "G3") |> 
+    prep() |> 
+    juice() |> 
+    ggplot(aes(x = PLS1, y= G3))+
+    geom_point()
+```
+
+
+```{r}
+rec_cubist <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_zv(all_predictors()) |> 
+    step_nzv(all_predictors())
+```
+
+
+
+
+```{r}
+cubist_spec <- cubist_rules(
+    committees = tune(),
+    neighbors = tune(),
+    max_rules = tune()
+) |> 
+set_engine("Cubist") |> 
+set_mode("regression")
+cubist_spec
+```
+
+
+```{r}
+cubist_wf <- workflow() |> 
+    add_recipe(rec_cubist) |> 
+    add_model(cubist_spec)
+```
+
+
+```{r}
+folds <- vfold_cv(train_data, v=10)
+```
+
+```{r}
+cubist_res <- cubist_wf |> 
+    tune_grid(
+        resamples = folds,
+        grid = 10,
+        control = control_grid(save_pred = TRUE,
+        parallel_over = "everything")
+    )
+cubist_res |> collect_metrics() |> 
+    filter(.metric == "rmse") |> 
+    arrange(mean)
+
+cubist_res |> collect_predictions() |> 
+    filter(.config == "Preprocessor2_Model2") |> 
+    ggplot(aes(x = .pred, y =G3))+
+    geom_point()+
+    coord_obs_pred()
+```
