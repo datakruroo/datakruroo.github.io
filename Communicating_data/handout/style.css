@@ -1,0 +1,11 @@
+/* ตั้งค่าโลโก้ที่มุมขวาล่าง */
+.reveal .slide-logo {
+    position: fixed;
+    width: 1000px; /* ปรับขนาดโลโก้ */
+    height: auto;
+}
+
+/* ซ่อนโลโก้บนหน้าแรก */
+.reveal .slides > section:first-child .slide-logo {
+    display: none;
+}

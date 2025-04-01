@@ -1,0 +1,35 @@
+---
+title: "การสื่อสารข้อมูลเพื่อการตัดสินใจในชั้นเรียน"
+subtitle: "Data-Driven Classroom"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: "ภาควิชาวิจัยและจิตวิทยาการศึกษา <br> คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"
+date: 2024-11-11
+format:
+  revealjs:
+    margin: 0.1 # ตัวอย่างของการตั้งค่า margin เป็น 10%
+    code-fold: false
+    slide-number: c/t
+    footer: "2758501 สถิติและสารสนเทศทางการศึกษา <br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    mermaid:
+      theme: default
+    title-slide-attributes:
+      data-background-opacity: 20%
+      data-background-size: full
+code-link: true
+execute:
+  echo: false
+  message: false
+  freeze: auto
+  progress: true
+bibliography: reference.bib
+suppress-bibliography: false # ซ่อนรายการอ้างอิงที่ท้ายเอกสาร
+---
+

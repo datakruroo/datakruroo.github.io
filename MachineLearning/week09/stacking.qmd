@@ -8,6 +8,7 @@ library(tidyverse)
 library(tidymodels)
 library(stacks)
 library(themis)
+library(finetune)
 tidymodels_prefer()
 ```
 
@@ -33,7 +34,6 @@ Model Stacking หรือ Stacked Ensemble คือเทคนิคกา�
 
 ![](https://github.com/tidymodels/stacks/blob/main/inst/figs/outline.png?raw=true)
 
-
 ขั้นตอนการทำ model stacking
 
 1. ฝึกโมเดลย่อยหลาย ๆ ตัว เช่น linear regression, random forest, knn, svm ทั้งนี้ควรเลือกโมเดลที่มีความหลากหลายในการเรียนรู้ เพื่อให้การรวมโมเดลสามารถสร้างข้อสรุปผลที่ดีขึ้น นอกจากนี้ควรตรวจสอบประสิทธิภาพของ single learner แต่ละตัวก่อนว่ามีประสิทธิภาพที่ดีในระดับหนึ่ง
@@ -48,32 +48,43 @@ Model Stacking หรือ Stacked Ensemble คือเทคนิคกา�
 
 ชุดข้อมูลตัวอย่าง
 
+จะสร้างโมเดลทำนายความสำเร็จในการเรียน ---> pass
+
 ```{r}
 data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv",
 delim = ";")
 data <- data |> 
-    mutate(G3 = ifelse(G3 > 10, "pass", "fail")) |> 
+    mutate(G3 = ifelse(G3 >= 10, "pass", "fail")) |> 
     mutate(G3 = fct_relevel(G3, "pass","fail"))
+### แบ่งชุดข้อมูล 80:20
+set.seed(123)
 split <- initial_split(data, prop = 0.8, strata = "G3")
 train_data <- training(split)
 test_data <- testing(split)
+
+glimpse(train_data)
+train_data %>% 
+    ggplot(aes(x = sex , y=G3))+
+    geom_boxplot()
 ```
 
-ลองสำรวจข้อมูลเบื้องต้นก่อน
+ลองสำรวจข้อมูลเบื้องต้นก่อน ดูว่าข้อมูลมีแววที่จะนำมาทำ classification ได้มั้ย
 
 ```{r}
 train_data |> 
     recipe(G3 ~. ,data = train_data) |> 
     step_dummy(all_nominal_predictors()) |> 
-    step_pls(all_numeric_predictors(), outcome = "G3") |> 
+    ## partial least square regression
+    step_pca(all_numeric_predictors(), num_comp = 2) |>
+   # step_pls(all_numeric_predictors(), outcome = "G3", num_comp = 2) |> 
     prep() |> 
     juice() |> 
-    ggplot(aes(x = PLS1, y= PLS2))+
+    ggplot(aes(x = PC1, y= PC2))+
     geom_point(aes(color = G3))
 ```
 
 
-## 1. ทดลอง fit base model
+## 1. ทดลอง fit base models
 
 สร้าง preprocessing pipeline ก่อน
 
@@ -85,10 +96,10 @@ rec_linear <- recipe(G3 ~. , data = train_data) |>
                  famsup, paid, activities, nursery, higher,internet,
                  romantic, famrel, freetime, goout, Dalc, Walc, health, 
                  fn = factor) |> 
-    step_normalize(all_numeric_predictors()) |> 
     step_novel(all_nominal_predictors()) |> 
     step_dummy(all_nominal_predictors()) |> 
-    step_zv(all_predictors())
+    step_zv(all_predictors()) %>% 
+    step_nzv(all_predictors())
 
 rec_knn <- recipe(G3 ~. , data = train_data) |> 
     step_mutate_at(school, sex, address, famsize, Pstatus, 
@@ -100,7 +111,8 @@ rec_knn <- recipe(G3 ~. , data = train_data) |>
     step_novel(all_nominal_predictors()) |> 
     step_dummy(all_nominal_predictors()) |> 
     step_normalize(all_numeric_predictors()) |> 
-    step_zv()
+    step_zv(all_predictors()) %>% 
+    step_nzv(all_predictors())
 
 
 rec_svm <- recipe(G3 ~. , data = train_data) |> 
@@ -110,7 +122,8 @@ rec_svm <- recipe(G3 ~. , data = train_data) |>
                  famsup, paid, activities, nursery, higher,internet,
                  romantic, famrel, freetime, goout, Dalc, Walc, health, 
                  fn = factor) |> 
-    step_zv(all_predictors())
+    step_zv(all_predictors()) %>% 
+    step_nzv(all_predictors())
 ```
 
 
@@ -132,7 +145,6 @@ svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune("sigma")) |>
 
 
 
-
 ```{r}
 set.seed(123)
 myfolds <- vfold_cv(train_data , v=5)
@@ -144,6 +156,7 @@ my_metrics <- metric_set(accuracy, roc_auc, f_meas, sens, spec, precision)
 library(future)
 plan(multisession, workers = 12)
 ```
+
 
 ## `tune_race_anova()`
 
@@ -166,33 +179,35 @@ wf_svm <- workflow() |>
 ```
 
 ```{r}
-
 start <- Sys.time()
-test_grid <- wf_svm |> tune_grid(
+test_grid <- wf_svm |> 
+    tune_grid(
     resamples = myfolds,
     metrics = my_metrics,
-    grid = 50,
+    grid = 50, ## latin hypercubes
     control = control_grid(
         verbose = FALSE,
         save_pred = TRUE, 
-        parallel_over = "everything"))
+        parallel_over = "everything")
+    )
 
 use_grid <- Sys.time() - start 
 
 start <- Sys.time()
-test_race <- wf_svm |> tune_race_anova(
+test_race <- wf_svm |> 
+    tune_race_anova(
     resamples = myfolds,
     metrics = my_metrics,
     grid = 50,
     control = control_race(
         burn_in = 3,
         verbose = FALSE,
+        verbose_elim = TRUE,
         save_pred = TRUE, 
-        parallel_over = "everything"))
-
+        save_workflow = TRUE,
+        parallel_over = "everything")
+    )
 use_race <- Sys.time() - start 
-
-
 
 data.frame(
 race_time = use_race,
@@ -220,8 +235,13 @@ test_grid |>
 
 ```{r}
 wf_set <- workflow_set(
-    preproc = list(linearrec = rec_linear, knnrrec = rec_knn, svmrec = rec_svm), ## กำหนดชุดของ preprocessor ที่ใช้
-    model = list(linear_spec, knn_spec, svm_spec),
+    preproc = list(linearrec = rec_linear, 
+                   knnrrec = rec_knn, 
+                   svmrec = rec_svm), 
+    ## กำหนดชุดของ preprocessor ที่ใช้
+    model = list(logis = linear_spec, 
+                 knn = knn_spec, 
+                 svm = svm_spec),
     cross = FALSE
     )
 wf_set
@@ -231,7 +251,7 @@ wf_set
 
 ```{r}
 wf_results_grid <- wf_set |> 
-    workflow_map("tune_grid",
+    workflow_map(fn = "tune_grid",
     resamples = myfolds,
     metrics = my_metrics,
     grid = 30,
@@ -251,8 +271,22 @@ wf_results_race <- wf_set |>
     grid = 10,
     control = control_race(
         parallel_over = "everything"))
-wf_results_race
+wf_results_race %>% autoplot()
 ```
+```{r}
+wf_results_race %>% collect_metrics() 
+
+wf_logistic <- wf_results_grid %>% extract_workflow_set_result(
+    id = "linearrec_logis"
+) 
+
+wf_logistic %>% 
+
+wf_results_grid %>% extract_workflow_set_result(
+    id = "linearrec_logis"
+) %>% collect_predictions()
+```
+
 
 
 ## 2. สร้างชุดข้อมูลฝึกหัดสำหรับ meta-model
@@ -282,7 +316,8 @@ rec_knn <- recipe(G3 ~. , data = train_data) |>
     step_novel(all_nominal_predictors()) |> 
     step_dummy(all_nominal_predictors()) |> 
     step_normalize(all_numeric_predictors()) |> 
-    step_zv()
+    step_zv(all_predictors()) %>% 
+    step_nzv(all_predictors())
 
 
 rec_svm <- recipe(G3 ~. , data = train_data) |> 
@@ -292,7 +327,9 @@ rec_svm <- recipe(G3 ~. , data = train_data) |>
                  famsup, paid, activities, nursery, higher,internet,
                  romantic, famrel, freetime, goout, Dalc, Walc, health, 
                  fn = factor) |> 
-    step_zv(all_predictors())
+    step_novel(all_nominal_predictors()) |> 
+    step_zv(all_predictors()) %>% 
+ step_nzv(all_predictors())
 ```
 
 
@@ -317,11 +354,11 @@ logistic_wf <- workflow() |>
     add_model(linear_spec)
 
 knn_wf <- workflow() |> 
-    add_recipe(rec_other) |> 
+    add_recipe(rec_knn) |> 
     add_model(knn_spec)
 
 svm_wf <- workflow() |> 
-    add_recipe(rec_other) |> 
+    add_recipe(rec_svm) |> 
     add_model(svm_spec)
 ```
 
@@ -361,7 +398,7 @@ knn_res <- knn_wf |>
     tune_grid(
         resamples = myfolds,
         metrics = my_metrics,
-        grid = 10,
+        grid = 4,
         control = control_stack_grid()
     )
 
@@ -369,7 +406,7 @@ svm_res <- svm_wf |>
      tune_grid(
         resamples = myfolds,
         metrics = my_metrics,
-        grid = 10,
+        grid = 4,
         control = control_stack_grid()
     )
 ```
@@ -398,9 +435,9 @@ stacks()
 ```{r}
 meta_training <- 
     stacks() |> 
-    add_candidates(logistic_res) |> 
-    add_candidates(knn_res) |> 
-    add_candidates(svm_res)
+    add_candidates(svm_res)  %>% 
+    add_candidates(logistic_res) %>% 
+    add_candidates(knn_res)
 
 meta_training |> as_tibble() |> 
     glimpse()
@@ -415,8 +452,8 @@ meta_training |> as_tibble() |>
 meta_model <- meta_training |> 
     blend_predictions(
         penalty = 10^seq(-6, -1, length.out = 10),
-        mixture = 1,  # หรือ 0.5 สำหรับ elastic net
-        metric = metric_set(f_meas),
+        mixture = 0,  # หรือ 0.5 สำหรับ elastic net
+        metric = metric_set(f_meas, roc_auc, sens, spec, precision),
         control = control_grid(verbose = TRUE, parallel_over = "everything"),
         times = 25
     )
@@ -493,6 +530,23 @@ metrics = metric_set(f_meas, sens, spec, precision)) |>
 
 ## กิจกรรม : ทดลองทำ regression task
 
+```{r}
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv",
+delim = ";")
+
+### แบ่งชุดข้อมูล 80:20
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = "G3")
+train_data <- training(split)
+test_data <- testing(split)
+
+glimpse(train_data)
+train_data %>% 
+    ggplot(aes(x = sex , y=G3))+
+    geom_boxplot()
+```
+
+
 แนะนำ CUBIST Rule เป็นอัลกอริทึมการเรียนรู้ของเครื่องที่ถูกออกแบบมาสำหรับ regression task พัฒนาต่อยอดมาจาก regression tree (decision tree) โดยมีวัตถุประสงค์เพื่อสร้างโมเดลทำนายที่มีความยืดหยุ่นและแม่นยำสูง
 
 
@@ -568,6 +622,7 @@ cubist_spec
 
 
 ```{r}
+library(rules)
 cubist_wf <- workflow() |> 
     add_recipe(rec_cubist) |> 
     add_model(cubist_spec)
@@ -590,8 +645,12 @@ cubist_res |> collect_metrics() |>
     filter(.metric == "rmse") |> 
     arrange(mean)
 
+cubist_res |> collect_metrics() |> 
+    filter(.metric == "rsq") |> 
+    arrange(desc(mean))
+
 cubist_res |> collect_predictions() |> 
-    filter(.config == "Preprocessor2_Model2") |> 
+    filter(.config == "Preprocessor1_Model08") |> 
     ggplot(aes(x = .pred, y =G3))+
     geom_point()+
     coord_obs_pred()

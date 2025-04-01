@@ -1,0 +1,541 @@
+---
+title: "Explainable AI"
+format: html
+editor: visual
+---
+
+## Outline
+
+-   แนวคิดพื้นฐาน
+
+-   เทคนิค XAI
+
+-   กรณีศึกษาและการประยุกต์ใช้ XAI
+
+## 1. แนวคิดพื้นฐาน
+
+โมเดลการเรียนรู้ของเครื่องที่กล่าวมาในรายวิชานี้สามารถนำไปประยุกต์ใช้เพื่อตัดสินใจทางการศึกษาในสถานการณ์ที่หลากหลายโดยเฉพาะการให้ insight เพื่อทำนายหรือจำแนกข้อมูล อย่างไรก็ตามหลายกรณีการใช้ประโยชน์จากโมเดลดังกล่าวเพียงแค่นี้อาจไม่เพียงพอ โดยเฉพาะในกรณีที่ต้องการให้คำอธิบายหรือเหตุผลที่จะใช้สนับสนุนหรือสร้างความมั่นใจในการตัดสินใจ คำอธิบายดังกล่าวจะช่วยให้เกิด
+
+1.  ความไว้วางใจ (trust)
+
+2.  ความเป็นธรรม (fairness)
+
+3.  ความรับผิดชอบ (accountability)
+
+4.  การปรับปรุง (improvement)
+
+5.  ความสอดคคล้องกับข้อกำหนดด้านกฎหมายหรือระเบียบต่าง ๆ
+
+อย่างไรก็ตามโมเดลการเรียนรู้ของเครื่องเกือบทุกตัวมีปัญหาเรื่องการอธิบายคำตอบหรือการตัดสินใจของโมเดลทั้งนี้เป็นเพราะโมเดลที่มีประสิทธิภาพสูงมาก ๆ มากมีลักษณะการทำงานที่ซับซ้อนเข้าไปสังเกตหรือทำความเข้าใจโดยตรงได้ยาก นักวิทยาการข้อมูลเรียกโมเดลลักษณะดังกล่าวว่าเป็น black box จากข้อจำกัดดังกล่าวทำให้นักวิทยาการข้อมูลต้องการ insight เพิ่มเติมสำหรับอธิบายการทำงานหรือการตัดสินใจของโมเดลนี้ การแก้ปัญหาคือการพัฒนาเทคนิคที่เรียกว่า explainable AI (XAI) ขึ้นมา
+
+## 2. เทคนิค XAI
+
+เป็นแนวคิดและชุดของเทคนิคที่มุ่งเน้นทำให้ระบบปัญญาประดิษฐ์และการเรียนรู้ของเครื่องมีความโปร่งใสและสามารถอธิบายได้ว่าเหตุใดจึงทำนายหรือตัดสินใตเช่นนั้น
+
+-   สามารถอธิบายเหตุผลการตัดสินใจให้กับผู้ใช้
+
+-   ระบุจุดแข็งและจุดอ่อนของตัวเอง
+
+-   สื่อสารให้ผู้ใช้เข้าใจถึงแนวโน้มพฤติกรรมในอนาคตของระบบ
+
+การเรียนรู้เรื่อง XAI ผู้เรียนควรทราบความแตกต่างระหว่าง interpretability และ explainability
+
+-   ความสามารถด้านการแปลความ (interpretability) -- ระดับที่มนุษย์สามารถเข้าใจสาเหตุของการตัดสินใจของโมเดล หรือความสามารถในการเข้าใจกลไกภายในของโมเดล เช่น การเข้าใจว่าตัวแปรอิสระแต่ละตัวมีผลต่อตัวแปรตามอย่างไรผ่านค่า regression coefficients ใน linear regression model
+
+-   ความสามารถด้านการอธิบาย (explainability)-- ความสามารถในการอธิบายหรือนำเสนอเหตุผลที่โมเดลตัดสินใจในรูปแบบที่มนุษย์เข้าใจได้ โดยไม่จำเป็นต้องเข้าใจกลไกภายในทั้งหมด เช่นการใช้ LIME หรือ SHAP เพื่อสร้างคำอธิบายจากโมเดลที่ซับซ้อน
+
+## 3. ประเภทของ XAI
+
+-   Global vs Local Explanations
+
+-   Model-specific vs Model-agnostic Explanations
+
+### 3.1 Global vs Local Explanations
+
+Global explanations คือ คำอธิบายพฤติกรรมโดยรวมของโมเดลทั้งหมด ตอบคำถามในลักษณะว่า โมเดลนี้ให้ความสำคัญกับปัจจัยหรือตัวแปรอิสระใดบ้าง เทคนิคที่อยู่ในกลุ่มนี้ เช่น Feature Importance, Partial Dependence Plot
+
+Local Explanations คือ คำอธิบายการทำนายเฉพาะกรณี (single prediction) ตอบคำถามว่า ทำไมโมเดลจึงให้ผลทำนายของเคสนี้ นักเรียนคนนี้เป็นแบบนี้ เทคนิคที่อยู่ในกลุ่มนี้ เช่น LIME, SHAP
+
+### 3.2 Model-specific vs Model-agnostic Explanations
+
+Model-specific explanations คือ คำอธิบายที่สร้างหรือออกแบบเฉพาะสำหรับโมเดลประเภทใดประเภทหนึ่ง เช่น การอ่านค่าสัมประสิทธิ์การถดถอยจาก linear regression การแปลผล odd ratio ใน logistic regression การดู split rule ใน decision tree
+
+Model-agnostic explanations คือ คำอธิบายที่สามารถใช้กับโมเดลทุกประเภท ไม่จำเป็นต้องรู้ว่าโมเดลเป็นประเภทใด เช่น VIP, LIME, SHAP,...
+
+## 4. เทคนิค XAI
+
+### 4.1 Feature importance (Variable Importance)
+
+Feature Importance เป็นเทคนิคพื้นฐานในการทำความเข้าใจว่าตัวแปรใดมีความสำคัญต่อการทำนายของโมเดล โดยวัดว่าตัวแปรแต่ละตัวมีผลกระทบมากน้อยเพียงใดต่อผลลัพธ์ ซึ่งจัดอยู่ในกลุ่ม global explanations
+
+หลักการทำงานของ feature importance มีหลายวิธีในการคำนวณ ขึ้นอยู่กับว่าผู้วิเคราะห์ใช้โมเดลอะไรในการทำนาย ทำให้การจัดกลุ่มในอีกประเภท feature importance สามารถเป็นไปได้ทั้ง model-specific และ model-agnostic
+
+1.  Model-specific methods จะใช้วิธีการคำนวณเฉพาะของแต่ละโมเดลเป็น feature importance เช่น linear regression หรือ glm อาจใช้ regression coefficients ในการคำนวณ หรือ tree-based model อาจใช้ impurity
+
+2.  Model-agnostic methods จะใช้วิธีการคำนวณที่ไม่ขึ้นกับโมเดล
+
+-   Variance-based variable importance -- ใช้ partial dependence plot (pdp) เป็นข้อมูลในการคำนวณตัวชี้วัด vip ประเภทนี้ (จะกล่าว pdp ภายหลัง) โดยที่ pdp เป็นเทคนิคในกลุ่มทัศนภาพข้อมูลที่ใช้แสดงความสัมพันธ์ระหว่างตัวแปรอิสระกับค่าทำนายของตัวแปรตามที่ได้จาก ML โดยแผนภาพจะแสดงให้เห็นว่า เมื่อ x เปลี่ยนแปลงไป ผลการทำนายจะเปลี่ยนแปลงไปอย่างไร เมื่อควบคุมให้ตัวแปรอิสระอื่นคงที่
+
+VIP ภายใต้แนวคิดของ Variance-based variable importance นี้จะสร้างตัวชี้วัดจาก pdp เพื่อวัดลักษณะการเปลี่ยนแปลงใน pdp กล่าวคือ pdp ที่มีการเปลี่ยนแปลงมากแสดงว่าตัวแปรอิสระนั้น ๆ มีความสำคัญมาก ดังนั้นความแปรปรวนของค่าทำนายในแต่ละ pdp จึงเป็นตัวชี้วัดสำคัญในการบอกความสำคัญของตัวแปรอิสระแต่ละตัว
+
+-   Permutation Feature Importance -- หลักการของวิธีการนี้คือการวัดว่าประสิทธิภาพของโมเดลเปลี่ยนแปลงไปอย่างไรเมื่อสลับค่าของตัวแปรอิสระแต่ละตัวแบบสุ่ม
+
+    -   fit model จากนั้นคำนวณประสิทธิภาพของโมเดลบนชุดข้อมูลทดสอบ
+
+    -   สลับค่าของตัวแปรอิสระหนึ่ง ๆ แบบสุ่ม (permute)
+
+    -   คำนวณประสิทธิภาพของโมเดลที่สลับค่าตัวแปรนี้อีกครั้ง
+
+    -   ความสำคัญของตัวแปร = การลดลงของประสิทธิภาพ
+
+    -   ทำซ้ำกับทุกตัวแปรอิสระ
+
+-   SHAP Values -- ค่านี้มาจากแนวคิดในทฤษฎีเกม โดยกำหนดให้โมเดลเป็นเหมือนผลกำไร ที่ได้จากการทำงานร่วมกันของตัวแปรอิสระทั้งหมด (เรียกว่าผู้เล่น)
+
+    -   ปัญหาคือเราต้องการทราบว่าผู้เล่นแต่ละคนมีส่วนช่วยให้โมเดลทำนายได้อย่างแม่นนำแค่ไหน
+
+        -   วิธีการวัดความสำคัญของตัวแปรดังกล่าว Shapley เสนอว่า ให้ดำเนินการพิจารณาว่าเมื่อใส่ตัวแปรอิสระดังกล่าวเข้าไปในชุดของตัวแปรอื่น ๆ แล้ว ตัวแปรอิสระตัวนั้นจะช่วยให้โมเดลเรียนรู้ได้ดีขึ้นมากน้อยแค่ไหน ระดับความสำคัญนี้หากจะเรียกให้ถูกอาจเรียกว่า ระดับการมีส่วนร่วมในการทำนายของตัวแปรอิสระ คำนวณจากค่าเฉลี่ยการมีส่วนร่วมนี้จากทุกรูปแบบที่มีการใส่ตัวแปร A เข้าไป
+
+            |                        |               |
+            |------------------------|---------------|
+            | Subset                 | ประสิทธิภาพที่ดีขึ้น |
+            | {} -\> X1              | 0.4           |
+            | {X2} -\> {X1,X2}       | 0.1           |
+            | {X3} -\> {X1, X3}      | 0.2           |
+            | {X2,X3} -\> {X1,X2,X3} | 0.3           |
+
+        -   ค่า Shapley value ของ A จะคำนวณจากค่าเฉลี่ยของประสิทธิภาพที่ดีขึ้นข้างต้น
+
+### 4.2 เตรียมโมเดล
+
+ในทางปฏิบัติเราสามารถคำนวณ feature importance ผ่าน library-vip ดังนี้
+
+```{r}
+## install.packages("vip")
+library(vip)
+library(tidyverse)
+library(tidymodels)
+library(future)
+library(finetune)
+```
+
+```{r}
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv",
+delim = ";")
+data <- data |> 
+    mutate(G3 = ifelse(G3 >= 10, "pass", "fail")) |> 
+    mutate(G3 = fct_relevel(G3, "pass","fail"))
+### แบ่งชุดข้อมูล 80:20
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = "G3")
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+```{r}
+## สร้าง data preprocessing
+rec_glm <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_novel(all_nominal_predictors()) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_zv(all_predictors()) %>% 
+    step_nzv(all_predictors()) %>% 
+    step_normalize(all_numeric_predictors())
+
+rec_svm <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |> 
+    step_novel(all_nominal_predictors()) %>% 
+    step_dummy(all_nominal_predictors()) %>% 
+    step_zv(all_predictors()) %>% 
+    step_nzv(all_predictors()) %>% 
+    step_normalize(all_predictors()) 
+
+
+## ระบุโมเดล
+glm_spec <- logistic_reg(penalty = tune()) %>% 
+    set_mode("classification") %>% 
+    set_engine("glmnet")
+
+svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune("sigma")) |> 
+    set_mode("classification") |> 
+    set_engine("kernlab")
+
+## สร้าง workflow
+wf_glm <- workflow() |> 
+    add_recipe(rec_glm) |> 
+    add_model(glm_spec)
+
+wf_svm <- workflow() |> 
+    add_recipe(rec_svm) |> 
+    add_model(svm_spec)
+```
+
+```{r}
+## เตรียมการทำ parallel processing
+plan(multisession, workers = 12)
+
+## สร้าง validation data และ performance metrics
+set.seed(123)
+myfolds <- vfold_cv(train_data , v=5, repeats = 3, strata = G3)
+my_metrics <- metric_set(f_meas, sens, spec, precision, accuracy, roc_auc)
+```
+
+```{r}
+start <- Sys.time()
+test_race_glm <- wf_glm %>% 
+  tune_race_anova(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = 30,
+    control = control_race(
+        burn_in = 3,
+        verbose = FALSE,
+        verbose_elim = TRUE,
+        save_pred = TRUE, 
+        save_workflow = TRUE,
+        parallel_over = "everything")
+    )
+
+test_race_svm <- wf_svm |> 
+    tune_race_anova(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = 30,
+    control = control_race(
+        burn_in = 3,
+        verbose = FALSE,
+        verbose_elim = TRUE,
+        save_pred = TRUE, 
+        save_workflow = TRUE,
+        parallel_over = "everything")
+    )
+use_race <- Sys.time() - start 
+```
+
+```{r}
+final_glm <- wf_glm %>% 
+  finalize_workflow(test_race_glm %>% select_best(metric = "f_meas")) %>% 
+  fit(data = train_data)
+
+final_svm <- wf_svm %>% 
+  finalize_workflow(test_race_svm %>% select_best(metric = "f_meas")) %>% 
+  fit(data = train_data)
+```
+
+### 4.3 Global Explanation using model-specific feature importance
+
+```{r}
+vi(final_glm)
+```
+
+### 4.4 Global Explainations using DALEX
+
+library-DALEX รองรับการคำนวณ feature importance ในกลุ่ม model-agnotic ด้วยวิธีการ permutation และ SHAP values
+
+```{r}
+library(DALEX)
+train_juiced <- rec_glm %>% prep() %>% juice()
+## สร้าง predict function เพื่อสื่อสารว่าโมเดลของเราทำนายอะไร และให้อะไรกลับมา
+## ลองก่อน
+predict(final_glm, new_data = train_data, type = "prob") %>% pull(1)
+## เขียนจริง
+predict_function <- function(model, newdata) {
+  predict(model, new_data = newdata, type = "prob") %>% pull(1)
+}
+
+## สร้าง explainer
+explainer_glm <- explain(
+  model = final_glm ,
+  data = train_data,
+  y = ifelse(train_data$G3 == "pass", 1, 0),
+  label = "glm",
+  predict_function = predict_function,
+  type = "classification"
+)
+
+## สร้าง explainer ของ svm
+```
+
+#### 4.4.1 คำนวณ model performance
+
+ดำเนินการสร้าง VIP เพื่ออธิบายความสำคัญของตัวแปรอิสระภายในโมเดล
+
+```{r}
+glm_performance <- model_performance(explainer_glm) 
+glm_performance %>% plot()
+```
+
+```{r}
+svm_performance <- model_performance(explainer_svm)
+svm_performance %>% plot()
+```
+
+```{r}
+plot(glm_performance, svm_performance)
+```
+
+ใน DALEX มีฟังก์ชันสำคัญสำหรับอธิบายโมเดลดังนี้
+
+-   `model_performance()` ประเมินประสิทธิภาพของโมเดลโดยรวม
+
+-   `model_parts()` ตัวแปรไหนมีผล/มีความสำคัญต่อการทำนายบ้าง อย่างไร
+
+-   `predict_parts()` หน่วยข้อมูลหรือนักเรียนคนนี้ได้ผลการทำนายแบบนี้เพราะอะไร
+
+-   `model_profile()` และ `predict_profile()` ถ้าเปลี่ยนค่าของตัวแปรอิสระแล้วจะเกิดอะไรขึ้น
+
+#### 4.4.2 คำนวณ feature importance (global explanations) ด้วย DALEX
+
+การวัดความสำคัญของตัวแปรด้วย DALEX จะใช้เทคนิคที่เรียกว่า Permutation Feature Importance ซึ่งจัดอยู่ในกลุ่ม model-agnostic และ global explanations หลักการเหมือนที่กล่าวไปแล้ว
+
+```{r}
+glm_parts <- model_parts(explainer_glm)
+glm_parts %>% plot()
+```
+
+```{r}
+# สร้าง custom loss function แบบ F1 (f_meas)
+loss_f1 <- function(observed, predicted) {
+  # แปลง prob เป็น class
+  predicted_class <- factor(ifelse(predicted >= 0.5, "pass", "fail"), levels = c("pass", "fail"))
+  observed_class <- factor(ifelse(observed == 1, "pass", "fail"), levels = c("pass", "fail"))
+  
+  f_meas_vec(truth = observed_class, estimate = predicted_class)
+}
+attr(loss_f1, "loss_accuracy") <- "F1 Score"
+
+test <- model_parts(
+  explainer_glm,
+  loss_function = loss_f1
+)
+```
+
+#### 4.4.3 การคำนวณ feature importance ด้วย SHAP values
+
+โดยปกติ shapley ถูกพัฒนาเพื่อทำ local explanations แต่ก็สามารถใช้ในลักษณะ global explanations ได้ด้วย
+
+```{r}
+shap_values <- predict_parts(
+  explainer_glm,
+  type = "shap",
+  new_observation = train_data,
+  B = 20
+)
+shap_values %>% 
+  data.frame() %>% 
+  mutate(variable = str_remove(variable, "=.*$")) %>% 
+  group_by(variable) %>%
+  summarise(mean_abs_shap = mean(abs(contribution))) %>% 
+  filter(variable != "G3 ") %>% 
+  ggplot(aes(x = mean_abs_shap, y = reorder(variable, mean_abs_shap)))+
+  geom_col()
+```
+
+### 4.5 Partial Dependence Plot (PDP)
+
+-   Partial Dependence Plot (PDP) เป็นเทคนิคการสร้างแผนภาพที่แสดงว่า เมื่อเปลี่ยนค่าของตัวแปรอิสระตัวใดตัวหนึ่ง ค่า prediction ของโมเดลมีแนวโน้มจะเปลี่ยนแปลงไปอย่างไร เมื่อกำหนดให้ตัวแปรอิสระอื่น ๆ คงที่
+
+-   การวิเคราะห์่ส่วนนี้เป็นการสร้างคำอธิบายแบบ What-if analysis ประเภทหนึ่ง
+
+```{r}
+model_profile(explainer_glm) %>% plot()
+```
+
+```{r}
+# 1. สร้าง model_profile สำหรับ GLM
+pdp_glm <- model_profile(
+  explainer = explainer_glm,
+  variables = c("G1")
+)
+
+# 2. สร้าง model_profile สำหรับ SVM
+pdp_svm <- model_profile(
+  explainer = explainer_svm,
+  variables = c("G1")
+)
+
+# 3. วาด plot เปรียบเทียบ
+plot(pdp_glm, pdp_svm)
+```
+
+### 4.6 Local Explainer
+
+แม้เราจะเข้าใจว่าโดยรวมแล้วโมเดลให้ความสำคัญกับตัวแปรใดบ้าง (global explanation) แต่ในหลายกรณีการตัดสินใจเฉพาะบุคคล เช่น นักเรียนแต่ละคน ได้รับการทำนายให้สอบผ่าน/ไม่ผ่าน เราอาจต้องการทราบว่า **ทำไมโมเดลจึงให้ผลทำนายเช่นนั้นกับเคสนี้**
+
+เทคนิคในกลุ่ม Local Explanation มีเป้าหมายเพื่อตอบคำถามนี้ โดยใช้ข้อมูลของแต่ละ observation ในการอธิบายผลลัพธ์ของโมเดล
+
+#### 4.6.1 คำนวณ feature importance ด้วย Shapley
+
+```{r}
+## เลือก observation ผลการทำนายของนักเรียนคนนี้เป็นอย่างไร
+test_data[1,]
+predict(final_glm, new_data = test_data[1,], type = "prob") %>% pull(1)
+```
+
+```{r}
+##  ผลการทำนายของนักเรียนคนนี้เป็นอย่างไร?
+test_data[50,]
+predict(final_glm, new_data = test_data[50,], type = "prob") %>% pull(1)
+```
+
+ทำไมนักเรียนทั้งสองคนถึงได้ผลการทำนายที่แตกต่างกัน?
+
+```{r}
+obs_student1 <- test_data[1,]
+obs_student2 <- test_data[50,]
+
+shape_student1 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = obs_student1,
+    type = "shap",
+    B = 20
+  )
+
+breakdown_student1 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = obs_student1,
+    type = "break_down",
+    B = 20
+  )
+shape_student1 %>% plot()
+```
+
+```{r}
+shape_student2 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = obs_student2,
+    type = "shap",
+    B = 20
+  )
+
+breakdown_student2 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = obs_student2 %>% select(G1, sex, everything()),
+    type = "break_down",
+    B = 20
+  )
+
+shape_student2 %>% plot()
+breakdown_student2 %>% plot()
+```
+
+```{r}
+shape_student_all <- map(.x = 1:5, .f = ~explainer_glm %>% 
+  predict_parts(
+    new_observation = test_data[.x,],
+    type = "shap",
+    B = 1
+  ))
+
+shape_student_all %>% bind_rows() %>% data.frame() %>% 
+  filter(variable_name %in% c("G2","G1")) %>% 
+  ggplot(aes(x = contribution, y=variable_name))+
+  geom_jitter(height = 0.1, width = 0.01)
+```
+
+```{r}
+## install.packages("shapviz")
+library(shapviz)
+shap_values_all <- predict_parts(
+  explainer_glm,
+  type = "shap",
+  new_observation = train_data[1:10,],
+  B = 20
+)
+
+# ดูข้อมูล
+shap_df <- shap_values_all %>%
+  data.frame()
+
+S <- shap_df %>% select(variable_name, contribution)
+
+  shap_df %>%
+  mutate(variable = str_remove(variable, "=.*$")) %>%
+  filter(abs(contribution) > 0.4) %>% 
+  ggplot(aes(x = contribution, y = reorder(variable, contribution))) +
+  geom_jitter(height = 0.2, alpha = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(title = "Beeswarm-style SHAP Plot (manual)", x = "SHAP value", y = "Feature")
+```
+
+```{r}
+library(iBreakDown)
+# ต้องมีฟังก์ชันพยากรณ์แบบ matrix
+predict_fun <- function(model, newdata) {
+  predict(model, new_data = newdata, type = "prob") %>% pull(1)
+}
+
+shap_matrix <- fastshap::explain(
+  object = final_glm,
+  X = train_data[1:100, ],
+  pred_wrapper = predict_fun,
+  nsim = 100
+)
+
+shape_df <- shap_matrix %>% data.frame() %>% 
+  mutate(id = row_number()) %>%
+  pivot_longer(
+    cols = -id,
+    names_to = "variable",
+    values_to = "shap_value"
+  )
+
+feature_df <- train_data[1:100, ] %>% 
+  mutate(across(everything(), as.character)) %>%  
+  mutate(id = row_number()) %>%
+  pivot_longer(
+    cols = -id,
+    names_to = "variable",
+    values_to = "value"
+  )
+
+order_var <- shape_df %>%
+  group_by(variable) %>%
+  summarise(mean_abs_shap = mean(abs(shap_value))) %>%
+  arrange(desc(mean_abs_shap)) %>%
+  pull(variable)
+
+library(ggbeeswarm)
+shape_df %>% 
+  left_join(feature_df, by = c("id", "variable")) %>% 
+  filter(abs(shap_value) > 0.03) %>%
+  mutate(value = as.numeric(value)) %>% 
+  ggplot(aes(x = shap_value, y = variable)) +
+  geom_violin(fill = "white")+
+  geom_quasirandom(groupOnX = FALSE, alpha = 0.7, aes(color = value)) +
+  scale_color_viridis_c(option = "C", end = 1) +
+  labs(
+    title = "SHAP Beeswarm Plot",
+    x = "SHAP value (impact on model output)",
+    y = "Feature"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold")
+  )
+```
+
+#### 4.6.2 What-If Analysis
+
+นักเรียนคนนี้มีการปรับเปลี่ยนพฤติกรรม เช่น มีคะแนนสอบ midterm ที่เพิ่มขึ้น และความรู้พื้นฐานที่ดีขึ้น แล้วผลลัพธ์จะเปลี่ยนแปลงไปยังไง
+
+```{r}
+profile1 <- explainer_glm %>% 
+  predict_profile(
+    new_observation = obs_student1,
+    variables = c("G2","G1")
+  )
+profile1 %>% 
+  plot(variables = c("G2","G1"))
+```

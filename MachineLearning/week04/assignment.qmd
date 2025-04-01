@@ -6,7 +6,6 @@ editor: visual
 
 obj: จะสร้างโมเดลจำแนก (classification model)
 
-
 ```{r}
 library(tidymodels)
 library(tidyverse)
@@ -34,7 +33,6 @@ test %>%
   ggplot(aes(x=G3)) + geom_histogram(bins=20)
 ```
 
-
 ## 1. Data Splitting
 
 แบ่งข้อมูลออกเป็นสองส่วน
@@ -52,22 +50,21 @@ test %>%
   ggplot(aes(x=G3)) + geom_bar()
 ```
 
-
 ## 2. EDA + Feature Engineering
 
-- ทำความเข้าใจข้อมูลก่อน
+-   ทำความเข้าใจข้อมูลก่อน
 
-- สำรวจ/ปรับเปลี่ยนสถานะของตัวแปรในชุดข้อมูล
+-   สำรวจ/ปรับเปลี่ยนสถานะของตัวแปรในชุดข้อมูล
 
-- สำรวจการแจกแจงของข้อมูล
+-   สำรวจการแจกแจงของข้อมูล
 
-- สำรวจ missing value
+-   สำรวจ missing value
 
-- สำรวจ outlier
+-   สำรวจ outlier
 
-- สำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+-   สำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
 
-- สำรวจความสัมพันธ์ระหว่างตัวแปรอิสระด้วยกัน (เฉพาะที่ใช้ตระกูล linear model)
+-   สำรวจความสัมพันธ์ระหว่างตัวแปรอิสระด้วยกัน (เฉพาะที่ใช้ตระกูล linear model)
 
 ```{r}
 baseline_rec <- recipe(G3 ~. ,data = train) %>% 
@@ -80,7 +77,6 @@ baseline_rec <- recipe(G3 ~. ,data = train) %>%
   prep() %>% 
   juice()
 ```
-
 
 ### 2.1 การสำรวจการแจกแจงของข้อมูล
 
@@ -97,12 +93,12 @@ baseline_rec %>%
   select_if(is.numeric) %>% 
   count(age)
 ```
+
 note:
 
-1. ตัวแปร `absences` มีลักษณะเบ้ขวามาก ๆ เลย อาจมี outliers อาจจะต้องแก้ปัญหาด้วยการ transform โดยใช้ power function หรือเราอาจจะแปลงตัวแปรนี้เป็นตัวแปรจัดประเภท (discretization)
+1.  ตัวแปร `absences` มีลักษณะเบ้ขวามาก ๆ เลย อาจมี outliers อาจจะต้องแก้ปัญหาด้วยการ transform โดยใช้ power function หรือเราอาจจะแปลงตัวแปรนี้เป็นตัวแปรจัดประเภท (discretization)
 
-2. ตัวแปร `age` กับ `failure` มีค่าที่เป็นไปได้ค่อนข้างน้อย ดังนั้นเราอาจพิจารณาปรับให้เป็นตัวแปรจัดประเภท ก็ได้
-
+2.  ตัวแปร `age` กับ `failure` มีค่าที่เป็นไปได้ค่อนข้างน้อย ดังนั้นเราอาจพิจารณาปรับให้เป็นตัวแปรจัดประเภท ก็ได้
 
 ```{r}
 recipe(G3 ~. ,data = train) %>% 
@@ -125,7 +121,6 @@ recipe(G3 ~. ,data = train) %>%
   ggtitle("100% Stacked Bar plot")
 ```
 
-
 ```{r}
 baseline_rec %>% 
   select_if(is.factor) %>% 
@@ -136,12 +131,11 @@ baseline_rec %>%
   facet_wrap(~name, scale = "free")
 ```
 
-
 ใน recipe มีฟังก์ชันสองตัว
 
-- `step_zv()` ใช้คัดเลือกตัวแปรที่มี variance = 0 ออกจากชุดข้อมูล <-- ตัวแปรนั้นจะมีค่าสังเกตเพียง 1 แบบ
+-   `step_zv()` ใช้คัดเลือกตัวแปรที่มี variance = 0 ออกจากชุดข้อมูล \<-- ตัวแปรนั้นจะมีค่าสังเกตเพียง 1 แบบ
 
-- `step_nzv()` ใช้คัดเลือกตัวแปรที่มี variance ใกล้ 0 ออกจากชุดข้อมูล
+-   `step_nzv()` ใช้คัดเลือกตัวแปรที่มี variance ใกล้ 0 ออกจากชุดข้อมูล
 
 ```{r}
 baseline_rec <- recipe(G3 ~. ,data = train) %>% 
@@ -163,17 +157,15 @@ baseline_rec <- recipe(G3 ~. ,data = train) %>%
   juice()
 ```
 
-
-
 ### 2.2 การสำรวจ missing value --- ไม่มี
 
 ### 2.3 การสำรวจ outlier
 
 ### 2.4 การสำรวจความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
 
-- ใช้ visualization ระหว่าง y กับ x
+-   ใช้ visualization ระหว่าง y กับ x
 
-- ใช้ simple logistic regression ดูความสัมพันธ์ระหว่างคู่ของตัวแปรตามกับอิสระ
+-   ใช้ simple logistic regression ดูความสัมพันธ์ระหว่างคู่ของตัวแปรตามกับอิสระ
 
 แนะนำ library-vip
 
@@ -269,9 +261,7 @@ fit_all %>%
   summary()
 ```
 
-
 ## 3. Train model
-
 
 ```{r}
 ### preprocessing model
@@ -318,9 +308,7 @@ basic_selected_rec <- recipe(G3 ~. ,data= train) %>%
 
 ```
 
-
 ระบุโมเดลการเรียนรู้
-
 
 ```{r}
 # logistic regression
@@ -339,9 +327,7 @@ ridge_reg <- logistic_reg(penalty = tune(), mixture = 0) %>%
   set_mode("classification")
 ```
 
-
-
-### 3.1 สร้าง workflow ของ logistic regression 
+### 3.1 สร้าง workflow ของ logistic regression
 
 ```{r}
 log_wf <- workflow() %>% 
@@ -396,7 +382,6 @@ log_res %>% collect_metrics(summarize = FALSE) %>%
   facet_wrap(~model)
 ```
 
-
 ```{r}
 log_res %>% 
   collect_predictions() %>% 
@@ -409,10 +394,7 @@ log_res %>%
   coord_obs_pred()
 ```
 
-
-
-### 3.2 สร้าง workflow ของ lasso logistic regression 
-
+### 3.2 สร้าง workflow ของ lasso logistic regression
 
 ```{r}
 lasso_wf <- workflow() %>% 
@@ -467,7 +449,6 @@ last_fit %>%
   mutate(model = "lasso")
 ```
 
-
 ```{r}
 last_fit <- lasso_wf %>%
   finalize_workflow(best_lasso) %>% 
@@ -476,16 +457,3 @@ last_fit <- lasso_wf %>%
 last_fit %>% collect_metrics() %>% 
   mutate(model = "lasso")
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
