@@ -223,6 +223,12 @@ use_race <- Sys.time() - start
 ```
 
 ```{r}
+test_race_glm %>% collect_metrics()
+test_race_svm %>% collect_metrics()
+```
+
+
+```{r}
 final_glm <- wf_glm %>% 
   finalize_workflow(test_race_glm %>% select_best(metric = "f_meas")) %>% 
   fit(data = train_data)
@@ -232,11 +238,24 @@ final_svm <- wf_svm %>%
   fit(data = train_data)
 ```
 
+
 ### 4.3 Global Explanation using model-specific feature importance
 
 ```{r}
-vi(final_glm)
+library(vip)
+vi(final_glm) %>% 
+  filter(Importance > 5) %>% 
+  ggplot(aes(x = Importance, y= reorder(Variable, Importance)))+
+  geom_col(aes(fill = Sign))+
+  ylab("")+
+  xlab("\n Importance")+
+  ggtitle("VIP plot")
 ```
+
+```{r}
+vip(final_glm, num_features = 5)
+```
+
 
 ### 4.4 Global Explainations using DALEX
 
@@ -244,26 +263,39 @@ library-DALEX รองรับการคำนวณ feature importance ใ�
 
 ```{r}
 library(DALEX)
-train_juiced <- rec_glm %>% prep() %>% juice()
+
 ## สร้าง predict function เพื่อสื่อสารว่าโมเดลของเราทำนายอะไร และให้อะไรกลับมา
 ## ลองก่อน
+
+predict(final_glm, new_data = train_data, type = "prob")
+
 predict(final_glm, new_data = train_data, type = "prob") %>% pull(1)
+
 ## เขียนจริง
 predict_function <- function(model, newdata) {
   predict(model, new_data = newdata, type = "prob") %>% pull(1)
 }
+
+
 
 ## สร้าง explainer
 explainer_glm <- explain(
   model = final_glm ,
   data = train_data,
   y = ifelse(train_data$G3 == "pass", 1, 0),
-  label = "glm",
+  label = "glmnet",
   predict_function = predict_function,
   type = "classification"
 )
-
 ## สร้าง explainer ของ svm
+explainer_svm <- explain(
+  model = final_svm,
+  data = train_data,
+  y = ifelse(train_data$G3 == "pass", 1, 0),
+  label = "svm",
+  predict_function = predict_function,
+  type = "classification"
+)
 ```
 
 #### 4.4.1 คำนวณ model performance
@@ -271,6 +303,7 @@ explainer_glm <- explain(
 ดำเนินการสร้าง VIP เพื่ออธิบายความสำคัญของตัวแปรอิสระภายในโมเดล
 
 ```{r}
+explainer_glm %>%  model_performance()
 glm_performance <- model_performance(explainer_glm) 
 glm_performance %>% plot()
 ```
@@ -294,13 +327,18 @@ plot(glm_performance, svm_performance)
 
 -   `model_profile()` และ `predict_profile()` ถ้าเปลี่ยนค่าของตัวแปรอิสระแล้วจะเกิดอะไรขึ้น
 
+
 #### 4.4.2 คำนวณ feature importance (global explanations) ด้วย DALEX
 
 การวัดความสำคัญของตัวแปรด้วย DALEX จะใช้เทคนิคที่เรียกว่า Permutation Feature Importance ซึ่งจัดอยู่ในกลุ่ม model-agnostic และ global explanations หลักการเหมือนที่กล่าวไปแล้ว
 
 ```{r}
-glm_parts <- model_parts(explainer_glm)
+glm_parts <- model_parts(explainer_glm) ## global XAI
 glm_parts %>% plot()
+glm_parts %>% data.frame() %>% 
+  filter(variable != "_full_model_" & variable != "_baseline_") %>% 
+  ggplot(aes(x = dropout_loss, y= reorder(variable, dropout_loss)))+
+  geom_boxplot()
 ```
 
 ```{r}
@@ -312,12 +350,14 @@ loss_f1 <- function(observed, predicted) {
   
   f_meas_vec(truth = observed_class, estimate = predicted_class)
 }
+
 attr(loss_f1, "loss_accuracy") <- "F1 Score"
 
 test <- model_parts(
   explainer_glm,
   loss_function = loss_f1
 )
+test %>% plot()
 ```
 
 #### 4.4.3 การคำนวณ feature importance ด้วย SHAP values
@@ -331,13 +371,26 @@ shap_values <- predict_parts(
   new_observation = train_data,
   B = 20
 )
-shap_values %>% 
+
+shap_list <- map(.x = 1:5, 
+    .f = ~ 
+  predict_parts(
+    explainer_glm,
+    new_observation = train_data[.x,],
+    type = "shap",
+    B = 5
+  ))
+
+shap_list[[1]] %>% dim()
+
+shap_list %>% 
+  bind_rows() %>% 
   data.frame() %>% 
-  mutate(variable = str_remove(variable, "=.*$")) %>% 
-  group_by(variable) %>%
+  #mutate(variable = str_remove(variable, "=.*$")) %>% 
+  group_by(variable_name) %>%
   summarise(mean_abs_shap = mean(abs(contribution))) %>% 
-  filter(variable != "G3 ") %>% 
-  ggplot(aes(x = mean_abs_shap, y = reorder(variable, mean_abs_shap)))+
+  filter(variable_name != "G3 ") %>% 
+  ggplot(aes(x = mean_abs_shap, y = reorder(variable_name, mean_abs_shap)))+
   geom_col()
 ```
 
@@ -355,14 +408,16 @@ model_profile(explainer_glm) %>% plot()
 # 1. สร้าง model_profile สำหรับ GLM
 pdp_glm <- model_profile(
   explainer = explainer_glm,
-  variables = c("G1")
+  variables = c("G2")
 )
+pdp_glm  %>% plot()
 
 # 2. สร้าง model_profile สำหรับ SVM
 pdp_svm <- model_profile(
   explainer = explainer_svm,
-  variables = c("G1")
+  variables = c("G2")
 )
+plot(pdp_svm)
 
 # 3. วาด plot เปรียบเทียบ
 plot(pdp_glm, pdp_svm)
@@ -374,7 +429,20 @@ plot(pdp_glm, pdp_svm)
 
 เทคนิคในกลุ่ม Local Explanation มีเป้าหมายเพื่อตอบคำถามนี้ โดยใช้ข้อมูลของแต่ละ observation ในการอธิบายผลลัพธ์ของโมเดล
 
-#### 4.6.1 คำนวณ feature importance ด้วย Shapley
+
+#### 4.6.1 Breakdown plot
+
+```{r}
+test_data
+test_data[1,] %>% select(-G3) %>% 
+  glimpse()
+predict(final_glm,
+        new_data = test_data[1,])
+predict(final_glm,
+        new_data = test_data[1,],
+        type = "prob")
+```
+
 
 ```{r}
 ## เลือก observation ผลการทำนายของนักเรียนคนนี้เป็นอย่างไร
@@ -390,152 +458,428 @@ predict(final_glm, new_data = test_data[50,], type = "prob") %>% pull(1)
 
 ทำไมนักเรียนทั้งสองคนถึงได้ผลการทำนายที่แตกต่างกัน?
 
+- **Break-down plot**
+
+แนวคิดพื้นฐานของ BD plots คือการระบุว่าตัวแปรอิสระแต่ละตัวมีส่วนเพิ่มหรือลดค่าทำนาย/ค่าความน่าจะเป็นของโมเดลมากน้อยแค่ไหน เราเรียกค่านี้ว่า contribution หลักการคำนวณคือการเพิ่มตัวแปรที่สนใจเข้าไปในโมเดล โดยกำหนดให้ตัวแปรอิสระตัวอื่น ๆ คงที่ จากนั้นวัดว่าค่าทำนายของโมเดลมีการเปลี่ยนแปลงไปอย่างไร
+
+note: breakdown plot ของ DALEX จะมีการเรียงลำดับตัวแปรอิสระตามความสำคัญให้โดยอัตโนมัติ โดยมีหลักการดังนี้
+
+1. เริ่มจาก baseline ก่อน (null model)
+
+2. วนลูปเพื่อตรวจสอบว่าการ fixed ค่าตัวแปรอิสระไหน ที่ทำให้ค่าทำนายเปลี่ยนแปลงไปจาก null model มากทีี่สุด
+
+3. วนลูปเพื่อเลือก feature ตัวถัดไปเรื่อย ๆ จนครบ
+
+
+ลองพิจารณานักเรียนที่ถูกทำนายว่าจะสอบตก ตัวแปร G2 มีผลมากน้อยแค่ไหนต่อการสอบตกของนักเรียนคนนี้
+
 ```{r}
-obs_student1 <- test_data[1,]
-obs_student2 <- test_data[50,]
-
-shape_student1 <- explainer_glm %>% 
-  predict_parts(
-    new_observation = obs_student1,
-    type = "shap",
-    B = 20
-  )
-
-breakdown_student1 <- explainer_glm %>% 
-  predict_parts(
-    new_observation = obs_student1,
-    type = "break_down",
-    B = 20
-  )
-shape_student1 %>% plot()
+## student1
+test_data[1,] %>% pull(G2)
 ```
 
 ```{r}
-shape_student2 <- explainer_glm %>% 
-  predict_parts(
-    new_observation = obs_student2,
-    type = "shap",
-    B = 20
-  )
+bd_g2 <- test_data
+bd_g2$G2 <- test_data[1,] %>% pull(G2)
 
+all_data <- predict(final_glm, 
+                    new_data = test_data, 
+                    type = "prob") %>% pull(1) %>% mean()
+
+g2_6 <- predict(final_glm, 
+                new_data = bd_g2, 
+                type = "prob") %>% pull(1) %>% mean()
+
+g2_6 - all_data ## contribution
+```
+
+
+การดำเนินการข้างต้นสามารถทำได้ด้วย `predict_parts()` ของ DALEX ดังนี้
+
+```{r}
+names(test_data)
+breakdown_student1 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "break_down"
+  )
+breakdown_student1 %>% data.frame()
+```
+
+```{r}
+breakdown_student1 %>% plot()
+```
+
+ลองพิจารณา BD-plot ของนักเรียนอีกคนนึงที่มีความน่าจะเป็นที่จะผ่านสูง
+
+```{r}
+test_data[50,]
 breakdown_student2 <- explainer_glm %>% 
   predict_parts(
-    new_observation = obs_student2 %>% select(G1, sex, everything()),
-    type = "break_down",
-    B = 20
+    new_observation = test_data[50,],
+    type = "break_down"
   )
-
-shape_student2 %>% plot()
 breakdown_student2 %>% plot()
 ```
 
+
 ```{r}
-shape_student_all <- map(.x = 1:5, .f = ~explainer_glm %>% 
+bd_list <- map(.x = 1:10, 
+    .f = ~ 
+  predict_parts(
+    explainer_glm,
+    new_observation = train_data[.x,],
+    type = "break_down"
+  ))
+
+bd_list %>% bind_rows() %>% data.frame() %>% 
+  mutate(student_id = rep(1:10, each = 35)) %>% 
+  select(student_id, variable_name, variable_value, contribution, sign) %>% 
+  filter(variable_name == "G2") %>% 
+  ggplot(aes(x= contribution, y=as.numeric(variable_value)))+
+  geom_point()+
+  xlab("contribution")+
+  ylab("G2: midterm score")
+```
+
+
+ในทางปฏิบัติเราสามารถกำหนดลำดับของการคำนวณ contribution ใน BD-plot ได้
+
+```{r fig.width=9, fig.height=4}
+custom_order <- names(test_data)
+
+explainer_glm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "break_down"
+  )
+
+breakdown_student1_order2
+
+breakdown_student1_order2 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "break_down",
+    order = custom_order
+  )
+library(patchwork)
+
+breakdown_student1 %>% plot() + ## default order
+  breakdown_student1_order2 %>% plot() + ## custom order
+  plot_layout(ncol = 2)
+```
+
+
+```{r}
+breakdown_student2_order2 <- explainer_glm %>% 
+  predict_parts(
+    new_observation = test_data[50,],
+    type = "break_down",
+    order = custom_order
+  )
+```
+
+
+```{r fig.width = 12, fig.height = 8}
+library(patchwork)
+breakdown_student1 %>% plot() + 
+  breakdown_student1_order2 %>% plot() +
+  breakdown_student2 %>% plot() +
+  breakdown_student2_order2 %>% plot() +
+  plot_layout(ncol = 2)
+```
+
+ตัวอย่างนี้แสดงให้เห็นว่าลำดับของการคำนวณ contribution มีผลให้ค่า contribution มีความแตกต่างกันได้ และความแตกต่างดังกล่าวอาจมีมากโดยเฉพาะในกรณีที่มีอิทธิพลปฏิสัมพันธ์ในตัวแปร ลองพิจารณาตัวอย่างด้านล่างจะเห็นว่าในโมเดลที่จับอิทธิพลปฏิสัมพันธ์ได้ ค่า contribution จะมีการเปลี่ยนแปลงอย่างมาก
+
+```{r fig.width = 12, fig.height = 8}
+breakdown_student1_svm1 <- explainer_svm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "break_down",
+  )
+
+breakdown_student1_svm2 <- explainer_svm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "break_down",
+    order = custom_order
+  )
+breakdown_student1_svm1 %>% plot() +
+  breakdown_student1_svm2 %>% plot() +
+  plot_layout(ncol = 2)
+```
+
+#### 4.6.2 Shapley values
+
+เพื่อแก้ปัญหาความลำเอียงของ BD-plot จึงมีการพัฒนา Shapley values ที่อิงกับหลักทฤษฎีเกมแบบร่วมมือ (cooperative game theory) highlight สำคัญของ Shapley values คือ
+
+> Feature แต่ละตัวมีส่วนช่วยเพิ่ม/ลดค่าทำนายของโมเดลมากน้อยแค่ไหน เมื่อกำหนดให้ตัวแปรอิสระอื่นคงที่ โดยจะพิจารณาทุกลำดับที่เป็นไปได้ของการเพิ่ม feature นั้นเข้าไปในโมเดล
+
+- พิจารณาทุก subset ที่เป็นไปได้ แสดงว่าไม่ได้พิจารณาเฉพาะลำดับใน full model แบบ BD-plot แต่เพียงอย่างเดียว
+
+- contribution ของ Shap เป็นการพิจารณาว่าเมื่อเพิ่มตัวแปรที่สนใจเข้าไปในโมเดล ค่าทำนายของเคสนั้น ๆ จะมีการเปลี่ยนแปลงโดยเฉลี่ยในทุกความเป็นไปได้อย่างไร
+
+แนวคิดดังกล่าวทำให้ Shap มีจุดเด่นในด้าน ความยุติธรรมมีความลำเอียงต่ำ รองรับ interaction เพราะพิจารณาในทุกกรณีทุกความเป็นไปได้ และอธิบายได้ทั้งในระดับ global และ local
+
+อย่างไรก็ตาม Shap มีข้อเสียคือการคำนวณที่ใช้เวลานานมาก โดยเฉพาะในกรณีที่มีตัวแปรอิสระจำนวนมาก ๆ
+
+```{r}
+shap_student1_glm <- explainer_glm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "shap",
+    B = 20
+  )
+shap_student1_glm 
+```
+
+```{r}
+shap_student1_glm %>% plot()
+```
+
+```{r}
+lm(G2 ~ G1, data= test_data) %>% summary()
+```
+
+
+
+ลองพิจารณา contribution ของ shapley value ที่ได้จาก svm (นักเรียนคนที่ 1)
+
+```{r}
+shap_student1_svm <- explainer_svm %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "shap",
+    B = 20
+  )
+
+shap_student1_svm %>% plot()
+```
+
+
+
+```{r}
+n <- 10
+shape_student_all <- map(.x = 1:n, 
+                         .f = ~explainer_glm %>% 
   predict_parts(
     new_observation = test_data[.x,],
     type = "shap",
-    B = 1
+    B = 5
   ))
 
-shape_student_all %>% bind_rows() %>% data.frame() %>% 
-  filter(variable_name %in% c("G2","G1")) %>% 
+shape_student_all %>% bind_rows() %>% data.frame() %>%
+  mutate(student_id = rep(1:n, 6, each = 33), .before = 1) %>% 
+  select(student_id, variable_name, variable_value, contribution) %>% 
+  filter(variable_name %in% c("G2","G1","age")) %>% 
+  
   ggplot(aes(x = contribution, y=variable_name))+
-  geom_jitter(height = 0.1, width = 0.01)
+  geom_boxplot(width = 0.2)+
+  geom_jitter(
+    data = . %>% filter(variable_name %in% c("G2","G1")),
+    aes(col = as.numeric(variable_value)>10))+
+  geom_jitter(
+    data = . %>% filter(variable_name == "age"),
+    aes(col = as.numeric(variable_value) > 16))+
+  theme_light()+
+  theme(legend.position = "none")
 ```
 
+
 ```{r}
-## install.packages("shapviz")
-library(shapviz)
-shap_values_all <- predict_parts(
-  explainer_glm,
-  type = "shap",
-  new_observation = train_data[1:10,],
-  B = 20
-)
+top_features <- shape_student_all %>% bind_rows() %>% data.frame() %>%
+  mutate(student_id = rep(1:n, 6, each =33), .before = 1) %>% 
+  select(student_id, variable_name, variable_value, contribution, sign) %>% 
+  group_by(variable_name) %>%
+summarise(med_abs_shap = median(abs(contribution), na.rm = TRUE)) %>%
+  arrange(desc(med_abs_shap)) %>%
+  slice_head(n = 5) %>%
+  pull(variable_name)
 
-# ดูข้อมูล
-shap_df <- shap_values_all %>%
-  data.frame()
 
-S <- shap_df %>% select(variable_name, contribution)
+## install.packages("ggbeeswarm")
+library(ggbeeswarm)
 
-  shap_df %>%
-  mutate(variable = str_remove(variable, "=.*$")) %>%
-  filter(abs(contribution) > 0.4) %>% 
-  ggplot(aes(x = contribution, y = reorder(variable, contribution))) +
-  geom_jitter(height = 0.2, alpha = 0.5) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  labs(title = "Beeswarm-style SHAP Plot (manual)", x = "SHAP value", y = "Feature")
+shape_student_all %>% bind_rows() %>% data.frame() %>%
+  mutate(student_id = rep(1:n, 33, each = 6), .before = 1) %>% 
+  select(student_id, variable_name, variable_value, contribution) %>% 
+  filter(variable_name %in% top_features) %>% 
+  ggplot(aes(x = contribution, y=reorder(variable_name, 
+                                         abs(contribution), 
+                                         FUN = median)))+
+  geom_quasirandom(col = "steelblue")+
+  stat_summary(fun = median, geom = "point", shape = 21, size = 3, fill = "orange") +
+  labs(title = "SHAP Summary Plot (DALEX)", x = "SHAP value", y = "Feature") +
+  theme_minimal()
+
+```
+##### Local dependency plot using SHAP
+
+การที่ได้ค่า Shapley value ของแต่ละหน่วยข้อมูล เราสามารถนำไปสร้าง partial dependency plot ได้ด้วย
+
+```{r}
+shape_student_all %>% bind_rows() %>% data.frame() %>%
+  mutate(student_id = rep(1:n, 6, each = 33), .before = 1) %>% 
+  select(student_id, variable_name, variable_value, contribution, sign) %>% 
+  filter(variable_name %in% c("G2")) %>%
+  mutate(
+    variable_value = as.numeric(variable_value),
+    contribution = as.numeric(contribution)) %>%
+  ggplot(aes(x = variable_value, y = contribution))+
+  geom_point(aes(col = variable_value))+
+  geom_smooth(col = "black", se = F)+
+  theme_light()+
+  scale_color_gradient2(low = "maroon", mid = "orange", high = "steelblue",
+                        midpoint = 10)+
+  ggtitle("Local dependency plot using SHAP")+
+  xlab("\n G2: Midterm Score")
 ```
 
+
+#### 4.6.3 Local Interpretable Model-agnostic Explanations (LIME)
+
+BD-plot และ Shapley ถูกพัฒนาขึ้นโดยเหมาะสำหรับโมเดลที่มี feature จำนวนไม่มากนัก อย่างไรก็ตามในกรณีที่โมเดลทำนายมีจำนวน feature จำนวนมาก
+
+อย่างไรก็ตามเมื่อจำนวน feature มีจำนวนมาก ๆ วิธีการแบบ Shap หรือ BD-plot จะทำงานค่อนข้างช้า นอกจากนี้แม้ว่าตัวแปรอิสระบางตัวจะไม่มีผลในการทำนาย y เลย แต่ก็อาจจะถูกระบุว่ามีผลต่อค่าทำนายอยู่บ้างเล็ก ๆ น้อย ๆ อยู่ดี
+
+ข้อจำกัดข้างต้นจะเป็ํนปัญหามาก ๆ โดยเฉพาะในกรณีที่เรามีตัวแปรอิสระหลายร้อย หลายพันตัวในโมเดล
+
+สถานการณ์ดังกล่าว LIME จะเป็นวิธีการที่เหมาะสมกว่า แนวคิดเบื้องหลังของ LIME มีดังนี้
+
+- วัตถุประสงค์คือ เราต้องการเข้าใจปัจจัยที่ทำให้โมเดลสร้างค่าทำนายแบบนี้มาให้เรา ณ บริเวณรอบ ๆ ตัวอย่างหนึ่งที่เราสนใจ
+
+- เพื่อให้เข้าใจพฤติกรรมของโมเดล ณ บริเวณที่เราสนใจ 
+
+  - เราจะสร้างชุดข้อมูลจำลอง (artificial data) ขึ้นมารวม ๆ ตัวอย่างที่เราสนใจ
+  
+  - นำข้อมูลจำลองนี้ไปสร้างโมเดลทำนายด้วยโมเดลง่าย ๆ เช่น linear regression ที่มี regularization หรือ decision tree แล้วใช้ผลการวิเคราะห์จากโมเดลนี้อธิบายพฤติกรรมของ black-box model แบบเฉพาะจุด เรียกโมเดลนี้ว่า glass-box model
+  
+  - glass-box model นี้ ตัวแปรตามจะเป็นค่าทำนายที่ได้จาก black-box model ส่วนตัวแปรอิสระคือ artificial data
+  
 ```{r}
-library(iBreakDown)
-# ต้องมีฟังก์ชันพยากรณ์แบบ matrix
-predict_fun <- function(model, newdata) {
-  predict(model, new_data = newdata, type = "prob") %>% pull(1)
+## install.packages("DALEXtra")
+## install.packages("lime")
+
+library(DALEXtra)
+library(lime)
+
+
+predict_model.workflow <- function(x, newdata, type, ...) {
+  yhat <- predict(x, new_data = newdata, type = type, ...)
+  
+  if (type == "raw") {
+    data.frame(Response = yhat$.pred_class)
+  } else {
+    as.data.frame(yhat)
+  }
 }
 
-shap_matrix <- fastshap::explain(
-  object = final_glm,
-  X = train_data[1:100, ],
-  pred_wrapper = predict_fun,
-  nsim = 100
+explainer <- lime::lime(
+  x = train_data %>% select(-G3),        # ข้อมูลต้นฉบับ (ไม่มี target)
+  model = as_classifier(final_glm),      # โมเดลที่ train แล้ว (เช่น workflow)
+  bin_continuous = TRUE,          # ให้ discretize ตัวแปรต่อเนื่อง
+  n_bins = 4 ,                     # จำนวน bin ที่ใช้ (optional)
+  quantile_bins = F
 )
 
-shape_df <- shap_matrix %>% data.frame() %>% 
-  mutate(id = row_number()) %>%
-  pivot_longer(
-    cols = -id,
-    names_to = "variable",
-    values_to = "shap_value"
-  )
+new_x <- test_data[1, ] %>% select(-G3)
 
-feature_df <- train_data[1:100, ] %>% 
-  mutate(across(everything(), as.character)) %>%  
-  mutate(id = row_number()) %>%
-  pivot_longer(
-    cols = -id,
-    names_to = "variable",
-    values_to = "value"
-  )
+explanation <- lime::explain(
+  x = new_x,
+  explainer = explainer,
+  n_permutations = 5000,
+  n_features = 5,          # จำนวนตัวแปรที่จะแสดงผล
+  n_labels = 1,            # จำนวนคลาสที่สนใจ
+  kernel_width = 0.2      # ค่าที่ควบคุมระยะของตัวอย่างจำลอง
+)
 
-order_var <- shape_df %>%
-  group_by(variable) %>%
-  summarise(mean_abs_shap = mean(abs(shap_value))) %>%
-  arrange(desc(mean_abs_shap)) %>%
-  pull(variable)
-
-library(ggbeeswarm)
-shape_df %>% 
-  left_join(feature_df, by = c("id", "variable")) %>% 
-  filter(abs(shap_value) > 0.03) %>%
-  mutate(value = as.numeric(value)) %>% 
-  ggplot(aes(x = shap_value, y = variable)) +
-  geom_violin(fill = "white")+
-  geom_quasirandom(groupOnX = FALSE, alpha = 0.7, aes(color = value)) +
-  scale_color_viridis_c(option = "C", end = 1) +
-  labs(
-    title = "SHAP Beeswarm Plot",
-    x = "SHAP value (impact on model output)",
-    y = "Feature"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    legend.position = "none",
-    plot.title = element_text(face = "bold")
-  )
+explanation %>% plot_explanations()
+explanation %>% plot_features()
 ```
 
-#### 4.6.2 What-If Analysis
+ลองเปลี่ยน glass-box model
+
+```{r}
+glassbox_model1 <- function(x, y, weights, ...) {
+  rpart::rpart(y ~ ., data = x, weights = weights, ...)
+}
+glassbox_model2 <- function(x, y, family, ...) {
+  glmnet::glmnet(x,y, family = family, lambda = 0.2, alpha = 1)
+}
+
+explainer <- lime::lime(
+  x = train_data %>% select(-G3),                     # ข้อมูลต้นฉบับ (ไม่มี target)
+  model = as_classifier(final_glm),            # โมเดลที่ train แล้ว (เช่น workflow)
+  bin_continuous = TRUE,          # ให้ discretize ตัวแปรต่อเนื่อง
+  n_bins = 4 ,                     # จำนวน bin ที่ใช้ (optional)
+  quantile_bins = F,
+  fit_model = glassbox_model1
+)
+
+new_x <- test_data[50, ] %>% select(-G3)
+
+explanation <- lime::explain(
+  x = new_x,
+  explainer = explainer,
+  n_permutations = 5000,
+  n_features = 5,          # จำนวนตัวแปรที่จะแสดงผล
+  n_labels = 1,            # จำนวนคลาสที่สนใจ
+  kernel_width = 0.2      # ค่าที่ควบคุมระยะของตัวอย่างจำลอง
+)
+
+explanation %>% plot_explanations()
+explanation %>% plot_features()
+```
+
+
+#### 4.6.4 What-If Analysis
 
 นักเรียนคนนี้มีการปรับเปลี่ยนพฤติกรรม เช่น มีคะแนนสอบ midterm ที่เพิ่มขึ้น และความรู้พื้นฐานที่ดีขึ้น แล้วผลลัพธ์จะเปลี่ยนแปลงไปยังไง
 
+
 ```{r}
-profile1 <- explainer_glm %>% 
+test_data[1,]
+
+profile1 <- explainer_svm %>% 
   predict_profile(
-    new_observation = obs_student1,
+    new_observation = test_data[1,],
     variables = c("G2","G1")
   )
 profile1 %>% 
   plot(variables = c("G2","G1"))
+
+profile2 <- explainer_svm %>% 
+  predict_profile(
+    new_observation = test_data[50,],
+    variables = c("G2","G1")
+  )
+
+plot(profile2,
+     variables = c("G2","G1")) +
+  labs(title = "What-If Analysis")
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
