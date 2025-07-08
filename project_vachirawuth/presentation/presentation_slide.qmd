@@ -1,0 +1,791 @@
+---
+title: "ผลการวิเคราะห์คุณลักษณะอันพึงประสงค์และปัจจัยที่ส่งผลต่อคุณลักษณะอันพึงประสงค์ของนักเรียนโรงเรียนวชิราวุธวิทยาลัย"
+author: "Assistant Prof. Dr. Kanit Sriklaub et al."
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: 2024-09-05
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Kanit Sriklaub et al. <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;; 
+      }
+      
+      </style>
+---
+
+```{r}
+library(googlesheets4)
+library(tidyverse)
+source("data_pipeline.R")
+```
+
+
+## Research Objectives {}
+
+<br>
+
+<div style="font-size: 1em; color: white; background-color: #C5705D; padding: 1em;"
+
+> เพื่อวิเคราะห์คุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6 และกระทรวงศึกษาธิการของนักเรียนโรงเรียนวชิราวุธวิทยาลัยที่เป็นจุดเด่น จุดที่ควรพัฒนาตามการรับรู้ของนักเรียน ครูและผู้กำกับคณะ
+
+</div>
+
+## คุณลักษณะอันพึงประสงค์ {.smaller}
+
+<div style = "font-size:50%;">
+
+| ด้าน                               | พระราโชบาย ร.6                                                                 | หลักสูตรแกนกลาง รับผิดชอบโดยฝ่ายวิชาการ                    | หลักสูตรแกนกลาง รับผิดชอบโดยฝ่ายกิจการ นร.                  |
+|------------------------------------|---------------------------------------|--------------------------------|-----------------------------------|
+| คุณธรรมและจริยธรรม                   | • ศีลธรรม<br>• ไม่เหยียดหยามผู้อื่น<br>• ไม่ทำตนเป็นคนถือยศศักดิ์                | • ซื่อสัตย์สุจริต<br>• มีจิตสาธารณะ                          | • เข้าใจและเห็นใจผู้อื่น<br>• มีจิตสาธารณะ เสียสละเพื่อส่วนรวม<br>• กริยามารยาทสุภาพเรียบร้อย |
+| วินัยและการกำกับตนเอง                | • มีระเบียบ                  | • มีวินัย                 | • รักษาระเบียบวินัยโรงเรียน                                 |
+| ภาวะผู้นำและความกล้าหาญ             | • เป็นผู้รับใช้และใช้คน <br>• เป็นผู้กล้าหาญ<br>• กล้าเสียสละเพื่อประโยชน์ส่วนรวม<br>• รู้จักรักษาหมู่รักษาคณะ |                                               | • ภาวะผู้นำ                                               |
+| การใฝ่รู้และปัญญา                   | • มีสติปัญญาความรู้                                                                | • ใฝ่เรียนรู้                                            | • มีความคิดสร้างสรรค์                                      |
+| ความรับผิดชอบในชีวิตและงาน          | • รู้จักตรากตรำ               | • มุ่งมั่นในการทำงาน          | • มีความรับผิดชอบ<br>• มีร่างกายและจิตใจเข้มแข็ง              |
+| อัตลักษณ์และความเป็นไทย             | • รักเกียรติ และรักชื่อเสียงและวงศ์ตระกูล                | • รักความเป็นไทย<br>• รักชาติ ศาสน์ กษัตริย์               | • รักชาติ ศาสน์ กษัตริย์                                   |
+| กรอบคิดด้านการดำเนินชีวิต            | • ไม่สำรวยหยิบโหย่ง                                                                | • อยู่อย่างพอเพียง                                      | • อยู่อย่างพอเพียง                                        |
+
+</div>
+
+## วิธีดำเนินการวิจัย
+
+## จำนวนนักเรียนที่ให้ข้อมูลจำแนกตามคุณลักษณะอันพึงประสงค์ตามพระราโชบาย ร.6 {.smaller}
+
+ในแต่ละคุณลักษณะมีนักเรียนให้ข้อมูลโดยเฉลี่ย 628.50 คน (SD = 40.65) โดยด้านที่มีนักเรียนให้ข้อมูลมากที่สุดคือ มีสติปัญญาความรู้ (n = 682) และด้านที่มีนักเรียนให้ข้อมูลน้อยที่สุดคือไม่ทำตนเป็นคนถือยศศักดิ์ (n = 524) 
+
+```{r}
+library(tidyverse)
+library(gt)
+source("05_report/score_data_merge.R")
+score_longformat %>% 
+  count(attribute) %>% 
+  summarise(avg_n = mean(n),
+            sd = sd(n),
+            min = min(n),
+            q1 = quantile(n, 0.25),
+            median = median(n),
+            q3 = quantile(n, 0.75),
+            max = max(n)) %>% 
+  gt() %>%
+  cols_label(avg_n = "M",
+             sd = "SD",
+             min = "Min",
+             q1 = "Q1",
+             median = "Med",
+             q3 = "Q3",
+             max = "Max") %>% 
+  fmt_number(columns = everything(),
+             decimals = 2) %>%
+  tab_options(table.font.size = 16,
+              table.width = pct(100),
+              column_labels.font.weight = "bold",
+              column_labels.font.size = 18,
+              table.border.top.style = "solid",
+              table.border.bottom.style = "solid",
+              table.border.top.color = "black",
+              table.border.bottom.color = "black") 
+  
+```
+
+```{r message=F, echo = F}
+score_longformat %>% 
+  count(attribute) %>% 
+  ggplot(aes(x = n, y = reorder(attribute, n)))+
+  geom_col(fill = "#4285f4")+
+  geom_text(aes(label = n), hjust = -0.3,
+            col = "grey20",
+            size = 4.5,
+            family = "ChulaCharasNew")+
+  ylab("")+
+  xlab("\n จำนวนนักเรียน")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_text(size = 14),
+        panel.grid = element_blank())+
+  xlim(0,700)
+```
+
+## จำนวนนักเรียนที่ให้ข้อมูลจำแนกตามคุณลักษณะอันพึงประสงค์ของหลักสูตรแกนกลางรับผิดชอบโดยฝ่ายวิชาการ {.smaller}
+
+ในแต่ละคุณลักษณะมีนักเรียนให้ข้อมูลโดยเฉลี่ย 635.38 คน (SD = 28.31) โดยด้านที่มีนักเรียนให้ข้อมูลมากที่สุดคือ ใฝ่เรียนรู้ (n = 683) และด้านที่มีนักเรียนให้ข้อมูลน้อยที่สุดคือ รักความเป็นไทย (n = 592)
+
+```{r}
+score_longformat_academic %>% 
+  count(attribute) %>% 
+  summarise(avg_n = mean(n),
+            sd = sd(n),
+            min = min(n),
+            q1 = quantile(n, 0.25),
+            median = median(n),
+            q3 = quantile(n, 0.75),
+            max = max(n)) %>% 
+  gt() %>%
+  cols_label(avg_n = "M",
+             sd = "SD",
+             min = "Min",
+             q1 = "Q1",
+             median = "Med",
+             q3 = "Q3",
+             max = "Max") %>% 
+  fmt_number(columns = everything(),
+             decimals = 2) %>%
+  tab_options(table.font.size = 16,
+              table.width = pct(100),
+              column_labels.font.weight = "bold",
+              column_labels.font.size = 18,
+              table.border.top.style = "solid",
+              table.border.bottom.style = "solid",
+              table.border.top.color = "black",
+              table.border.bottom.color = "black") 
+```
+
+
+```{r}
+score_longformat_academic %>% 
+  count(attribute) %>% 
+  ggplot(aes(x = n, y = reorder(attribute, n)))+
+  geom_col(fill = "#0f9d58")+
+  geom_text(aes(label = n), hjust = -0.3,
+            col = "grey20",
+            size = 4.5,
+            family = "ChulaCharasNew")+
+  ylab("")+
+  xlab("\n จำนวนนักเรียน")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_text(size = 14),
+        panel.grid = element_blank())+
+  xlim(0,700)
+```
+
+## จำนวนนักเรียนที่ให้ข้อมูลจำแนกตามคุณลักษณะอันพึงประสงค์ของหลักสูตรแกนกลางรับผิดชอบโดยฝ่ายกิจการนักเรียน {.smaller}
+
+
+ในแต่ละคุณลักษณะมีนักเรียนให้ข้อมูลโดยเฉลี่ย 631.22 คน (SD = 43.17) โดยด้านที่มีนักเรียนให้ข้อมูลมากที่สุดคือ ใฝ่เรียนรู้ (n = 680) และด้านที่มีนักเรียนให้ข้อมูลน้อยที่สุดคือ รักความเป็นไทย (n = 524)
+
+
+```{r}
+score_longformat_student %>% 
+  count(attribute) %>% 
+  summarise(avg_n = mean(n),
+            sd = sd(n),
+            min = min(n),
+            q1 = quantile(n, 0.25),
+            median = median(n),
+            q3 = quantile(n, 0.75),
+            max = max(n)) %>% 
+  gt() %>%
+  cols_label(avg_n = "M",
+             sd = "SD",
+             min = "Min",
+             q1 = "Q1",
+             median = "Med",
+             q3 = "Q3",
+             max = "Max") %>% 
+  fmt_number(columns = everything(),
+             decimals = 2) %>%
+  tab_options(table.font.size = 16,
+              table.width = pct(100),
+              column_labels.font.weight = "bold",
+              column_labels.font.size = 18,
+              table.border.top.style = "solid",
+              table.border.bottom.style = "solid",
+              table.border.top.color = "black",
+              table.border.bottom.color = "black") 
+```
+
+
+```{r}
+score_longformat_student %>% 
+  count(attribute) %>% 
+  ggplot(aes(x = n, y = reorder(attribute, n)))+
+  geom_col(fill = "#f4b400")+
+  geom_text(aes(label = n), hjust = -0.3,
+            col = "grey20",
+            size = 4.5,
+            family = "ChulaCharasNew")+
+  ylab("")+
+  xlab("\n จำนวนนักเรียน")+
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        axis.text = element_text(size = 14),
+        panel.grid = element_blank())+
+  xlim(0,700)
+```
+
+
+## การคำนวณคะแนนคุณลักษณะอันพึงประสงค์ของนักเรียนวชิรวุธ
+
+$$
+ Score_{attribute} = max(P_{สอดคล้อง}) - max(P_{ไม่สอดคล้อง})
+$$
+
+<center>
+
+![](img/scale_score.png){width="60%"}
+
+</center>
+
+
+## คะแนนคุณลักษณะอันพึงประสงค์ตามพระราโชบายของ ร.6
+
+```{r}
+score_longformat |> 
+  ggplot(aes(x = score_value))+
+  geom_histogram(fill = "#4285f4") +
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew"),
+        strip.background = element_rect(fill = "black"))+
+  facet_wrap(~attribute)+
+  xlab("\n คะแนนคุณลักษณะอันพึงประสงค์ตามพระราโชบายของ ร.6")+
+  ylab("\n จำนวนนักเรียน \n")
+
+```
+
+
+## คะแนนคุณลักษณะอันพึงประสงค์ของหลักสูตรแกนกลางรับผิดชอบโดยฝ่ายวิชาการ
+
+```{r}
+score_longformat_academic |> 
+  ggplot(aes(x = score_value))+
+  geom_histogram(fill = "#4285f4") +
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew"),
+        strip.background = element_rect(fill = "black"))+
+  facet_wrap(~attribute)+
+  xlab("\n คะแนนคุณลักษณะอันพึงประสงค์ของหลักสูตรแกนกลางรับผิดชอบโดยฝ่ายวิชาการ")+
+  ylab("\n จำนวนนักเรียน \n")
+
+```
+
+
+## คะแนนคุณลักษณะอันพึงประสงค์ของหลักสูตรแกนกลางรับผิดชอบโดยฝ่ายกิจการนักเรียน
+
+```{r}
+score_longformat_student |> 
+  ggplot(aes(x = score_value))+
+  geom_histogram(fill = "#4285f4") +
+  theme_light()+
+  theme(panel.grid = element_blank(),
+        text = element_text(family = "ChulaCharasNew"),
+        strip.background = element_rect(fill = "black"))+
+  facet_wrap(~attribute)+
+  xlab("\n คะแนนคุณลักษณะอันพึงประสงค์ของหลักสูตรแกนกลางรับผิดชอบโดยฝ่ายกิจการนักเรียน")+
+  ylab("\n จำนวนนักเรียน \n")
+
+```
+
+
+
+## การกำหนดจุดตัดของคะแนนคุณลักษณะอันพึงประสงค์ {.smaller}
+
+เมื่อพิจารณาการแจกแจงของคะแนนคุณลักษณะอันพึงประสงค์ พบว่ามีการแจกแจงในลักษณะเดียวกัน ผู้วิจัยตึงนำคะแนนคุณลักษณะทุกด้านมาดำเนินการจัดกลุ่มด้วยอัลกอริทึม K-Means โดยแบ่งออกเป็น 3 กลุ่ม จากนั้นใช้ค่าต่ำสุดและสูงสุดของแต่ละกลุ่มมาเป็นคะแนนจุดตัด
+
+```{r}
+set.seed(123)
+kmeans_result <- kmeans(score_longformat$score_value, centers = 3, nstart = 20)
+score_category <- factor(kmeans_result$cluster, 
+                         levels = c(1,3,2),
+                         labels = c("สอดคล้อง",
+                                     "ไม่ชัดเจน",
+                                      "ไม่สอดคล้อง"))
+score_longformat %>% 
+  bind_cols(
+score_category = score_category) %>% 
+  group_by(score_category) %>% 
+  summarise(
+    n = n(),
+    avg = mean(score_value, na.rm = TRUE),
+    sd = sd(score_value, na.rm = TRUE),
+    min = min(score_value, na.rm = TRUE),
+    q1 = quantile(score_value, 0.25, na.rm = TRUE),
+    median = median(score_value, na.rm = TRUE),
+    q3 = quantile(score_value, 0.75, na.rm = TRUE),
+    max = max(score_value, na.rm = TRUE)
+  )
+```
+
+```{r}
+score_longformat %>% 
+  bind_cols(
+score_category = score_category) %>% 
+  ggplot(aes(x = score_value))+
+  geom_histogram(aes(y = after_stat(count),
+                     fill = score_category), 
+                color = "white", binwidth = 0.05, alpha = 0.8) +
+  scale_fill_manual(values = c(
+    "ไม่สอดคล้อง" = "#e74c3c", 
+    "ไม่ชัดเจน" = "#f39c12", 
+    "สอดคล้อง" = "#27ae60"
+  )) +
+  geom_vline(xintercept = c(-0.36, 0.45), linetype = "dashed", color = "black") +
+  annotate("text", x = -0.36, y = 0.4, label = "คะแนนจุดตัด -0.36", 
+           vjust = -0.5, hjust = -0.6,
+           size = 3.5, col = "grey20",
+           family = "ChulaCharasNew", 
+           fontface = "italic",
+           angle = 90) +
+annotate("text", x = 0.45, y = 0.4, label = "คะแนนจุดตัด 0.45", 
+           vjust = -0.5, hjust = -0.6,
+           size = 3.5, col = "grey20",
+           family = "ChulaCharasNew", 
+           fontface = "italic",
+           angle = 90) +
+  labs(x = "\nคะแนนคุณลักษณะอันพึงประสงค์", y = "\n ความหนาแน่น \n", fill = "ความสอดคล้องกับคุณลักษณะฯ") +
+  theme_minimal(base_family = "ChulaCharasNew") +
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 14),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 13)
+  )+
+  scale_y_continuous(breaks = c(0, 300, 600, 900, 1200),
+                     labels = c(0, 1, 2, 3, 4))
+```
+
+
+## 1.1 คะแนนคุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6 (1) {.smaller}
+
+เมื่อพิจารณาคุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6 จำนวน 12 ด้าน พบว่าทุกด้านมีค่ามัธยฐานสูงกว่าคะแนนจุดตัดที่ 0.45 คะแนนทั้งหมด บ่งชี้ว่าพฤติกรรมการแสดงออกของนักเรียนส่วนใหญ่มีแนวโน้มสอดคล้องกับคุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6
+
+เมื่อพิจารณาจากมัธยฐานพบว่า ด้านที่นักเรียนแสดงออกอย่างสอดคล้องมากที่สุดได้แก่
+
+- รู้จักตรากตรำ (Med = 0.89, QD = 0.05)
+
+- ไม่สำรวยหยิบโหย่ง (Med = 0.86, QD = 0.08) และไม่ทำตนเป็นคนถือยศศักดิ์ (Med = 0.86, QD = 0.06) 
+
+ด้านที่มีมัธยฐานต่ำที่สุดคือด้านศีลธรรม (Med = 0.64, QD = 0.79) นอกจากนี้ยังมีข้อสังเกตว่าคะแนนด้านศีลธรรมเป็นด้่านที่มีการกระจายสูงมากที่สุด บ่งชี้ว่ามีนักเรียนบางกลุ่มที่มีแนวโน้มแสดงออกไม่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านศีลธรรม
+
+## 1.1 คะแนนคุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6 (2) {.smaller}
+
+
+```{r}
+score_longformat %>% 
+  group_by(attribute) %>% 
+  summarise(
+    n = n(),
+    median = median(score_value, na.rm = TRUE),
+    qd = IQR(score_value, na.rm = TRUE)/2,
+    avg = mean(score_value, na.rm = TRUE),
+    sd = sd(score_value, na.rm = TRUE),
+    min = min(score_value, na.rm = TRUE),
+    q1 = quantile(score_value, 0.25, na.rm = TRUE),
+    q3 = quantile(score_value, 0.75, na.rm = TRUE),
+    max = max(score_value, na.rm = TRUE)
+  ) %>% 
+  arrange(desc(median)) %>% 
+  gt() %>% 
+  cols_label(attribute = "คุณลักษณะอันพึงประสงค์",
+             median = "Med",
+             qd = "QD",
+             avg = "M",
+             sd = "SD",
+             min = "Min",
+             q1 = "Q1",
+             q3 = "Q3",
+             max = "Max") %>% 
+  cols_align(align = "left", columns = attribute) %>%
+  fmt_number(columns = everything(),
+             decimals = 2) %>%
+  tab_options(table.font.size = 12,
+              table.width = pct(100),
+              column_labels.font.weight = "bold",
+              column_labels.font.size = 18,
+              table.border.top.style = "solid",
+              table.border.bottom.style = "solid",
+              table.border.top.color = "black",
+              table.border.bottom.color = "black") %>% 
+  tab_style(
+    style = cell_text(font = "ChulaCharasNew"),
+    locations = cells_column_labels()
+  )
+```
+
+
+## 1.1 คะแนนคุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6 (3) {.smaller}
+
+```{r fig.height = 5}
+score_longformat %>% 
+  mutate(attribute = fct_reorder(attribute, score_value, .fun = mean, .na_rm = TRUE)) %>% 
+  ggplot(aes(x = score_value, y = attribute)) +
+  geom_boxplot(fill = "#4285f4", outlier.alpha = 0) +
+  geom_jitter(height = 0.1, alpha = 0.1)+
+  geom_vline(xintercept = c(-0.5, 0.5), linetype = 2, color = "grey50")+
+  ylab("")+
+  xlab("\n คะแนนคุณลักษณะอันพึงประสงค์") +
+  theme_light()+
+  theme(text = element_text(family = "ChulaCharasNew"),
+        panel.grid = element_blank(),
+        axis.text = element_text(size = 14),
+        axis.title.x = element_text(size = 15))
+```
+
+
+## 1.2 สัดส่วนนักเรียนจำแนกตามความสอดคล้องกับคุณลักษณะอันพึงประสงค์ตามพระราโชบายของรัชกาลที่ 6 {.smaller}
+
+```{r fig.height = 5}
+library(rcartocolor)
+score_longformat %>% 
+  mutate(class = case_when(
+    score_value > 0.45 ~ "สอดคล้อง",
+    score_value < -0.37 ~ "ไม่สอดคล้อง",
+    TRUE ~ "ไม่ขัดเจน/หลากหลาย"
+  )) %>% 
+  mutate(class = fct_relevel(class, "สอดคล้อง", "ไม่ขัดเจน/หลากหลาย", "ไม่สอดคล้อง")) %>%
+  
+  # 1. คำนวณสัดส่วนแต่ละ class
+  count(attribute, class) %>%
+  group_by(attribute) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  
+  # 2. หาค่าที่เป็น prop ของ "สอดคล้อง" เพื่อนำไปจัดลำดับ
+  group_by(attribute) %>%
+  mutate(prop_green = prop[class == "สอดคล้อง"]) %>%
+  ungroup() %>%
+  
+  # 3. จัดลำดับ attribute ใหม่
+  mutate(attribute = fct_reorder(attribute, prop_green)) %>%
+  
+  # 4. ใส่ label เฉพาะ "สอดคล้อง"
+  mutate(label = ifelse(class == "สอดคล้อง", scales::percent(prop, accuracy = 1), NA)) %>%
+  
+  ggplot(aes(y = attribute, x = prop, fill = class)) +
+  geom_col(position = "fill") +
+  geom_text(
+    aes(label = label),
+    position = position_fill(vjust = 0.5),
+    family = "ChulaCharasNew",
+    fontface = "bold",
+    size = 5,
+    na.rm = TRUE,
+    col = "white"
+  ) +
+  scale_fill_manual(values = c(
+    "สอดคล้อง" = "#0f9d58", 
+    "ไม่ขัดเจน/หลากหลาย" = "#f4b400", 
+    "ไม่สอดคล้อง" = "#db4437"
+  )) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = "\nสัดส่วนของนักเรียน", y = "", fill = "") +
+  theme_light() +
+  theme(
+    panel.grid = element_blank(),
+    text = element_text(family = "ChulaCharasNew", size = 14),
+    axis.text = element_text(size = 14),
+    axis.title.x = element_text(size = 15),
+    legend.position = "top"
+  ) +
+  guides(fill = guide_legend(reverse = TRUE))
+```
+
+
+## 1.3 ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน : รู้จักตรากตรำ {.smaller}
+
+
+- ผู้วิจัยคัดกรองข้อความที่มีความสอดคล้อง/ไม่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านรู้จักตรากตรำ โดยใช้คะแนนจุดตัดเป็นเกณฑ์ 
+
+- จากนั้นใช้โมเดลภาษาขนาดใหญ่ช่วยระบุคุณลักษณะย่อยของพฤติกรรมที่แสดงออกในแต่ละข้อความ
+
+```{r results = F}
+source("05_report/generate_report.R")
+```
+
+
+```{r message = F, warning = F, echo = F}
+score_hardwork_phrase <- read_csv("01_data/score_data/score_item5.1_phrase.csv")
+score_hardwork_phrase <- score_hardwork_phrase %>% 
+  left_join(all_data %>% select(student_id, student_level) %>% 
+  filter(is.na(student_id) == F),
+  by = "student_id", keep = F) %>% 
+  unique()
+```
+
+
+```{r distribution_plot, fig.width = 8, echo = F}
+library(rcartocolor)
+# กำหนดว่าแต่ละ category เป็นบวกหรือลบ
+positive_cats <- score_hardwork_phrase %>% 
+  count(category_use,category) %>% 
+  slice(2:6) %>% 
+  pull(category)
+negative_cats <- score_hardwork_phrase %>% 
+  count(category_use,category) %>% 
+  slice(1) %>% 
+  pull(category)
+
+thai_labels <- c(
+  "ทุ่มเทอย่างสมดุล",
+  "รับผิดชอบอย่างขยันขันแข็ง",
+  "บริหารเวลาที่มีประสิทธิภาพ",
+  "ยืดหยุ่นและอดทนต่ออุปสรรค",
+  "หาความช่วยเหลืออย่างเหมาะสม",
+  "หลีกเลี่ยง"
+)
+
+plot_pyramid_chart(score_hardwork_phrase %>% select(-student_level), 
+                   all_data,
+                   legend_row = 2,
+                   positive_cats = positive_cats,
+                   negative_cats = negative_cats,
+                   thai_labels = thai_labels)+
+  scale_fill_manual(
+    values = c(
+      "ทุ่มเทอย่างสมดุล" = "#C2E1D7", 
+      "รับผิดชอบอย่างขยันขันแข็ง" = "#389390", 
+      "บริหารเวลาที่มีประสิทธิภาพ" = "#527c70",
+      "ยืดหยุ่นและอดทนต่ออุปสรรค" = "#15392f",
+      "หาความช่วยเหลืออย่างเหมาะสม" = "forestgreen",
+      "หลีกเลี่ยง" = "#d2371f"
+    )
+  )
+  
+
+```
+
+
+
+
+
+## 1.3 ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน : รู้จักตรากตรำ {.smaller}
+
+
+- ผู้วิจัยคัดกรองข้อความที่มีความสอดคล้อง/ไม่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านรู้จักตรากตรำ โดยใช้คะแนนจุดตัดเป็นเกณฑ์ 
+
+- จากนั้นใช้โมเดลภาษาขนาดใหญ่ช่วยระบุคุณลักษณะย่อยของพฤติกรรมที่แสดงออกในแต่ละข้อความ
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r results = F}
+source("05_report/generate_report.R")
+```
+
+
+```{r message = F, warning = F, echo = F}
+score_hardwork_phrase <- read_csv("01_data/score_data/score_item5.1_phrase.csv")
+score_hardwork_phrase <- score_hardwork_phrase %>% 
+  left_join(all_data %>% select(student_id, student_level) %>% 
+  filter(is.na(student_id) == F),
+  by = "student_id", keep = F) %>% 
+  unique()
+```
+
+
+```{r fig.width = 8, echo = F}
+library(rcartocolor)
+# กำหนดว่าแต่ละ category เป็นบวกหรือลบ
+positive_cats <- score_hardwork_phrase %>% 
+  count(category_use,category) %>% 
+  slice(2:6) %>% 
+  pull(category)
+negative_cats <- score_hardwork_phrase %>% 
+  count(category_use,category) %>% 
+  slice(1) %>% 
+  pull(category)
+
+thai_labels <- c(
+  "ทุ่มเทอย่างสมดุล",
+  "รับผิดชอบอย่างขยันขันแข็ง",
+  "บริหารเวลาที่มีประสิทธิภาพ",
+  "ยืดหยุ่นและอดทนต่ออุปสรรค",
+  "หาความช่วยเหลืออย่างเหมาะสม",
+  "หลีกเลี่ยง"
+)
+
+plot_pyramid_chart(score_hardwork_phrase %>% select(-student_level), 
+                   all_data,
+                   legend_row = 2,
+                   positive_cats = positive_cats,
+                   negative_cats = negative_cats,
+                   thai_labels = thai_labels)+
+  scale_fill_manual(
+    values = c(
+      "ทุ่มเทอย่างสมดุล" = "#C2E1D7", 
+      "รับผิดชอบอย่างขยันขันแข็ง" = "#389390", 
+      "บริหารเวลาที่มีประสิทธิภาพ" = "#527c70",
+      "ยืดหยุ่นและอดทนต่ออุปสรรค" = "#15392f",
+      "หาความช่วยเหลืออย่างเหมาะสม" = "forestgreen",
+      "หลีกเลี่ยง" = "#d2371f"
+    )
+  )
+  
+
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r message = F, warning = F, results = F}
+source("05_report/word_cloud.R")
+```
+
+```{r data_preprocessing_respect, echo = F, eval = F}
+library(thaitextrecipe)
+library(tidytext)
+
+positive_phrase <- score_hardwork_phrase %>% 
+  mutate(score = .pred_positive_behav_rf - .pred_negative_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map_chr(phrase, summarize_main_idea_openai)) 
+write_excel_csv(positive_phrase, file = "01_data/score_data/hardwork_positive_phrase.csv")
+
+negative_phrase <- score_hardwork_phrase %>% 
+  mutate(score = .pred_negative_behav_rf - .pred_positive_behav_rf) %>% 
+  filter(score > 0.6) %>% 
+  mutate(main_idea = purrr::map_chr(phrase, summarize_main_idea_openai))
+write_excel_csv(negative_phrase, file = "01_data/score_data/hardwork_negative_phrase.csv")
+```
+
+```{r}
+positive_phrase <- read_csv("01_data/score_data/hardwork_positive_phrase.csv")
+
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% 
+      slice(2:6) %>%  pull(category),
+    category_labels = thai_labels[1:5],
+    selected_categories = thai_labels[1],
+  max_words = 150,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+
+```
+
+:::
+
+::::
+
+
+
+## 1.3 ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน : รู้จักตรากตรำ {.smaller}
+
+
+- ผู้วิจัยคัดกรองข้อความที่มีความสอดคล้อง/ไม่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านรู้จักตรากตรำ โดยใช้คะแนนจุดตัดเป็นเกณฑ์ 
+
+- จากนั้นใช้โมเดลภาษาขนาดใหญ่ช่วยระบุคุณลักษณะย่อยของพฤติกรรมที่แสดงออกในแต่ละข้อความ
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+
+```{r message = F, warning = F, echo = F}
+score_hardwork_phrase <- read_csv("01_data/score_data/score_item5.1_phrase.csv")
+score_hardwork_phrase <- score_hardwork_phrase %>% 
+  left_join(all_data %>% select(student_id, student_level) %>% 
+  filter(is.na(student_id) == F),
+  by = "student_id", keep = F) %>% 
+  unique()
+```
+
+
+```{r fig.width = 8, echo = F}
+library(rcartocolor)
+# กำหนดว่าแต่ละ category เป็นบวกหรือลบ
+positive_cats <- score_hardwork_phrase %>% 
+  count(category_use,category) %>% 
+  slice(2:6) %>% 
+  pull(category)
+negative_cats <- score_hardwork_phrase %>% 
+  count(category_use,category) %>% 
+  slice(1) %>% 
+  pull(category)
+
+thai_labels <- c(
+  "ทุ่มเทอย่างสมดุล",
+  "รับผิดชอบอย่างขยันขันแข็ง",
+  "บริหารเวลาที่มีประสิทธิภาพ",
+  "ยืดหยุ่นและอดทนต่ออุปสรรค",
+  "หาความช่วยเหลืออย่างเหมาะสม",
+  "หลีกเลี่ยง"
+)
+
+plot_pyramid_chart(score_hardwork_phrase %>% select(-student_level), 
+                   all_data,
+                   legend_row = 2,
+                   positive_cats = positive_cats,
+                   negative_cats = negative_cats,
+                   thai_labels = thai_labels)+
+  scale_fill_manual(
+    values = c(
+      "ทุ่มเทอย่างสมดุล" = "#C2E1D7", 
+      "รับผิดชอบอย่างขยันขันแข็ง" = "#389390", 
+      "บริหารเวลาที่มีประสิทธิภาพ" = "#527c70",
+      "ยืดหยุ่นและอดทนต่ออุปสรรค" = "#15392f",
+      "หาความช่วยเหลืออย่างเหมาะสม" = "forestgreen",
+      "หลีกเลี่ยง" = "#d2371f"
+    )
+  )
+  
+
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+positive_phrase <- read_csv("01_data/score_data/hardwork_positive_phrase.csv")
+
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% 
+      slice(2:6) %>%  pull(category),
+    category_labels = thai_labels[1:5],
+    selected_categories = thai_labels[2],
+  max_words = 150,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+
+```
+
+:::
+
+::::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
