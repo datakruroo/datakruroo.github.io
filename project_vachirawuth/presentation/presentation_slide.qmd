@@ -1367,7 +1367,9 @@ p<-plot_category_wordclouds(
 ```{r}
 
 p<-plot_category_wordclouds(
-    phrase_data = negative_phrase,
+    phrase_data = negative_phrase %>% 
+      filter(!main_idea == "เลิกอ้าง") %>% 
+      filter(!main_idea == "เริ่มใหม่"),
     categories_filter = negative_phrase %>% 
       count(category) %>% pull(category),
     category_labels = thai_labels[5:7],
@@ -1488,6 +1490,11 @@ score_phrase %>%
   xlab("\n จำนวนข้อความ") +
   xlim(0,650)
 ```
+
+
+:::
+
+::::
 
 
 ## 1.6 เป็นผู้กล้าหาญ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
