@@ -18,6 +18,8 @@ p {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Sarabun', serif; /* ตัวอย่างการตั้งค่าฟอนต์หัวข้อเป็น Georgia */
   color: #C5705D;
+  line-height: 1.6em;
+
 }
 
 
@@ -79,4 +81,14 @@ td {
   font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
   margin-top: -1.6em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
   margin-left: 22em;
+}
+
+/* บังคับให้หัวเรื่อง (h1.title, h2.subtitle) ห่อข้อความได้ใน Reveal.js */
+.reveal .slides section h1.title,
+.reveal .slides section h2.title {
+  white-space: normal;         /* ปลดล็อกการไม่ห่อบรรทัด */
+  word-wrap: break-word;       /* ตัดคำ (wrap) เมื่อเกินขอบ */
+  overflow-wrap: break-word;   /* ให้เบราว์เซอร์ช่วยตัดคำอัตโนมัติ */
+  /* ถ้าต้องการบังคับตัดคำแบบรุนแรง (อาจทำให้กลายเป็นตกบรรทัดกลางคำ) */
+  word-break: break-all;
 }

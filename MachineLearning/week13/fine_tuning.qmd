@@ -1,0 +1,808 @@
+---
+title: "Fine-tuning DL"
+format: html
+editor: visual
+---
+
+```{python}
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+```
+
+### No fine-tuning
+
+```{r}
+library(rsample)
+library(recipes)
+library(tidyverse)
+library(reticulate)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week01/exam.csv")
+glimpse(data)
+```
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = ach)
+train <- training(split)
+test <- testing(split)
+glimpse(train)
+
+
+rec <- recipe(ach~ . ,data= train) %>% 
+  step_dummy(all_nominal_predictors(),
+             one_hot = TRUE) %>%
+  step_normalize(all_numeric_predictors()) 
+
+train_full <- rec %>%
+  prep() %>% 
+  juice()
+
+
+train_full %>% glimpse()
+#x <- model.matrix(ach ~. -1, data= train)
+#y <- train[,1]
+#x %>% glimpse()
+#y %>% glimpse()
+
+x <- train_full %>% select(-ach)
+y <- train_full %>% select(ach)
+
+py$x_train <- as.matrix(x)
+py$y_train <- as.matrix(y)
+```
+
+```{python}
+x_train ## feature matrix
+y_train ## target vector
+```
+
+ต่อไปเราจะสร้างโมเดล ANNs ที่ประกอบด้วย
+
+-   input layer มีจำนวนเท่ากับ feature ในข้อมูลนำเข้ามี 9 features
+
+-   hidden layer 1 มีจำนวน neuron เท่ากับ 8 หน่วย แต่ละตัวเราจะใช้ activation function เป็น ReLU
+
+-   output layer มีจำนวน neuron เท่ากับ 1 หน่วย เป็นเชิงปริมาณ
+
+แปลงข้อมูลจาก array เป็น tensor
+
+### สร้าง ANN model + loss + optimizer
+
+```{python}
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+
+#1. Create a Sequential model
+model = Sequential()
+
+#2. Add an input layer and a hidden layers.
+model.add(Dense(input_shape = [9], 
+                units = 20,
+                activation="relu"))
+                
+              
+#3. Add 2-neuron output layer
+model.add(Dense(units = 1, 
+                activation="linear"))
+
+#4. model summary
+model.summary()
+```
+
+### Compile model
+
+```{python}
+model.compile(
+    optimizer="adam",
+    loss="mse",                 # regression → mean squared error
+    metrics=["mae"]             # ดู mean absolute error เพิ่มเติม
+)
+```
+
+### train model
+
+```{python}
+history = model.fit(
+    x_train, y_train,
+    epochs=500,
+    batch_size=50,
+    verbose=1                   # เปลี่ยนเป็น 0 ถ้าไม่อยากให้แสดง progress
+)
+```
+
+```{python}
+history.history
+```
+
+### เรียกดูผลลัพธ์
+
+```{r}
+library(patchwork)
+train_results <- py$history$history
+train_results %>% data.frame() %>% summary()
+
+train_results %>% data.frame() %>% 
+  mutate(epoch = row_number()) %>% 
+  ggplot(aes(x = epoch, y = loss))+
+  geom_line(col = "steelblue")+
+  ggtitle("Loss function (MSE)") + 
+train_results %>% data.frame() %>% 
+  mutate(epoch = row_number()) %>% 
+  ggplot(aes(x = epoch, y = mae))+
+  geom_line(col = "orange")+
+  ggtitle("MAE")
+```
+สามารถใช้ matplolib หรือ library อื่น ๆ ในpython หรืออาจดึงเข้ามาใน R ดังนี้
+
+```{r}
+## ดึง history มาเก็บใน R
+history <- py$history$history
+class(history)
+## ------ 
+as_tibble(history) %>% summary()
+
+as_tibble(history) %>%
+  mutate(epoch = row_number()) %>%
+  pivot_longer(cols = -epoch) %>%
+  ggplot(aes(epoch, value, color = name)) +
+  geom_line() +
+  labs(title = "Loss & MAE during Training", x = "Epoch", y = "Value")
+```
+
+
+## Challenge in DL
+
+-   Learning Rate
+
+-   Overfitting -- regularization, dropout, early stopping
+
+-   Minibatches vs Stochastic Gradient Descent
+
+### Learning Rate
+
+ดังที่เกริ่นไว้ก่อนหน้าแล้วว่า gradient descent เป็นอัลกอริทึมหลักที่ ANNs ใช้ในการปรับค่าพารามิเตอร์ของโมเดล โดยมีเป้าหมายในการนำ error ที่คำนวณได้จาก loss function มาปรับปรุงค่าพารามิเตอร์ในโมเดลเพื่อลด error ดังกล่าวลงผ่านกระบวนการ forward + backward propagation
+
+หากกำหนดให้ $\theta$ เป็นค่าพารามิเตอร์ในโมเดล การปรับแต่งค่าพารามิเตอร์ด้วยอัลกอริทึมดังกล่าวสามารถดำเนินการได้ตามสมการนี้
+
+$$
+\theta := \theta - \eta \cdot \frac{\partial L}{\partial \theta}
+$$
+
+โดยที่
+
+-   $\eta$ คือ learning rate ซึ่งเป็นค่าคงที่ที่ผู้วิเคราะห์กำหนดขึ้นมาเพื่อควบคุมความเร็วในการปรับค่าพารามิเตอร์ในโมเดล
+
+-   $\frac{\partial L}{\partial \theta}$ คือ gradient ของ loss function เทียบกับค่าพารามิเตอร์ในโมเดล
+
+```{r}
+#| echo: false
+library(tidyverse)
+# สร้างข้อมูล loss function y = x^2
+df <- data.frame(
+  x = seq(-2, 2, length.out = 100)
+) %>%
+  mutate(y = x^2)
+
+# จุดเริ่มต้นที่ w = 1
+start_point <- data.frame(
+  x = 1,
+  y = 1^2,
+  dx = -2 * 1,    # gradient = 2x, move opposite direction
+  dy = -2.0
+)
+
+ggplot(df, aes(x = x, y = y)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_segment(data = start_point,
+               aes(x = x, y = y, xend = x + dx/5, yend = y + dy/5),
+               arrow = arrow(length = unit(0.2, "inches")),
+               color = "orange", size = 1) +
+  geom_point(data = start_point, aes(x=x, y=y), color = "orange")+
+  labs(
+    title = "Gradient Descent Illustration",
+    x = "Weight",
+    y = "Loss"
+  ) +
+  theme_minimal()
+```
+
+note: <https://arxiv.org/pdf/1712.09913>
+
+การกำหนด learning rate ที่เหมาะสมมีความสำคัญ ทั้งนี้เป็นเพราะ หาก learning rate สูงเกินไปอาจทำให้โมเดลไม่สามารถหาค่าพารามิเตอร์ที่เหมาะสมได้ (overshoot) และอาจทำให้โมเดลไม่สามารถเรียนรู้ได้เลย ในทางกลับกันหาก learning rate ต่ำเกินไปจะทำให้การเรียนรู้ใช้เวลานานมาก ๆ และอาจทำให้โมเดลไม่สามารถหาค่าพารามิเตอร์ที่เหมาะสมได้เช่นกัน
+
+## Overfitting & Regularization
+
+เป็นเทคนิคหนึ่งที่นำมาใช้สำหรับป้องกันไม่ให้โมเดลเกิดการ overfitting โดยการเพิ่มค่าปรับ (penalty) ลงไปใน loss function เพื่อควบคุมความซับซ้อนของโมเดล ผ่านการดันให้ค่า weight/coefficient ของโมเดลมีค่าต่ำลงเข้าใกล้ศูนย์ โดยทั่วไปแล้ว regularization จะมี 2 รูปแบบได้แก่
+
+-   Ridge regression (L2 regularization)
+
+-   Lasso regression (L1 regularization)
+
+-   ElasticNet regression (L1 + L2 regularization)
+
+$$
+L(\theta) = L_{original}(\theta) + \lambda \cdot R(\theta)
+$$
+
+โดยที่ $R(\theta)$ คือค่าปรับที่เพิ่มเข้าไปใน loss function และ $\lambda$ คือค่าคงที่ที่ผู้วิเคราะห์กำหนดขึ้นมาเพื่อควบคุมความเข้มข้นของการ regularization
+
+### Dropout
+
+นอกจากการ regularization แล้ว ยังมีเทคนิคอื่น ๆ ที่สามารถนำมาใช้ในการป้องกันการ overfitting เช่น dropout
+
+![](https://www.researchgate.net/profile/Pratik-Kanani/publication/345321282/figure/fig1/AS:954453112934400@1604570763065/Dropout-in-Machine-Learning-13.jpg)
+
+dropout คือเทคนิคที่มีการสุ่มปิด neuron บางตัวระหว่างการ train โมเดล โดย neuron ที่ถูกปิดจะไม่ถูกนำมาคำนวณในรอบการ train นั้น ๆ ซึ่งจะช่วยลดความซับซ้อนของโมเดลและทำให้โมเดลมีความสามารถในการ generalize ข้อมูลได้ดีขึ้น
+
+## Early Stopping
+
+Early Stopping เป็นเทคนิคในการป้องกัน Overfitting ในระหว่างการฝึก (training) โมเดล Machine Learning หรือ Deep Learning โดยจะ หยุดการฝึกก่อนที่จะครบจำนวน epoch ทั้งหมด เมื่อพบว่าโมเดลเริ่มเรียนรู้เฉพาะข้อมูลฝึก (train) จนส่งผลให้ประสิทธิภาพบนข้อมูลใหม่ (validation) แย่ลง
+
+
+หลักการทำงาน
+
+1.  แบ่งข้อมูล train data ออกเป็นสองส่วนได้แก่ training data และ validation data
+
+2.  ในแต่ละรอบที่ train โมเดล (epoch) จะมีการประเมินผลโมเดลบน validation data
+
+3.  หาก validation loss ไม่ลดลงต่อเนื่องหลายรอบติดต่อกัน แสดงว่าโมเดลเริ่มมีแนวโน้ม overfitting อัลกอริทึมจะสั่งให้หยุดฝึกโมเดลทันที
+
+4.  โมเดลที่ดีที่สุดจะถูกบันทึกไว้ในระหว่างการฝึก โดยจะเลือกโมเดลที่มี validation loss ต่ำที่สุด
+
+ตัวแปรสำคัญที่ใช้ในการทำ early stoping
+
+-   `patience` คือจำนวน epoch ที่จะรอให้ validation loss ลดลงก่อนที่จะหยุดการฝึก
+
+-   `min_delta` การเปลี่ยนแปลงของ loss ขั้นต่ำที่จะถือว่าโมเดลดีขึ้น
+
+-   `restore_best_weights` คือการบันทึกโมเดลที่ดีที่สุดในระหว่างการฝึก โดยจะเลือกโมเดลที่มี validation loss ต่ำที่สุด
+
+## การใช้งาน GPU (สำหรับ apple silicon MPS)
+
+`tensorflow-macos` และ `tensorflow-metal` เป็นแพ็คเกจซอฟต์แวร์ที่ช่วยให้สามารถใช้ประโยชน์จาก GPU บนเครื่อง Mac เพื่อเร่งความเร็วในการทำงานของ TensorFlow ซึ่งเป็นเฟรมเวิร์ก Machine Learning แบบโอเพนซอร์สที่พัฒนาโดย Google
+
+1.  เปิด terminal แล้วติดตั้ง tensorflow-macos และ tensorflow-metal
+
+```{bash eval = F}
+pip install tensorflow-macos
+pip install tensorflow-metal
+```
+
+2.  ทดสอบว่า TensorFlow เห็น GPU หรือไม่
+
+```{python}
+import tensorflow as tf
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+```
+
+## ตัวอย่าง 2
+
+ตัวอย่างต่อไปนี้ลองประมวลผลโมเดลเดิม โดยมีการแยก train และ validation dataset
+
+```{python}
+import random
+import numpy as np
+
+# ตั้งค่า seed
+seed_value = 42
+np.random.seed(seed_value)
+tf.random.set_seed(seed_value)
+random.seed(seed_value)
+
+
+#1. Create a Sequential model
+model = Sequential()
+
+#2. Add an input layer and a hidden layers.
+model.add(Dense(input_shape=[9], units = 8,
+                activation="relu"))
+##kernal_regularizer=keras.regularizers.l1_l2(l1 = 0.01, l2 = 0.01))
+##model.add(Dropout(0.1))
+##model.add(Dense(units = 4, activation="relu"))
+#3. Add 2-neuron output layer
+model.add(Dense(units = 1, activation="linear"))
+
+#4. model summary
+model.summary()
+## optimizer = keras.optimizers.Adam(learning_rate=0.01)
+model.compile(
+    optimizer= "adam",
+    loss="mse",                 # regression → mean squared error
+    metrics=["mae"]             # ดู mean absolute error เพิ่มเติม
+)
+
+
+history = model.fit(
+    x, y,
+    validation_split= 0.1,        # แบ่งข้อมูล 20% สำหรับ validation
+    epochs=300,
+    batch_size=32,
+    verbose=1                   # เปลี่ยนเป็น 0 ถ้าไม่อยากให้แสดง progress
+)
+```
+
+
+
+```{python}
+history.history
+```
+
+### เรียกดูผลลัพธ์
+
+สามารถใช้ matplolib หรือ library อื่น ๆ ในpython หรืออาจดึงเข้ามาใน R ดังนี้
+
+```{r}
+## ดึง history มาเก็บใน R
+history <- py$history$history
+class(history)
+## ------ 
+as_tibble(history) %>% summary()
+
+as_tibble(history) %>%
+  select(contains("loss")) %>% 
+  mutate(epoch = row_number()) %>%
+  pivot_longer(cols = -epoch) %>%
+  ggplot(aes(epoch, value, color = name)) +
+  geom_line() +
+  labs(title = "Loss vs Validation Loss", x = "Epoch", y = "Value")
+```
+
+การทำ early stop สามารถดำเนินการได้ดังนี้
+
+
+Note: Regularization ใน Keras มี 3 แบบ
+
+-   Lasso สั่งงานผ่าน `keras.regularizers.l1(...)`
+
+-   Ridge สั่งงานผ่าน `keras.regularizers.l2(...)`
+
+-   ElasticNet สั่งงานผ่าน `keras.regularizers.l1_l2(l1=0.001, l2=0.001)`
+
+```{python}
+from keras.callbacks import EarlyStopping
+from keras.regularizers import l2 
+from keras.optimizers import Adam
+
+early_stop = EarlyStopping(
+    monitor='val_loss',    # ติดตาม metric ที่เราสนใจ
+    patience=10,           # รอได้กี่ epoch ก่อนจะหยุด
+    restore_best_weights=True  # เอาค่าน้ำหนักที่ดีที่สุดกลับมา
+)
+
+
+#1. Create a Sequential model
+model = Sequential()
+
+#2. Add an input layer and a hidden layers.
+model.add(Dense(input_shape=[9], units = 8,
+                activation="relu",
+                kernal_regularizer = l2(0.01)))
+model.add(Dropout(0.1))
+model.add(Dense(units = 4, activation="relu"))
+#3. Add 2-neuron output layer
+model.add(Dense(units = 1, activation="linear"))
+
+#4. model summary
+model.summary()
+
+
+optimizer_adam = Adam(learning_rate=0.01)
+
+model.compile(
+    optimizer= optimizer_adam,
+    loss="mse",                 # regression → mean squared error
+    metrics=["mae"]             # ดู mean absolute error เพิ่มเติม
+)
+
+history_val = model.fit(
+    x, y,
+    validation_split=0.2,
+    epochs=500,
+    batch_size=32,
+    callbacks = [early_stop],
+    verbose=1
+)
+
+```
+
+```{r}
+## ดึง history มาเก็บใน R
+history_val <- py$history_val$history
+class(history_val)
+## ------ 
+as_tibble(history_val) %>% summary()
+
+as_tibble(history_val) %>%
+  select(contains("loss")) %>% 
+  mutate(epoch = row_number()) %>%
+  pivot_longer(cols = -epoch) %>%
+  ggplot(aes(epoch, value, color = name)) +
+  geom_line() +
+  labs(title = "Training Loss vs  Val Loss", x = "Epoch", y = "Value")
+```
+
+### กิจกรรม 1: จากชุดข้อมูลที่กำหนดให้แปลง `ach`
+
+-   เป็นตัวแปรจัดประเภทแบบ binary โดยใช้เกณฑ์ 50 คะแนน เป็นเกณฑ์แบ่งกลุ่ม สอบผ่านและสอบตก
+
+-   สร้าง ANN สำหรับการจำแนกประเภทจากข้อมูลที่แปลงแล้ว
+
+-   metric ที่ใช้ในการประเมินคือ accuracy
+
+
+## Deep Learning Training Strategy
+
+1.  กำหนดเป้าหมายของงานที่ชัดเจน และเตรียมข้อมูลให้เหมาะสมกับงาน
+
+-   เริ่มจากโมเดลที่ง่ายที่สุดก่อน วัตถุประสงค์คือพยายามรันโมเดลให้ใช้งานได้ และศึกษาแนวโน้มว่าโมเดลง่าย ๆ มีประสิทธิภาพการเรียนรู้ดีมากน้อยแค่ไหน
+
+    -   MLP ที่มี 1-2 hidden layers
+
+    -   activation function: Relu
+
+    -   optimizer: Adam
+
+    -   loss function: ตามประเภทของ Task
+
+2.  ใช้ default hyperparameters ก่อน เช่น learning rate, batch size, epochs แล้วประเมินประสิทธิภาพของโมเดลผ่าน validation loss
+
+3.  ปรับขนาดโมเดล (model capacity)
+
+-   ถ้าแนวโน้ม underfit ให้เพิ่ม hidden layers/units
+
+-   ถ้า overfit ให้ทำ regularization, dropout, early stopping หรือบางกรณีอาจทำ data augmentation
+
+4.  หากทำ regularization แล้วโมเดลยัง overfit ให้ลองพิจารณาปัจจัยเหล่านี้ประกอบ
+
+-   ข้อมูลไม่พอมั้ย --\> เพิ่มข้อมูล
+
+-   ข้อมูลมีความแปรปรวนน้อยมั้ย --\> ทำ data augmentation หรือเพิ่มข้อมูล
+
+-   กำหนด regularization ไม่เหมาะสมมั้ย --\> ต้องทดลอง fine-tune ค่า hyperparameters ของ regularization หลาย ๆ ค่า
+
+-   training data และ validation data มีความแตกต่างกันเพราะสุ่มข้อมูลไม่ดีมั้ย --\> สุ่มข้อมูลให้เหมือนกัน
+
+-   โมเดลขนาดใหญ่เกินไปมั้ย --\> ลดขนาดโมเดล เช่น ลดจำนวน neuron หรือ layer
+
+-   โมเดลอาจจะไม่เหมาะสมกับข้อมูลมั้ย --\> อาจเปลี่ยนเป็นโมเดลอื่น เช่น CNNs, RNNs, LSTM, Transformers
+
+5.  เมื่อได้โมเดลที่ใช้งานได้ดีแล้ว
+
+-   บันทึกโมเดลที่ให้ performance บน validation สูงสุด (Model Checkpointing)
+
+-   ทดสอบกับ Test Set เพื่อประเมิน final performance
+
+
+## การ fine-tuning DL model
+
+การออกแบบโครงสร้างของโมเดล Artificial Neural Network (ANN) โดยเฉพาะจำนวนของ hidden layers และจำนวน neurons ในแต่ละชั้น เป็นหนึ่งในปัจจัยสำคัญที่ส่งผลต่อประสิทธิภาพของโมเดลอย่างมาก อย่างไรก็ตาม ไม่มีสูตรสำเร็จตายตัว เนื่องจากโครงสร้างที่เหมาะสมขึ้นอยู่กับลักษณะของข้อมูลและปัญหาที่ต้องการแก้ไข
+
+โดยทั่วไปอาจจำแนกการดำเนินงานดังกล่าวออกเป็น 2 แนวทางหลักได้แก่
+
+1.  Heuristic Approach
+
+    -   ใช้ประสบการณ์และความรู้ในสาขาที่เกี่ยวข้องในการออกแบบโครงสร้างของโมเดล
+
+    -   อาจใช้การทดลองและข้อผิดพลาด (trial and error) เพื่อหาค่าที่เหมาะสมที่สุด
+
+2.  Automated Approach
+
+    -   ใช้เทคนิคการค้นหาพารามิเตอร์อัตโนมัติ เช่น Grid Search, Random Search, Bayesian Optimization เพื่อค้นหาค่าที่เหมาะสมที่สุด
+
+### Heuristic Approach
+
+เป็นการกำหนดโครงสร้างของโมเดลตามหลักประสบการณ์, กฎเชิงประจักษ์ (rule of thumb), และความรู้จากงานวิจัยหรือปัญหาที่คล้ายคลึงกัน โดยแนวทางนี้นิยมใช้ในขั้นตอนเริ่มต้นของการพัฒนาโมเดล
+
+1.  จำนวน Hidden Layers (Depth)
+
+-   สำหรับ tabular data มักใช้ 1-2 hidden layers ก็เพียงพอ
+
+-   ข้อมูลไม่เป็นโครงสร้าง เช่น ภาพ เสียง ข้อความ อาจเริ่มต้นที่ 2-4 hidden layers ในบางกรณีอาจใช้มากกว่านี้
+
+-   ข้อมูลที่มีลำดับหรือเวลา ควรใช้ RNNs หรือ LSTMs หรือ Transformers
+
+Note: กรณีทั่วไปที่ข้อมูลไม่ได้ซับซ้อนมากบางครั้งใช้ 1 hidden layer ที่มีขนาดใหญ่พอ ก็สามารถให้ผลลัพธ์ที่ดีได้เหมือนกัน อย่างไรก็ตามมีงานวิจัยที่พบว่าความลึกของโมเดลเป็นปัจจัยต่อประสิทธิภาพในการ generalized ของโมเดล
+
+2.  จำนวน Neurons ในแต่ละ Hidden Layer (Width)
+
+-   เริ่มจากจำนวน neurons ที่ใกล้เคียงกับจำนวน features ในข้อมูลใน input layer
+
+-   หากมีหลาย hidden layers จำนวน neurons ในแต่ละ layer ควรลดลงเรื่อย ๆ จาก input layer ไปยัง output layer ในลักษณะแบบ Pyramid (แต่ไม่เสมอไป)
+
+-   จำนวน neurons ไม่ควรน้อยกว่าจำนวน output และควรมีจำนวนระหว่าง input กับ output
+
+Note: รูปแบบโครงสร้างที่พบบ่อยได้แก่
+
+-   Pyramid
+
+-   Diamond
+
+-   Uniform
+
+### Automated Approach
+
+เป็นแนวทางที่ใช้การค้นหาโครงสร้างโมเดลและค่าพารามิเตอร์ที่เหมาะสมโดยอัตโนมัติ ด้วยการทดลองค่าต่าง ๆ ภายใต้เงื่อนไขที่กำหนดไว้ (Hyperparameter Tuning) ซึ่งช่วยลดภาระของผู้พัฒนาโมเดล และอาจให้ผลลัพธ์ที่ดีกว่าการกำหนดด้วยมือ
+
+-   Grid Search
+
+-   Random Grid Search
+
+-   Bayesian Optimization
+
+-   Tree-structured Parzen Estimator (TPE)
+
+-   Hyperband
+
+-   AutoML
+
+### ทดลองทำ random search
+
+-   ขนาดของ hidden layer: \[4, 5, 6, 7, 8\]
+
+-   learning rate: \[0,1, 0.01, 0.001, 0.0001\]
+
+-   dropout rate: \[0.0, 0.1, 0.2, 0.5\]
+
+-   จำนวนรอบสุ่ม (iterations) 10 (เพื่อให้รวดเร็ว)
+
+```{python}
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
+import random
+
+# ตั้ง seed ให้ reproducible
+np.random.seed(42)
+tf.random.set_seed(42)
+random.seed(42)
+
+# ข้อมูลจาก R
+x_train = x
+y_train = y
+
+# กำหนดช่วงของ hyperparameters
+hidden_sizes = [3, 4, 5, 6]
+learning_rates = [0.1]
+dropout_rates = [0.0, 0.1, 0.2]
+
+# เพื่อเก็บผลลัพธ์
+results = [] ## list เปล่า
+
+# จำนวนครั้งที่สุ่มทดลอง
+n_iter = 12 ## จำนวน grid ที่ต้องการสุ่มมา
+
+for i in range(n_iter):
+    print(f"Trial {i+1}/{n_iter}")
+
+    # สุ่มค่าต่าง ๆ
+    hidden_size = random.choice(hidden_sizes)
+    lr = random.choice(learning_rates)
+    dropout_rate = random.choice(dropout_rates)
+
+    # สร้างโมเดล
+    model = Sequential()
+    model.add(Dense(units = hidden_size, activation='relu', 
+                    input_shape=(9,)))
+    model.add(Dropout(dropout_rate))
+    model.add(Dense(units = 4, activation='relu'))
+    model.add(Dense(1, activation='linear'))
+
+    # คอมไพล์โมเดล
+    model.compile(optimizer=Adam(learning_rate=lr), loss='mse', metrics=['mae'])
+
+    # early stopping
+    es = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
+
+    # ฝึกโมเดล
+    history = model.fit(
+        x_train, y_train,
+        validation_split=0.2,
+        epochs=300,
+        batch_size=32,
+        verbose=0,
+        callbacks=[es]
+    )
+
+    # เก็บผลลัพธ์
+    best_val_loss = min(history.history['val_loss'])
+    results.append({
+        'hidden_size': hidden_size,
+        'learning_rate': lr,
+        'dropout_rate': dropout_rate,
+        'best_val_loss': best_val_loss
+    })
+```
+
+```{r}
+# ส่งผลลัพธ์กลับไป R
+my_results <- py$results 
+
+library(purrr)
+df <- map_dfr(my_results, ~tibble(
+  hidden_size   = .x$hidden_size,
+  learning_rate = .x$learning_rate,
+  dropout_rate  = .x$dropout_rate,
+  best_val_loss = .x$best_val_loss
+))
+df %>% 
+  arrange(best_val_loss)
+```
+
+### Bayesian Optimization
+
+```{r}
+py_install("optuna")
+```
+
+
+```{bash eval = F}
+pip install optuna
+```
+
+```{python}
+import optuna
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
+import numpy as np
+import tensorflow as tf
+
+# เตรียมข้อมูลจาก R
+x_train = x
+y_train = y
+
+# ตั้งค่า seed
+np.random.seed(42)
+tf.random.set_seed(42)
+
+def objective(trial):
+    # กำหนดช่วงของ hyperparameters ที่จะให้ Optuna เลือก
+    hidden_size = trial.suggest_categorical("hidden_size", [4, 5, 6, 7, 8])
+    learning_rate = trial.suggest_loguniform("learning_rate", 1e-4, 1e-1)
+    dropout_rate = trial.suggest_float("dropout_rate", 0.0, 0.5, step = 0.1)
+
+    # สร้างโมเดล
+    model = Sequential()
+    model.add(Dense(hidden_size, activation='relu', input_shape=(x_train.shape[1],)))
+    model.add(Dropout(dropout_rate))
+    model.add(Dense(units = 4, activation='relu'))
+    model.add(Dense(1, activation='linear'))
+
+    model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mse', metrics=['mae'])
+
+    # early stopping
+    es = EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
+
+    # เทรน
+    history = model.fit(
+        x_train, y_train,
+        validation_split=0.2,
+        epochs=300,
+        batch_size=32,
+        verbose=0,
+        callbacks=[es]
+    )
+
+    val_loss = min(history.history['val_loss'])
+    return val_loss
+
+# สร้าง study และ optimize
+study = optuna.create_study(direction="minimize")
+study.optimize(objective, n_trials=20)
+```
+
+```{python}
+study.best_params
+```
+
+```{r}
+91.48108673095703 %>% sqrt()
+# บันทึกผลลัพธ์ที่ดีที่สุด
+py$study-> study
+study$best_params
+
+
+study$best_params
+study$best_value
+```
+
+เมื่อได้ best hyperparameters แล้วให้นำมา train อีกรอบกับชุดข้อมูลทั้งหมด
+
+```{r}
+
+test_full <- rec %>% 
+  prep() %>% 
+  bake(test)
+#x <- model.matrix(ach ~. -1, data= train)
+#y <- train[,1]
+#x %>% glimpse()
+#y %>% glimpse()
+
+x_test <- test_full %>% select(-ach)
+y_test <- test_full %>% select(ach)
+py$x_test <- as.matrix(x_test)
+py$y_test <- as.matrix(y_test)
+```
+
+
+
+```{python}
+# ดึง hyperparameters ที่ดีที่สุด
+best = study.best_params
+print(best)
+
+# สร้างโมเดลใหม่ด้วย best params
+final_model = Sequential()
+final_model.add(Dense(best['hidden_size'], activation='relu', input_shape=(x.shape[1],)))
+final_model.add(Dropout(best['dropout_rate']))
+final_model.add(Dense(1, activation='linear'))
+final_model.summary()
+final_model.compile(optimizer=Adam(learning_rate=best['learning_rate']),
+                    loss='mse', metrics=['mae'])
+
+
+# เทรนด้วยข้อมูลทั้งหมด
+
+early_stop = EarlyStopping(
+    monitor='val_loss',
+    patience=20,
+    restore_best_weights=True  # เอาค่าน้ำหนักตอน val_loss ต่ำสุดกลับมา
+)
+
+## last_fit เหมือนใน tidymodels
+final_history = final_model.fit(x_train, y_train, 
+                validation_data = (x_test, y_test),
+                epochs=300, 
+                batch_size=32, 
+                callbacks=[early_stop],
+                verbose=1)
+```
+
+```{r}
+## ดึง history มาเก็บใน R
+history <- py$final_history$history
+class(history)
+## ------ 
+as_tibble(history) %>% summary()
+
+as_tibble(history) %>%
+  select(contains("loss")) %>% 
+  mutate(epoch = row_number()) %>%
+  pivot_longer(cols = -epoch) %>%
+  ggplot(aes(epoch, value, color = name)) +
+  geom_line() +
+  labs(title = "Loss & MAE during Training", x = "Epoch", y = "Value")
+```
+
+
+## save model
+
+เราสามารถนำโมเดลที่ train แล้วไปใช้งานต่อได้ โดยการบันทึกโมเดลลงในไฟล์ และโหลดโมเดลกลับมาใช้งานได้ในภายหลัง
+
+
+```{python}
+final_model.save("final_model.keras")
+```
+
+
+การโหลดโมเดลกลับมาใช้งานสามารถทำได้ดังนี้
+
+```{python}
+from tensorflow.keras.models import load_model
+loaded_model = load_model("final_model.keras")
+loaded_model.summary()
+```
+
+
+
+
+
+
+
+

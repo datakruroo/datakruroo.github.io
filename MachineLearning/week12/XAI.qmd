@@ -227,7 +227,6 @@ test_race_glm %>% collect_metrics()
 test_race_svm %>% collect_metrics()
 ```
 
-
 ```{r}
 final_glm <- wf_glm %>% 
   finalize_workflow(test_race_glm %>% select_best(metric = "f_meas")) %>% 
@@ -237,7 +236,6 @@ final_svm <- wf_svm %>%
   finalize_workflow(test_race_svm %>% select_best(metric = "f_meas")) %>% 
   fit(data = train_data)
 ```
-
 
 ### 4.3 Global Explanation using model-specific feature importance
 
@@ -255,7 +253,6 @@ vi(final_glm) %>%
 ```{r}
 vip(final_glm, num_features = 5)
 ```
-
 
 ### 4.4 Global Explainations using DALEX
 
@@ -326,7 +323,6 @@ plot(glm_performance, svm_performance)
 -   `predict_parts()` หน่วยข้อมูลหรือนักเรียนคนนี้ได้ผลการทำนายแบบนี้เพราะอะไร
 
 -   `model_profile()` และ `predict_profile()` ถ้าเปลี่ยนค่าของตัวแปรอิสระแล้วจะเกิดอะไรขึ้น
-
 
 #### 4.4.2 คำนวณ feature importance (global explanations) ด้วย DALEX
 
@@ -429,7 +425,6 @@ plot(pdp_glm, pdp_svm)
 
 เทคนิคในกลุ่ม Local Explanation มีเป้าหมายเพื่อตอบคำถามนี้ โดยใช้ข้อมูลของแต่ละ observation ในการอธิบายผลลัพธ์ของโมเดล
 
-
 #### 4.6.1 Breakdown plot
 
 ```{r}
@@ -442,7 +437,6 @@ predict(final_glm,
         new_data = test_data[1,],
         type = "prob")
 ```
-
 
 ```{r}
 ## เลือก observation ผลการทำนายของนักเรียนคนนี้เป็นอย่างไร
@@ -458,18 +452,17 @@ predict(final_glm, new_data = test_data[50,], type = "prob") %>% pull(1)
 
 ทำไมนักเรียนทั้งสองคนถึงได้ผลการทำนายที่แตกต่างกัน?
 
-- **Break-down plot**
+-   **Break-down plot**
 
 แนวคิดพื้นฐานของ BD plots คือการระบุว่าตัวแปรอิสระแต่ละตัวมีส่วนเพิ่มหรือลดค่าทำนาย/ค่าความน่าจะเป็นของโมเดลมากน้อยแค่ไหน เราเรียกค่านี้ว่า contribution หลักการคำนวณคือการเพิ่มตัวแปรที่สนใจเข้าไปในโมเดล โดยกำหนดให้ตัวแปรอิสระตัวอื่น ๆ คงที่ จากนั้นวัดว่าค่าทำนายของโมเดลมีการเปลี่ยนแปลงไปอย่างไร
 
 note: breakdown plot ของ DALEX จะมีการเรียงลำดับตัวแปรอิสระตามความสำคัญให้โดยอัตโนมัติ โดยมีหลักการดังนี้
 
-1. เริ่มจาก baseline ก่อน (null model)
+1.  เริ่มจาก baseline ก่อน (null model)
 
-2. วนลูปเพื่อตรวจสอบว่าการ fixed ค่าตัวแปรอิสระไหน ที่ทำให้ค่าทำนายเปลี่ยนแปลงไปจาก null model มากทีี่สุด
+2.  วนลูปเพื่อตรวจสอบว่าการ fixed ค่าตัวแปรอิสระไหน ที่ทำให้ค่าทำนายเปลี่ยนแปลงไปจาก null model มากทีี่สุด
 
-3. วนลูปเพื่อเลือก feature ตัวถัดไปเรื่อย ๆ จนครบ
-
+3.  วนลูปเพื่อเลือก feature ตัวถัดไปเรื่อย ๆ จนครบ
 
 ลองพิจารณานักเรียนที่ถูกทำนายว่าจะสอบตก ตัวแปร G2 มีผลมากน้อยแค่ไหนต่อการสอบตกของนักเรียนคนนี้
 
@@ -492,7 +485,6 @@ g2_6 <- predict(final_glm,
 
 g2_6 - all_data ## contribution
 ```
-
 
 การดำเนินการข้างต้นสามารถทำได้ด้วย `predict_parts()` ของ DALEX ดังนี้
 
@@ -522,7 +514,6 @@ breakdown_student2 <- explainer_glm %>%
 breakdown_student2 %>% plot()
 ```
 
-
 ```{r}
 bd_list <- map(.x = 1:10, 
     .f = ~ 
@@ -541,7 +532,6 @@ bd_list %>% bind_rows() %>% data.frame() %>%
   xlab("contribution")+
   ylab("G2: midterm score")
 ```
-
 
 ในทางปฏิบัติเราสามารถกำหนดลำดับของการคำนวณ contribution ใน BD-plot ได้
 
@@ -569,7 +559,6 @@ breakdown_student1 %>% plot() + ## default order
   plot_layout(ncol = 2)
 ```
 
-
 ```{r}
 breakdown_student2_order2 <- explainer_glm %>% 
   predict_parts(
@@ -578,7 +567,6 @@ breakdown_student2_order2 <- explainer_glm %>%
     order = custom_order
   )
 ```
-
 
 ```{r fig.width = 12, fig.height = 8}
 library(patchwork)
@@ -615,9 +603,9 @@ breakdown_student1_svm1 %>% plot() +
 
 > Feature แต่ละตัวมีส่วนช่วยเพิ่ม/ลดค่าทำนายของโมเดลมากน้อยแค่ไหน เมื่อกำหนดให้ตัวแปรอิสระอื่นคงที่ โดยจะพิจารณาทุกลำดับที่เป็นไปได้ของการเพิ่ม feature นั้นเข้าไปในโมเดล
 
-- พิจารณาทุก subset ที่เป็นไปได้ แสดงว่าไม่ได้พิจารณาเฉพาะลำดับใน full model แบบ BD-plot แต่เพียงอย่างเดียว
+-   พิจารณาทุก subset ที่เป็นไปได้ แสดงว่าไม่ได้พิจารณาเฉพาะลำดับใน full model แบบ BD-plot แต่เพียงอย่างเดียว
 
-- contribution ของ Shap เป็นการพิจารณาว่าเมื่อเพิ่มตัวแปรที่สนใจเข้าไปในโมเดล ค่าทำนายของเคสนั้น ๆ จะมีการเปลี่ยนแปลงโดยเฉลี่ยในทุกความเป็นไปได้อย่างไร
+-   contribution ของ Shap เป็นการพิจารณาว่าเมื่อเพิ่มตัวแปรที่สนใจเข้าไปในโมเดล ค่าทำนายของเคสนั้น ๆ จะมีการเปลี่ยนแปลงโดยเฉลี่ยในทุกความเป็นไปได้อย่างไร
 
 แนวคิดดังกล่าวทำให้ Shap มีจุดเด่นในด้าน ความยุติธรรมมีความลำเอียงต่ำ รองรับ interaction เพราะพิจารณาในทุกกรณีทุกความเป็นไปได้ และอธิบายได้ทั้งในระดับ global และ local
 
@@ -641,8 +629,6 @@ shap_student1_glm %>% plot()
 lm(G2 ~ G1, data= test_data) %>% summary()
 ```
 
-
-
 ลองพิจารณา contribution ของ shapley value ที่ได้จาก svm (นักเรียนคนที่ 1)
 
 ```{r}
@@ -655,8 +641,6 @@ shap_student1_svm <- explainer_svm %>%
 
 shap_student1_svm %>% plot()
 ```
-
-
 
 ```{r}
 n <- 10
@@ -685,7 +669,6 @@ shape_student_all %>% bind_rows() %>% data.frame() %>%
   theme(legend.position = "none")
 ```
 
-
 ```{r}
 top_features <- shape_student_all %>% bind_rows() %>% data.frame() %>%
   mutate(student_id = rep(1:n, 6, each =33), .before = 1) %>% 
@@ -713,6 +696,7 @@ shape_student_all %>% bind_rows() %>% data.frame() %>%
   theme_minimal()
 
 ```
+
 ##### Local dependency plot using SHAP
 
 การที่ได้ค่า Shapley value ของแต่ละหน่วยข้อมูล เราสามารถนำไปสร้าง partial dependency plot ได้ด้วย
@@ -735,7 +719,6 @@ shape_student_all %>% bind_rows() %>% data.frame() %>%
   xlab("\n G2: Midterm Score")
 ```
 
-
 #### 4.6.3 Local Interpretable Model-agnostic Explanations (LIME)
 
 BD-plot และ Shapley ถูกพัฒนาขึ้นโดยเหมาะสำหรับโมเดลที่มี feature จำนวนไม่มากนัก อย่างไรก็ตามในกรณีที่โมเดลทำนายมีจำนวน feature จำนวนมาก
@@ -746,16 +729,16 @@ BD-plot และ Shapley ถูกพัฒนาขึ้นโดยเหม
 
 สถานการณ์ดังกล่าว LIME จะเป็นวิธีการที่เหมาะสมกว่า แนวคิดเบื้องหลังของ LIME มีดังนี้
 
-- วัตถุประสงค์คือ เราต้องการเข้าใจปัจจัยที่ทำให้โมเดลสร้างค่าทำนายแบบนี้มาให้เรา ณ บริเวณรอบ ๆ ตัวอย่างหนึ่งที่เราสนใจ
+-   วัตถุประสงค์คือ เราต้องการเข้าใจปัจจัยที่ทำให้โมเดลสร้างค่าทำนายแบบนี้มาให้เรา ณ บริเวณรอบ ๆ ตัวอย่างหนึ่งที่เราสนใจ
 
-- เพื่อให้เข้าใจพฤติกรรมของโมเดล ณ บริเวณที่เราสนใจ 
+-   เพื่อให้เข้าใจพฤติกรรมของโมเดล ณ บริเวณที่เราสนใจ
 
-  - เราจะสร้างชุดข้อมูลจำลอง (artificial data) ขึ้นมารวม ๆ ตัวอย่างที่เราสนใจ
-  
-  - นำข้อมูลจำลองนี้ไปสร้างโมเดลทำนายด้วยโมเดลง่าย ๆ เช่น linear regression ที่มี regularization หรือ decision tree แล้วใช้ผลการวิเคราะห์จากโมเดลนี้อธิบายพฤติกรรมของ black-box model แบบเฉพาะจุด เรียกโมเดลนี้ว่า glass-box model
-  
-  - glass-box model นี้ ตัวแปรตามจะเป็นค่าทำนายที่ได้จาก black-box model ส่วนตัวแปรอิสระคือ artificial data
-  
+    -   เราจะสร้างชุดข้อมูลจำลอง (artificial data) ขึ้นมารวม ๆ ตัวอย่างที่เราสนใจ
+
+    -   นำข้อมูลจำลองนี้ไปสร้างโมเดลทำนายด้วยโมเดลง่าย ๆ เช่น linear regression ที่มี regularization หรือ decision tree แล้วใช้ผลการวิเคราะห์จากโมเดลนี้อธิบายพฤติกรรมของ black-box model แบบเฉพาะจุด เรียกโมเดลนี้ว่า glass-box model
+
+    -   glass-box model นี้ ตัวแปรตามจะเป็นค่าทำนายที่ได้จาก black-box model ส่วนตัวแปรอิสระคือ artificial data
+
 ```{r}
 ## install.packages("DALEXtra")
 ## install.packages("lime")
@@ -831,11 +814,9 @@ explanation %>% plot_explanations()
 explanation %>% plot_features()
 ```
 
-
 #### 4.6.4 What-If Analysis
 
 นักเรียนคนนี้มีการปรับเปลี่ยนพฤติกรรม เช่น มีคะแนนสอบ midterm ที่เพิ่มขึ้น และความรู้พื้นฐานที่ดีขึ้น แล้วผลลัพธ์จะเปลี่ยนแปลงไปยังไง
-
 
 ```{r}
 test_data[1,]
@@ -858,28 +839,3 @@ plot(profile2,
      variables = c("G2","G1")) +
   labs(title = "What-If Analysis")
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

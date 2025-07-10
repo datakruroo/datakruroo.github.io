@@ -1,0 +1,1028 @@
+---
+title: "Introduction to Neural Network"
+format: html
+---
+
+## สมองมนุษย์
+
+
+- การประมวลผลข้อมูลในสมองเกิดจาก เซลล์ประสาท (neurons) ที่รับสัญญาณผ่าน เดนไดรต์ (dendrites) แล้วส่งต่อผ่าน แอกซอน (axon) ไปยัง neuron ถัดไป โดยการเชื่อมโยงระหว่าง neuron แต่ละตัวเรียกว่า ไซแนปส์ (synapse)
+
+- ในแต่ละ synapse มีความสามารถในการ ปรับความแรงของสัญญาณ ได้ (เรียกว่า synaptic strength)
+
+- ในสมอง ถ้าเราเจอผลลัพธ์ไม่ดีจากพฤติกรรมใด สมองจะลดความแรงของสัญญาณในเส้นทางนั้น
+ทำให้เรามีโอกาส ‘ไม่เลือกใช้’ พฤติกรรมเดิมในครั้งหน้า 
+
+สังเกตการทำงานนี้จะเห็นว่า สมองมีการให้น้ำหนักความสำคัญของสัญญาณแต่ละการเชื่อมโยงเอาไว้ น้ำหนักดังกล่าวเกิดขึ้นจากการเรียนรู้และผลลัพธ์การเรียนรู้ที่แต่ละบุคคลได้รับมาได้อดีต 
+
+
+![](https://clevertap.com/wp-content/uploads/2019/04/Neural_Network_Brain_Mimic.jpeg)
+
+## What's Neural Network?
+
+Artificial Neural Networks (ANNs) คือโมเดลทางคณิตศาสตร์ที่สร้างขึ้นโดยเลียนแบบการทำงานของสมองมนุษย์ ซึ่งประกอบด้วยโครงสร้างพื้นฐานที่เรียกว่า “neuron” หรือ “หน่วยประมวลผลประดิษฐ์” ที่สามารถรับข้อมูล ประมวลผล และส่งต่อข้อมูลไปยัง neuron อื่น ๆ ได้
+
+จากการทำงานของสมองที่กล่าวในข้างต้น ใน ANNs ก็ออกแบบให้ใช้หลักการเดียวกัน โดย neuron แต่ละตัวจะเชื่อมโยงกับ neuron ตัวอื่นผ่านเส้นเชื่อมที่มีการกำหนดน้ำหนัก (weights) ไว้ น้ำหนักนี้จะบ่งชี้ความสำคัญหรืออิทธิพลของข้อมูลที่ส่งผ่านเส้นเชื่อมนั้น ๆ 
+
+ระหว่างการ fine-tune โมเดล ANNs จะเรียนรู้จากข้อมูลที่มีอยู่ ผ่านกระบวนการ backpropagation ซึ่งจะปรับน้ำหนักของเส้นเชื่อมระหว่าง neuron โดยอิงจากความคลาดเคลื่อนที่เกิดขึ้นระหว่างผลลัพธ์จริงที่ควรจะเป็นกับค่าทำนายที่เป็นคำตอบของโมเดล
+
+
+## Why's Neural Network?
+
+ที่ผ่านมาเราทำความรู้จักอัลกอริทึมการเรียนรู้ของเครื่องหลายตัว เช่น GLMS, Decision tree, Random Forest, SVM, KNN, XGBoost, ... ถึงแม้เราจะเห็นว่า ML ดังกล่าวสามารถใช้ได้ดี ในหลาย ๆ ปัญหา แต่ก็ยังมีข้อจำกัดในหลายประเด็นต่อไปนี้
+
+### Feature Engineering 
+
+ML แบบดั้งเดิมจำเป็นต้องอาศัย Feature Engineering อย่างมาก กล่าวคือ ผู้วิเคราะห์จะต้องสร้างหรือนิยามตัวแปรต้น (features) ที่เหมาะสมกับปัญหาด้วยตนเอง เพื่อให้โมเดลสามารถเรียนรู้และจำแนกรูปแบบในข้อมูลได้อย่างมีประสิทธิภาพ
+
+การสร้าง feature ดังกล่าวมักจะต้องอาศัยความเชี่ยวชาญในหลาย ๆ ด้านทั้ง ความรู้ความเข้าใจเฉพาะสาขา (domain knowledge) เทคนิคทางสถิติ และอัลกอริทึมการเรียนรู้ของเครื่อง
+
+- ใช้เวลาและความเชี่ยวชาญสูง
+
+- อาจจะไม่สามารถสร้าง feature ที่เหมาะสมได้ซึ่งส่งผลต่อประสิทธิภาพของโมเดลโดยตรง
+
+- ยากเมื่อเจอกับข้อมูลที่ไม่มีโครงสร้าง เช่น ข้อความ เสียง รูปภาพ
+
+- ML แบบดั้งเดิมไม่สามารถพัฒนาคุณภาพของ feature ได้ด้วยตนเอง กล่าวคือ เมื่อมีข้อมูลใหม่ ๆ เข้ามา ผู้วิเคราะห์จะต้องสร้าง feature ใหม่ ๆ ขึ้นมาอีกครั้ง
+
+### Hierarchical Representation
+
+Machine Learning แบบดั้งเดิม เป็นอัลกอริธึมที่ ไม่มีการเรียนรู้แบบเป็นลำดับชั้น กล่าวคือ โมเดลจะเรียนรู้จากข้อมูลที่มีอยู่เท่านั้น ตรงไปตรงมา โดยไม่มีความสามารถในการแปลงหรือสร้าง “มุมมองใหม่” ของข้อมูลขึ้นมาได้เอง รูปด้านล่างแสดงลักษณะการเรียนรู้ของ ML แบบดั้งเดิม
+
+![](https://ssiwacho.github.io/DL/DL1/Screen%20Shot%202564-05-15%20at%2002.08.01.png)
+
+ถึง ML แบบดั้งเดิมหลายตัวจะสามารถเรียนรู้ได้ดีมาก ๆ ในหลาย ๆ ปัญหา และสามารถจัดการกับสถานการณ์ที่ความสัมพันธ์ในข้อมูลเป็นแบบ non-linear ได้ดี อย่างไรก็ตามหากข้อมูลนำเข้ามีความซับซ้อน เช่น มีจำนวน feature จำนวนมาก มีความสัมพันธ์ซับซ้อนมาก หรือข้อมูลมีลักษณะไม่เป็นโครงสร้าง เช่น ภาพ เสียง หรือข้อความ การใช้ ML แบบดั้งเดิมก็มักจะมีข้อจำกัด เพราะอัลกอริทึมดังกล่าวจะเริ่มไม่สามารถเรียนรู้ความสัมพันธ์ที่ซ่อนอยู่ในข้อมูลลึก ๆ ได้
+
+ANNs ถูกออกแบบมาให้มีลักษณะการเรียนรู้ผ่านชั้นการเรียนรู้หลายชั้น (Deep Learning) กล่าวคือ โมเดลจะเรียนรู้จากข้อมูลที่มีอยู่ในหลาย ๆ มุมมอง โดยการสร้าง feature ใหม่ ๆ ขึ้นมาเองในแต่ละชั้นการเรียนรู้ ซึ่งจะช่วยให้โมเดลสามารถเรียนรู้ความสัมพันธ์ที่ซับซ้อนในข้อมูลได้ดียิ่งขึ้น
+
+![](https://ssiwacho.github.io/DL/DL1/Screen%20Shot%202564-05-15%20at%2002.29.19.png)
+
+
+### Parallel Multi-Learner
+
+ืnode แต่ละตัวใน hidden layer ของ ANNs ก็คือ learner ย่อยตัวหนึ่งในสมอง ดังนั้นเมื่อมองโมเดลในภาพรวมจะเห็นว่า ANNs เป็นเหมือนระบบที่มี mini learner จำนวนมากทำงานร่วมกัน ซึ่งแต่ละตัวจะเรียนรู้ข้อมูลในมุมมองที่แตกต่างกันไป เมื่อนำผลลัพธ์จากการเรียนรู้ดังกล่าวมารวมกันย่อมทำให้ประสิทธิภาพการเรียนรู้มีสูงขึ้น
+
+
+### Unstructured Data
+
+ML แบบดั้งเดิมทำงานกับข้อมูลแบบไม่มีโครงสร้างได้ยาก เพราะต้องพึ่งพาการทำ Feauture Engineering จากผู้วิเคราะห์เป็นหลัก ในทางกลับกัน ANNs สามารถนำเข้าข้อมูลแบบไม่มีโครงสร้างด้วย raw data ได้เลย เช่น ข้อความ รูปภาพ เสียง โดยไม่ต้องทำการแปลงข้อมูลให้เป็น structured data ก่อน
+
+
+### Scalability and Big data
+
+ML แบบดั้งเดิมทำงานได้ดีมากกับข้อมูลขนาดเล็กและปานกลาง แต่เมื่อข้อมูลมีขนาดใหญ่มาก ๆ มักอิ่มตัวเร็วและไม่สามารถเพิ่ม performance ให้ดีขึ้นได้ ในทางกลับกัน ANNs สามารถทำงานได้ดีมากกับข้อมูลขนาดใหญ่และมีความซับซ้อนสูง ยิ่งมีข้อมูลมากยิ่งสามารถเรียนรู้ได้ดีขึ้น
+
+### Transfer Learning
+
+ANNs สามารถนำโมเดลที่เรียนรู้จากข้อมูลชุดหนึ่งไปใช้กับข้อมูลอีกชุดหนึ่งได้ โดยไม่ต้องเริ่มต้นเรียนรู้ใหม่ทั้งหมด ซึ่งช่วยประหยัดเวลาและทรัพยากรในการฝึกโมเดลใหม่
+
+
+
+## Neural Network Concepts
+
+โครงสร้างของ neural network ประกอบด้วยส่วนประกอบหลักได้แก่
+
+- Input Layer: เป็นชั้นแรกของโมเดลที่รับข้อมูลเข้ามา โดยข้อมูลที่รับเข้ามาจะถูกส่งไปยัง neuron ในชั้นถัดไป
+
+- Hidden Layer: เป็นชั้นกลางของโมเดลที่ทำหน้าที่ประมวลผลข้อมูล โดย neuron ในชั้นนี้จะทำการคำนวณและส่งผลลัพธ์ไปยัง neuron ในชั้นถัดไป
+
+- Output Layer: เป็นชั้นสุดท้ายของโมเดลที่ให้ผลลัพธ์การทำนาย โดย neuron ในชั้นนี้จะทำการคำนวณและส่งผลลัพธ์ออกมาเป็นค่าที่เราต้องการ
+
+
+![](https://ssiwacho.github.io/DL/DL1/Screen%20Shot%202564-05-15%20at%2002.29.19.png)
+
+
+โมเดลจะนำข้อมูลนำเข้าจาก input layer ที่กำหนดมาประมวลผลร่วมกันโดยมีการปรับ weight และ bias ก่อนที่จะนำส่งผลลัพธ์ไปยัง neuron ในชั้นถัดไป โดยการคำนวณจะใช้ฟังก์ชัน activation function เพื่อกำหนดว่าข้อมูลที่ส่งไปยัง neuron ถัดไปจะต้องมีค่ามากน้อยเพียงใด
+
+![](https://ssiwacho.github.io/DL/DL1/Screen%20Shot%202564-05-15%20at%2002.32.24.png)
+
+
+### Forward Propagation
+
+เป็นขั้นตอนแรกของการ train โมเดล โดยปกติแล้วเมื่อเริ่มต้นกระบวนการผู้วิเคราะห์จะยังไม่ทราบค่าพารามิเตอร์ที่เหมาะสมของโมเดลดังนั้นจึงต้องมีการประมาณค่าพารามิเตอร์ดังกล่าวก่อนการใช้งานจริง กระบวนการ forward propagation จะเริ่มจากการ
+
+- สุ่มค่าเริ่มต้นของพารามิเตอร์ทั้งหมดภายในโมเดลขึ้นมาก่อน 1 ชุด
+
+- นำ input data วิ่งผ่านเครือข่ายทีละชั้น input -> hidden -> output
+
+- ผลลัพธ์ที่ได้จะเป็นค่าทำนายใน output layer
+
+ค่าทำนายที่ได้นี้ยังมีความคลาดเคลื่อนแน่นอน ความคลาดเคลื่อนนี้สามารถคำนวณได้โดยการนำไปเปรียบเทียบกับค่าจริงของตัวแปรตามผ่าน loss function 
+
+
+### Loss function/Cost function
+
+คือฟังก์ชันทางคณิตศาสตร์ที่ใช้วัดความคลาดเคลื่อนหรือความแตกต่างระหว่างค่าทำนายที่ได้จากโมเดลกับค่าจริงของตัวแปรตาม โดยปกติ loss function มีหลายตัวขึ้นอยู่กับปัญหา
+
+- mean square error (MSE)
+
+- mean absolute error (MAE)
+
+- Huber loss
+
+- binary cross-entropy
+
+- categorical cross-entropy
+
+- ...
+
+
+### Backward Propagation
+
+กระบวนการ forward propagation จะสิ้นสุดลงเมื่อคำนวณค่าทำนายของตัวแปรเป้าหมายในโมเดลได้ เมื่อได้ค่าทำนายดังกล่าวผู้วิเคราะห์จะทำการประเมินความสอดคล้องเชิงประจักษ์ของโมเดลด้วยการเปรียบเทียบค่าทำนายนี้กับค่าจริงในชุดข้อมูลฝึกหัดผ่านฟังก์ชันวัตถุประสงค์หรือฟังก์ชันต้นทุน (cost function) ซึ่งมีหลากหลายตัวขึ้นกับปัญหาของการทำงาน เช่นในปัญหา regression อาจใช้ cost function เป็นค่า mean squares error (MSE) หรือปัญหา binary classification อาจใช้ cost function เป็น cross entropy ดังนี้
+
+$$
+L(y, \hat{y}) = -\frac{1}{N} \sum_{i=1}^{N} y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i)
+$$
+
+กระบวนการ backward propagation จะปรับค่าพารามิเตอร์ในโมเดลเพื่อให้ได้โมเดลที่มีความสอดคล้่องกับข้อมูลฝึกหัดมากขึ้น โดยพิจารณาชุดของค่าพารามิเตอร์ที่ทำให้ cost function มีค่าต่ำที่สุด โดยใช้อัลกอริทึม gradient descent เป็นเครื่องมือ ดังนี้
+
+
+- คำนวณ first-order derivative ของ loss function เทียบกับพารามิเตอร์ในโมเดล
+
+- นำ first-order derivative ข้างต้นไปลบจากค่าพารามิเตอร์ในรอบก่อนหน้า โดยควบคุมความเร็วในการปรับปรุงค่าพารามิเตอร์ด้วย learning rate ($\alpha$)
+
+
+- เมื่อปรับปรุงแล้วจะได้ค่าพารามิเตอร์ใหม่ที่มีความสอดคล้องกับข้อมูลฝึกหัดมากขึ้น เราจะปรับปรุงค่าพารามิเตอร์ในโมเดลไปเรื่อย ๆ จนกว่าจะได้ค่าพารามิเตอร์ที่ทำให้ loss function มีค่าน้อยที่สุด
+
+กระบวนการ forward + backward propagation นี้ 1 รอบจะเรียกว่า 1 epoch
+
+
+## Activation function
+
+- เป็นฟังก์ชันทางคณิตศาสตร์ที่ใช้ใน neuron วัตถุประสงค์หลักคือเพื่อใช้ตัดสินใจว่า neuron นี้ควรทำงาน/ส่งข้อมูลไปยัง neuron ถัดไปหรือไม่
+
+- ทำให้ neuron network สามารถเรียนรู้ความสัมพันธ์ที่ซับซ้อนในข้อมูลได้
+
+- ควบคุมสเกลของ output ให้สมเหตุสมผล
+
+
+activation function ที่นิยมใช้ใน ANNs มีหลายตัวได้แก่
+
+- Linear : $\sigma(x) = x$
+
+- ReLU (Rectified Linear Unit): $\sigma(x) = \max(0, x)$
+
+- Leaky ReLU: $\sigma(x) = \begin{cases} x & \text{if } x > 0 \\ \alpha x & \text{if } x \leq 0 \end{cases}$
+
+- Sigmoid: $\sigma(x) = \frac{1}{1 + e^{-x}}$
+
+- Tanh: $\sigma(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$
+
+
+```{r}
+library(tidyverse)
+relu <- function(x) {
+  y <- max(0,x)
+  return(y)
+}
+
+leaky_relu <- function(x, alpha = 0.01) {
+  y <- ifelse(x >= 0, x, alpha * x)
+  return(y)
+}
+x <- seq(-10, 10, by = 0.1)
+y_relu <- map_dbl(x, relu)
+y_leaky_relu <- map_dbl(x, leaky_relu, alpha = 0.1)
+
+data.frame(x,y_relu,y_leaky_relu) %>% 
+  pivot_longer(cols = -x, names_to = "activation", values_to = "value") %>%
+  ggplot(aes(x = x, y = value, color = activation)) +
+  geom_line() +
+  labs(title = "Activation Functions", x = "Input (x)", y = "Output (y)") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+```
+
+
+```{r}
+sigmoid <- function(x) {
+  y <- 1 / (1 + exp(-x))
+  return(y)
+}
+
+tanh <- function(x) {
+  y <- (exp(x) - exp(-x)) / (exp(x) + exp(-x))
+  return(y)
+}
+y_sigmoid <- map_dbl(x, sigmoid)
+y_tanh <- map_dbl(x, tanh)
+
+data.frame(x,y_sigmoid,y_tanh) %>% 
+  pivot_longer(cols = -x, names_to = "activation", values_to = "value") %>%
+  ggplot(aes(x = x, y = value, color = activation)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  labs(title = "Activation Functions", x = "Input (x)", y = "Output (y)") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+- Softmax: 
+
+  - ใช้ใน output layer ของโมเดลที่มีการจำแนกประเภทหลายประเภท (multi-class classification)
+  - ทำให้ผลลัพธ์ของ neuron ใน output layer มีค่าระหว่าง 0 ถึง 1 และรวมกันได้เป็น 1
+  - ช่วยให้สามารถตีความผลลัพธ์เป็นความน่าจะเป็นของแต่ละ class ได้
+
+$$
+
+\sigma(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}
+
+$$
+โดยที่ $z_i$ คือผลรวมเชิงเส้นที่ได้จาก neuron และ $K$ คือจำนวน class ที่เราต้องการทำนาย
+
+
+## เตรียม library
+
+- tidymodels
+
+- keras
+
+- pytorch
+
+###  ติดตั้ง `reticulate`
+
+- run python บน Rstudio/Positron ได้ ผ่าน quarto document
+
+- สามารถใช้ R กับ python ร่วมกันได้บน environment เดียวกัน
+
+```{r}
+## install.packages("reticulate")
+library(reticulate)
+```
+
+
+
+###  ติดตั้ง [Anaconda](https://www.anaconda.com/download)
+
+เมื่อติดตั้งแล้วให้ลองตรวจสอบว่าเครื่องมี conda แล้วหรือไม่
+
+```{r}
+conda_binary()
+```
+
+### สร้าง conda environments
+
+```{r}
+### สร้าง environment
+conda_create("r-reticulate") 
+
+### เรียกดู environment
+conda_list()
+
+### เรียกใช้ environment
+use_condaenv("r-reticulate", required = T)
+```
+
+
+### ติดตั้ง keras
+
+```{r}
+conda_install("r-reticulate", 
+              packages = c("tensorflow","numpy","matplotlib", "pandas"),
+              pip = T)
+```
+
+ตรวจสอบว่าสามารถทำงานได้จริง
+
+```{r}
+py_config()
+```
+
+```{python}
+import sys
+print(sys.executable)
+```
+
+
+
+## My First ANNs with Keras
+
+```{python}
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+```
+
+
+
+### นำเข้าข้อมูล
+
+```{r}
+library(rsample)
+library(tidyverse)
+library(reticulate)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week01/exam.csv")
+split <- initial_split(data, prop = 0.8, strata = ach)
+train <- training(split)
+test <- testing(split)
+
+x <- model.matrix(ach ~. -1, data= train)
+y <- train[,1]
+x %>% glimpse()
+y %>% glimpse()
+
+py$x <- as.matrix(x)
+py$y <- as.matrix(y)
+
+
+train %>% 
+  count(ontime_class)
+
+x %>% colnames()
+```
+
+
+```{python}
+x
+y
+```
+
+ต่อไปเราจะสร้างโมเดล ANNs ที่ประกอบด้วย
+
+- input layer มีจำนวนเท่ากับ feature ในข้อมูลนำเข้ามี 7 features
+
+- hidden layer 1 มีจำนวน neuron เท่ากับ 8 หน่วย แต่ละตัวเราจะใช้ activation function เป็น ReLU
+
+- hidden layer 2 มีจำนวน neuron เท่ากับ 4 หน่วย แต่ละตัวเราจะใช้ activation function เป็น ReLU
+
+- output layer มีจำนวน neuron เท่ากับ 1 หน่วย เป็นเชิงปริมาณ
+
+แปลงข้อมูลจาก array เป็น tensor
+
+
+### สร้าง ANN model + loss + optimizer
+
+
+```{python}
+from keras.models import Sequential
+from keras.layers import Dense
+
+#1. Create a Sequential model
+model = Sequential()
+
+#2. Add an input layer and a hidden layers.
+model.add(Dense(input_shape=[7], units = 8,
+                activation="relu"))
+
+model.add(Dense(units=4, activation = "relu"))
+
+#3. Add 2-neuron output layer
+model.add(Dense(units = 1, activation="linear"))
+
+#4. model summary
+model.summary()
+```
+
+
+### Compile model
+
+```{python}
+model.compile(
+    optimizer="adam",
+    loss="mse",                 # regression → mean squared error
+    metrics=["mae"]             # ดู mean absolute error เพิ่มเติม
+)
+```
+
+### train model
+
+```{python}
+history = model.fit(
+    x, y,
+    epochs=100,
+    batch_size=32,
+    verbose=1                   # เปลี่ยนเป็น 0 ถ้าไม่อยากให้แสดง progress
+)
+```
+
+
+```{python}
+history.history
+```
+
+
+### เรียกดูผลลัพธ์
+
+```{r}
+library(tidyverse)
+history <- py$history$history
+as_tibble(history) %>%
+  mutate(epoch = row_number()) %>%
+  pivot_longer(cols = -epoch) %>%
+  ggplot(aes(epoch, value, color = name)) +
+  geom_line() +
+  labs(title = "Loss & MAE during Training", x = "Epoch", y = "Value")
+```
+
+
+Challenge in DL
+
+- Learning Rate
+
+- Overfitting -- regularization, dropout, early stopping
+
+- Minibatches vs Stochastic Gradient Descent
+
+
+
+## Learning rate 
+
+ดังที่เกริ่นไว้ก่อนหน้าแล้วว่า gradient descent เป็นอัลกอริทึมหลักที่ ANNs ใช้ในการปรับค่าพารามิเตอร์ของโมเดล โดยมีเป้าหมายในการนำ error ที่คำนวณได้จาก loss function มาปรับปรุงค่าพารามิเตอร์ในโมเดลเพื่อลด error ดังกล่าวลงผ่านกระบวนการ forward + backward propagation
+
+
+หากกำหนดให้ $\theta$ เป็นค่าพารามิเตอร์ในโมเดล การปรับแต่งค่าพารามิเตอร์ด้วยอัลกอริทึมดังกล่าวสามารถดำเนินการได้ตามสมการนี้
+
+$$
+\theta := \theta - \eta \cdot \frac{\partial L}{\partial \theta}
+$$
+
+
+โดยที่
+
+- $\eta$ คือ learning rate ซึ่งเป็นค่าคงที่ที่ผู้วิเคราะห์กำหนดขึ้นมาเพื่อควบคุมความเร็วในการปรับค่าพารามิเตอร์ในโมเดล
+
+- $\frac{\partial L}{\partial \theta}$ คือ gradient ของ loss function เทียบกับค่าพารามิเตอร์ในโมเดล
+
+
+```{r}
+#| echo: false
+library(tidyverse)
+# สร้างข้อมูล loss function y = x^2
+df <- data.frame(
+  x = seq(-2, 2, length.out = 100)
+) %>%
+  mutate(y = x^2)
+
+# จุดเริ่มต้นที่ w = 1
+start_point <- data.frame(
+  x = 1,
+  y = 1^2,
+  dx = -2 * 1,    # gradient = 2x, move opposite direction
+  dy = -2.0
+)
+
+ggplot(df, aes(x = x, y = y)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_segment(data = start_point,
+               aes(x = x, y = y, xend = x + dx/5, yend = y + dy/5),
+               arrow = arrow(length = unit(0.2, "inches")),
+               color = "orange", size = 1) +
+  geom_point(data = start_point, aes(x=x, y=y), color = "orange")+
+  labs(
+    title = "Gradient Descent Illustration",
+    x = "Weight",
+    y = "Loss"
+  ) +
+  theme_minimal()
+```
+
+note: [https://arxiv.org/pdf/1712.09913](https://arxiv.org/pdf/1712.09913)
+
+การกำหนด learning rate ที่เหมาะสมมีความสำคัญ ทั้งนี้เป็นเพราะ หาก learning rate สูงเกินไปอาจทำให้โมเดลไม่สามารถหาค่าพารามิเตอร์ที่เหมาะสมได้ (overshoot) และอาจทำให้โมเดลไม่สามารถเรียนรู้ได้เลย ในทางกลับกันหาก learning rate ต่ำเกินไปจะทำให้การเรียนรู้ใช้เวลานานมาก ๆ และอาจทำให้โมเดลไม่สามารถหาค่าพารามิเตอร์ที่เหมาะสมได้เช่นกัน
+
+
+## Overfitting
+
+### Regularization
+
+เป็นเทคนิคหนึ่งที่นำมาใช้สำหรับป้องกันไม่ให้โมเดลเกิดการ overfitting โดยการเพิ่มค่าปรับ (penalty) ลงไปใน loss function เพื่อควบคุมความซับซ้อนของโมเดล ผ่านการดันให้ค่า weight/coefficient ของโมเดลมีค่าต่ำลงเข้าใกล้ศูนย์ โดยทั่วไปแล้ว regularization จะมี 2 รูปแบบได้แก่
+
+- Ridge regression (L2 regularization)
+
+- Lasso regression (L1 regularization)
+
+$$
+L(\theta) = L_{original}(\theta) + \lambda \cdot R(\theta)
+$$
+
+โดยที่ $R(\theta)$ คือค่าปรับที่เพิ่มเข้าไปใน loss function และ $\lambda$ คือค่าคงที่ที่ผู้วิเคราะห์กำหนดขึ้นมาเพื่อควบคุมความเข้มข้นของการ regularization
+
+
+### Dropout
+
+นอกจากการ regularization แล้ว ยังมีเทคนิคอื่น ๆ ที่สามารถนำมาใช้ในการป้องกันการ overfitting เช่น dropout
+
+![](https://www.researchgate.net/profile/Pratik-Kanani/publication/345321282/figure/fig1/AS:954453112934400@1604570763065/Dropout-in-Machine-Learning-13.jpg)
+
+dropout คือเทคนิคที่มีการสุ่มปิด neuron บางตัวระหว่างการ train โมเดล โดย neuron ที่ถูกปิดจะไม่ถูกนำมาคำนวณในรอบการ train นั้น ๆ ซึ่งจะช่วยลดความซับซ้อนของโมเดลและทำให้โมเดลมีความสามารถในการ generalize ข้อมูลได้ดีขึ้น
+
+
+## Early Stopping
+
+Early Stopping เป็นเทคนิคในการป้องกัน Overfitting ในระหว่างการฝึก (training) โมเดล Machine Learning หรือ Deep Learning โดยจะ หยุดการฝึกก่อนที่จะครบจำนวน epoch ทั้งหมด เมื่อพบว่าโมเดลเริ่มเรียนรู้เฉพาะข้อมูลฝึก (train) จนส่งผลให้ประสิทธิภาพบนข้อมูลใหม่ (validation) แย่ลง
+
+หลักการทำงาน
+
+1. แบ่งข้อมูล train data ออกเป็นสองส่วนได้แก่ training data และ validation data
+
+2. ในแต่ละรอบที่ train โมเดล (epoch) จะมีการประเมินผลโมเดลบน validation data
+
+3. หาก validation loss ไม่ลดลงต่อเนื่องหลายรอบติดต่อกัน แสดงว่าโมเดลเริ่มมีแนวโน้ม overfitting อัลกอริทึมจะสั่งให้หยุดฝึกโมเดลทันที
+
+4. โมเดลที่ดีที่สุดจะถูกบันทึกไว้ในระหว่างการฝึก โดยจะเลือกโมเดลที่มี validation loss ต่ำที่สุด
+
+
+ตัวแปรสำคัญที่ใช้ในการทำ early stoping
+
+- `patience` คือจำนวน epoch ที่จะรอให้ validation loss ลดลงก่อนที่จะหยุดการฝึก
+
+- `min_delta` การเปลี่ยนแปลงของ loss ขั้นต่ำที่จะถือว่าโมเดลดีขึ้น
+
+- `restore_best_weights` คือการบันทึกโมเดลที่ดีที่สุดในระหว่างการฝึก โดยจะเลือกโมเดลที่มี validation loss ต่ำที่สุด
+
+
+## Deep Learning Training Strategy
+
+1. กำหนดเป้าหมายของงานที่ชัดเจน และเตรียมข้อมูลให้เหมาะสมกับงาน
+
+- เริ่มจากโมเดลที่ง่ายที่สุดก่อน วัตถุประสงค์คือพยายามรันโมเดลให้ใช้งานได้ และศึกษาแนวโน้มว่าโมเดลง่าย ๆ มีประสิทธิภาพการเรียนรู้ดีมากน้อยแค่ไหน
+
+  - MLP ที่มี 1-2 hidden layers
+  
+  - activation function: Relu
+  
+  - optimizer: Adam
+  
+  - loss function: ตามประเภทของ Task
+  
+3. ใช้ default hyperparameters ก่อน เช่น learning rate, batch size, epochs แล้วประเมินประสิทธิภาพของโมเดลผ่าน validation loss
+
+
+4. ปรับขนาดโมเดล (model capacity) 
+
+  - ถ้าแนวโน้ม underfit ให้เพิ่ม hidden layers/units
+  
+  - ถ้า overfit ให้ทำ regularization, dropout, early stopping หรือบางกรณีอาจทำ data augmentation
+  
+5. หากทำ regularization แล้วโมเดลยัง overfit ให้ลองพิจารณาปัจจัยเหล่านี้ประกอบ
+
+  - ข้อมูลไม่พอมั้ย --> เพิ่มข้อมูล
+  
+  - ข้อมูลมีความแปรปรวนน้อยมั้ย --> ทำ data augmentation หรือเพิ่มข้อมูล
+  
+  - กำหนด regularization ไม่เหมาะสมมั้ย --> ต้องทดลอง fine-tune ค่า hyperparameters ของ regularization หลาย ๆ ค่า
+  
+  - training data และ validation data มีความแตกต่างกันเพราะสุ่มข้อมูลไม่ดีมั้ย --> สุ่มข้อมูลให้เหมือนกัน
+  
+  - โมเดลขนาดใหญ่เกินไปมั้ย --> ลดขนาดโมเดล เช่น ลดจำนวน neuron หรือ layer
+  
+  - โมเดลอาจจะไม่เหมาะสมกับข้อมูลมั้ย --> อาจเปลี่ยนเป็นโมเดลอื่น เช่น CNNs, RNNs, LSTM, ...
+  
+
+6. เมื่อได้โมเดลที่ใช้งานได้ดีแล้ว
+
+- บันทึกโมเดลที่ให้ performance บน validation สูงสุด (Model Checkpointing)
+
+- ทดสอบกับ Test Set เพื่อประเมิน final performance
+
+
+## การใช้งาน GPU (สำหรับ apple silicon MPS)
+
+`tensorflow-macos` และ `tensorflow-metal` เป็นแพ็คเกจซอฟต์แวร์ที่ช่วยให้สามารถใช้ประโยชน์จาก GPU บนเครื่อง Mac เพื่อเร่งความเร็วในการทำงานของ TensorFlow ซึ่งเป็นเฟรมเวิร์ก Machine Learning แบบโอเพนซอร์สที่พัฒนาโดย Google
+
+
+
+1. เปิด terminal แล้วติดตั้ง tensorflow-macos และ tensorflow-metal
+
+
+```{bash eval = F}
+pip install tensorflow-macos
+pip install tensorflow-metal
+```
+
+2. ทดสอบว่า TensorFlow เห็น GPU หรือไม่
+
+```{python}
+import tensorflow as tf
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+```
+
+
+## MNIST with MLP
+
+ตัวอย่างนี้จะใช้ชุดข้อมูล MNIST ซึ่งเป็นชุดข้อมูลที่ใช้ในการจำแนกตัวเลขเขียนด้วยมือ (handwritten digits) โดยมี 10 class ได้แก่ 0-9
+
+```{r}
+## importing data
+library(keras)
+library(reticulate)
+use_virtualenv("r-reticulate", required = TRUE)  # หรือชื่อที่ตรงกับ env คุณ
+data <- dataset_mnist()
+data %>% objects()
+```
+
+```{r}
+## features
+train_x <- data$train$x
+## target
+train_y <- data$train$y
+
+py$x_train <- train_x %>% array_reshape(c(nrow(train_x), 28*28))/255
+py$y_train <- train_y 
+```
+
+
+```{r}
+library(tidyverse)
+train_x[3,,] %>% 
+  as.table() %>% 
+  data.frame() %>% 
+  mutate_at(vars(starts_with("Var")), as.numeric) %>% 
+  ggplot(aes(x = Var1, y = Var2, fill = Freq)) +
+  geom_tile()+
+  coord_flip()+
+  scale_x_reverse()+
+  scale_fill_gradient(low = "white", high = "black")
+```
+
+```{r}
+train_y[3]
+```
+
+
+จากข้อมูลข้างต้นวัตถุประสงค์คือเพื่อสร้างโมเดลจำแนกตัวเลขที่เขียนด้วยลายมือได้
+
+- ข้อมูลนำเข้าเป็นภาพที่ถูกจัดเก็บในรูปของเมททริกซ์ขนาด 28x28 pixel ตัวเลขในแต่ละ pixel ใช้แทนความเข้มของสีดำ
+
+- ข้อมูล target เป็นตัวเลข 0-9 ที่เราต้องการจำแนก
+
+ดังนั้น MLP model ที่เราจะใช้ในการจำแนกควรมี
+
+- input layer ที่มีขนาดเท่ากับจำนวน pixel ในภาพ 28x28 = 784 input
+
+- hidden layer --> ???
+
+- output layer --> classfication 10 classes
+
+
+ปัญหาคือเราควรกำหนด hidden layer และจำนวน neuron ใน hidden layer อย่างไรดี??
+
+
+- คำตอบคือไม่มีคำตอบที่ตายตัว ขึ้นอยู่กับข้อมูลและปัญหาที่เราต้องการแก้ไข เราอาจจำแนกวิธีการกำหนดรายละเอียดของโมเดลดังกล่าวออกเป็น 2 วิธีการได้แก่
+
+  - Heuristic method
+  
+  - Automated method
+  
+รายละเอียดมีดังนี้
+
+### Heuristic method
+
+คือวิธีการกำหนดโมเดลโดย rule of thumb หรือประสบการณ์ของผู้วิเคราะห์ โดยอาจพิจารณาจากข้อมูลที่มีอยู่ในมือและงานวิจัยที่เกี่ยวข้องกับปัญหาที่กำลังดำเนินการ แนวทางแบบ heuristic เช่น
+
+1. จำนวน Hidden Layer (Depth)
+
+- ข้อมูลแบบตาราง --> 1-2 hidden layers น่าจะเพียงพอ
+
+- ข้อมูล unstructured เช่น ภาพ เสียง ข้อความ --> 2-4 hidden layers
+
+- ข้อมูลที่มีลำดับเวลาเข้ามาเกี่ยวข้อง --> ใช้ CNN, RNN, LSTM หรือ Transformers
+
+- นอกจากนี้สำหรับข้อมูลทั่ว ๆ ไปที่ไม่ซับซ้อนมาก บางทีการใช้ MLP ที่มี 1 hidden layer และมีจำนวน node มากพอ ก็เพียงพอที่จะสร้างโมเดลทำนายที่มีประสิทธิภาพได้แล้ว อย่างไรก็ตามมีการวิจัยที่พบว่าการ train หลาย ๆ layer ทำได้ง่ายกว่าและโมเดลมีแนวโน้มจะมีคุณสมบัติ generalization ได้ดีกว่า
+
+2. จำนวน Neuron ใน Hidden Layer (Width)
+
+- เริ่มต้นด้วย จำนวน neuron ใน hidden layer ที่มีจำนวนเท่ากับหรือใกล้เคียงกับ input layer
+
+- ขนาด neuron ใน hidden layer ควรลดลงเรื่อย ๆ แบบ pyramid 
+
+- ขนาด neuron ใน hidden layer ไม่ควรเล็กกว่า output layer
+
+- ขนาด neuron ใน hidden layer ควรอยู่ระหว่าง input กับ output
+
+นอกจากโครงสร้างโมเดลแบบ pyramid แล้วยังมีรูปแบบอื่น ๆ ที่สามารถใช้ได้และเหมาะกับเงื่อนไขหรือกรณีที่แตกต่างกันดังนี้
+
+1. Pyramid --> โครงสร้างโมเดลแบบลดจำนวน neuron ลงทีละขั้น โมเดลลักษณะนี้มักถูกออกแบบให้ทำหน้าที่สกัดหรือย่อข้อมูลปริมาณมาก ๆ ลงให้เลือกสาระสำคัญที่จะนำไปใช้จำแนกหรือทำนาย
+
+2. Diamond/Hourglass --> โครงสร้างที่มีลักษณะ hidden layer ตรงกลางแคบ แต่ด้านข้างกว้าง โมเดลลักษณะนี้มักใช้ใน autoencoder, denoising หรือ dimensionality reduction เพื่อสกัดหา latent space หรือองค์ประกอบแฝงที่ใช้เป็นตัวแทนข้อมูล input ได้
+
+
+3. Uniform (Flat) --> โครงสร้างที่มีจำนวน neuron ใน hidden layer เท่ากันทุก layer โมเดลลักษณะนี้มักใช้ในงานที่ไม่ซับซ้อนมาก และผู้วิเคราะห์ยังไม่แน่ใจว่าควรใช้โครงสร้างแบบไหน ลักษณะดังกล่าวโมเดลแบบนี้จึงมักถูกใช้เป็น baseline model เพื่อเปรียบเทียบกับโมเดลอื่น ๆ ที่มีความซับซ้อนมากขึ้น
+
+
+### Automated method
+
+คือกระบวนการที่ให้คอมพิวเตอร์ช่วย “ค้นหาค่าที่ดีที่สุด” สำหรับ hyperparameters โดยอัตโนมัติ
+เช่น จำนวน hidden layers, ขนาดแต่ละ layer, learning rate, batch size, dropout rate ...
+
+เทคนิคที่มักใช้โดยทั่วไปเช่น
+
+- Grid Search
+
+- Random Search
+
+- Bayesian Optimization
+
+- Tree-structured Parzen Estimator (TPE)
+
+- Hyperband
+
+- AutoML
+
+
+ตัวอย่างต่อไปนี้จะลองทำ random grid search เพื่อหาค่าที่ดีที่สุดของ hyperparameters ที่เราสนใจ โดย hyperparameters ที่จะทำการค้นหามีขอบเขตดังนี้
+
+- ขนาดของ hidden layer : [64, 128, 256]
+
+- learning rate: [0.01, 0.001, 0.0001]
+
+- dropout rate: [0.0, 0.2, 0.5]
+
+```{r}
+reticulate::py_install("scikit-learn", pip = TRUE)
+```
+
+```{python}
+# แก้ไขปัญหา __sklearn_tags__ ด้วยการระบุ tags ใน class ใหม่
+class MyKerasClassifier(KerasClassifier):
+    def __sklearn_tags__(self):
+        """Return sklearn classifier tags."""
+        return {
+            'non_deterministic': True,
+            'requires_positive_X': False,
+            'requires_positive_y': False,
+            'X_types': ['2darray'],
+            'poor_score': False,
+            'no_validation': False,
+            'multioutput': False,
+            'allow_nan': False,
+            'stateless': False,
+            'multilabel': False,
+            '_skip_test': False,
+            'binary_only': False,
+            'estimator_type': 'classifier'
+        }
+```
+
+
+
+```{python}
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+
+from tensorflow import keras
+from scikeras.wrappers import KerasClassifier
+from tensorflow.keras import layers
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+
+print(scikeras.__version__)
+
+# ฟังก์ชันสร้างโมเดล
+def build_model(hidden_units=128, dropout=0.2):
+    model = Sequential()
+    model.add(Dense(input_shape=(784,), 
+                    units = hidden_units, 
+                    activation='relu'))
+    model.add(Dropout(dropout))
+    model.add(Dense(10, activation='softmax'))
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+
+# Wrap ด้วย KerasClassifier
+model = MyKerasClassifier(
+    model=build_model,
+    hidden_units=64,
+    dropout=0,
+    epochs=3,  # ลดจำนวน epochs ลงเหลือ 3 เพื่อความเร็ว
+    batch_size=128,
+    verbose=1
+)
+
+# Grid Search: ลองทุก combination
+param_grid = {
+    'hidden_units': [64, 128],
+    'dropout': [0.0, 0.2],
+    'epochs': [5],
+    'batch_size': [128]
+}
+
+grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=2, verbose=1)
+print("Starting GridSearchCV...")
+grid_result = grid.fit(x_train, y_train)
+
+print("Best Grid Params:", grid_result.best_params_)
+print("Best Score:", grid_result.best_score_)
+
+```
+
+
+
+
+```{python}
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import optuna
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import fetch_openml
+
+# ตรวจสอบเวอร์ชัน
+print(f"TensorFlow version: {tf.__version__}")
+try:
+    import optuna
+    print(f"Optuna version: {optuna.__version__}")
+except ImportError:
+    print("Please install Optuna with: pip install optuna")
+    # หากยังไม่ได้ติดตั้ง Optuna สามารถติดตั้งได้ด้วย:
+    # !pip install optuna
+
+# โหลดข้อมูล MNIST
+def get_mnist_data(sample_fraction=0.1):
+    """โหลดข้อมูล MNIST และสามารถเลือกตัวอย่างบางส่วนเพื่อความเร็วในการทดสอบ"""
+    try:
+        # ถ้ามี x_train, y_train อยู่แล้ว ใช้ตัวที่มีอยู่
+        x_train_sample = x_train
+        y_train_sample = y_train
+        print(f"Using existing data: shape={x_train_sample.shape}")
+    except NameError:
+        # ถ้าไม่มี โหลดใหม่
+        print("Loading MNIST dataset...")
+        mnist = fetch_openml('mnist_784', version=1, parser='auto')
+        X = mnist.data.astype('float32') / 255.0
+        y = mnist.target.astype('int')
+        
+        # สุ่มตัวอย่างถ้าต้องการ
+        if sample_fraction < 1.0:
+            n_samples = len(X)
+            sample_size = int(n_samples * sample_fraction)
+            indices = np.random.choice(n_samples, sample_size, replace=False)
+            x_train_sample = X.iloc[indices].values
+            y_train_sample = y.iloc[indices].values
+        else:
+            x_train_sample = X.values
+            y_train_sample = y.values
+            
+        print(f"Created new data: shape={x_train_sample.shape}")
+    
+    # แบ่งข้อมูลเป็น train และ validation sets
+    x_train_split, x_val_split, y_train_split, y_val_split = train_test_split(
+        x_train_sample, y_train_sample, test_size=0.2, random_state=42
+    )
+    
+    return x_train_split, x_val_split, y_train_split, y_val_split
+
+# โหลดข้อมูล
+x_train, x_val, y_train, y_val = get_mnist_data(sample_fraction=0.2)  # ใช้ 20% ของข้อมูล
+
+# สร้าง objective function สำหรับ Optuna
+def objective(trial):
+    # พารามิเตอร์ที่ต้องการปรับแต่ง
+    hidden_units = trial.suggest_int('hidden_units', 32, 256)
+    dropout_rate = trial.suggest_float('dropout_rate', 0.0, 0.5)
+    learning_rate = trial.suggest_float('learning_rate', 1e-4, 1e-2, log=True)
+    batch_size = trial.suggest_categorical('batch_size', [64, 128, 256])
+    
+    # สร้างโมเดล
+    model = keras.Sequential([
+        layers.Dense(hidden_units, activation='relu', input_shape=(784,)),
+        layers.Dropout(dropout_rate),
+        layers.Dense(10, activation='softmax')
+    ])
+    
+    # คอมไพล์โมเดล
+    optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
+    model.compile(
+        optimizer=optimizer,
+        loss='sparse_categorical_crossentropy',
+        metrics=[
+            'accuracy'])
+    
+    # ใช้ EarlyStopping เพื่อหยุดเมื่อโมเดลไม่พัฒนา
+    early_stopping = keras.callbacks.EarlyStopping(
+        monitor='val_accuracy',
+        patience=3,
+        restore_best_weights=True
+    )
+    
+    # Train โมเดล
+    history = model.fit(
+        x_train, y_train,
+        validation_data=(x_val, y_val),
+        epochs=10,  # จำนวน epochs สูงสุด
+        batch_size=batch_size,
+        callbacks=[early_stopping],
+        verbose=1
+    )
+    
+    # คืนค่า validation accuracy
+    return history.history['val_accuracy'][-1]
+
+# สร้าง Optuna study
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=10)  # ลองแค่ 10 ครั้งเพื่อความเร็ว
+
+# แสดงผลลัพธ์
+print("\n===== Best Hyperparameters =====")
+print(f"Best trial: {study.best_trial.number}")
+print(f"Best value (validation accuracy): {study.best_value:.4f}")
+print("Best hyperparameters:")
+for key, value in study.best_params.items():
+    print(f"  {key}: {value}")
+
+# ทดสอบโมเดลที่ดีที่สุด
+best_hidden_units = study.best_params['hidden_units']
+best_dropout_rate = study.best_params['dropout_rate']
+best_learning_rate = study.best_params['learning_rate']
+best_batch_size = study.best_params['batch_size']
+
+# สร้างโมเดลที่ดีที่สุด
+best_model = keras.Sequential([
+    layers.Dense(best_hidden_units, activation='relu', input_shape=(784,)),
+    layers.Dropout(best_dropout_rate),
+    layers.Dense(10, activation='softmax')
+])
+
+# คอมไพล์โมเดล
+best_optimizer = keras.optimizers.Adam(learning_rate=best_learning_rate)
+best_model.compile(
+    optimizer=best_optimizer,
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# ฝึกโมเดลกับทุกข้อมูล
+print("\nTraining final model with best hyperparameters...")
+best_model.fit(
+    np.vstack((x_train, x_val)),
+    np.concatenate((y_train, y_val)),
+    epochs=10,
+    batch_size=best_batch_size,
+    verbose=1
+)
+
+# บันทึกโมเดลถ้าต้องการ
+# best_model.save('best_mnist_model.h5')
+print("\nDone! Best model trained with optimal hyperparameters.")
+
+# แสดงกราฟการเปรียบเทียบพารามิเตอร์
+try:
+    from optuna.visualization import plot_optimization_history, plot_param_importances
+    import matplotlib.pyplot as plt
+    
+    print("\nCreating visualization plots...")
+    
+    plt.figure(figsize=(10, 6))
+    plot_optimization_history(study)
+    plt.title('Optimization History')
+    plt.tight_layout()
+    plt.savefig('optimization_history.png')
+    
+    plt.figure(figsize=(10, 6))
+    plot_param_importances(study)
+    plt.title('Parameter Importances')
+    plt.tight_layout()
+    plt.savefig('param_importances.png')
+    
+    print("Plots saved as 'optimization_history.png' and 'param_importances.png'")
+except ImportError:
+    print("For visualization, install matplotlib: pip install matplotlib")
+```
+
+
+
+```{python}
+plt.figure(figsize=(10, 6))
+    ax = optuna.visualization.matplotlib.plot_optimization_history(study)
+    plt.title('Optimization History')
+    plt.tight_layout()
+    plt.savefig('optimization_history.png')
+    plt.close()
+    print("Saved optimization history to 'optimization_history.png'")
+```
+
+
+
+```{python}
+
+    plt.figure(figsize=(10, 6))
+    ax = optuna.visualization.matplotlib.plot_param_importances(study)
+    plt.title('Parameter Importances')
+    plt.tight_layout()
+    plt.savefig('param_importances.png')
+    plt.close()
+    print("Saved parameter importances to 'param_importances.png'")
+    
+    # แสดงสรุปผลลัพธ์
+    print("\n===== Best Hyperparameters =====")
+    print(f"Best trial: {study.best_trial.number}")
+    print(f"Best value: {study.best_value:.6f}")
+    print("Best hyperparameters:")
+    for key, value in study.best_params.items():
+        print(f"  {key}: {value}")
+```
+
+```{python}
+
+```
+
+
+
+
+
+
+

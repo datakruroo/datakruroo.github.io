@@ -1,0 +1,142 @@
+---
+title: "การปรับแต่ง Hyperparameter ใน DL"
+format: html
+editor: visual
+---
+
+Hyperparameters เป็นค่าที่ผู้ใช้นิยามก่อนเริ่มฝึกโมเดล เช่น learning rate, ขนาด hidden layer, dropout, batch size ฯลฯ ซึ่งส่งผลโดยตรงต่อผลลัพธ์การเรียนรู้ของโมเดล
+
+หากกำหนดไม่เหมาะสม อาจทำให้โมเดล overfit, underfit หรือ convergence ช้าเกินไป
+
+## 1. วิธีการปรับ Hyperparameters
+
+- Manual Grid Search
+
+- Random Search
+
+- Bayesian Optimization
+
+## 2. Bayesian Optimization
+
+Bayesian Optimization เป็นวิธีการหาค่าที่ดีที่สุด (optimization) ของฟังก์ชันที่ไม่ทราบรูปร่างล่วงหน้า เช่น validation accuracy หรือ loss ของโมเดล โดยใช้การคาดคะเน (approximate) ฟังก์ชันนี้ด้วยโมเดลที่สามารถบอกได้ว่าค่าที่ทดลองไปแล้วน่าจะให้ผลดีหรือไม่ดีอย่างไร ขั้นตอนการทำงานของ Bayesian Optimization มีดังนี้
+
+1. กำหนดขอบเขตของ hyperparameters ที่ต้องการค้นหาในโมเดล
+
+2. สุ่มค่าของ hyperparameters ในขอบเขตที่กำหนด นำไปฝึกโมเดล และบันทึกผลลัพธ์ (validation accuracy หรือ loss)
+
+3. ดำเนินการในขั้นที่ 2 สัก 2-3 ชุดเพื่อใช้เป็นข้อมูลในการสร้าง surrogate model
+
+4. สร้าง surrogate model จากข้อมูล hyperparameters และคะแนนของ model ที่ได้ในขั้นที่ 3.
+
+  - Gaussian Process (GP)
+  
+  - Tree-structured Parzen Estimator (TPE)
+
+5. ใช้ Acquisition Function เพื่อหาค่าของ hyperparameters ที่จะทดลองในรอบถัดไป โดยการคำนวณจาก surrogate model ที่ได้ในขั้นที่ 4. ซึ่งจะช่วยให้เราสามารถเลือกค่าที่มีแนวโน้มว่าจะให้ผลลัพธ์ดีที่สุดในรอบถัดไป
+
+6. สุ่มค่าของ hyperparameters ชุดใหม่ เพื่อนำไปฝึก surrogate model ในขั้นที่ 4. โดยใช้ค่าที่ได้จากขั้นที่ 5. เป็นจุดเริ่มต้นในการสุ่มค่าของ hyperparameters ใหม่
+
+
+### 3. Surrogate Model
+
+- คือโมเดลตัวแทนที่ใช้สำหรับประมาณฟังก์ชันที่ไม่ทราบ functional form ล่วงหน้า ในกรณีนี้คือฟังก์ชันของ model performance กับ hyperparameters --> f(hyperparameters) = model performance
+
+- มีหลายวิธีการที่สามารถใช้สร้าง surrogate model ได้ ในบริบทของการ fine-tune hyperparameters ของ deep learning model เช่น
+
+  - Gaussian Process (GP)
+  
+  - Tree-structured Parzen Estimator (TPE)
+
+#### 3.1 Gaussian Process (GP)
+
+- GP เป็นโมเดลที่ใช้ในการประมาณฟังก์ชันที่ไม่ทราบรูปร่างล่วงหน้า โดยใช้ข้อมูลที่มีอยู่แล้วในการสร้างฟังก์ชันใหม่
+
+- วัตถุประสงค์ของ GP คือการประมาณการแจกแจงความน่าจะเป็นของ f(hyperparameters) โดยใช้ข้อมูลที่มีอยู่แล้ว 
+
+  - GP สมมุติว่า $f(x) \sim MVN(\mu, \Sigma)$ โดยที่ $\mu$ คือ mean function และ $\Sigma$ คือ covariance function
+
+  - เมื่อทดลอง hyperparameters ไปจำนวนหนึ่งอาจจะ 2-3 ชุด เราจะนำข้อมูล x กับ f(x) นี้มาสร้าง GP model
+
+  - แนวโน้มว่าความเป็นไปได้ไหนมีโอกาสที่จะให้ผลลัพธ์ที่ดีที่สุด --> Expected value ของ x
+  
+  - มีความไม่แน่นอนแต่ละความเป็นไปได้เท่าไหร่
+ 
+```{r}
+library(ggplot2)
+x <- seq(-5, 5, length.out = 300)
+x0 <- 0
+l <- 1
+
+df_kernel <- data.frame(
+  x = x,
+  similarity = exp(- (x - x0)^2 / (2 * l^2))
+)
+
+ggplot(df_kernel, aes(x = x, y = similarity)) +
+  geom_line(color = "blue", linewidth = 1.2) +
+  geom_vline(xintercept = x0, linetype = "dashed", color = "red") +
+  labs(
+    title = "RBF Kernel",
+    subtitle = expression(k(x, x[0]) == exp(- (x - x[0])^2 / (2 * l^2))),
+    x = "x", y = expression(k(x, x[0]))
+  ) +
+  theme_minimal()
+```
+ 
+ 
+ 
+
+ 
+ 
+```{r}
+library(MASS)
+set.seed(42)
+
+x <- seq(-5, 5, length.out = 100)
+x_obs <- c(-4, -2, 0, 2, 4)
+y_obs <- sin(x_obs)
+
+# สร้าง kernel matrix
+kernel <- function(x1, x2, l = 1) exp(- outer(x1, x2, function(a, b) (a - b)^2 / (2 * l^2)))
+
+K_xx <- kernel(x_obs, x_obs) + diag(1e-6, length(x_obs))
+K_xs <- kernel(x_obs, x)
+K_ss <- kernel(x, x)
+
+# GP posterior mean and covariance
+K_inv <- solve(K_xx)
+mu_post <- t(K_xs) %*% K_inv %*% y_obs
+cov_post <- K_ss - t(K_xs) %*% K_inv %*% K_xs
+
+# Sample from posterior
+samples_post <- mvrnorm(3, mu_post, cov_post)
+df_post <- data.frame(x = x, mean = mu_post, t(samples_post))
+df_post_long <- tidyr::pivot_longer(df_post, cols = starts_with("X"), names_to = "sample", values_to = "y")
+
+ggplot(df_post_long, aes(x = x, y = y, color = sample)) +
+  geom_line(alpha = 0.8) +
+  geom_line(aes(y = mean), color = "black", linewidth = 1.2) +
+  geom_point(data = data.frame(x = x_obs, y = y_obs), aes(x, y), color = "red", size = 2) +
+  labs(title = "GP Posterior (After Observing Data)", y = "f(x)") +
+  theme_minimal()
+```
+
+ 
+ยกตัวอย่างเช่น จากการทดลอง hyperparameters 3 ชุดแรกได้ผลดังนี้
+
+```{r}
+hyper_param <- c(0.5, 1.5, 2.5)
+model_perform <- c(0.7, 0.9, 0.85)
+```
+
+
+
+
+
+
+#### 3.2 Tree-structured Parzen Estimator (TPE)
+
+### Acquisition Function
+
+
+
