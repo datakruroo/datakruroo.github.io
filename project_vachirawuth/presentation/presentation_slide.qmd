@@ -1663,14 +1663,17 @@ score_phrase <- score_phrase %>%
   left_join(all_data %>% select(student_id, student_level) %>% 
   filter(is.na(student_id) == F),
   by = "student_id", keep = F) %>% 
-  unique()  
+  unique()  %>% 
+  mutate(category = ifelse(category == "Planned_Responsibility", "Commitment_to_Rules", category)) 
+
 
 
 library(rcartocolor)
 # กำหนดว่าแต่ละ category เป็นบวกหรือลบ
 positive_cats <- score_phrase %>% 
+  filter(!category == "Reactive_or_Emotional_Response") %>% 
   count(category_use,category) %>% 
-  slice(4:7) %>% 
+  slice(3:6) %>% 
   pull(category)
 
 
@@ -1681,8 +1684,7 @@ negative_cats <- score_phrase %>%
 
 
 thai_labels <- c(
-  "ยึดมั่นในกฎระเบียบ",
-  "รับผิดชอบตามแผนที่วางไว้",
+  "ยึดมั่นในกฎระเบียบ/รับผิดชอบต่อหน้าที่",
   "กระตุ้นเพื่อนให้ตรงเวลา",
   "ควบคุมตนเองได้",
   "ละเลยหน้าที่",
@@ -1705,7 +1707,7 @@ score_phrase %>%
             hjust = -0.1, size = 5, family = "ChulaCharasNew") +
   scale_fill_manual(
     values = c(
-      rep("#0f9d58",4),
+      rep("#0f9d58",3),
       rep("#db4437",3)
     ))+
   theme_light()+
@@ -1716,7 +1718,7 @@ score_phrase %>%
     text = element_text(family = "ChulaCharasNew", size = 18))+
   ylab("")+
   xlab("\n จำนวนข้อความ") +
-  xlim(0,650)
+  xlim(0,300)
 ```
 
 :::
@@ -1727,7 +1729,7 @@ score_phrase %>%
 ## 1.5 มีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
 
 
-คุณลักษณะย่อยของพฤติกรรมที่นักเรียนแสดงออกในด้านไม่สำรวยหยิบโหย่ง จำแนกตามระดับชั้นของนักเรียน
+คุณลักษณะย่อยของพฤติกรรมที่นักเรียนแสดงออกในด้านมีระเบียบ จำแนกตามระดับชั้นของนักเรียน
 
 ```{r fig.width = 10, fig.height = 6, echo = F}
 plot_pyramid_chart(score_phrase %>% select(-student_level), 
@@ -1740,7 +1742,146 @@ plot_pyramid_chart(score_phrase %>% select(-student_level),
 ```
 
 
-## 1.5 
+## 1.5 คุณลักษณะย่อยด้านมีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r echo = F, eval = F, fig.width=8, fig.height=6}
+positive_phrase <- score_phrase %>% 
+  mutate(score = .pred_positive_behav_rf - .pred_negative_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map2_chr(phrase, category, summarize_main_idea_openai2)) 
+write_excel_csv(positive_phrase, file = "01_data/score_data/discipline_positive_phrase.csv")
+
+negative_phrase <- score_phrase %>% 
+  mutate(score = .pred_negative_behav_rf - .pred_positive_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map2_chr(phrase,category, summarize_main_idea_openai2))
+write_excel_csv(negative_phrase, file = "01_data/score_data/discipline_negative_phrase.csv")
+```
+
+
+```{r}
+positive_phrase <- read_csv("01_data/score_data/discipline_positive_phrase.csv")
+negative_phrase <- read_csv("01_data/score_data/discipline_negative_phrase.csv")
+
+positive_phrase <- positive_phrase %>% 
+      filter(!category == "Peer_Pressure_Compliance") %>% 
+      filter(!category == "Reactive_or_Emotional_Response") %>% 
+  mutate(category = ifelse(category == "Planned_Responsibility", "Commitment_to_Rules", category))
+
+negative_phrase <- negative_phrase %>% 
+  filter(!category == "Self_Control")
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:3],
+    selected_categories = thai_labels[1],
+  max_words = 350,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+## 1.5 คุณลักษณะย่อยด้านมีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:3],
+    selected_categories = thai_labels[2],
+  max_words = 350,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+## 1.5 คุณลักษณะย่อยด้านมีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:3],
+    selected_categories = thai_labels[3],
+  max_words = 350,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+## 1.5 คุณลักษณะย่อยด้านมีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase,
+    categories_filter =negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[4:6],
+    selected_categories = thai_labels[4],
+  max_words = 350,
+  color_palette = "Set1",
+  reverse_colors = TRUE
+)
+```
+
+
+## 1.5 คุณลักษณะย่อยด้านมีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r}
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase %>% 
+      mutate(main_idea = ifelse(main_idea == "เห็นด้วยกับเพื่อน", "ไปช้ากับเพื่อน", main_idea)) %>% 
+      mutate(main_idea = str_replace_all(main_idea, "ตามเพื่อนให้เร็วหน่อย" , "ไปตามเพื่อน")) %>% 
+      filter(!main_idea == "ทิ้งเพื่อนไว้ตรงนั้น") %>% 
+      filter(!main_idea == '"เห็นด้วย"') %>% 
+      filter(!main_idea == "ปล่อยเขาไป") %>% 
+      filter(!main_idea == '"ไปก่อนเลย"') %>% 
+      filter(!main_idea == "ช่วยเพื่อนด่วน") %>% 
+      filter(!main_idea == str_detect(main_idea,"คนเดียว")) %>% 
+      filter(!main_idea == "ไปคนเดียวก็ได้") %>% 
+      filter(!str_detect(main_idea, "ปล่อย")),
+
+    categories_filter =negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[4:6],
+    selected_categories = thai_labels[5],
+  max_words = 350,
+  color_palette = "Set1",
+  reverse_colors = TRUE
+)
+```
 
 
 
+## 1.5 คุณลักษณะย่อยด้านมีระเบียบ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r}
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase %>% 
+      mutate(main_idea = ifelse(main_idea == "เห็นด้วยกับเพื่อน", "ไปช้ากับเพื่อน", main_idea)) %>% 
+      mutate(main_idea = str_replace_all(main_idea, "ตามเพื่อนให้เร็วหน่อย" , "ไปตามเพื่อน")) %>% 
+      filter(!main_idea == "ทิ้งเพื่อนไว้ตรงนั้น") %>% 
+      filter(!main_idea == '"เห็นด้วย"') %>% 
+      filter(!main_idea == "ปล่อยเขาไป") %>% 
+      filter(!main_idea == '"ไปก่อนเลย"') %>% 
+      filter(!main_idea == "ช่วยเพื่อนด่วน") %>% 
+      filter(!main_idea == str_detect(main_idea,"คนเดียว")) %>% 
+      filter(!main_idea == "ไปคนเดียวก็ได้") %>% 
+      filter(!str_detect(main_idea, "ปล่อย")) %>% 
+      mutate(main_idea = str_replace(main_idea, "สายไหมไหม" , "สายไหม")),
+
+    categories_filter =negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[4:6],
+    selected_categories = thai_labels[6],
+  max_words = 350,
+  color_palette = "Set1",
+  reverse_colors = TRUE
+)
+```
