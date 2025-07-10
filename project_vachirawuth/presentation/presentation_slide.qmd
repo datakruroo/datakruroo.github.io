@@ -2263,7 +2263,11 @@ score_phrase <- score_phrase %>%
   left_join(all_data %>% select(student_id, student_level) %>% 
   filter(is.na(student_id) == F),
   by = "student_id", keep = F) %>% 
-  unique() 
+  unique() %>% 
+  mutate(category = ifelse(category == "Balanced_Response", "Cultural_Respect", category)) %>% 
+  mutate(category = ifelse(category == "Ethical_Assertiveness",
+                           "Cultural_Respect" , category)) %>% 
+  filter(!category == "Avoidance_or_Sarcasm")
 
 
 
@@ -2271,22 +2275,19 @@ library(rcartocolor)
 # กำหนดว่าแต่ละ category เป็นบวกหรือลบ
 positive_cats <- score_phrase %>% 
   count(category_use,category) %>% 
-  slice(3:6) %>% 
+  slice(2:3) %>% 
   pull(category)
 
 
 negative_cats <- score_phrase %>% 
   count(category_use,category) %>% 
-  slice(1:2) %>% 
+  slice(1) %>% 
   pull(category)
 
 
 thai_labels <- c(
-"ตอบสนองอย่างเหมาะสม",
   "เคารพวัฒนธรรม",
-  "กล้าแสดงจุดยืนด้วยจริยธรรม",
   "ปกป้องชื่อเสียงของครอบครัว",
-  "หลีกเลี่ยงหรือประชดประชัน",
   "ทำตามรุ่นพี่โดยไม่ตั้งคำถาม"
   )
 
@@ -2302,8 +2303,8 @@ score_phrase %>%
             hjust = -0.1, size = 5, family = "ChulaCharasNew") +
   scale_fill_manual(
     values = c(
-      rep("#0f9d58",4),
-      rep("#db4437",2)
+      rep("#0f9d58",2),
+      rep("#db4437",1)
     ))+
   theme_light()+
   theme(
@@ -2313,7 +2314,7 @@ score_phrase %>%
     text = element_text(family = "ChulaCharasNew", size = 18))+
   ylab("")+
   xlab("\n จำนวนข้อความ") +
-  xlim(0,300)
+  xlim(0,600)
 ```
 
 :::
@@ -2333,4 +2334,129 @@ plot_pyramid_chart(score_phrase %>% select(-student_level),
                    negative_cats = negative_cats,
                    thai_labels = thai_labels)
 ```
+
+
+## 1.7 คุณลักษณะย่อยด้านรักเกียรติ และรักชื่อเสียงวงศ์ตระกูล : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+
+```{r echo = F, eval = F, fig.width=8, fig.height=6}
+positive_phrase <- score_phrase %>% 
+  mutate(score = .pred_positive_behav_rf - .pred_negative_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map2_chr(phrase, category, summarize_main_idea_openai2)) 
+write_excel_csv(positive_phrase, file = "01_data/score_data/family_positive_phrase.csv")
+
+negative_phrase <- score_phrase %>% 
+  mutate(score = .pred_negative_behav_rf - .pred_positive_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map2_chr(phrase,category, summarize_main_idea_openai2))
+write_excel_csv(negative_phrase, file = "01_data/score_data/family_negative_phrase.csv")
+```
+
+
+```{r}
+positive_phrase <- read_csv("01_data/score_data/family_positive_phrase.csv")
+negative_phrase <- read_csv("01_data/score_data/family_negative_phrase.csv")
+```
+
+
+```{r}
+
+positive_phrase <- positive_phrase %>% 
+  filter(!category == "Follow_Superior_Unquestioned")%>% 
+  mutate(category = ifelse(category == "Balanced_Response", "Cultural_Respect", category)) %>% 
+  mutate(category = ifelse(category == "Ethical_Assertiveness",
+                           "Cultural_Respect" , category))
+
+positive_phrase <- positive_phrase %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "เหมาะสม"),
+                            "เล่นให้เหมาะสม",
+                            main_idea))
+
+positive_phrase <- positive_phrase %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "เปลี่ยน"),
+                            "ปรับบทให้ดีขึ้น",
+                            main_idea)) %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "แสดง"),
+                            "แสดงให้พอดี",
+                            main_idea)) %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "ตลก"),
+                            "ตลกพอประมาณ",
+                            main_idea)) %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "พอเหมาะ"),
+                            "เล่นให้พอเหมาะ",
+                            main_idea)) %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "ลด" ),
+                            "ลดการล้อเลียน",
+                            main_idea)) 
+
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:2],
+    selected_categories = thai_labels[1],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = T
+)
+```
+
+
+## 1.7 คุณลักษณะย่อยด้านรักเกียรติ และรักชื่อเสียงวงศ์ตระกูล : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+
+positive_phrase <- positive_phrase %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "ต่อว่าครอบครัว"),
+                            "ครอบครัวจะถูกตำหนิ",
+                            main_idea)) %>% 
+  mutate(main_idea = ifelse(str_detect(main_idea, "อบอุ่นครอบครัว"),
+                            "มีผลต่อครอบครัว",
+                            main_idea)) %>% 
+    mutate(main_idea = ifelse(str_detect(main_idea, "มั่นใจในครอบครัว"),
+                            "มีผลต่อครอบครัว",
+                            main_idea)) %>% 
+  filter(!str_detect(main_idea,"โบ้ยงานน้อง"))
+
+
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:2],
+    selected_categories = thai_labels[2],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+## 1.7 คุณลักษณะย่อยด้านรักเกียรติ และรักชื่อเสียงวงศ์ตระกูล : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r}
+negative_phrase <- negative_phrase %>% 
+  filter(!category == "Avoidance_or_Sarcasm")
+
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase,
+    categories_filter = negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[3],
+    selected_categories = thai_labels[3],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+
+
+
+
+
 
