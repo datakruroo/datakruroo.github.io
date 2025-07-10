@@ -1359,7 +1359,7 @@ p<-plot_category_wordclouds(
     category_labels = thai_labels[5:7],
     selected_categories = thai_labels[5],
   max_words = 150,
-  color_palette = "Set1",
+  color_palette = "Set3",
   reverse_colors = TRUE
 )
 ```
@@ -1885,3 +1885,452 @@ p<-plot_category_wordclouds(
   reverse_colors = TRUE
 )
 ```
+
+
+## 1.6 มีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+<div style = "font-size:75%;">
+
+- ผู้วิจัยคัดกรองข้อความที่มีความสอดคล้อง/ไม่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านรู้จักตรากตรำ โดยใช้คะแนนจุดตัดเป็นเกณฑ์  จากนั้นใช้โมเดลภาษาขนาดใหญ่ช่วยระบุคุณลักษณะย่อยของพฤติกรรมที่แสดงออกในแต่ละข้อความ
+
+</div>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<div style = "font-size:75%;">
+
+- จำแนกข้อความออกเป็นคุณลักษณะย่อย  7 ด้าน ประกอบด้วย ด้านที่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านไม่เป็นตนถือยศศักดิ์จำนวน 4 ด้าน และด้านที่ไม่สอดคล้อง 3 ด้าน
+
+- **ด้านที่สอดคล้อง** ได้แก่
+  
+  - แสดงออก/พูดจาสุภาพ (ร้อยละ 65.8)
+
+  - ให้เกียรติผู้อื่น (ร้อยละ 17.4)
+
+  - รู้จักกาลเทศะ (ร้อยละ 6.7)
+
+
+- **ด้านที่ไม่สอดคล้อง** ได้แก่ 
+
+  - พูดจาหยาบคาย (ร้อยละ 7.2)
+
+  - แสดงพฤติกรรมก้าวร้าว (ร้อยละ 2.9)
+  
+  - ใช้อำนาจข่มคนอื่น (ร้อยละ 0.1)
+
+</div>
+
+:::
+
+
+::: {.column width="60%"}
+
+<br>
+
+
+```{r results = F}
+source("05_report/generate_report.R")
+```
+
+```{r message = F, warning = F, echo = F}
+score_phrase <- read_csv("01_data/score_data/score_item4.1_phrase.csv")
+score_phrase <- score_phrase %>% 
+  left_join(all_data %>% select(student_id, student_level) %>% 
+  filter(is.na(student_id) == F),
+  by = "student_id", keep = F) %>% 
+  unique() %>% 
+  mutate(category = ifelse(category == "Constructive_Challenger",
+                           "Reasoned_Creativity" , category))
+
+
+
+library(rcartocolor)
+# กำหนดว่าแต่ละ category เป็นบวกหรือลบ
+positive_cats <- score_phrase %>% 
+  count(category_use,category) %>% 
+  slice(3:6) %>% 
+  pull(category)
+
+
+negative_cats <- score_phrase %>% 
+  count(category_use,category) %>% 
+  slice(1:2) %>% 
+  pull(category)
+
+
+thai_labels <- c(
+"คิดวิเคราะห์และสังเคราะห์อย่างมีระบบ",
+  "ให้เหตุผลร่วมกับผู้อื่น",
+  "คิดสร้างสรรค์อย่างมีเหตุผล",
+  "วางแผนอย่างเป็นขั้นเป็นตอน",
+"ยอมตามโดยไม่ใช้วิจารณญาณ",
+  "หลีกเลี่ยง"
+
+  )
+
+score_phrase %>% 
+  count(category) %>% 
+  mutate(prop = n / sum(n)) %>%
+  mutate(category = factor(category, 
+                      levels = c(positive_cats, negative_cats),
+                      labels = thai_labels)) %>% 
+  ggplot(aes(x = n, y = reorder(category, n), fill = category)) +
+  geom_col()+
+  geom_text(aes(x = n, label = scales::percent(prop, accuracy = 0.1)),
+            hjust = -0.1, size = 5, family = "ChulaCharasNew") +
+  scale_fill_manual(
+    values = c(
+      rep("#0f9d58",4),
+      rep("#db4437",2)
+    ))+
+  theme_light()+
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "none",
+    axis.text = element_text(size = 16),
+    text = element_text(family = "ChulaCharasNew", size = 18))+
+  ylab("")+
+  xlab("\n จำนวนข้อความ") +
+  xlim(0,300)
+```
+
+:::
+
+::::
+
+## 1.6 มีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+คุณลักษณะย่อยของพฤติกรรมที่นักเรียนแสดงออกในด้านมีระเบียบ จำแนกตามระดับชั้นของนักเรียน
+
+```{r fig.width = 10, fig.height = 6, echo = F}
+plot_pyramid_chart(score_phrase %>% select(-student_level), 
+                   all_data,
+                   legend_row = 2,
+                   color_direction = 1,
+                   positive_cats = positive_cats,
+                   negative_cats = negative_cats,
+                   thai_labels = thai_labels)
+```
+
+## 1.6 คุณลักษณะย่อยด้านมีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r echo = F, eval = F, fig.width=8, fig.height=6}
+positive_phrase <- score_phrase %>% 
+  mutate(score = .pred_positive_behav_rf - .pred_negative_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map2_chr(phrase, category, summarize_main_idea_openai2)) 
+write_excel_csv(positive_phrase, file = "01_data/score_data/intellegent_positive_phrase.csv")
+
+negative_phrase <- score_phrase %>% 
+  mutate(score = .pred_negative_behav_rf - .pred_positive_behav_rf) %>% 
+  filter(score > 0.7) %>% 
+  mutate(main_idea = purrr::map2_chr(phrase,category, summarize_main_idea_openai2))
+write_excel_csv(negative_phrase, file = "01_data/score_data/intellegent_negative_phrase.csv")
+```
+
+
+```{r}
+positive_phrase <- read_csv("01_data/score_data/intellegent_positive_phrase.csv")
+negative_phrase <- read_csv("01_data/score_data/intellegent_negative_phrase.csv")
+```
+
+
+```{r}
+
+positive_phrase <- positive_phrase %>% 
+  filter(!category == "Avoidant_Compliance") %>% 
+mutate(category = ifelse(category == "Constructive_Challenger",
+                           "Reasoned_Creativity" , category)) %>% 
+  filter(!str_detect(main_idea, "ขอย้ายกลุ่มใหม่")) %>% 
+  mutate(main_idea = if_else(str_detect(main_idea, "ลองของใหม่"), "ลองของใหม่", main_idea))  %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "ทำใหม่"), "ทำของใหม่", main_idea))  %>% 
+    mutate(main_idea = if_else(str_detect(main_idea, "ไอเดียใหม่"), "ลองใช้ไอเดียใหม่", main_idea)) %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "ไม่ซ้ำ"), "ไม่ซ้ำใคร", main_idea)) 
+
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:4],
+    selected_categories = thai_labels[3],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+
+## 1.6 คุณลักษณะย่อยด้านมีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r}
+
+positive_phrase <- positive_phrase %>% 
+  mutate(main_idea = if_else(str_detect(main_idea, "ปรึกษาเพื่อน"), "ปรึกษาเพื่อนในกลุ่ม", main_idea)) %>% 
+  mutate(main_idea = if_else(str_detect(main_idea, "รับฟัง"), "รับฟังความคิดเห็น", main_idea)) %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "เสนอความคิด"), "เสนอไอเดีย", main_idea))  %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "เสนอไอเดีย"), "เสนอไอเดีย", main_idea))  %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "แชร์"), "แชร์ไอเดีย", main_idea)) %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "คิดตาม"), "ฟังเพื่อนแล้วคิดตาม", main_idea))  %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "ระดม"), "ระดมความคิดเห็นกับเพื่อน", main_idea))
+
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:4],
+    selected_categories = thai_labels[2],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+
+
+
+
+## 1.6 คุณลักษณะย่อยด้านมีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+
+positive_phrase <- positive_phrase %>% 
+  mutate(main_idea = if_else(str_detect(main_idea, "วางแผนงานให้ดี"), "วางแผนให้ดี", main_idea)) %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "ออกแบบ"), "ออกแบบงาน", main_idea))  %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "วางแผน"),"วางแผนงาน", main_idea)) %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "แบ่งงาน"), "แบ่งงานตามหน้าที่" , main_idea))  %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "แบ่งหน้าที่"), "แบ่งงานตามหน้าที่" , main_idea))  %>% 
+   mutate(main_idea = if_else(str_detect(main_idea, "แบบ"), "ออกแบบงาน" , main_idea)) 
+  
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:4],
+    selected_categories = thai_labels[4],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+
+```
+
+
+
+## 1.6 คุณลักษณะย่อยด้านมีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+positive_phrase <- positive_phrase %>% 
+  filter(!category == "Avoidant_Compliance") %>% 
+  mutate(category = ifelse(category == "Constructive_Challenger",
+                           "Reasoned_Creativity" , category)) %>% 
+  mutate(main_idea = str_replace(main_idea, "วิเคราะห์เจตนาข้อความ",
+                                 "วิเคราะห์ปัญหา")) %>% 
+  filter(!str_detect(main_idea, "คิดเองเถอะ")) %>% 
+  mutate(main_idea = str_replace(main_idea, "คิดให้รอบคอบก่อนทำ" ,"คิดให้รอบคอบ")) %>% 
+    mutate(main_idea = str_replace(main_idea, "คิดละเอียด" ,"คิดให้รอบคอบ")) %>% 
+    mutate(main_idea = str_replace(main_idea, "คิดก่อนทำ" ,"คิดให้รอบคอบ")) %>% 
+  mutate(main_idea = str_replace(main_idea, "คิดปัญหาหลักให้ชัดเจน","หาปัญหา")) %>% 
+  mutate(main_idea = str_replace(main_idea, "หาปัญหาโรงเรียน","หาปัญหา")) %>% 
+  mutate(main_idea = str_replace(main_idea, "หาหัวข้อใหม่","หาปัญหา")) %>% 
+  mutate(main_idea = str_replace_all(main_idea, "ข้อมูล", "หาข้อมูล")) %>% 
+  mutate(main_idea = str_replace(main_idea, "หาหาข้อมูล", "หาข้อมูล")) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "หาข้อมูล"), "หาข้อมูล", main_idea)) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "หาปัญหา"), "หาปัญหา", main_idea)) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "พิจารณาเจตนา"), "วิเคราะห์ปัญหา", main_idea))  %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "ขาด"), "หาสิ่งที่โรงเรียนขาด", main_idea)) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "ประโยชน์"), "ทำสิ่งที่มีประโยชน์", main_idea)) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "ปัญหาโรงเรียน"), "วิเคราะห์ปัญหาโรงเรียน", main_idea))
+
+p<-plot_category_wordclouds(
+    phrase_data = positive_phrase,
+    categories_filter = positive_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[1:4],
+    selected_categories = thai_labels[1],
+  max_words = 300,
+  color_palette = "Set2",
+  reverse_colors = TRUE
+)
+```
+
+
+## 1.6 คุณลักษณะย่อยด้านมีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r}
+negative_phrase <- negative_phrase %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "ง่าย"), "ทำง่าย ๆ ", main_idea))  %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "เดิม"), "ทำเหมือนเดิม", main_idea)) %>% 
+filter(!str_detect(main_idea, "สุดชีวิต")) %>% 
+filter(!str_detect(main_idea, "สร้างสรรค์"))
+
+
+
+
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase,
+    categories_filter = negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[5:6],
+    selected_categories = thai_labels[5],
+  max_words = 300,
+  color_palette = "Set1",
+  reverse_colors = T
+)
+```
+
+
+## 1.6 คุณลักษณะย่อยด้านมีสติปัญญาความรู้ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+```{r}
+negative_phrase <- negative_phrase %>% 
+filter(!str_detect(main_idea, "ตั้งใจ")) %>% 
+filter(!str_detect(main_idea, "ทำเยอะ")) %>% 
+filter(!str_detect(main_idea, "my"))  %>% 
+filter(!str_detect(main_idea, "ดี")) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, "จ้าง"), "จ้างทำ", main_idea)) %>% 
+mutate(main_idea = if_else(str_detect(main_idea, '"แล้วแต่"'), "จ้างทำ", main_idea))
+
+
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase,
+    categories_filter = negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[5:6],
+    selected_categories = thai_labels[6],
+  max_words = 300,
+  color_palette = "Set1",
+  reverse_colors = T
+)
+```
+
+## 1.7 รักเกียรติ และรักชื่อเสียงวงศ์ตระกูล : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+<div style = "font-size:75%;">
+
+- ผู้วิจัยคัดกรองข้อความที่มีความสอดคล้อง/ไม่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านรู้จักตรากตรำ โดยใช้คะแนนจุดตัดเป็นเกณฑ์  จากนั้นใช้โมเดลภาษาขนาดใหญ่ช่วยระบุคุณลักษณะย่อยของพฤติกรรมที่แสดงออกในแต่ละข้อความ
+
+</div>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<div style = "font-size:75%;">
+
+- จำแนกข้อความออกเป็นคุณลักษณะย่อย  7 ด้าน ประกอบด้วย ด้านที่สอดคล้องกับคุณลักษณะอันพึงประสงค์ด้านไม่เป็นตนถือยศศักดิ์จำนวน 4 ด้าน และด้านที่ไม่สอดคล้อง 3 ด้าน
+
+- **ด้านที่สอดคล้อง** ได้แก่
+  
+  - แสดงออก/พูดจาสุภาพ (ร้อยละ 65.8)
+
+  - ให้เกียรติผู้อื่น (ร้อยละ 17.4)
+
+  - รู้จักกาลเทศะ (ร้อยละ 6.7)
+
+
+- **ด้านที่ไม่สอดคล้อง** ได้แก่ 
+
+  - พูดจาหยาบคาย (ร้อยละ 7.2)
+
+  - แสดงพฤติกรรมก้าวร้าว (ร้อยละ 2.9)
+  
+  - ใช้อำนาจข่มคนอื่น (ร้อยละ 0.1)
+
+</div>
+
+:::
+
+
+::: {.column width="60%"}
+
+<br>
+
+
+```{r message = F, warning = F, echo = F}
+score_phrase <- read_csv("01_data/score_data/score_item6.1_phrase.csv")
+score_phrase <- score_phrase %>% 
+  left_join(all_data %>% select(student_id, student_level) %>% 
+  filter(is.na(student_id) == F),
+  by = "student_id", keep = F) %>% 
+  unique() 
+
+
+
+library(rcartocolor)
+# กำหนดว่าแต่ละ category เป็นบวกหรือลบ
+positive_cats <- score_phrase %>% 
+  count(category_use,category) %>% 
+  slice(3:6) %>% 
+  pull(category)
+
+
+negative_cats <- score_phrase %>% 
+  count(category_use,category) %>% 
+  slice(1:2) %>% 
+  pull(category)
+
+
+thai_labels <- c(
+"ตอบสนองอย่างเหมาะสม",
+  "เคารพวัฒนธรรม",
+  "กล้าแสดงจุดยืนด้วยจริยธรรม",
+  "ปกป้องชื่อเสียงของครอบครัว",
+  "หลีกเลี่ยงหรือประชดประชัน",
+  "ทำตามรุ่นพี่โดยไม่ตั้งคำถาม"
+  )
+
+score_phrase %>% 
+  count(category) %>% 
+  mutate(prop = n / sum(n)) %>%
+  mutate(category = factor(category, 
+                      levels = c(positive_cats, negative_cats),
+                      labels = thai_labels)) %>% 
+  ggplot(aes(x = n, y = reorder(category, n), fill = category)) +
+  geom_col()+
+  geom_text(aes(x = n, label = scales::percent(prop, accuracy = 0.1)),
+            hjust = -0.1, size = 5, family = "ChulaCharasNew") +
+  scale_fill_manual(
+    values = c(
+      rep("#0f9d58",4),
+      rep("#db4437",2)
+    ))+
+  theme_light()+
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "none",
+    axis.text = element_text(size = 16),
+    text = element_text(family = "ChulaCharasNew", size = 18))+
+  ylab("")+
+  xlab("\n จำนวนข้อความ") +
+  xlim(0,300)
+```
+
+:::
+
+::::
+
+## 1.7 รักเกียรติ และรักชื่อเสียงวงศ์ตระกูล : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+คุณลักษณะย่อยของพฤติกรรมที่นักเรียนแสดงออกในด้านมีระเบียบ จำแนกตามระดับชั้นของนักเรียน
+
+```{r fig.width = 10, fig.height = 6, echo = F}
+plot_pyramid_chart(score_phrase %>% select(-student_level), 
+                   all_data,
+                   legend_row = 2,
+                   color_direction = 1,
+                   positive_cats = positive_cats,
+                   negative_cats = negative_cats,
+                   thai_labels = thai_labels)
+```
+
