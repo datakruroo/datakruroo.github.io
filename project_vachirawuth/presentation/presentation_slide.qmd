@@ -1438,30 +1438,31 @@ score_phrase <- score_phrase %>%
   by = "student_id", keep = F) %>% 
   unique()  %>% 
   mutate(category = ifelse(category == "Calm_Intervention", "Assertive_Correction", category)) %>% 
-  filter(!category == "Moral_Stand")
+  filter(!category == "Moral_Stand") %>% 
+  filter(!category == "Responsible_Leadership") %>% 
+  filter(!category == "Over_Relaxing")
 
 library(rcartocolor)
 # กำหนดว่าแต่ละ category เป็นบวกหรือลบ
 positive_cats <- score_phrase %>% 
   count(category_use,category) %>% 
-  slice(4:6) %>% 
+  slice(3:4) %>% 
   pull(category)
 
 
 negative_cats <- score_phrase %>% 
   count(category_use,category) %>% 
-  slice(1:3) %>% 
+  slice(1:2) %>% 
   pull(category)
 
 
 thai_labels <- c(
-  "ตักเตือนอย่างมั่นใจและเหมาะสม",           # Assertive_Correction
-  "ใช้ระเบียบควบคุมสถานการณ์",                # Consequential_Accountability
-  "เป็นผู้นำที่รับผิดชอบ" ,                    # Responsible_Leadership
+  "ตักเตือนอย่างเหมาะสม",           # Assertive_Correction
+  "ใช้ระเบียบ/ชี้ให้เห็นผลที่จะตามมา",                # Consequential_Accountability
 "ตอบโต้ด้วยความก้าวร้าว",      # Aggressive_Reaction
-  "หลีกเลี่ยงสถานการณ์",          # Avoidant_Behavior
-  "ชิลเกินไป / ไม่จริงจัง"         # Over_Relaxing
+  "หลีกเลี่ยงสถานการณ์"        # Avoidant_Behavior
   )
+
 
 
 
@@ -1477,8 +1478,8 @@ score_phrase %>%
             hjust = -0.1, size = 5, family = "ChulaCharasNew") +
   scale_fill_manual(
     values = c(
-      rep("#0f9d58",3),
-      rep("#db4437",3)
+      rep("#0f9d58",2),
+      rep("#db4437",2)
     ))+
   theme_light()+
   theme(
@@ -1559,7 +1560,7 @@ p<-plot_category_wordclouds(
       count(category) %>% pull(category),
     category_labels = thai_labels[1:4],
     selected_categories = thai_labels[2],
-  max_words = 150,
+  max_words = 350,
   color_palette = "Set2",
   reverse_colors = TRUE
 )
@@ -1567,24 +1568,40 @@ p<-plot_category_wordclouds(
 ```
 
 
-
-
 ## 1.6 คุณลักษณะย่อยด้านเป็นผู้กล้าหาญ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
 
 ```{r}
 p<-plot_category_wordclouds(
-    phrase_data = positive_phrase,
-    categories_filter = positive_phrase %>% 
+    phrase_data = negative_phrase,
+    categories_filter = negative_phrase %>% 
       count(category) %>% pull(category),
-    category_labels = thai_labels[1:4],
-    selected_categories = thai_labels[4],
-  max_words = 150,
-  color_palette = "Set2",
+    category_labels = thai_labels[3:5],
+    selected_categories = thai_labels[3],
+  max_words = 350,
+  color_palette = "Set1",
   reverse_colors = TRUE
 )
 
+```
 
-positive_phrase %>% 
-  filter(category == "Responsible_Leadership")
+## 1.6 คุณลักษณะย่อยด้านเป็นผู้กล้าหาญ : ผลการวิเคราะห์ลักษณะของพฤติกรรมจากข้อความของนักเรียน {.smaller}
+
+
+```{r}
+p<-plot_category_wordclouds(
+    phrase_data = negative_phrase %>% 
+      filter(!main_idea == "รอทำข้อหนึ่ง") %>% 
+      filter(!main_idea == "สงสารคนเงียบ") %>% 
+      filter(!main_idea == "เตือนผิด"),
+    categories_filter = negative_phrase %>% 
+      count(category) %>% pull(category),
+    category_labels = thai_labels[3:5],
+    selected_categories = thai_labels[4],
+  max_words = 30,
+  color_palette = "Set1",
+  reverse_colors = TRUE
+)
+
 ```
 
