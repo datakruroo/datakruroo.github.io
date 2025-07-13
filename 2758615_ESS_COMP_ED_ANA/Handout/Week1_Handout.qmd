@@ -1,0 +1,234 @@
+---
+title: "Week1 : แนะนำรายวิชาและมโนทัศน์พื้นฐาน"
+author: "Assistant Prof. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: 2024-09-05
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: [default,theme.scss]
+    css: my_css.css
+    scrollable: false
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;; 
+      }
+      
+      </style>
+---
+
+## สถิติและวิทยาการข้อมูล
+
+> นำข้อมูลมาใช้ประกอบการตัดสินใจ + ดำเนินงาน เพื่อสร้างผลกระทบเชิงบวกต่อผู้เกี่ยวข้องได้อย่างมีนัยสำคัญ
+
+::::: columns
+::: {.column width="50%"}
+-   คณิตศาสตร์/สถิติ
+
+-   วิทยาการคอมพิวเตอร์
+
+-   ทฤษฎีที่เกี่ยวข้องกับบริบทเป้าหมาย
+
+![](images/clipboard-4073736845.png){width="80%"}
+:::
+
+::: {.column width="50%"}
+![https://clevertap.com/blog/data-science/](images/clipboard-2433123859.png){width="80%"}
+:::
+:::::
+
+## Insights
+
+:::::: columns
+:::: {.column width="50%"}
+> สารสนเทศเชิงลึก คือการเปลี่ยนแปลงความเข้าใจอย่างไม่คาดคิด
+
+::: {style="font-size:70%;"}
+-   **มีความหมาย** : เชื่อมโยงกับบริบท กลุ่มเป้าหมาย หรือคำถามเฉพาะ
+
+-   **มีประโยชน์** : ช่วยให้เข้าใจประเด็นสำคัญที่เกี่ยวข้อง
+
+-   **สามารถนำไปใช้ได้จริง** : ช่วยกำหนดทิศทางการตัดสินใจหรือการออกแบบนโยบาย
+
+-   **มีหลักฐานรองรับ** : มาจากการวิเคราะห์ข้อมูลที่มีคุณภาพ
+:::
+::::
+
+::: {.column width="50%"}
+![](images/clipboard-2114812446.png){width="100%"}
+:::
+::::::
+
+## Insights
+
+![Dykes (2020)](images/clipboard-1484066495.png){fig-align="center" width="80%"}
+
+## Insights
+
+ผลประเมินโครงงานของนักเรียนเป็นอย่างไร?
+
+![](images/clipboard-241818128.png)
+
+## Insights
+
+ผลประเมินโครงงานของนักเรียนเป็นอย่างไร?
+
+![](images/clipboard-1709530328.png)
+
+## Insights : Data Analysis Mindset
+
+![](images/clipboard-2734775483.png)
+
+## Insights : Problem Prioritization
+
+ผลการสำรวจปัจจัยที่เป็นปัญหาในกลุ่มนักเรียนที่ไม่ผ่านการประเมินโครงงาน
+
+![](images/clipboard-1937014398.png)
+
+## Insights : Segmentation/Root Cause Analysis
+
+![](images/clipboard-3623312031.png)
+
+## Insights : Segmentation/Root Cause Analysis
+
+![](images/clipboard-2172974734.png)
+
+## Designing Program Learning Outcome
+
+คุณลักษณะของบัณฑิตคณะครุศาสตร์ จุฬา ควรเป็นอย่างไร??
+
+-   มีความรู้ในเนื้อหา ?
+
+-   มีความรู้ทักษะในการออกแบบและจัดประสบการณ์การเรียนรู้ ?
+
+-   ...
+
+## Designing Program Learning Outcome
+
+![](images/clipboard-2237882774.png){width="70%"}
+
+## Designing Program Learning Outcome : Prototype
+
+![Saifah, Y., Srisuttiyakorn, S., & Sriklaub, K. (2025).](images/clipboard-3101202712.png)
+
+## Designing Program Learning Outcome : Refine
+
+-   สกัดข้อความ/วลีที่เกี่ยวข้องกับคุณลักษณะของบัณฑิตคณะครุศาสตร์ จุฬาฯ (4,971 ข้อความ)
+
+-   ด้วยกระบวนการ text mining เราคัดคำสำคัญจากข้อความได้ทั้งหมด 1,627 คำ
+
+![Saifah, Y., Srisuttiyakorn, S., & Sriklaub, K. (2025).](images/clipboard-200309088.png)
+
+## Designing Program Learning Outcome : Refine
+
+![Saifah, Y., Srisuttiyakorn, S., & Sriklaub, K. (2025).](images/clipboard-1258647797.png)
+
+## Designing Program Learning Outcome
+
+![Saifah, Y., Srisuttiyakorn, S., & Sriklaub, K. (2025).](images/clipboard-2010787687.png)
+
+## Data Science Cycle
+
+![](images/clipboard-2783479104.png)
+
+## Data Science Cycle: Data-Driven Classroom
+
+![Bolz and Madhavan (2023)](images/clipboard-1398948684.png){width="80%"}
+
+## Data Science Cycle
+
+-   กระบวนการวนซ้ำระหว่าง Transform – Visualize – Model
+
+-   Programming เป็นเครื่องมือสำคัญที่ใช้ตลอดทุกขั้นตอน
+
+![https://r4ds.hadley.nz/intro.html](https://r4ds.hadley.nz/diagrams/data-science/base.png)
+
+## Type of Data Analytics
+
+![](images/clipboard-2646024080.png)
+
+## Prerequisites {.smaller}
+
+<br>
+
+::::::: columns
+:::: {.column width="50%"}
+#### ✅ ติดตั้ง R
+
+::: {style="font-size:90%;"}
+-   ดาวน์โหลดจาก **CRAN**:\
+    <https://cloud.r-project.org>
+-   ออกเวอร์ชันหลักทุกปี และเวอร์ชันย่อย 2–3 ครั้งต่อปี
+-   ควรอัปเดตสม่ำเสมอ เพื่อใช้ฟีเจอร์ใหม่
+
+![](images/clipboard-1531774250.png){width="80%"}
+:::
+::::
+
+:::: {.column width="50%"}
+#### ✅ ติดตั้ง RStudio
+
+::: {style="font-size:80%;"}
+-   ดาวน์โหลดจาก Posit:\
+    <https://posit.co/download/rstudio-desktop>
+-   เป็น **IDE (Integrated Development Environment)** สำหรับ R
+-   มีการอัปเดตปีละ 2–3 ครั้ง
+
+![](images/clipboard-949198061.png)
+:::
+::::
+:::::::
+
+## Positron IDE
+
+-   Positron ได้การนิยามตัวเองว่าเป็น IDE สำหรับวงการวิทยาการข้อมูลที่รองรับการเขียนโปรแกรมหลากหลายภาษา
+-   ดาวน์โหลดจาก <https://github.com/posit-dev/positron/releases>
+
+![](images/clipboard-2212088101.png)
+
+## Tidyverse
+
+```         
+> install.packages("tidyverse")
+> library(tidyverse)
+```
+
+<br>
+
+<center>
+
+![https://teachdatascience.com/tidyverse/](https://teachdatascience.com/post/tidyverse/tidyverse-package-workflow.png){width="70%"}
+
+</center>
+
+## AI Usage Framework
+
+::::: columns
+::: {.column width="50%"}
+![](images/clipboard-2958583119.png)
+
+![](images/clipboard-2344794315.png){width="80%"}
+:::
+
+::: {.column width="50%"}
+![](images/clipboard-2522654855.png){width="80%"}
+:::
+:::::
+
+## Prompt Design
+
+![https://llmnanban.akmmusai.pro/Introductory/Prompt-Elements/](images/clipboard-933838906.png){fig-align="center" width="80%"}
