@@ -4369,7 +4369,7 @@ combined_student_teacher_academic %>%
 library(ggrepel)
 combined_student_teacher_academic %>% 
   mutate(type = fct_recode(type, "นักเรียน" = "student",
-                           "บุคลากรครู" = "teacher")) %>%
+                           "บุคลากรครู" = "teacher"))   %>%
   ggplot(aes(x = type, y = score))+
   geom_boxplot(aes(fill = type), outlier.alpha = 0)+
   geom_jitter(width = 0.1, alpha = 0.1, col = "grey20")+
