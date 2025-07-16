@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+  <!-- พื้นหลัง -->
+  <rect width="500" height="400" fill="#f8f9fa" rx="10" ry="10"/>
+  
+  <!-- กรอบกราฟ (ขยับกรอบไปทางขวา) -->
+  <rect x="70" y="50" width="380" height="300" fill="white" stroke="#e0e0e0" stroke-width="1" rx="5" ry="5"/>
+  
+  <!-- นิยามลูกศร -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+            refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34A853" fill-opacity="0.8"/>
+    </marker>
+  </defs>
+  
+  <!-- เส้นโค้งแนวโน้มพร้อมลูกศร (layer ล่างสุด) - ขยับตามกรอบ -->
+  <path d="M173,110 Q266,180 359,250" stroke="#34A853" stroke-width="3" fill="none" 
+        stroke-opacity="0.8" marker-end="url(#arrowhead)"/>
+  
+  <!-- แกน X และ Y (ขยับตามกรอบ) -->
+  <line x1="90" y1="320" x2="450" y2="320" stroke="#333" stroke-width="2"/>
+  <line x1="90" y1="320" x2="90" y2="70" stroke="#333" stroke-width="2"/>
+  
+  <!-- ชื่อแกน -->
+  <text x="270" y="360" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold">ML/AI Intelligence</text>
+  <text x="14" y="190" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" transform="rotate(-90, 14, 190)">Human Intelligence</text>
+  
+  <!-- เส้นตาราง (ขยับตามกรอบ) -->
+  <line x1="90" y1="250" x2="450" y2="250" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="90" y1="180" x2="450" y2="180" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="90" y1="110" x2="450" y2="110" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <line x1="173" y1="70" x2="173" y2="320" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="266" y1="70" x2="266" y2="320" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="359" y1="70" x2="359" y2="320" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- จุดข้อมูลและคำอธิบาย (ขยับตามกรอบ) -->
+  <circle cx="173" cy="110" r="8" fill="#4285F4"/>
+  <text x="173" y="95" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Assisted</text>
+  <text x="173" y="80" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Intelligence</text>
+  
+  <circle cx="266" cy="180" r="8" fill="#FBBC05"/>
+  <text x="266" y="165" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Augmented</text>
+  <text x="266" y="150" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Intelligence</text>
+  
+  <circle cx="359" cy="250" r="8" fill="#EA4335"/>
+  <text x="359" y="235" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Autonomous</text>
+  <text x="359" y="220" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Intelligence</text>
+  
+  <!-- ป้ายกำกับแกน X (ขยับตามกรอบ) -->
+  <text x="173" y="340" text-anchor="middle" font-family="Arial" font-size="12">Lower</text>
+  <text x="266" y="340" text-anchor="middle" font-family="Arial" font-size="12">Medium</text>
+  <text x="359" y="340" text-anchor="middle" font-family="Arial" font-size="12">Higher</text>
+  
+  <!-- ป้ายกำกับแกน Y (ขยับตามกรอบ) -->
+  <text x="70" y="250" text-anchor="end" font-family="Arial" font-size="12" dominant-baseline="middle">High</text>
+  <text x="70" y="180" text-anchor="end" font-family="Arial" font-size="12" dominant-baseline="middle">Medium</text>
+  <text x="70" y="110" text-anchor="end" font-family="Arial" font-size="12" dominant-baseline="middle">Low</text>
+  
+  <!-- หัวข้อ -->
+  <text x="250" y="30" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">Microsoft Maturity Model</text>
+</svg>
