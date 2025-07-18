@@ -1,0 +1,21 @@
+---
+title: "ชื่อเอกสารของคุณ"
+author: "ชื่อผู้เขียน"
+date: today
+lang: th
+mainfont: "TH Sarabun New"  # หรือใช้ "TH SarabunPSK" หากไม่มีฟอนต์ใหม่
+fontsize: 16pt
+reference-location: margin
+citation-location: document
+bibliography: reference.bib
+csl: thai-citation-style.csl  # (เลือกใส่ถ้ามีไฟล์ .csl ที่เหมาะกับรูปแบบการอ้างอิง)
+format:
+  docx:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    reference-doc: template.docx  # (ถ้ามีไฟล์แม่แบบ Word ที่ตั้งค่าฟอนต์และรูปแบบไว้)
+---
+
+## บทนำ
+

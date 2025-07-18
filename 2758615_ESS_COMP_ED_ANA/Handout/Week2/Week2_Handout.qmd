@@ -1,0 +1,421 @@
+---
+title: "Week2 : ภาพรวม และ Workflow"
+author: "Assistant Prof. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: 2024-09-05
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: [default, theme.scss]
+    css: my_css.css
+    scrollable: false
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: false
+    code-overflow: scroll
+code-link: false
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;; 
+      }
+      
+      </style>
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+## Overview {.smaller}
+
+![](https://r4ds.hadley.nz/diagrams/data-science/whole-game.png)
+
+#### Prerequisites 
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+```{r eval = F, echo = T}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+:::
+
+
+::: {.column width="55%"}
+
+:::
+
+::::
+
+## Data Visualization {.smaller}
+
+<div style="font-size:150%;">
+
+> One picture is worth a thousand words
+
+</div>
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+![](https://upload.wikimedia.org/wikipedia/commons/d/d2/A_picture_is_worth_a_thousand_words.jpg)
+
+
+:::
+
+::: {.column width="55%"}
+
+<div style="font-size:30%;">
+<br>
+</div>
+
+```{r eval = T, echo = T}
+## Importing data
+char_data <- read_csv("character_data_dim1.csv")
+## print data
+char_data
+```
+
+
+
+:::
+
+::::
+
+## Data Visualization {.smaller}
+
+<div style="font-size:150%;">
+
+> One picture is worth a thousand words
+
+</div>
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+<br>
+
+::: {.fragment}
+
+<div style = "font-size:80%;">
+
+- **ตัวแปร (Variable)** : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้ 
+
+</div>
+
+:::
+
+::: {.fragment}
+
+<div style = "font-size:80%;">
+
+- **ค่าของตัวแปร (Value)** : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ 
+
+</div>
+
+:::
+
+::: {.fragment}
+
+<div style = "font-size:80%;">
+
+- **ค่าสังเกต (Observation)** : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง
+
+</div>
+
+:::
+
+::: {.fragment}
+
+<div style = "font-size:80%;">
+
+- **ข้อมูล (Data)** : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต
+
+</div>
+
+:::
+
+:::
+
+::: {.column width="55%"}
+
+<div style="font-size:30%;">
+<br>
+</div>
+
+```{r eval = T, echo = T}
+## Importing data
+char_data <- read_csv("character_data_dim1.csv")
+## print data
+char_data
+```
+
+
+
+:::
+
+::::
+
+## Data Visualization {.smaller}
+
+<div style="font-size:150%;">
+
+> One picture is worth a thousand words
+
+</div>
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+<br>
+
+
+
+<div style = "font-size:80%;">
+
+- **ตัวแปร (Variable)** : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้ 
+
+</div>
+
+
+<div style = "font-size:80%;">
+
+- **ค่าของตัวแปร (Value)** : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ 
+
+</div>
+
+
+
+<div style = "font-size:80%;">
+
+- **ค่าสังเกต (Observation)** : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง
+
+</div>
+
+
+<div style = "font-size:80%;">
+
+- **ข้อมูล (Data)** : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต
+
+</div>
+
+
+
+:::
+
+::: {.column width="55%"}
+
+<div style="font-size:30%;">
+<br>
+</div>
+
+```{r eval = T, echo = T}
+glimpse(char_data, 60)
+```
+
+
+
+:::
+
+::::
+
+
+## Data Visualization {.smaller}
+
+
+<div style="font-size:150%;">
+
+> One picture is worth a thousand words
+
+</div>
+
+
+```{r eval = T, echo = T}
+## summary statistics
+summary(char_data)
+```
+
+```{r echo = T}
+cat("average score:", mean(char_data$score_value), "\n")
+cat("standard deviation:", sd(char_data$score_value), "\n")
+cat("median score:", median(char_data$score_value), "\n")
+cat("quantiles:\n", quantile(char_data$score_value, probs = c(0.25, 0.5, 0.75)), "\n")
+```
+
+
+
+## Data Visualization: Visual Representation
+
+กระบวนการแปลงข้อมูลที่มีให้อยู่ในรูปของแผนภาพ หรืออาจกล่าวว่าเป็นกระบวนการตัดสินใจเลือกใช้แผนภาพที่เหมาะสมสำหรับแสดงสาระสำคัญของข้อมูล
+
+> Chart = Mark + Attribute
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<div style="font-size:60%;">
+
+**Marks** : สัญลักษณ์ที่ใช้แสดงข้อมูล
+
+- จุด (Point)
+
+- เส้น (Line)
+
+- แท่ง (Bar)
+
+- พื้นที่ (Area)
+
+- ปริมาตร (Volume)
+
+- ...
+
+</div>
+
+:::
+
+::: {.column width="40%"}
+
+<div style="font-size:60%;">
+
+**Attributes** : variants ของ Marks 
+
+- ตำแหน่ง (Position)
+
+- ขนาด (Size)
+
+- สี (Color)
+
+- รูปร่าง (Shape)
+
+- ความโปร่งใส (Opacity)
+
+- ทิศทาง (Direction)
+
+- ...
+
+</div>
+
+:::
+
+::::
+
+
+## Data Visualization: Visual Representation
+
+
+
+![](https://datakruroo.github.io/DataVisualization/week01/img/data_representation.png)
+
+
+## Data Visualization: Visual Representation
+
+<div style="font-size:60%; text-align: center;">
+
+![Source: https://www.researchgate.net/figure/The-Mackinlay-ranking-of-perceptual-task_fig2_221098028](https://datakruroo.github.io/DataVisualization/week01/img/The-Mackinlay-ranking-of-perceptual-task.png)
+
+</div>
+## Data Visualization {.smaller}
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+```{r echo = T}
+summary(char_data)
+```
+
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/0*LFG6Hyp7Py80nc1d.jpg)
+
+
+## Data Visualization : ggplot2 {.smaller}
+
+ggplot2 เป็น package ที่ใช้ในการสร้างกราฟใน R โดยมีหลักการทำงานที่เรียกว่า "Grammar of Graphics" ซึ่งช่วยให้ผู้ใช้สามารถสร้างกราฟได้อย่างยืดหยุ่นและมีประสิทธิภาพ
+
+- สร้างวัตถุเชิงกราฟฟิก หรือ canvas ด้วย `ggplot()` ขั้นตอนนี้กำหนดอาร์กิวเมนท์ `data` เป็นข้อมูลที่ต้องการใช้ในการสร้างกราฟ
+
+- เพิ่ม layer เรียกว่า aesthetic mappings ด้วย `aes()` เพื่อจับคู่ระหว่างตัวแปรกับ visual element ในแผนภาพ
+
+- เพิ่ม layer แสดงผลข้อมูลด้วย `geom_xxx()` เช่น `geom_histogram()`, `geom_boxplot()`, `geom_bar()`, `geom_line()`, `geom_point()` เป็นต้น
+
+
+## Data Visualization : ggplot2 {auto-animate=true}
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+
+```{r eval = T, echo = T}
+ggplot(data = char_data)
+```
+
+## Data Visualization : ggplot2 {auto-animate=true}
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+```{r eval = T, echo = T}
+ggplot(data = char_data,
+       mapping = aes(x = score_value))
+```
+
+## Data Visualization : ggplot2 {auto-animate=true}
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+```{r eval = T, echo = T}
+ggplot(data = char_data,
+       mapping = aes(x = score_value))+
+  geom_histogram()
+```
+
+## Data Visualization : ggplot2 
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+```{r eval = T, echo = T}
+ggplot(data = char_data,
+       mapping = aes(x = score_value))+
+  geom_histogram(fill = "forestgreen", col = "white")
+```
+
+## Data Visualization : ggplot2 {auto-animate=true}
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+```{r eval = T, echo = T}
+ggplot(data = char_data,
+       mapping = aes(x = score_value, y = ""))+
+  geom_boxplot(width = 0.5, fill = "steelblue")
+```
+
+## Data Visualization : ggplot2 {auto-animate=true}
+
+คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+
+
+```{r eval = T, echo = T}
+ggplot(data = char_data,
+       mapping = aes(x = score_value, y = "", 
+                     fill = student_level))+
+  geom_boxplot(width = 0.5)
+```

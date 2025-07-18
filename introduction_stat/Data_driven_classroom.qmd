@@ -1,0 +1,1532 @@
+---
+title: "Data-Driven Classroom" 
+subtitle: "Part I: Fundamental Ideas"
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: today
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn<br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    bibliography: "reference.bib"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color: #00589b;
+      }
+      </style>
+---
+
+
+
+## Education 4.0
+
+:::: {.columns}
+::: {.column width="30%"}
+
+<div style="font-size:70%;">
+"A Global Framework for **Shifting
+Learning Content and Experiences**
+Towards the Needs of the Future"
+</div>
+
+<div style="font-size:50%;">
+
+- ปรับตัวให้ยืดหยุ่น เฉพาะบุคคล
+
+- ใช้เทคโนโลยีเป็นเครื่องมือ
+
+- พัฒนาทักษะที่ตอบโจทย์อนาคต
+</div>
+
+
+:::
+
+::: {.column width="70%"}
+
+ <center>
+![@wef2020schools](img/Education4.0.png){width="100%"}
+</center>
+:::
+
+::::
+
+
+## Limitations of Conventional Teaching {background-image="img/EDU afternoon talk_tradclass.svg" background-size="contain"}
+
+<div style="font-size:80%;">
+
+- การเรียนรู้แบบ One-size-fits-all → ไม่ตอบโจทย์ความหลากหลายของผู้เรียน
+
+- ข้อมูลนักเรียนมีมาก แต่ใช้งานน้อย → ขาดการวิเคราะห์เชิงลึก (Data Gap)
+
+- ขาดเครื่องมือช่วยวิเคราะห์พฤติกรรมและผลสัมฤทธิ์อย่างมีประสิทธิภาพ
+
+- ใช้เวลามากกับงานซ้ำซ้อน เช่น ให้คะแนน ติดตามงาน ส่งผลต่อการสอน
+
+</div>
+
+
+## Why's Data-Driven?  {transition="zoom-in slide-out"}
+
+
+![](img/2021-09-06-008.png)
+
+## Why's Data-Driven? 
+
+Data Literacy is the Core Capability
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+> Do you "speak data"?
+
+<center>
+<div style="font-size:60%;">
+
+![https://mobile.x.com/timoelliott/status/1102895192246571009/photo/1](img/D05FU_xX0AAWlw3.jpeg){width="70%"}
+
+</div>
+</center>
+
+:::
+
+::: {.column width="30%"}
+
+
+![](https://datakruroo.github.io/IPST/PPT/img/What-is-data-literacy.png)
+
+:::
+
+::::
+
+## Data-Driven Classroom {transition="zoom-in slide-out" .smaller}
+
+- ห้องเรียนที่ใช้ข้อมูลนักเรียนอย่างเป็นระบบและต่อเนื่อง เพื่อวิเคราะห์ ปรับกลยุทธ์การสอน และออกแบบการสนับสนุนเฉพาะบุคคล โดยมีเป้าหมายเพื่อพัฒนาการเรียนรู้และความสำเร็จของผู้เรียน ผ่านกระบวนการตัดสินใจจากข้อมูล (DDDM/DIDM) อย่างมีวงจรและยั่งยืน
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+<div style="font-size:100%;">
+> Data is a strategic asset that must be operationalized to drive business outcomes.
+</div>
+
+<center>
+<div style="font-size:50%;">
+@njedge2025
+</div>
+</center>
+
+<div style="font-size:100%;">
+
+> Using insights from data to identify specific areas of weakness or
+strength to make targeted adjustments to instruction and improve
+learner outcomes
+
+</div>
+
+<center>
+<div style="font-size:50%;">
+@bolz2023datadriven
+</div>
+</center>
+
+
+:::
+
+::: {.column width="50%"}
+
+
+![](img/EDU afternoon talk.gif){width="80%"}
+<center>
+
+<div style="font-size:60%;">
+![@dykes2020](https://datakruroo.github.io/Datadriven_ONESQA/img/decision.png)
+</div>
+
+</center>
+
+
+
+:::
+
+::::
+
+
+## Data-Driven Classroom Cycle
+
+<center>
+<div style="font-size:55%;">
+![@bolz2023datadriven](img/personalized.png){width="100%"}
+</div>
+</center>
+
+
+
+## Intentional Assessment {.smaller}
+
+<div style="font-size: 70%;">
+
+- กระบวนการออกแบบการประเมินที่มีเป้าหมายเชิงลึกและชัดเจน โดยไม่ใช่แค่วัดผลสุดท้ายของนักเรียน แต่ใช้การประเมินเป็นเครื่องมือในการเข้าใจ เหตุของปัญหา และ วางแผนการช่วยเหลือเชิงรุก ได้อย่างแม่นยำ
+
+</div>
+
+:::: {.columns}
+
+
+::: {.column width="60%"}
+
+
+**Traditional**
+
+<div style="font-size: 70%;">
+
+"โครงงานเป็นส่วนหนึ่งของการวัดประเมินผลการเรียน คิดเป็นร้อยละ 40 ของคะแนนรวม"
+
+</div>
+
+![](img/traditional_assessment1.png){width="80%"}
+
+
+**Data-driven**
+
+<div style="font-size: 70%;">
+
+- "ผลประเมินโครงงานใช้วัด การใช้ความรู้สถิติแก้ปัญหาของนักเรียน" 
+
+- หากนักเรียนทำได้ไม่ดี เราต้องรู้ว่าเพราะขาดทักษะย่อยหรือเพราะปัจจัยแวดล้อม เช่น เวลาเรียนหรือการขาดเรียน เพื่อช่วยเหลือได้ตรงจุด"
+
+</div>
+:::
+
+::: {.column width="40%"}
+
+
+
+![](img/intentional1.png)
+:::
+
+::::
+
+## Intentional Assessment: Three-Tier Framework {.smaller}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+<br>
+
+
+- **Tier 1: Predictive Assessment** – ป้องกันความเสี่ยงที่อาจเกิดขึ้นโดยใช้การทำนาย
+
+- **Tier 2: Responsive Assessment** – แทรกแซงปัญหาที่เกิดขึ้นให้ทันท่วงที
+
+- **Tier 3: Summative Assessment** – intensive Individual Support/ประเมินกระบวนการจัดการเรียนรู้และปรับปรุงต่อไป
+
+<div style="font-size: 50%;">
+ที่มา: ปรับจาก @ResponsetoIntervention
+</div>
+
+:::
+
+::: {.column width="40%"}
+
+![](img/intentional_assessment3.png)
+
+:::
+
+
+::::
+
+
+
+## Intentional Assessment {.smaller}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+
+```{r echo=FALSE}
+library(tidymodels)
+library(tidyverse)
+
+
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/ai_powered/handout/student-por.csv",
+                   delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+use_data <- data %>% 
+  select(failures,
+         romantic,
+         studytime,
+         traveltime,
+         freetime,
+         activities,
+         Walc,
+         G1,
+         G2,
+         G3,
+         address,
+         famrel,
+         goout,
+         internet,
+         guardian,
+         health,
+         absences) %>% 
+  rename(
+    define_var = G1,
+    stat_concept = G2,
+    project_score = G3,
+    residence_type = address
+  ) %>% 
+  mutate(residence_type = case_when(
+  residence_type == "U" ~ "campus_dorm",
+  residence_type == "R" ~ "off_campus"
+  )) %>% 
+  relocate(project_score, define_var, stat_concept)  
+
+use_data %>% write_excel_csv(file = "exam_data.csv")
+```
+
+
+![](img/example_dat.png){width="100%"}
+
+:::
+
+::: {.column width="40%"}
+
+<div style="font-size:70%;">
+
+- **Outcome Variables:** project_score
+
+- **Academic Readiness Variables:** define_var, stat_concept, failures
+
+- **Learning Behavior Variables:** studytime, absences, activities
+
+- **Social Lifestyle Variables:** romantic, goout, Walc, freetime
+
+- **Environmental Support Variables:** residence_type, traveltime, computer, guardian
+
+- **Personal Wellness Variables:** famrel, health
+
+</div>
+:::
+
+
+::::
+
+
+## Data Analysis {.smaller}
+
+ผลประเมินโครงงานของนักเรียนเป็นอย่างไร ?
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = project_score))+
+  geom_histogram(bins = 20, col = "white", 
+                 fill = "black", alpha = 0.8)+
+  theme_light()+
+  labs(
+    x = "Project Score",
+    y = "Count",
+    title = "Distribution of Project Scores",
+    caption = "Source: Srisuttiyakorn (2025)"
+  )
+```
+
+
+## Data Analysis {.smaller}
+
+ผลประเมินโครงงานของนักเรียนเป็นอย่างไร ?
+
+```{r}
+use_data %>% 
+  mutate(project_score = case_when(
+    project_score < 10 ~ "fail",
+    project_score >=10 & project_score < 16 ~ "pass",
+    project_score >= 16  ~ "good",
+  )) %>% 
+  mutate(project_score = fct_relevel(project_score, "fail", "pass", "good")) %>%
+  ggplot(aes(x = project_score, fill = project_score))+
+  geom_bar(bins = 20, col = "white", alpha = 0.8)+
+  scale_fill_manual(values = c("fail" = "orange", "pass" = "black", "good" = "black")) +
+  theme_light()+
+  theme(legend.position = "none")+
+  labs(
+    caption = "Source: Srisuttiyakorn (2025)",
+  )
+```
+
+
+## Data Analysis Mindset {.smaller}
+
+![@srisuttiyakorn2025machine](img/analysis_mindset.png)
+
+
+## Problem Prioritization {.smaller}
+
+ปัจจัยที่เป็นปัญหาในกลุ่มนักเรียนไม่ผ่านการประเมินโครงงาน
+
+```{r}
+use_data  %>% 
+  mutate(
+    absences = ceiling(absences * 14 / 100)  # แปลง absences ให้เป็นจำนวนวันเต็ม
+  ) %>%
+  filter(project_score < 10) %>%
+  mutate(
+    # พฤติกรรมการเรียนรู้
+    studytime_cat = ifelse(studytime <= 2, "less_studytime", "adequate_studytime"),
+    traveltime_cat = ifelse(traveltime <= 1, "short_travel", "long_travel"),
+    freetime_cat = ifelse(freetime <= 2, "less_freetime", "adequate_freetime"),
+    activities_cat = ifelse(activities == "yes", "has_activities", "no_activities"),
+    Walc_cat = ifelse(Walc <= 2, "low_alcohol", "high_alcohol"),
+    
+    # สุขภาพและครอบครัว
+    health_cat = ifelse(health <= 2, "poor_health", "good_health"),
+    famrel_cat = ifelse(famrel <= 2, "poor_family", "good_family"),
+
+    # ปัจจัยพื้นฐานทางวิชาการ
+    absences_cat = ifelse(absences > 4, "high_absences", "low_absences"),
+    define_var_score_cat = ifelse(define_var < 10, "low_define_score", "adequate_define_score"),
+    stat_concept_score_cat = ifelse(stat_concept < 11, "low_statconcept_score", "adequate_statconcept_score"),
+    failures_cat = ifelse(failures > 0, "has_failures", "no_failures"),
+    
+    # ปัจจัยส่วนตัวอื่น ๆ
+    romantic_cat = ifelse(romantic == "yes", "has_romantic", "no_romantic"),
+    guardian_cat = ifelse(!guardian %in% c("mother", "father"), "other", "yes"),
+    computer_cat = ifelse(internet == "no", "has_computer", "no_computer"),
+    goout_cat = ifelse(goout >= 3, "goout_often", "goout_less")
+  ) -> df_pareto
+
+
+
+# รวมกลุ่มปัญหา
+problem_counts <- df_pareto %>%
+  select(ends_with("_cat")) %>%
+  pivot_longer(everything(), names_to = "problem_type", values_to = "problem") %>%
+  filter(problem %in% c(
+    "less_studytime", "long_travel", "less_freetime", "has_activities",
+    "high_alcohol", "poor_health", "poor_family", "high_absences",
+    "low_define_score", "low_statconcept_score", "has_failures",
+    "has_romantic", "other", "no_computer", "goout_often"
+  )) %>%
+  count(problem) %>%
+  arrange(desc(n)) %>%
+  mutate(
+    percentage = n / sum(n) * 100,
+    cumulative_percentage = cumsum(percentage)
+  )
+
+# วาดกราฟ Pareto
+ggplot(problem_counts, aes(x = reorder(problem, -n), y = n)) +
+  geom_col(fill = "black", color = "white", alpha = 0.8) +
+  geom_line(aes(y = cumulative_percentage * max(n) / 100, group = 1),
+            color = "orange", linetype = 3, linewidth = 1.5) +
+  geom_point(aes(y = cumulative_percentage * max(n) / 100),
+             color = "orange", size = 3, shape = 17) +
+  geom_text(aes(y = n + max(n) * 0.01, label = paste0(round(percentage, 1), "%")),
+            vjust = -0.5, family = "ChulaCharasNew") +
+  scale_y_continuous(
+    name = "Count",
+    sec.axis = sec_axis(transform = ~ . * 100 / max(problem_counts$n),
+                    name = "Cumulative Percentage")
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "ChulaCharasNew"),
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 10),
+    plot.title = element_text(hjust = 0.5, size = 14),
+    axis.title = element_text(size = 12)
+  ) +
+  labs(
+    x = "",
+    y = "Frequency",
+    caption = "Source: Srisuttiyakorn (2025)"
+  ) +
+  scale_x_discrete(labels = c(
+    "less_studytime" = "ไม่ทบทวน \n บทเรียน",
+    "long_travel" = "ใช้เวลาเดินทาง \n มาเรียนนาน",
+    "less_freetime" = "มีเวลาว่าง \n น้อย",
+    "has_activities" = "มีกิจกรรม \n นอกเวลา",
+    "high_alcohol" = "ดื่ม \n แอลกอฮอล์ \n บ่อย",
+    "poor_health" = "มีปัญหาด้าน \n สุขภาพ",
+    "poor_family" = "มีปัญหาด้าน \n ความสัมพันธ์ \n ครอบครัว",
+    "high_absences" = "ขาดเรียน \n เกินเกณฑ์",
+    "low_define_score" = "มีปัญหาด้าน \n การกำหนด \n ตัวแปร",
+    "low_statconcept_score" = "มีปัญหาด้าน\nการใช้แนวคิด\nทางสถิติ",
+    "has_failures" = "เคย \n สอบตก \n คณิตฯ",
+    "has_romantic" = "กำลังมี \n ความรัก",
+    "other" = "ไม่ได้อยู่กับ \n พ่อแม่",
+    "no_computer" = "ไม่มี\ncomputer",
+    "goout_often" = "ชอบเที่ยว"
+  )) +
+  ggtitle("Pareto Chart of Student Problems Related to Low Project Scores")
+```
+
+
+## Diagnostic Analysis {.smaller}
+
+- Segmentation
+
+- Root Cause Analysis
+
+```{r eval = F}
+
+# 1. เตรียมข้อมูล
+df_model <- use_data %>%
+  mutate(
+    project_score_group = ifelse(project_score < 10, "fail", "pass"),
+    project_score_group = factor(project_score_group)
+  ) %>%
+  select(-project_score)
+
+# 2. แบ่ง training/testing set
+set.seed(123)
+data_split <- initial_split(df_model, strata = project_score_group, prop = 0.8)
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+# 3. สร้าง recipe
+rec <- recipe(project_score_group ~ ., data = train_data) %>%
+  
+  # แปลงตัวแปร rating scale เป็นกลุ่มแบบ meaningful (ตาม cut-off ที่ใช้ใน Pareto)
+  step_mutate(
+    stat_concept = case_when(
+      stat_concept <= 8.5 ~ "fail",
+      TRUE ~ "good_stat_concept"
+    ),
+    
+    define_var = case_when(
+      define_var <= 9.5 ~ "fail",
+      TRUE ~ "good_define_var"
+    ),
+    
+    health_status = case_when(
+      health <= 2 ~ "poor_health",
+      TRUE ~ "good_health"
+    ),
+    
+    family_status = case_when(
+      famrel <= 2 ~ "poor_family",
+      TRUE ~ "good_family"
+    ),
+    
+    alcohol_use = case_when(
+      Walc > 2 ~ "high_alcohol",
+      TRUE ~ "low_alcohol"
+    ),
+  
+    
+    free_time = case_when(
+      freetime <= 4.5 ~ "less_freetime",
+      TRUE ~ "adequate_freetime"
+    ),
+    
+    travel_time = case_when(
+      traveltime > 1 ~ "long_travel",
+      TRUE ~ "short_travel"
+    ),
+    
+    goouting_out = case_when(
+      goout <= 4.5 ~ "less_goout",
+      TRUE ~ "adequate_goout"
+    ),
+    
+    absences = case_when(
+      absences > 10 ~ "high_absences",
+      TRUE ~ "low_absences"
+    ),
+    
+   study_time = case_when(
+       studytime <= 1.5 ~ "less_studytime",
+       TRUE ~ "adequate_studytime"
+    )
+  ) %>%
+  # ลบตัวแปรดิบเดิมที่เป็นตัวเลข 1–5 ออก (ถ้าไม่ต้องการให้ใช้ซ้ำซ้อน)
+  step_rm(health, famrel, Walc, freetime, traveltime, studytime, goout,
+          guardian)
+
+# 4. สร้าง model spec (tune cp = complexity parameter)
+tree_spec <- decision_tree(
+  cost_complexity = 0.00001,
+  tree_depth = 6,
+  min_n = tune()  # ใช้ tune() เพื่อให้สามารถปรับค่าได้
+) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+# 5. สร้าง workflow
+tree_work <- workflow() %>%
+  add_model(tree_spec) %>%
+  add_recipe(rec)
+
+# 6. สร้าง tuning grid
+tree_grid <- grid_regular(
+  min_n(range = c(10, 20)),
+  #cost_complexity(range = c(-4, -1)),  # log10 scale
+ # tree_depth(range = c(2, 10)),
+  levels = 4
+)
+
+# 7. ทำ cross-validation
+set.seed(123)
+folds <- vfold_cv(train_data, v = 5, repeats = 3, strata = project_score_group)
+
+# 8. Tune model
+tuned_tree <- tune_grid(
+  tree_work,
+  resamples = folds,
+  grid = tree_grid,
+  metrics = metric_set(accuracy, roc_auc, sens, spec, precision, f_meas)
+)
+
+# 9. เลือก best model
+best_tree <- select_best(tuned_tree, metric = "sens")
+
+# 10. Finalize model
+final_tree_work <- finalize_workflow(tree_work, best_tree)
+
+# 11. Fit กับ training set และประเมินบน test set
+final_fit <- last_fit(final_tree_work, split = data_split)
+
+# 12. ดู performance
+conf <- final_fit %>% collect_predictions() %>% 
+  conf_mat(project_score_group, .pred_class)
+
+
+
+
+# สมมุติว่า final_fit คือผลจาก last_fit()
+final_fit %>%
+  extract_fit_engine() %>%      # ดึง model ที่ train เสร็จจาก last_fit
+  rpart.plot(type = 2, extra = 104, fallen.leaves = TRUE)
+
+
+```
+
+
+![@srisuttiyakorn2025machine](img/dt5.png){width="90%"}
+
+
+
+
+## Diagnostic Analysis {.smaller}
+
+- Segmentation
+
+- Root Cause Analysis
+
+<center>
+![](img/root_cause.png){width="70%"}
+</center>
+
+
+
+
+## Diagnostic Analysis {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+<div style="font-size:50%;">
+
+**Traditional Approach**
+
+จุดเด่น
+
+- เข้าใจง่าย: บอกได้ว่าตัวแปรใด “สำคัญโดยรวม” ต่อโมเดล
+
+- ใช้สื่อสารกับผู้บริหารหรือทีมได้เร็ว
+
+- เหมาะสำหรับวางนโยบายระดับภาพรวม (macro level)
+
+ข้อจำกัด
+
+- ไม่สามารถบอกได้ว่าส่งผลกับใครเป็นพิเศษ
+
+- ไม่มีการแยกนักเรียนที่มีปัญหาหลากหลายรูปแบบ
+
+- ไม่รองรับการช่วยเหลือเฉพาะรายหรือวางแผนการสอนเฉพาะบุคคล
+
+</div> 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(forcats)
+
+# Variable importance (ตัวอย่างจากคุณ)
+vip_df <- tibble::tribble(
+  ~variable,           ~importance,
+  "stat_concept",        190,
+  "define_var",          182,
+  "math_failure",        71.2,
+  "resident_type",           43.1,
+  "short_travel",         38.9,
+  "study_time",       34.4,
+  "computer",           4.83,
+  "absences",              1.86,
+  "family",           1.16,
+  "activities",        1.06,
+  "romance",           0.666,
+  "goout",                 0.534,
+  "free_time",         0.444
+)
+
+# สร้าง Variable Importance Plot
+vip_df %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  ggplot(aes(x = variable, y = importance)) +
+  geom_col(fill = "#3B82F6", alpha = 0.9) +
+  coord_flip() +
+  labs(
+    title = "\n Variable Importance",
+    x = "",
+    y = "\n Importance Score"
+  ) +
+  theme_minimal(base_family = "sans") +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13)
+  )
+```
+
+
+:::
+
+::: {.column width="60%"}
+
+<div style="font-size:50%;">
+
+**Data-Driven Approach**
+
+
+จุดเด่น
+
+- วิเคราะห์สาเหตุเฉพาะรายนักเรียนได้อย่างแม่นยำ
+
+-  บอกได้ว่าแต่ละปัจจัย “เพิ่มหรือลดความเสี่ยง” แค่ไหน
+
+-  เหมาะสำหรับใช้วางแผนแทรกแซงเฉพาะกลุ่มหรือรายบุคคล
+
+-  ช่วยครูเข้าใจ “ที่มาของปัญหา” ของนักเรียนแต่ละคน
+
+ข้อจำกัด
+
+- ใช้ความเชี่ยวชาญและเวลามากกว่า และต้องมีข้อมูลสะอาด/ครอบคลุม
+
+- อธิบายยากขึ้นหากผู้ใช้ไม่คุ้นกับโมเดล AI
+
+</div>
+
+```{r modelling, echo = F, eval = F}
+library(tidymodels)
+library(themis)
+tidymodels_prefer()
+
+# 1. เตรียมข้อมูล
+df_model <- use_data %>%
+  mutate(
+    project_score_group = ifelse(project_score < 10, "fail", "pass"),
+    project_score_group = factor(project_score_group)
+  ) %>%
+  mutate(computer = ifelse(internet == "yes", "no_computer", "has_computer")) %>% 
+  select(-project_score, -internet)
+
+# 2. แบ่ง training/testing set
+set.seed(123)
+data_split <- initial_split(df_model, strata = project_score_group, prop = 0.8)
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+rec <- recipe(project_score_group ~ ., data = train_data) %>% 
+  
+  # แปลงตัวแปร rating scale เป็นกลุ่มแบบ meaningful
+  step_mutate(
+    stat_concept = case_when(
+      stat_concept <= 10 ~ "fail",
+      TRUE ~ "pass"
+    ),
+    define_var = case_when(
+      define_var <= 10 ~ "fail",
+      TRUE ~ "pass"
+    ),
+    health_status = case_when(health <= 2 ~ "poor_health", TRUE ~ "good_health"),
+    family_status = case_when(famrel <= 2 ~ "poor_family", TRUE ~ "good_family"),
+    alcohol_use = case_when(Walc > 2 ~ "high_alcohol", TRUE ~ "low_alcohol"),
+    free_time = case_when(freetime <= 2 ~ "less_freetime", TRUE ~ "adequate_freetime"),
+    travel_time = case_when(traveltime > 1 ~ "long_travel", TRUE ~ "short_travel"),
+    study_time = case_when(studytime <= 2 ~ "less_studytime", TRUE ~ "adequate_studytime")
+  ) %>%
+  
+  # แปลง character → factor ให้กับทุกตัวแปรใหม่ที่ได้
+  step_mutate(
+    across(
+      c(define_var, stat_concept, study_time, health_status, family_status, alcohol_use, free_time, travel_time),
+      ~ factor(.x)
+    )
+  ) %>%
+  
+  # แปลง factor เป็น dummy
+  step_dummy(all_nominal_predictors()) %>%
+  
+  # ใช้ BSMOTE จัดการ class imbalance
+  step_smote(project_score_group, over_ratio = 0.7) %>%
+  
+  # ลบตัวแปรต้นฉบับที่ไม่ต้องการ
+  step_rm(studytime, health, famrel, Walc, freetime, traveltime)
+
+# 4. สร้าง model spec (tune cp = complexity parameter)
+tree_spec <- decision_tree(
+  cost_complexity = tune(),
+  tree_depth = tune(),
+ # min_n = tune()  # ใช้ tune() เพื่อให้สามารถปรับค่าได้
+) %>%
+  set_engine("rpart") %>%
+  set_mode("classification")
+
+# 5. สร้าง workflow
+tree_work <- workflow() %>%
+  add_model(tree_spec) %>%
+  add_recipe(rec)
+
+# 6. สร้าง tuning grid
+tree_grid <- grid_regular(
+ # min_n(range = c(2, 20)),
+  cost_complexity(range = c(-8, -6)),  # log10 scale
+  tree_depth(range = c(5,8)),
+  levels = 5
+)
+
+# 7. ทำ cross-validation
+set.seed(123)
+
+folds <- vfold_cv(train_data, v = 5, repeats = 3, strata = project_score_group)
+
+# 8. Tune model
+tuned_tree <- tune_grid(
+  tree_work,
+  resamples = folds,
+  grid = tree_grid,
+  metrics = metric_set(accuracy, roc_auc, sens, spec, precision, f_meas)
+)
+
+# 9. เลือก best model
+best_tree <- select_best(tuned_tree, metric = "roc_auc")
+
+# 10. Finalize model
+final_tree_work <- finalize_workflow(tree_work, best_tree)
+
+# 11. Fit กับ training set และประเมินบน test set
+final_fit <- last_fit(final_tree_work, split = data_split)
+
+# 12. ดู performance
+conf <- final_fit %>% collect_predictions() %>% 
+  conf_mat(project_score_group, .pred_class)
+```
+
+
+```{r XAI, echo = F, message = F, warning = F, eval = F}
+library(DALEX)
+library(DALEXtra)
+# 1. สร้างโมเดล Decision Tree
+tree_model <- final_fit %>%
+  extract_fit_engine()
+
+predict_function <- function(model, data) {
+  predict(model, data, type = "prob")[,2]  # class "1" หรือ "pass"
+}
+
+# 2. สร้าง explainer
+explainer_tree <- DALEX::explain(
+  model = tree_model,
+  data = rec |> prep() %>% juice() %>% dplyr::select(-project_score_group),
+  y = rec |> prep() %>% juice() %>% 
+    mutate(project_score_group = ifelse(project_score_group == "pass", 1, 0)) %>% 
+    pull(project_score_group),
+  predict_function = predict_function ,
+  label = "Decision Tree"
+)
+
+## breakdown
+
+# 3. คำนวณ Variable Importance
+
+predict_parts_tree <- predict_parts(
+  explainer = explainer_tree,
+  new_observation = rec |> prep() |> bake(new_data = train_data)  |> slice(1) %>% 
+    select(-project_score_group),
+  type = "break_down"
+)
+
+p1 <- plot(predict_parts_tree)
+
+predict_parts_tree <- predict_parts(
+  explainer = explainer_tree,
+  new_observation = rec |> prep() |> bake(new_data = train_data)  |> slice(100) %>% 
+    select(-project_score_group),
+  type = "break_down"
+)
+
+p2 <- plot(predict_parts_tree)
+
+predict_parts_tree <- predict_parts(
+  explainer = explainer_tree,
+  new_observation = rec |> prep() |> bake(new_data = train_data)  |> slice(60) %>% 
+    select(-project_score_group),
+  type = "break_down"
+)
+
+p3 <- plot(predict_parts_tree)
+
+
+
+predict_parts_tree <- predict_parts(
+  explainer = explainer_tree,
+  new_observation = rec |> prep() |> bake(new_data = train_data)  |> slice(500) %>% 
+    select(-project_score_group),
+  type = "break_down"
+)
+
+p4 <- plot(predict_parts_tree)
+
+
+
+library(patchwork)
+
+(p1+p2)/(p3+p4)
+
+```
+
+![@srisuttiyakorn2025machine](img/predict_part.png){width="80%"}
+
+:::
+
+
+::::
+
+
+## Data-Driven Intervention Strategy
+
+<center>
+![](img/intervention_strategy.png){width="70%"}
+</center>
+
+
+## AI + Data in Education {.smaller}
+
+::: {style="font-size:80%;"}
+-   AI + Data → Learning Analytic + Personalized Learning +
+    ปรับปรุงคุณภาพการศึกษา
+
+-   AI → ลดภาระงานซ้ำซ้อนของครู → เพิ่มเวลาให้งานสร้างสรรค์
+    การมีปฏิสัมพันธ์กับผู้เรียนอย่างใกล้ชิด
+
+-   AI + Technology ที่เหมาะสม → Accessible & Inclusive Learning/ Lifelong
+    Learning
+:::
+
+<center>
+
+```{=html}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" style="width: 60%; height: auto;">
+  <!-- สีพื้นหลัง -->
+  <rect width="1000" height="600" fill="white"/>
+  
+  <!-- กรอบสำหรับ AI & Digital Integration in Education -->
+  <rect x="30" y="225" width="250" height="170" rx="10" ry="10" fill="#F5F5F5" stroke="#333" stroke-width="2"/>
+  <text x="155" y="205" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold">AI & Digital Integration in Education</text>
+  
+  <!-- AI Competency - เพิ่มระยะห่างจาก Digital Technologies -->
+  <rect x="55" y="245" width="200" height="50" rx="5" ry="5" fill="#FFA500" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="155" y="275" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">AI Competency</text>
+  
+  <!-- Digital Technologies in Education - เพิ่มระยะห่างจาก AI Competency -->
+  <rect x="55" y="325" width="200" height="50" rx="5" ry="5" fill="#FFA500" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="155" y="345" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">Digital Technologies</text>
+  <text x="155" y="365" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">in Education</text>
+  
+  <!-- เส้นเชื่อมระหว่าง AI Competency และ Digital Technologies -->
+  <path d="M 105 295 L 105 325" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 205 325 L 205 295" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  
+  <!-- ข้อความบนเส้นเชื่อม - ปรับตำแหน่ง -->
+  <text x="65" y="310" text-anchor="middle" font-family="Arial" font-size="10">เสริมความรู้</text>
+  <text x="245" y="310" text-anchor="middle" font-family="Arial" font-size="10">สร้างโอกาส</text>
+  
+  <!-- กล่องหลักทั้ง 5 ด้านขวา - เพิ่มระยะห่างจากกล่องซ้าย -->
+  
+  <!-- ด้านที่ 1 -->
+  <rect x="450" y="80" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="115" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">1. ส่งเสริมการเรียนรู้แบบส่วนบุคคล</text>
+  
+  <!-- ด้านที่ 2 -->
+  <rect x="450" y="160" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">2. ปรับปรุงคุณภาพการเรียนรู้</text>
+  
+  <!-- ด้านที่ 3 -->
+  <rect x="450" y="340" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="375" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">3. สนับสนุนการจัดการระบบการศึกษา</text>
+  
+  <!-- ด้านที่ 4 -->
+  <rect x="450" y="420" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="455" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">4. เพิ่มโอกาสการเข้าถึงการศึกษา</text>
+  
+  <!-- ด้านที่ 5 -->
+  <rect x="750" y="270" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="850" y="305" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">5. พัฒนาทักษะสำหรับอนาคต</text>
+  
+  <!-- เส้นเชื่อมจากกรอบใหญ่ไปยังกล่องหลัก 1-4 ปรับ opacity เป็น 0.7 -->
+  <path d="M 280 240 L 450 110" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น - ขยับไปทางขวาและลงล่างอีกหน่อย -->
+  <text x="345" y="155" text-anchor="middle" font-family="Arial" font-size="11">ปรับแต่งเนื้อหา</text>
+  <text x="345" y="170" text-anchor="middle" font-family="Arial" font-size="11">ตามผู้เรียน</text>
+  
+  <path d="M 280 260 L 450 190" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น - ขยับไปทางขวาและลงล่างอีกหน่อย -->
+  <text x="365" y="210" text-anchor="middle" font-family="Arial" font-size="11">สนับสนุน</text>
+  <text x="365" y="225" text-anchor="middle" font-family="Arial" font-size="11">การวิเคราะห์ข้อมูล</text>
+  
+  <path d="M 280 340 L 450 370" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น -->
+  <text x="335" y="335" text-anchor="middle" font-family="Arial" font-size="11">เพิ่มประสิทธิภาพ</text>
+  <text x="335" y="350" text-anchor="middle" font-family="Arial" font-size="11">การบริหาร</text>
+  
+  <path d="M 280 360 L 450 450" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น -->
+  <text x="330" y="385" text-anchor="middle" font-family="Arial" font-size="11">ลดอุปสรรค</text>
+  <text x="330" y="400" text-anchor="middle" font-family="Arial" font-size="11">ด้านการเข้าถึง</text>
+  
+  <!-- เส้นตรงผ่ากลางจากกรอบใหญ่ไปยังกล่องที่ 5 -->
+  <path d="M 280 300 L 750 300" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <text x="515" y="285" text-anchor="middle" font-family="Arial" font-size="12">พัฒนาทักษะดิจิทัลและ AI</text>
+  
+  <!-- เส้นเชื่อมจากกล่องหลัก 1-4 ไปยังกล่องที่ 5 -->
+  <path d="M 650 110 L 750 270" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 650 190 L 750 280" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 650 370 L 750 320" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 650 450 L 750 330" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  
+  <!-- กำหนดหัวลูกศร -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+</svg>
+  
+```
+
+::: {style="font-size:50%;\""}
+@wef2020schools
+
+@unesco2024teacherAI
+:::
+
+</center>
+
+
+
+## Artificial Intelligence (AI) {transition="fade-in slide-out" transition-speed="\"slow"}
+
+::::::: columns
+:::: {.column width="40%"}
+![](img/AI.png)
+
+::: {style="font-size:50%;\""}
+<center>
+
+![@datakeen2020ai](img/3_stages_of_ai.png)
+
+</center>
+:::
+::::
+
+:::: {.column width="60%"}
+![](https://media.springernature.com/full/springer-static/image/chp%3A10.1007%2F978-981-19-2879-6_1/MediaObjects/513316_1_En_1_Fig8_HTML.png){width="70%"}
+
+::: {style="font-size:80%;"}
+<center>
+
+![@HuaweiTechnologies_Co_Ltd2023](img/what_is_ai_summary_chart.png){width="50%"}
+
+</center>
+:::
+::::
+:::::::
+
+
+## AI in the Modern World {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/eyeAI.png){width="60%"}
+
+> <div style="font-size: 50%;">"Using **two types of neural network** - mathematical systems for identifying patterns in images or data - the Al system quickly **learnt to identify ten features of eye disease** from highly complex optical coherence tomography (OCT) scans. **The system was then able to recommend a referral decision based on the most urgent conditions detected.**" ... "Al was able to make the right referral recommendation more than **94% of the time** ..."</div>
+
+
+<div style="font-size: 50%;">
+
+- Diabetic Retinopathy
+
+- Age-related Macular Degeneration
+
+- Glaucoma
+
+- Retinal Detachment
+
+- Optic Neuropathy
+
+</div>
+
+
+<div style="font-size: 70%;">
+</br>
+<div class="caption2">https://www.ucl.ac.uk/ioo/news/2018/aug/artificial-intelligence-equal-experts-detecting-eye-diseases [-@ucl2018ai]</div>
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+Al system for breast cancer screening
+
+![](img/ai_cancer.png){width="60%"}
+![](img/ai_cancer2.png){width="70%"}
+
+
+
+<div style="font-size: 50%;">
+</br>
+<div class="caption3">[@mckinney2020international]</div>
+</div>
+
+:::
+
+::::
+
+
+## AI in the Modern World {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="font-size:60%;">
+
+Molecular Biology Research
+
+</div>
+
+![@jumper2021highly](img/alphafold.png){width="80%"}
+
+
+
+![@srisuttiyakorn2024technical](img/climate.png)
+
+
+:::
+
+::: {.column width="50%"}
+
+
+![@mansfield2020predicting](img/climate3.png){width="80%"}
+
+
+
+
+:::
+
+::::
+
+
+## AI in the Modern World {.smaller}
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+![](img/woebot.png){width="75%"}
+
+<div class="caption2">https://woebothealth.com/[-@woebothealth2025]</div>
+
+
+:::
+
+::: {.column width="40%"}
+
+![](img/vitual_healthcare.png){width="100%"}
+
+<div class="caption3">https://www.youper.ai/how-it-works</div>
+:::
+
+::::
+
+
+
+
+## AI in the Modern World {.smaller}
+
+
+![](https://knihovna.utb.cz/wp-content/uploads/2020/11/Desktop-App-1536x1024.png){width="60%"}
+
+<div class="caption3">https://knihovna.utb.cz/en/services/tools/grammarly/</div>
+
+
+
+## AI in the Modern World {.smaller}
+
+
+AI ไม่ได้ถูกใช้เพียงแค่ในการวิเคราะห์ข้อมูลเท่านั้น แต่ยังสามารถ สร้างเนื้อหา ได้ เช่น ข้อความ รูปภาพ เสียง และวิดีโอ
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+![](https://www.xenonstack.com/hs-fs/hubfs/generative-ai-application-landscape.png?width=2560&height=2472&name=generative-ai-application-landscape.png){width="60%"}
+
+<div style="font-size:100%;">
+<br>
+<div class="caption2">https://www.xenonstack.com/blog/generative-ai-applications</div>
+
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+
+![](https://d1eipm3vz40hy0.cloudfront.net/images/AMER/generativeAI-1.jpg){width="70%"}
+<div style="font-size:100%;">
+<br>
+<div class="caption2">https://www.zendesk.com.br/blog/generative-ai-guide/</div>
+
+</div>
+:::
+
+::::
+
+
+
+
+
+## AI Competency Framework for Teachers {.smaller}
+
+<br>
+
+<center>
+
+```{r echo=F}
+# โหลดแพ็คเกจที่จำเป็น
+library(kableExtra)
+
+# สร้าง Data Frame สำหรับตาราง
+ai_competency <- data.frame(
+  "มิติหลัก (Aspects)" = c(
+    "1️⃣ แนวคิดมนุษย์เป็นศูนย์กลาง <br> (Human-centred mindset)",
+    "2️⃣ จริยธรรมของ AI <br> (Ethics of AI)",
+    "3️⃣ พื้นฐานและการประยุกต์ใช้ AI <br> (AI foundations and applications)",
+    "4️⃣ การสอนโดยใช้ AI <br> (AI pedagogy)",
+    "5️⃣ AI เพื่อการพัฒนาวิชาชีพของครู <br> (AI for professional development)"
+  ),
+  "ระดับเริ่มต้น (Acquire)" = c(
+    "<b>Human Agency</b> <br>
+     🔹 เข้าใจว่า AI เป็นเครื่องมือ <br> 
+     🔹 เข้าใจข้อจำกัดของ AI <br>
+     🔹 เข้าใจแนวคิด Human-centred AI",
+     
+    "<b>Ethical principles</b> <br>
+     🔹 เข้าใจหลักจริยธรรมพื้นฐานของ AI <br>
+     🔹 ตระหนักถึงความเป็นส่วนตัวและความปลอดภัยของข้อมูล <br>
+     🔹 ตระหนักว่า AI ไม่สามารถตัดสินใจแทนมนุษย์ได้",
+     
+    "<b>Basic AI Techniques</b> <br>
+     🔹 เข้าใจพื้นฐานของ AI และตัวอย่างการนำไปใช้ <br>
+     🔹 รู้จักเครื่องมือ AI ที่สามารถนำมาใช้ในการศึกษา <br>
+     🔹 เข้าใจข้อจำกัดและโอกาสของ AI",
+     
+    "<b>AI-assisted Teaching</b> <br>
+     🔹 ใช้ AI เป็นเครื่องมือช่วยสอน <br>
+     🔹 ทดลองใช้ AI ในกิจกรรมการสอนที่เรียบง่าย <br>
+     🔹 เข้าใจว่า AI สนับสนุนการสอนอย่างไร",
+     
+    "<b>AI for Lifelong Learning</b> <br>
+     🔹 ใช้ AI เพื่อพัฒนาความรู้และทักษะของตนเอง <br>
+     🔹 ติดตามแนวโน้มของ AI เพื่อพัฒนาการสอน <br>
+     🔹 ใช้ AI เพื่อค้นหาสื่อและแหล่งเรียนรู้ใหม่ๆ"
+  ),
+  "ระดับเชี่ยวชาญขึ้น (Deepen)" = c(
+    "<b>Human Accountability</b> <br>
+     🔹 วิเคราะห์และป้องกันอคติของ AI <br>
+     🔹 รับผิดชอบต่อผลลัพธ์ของ AI <br>
+     🔹 ปกป้องความเป็นส่วนตัวของนักเรียน <br>
+     🔹 ใช้ AI อย่างมีจริยธรรมและโปร่งใส",
+     
+    "<b>Safe & Responsible AI</b> <br>
+     🔹 ใช้ AI อย่างปลอดภัยและมีความรับผิดชอบ <br>
+     🔹 ป้องกันอคติและส่งเสริมความเป็นธรรม <br>
+     🔹 ปกป้องข้อมูลและสิทธิความเป็นส่วนตัวของนักเรียน <br>
+     🔹 วิเคราะห์ผลกระทบทางสังคมของ AI",
+     
+    "<b>Application of AI</b> <br>
+     🔹 มีทักษะการประยุกต์ใช้ AI ในบริบทของการศึกษา <br>
+     🔹 ใช้ AI วิเคราะห์แนวโน้มการเรียนของนักเรียน <br>
+     🔹 ปรับแต่งการเรียนการสอนโดยใช้ AI",
+     
+    "<b>AI-Pedagogy Integration</b> <br>
+     🔹 ผสมผสาน AI กับแนวทางการสอน <br>
+     🔹 ใช้ AI วิเคราะห์พฤติกรรมการเรียนรู้ของนักเรียน <br>
+     🔹 ปรับกลยุทธ์การสอนตามข้อมูลจาก AI",
+     
+    "<b>AI for Organizational Learning</b> <br>
+     🔹 นำ AI มาใช้เพื่อเสริมสร้างการเรียนรู้ขององค์กร <br>
+     🔹 ใช้ AI เพื่อช่วยบริหารและพัฒนาคุณภาพการศึกษา <br>
+     🔹 ติดตามและวิเคราะห์พัฒนาการของครูและนักเรียน"
+  ),
+  "ระดับสร้างสรรค์ (Create)" = c(
+    "<b>Social Responsibility</b> <br>
+     🔹 เป็นผู้นำด้าน AI Literacy <br>
+     🔹 กำหนดนโยบายการใช้ AI <br>
+     🔹 ส่งเสริม AI ที่เป็นประโยชน์ต่อสังคม",
+     
+    "<b>Co-creating Ethical AI Policies</b> <br>
+     🔹 มีส่วนร่วมในการพัฒนาแนวปฏิบัติเชิงจริยธรรมของ AI <br>
+     🔹 ออกแบบแนวทางป้องกันการใช้ AI อย่างไม่เหมาะสม <br>
+     🔹 พัฒนาโครงการ AI ที่คำนึงถึงความเป็นธรรม",
+     
+    "<b>Creating with AI</b> <br>
+     🔹 สามารถออกแบบนวัตกรรมใหม่โดยใช้ AI <br>
+     🔹 พัฒนาโมเดล AI ที่ช่วยแก้ปัญหาทางการศึกษา <br>
+     🔹 ใช้ AI เพื่อสร้างเครื่องมือช่วยการเรียนการสอน",
+     
+    "<b>AI-Enhanced Pedagogical Transformation</b> <br>
+     🔹 เปลี่ยนแปลงวิธีการสอนโดยใช้ AI <br>
+     🔹 พัฒนาแพลตฟอร์มการเรียนรู้ที่ขับเคลื่อนด้วย AI <br>
+     🔹 สนับสนุนการเรียนรู้เฉพาะบุคคลด้วย AI",
+     
+    "<b>AI to Support Professional Transformation</b> <br>
+     🔹 ใช้ AI เพื่อพัฒนาศักยภาพของครู <br>
+     🔹 พัฒนาโปรแกรมอบรม AI สำหรับเพื่อนครู <br>
+     🔹 สร้างเครือข่ายการเรียนรู้สำหรับครูด้วย AI"
+  )
+)
+
+# แสดงตารางด้วย kableExtra
+ai_competency %>%
+  kbl(
+    col.names = c("มิติหลัก (Aspects)", "ระดับเริ่มต้น (Acquire)", "ระดับเชี่ยวชาญขึ้น (Deepen)", "ระดับสร้างสรรค์ (Create)"),
+    align = c("l", "l", "l", "l"),
+    escape = FALSE # เปิดใช้งาน HTML ในตาราง
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 16
+  ) %>%
+  column_spec(1, bold = TRUE, width = "10em", extra_css = "min-width: 10em; max-width: 30em; text-align: left;") %>% 
+  column_spec(2:4, width = "23em", extra_css = "min-width: 23em; extra_css = text-align: left; vertical-align: top;")
+
+```
+
+<br>
+
+::: {style="font-size:60%;"}
+@unesco2024teacherAI
+:::
+
+</center>
+
+## AI Competency Framework for Students {.smaller}
+
+<br>
+
+<center>
+
+```{r echo = F}
+# โหลดแพ็คเกจที่จำเป็น
+library(kableExtra)
+
+# สร้าง Data Frame สำหรับตาราง AI Competency สำหรับนักเรียน
+student_ai_competency <- data.frame(
+  "มิติหลัก (Aspects)" = c(
+    "1️⃣ แนวคิดมนุษย์เป็นศูนย์กลาง <br> (Human-centred mindset)",
+    "2️⃣ จริยธรรมของ AI <br> (Ethics of AI)",
+    "3️⃣ พื้นฐานและการประยุกต์ใช้ AI <br> (AI techniques and applications)",
+    "4️⃣ การออกแบบระบบ AI (AI system design)"
+  ),
+  "ระดับเข้าใจ (Understand)" = c(
+    "<b>Human Agency</b> <br>
+     🔹 เข้าใจว่า AI เป็นเครื่องมือที่ช่วยมนุษย์ ไม่ใช่สิ่งที่แทนที่มนุษย์ <br>
+     🔹 เข้าใจบทบาทและข้อจำกัดของ AI <br>
+     🔹 ตระหนักว่ามนุษย์ต้องเป็นผู้กำกับดูแล AI",
+     
+    "<b>Embodied Ethics</b> <br>
+     🔹 เข้าใจแนวคิดพื้นฐานของจริยธรรม AI <br>
+     🔹 ตระหนักถึงความเป็นส่วนตัวและการใช้ข้อมูล AI <br>
+     🔹 เข้าใจว่า AI สามารถมีอคติและผลกระทบต่อสังคมได้",
+     
+    "<b>AI Foundations</b> <br>
+     🔹 เข้าใจหลักการพื้นฐานของ AI <br>
+     🔹 เรียนรู้วิธีการทำงานของ AI เช่น Machine Learning <br>
+     🔹 ทดลองใช้เครื่องมือ AI พื้นฐาน เช่น Chatbots หรือ AI-based search tools",
+     
+    "<b>Problem Scoping</b> <br>
+     🔹 เข้าใจวิธีระบุปัญหาที่สามารถแก้ไขได้ด้วย AI <br>
+     🔹 เรียนรู้กระบวนการวิเคราะห์ปัญหาและข้อจำกัดของ AI <br>
+     🔹 ฝึกฝนการคิดเชิงระบบในการกำหนดขอบเขตของ AI"
+  ),
+  "ระดับประยุกต์ใช้ (Apply)" = c(
+    "<b>Human Accountability</b> <br>
+     🔹 วิเคราะห์และตั้งคำถามเกี่ยวกับการตัดสินใจของ AI <br>
+     🔹 ใช้ AI อย่างมีความรับผิดชอบและพิจารณาผลกระทบต่อผู้ใช้ <br>
+     🔹 ป้องกันอคติและความไม่เป็นธรรมใน AI",
+     
+    "<b>Safe and Responsible Use</b> <br>
+     🔹 ใช้ AI อย่างปลอดภัยโดยคำนึงถึงสิทธิและความเป็นส่วนตัวของผู้ใช้ <br>
+     🔹 พิจารณาผลกระทบของ AI ต่อเศรษฐกิจและสังคม <br>
+     🔹 วิเคราะห์ปัญหาทางจริยธรรมที่เกี่ยวข้องกับ AI",
+     
+    "<b>Application Skills</b> <br>
+     🔹 ใช้ AI ในการแก้ปัญหาการเรียนรู้หรือโครงการต่างๆ <br>
+     🔹 วิเคราะห์ข้อมูลจาก AI เพื่อช่วยพัฒนากลยุทธ์การเรียนรู้ของตนเอง <br>
+     🔹 ใช้ AI เพื่อสร้างเครื่องมือช่วยเรียนรู้ เช่น AI-based flashcards",
+     
+    "<b>Architecture Design</b> <br>
+     🔹 สามารถออกแบบโครงสร้างของ AI เบื้องต้น <br>
+     🔹 ทดลองสร้างโมเดล AI โดยใช้เครื่องมือ no-code หรือ low-code AI tools <br>
+     🔹 ศึกษากระบวนการพัฒนา AI ที่เน้นความโปร่งใสและความยุติธรรม"
+  ),
+  "ระดับสร้างสรรค์ (Create)" = c(
+    "<b>Citizenship in the Era of AI</b> <br>
+     🔹 เป็นผู้นำในการใช้ AI อย่างมีจริยธรรมในสังคม <br>
+     🔹 ส่งเสริมการพัฒนา AI ที่มีผลกระทบเชิงบวกต่อสังคม <br>
+     🔹 มีส่วนร่วมในการกำหนดนโยบายเกี่ยวกับ AI ในโรงเรียนหรือชุมชน",
+     
+    "<b>Ethics by Design</b> <br>
+     🔹 สามารถออกแบบระบบ AI ที่คำนึงถึงจริยธรรมและความเป็นธรรม <br>
+     🔹 พัฒนาโครงการ AI ที่เน้นการใช้งานที่เป็นธรรมและปลอดภัย <br>
+     🔹 วิเคราะห์แนวทางการออกแบบ AI ที่ลดอคติและเพิ่มความโปร่งใส",
+     
+    "<b>Creating AI Tools</b> <br>
+     🔹 สร้างและพัฒนาเครื่องมือ AI ที่สามารถแก้ปัญหาได้จริง <br>
+     🔹 ใช้ AI ในการออกแบบนวัตกรรมเพื่อพัฒนาชุมชนหรือการศึกษา <br>
+     🔹 พัฒนาโมเดล AI ที่สามารถช่วยเหลือผู้เรียนที่มีความต้องการพิเศษ",
+     
+    "<b>Iteration and Feedback Loops</b> <br>
+     🔹 ออกแบบและพัฒนา AI โดยใช้แนวคิด iteration และ feedback loops <br>
+     🔹 ปรับปรุงโมเดล AI ตามข้อเสนอแนะและข้อมูลที่ได้รับ <br>
+     🔹 สร้างแนวทาง AI ที่มีการเรียนรู้และปรับตัวอย่างต่อเนื่อง"
+  )
+)
+
+# แสดงตารางด้วย kableExtra
+student_ai_competency %>%
+  kbl(
+    col.names = c("มิติหลัก (Aspects)", "ระดับเข้าใจ (Understand)", "ระดับประยุกต์ใช้ (Apply)", "ระดับสร้างสรรค์ (Create)"),
+    align = c("l", "l", "l", "l"),
+    escape = FALSE # เปิดใช้งาน HTML ในตาราง
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 16
+  ) %>%
+  column_spec(1, bold = TRUE, width = "10em", extra_css = "min-width: 10em; max-width: 30em; text-align: left;") %>% 
+  column_spec(2:4, width = "23em", extra_css = "min-width: 23em; extra_css = text-align: left; vertical-align: top;")
+```
+
+<br>
+
+::: {style="font-size:60%;"}
+@unesco2024studentAI
+:::
+
+</center>
+
+
+
+## AI Usage Framework {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](img/ai_maturity.png){width="100%"}
+
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+
+::: {.column width="40%"}
+<br>
+<br>
+
+**Human in the Loop Framework**
+
+
+
+![https://www.doubleword.ai/glossary/human-in-the-loop](img/Human_inthe_loop.webp){width="100%"}
+
+
+:::
+
+
+::::
+
+
+
+## Summary {.smaller}
+
+- Assessment Design: "ข้อมูลอะไรที่จะช่วยให้ฉันสอนได้ดีขึ้น?"
+
+- Analysis Phase: "ข้อมูลนี้บอกอะไรฉันเกี่ยวกับนักเรียนแต่ละคน?"
+
+- Intervention Phase: "ฉันจะใช้ข้อมูลนี้เพื่อช่วยนักเรียนอย่างไร?"
+
+- Monitoring Phase: "การเปลี่ยนแปลงนี้ได้ผลจริงหรือไม่?"
+
+<center>
+<div style="font-size:55%;">
+![@bolz2023datadriven](img/personalized.png){width="60%"}
+</div>
+</center>
+
+
+
+## References
+
+

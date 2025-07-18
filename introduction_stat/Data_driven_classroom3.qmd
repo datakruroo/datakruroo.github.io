@@ -1,0 +1,376 @@
+---
+title: "Data-Driven Classroom" 
+subtitle: "Part III: Data Analysis"
+author: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn"
+institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+date: today
+format:
+  revealjs:
+    auto-animate-easing: ease-in
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
+    slide-number: c/t
+    footer: "Assistant Prof. Dr. Siwachoat Srisuttiyakorn<br> Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
+    bibliography: "reference.bib"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color: #00589b;
+      }
+      </style>
+---
+
+## Statistical Problem-Solving Process {.smaller}
+
+::: {style="font-size:70%;"}
+-   ตั้งคำถามที่สามารถตอบได้ด้วยข้อมูล
+
+-   เก็บรวบรวมและเลือกใช้ข้อมูลที่เกี่ยวข้อง
+
+-   วิเคราะห์ข้อมูลเพื่อตอบคำถาม
+
+-   แปลผลการวิเคราะห์อย่างมีวิจารณญาณ
+:::
+
+![](img/stat_problem_solving.png){width="100%"}
+
+::: {style="font-size:40%;"}
+https://www.amstat.org/asa/files/pdfs/GAISE/GAISEIIPreK-12_Full.pdf
+:::
+
+## Example: ควรให้เวลาทำการบ้านแก่ผู้เรียนมากขึ้นหรือไม่ {.smaller}
+
+::::: columns
+::: {.column width="40%"}
+
+![](img/homework_extent.png){width="80%"}
+
+:::
+
+::: {.column width="60%"}
+
+<br>
+
+1. การตั้งคำถาม
+
+2. การเก็บรวบรวมข้อมูล
+
+3. การวิเคราะห์ข้อมูล
+
+4. การแปลความหมายและสรุป
+
+
+:::
+:::::
+
+## Example: Dataset
+
+![](img/variable_view.png)
+
+
+## การตั้งคำถาม {.smaller}
+
+เน้นการตั้งคำถามย่อยเพื่อหาคำตอบหรือให้เหตุผลที่อิงข้อเท็จจริงหรือข้อมูลเชิงประจักษ์ โดยควรพิจารณาให้สอดคล้องกับข้อมูลที่มีอยู่
+
+  - ที่ผ่านมาผู้เรียนใช้เวลาในการทำการบ้านมากหรือน้อยอย่างไร 
+  
+  - มีผู้เรียนส่งการบ้านช้าหรือไม่ จำนวนเท่าไหร่
+
+## การเก็บรวบรวมข้อมูล {.smaller}
+
+เก็บรวบรวม/เลือกข้อมูลที่เกี่ยวข้องกับคำถามที่กำหนด
+
+- `submit_time` -- จำนวนชั่วโมงโดยเฉลี่ยที่ผู้เรียนใช้ในการทำการบ้าน
+
+- `percent_submit` -- ร้อยละของการส่งการบ้าน
+
+- `learning_performance` -- ความสามารถในการเรียนรู้วัดจากค่าเฉลี่ยคะแนนคุณภาพการบ้านที่ผู้เรียนส่ง
+
+- `concept`, `choose_method` และ `interpretation` -- ผลการประเมินคะแนนสอบ midterm ที่จำแนกตามผลลัพธ์การเรียนรู้ที่คาดหวัง
+
+## การวิเคราะห์ข้อมูล {.smaller}
+
+- Statistical Approach -- มีความเป็นปรนัยสูง แต่อาจไม่เห็นภาพรวม/สภาพจริงของข้อมูล
+
+- Graphical Approach -- แสดงผลการวิเคราะห์ที่เป็นสภาพจริงของข้อมูลมากกว่า แต่อาจขาดความเป็นปรนัย ต้องใช้การตีความหมายมากกว่า
+
+![](img/level_ana.png)
+
+
+
+
+## การวิเคราะห์ข้อมูล {.smaller}
+
+- **ทำความเข้าใจข้อมูล** -- วิเคราะห์เพื่อบรรยาย/ทำความเข้าใจสภาพทั่วไปของข้อมูล เช่น  ระดับความสามารถในปัจจุบัน/ความต้องการ/หรือความโดดเด่น (ทั้งในด้านบวกและลบ) ของผู้เรียน
+
+  - การสำรวจการแจกแจงของข้อมูล (distribution)
+  
+  - การเปรียบเทียบข้อมูล (comparison)
+  
+  - การสำรวจแนวโน้มของข้อมูล (trend)
+
+- **สำรวจผู้เรียนที่มีความโดดเด่น** -- นักเรียนที่มีลักษณะแตกต่างจากกลุ่มใหญ่อย่างชัดเจน ทั้งในด้านบวกและลบ
+
+- **สำรวจ/วิเคราะห์ความสัมพันธ์** -- วิเคราะห์ความสัมพันธ์ระหว่างคุณลักษณะของนักเรียนหรือตัวแปรที่เกี่ยวข้อง เพื่อทำความเข้าใจนักเรียนเชิงลึก
+
+  - การเปรียบเทียบข้อมูล (comparison)
+  
+  - การวิเคราะห์ความสัมพันธ์ (relationship)
+
+- **สำรวจเพื่อสร้าง insight ที่นำไปสู่การกำหนดคำถาม สมมุติฐาน** -- เพื่อนำไปสู่การวิเคราะห์เชิงลึก เช่น การวิเคราะห์เชิงวินิจฉัย การวิเคราะห์เชิงทำนาย
+
+
+## การวิเคราะห์ข้อมูล : ทำความเข้าใจข้อมูล {.smaller}
+
+อาจารย์ผู้สอนในรายวิชาวิจัยกําลังเตรียมตัวสําหรับการสอนในภาคการศึกษา
+หน้า ทั้งนี้อาจารย์ได้ลองรวบรวมข้อมูลการเรียนรู้ที่ผ่านมาในรายวิชาสถิติซึ่งเป็น
+วิชาที่นิสิตกลุ่มนี้ได้ลงทะเบียนในภาคการศึกษาก่อนหน้า
+
+![](img/dataset2.png)
+
+##
+
+![](img/p1.png)
+
+##
+
+![](img/p2.png)
+
+##
+
+![](img/p3.png)
+
+##
+
+![](img/p4.png)
+
+##
+
+![](img/p5.png)
+
+##
+
+![](img/p6.png)
+
+##
+
+![](img/p7.png)
+
+
+## การวิเคราะห์ข้อมูล {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://agnieszka.si/img/portfolio/orange-2023/orange-ilustr-2023.png){width="80%"}
+
+![](https://diplo-media.s3.eu-central-1.amazonaws.com/2025/03/openai-chatgpt-surge-deepseek.jpg){width="75%"}
+
+
+:::
+
+::: {.column width="50%"}
+
+
+![](https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1d366b74-d53b-49b0-9551-787e4c15b190_1920x1080.jpeg)
+
+
+![](https://files.manuscdn.com/webapp/media/ogBanner.png)
+:::
+
+::::
+
+## [Orange Data Mining](https://orangedatamining.com/) {.smaller}
+
+- [https://orangedatamining.com/docs/](https://orangedatamining.com/docs/)
+
+- [Get Started with Orange](https://www.youtube.com/watch?v=HXjnDIgGDuI&list=PLmNPvQr9Tf-ZSDLwOzxpvY-HrE0yv-8Fy)
+
+![](img/web_orange.png)
+
+## การแจกแจงของ `submit_time` {.smaller}
+
+![](img/histogram_orange.png)
+
+## Basic Statistics {.smaller}
+
+![](img/statistics_orange.png)
+
+
+## การตั้งคำถาม {.smaller}
+
+เน้นการตั้งคำถามย่อยเพื่อหาคำตอบหรือให้เหตุผลที่อิงข้อเท็จจริงหรือข้อมูลเชิงประจักษ์ โดยควรพิจารณาให้สอดคล้องกับข้อมูลที่มีอยู่
+
+  - **ที่ผ่านมาผู้เรียนใช้เวลาในการทำการบ้านมากหรือน้อยอย่างไร**
+  
+  - **มีผู้เรียนส่งการบ้านช้าหรือไม่ จำนวนเท่าไหร่**
+
+
+
+## ทำความเข้าใจ `submit_time` {.smaller}
+
+![](img/orange1.png)
+
+
+
+
+
+## [Generative AI เป็นผู้ช่วยในการแปลผลได้](https://chatgpt.com/share/684325dd-0488-8003-8fd2-820382f2e115) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+![](img/genai_interpret.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/genai_interpret2.png)
+
+:::
+
+::::
+
+## [Generative AI ช่วยวิเคราะห์ได้](https://claude.ai/public/artifacts/a4fd33d9-b58d-494a-aa51-93d4c0aa7d2c) {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](img/claude_ana.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](img/claude_ana2.png)
+
+![](img/claude_ana3.png)
+
+:::
+
+::::
+
+
+## การตั้งคำถาม {.smaller}
+
+เน้นการตั้งคำถามย่อยเพื่อหาคำตอบหรือให้เหตุผลที่อิงข้อเท็จจริงหรือข้อมูลเชิงประจักษ์ โดยควรพิจารณาให้สอดคล้องกับข้อมูลที่มีอยู่
+
+  - **ที่ผ่านมาผู้เรียนใช้เวลาในการทำการบ้านมากหรือน้อยอย่างไร** 
+  
+  - **มีผู้เรียนส่งการบ้านช้าหรือไม่ จำนวนเท่าไหร่**
+
+> ผู้เรียนส่วนใหญ่ส่งงานได้ทันเวลา มีเพียง 31 คนที่ใช้เวลาเกินกว่าที่กำหนด  หากเราขยายเวลาก็จะเป็นประโยชน์กับผู้เรียนส่วนน้อย และผลการวิเคราะห์นี้ยัง confirm ไม่ได้ว่าการขยายเวลาจะเป็นผลดีกับผู้เรียนอย่างไร หรืออาจจะต้องมีการวิเคราะห์เชิงลึกเพื่อระบุเหตุผลเบื้องหลังของการส่งงานช้า 
+  
+## พิจารณาปัจจัยที่อาจเป็นปัญหาในกลุ่มผู้เรียนส่งงานช้า
+
+![](img/orange_ana3.png)
+
+
+## Statistical Problem Solving Process {.smaller}
+
+![](img/stat_problem_solving.png){width="100%"}
+
+  - ผู้เรียนที่ส่งการบ้านตรงเวลากับช้ามีร้อยละการส่งการบ้านแตกต่างกันอย่างไร
+  
+  - คุณภาพของการบ้านที่ส่งมีความแตกต่างกันหรือไม่ระหว่างผู้เรียนทั้งสองกลุ่ม
+  
+  - ผลสัมฤทธิ์ทางการเรียนของผู้เรียนที่ส่งตรงเวลากับช้าแตกต่างกันอย่างไร
+
+## เปรียบเทียบข้อมูล {.smaller}
+
+ผู้เรียนที่ส่งการบ้านตรงเวลากับส่งช้า มีร้อยละการส่งการบ้านแตกต่างกันอย่างไร?
+
+![](img/orange_ana4.png)
+
+## เปรียบเทียบข้อมูล {.smaller}
+
+คุณภาพของการบ้านที่ส่งมีความแตกต่างกันหรือไม่ระหว่างผู้เรียนทั้งสองกลุ่ม?
+
+![](img/orange_ana4.png)
+
+## เปรียบเทียบข้อมูล {.smaller}
+
+ผลสัมฤทธิ์ทางการเรียนของผู้เรียนที่ส่งตรงเวลากับช้าแตกต่างกันอย่างไร?
+
+![](img/orange_ana5.png)
+
+
+## เปรียบเทียบข้อมูล {.smaller}
+
+ผลสัมฤทธิ์ทางการเรียนของผู้เรียนที่ส่งตรงเวลากับช้าแตกต่างกันอย่างไร?
+
+![](img/orange_ana6.png)
+
+
+## ควรขยายเวลาทำการบ้านให้กับผู้เรียนหรือไม่? {.smaller}
+
+- ผู้เรียนที่ส่งการบ้านตรงเวลากับช้ามีร้อยละการส่งการบ้านแตกต่างกันอย่างไร
+  
+- คุณภาพของการบ้านที่ส่งมีความแตกต่างกันหรือไม่ระหว่างผู้เรียนทั้งสองกลุ่ม
+  
+- ผลสัมฤทธิ์ทางการเรียนของผู้เรียนที่ส่งตรงเวลากับช้าแตกต่างกันอย่างไร
+
+## `exam_data.csv` ผลประเมินโครงงานของนักเรียนเป็นอย่างไร?
+
+![](img/project_score.png)
+
+## `exam_data.csv` ผลประเมินโครงงานของนักเรียนเป็นอย่างไร?
+
+![](img/project_score2.png)
+
+## Problem Prioritization
+
+ในกลุ่มผู้เรียนที่ไม่ผ่านการประเมินโครงงาน มีปัญหาอะไรบ้างที่น่าจะเป็นปัญหา
+
+![](img/project_ana.png)
+
+
+## Student Segmentation
+
+![](img/project_dt.png)
+
+
+## Explainable AI
+
+:::: {.columns}
+
+
+::: {.column width="50%"}
+
+P(pass) = 1.00
+
+![](img/why_pass.png){width="60%"}
+
+:::
+
+::: {.column width="50%"}
+
+P(Pass) = 0.22
+
+![](img/why_fail.png){width="60%"}
+
+
+:::
+
+::::
+
