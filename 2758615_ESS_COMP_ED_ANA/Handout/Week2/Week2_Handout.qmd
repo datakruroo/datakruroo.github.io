@@ -1,5 +1,5 @@
 ---
-title: "Week2 : ภาพรวม และ Workflow"
+title: "Week2 : Get Started with R"
 author: "Assistant Prof. Siwachoat Srisuttiyakorn"
 institute: "Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University"
 date: 2024-09-05
@@ -16,7 +16,8 @@ format:
     highlight-style: github
     embed-resources: false
     code-overflow: scroll
-code-link: false
+    code-link: true
+    code-line-numbers: true  # หรือ false
 execute:
   echo: false
   freeze: auto
@@ -36,230 +37,401 @@ include-in-header:
 library(tidyverse)
 ```
 
+## การจัดการ Project ใน R
 
-## Overview {.smaller}
+-   Global Environment
 
-![](https://r4ds.hadley.nz/diagrams/data-science/whole-game.png)
+-   Project
 
-#### Prerequisites 
+## R Environment {.smaller}
+
+> คือพื้นที่เก็บข้อมูล ตัวแปร ฟังก์ชัน หรือวัตถุอื่น ๆ ใน R
+
+- โดยทั่วไปจะประกอบด้วยเซตที่มีสมาชิกเป็น คู่ของสัญลักษณ์ - ค่า (symbol-value pairs)
+
+- เรียกสมาชิกดังกล่าวว่า "ตัวแปร (variables)"
+
+- มีโครงสร้างการเก็บข้อมูลเป็นลำดับชั้น กล่าวคือ environment หนึ่ง ๆ อาจอยู่ภายใต้ environment อื่น ๆ ได้ เกิดเป็นสายโซ่ขอบเขตการค้นหาหรือประมวลผลบน R
 
 :::: {.columns}
 
 ::: {.column width="45%"}
+
+- มีหลายประเภท
+  - Global environment
+  - Local environment
+  - Custom environment
+
+::: 
+
+::: {.column width="55%"}
+<center>
+
+::: {style="font-size:70%;"}
+![https://medium.com/@wilson.toussile/r-environments-and-variable-scope-ae629da311bf](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*rCeKYuG2CYoJxhoIcmKcYQ.png)
+:::
+
+</center>
+
+:::
+
+::::
+
+## Global Environment {.smaller}
+
+- Top-level environment
+
+- พื้นที่ทำงานหลักของ R ถูกตั้งไว้เป็นค่าเริ่มต้นสำหรับเก็บข้อมูล ตัวแปร ฟังก์ชันต่าง ๆ 
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+<div style="font-size: 70%;">
+<br>
+</div>
+
+![](images/clipboard-1740597180.png){width="80%"}
+
+:::
+
+::: {.column width="55%"}
+
+ลองดำเนินการต่อไปนี้
+
+1.สำรวจ Global Environment
+
+```{r echo = T, eval = F}
+ls()
+```
+
+2.ลองสร้างตัวแปรใหม่
+
+```{r echo = T, eval = F}
+x <- 5
+y <- c(1,2,3)
+z <- "Hello World!!"
+```
+
+3.สำรวจ Global Enviromment อีกครั้งหนึ่ง
+
+:::
+
+::::
+
+
+## Global Environment {.smaller}
+
+-   ใน Project ทาง data science การทำงานบน Global Environment อาจทำให้เกิดปัญหาในการจัดการข้อมูลและโค้ด ซึ่งเพิ่มความเสี่ยงที่โปรเจคจะล้มเหลว หรือไม่สามารถทำซ้ำได้
+
+-   เกิดปัญหาเมื่อทำงานร่วมกันหลายคน หรือหลายเครื่อง
+
+    -   path หรือ working directory ไม่ตรงกัน
+
+    -   เรียก package ไม่สมบูรณ์ ไม่ตรงกัน
+
+    -   มีข้อมูลที่ไม่ครบถ้วน
+
+    -   ขาดความเป็นระเบียบ ทำซ้ำยาก
+
+
+## Variable and Value ใน R Environment {.smaller}
+
+- **Variable**: ตัวแปรใน R ทำหน้าที่ *อ้างถึงค่าหนึ่ง* ใน environment
+
+- **Value**: ข้อมูลที่ตัวแปรชี้ไป เช่น ตัวเลข, string, หรือโครงสร้างข้อมูล
+
+ตัวแปรสามารถจำแนกได้หลายประเภท
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**จำแนกตามประเภทข้อมูล**
+
+- ตัวแปรตัวเลข (numeric variable)
+
+- ตัวแปรตัวอักษร (character variable)
+
+- ตัวแปรตรรกะ (logical variable)
+
+```{r echo = T, eval = F}
+x <- 10
+y <- "data science"
+z <- x > 5
+typeof(x)
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+**จำแนกตามโครงสร้างการจัดเก็บข้อมูล**
+
+- Scalars
+
+- Vectors
+
+- Matrices
+
+- Arrays or Tensors
+
+- Data Frames (`data.frame` or `tibble`)
+
+- Lists
+
+- ...
+
+:::
+
+::::
+
+
+## [RStudio Project](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects) {`Rproj`} {.smaller}
+
+`Rproj` เป็นไฟล์ที่ใช้จัดการโครงสร้าง Project ใน Rstudio ทำหน้าที่บันทึกการตั้งค่าต่าง ๆ ของ Project เช่น
+
+- working directory
+
+- ประวัติไฟล์ (history, console, environment)
+
+- ทำให้การใช้ relative path ทำงานได้ง่ายไม่ขึ้นกับคอมพิวเตอร์ที่ใช้
+
+ใน RStudio ไปที่ `File > New Project…`
+
+![](http://www.rstudio.com/images/docs/projects_new.png)
+
+
+## โครงสร้าง Project ที่ดีช่วยให้งานเป็นระบบ และทำให้การสื่อสารกับทีมง่ายขึ้น {.smaller}
+ 
+
+```
+my_project/
+├── data/
+│   ├── raw/             # ข้อมูลดิบ
+│   └── cleaned/         # ข้อมูลที่ผ่านการจัดการแล้ว
+├── scripts/             # โค้ดสำหรับแต่ละขั้นตอนใน pipeline
+│   ├── import.R
+│   ├── data_cleaning.R
+│   ├── analysis.R
+│   └── workflow.qmd     # Quarto ตัวหลักควบคุม script ทั้งหมด
+├── output/
+│   ├── report.qmd       # สำหรับสรุปผล/รายงานให้ผู้
+│   ├── plots/           # กราฟทั้งหมด
+│   └── reports/         # PDF/HTML/Word ที่ render แล้ว
+├── my_project.Rproj     # Project file ของ RStudio
+└── README.md            # อธิบายโปรเจกต์
+```
+
+
+
+</br>
+<div style="font-size: 70%;">
+
+
+
+**แนวทางการตั้งชื่อไฟล์**
+
+- มีความหมาย
+
+- มีระบบ มีรูปแบบสม่ำเสมอ เช่น 🐍snake_case หรือ 🐫camelCase 
+
+- เลี่ยงคำกำกวม เช่น `final.csv`, `output.docx`, `my_data.csv`, `analysis1.R` ซึ่งอาจสื่อไม่ชัดเมื่อเวลาผ่านไป
+
+- คิดไม่ออกจริง ๆ ให้ chatgpt ช่วย
+
+</div>
+
+
+## [snake_case vs camelCase](https://www.freecodecamp.org/news/snake-case-vs-camel-case-vs-pascal-case-vs-kebab-case-whats-the-difference/) {.smaller}
+
+<div style="font-size: 70%;">
+
+| ลำดับ | จุดประสงค์ของไฟล์                        | ❌ ชื่อที่ไม่ควรใช้      | 🐍 snake_case                    | 🐫 camelCase                    |
+|--------|--------------------------------------------|---------------------------|----------------------------------|---------------------------------|
+| 1      | ข้อมูลคะแนนสอบดิบ                         | data1.csv                 | raw_test_scores.csv             | rawTestScores.csv               |
+| 2      | ข้อมูลที่จัดรูปแบบเรียบร้อยแล้ว           | final.csv                 | cleaned_scores_sem1_2025.csv         | cleanedScoresSem1_2025.csv           |
+| 3      | สคริปต์นำเข้าข้อมูล                      | import.R                  | import_student_data.R           | importStudentData.R             |
+| 4      | สคริปต์จัดการ missing และ outlier        | fix.R                     | handle_missing_outliers.R       | handleMissingOutliers.R         |
+| 5      | วิเคราะห์ความสัมพันธ์เวลาเรียนกับคะแนน | analysis1.R               | studytime_score_analysis.R      | studytimeScoreAnalysis.R        |
+| 6      | เอกสารรายงานผลเบื้องต้น                 | report.docx               | learning_outcome_report.qmd     | learningOutcomeReport.qmd       |
+| 7      | กราฟเปรียบเทียบผลสอบกลุ่มเรียน         | graph1.png                | score_comparison_plot.png       | scoreComparisonPlot.png         |
+| 8      | ไฟล์รวมผลสรุปจากหลายโรงเรียน             | results.xlsx              | summary_results_all_schools.csv | summaryResultsAllSchools.csv    |
+
+**Note:** แนวคิดนี้สามารถนำไปใช้กับการตั้งชื่อตัวแปรภายใน environment ของ R ได้ด้วย
+
+</div>
+
+
+## Variables, Values, Observations, Data {.smaller}
+
+:::::::::::::: columns
+::::::::::: {.column width="55%"}
+::: {style="font-size:30%;"}
+<br>
+:::
+
+```{r eval = T, echo = T}
+## Importing data
+## install.packages("gapminder")
+library(gapminder)
+## print data
+gapminder
+```
+
+
+:::::::::::
+
+:::: {.column width="45%"}
+
+<div style="font-size: 70%;">
+<br>
+</div>
+
+:::: fragment
+::: {style="font-size:80%;"}
+-   **ตัวแปร (Variable)** : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้
+:::
+::::
+
+:::: fragment
+::: {style="font-size:80%;"}
+-   **ค่าของตัวแปร (Value)** : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ
+:::
+::::
+
+:::: fragment
+::: {style="font-size:80%;"}
+-   **ค่าสังเกต (Observation)** : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง
+:::
+::::
+
+:::: fragment
+::: {style="font-size:80%;"}
+-   **ข้อมูล (Data)** : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต
+:::
+::::
+::::
+::::::::::::::
+
+
+
+## Project Workflow
 
 ```{r eval = F, echo = T}
 install.packages("tidyverse")
 library(tidyverse)
 ```
 
-:::
+<br>
+
+![](https://r4ds.hadley.nz/diagrams/data-science/whole-game.png)
 
 
-::: {.column width="55%"}
-
-:::
-
-::::
 
 ## Data Visualization {.smaller}
 
-<div style="font-size:150%;">
-
+::: {style="font-size:150%;"}
 > One picture is worth a thousand words
+:::
 
-</div>
-
-:::: {.columns}
-
+:::::: columns
 ::: {.column width="45%"}
-
 ![](https://upload.wikimedia.org/wikipedia/commons/d/d2/A_picture_is_worth_a_thousand_words.jpg)
-
-
 :::
 
-::: {.column width="55%"}
-
-<div style="font-size:30%;">
+:::: {.column width="55%"}
+::: {style="font-size:30%;"}
 <br>
-</div>
+:::
 
 ```{r eval = T, echo = T}
 ## Importing data
-char_data <- read_csv("character_data_dim1.csv")
+## install.packages("gapminder")
+library(gapminder)
 ## print data
-char_data
+gapminder
 ```
-
-
-
-:::
-
 ::::
+::::::
 
 ## Data Visualization {.smaller}
 
-<div style="font-size:150%;">
-
+::: {style="font-size:150%;"}
 > One picture is worth a thousand words
+:::
 
-</div>
+:::::::::: columns
+::::::: {.column width="45%"}
+![](https://upload.wikimedia.org/wikipedia/commons/d/d2/A_picture_is_worth_a_thousand_words.jpg)
+:::::::
 
-:::: {.columns}
-
-::: {.column width="45%"}
-
+:::: {.column width="55%"}
+::: {style="font-size:30%;"}
 <br>
-
-::: {.fragment}
-
-<div style = "font-size:80%;">
-
-- **ตัวแปร (Variable)** : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้ 
-
-</div>
-
 :::
-
-::: {.fragment}
-
-<div style = "font-size:80%;">
-
-- **ค่าของตัวแปร (Value)** : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ 
-
-</div>
-
-:::
-
-::: {.fragment}
-
-<div style = "font-size:80%;">
-
-- **ค่าสังเกต (Observation)** : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง
-
-</div>
-
-:::
-
-::: {.fragment}
-
-<div style = "font-size:80%;">
-
-- **ข้อมูล (Data)** : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต
-
-</div>
-
-:::
-
-:::
-
-::: {.column width="55%"}
-
-<div style="font-size:30%;">
-<br>
-</div>
 
 ```{r eval = T, echo = T}
-## Importing data
-char_data <- read_csv("character_data_dim1.csv")
-## print data
-char_data
+glimpse(gapminder, 60)
 ```
-
-
-
-:::
-
 ::::
+::::::::::
 
 ## Data Visualization {.smaller}
 
-<div style="font-size:150%;">
-
+::: {style="font-size:150%;"}
 > One picture is worth a thousand words
-
-</div>
-
-:::: {.columns}
-
-::: {.column width="45%"}
-
-<br>
-
-
-
-<div style = "font-size:80%;">
-
-- **ตัวแปร (Variable)** : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้ 
-
-</div>
-
-
-<div style = "font-size:80%;">
-
-- **ค่าของตัวแปร (Value)** : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ 
-
-</div>
-
-
-
-<div style = "font-size:80%;">
-
-- **ค่าสังเกต (Observation)** : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง
-
-</div>
-
-
-<div style = "font-size:80%;">
-
-- **ข้อมูล (Data)** : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต
-
-</div>
-
-
-
 :::
 
-::: {.column width="55%"}
-
-<div style="font-size:30%;">
-<br>
-</div>
-
-```{r eval = T, echo = T}
-glimpse(char_data, 60)
+```{r}
+options(width = 120)
 ```
-
-
-
-:::
-
-::::
-
-
-## Data Visualization {.smaller}
-
-
-<div style="font-size:150%;">
-
-> One picture is worth a thousand words
-
-</div>
-
 
 ```{r eval = T, echo = T}
 ## summary statistics
-summary(char_data)
+summary(gapminder)
 ```
 
 ```{r echo = T}
-cat("average score:", mean(char_data$score_value), "\n")
-cat("standard deviation:", sd(char_data$score_value), "\n")
-cat("median score:", median(char_data$score_value), "\n")
-cat("quantiles:\n", quantile(char_data$score_value, probs = c(0.25, 0.5, 0.75)), "\n")
+cat("average score:", mean(gapminder$gdpPercap), "\n")
+cat("standard deviation:", sd(gapminder$gdpPercap), "\n")
+cat("median score:", median(gapminder$gdpPercap), "\n")
+cat("quantiles:\n", quantile(gapminder$gdpPercap, probs = c(0.25, 0.5, 0.75)), "\n")
 ```
 
+## Data Visualization {.smaller auto-animate="true"}
 
+::: {style="font-size:150%;"}
+> One picture is worth a thousand words
+:::
+
+-   ความแตกต่างของ `gdpPercap` ระหว่างทวีปต่าง ๆ
+
+-   ความสัมพันธ์ระหว่าง `gdrPercap` กับ `lifeExp`
+
+::: {style="font-size:80%;"}
+```{r echo = T}
+library(psych)
+describeBy(gapminder$gdpPercap, gapminder$continent)
+```
+:::
+
+## Data Visualization {.smaller auto-animate="true"}
+
+::: {style="font-size:150%;"}
+> One picture is worth a thousand words
+:::
+
+-   ความแตกต่างของ `gdpPercap` ระหว่างทวีปต่าง ๆ
+
+-   ความสัมพันธ์ระหว่าง `gdrPercap` กับ `lifeExp`
+
+```{r echo = T}
+cat("Pearson Correlation between gdpPercap and lifeExp: ", 
+    cor(gapminder$gdpPercap, gapminder$lifeExp), "\n")
+cat("R2: ", cor(gapminder$gdpPercap, gapminder$lifeExp)^2)
+```
 
 ## Data Visualization: Visual Representation
 
@@ -267,155 +439,381 @@ cat("quantiles:\n", quantile(char_data$score_value, probs = c(0.25, 0.5, 0.75)),
 
 > Chart = Mark + Attribute
 
-:::: {.columns}
-
-::: {.column width="40%"}
-
-<div style="font-size:60%;">
-
+::::::: columns
+:::: {.column width="40%"}
+::: {style="font-size:60%;"}
 **Marks** : สัญลักษณ์ที่ใช้แสดงข้อมูล
 
-- จุด (Point)
+-   จุด (Point)
 
-- เส้น (Line)
+-   เส้น (Line)
 
-- แท่ง (Bar)
+-   แท่ง (Bar)
 
-- พื้นที่ (Area)
+-   พื้นที่ (Area)
 
-- ปริมาตร (Volume)
+-   ปริมาตร (Volume)
 
-- ...
-
-</div>
-
+-   ...
 :::
-
-::: {.column width="40%"}
-
-<div style="font-size:60%;">
-
-**Attributes** : variants ของ Marks 
-
-- ตำแหน่ง (Position)
-
-- ขนาด (Size)
-
-- สี (Color)
-
-- รูปร่าง (Shape)
-
-- ความโปร่งใส (Opacity)
-
-- ทิศทาง (Direction)
-
-- ...
-
-</div>
-
-:::
-
 ::::
 
+:::: {.column width="40%"}
+::: {style="font-size:60%;"}
+**Attributes** : variants ของ Marks
+
+-   ตำแหน่ง (Position)
+
+-   ขนาด (Size)
+
+-   สี (Color)
+
+-   รูปร่าง (Shape)
+
+-   ความโปร่งใส (Opacity)
+
+-   ทิศทาง (Direction)
+
+-   ...
+:::
+::::
+:::::::
 
 ## Data Visualization: Visual Representation
-
-
 
 ![](https://datakruroo.github.io/DataVisualization/week01/img/data_representation.png)
 
-
 ## Data Visualization: Visual Representation
 
-<div style="font-size:60%; text-align: center;">
-
+::: {style="font-size:60%; text-align: center;"}
 ![Source: https://www.researchgate.net/figure/The-Mackinlay-ranking-of-perceptual-task_fig2_221098028](https://datakruroo.github.io/DataVisualization/week01/img/The-Mackinlay-ranking-of-perceptual-task.png)
+:::
 
-</div>
 ## Data Visualization {.smaller}
 
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
-
-
 ```{r echo = T}
-summary(char_data)
+summary(gapminder)
 ```
 
 ![](https://miro.medium.com/v2/resize:fit:1400/format:webp/0*LFG6Hyp7Py80nc1d.jpg)
-
 
 ## Data Visualization : ggplot2 {.smaller}
 
 ggplot2 เป็น package ที่ใช้ในการสร้างกราฟใน R โดยมีหลักการทำงานที่เรียกว่า "Grammar of Graphics" ซึ่งช่วยให้ผู้ใช้สามารถสร้างกราฟได้อย่างยืดหยุ่นและมีประสิทธิภาพ
 
-- สร้างวัตถุเชิงกราฟฟิก หรือ canvas ด้วย `ggplot()` ขั้นตอนนี้กำหนดอาร์กิวเมนท์ `data` เป็นข้อมูลที่ต้องการใช้ในการสร้างกราฟ
+-   สร้างวัตถุเชิงกราฟฟิก หรือ canvas ด้วย `ggplot()` ขั้นตอนนี้กำหนดอาร์กิวเมนท์ `data` เป็นข้อมูลที่ต้องการใช้ในการสร้างกราฟ
 
-- เพิ่ม layer เรียกว่า aesthetic mappings ด้วย `aes()` เพื่อจับคู่ระหว่างตัวแปรกับ visual element ในแผนภาพ
+-   เพิ่ม layer เรียกว่า aesthetic mappings ด้วย `aes()` เพื่อจับคู่ระหว่างตัวแปรกับ visual element ในแผนภาพ
 
-- เพิ่ม layer แสดงผลข้อมูลด้วย `geom_xxx()` เช่น `geom_histogram()`, `geom_boxplot()`, `geom_bar()`, `geom_line()`, `geom_point()` เป็นต้น
+-   เพิ่ม layer แสดงผลข้อมูลด้วย `geom_xxx()` เช่น `geom_histogram()`, `geom_boxplot()`, `geom_bar()`, `geom_line()`, `geom_point()` เป็นต้น
 
+## Data Visualization : ggplot2 {.smaller}
 
-## Data Visualization : ggplot2 {auto-animate=true}
+layer จำเป็นสำหรับการแสดงผลลัพธ์ด้วย ggplot2
 
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+-   `data` + aesthetic mappings
 
+-   geometric objects (Marks) + statistical transformations
 
+-   Scales
+
+-   Coordinate System
+
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
 
 ```{r eval = T, echo = T}
-ggplot(data = char_data)
+ggplot(data = gapminder) # data layer
 ```
 
-## Data Visualization : ggplot2 {auto-animate=true}
-
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
-
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
 
 ```{r eval = T, echo = T}
-ggplot(data = char_data,
-       mapping = aes(x = score_value))
+#| code-line-numbers: "2"
+ggplot(data = gapminder, # data layer
+       mapping = aes(x = gdpPercap)) # aesthetic mappings
 ```
 
-## Data Visualization : ggplot2 {auto-animate=true}
-
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
-
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
 
 ```{r eval = T, echo = T}
-ggplot(data = char_data,
-       mapping = aes(x = score_value))+
-  geom_histogram()
+#| code-line-numbers: "3"
+ggplot(data = gapminder, # data layer
+       mapping = aes(x = gdpPercap))+ # aesthetic mappings
+  geom_histogram() # geometric objects
 ```
 
-## Data Visualization : ggplot2 
+## Data Visualization : ggplot2 {.smaller}
 
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
-
+ปรับแต่งการนำเสนอผลผ่าน argument ของ `geom_xxx()`
 
 ```{r eval = T, echo = T}
-ggplot(data = char_data,
-       mapping = aes(x = score_value))+
+#| code-line-numbers: "3"
+ggplot(data = gapminder,
+       mapping = aes(x = gdpPercap))+
   geom_histogram(fill = "forestgreen", col = "white")
 ```
 
-## Data Visualization : ggplot2 {auto-animate=true}
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
 
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+-   เปลี่ยน `geom_xxx()` = เปลี่ยน Mark
 
+-   เปลี่ยนมุมมองในการทำความเข้าใจข้อมูล
 
 ```{r eval = T, echo = T}
-ggplot(data = char_data,
-       mapping = aes(x = score_value, y = ""))+
+#| code-line-numbers: "3"
+ggplot(data = gapminder,
+       mapping = aes(x = gdpPercap, y = ""))+
   geom_boxplot(width = 0.5, fill = "steelblue")
 ```
 
-## Data Visualization : ggplot2 {auto-animate=true}
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
 
-คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?
+-   แต่ละแผนภาพสามารถเพิ่ม layer ของ attribute ได้
 
+-   ช่วยให้พิจารณาหลายตัวแปรไปพร้อมกันในแผนภาพเดียว
 
 ```{r eval = T, echo = T}
-ggplot(data = char_data,
-       mapping = aes(x = score_value, y = "", 
-                     fill = student_level))+
+#| code-line-numbers: "2-3"
+ggplot(data = gapminder,
+       mapping = aes(x = gdpPercap, y = continent, 
+                     fill = continent))+
   geom_boxplot(width = 0.5)
 ```
+
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
+
+-   `scale_xxx_xxx()` ใช้ควบคุมลักษณะของ attribute ในแผนภาพ
+
+-   มีความสัมพันธ์กับ aesthetic mapping ของแผนภาพ
+
+::: {style="font-size:80%;"}
+| องค์ประกอบ | หน้าที่ | ตัวอย่าง |
+|----------------|------------------------------|---------------------------|
+| `aes()` | จับคู่ **ตัวแปร** กับ **attribute** เช่น x, y, color, size | `aes(x = gdpPercap, y = continent, fill = continent)` |
+| `scale_xxx_xxx()` | ปรับรูปแบบของค่าที่จับคู่ไปแล้วใน `aes()` เช่น สี ขนาด หรือแกน | `scale_fill_manual()`, `scale_x_continuous()`, `score_y_discrete()` |
+| `theme()` | ปรับองค์ประกอบของกราฟที่ **ไม่เกี่ยวกับข้อมูลโดยตรง** เช่น ตัวอักษร เส้น แกน สีพื้นหลัง | `theme_minimal()`, `theme(axis.text.x = element_text(angle = 45))` |
+:::
+
+
+
+
+## Data Visualization : ggplot2 {.smaller auto-animate="true"}
+
+```{r echo = T}
+#| code-line-numbers: "5-12|13-14"
+ggplot(data = gapminder,
+       mapping = aes(x = gdpPercap, y = continent, 
+                     fill = continent))+
+  geom_boxplot(width = 0.5) +
+  scale_fill_manual(values = c("Asia" = "red", "Europe" = "blue", 
+                                "Africa" = "green", "Americas" = "yellow", 
+                                "Oceania" = "purple"))+
+  scale_y_discrete(name = "Continent",
+                   limits = c("Asia", "Europe", "Africa", "Americas", "Oceania"))+
+  scale_x_continuous(name = "\n GDP per Capita",
+                     breaks = seq(0,100000, 25000),
+                     labels = scales::dollar_format(prefix = "$", suffix = " USD"))+
+  theme_light()+
+  theme(legend.position = "none")
+```
+
+## Visualizing distribution {.smaller}
+
+- ขอบเขตของข้อมูล
+
+- แนวโน้มการพบข้อมูล
+
+
+
+## Visualizing distribution: Categorical variables {.smaller}
+
+
+```{r echo = T}
+ggplot(data = gapminder, 
+       aes(x = continent))+
+  geom_bar()
+```
+
+## Visualizing distribution: Categorical variables {.smaller}
+
+
+```{r echo = T}
+ggplot(data = gapminder, 
+       aes(x = fct_infreq(continent)))+
+  geom_bar()
+```
+
+
+
+## Visualizing distribution: Numerical variables {.smaller}
+
+```{r echo = T}
+ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram()
+```
+
+
+
+
+## Visualizing distribution: Numerical variables {.smaller}
+
+```{r echo = T}
+ggplot(data = gapminder, 
+       aes(x = lifeExp, y = after_stat(density)))+
+  geom_histogram(fill = "grey80")+
+  geom_density()
+```
+
+## Visualizing distribution: Numerical variables {.smaller}
+
+```{r eval = F, echo = T}
+ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram(fill = "black", col = "white", binwidth = 0.5)
+
+ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram(fill = "black", col = "white", binwidth = 5)
+
+ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram(fill = "black", col = "white", binwidth = 20)
+```
+
+```{r fig.width=12, fig.height=3}
+#| code-line-numbers: "3"
+library(patchwork)
+p1<-ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram(fill = "black", col = "white", binwidth = 0.5)
+
+p2<-ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram(fill = "black", col = "white", binwidth = 5)
+
+p3<-ggplot(data = gapminder, 
+       aes(x = lifeExp))+
+  geom_histogram(fill = "black", col = "white", binwidth = 20)
+
+p1+p2+p3
+```
+
+## Visualizing Relationship {.smaller}
+
+- ความสัมพันธ์ระหว่างตัวแปร คือ สถานการณ์ที่การเปลี่ยนแปลงค่าของตัวแปรหนึ่งแปรผันร่วมกับการเปลี่ยนแปลงค่าของตัวแปรอื่น
+
+  - ความสัมพันธ์ระหว่าง numeric กับ categorical variable
+  
+  - ความสัมพันธ์ระหว่าง numeric variables
+
+  - ความสัมพันธ์ระหว่าง categorical variables
+
+
+## Visualizing Relationship: numeric vs categorical variables  {.smaller}
+
+
+```{r echo = T}
+ggplot(data = gapminder, aes(x = continent, y = lifeExp)) +
+  geom_boxplot()
+```
+
+
+
+## Visualizing Relationship: numeric vs categorical variables  {.smaller}
+
+
+```{r echo = T}
+ggplot(data = gapminder, aes(x = continent, y = lifeExp)) +
+  geom_boxplot()+
+  facet_wrap(~year)
+```
+
+## Visualizing Relationship: numeric vs categorical variables  {.smaller}
+
+```{r echo = T}
+ggplot(data = gapminder, aes(x = lifeExp, col = continent)) +
+  geom_density(bw = 3)
+```
+
+## Visualizing Relationship: numeric vs categorical variables  {.smaller}
+
+```{r echo = T}
+ggplot(data = gapminder, aes(x = lifeExp, fill = continent)) +
+  geom_density(bw = 3, alpha = 0.2)+
+  facet_wrap(~year)
+```
+
+
+## Visualizing Relationship: numeric vs numeric variables {.smaller}
+
+
+```{r echo = T}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+```
+
+
+## Visualizing Relationship: numeric vs numeric variables {.smaller}
+
+
+```{r echo = T, fig.height = 10}
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()+
+  facet_grid(year~continent)
+```
+
+## Visualizing Relationship: categorical vs categorical variables {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<div style="font-size:80%;">
+
+```{r echo = T}
+#| code-line-numbers: "1|2|3"
+ggplot(data = gapminder[gapminder$year == 2007,], 
+       aes(x = continent, fill = lifeExp > 60))+
+  geom_bar(position = "stack")
+```
+
+</div>
+:::
+
+::: {.column width="50%"}
+
+<div style="font-size:80%;">
+
+```{r echo = T}
+#| code-line-numbers: "1|2|3"
+ggplot(data = gapminder[gapminder$year == 2007,], 
+       aes(x = continent, fill = lifeExp > 60))+
+  geom_bar(position = "fill")
+```
+
+</div>
+:::
+
+
+::::
+
+## Saving ggplot2 plot {.smaller}
+
+```{r echo = T} 
+stackbar_plot <- ggplot(data = gapminder[gapminder$year == 2007,], 
+       aes(x = continent, fill = lifeExp > 60))+
+  geom_bar(position = "fill")
+
+stackbar_plot
+```
+
+
+```{r echo = T}
+library(here)
+ggsave(stackbar_plot, filename = here("Week2/output/plots", "stackbar_plot.png"),
+       width = 8, height = 5, dpi = 200)
+```
+
+
+

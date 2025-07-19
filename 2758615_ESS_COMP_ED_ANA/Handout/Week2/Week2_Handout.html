@@ -6,18 +6,18 @@
 <script src="Week2_Handout_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="Week2_Handout_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Week2_Handout_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="Week2_Handout_files/libs/quarto-html/quarto-syntax-highlighting-2577ed9d2f9b020f727002863c1eb492.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.17">
-
-  <meta name="author" content="Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn">
-  <meta name="dcterms.date" content="2024-09-05">
-  <title>Week2 : ภาพรวม และ Workflow</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="Week2_Handout_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="Week2_Handout_files/libs/revealjs/dist/reveal.css">
-  <style>
+<link href="Week2_Handout_files/libs/quarto-html/quarto-syntax-highlighting-2577ed9d2f9b020f727002863c1eb492.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.17">
+<meta name="author" content="Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn">
+<meta name="dcterms.date" content="2024-09-05">
+<title>Week2 : Get Started with R</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+<link rel="stylesheet" href="Week2_Handout_files/libs/revealjs/dist/reset.css">
+<link rel="stylesheet" href="Week2_Handout_files/libs/revealjs/dist/reveal.css">
+<style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -95,13 +95,13 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="Week2_Handout_files/libs/revealjs/dist/theme/quarto-0f2e86006860adcc558ab7074c6c5218.css">
-  <link rel="stylesheet" href="my_css.css">
-  <link href="Week2_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="Week2_Handout_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-  <style type="text/css">
+<link rel="stylesheet" href="Week2_Handout_files/libs/revealjs/dist/theme/quarto-0f2e86006860adcc558ab7074c6c5218.css">
+<link rel="stylesheet" href="my_css.css">
+<link href="Week2_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+<link href="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+<link href="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+<link href="Week2_Handout_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+<style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -188,7 +188,7 @@
       margin-right: 0; 
     }
   </style>
-  <style>
+<style>
   #title-slide .title {
     font-size: 1.5em;
     color: #C5705D;;
@@ -200,8 +200,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Week2 : ภาพรวม และ Workflow</h1>
+<section id="title-slide" class="quarto-title-block center"><h1 class="title">Week2 : Get Started with R</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -215,23 +214,297 @@ Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn
 </div>
 
   <p class="date">2024-09-05</p>
-</section>
-<section id="overview" class="slide level2 smaller">
-<h2>Overview</h2>
-
-<img data-src="https://r4ds.hadley.nz/diagrams/data-science/whole-game.png" class="r-stretch"><h4 id="prerequisites">Prerequisites</h4>
+</section><section id="การจดการ-project-ใน-r" class="slide level2"><h2>การจัดการ Project ใน R</h2>
+<ul>
+<li><p>Global Environment</p></li>
+<li><p>Project</p></li>
+</ul></section><section id="r-environment" class="slide level2 smaller"><h2>R Environment</h2>
+<blockquote>
+<p>คือพื้นที่เก็บข้อมูล ตัวแปร ฟังก์ชัน หรือวัตถุอื่น ๆ ใน R</p>
+</blockquote>
+<ul>
+<li><p>โดยทั่วไปจะประกอบด้วยเซตที่มีสมาชิกเป็น คู่ของสัญลักษณ์ - ค่า (symbol-value pairs)</p></li>
+<li><p>เรียกสมาชิกดังกล่าวว่า “ตัวแปร (variables)”</p></li>
+<li><p>มีโครงสร้างการเก็บข้อมูลเป็นลำดับชั้น กล่าวคือ environment หนึ่ง ๆ อาจอยู่ภายใต้ environment อื่น ๆ ได้ เกิดเป็นสายโซ่ขอบเขตการค้นหาหรือประมวลผลบน R</p></li>
+</ul>
 <div class="columns">
 <div class="column" style="width:45%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
-<span id="cb1-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<ul>
+<li>มีหลายประเภท
+<ul>
+<li>Global environment</li>
+<li>Local environment</li>
+<li>Custom environment</li>
+</ul>
+</li>
+</ul>
 </div><div class="column" style="width:55%;">
-
+<center>
+<div style="font-size:70%;">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img data-src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*rCeKYuG2CYoJxhoIcmKcYQ.png"></p>
+<figcaption>https://medium.com/<span class="citation" data-cites="wilson.toussile/r-environments-and-variable-scope-ae629da311bf">@wilson.toussile/r-environments-and-variable-scope-ae629da311bf</span></figcaption></figure>
+</div>
+</div>
+</center>
 </div></div>
-</section>
-<section id="data-visualization" class="slide level2 smaller">
-<h2>Data Visualization</h2>
+</section><section id="global-environment" class="slide level2 smaller"><h2>Global Environment</h2>
+<ul>
+<li><p>Top-level environment</p></li>
+<li><p>พื้นที่ทำงานหลักของ R ถูกตั้งไว้เป็นค่าเริ่มต้นสำหรับเก็บข้อมูล ตัวแปร ฟังก์ชันต่าง ๆ</p></li>
+</ul>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div style="font-size: 70%;">
+<p><br></p>
+</div>
+<p><img data-src="images/clipboard-1740597180.png" style="width:80.0%"></p>
+</div><div class="column" style="width:55%;">
+<p>ลองดำเนินการต่อไปนี้</p>
+<p>1.สำรวจ Global Environment</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">ls</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>2.ลองสร้างตัวแปรใหม่</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>x <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb2-2"><a href=""></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</span>
+<span id="cb2-3"><a href=""></a>z <span class="ot">&lt;-</span> <span class="st">"Hello World!!"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>3.สำรวจ Global Enviromment อีกครั้งหนึ่ง</p>
+</div></div>
+</section><section id="global-environment-1" class="slide level2 smaller"><h2>Global Environment</h2>
+<ul>
+<li><p>ใน Project ทาง data science การทำงานบน Global Environment อาจทำให้เกิดปัญหาในการจัดการข้อมูลและโค้ด ซึ่งเพิ่มความเสี่ยงที่โปรเจคจะล้มเหลว หรือไม่สามารถทำซ้ำได้</p></li>
+<li>
+<p>เกิดปัญหาเมื่อทำงานร่วมกันหลายคน หรือหลายเครื่อง</p>
+<ul>
+<li><p>path หรือ working directory ไม่ตรงกัน</p></li>
+<li><p>เรียก package ไม่สมบูรณ์ ไม่ตรงกัน</p></li>
+<li><p>มีข้อมูลที่ไม่ครบถ้วน</p></li>
+<li><p>ขาดความเป็นระเบียบ ทำซ้ำยาก</p></li>
+</ul>
+</li>
+</ul></section><section id="variable-and-value-ใน-r-environment" class="slide level2 smaller"><h2>Variable and Value ใน R Environment</h2>
+<ul>
+<li><p><strong>Variable</strong>: ตัวแปรใน R ทำหน้าที่ <em>อ้างถึงค่าหนึ่ง</em> ใน environment</p></li>
+<li><p><strong>Value</strong>: ข้อมูลที่ตัวแปรชี้ไป เช่น ตัวเลข, string, หรือโครงสร้างข้อมูล</p></li>
+</ul>
+<p>ตัวแปรสามารถจำแนกได้หลายประเภท</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>จำแนกตามประเภทข้อมูล</strong></p>
+<ul>
+<li><p>ตัวแปรตัวเลข (numeric variable)</p></li>
+<li><p>ตัวแปรตัวอักษร (character variable)</p></li>
+<li><p>ตัวแปรตรรกะ (logical variable)</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>x <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb3-2"><a href=""></a>y <span class="ot">&lt;-</span> <span class="st">"data science"</span></span>
+<span id="cb3-3"><a href=""></a>z <span class="ot">&lt;-</span> x <span class="sc">&gt;</span> <span class="dv">5</span></span>
+<span id="cb3-4"><a href=""></a><span class="fu">typeof</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong>จำแนกตามโครงสร้างการจัดเก็บข้อมูล</strong></p>
+<ul>
+<li><p>Scalars</p></li>
+<li><p>Vectors</p></li>
+<li><p>Matrices</p></li>
+<li><p>Arrays or Tensors</p></li>
+<li><p>Data Frames (<code>data.frame</code> or <code>tibble</code>)</p></li>
+<li><p>Lists</p></li>
+<li><p>…</p></li>
+</ul>
+</div></div>
+</section><section id="rstudio-project-rproj" class="slide level2 smaller"><h2>
+<a href="https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects">RStudio Project</a> {<code>Rproj</code>}</h2>
+<p><code>Rproj</code> เป็นไฟล์ที่ใช้จัดการโครงสร้าง Project ใน Rstudio ทำหน้าที่บันทึกการตั้งค่าต่าง ๆ ของ Project เช่น</p>
+<ul>
+<li><p>working directory</p></li>
+<li><p>ประวัติไฟล์ (history, console, environment)</p></li>
+<li><p>ทำให้การใช้ relative path ทำงานได้ง่ายไม่ขึ้นกับคอมพิวเตอร์ที่ใช้</p></li>
+</ul>
+<p>ใน RStudio ไปที่ <code>File &gt; New Project…</code></p>
+
+<img data-src="http://www.rstudio.com/images/docs/projects_new.png" class="r-stretch"></section><section id="โครงสราง-project-ทดชวยใหงานเปนระบบ-และทำใหการสอสารกบทมงายขน" class="slide level2 smaller"><h2>โครงสร้าง Project ที่ดีช่วยให้งานเป็นระบบ และทำให้การสื่อสารกับทีมง่ายขึ้น</h2>
+<pre><code>my_project/
+├── data/
+│   ├── raw/             # ข้อมูลดิบ
+│   └── cleaned/         # ข้อมูลที่ผ่านการจัดการแล้ว
+├── scripts/             # โค้ดสำหรับแต่ละขั้นตอนใน pipeline
+│   ├── import.R
+│   ├── data_cleaning.R
+│   ├── analysis.R
+│   └── workflow.qmd     # Quarto ตัวหลักควบคุม script ทั้งหมด
+├── output/
+│   ├── report.qmd       # สำหรับสรุปผล/รายงานให้ผู้
+│   ├── plots/           # กราฟทั้งหมด
+│   └── reports/         # PDF/HTML/Word ที่ render แล้ว
+├── my_project.Rproj     # Project file ของ RStudio
+└── README.md            # อธิบายโปรเจกต์</code></pre>
+
+<div style="font-size: 70%;">
+<p><strong>แนวทางการตั้งชื่อไฟล์</strong></p>
+<ul>
+<li><p>มีความหมาย</p></li>
+<li><p>มีระบบ มีรูปแบบสม่ำเสมอ เช่น 🐍snake_case หรือ 🐫camelCase</p></li>
+<li><p>เลี่ยงคำกำกวม เช่น <code>final.csv</code>, <code>output.docx</code>, <code>my_data.csv</code>, <code>analysis1.R</code> ซึ่งอาจสื่อไม่ชัดเมื่อเวลาผ่านไป</p></li>
+<li><p>คิดไม่ออกจริง ๆ ให้ chatgpt ช่วย</p></li>
+</ul>
+</div>
+</section><section id="snake_case-vs-camelcase" class="slide level2 smaller"><h2><a href="https://www.freecodecamp.org/news/snake-case-vs-camel-case-vs-pascal-case-vs-kebab-case-whats-the-difference/">snake_case vs camelCase</a></h2>
+<div style="font-size: 70%;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 30%">
+<col style="width: 18%">
+<col style="width: 23%">
+<col style="width: 22%">
+</colgroup>
+<thead><tr class="header">
+<th>ลำดับ</th>
+<th>จุดประสงค์ของไฟล์</th>
+<th>❌ ชื่อที่ไม่ควรใช้</th>
+<th>🐍 snake_case</th>
+<th>🐫 camelCase</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>ข้อมูลคะแนนสอบดิบ</td>
+<td>data1.csv</td>
+<td>raw_test_scores.csv</td>
+<td>rawTestScores.csv</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>ข้อมูลที่จัดรูปแบบเรียบร้อยแล้ว</td>
+<td>final.csv</td>
+<td>cleaned_scores_sem1_2025.csv</td>
+<td>cleanedScoresSem1_2025.csv</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>สคริปต์นำเข้าข้อมูล</td>
+<td>import.R</td>
+<td>import_student_data.R</td>
+<td>importStudentData.R</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>สคริปต์จัดการ missing และ outlier</td>
+<td>fix.R</td>
+<td>handle_missing_outliers.R</td>
+<td>handleMissingOutliers.R</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>วิเคราะห์ความสัมพันธ์เวลาเรียนกับคะแนน</td>
+<td>analysis1.R</td>
+<td>studytime_score_analysis.R</td>
+<td>studytimeScoreAnalysis.R</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>เอกสารรายงานผลเบื้องต้น</td>
+<td>report.docx</td>
+<td>learning_outcome_report.qmd</td>
+<td>learningOutcomeReport.qmd</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>กราฟเปรียบเทียบผลสอบกลุ่มเรียน</td>
+<td>graph1.png</td>
+<td>score_comparison_plot.png</td>
+<td>scoreComparisonPlot.png</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>ไฟล์รวมผลสรุปจากหลายโรงเรียน</td>
+<td>results.xlsx</td>
+<td>summary_results_all_schools.csv</td>
+<td>summaryResultsAllSchools.csv</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> แนวคิดนี้สามารถนำไปใช้กับการตั้งชื่อตัวแปรภายใน environment ของ R ได้ด้วย</p>
+</div>
+</section><section id="variables-values-observations-data" class="slide level2 smaller"><h2>Variables, Values, Observations, Data</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div style="font-size:30%;">
+<p><br></p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="do">## Importing data</span></span>
+<span id="cb5-2"><a href=""></a><span class="do">## install.packages("gapminder")</span></span>
+<span id="cb5-3"><a href=""></a><span class="fu">library</span>(gapminder)</span>
+<span id="cb5-4"><a href=""></a><span class="do">## print data</span></span>
+<span id="cb5-5"><a href=""></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.
+10 Afghanistan Asia       1997    41.8 22227415      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:45%;">
+<div style="font-size: 70%;">
+<p><br></p>
+</div>
+<div class="fragment">
+<div style="font-size:80%;">
+<ul>
+<li>
+<strong>ตัวแปร (Variable)</strong> : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size:80%;">
+<ul>
+<li>
+<strong>ค่าของตัวแปร (Value)</strong> : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size:80%;">
+<ul>
+<li>
+<strong>ค่าสังเกต (Observation)</strong> : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size:80%;">
+<ul>
+<li>
+<strong>ข้อมูล (Data)</strong> : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต</li>
+</ul>
+</div>
+</div>
+</div></div>
+</section><section id="project-workflow" class="slide level2"><h2>Project Workflow</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb7-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+
+<img data-src="https://r4ds.hadley.nz/diagrams/data-science/whole-game.png" class="r-stretch"></section><section id="data-visualization" class="slide level2 smaller"><h2>Data Visualization</h2>
 <div style="font-size:150%;">
 <blockquote>
 <p>One picture is worth a thousand words</p>
@@ -245,31 +518,30 @@ Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn
 <p><br></p>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="do">## Importing data</span></span>
-<span id="cb2-2"><a href=""></a>char_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"character_data_dim1.csv"</span>)</span>
-<span id="cb2-3"><a href=""></a><span class="do">## print data</span></span>
-<span id="cb2-4"><a href=""></a>char_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="do">## Importing data</span></span>
+<span id="cb8-2"><a href=""></a><span class="do">## install.packages("gapminder")</span></span>
+<span id="cb8-3"><a href=""></a><span class="fu">library</span>(gapminder)</span>
+<span id="cb8-4"><a href=""></a><span class="do">## print data</span></span>
+<span id="cb8-5"><a href=""></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 62 × 4
-   student_id student_level score_value attribute
-   &lt;chr&gt;      &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;    
- 1 student29  มัธยมศึกษาปีที่ 6     -0.711   ศีลธรรม   
- 2 student47  มัธยมศึกษาปีที่ 6     -0.121   ศีลธรรม   
- 3 student10  มัธยมศึกษาปีที่ 6      1       ศีลธรรม   
- 4 student39  มัธยมศึกษาปีที่ 6     -0.848   ศีลธรรม   
- 5 student8   มัธยมศึกษาปีที่ 6      0.966   ศีลธรรม   
- 6 student67  มัธยมศึกษาปีที่ 6      0.970   ศีลธรรม   
- 7 student22  มัธยมศึกษาปีที่ 6     -0.00679 ศีลธรรม   
- 8 student38  มัธยมศึกษาปีที่ 6      0.496   ศีลธรรม   
- 9 student41  มัธยมศึกษาปีที่ 6      1       ศีลธรรม   
-10 student6   มัธยมศึกษาปีที่ 5      1       ศีลธรรม   
-# ℹ 52 more rows</code></pre>
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.
+10 Afghanistan Asia       1997    41.8 22227415      635.
+# ℹ 1,694 more rows</code></pre>
 </div>
 </div>
 </div></div>
-</section>
-<section id="data-visualization-1" class="slide level2 smaller">
-<h2>Data Visualization</h2>
+</section><section id="data-visualization-1" class="slide level2 smaller"><h2>Data Visualization</h2>
 <div style="font-size:150%;">
 <blockquote>
 <p>One picture is worth a thousand words</p>
@@ -277,152 +549,125 @@ Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn
 </div>
 <div class="columns">
 <div class="column" style="width:45%;">
-<p><br></p>
-<div class="fragment">
-<div style="font-size:80%;">
-<ul>
-<li><strong>ตัวแปร (Variable)</strong> : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้</li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size:80%;">
-<ul>
-<li><strong>ค่าของตัวแปร (Value)</strong> : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ</li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size:80%;">
-<ul>
-<li><strong>ค่าสังเกต (Observation)</strong> : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง</li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size:80%;">
-<ul>
-<li><strong>ข้อมูล (Data)</strong> : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต</li>
-</ul>
-</div>
-</div>
+<p><img data-src="https://upload.wikimedia.org/wikipedia/commons/d/d2/A_picture_is_worth_a_thousand_words.jpg"></p>
 </div><div class="column" style="width:55%;">
 <div style="font-size:30%;">
 <p><br></p>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="do">## Importing data</span></span>
-<span id="cb4-2"><a href=""></a>char_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"character_data_dim1.csv"</span>)</span>
-<span id="cb4-3"><a href=""></a><span class="do">## print data</span></span>
-<span id="cb4-4"><a href=""></a>char_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">glimpse</span>(gapminder, <span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 62 × 4
-   student_id student_level score_value attribute
-   &lt;chr&gt;      &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;    
- 1 student29  มัธยมศึกษาปีที่ 6     -0.711   ศีลธรรม   
- 2 student47  มัธยมศึกษาปีที่ 6     -0.121   ศีลธรรม   
- 3 student10  มัธยมศึกษาปีที่ 6      1       ศีลธรรม   
- 4 student39  มัธยมศึกษาปีที่ 6     -0.848   ศีลธรรม   
- 5 student8   มัธยมศึกษาปีที่ 6      0.966   ศีลธรรม   
- 6 student67  มัธยมศึกษาปีที่ 6      0.970   ศีลธรรม   
- 7 student22  มัธยมศึกษาปีที่ 6     -0.00679 ศีลธรรม   
- 8 student38  มัธยมศึกษาปีที่ 6      0.496   ศีลธรรม   
- 9 student41  มัธยมศึกษาปีที่ 6      1       ศีลธรรม   
-10 student6   มัธยมศึกษาปีที่ 5      1       ศีลธรรม   
-# ℹ 52 more rows</code></pre>
+<pre><code>Rows: 1,704
+Columns: 6
+$ country   &lt;fct&gt; "Afghanistan", "Afghanistan", "Afghanist…
+$ continent &lt;fct&gt; Asia, Asia, Asia, Asia, Asia, Asia, Asia…
+$ year      &lt;int&gt; 1952, 1957, 1962, 1967, 1972, 1977, 1982…
+$ lifeExp   &lt;dbl&gt; 28.801, 30.332, 31.997, 34.020, 36.088, …
+$ pop       &lt;int&gt; 8425333, 9240934, 10267083, 11537966, 13…
+$ gdpPercap &lt;dbl&gt; 779.4453, 820.8530, 853.1007, 836.1971, …</code></pre>
 </div>
 </div>
 </div></div>
-</section>
-<section id="data-visualization-2" class="slide level2 smaller">
-<h2>Data Visualization</h2>
-<div style="font-size:150%;">
-<blockquote>
-<p>One picture is worth a thousand words</p>
-</blockquote>
-</div>
-<div class="columns">
-<div class="column" style="width:45%;">
-<p><br></p>
-<div style="font-size:80%;">
-<ul>
-<li><strong>ตัวแปร (Variable)</strong> : คุณลักษณะของสิ่งที่ทำการศึกษา <br> ซึ่งสามารถเปลี่ยนแปลงได้จากหน่วยวิเคราะห์หนึ่งไปยังอีกหน่วยหนึ่ง และสามารถวัดหรือจัดประเภทได้</li>
-</ul>
-</div>
-<div style="font-size:80%;">
-<ul>
-<li><strong>ค่าของตัวแปร (Value)</strong> : ค่าที่วัดได้ของตัวแปรจากหน่วยวิเคราะห์หนึ่ง ๆ</li>
-</ul>
-</div>
-<div style="font-size:80%;">
-<ul>
-<li><strong>ค่าสังเกต (Observation)</strong> : เซตของ Value ที่วัดจากหน่วยวิเคราะห์เดียวกัน โดยปกติค่าสังเกตหนึ่ง ๆ จะมีสมาชิกเป็นค่าของตัวแปรหลาย ๆ ตัวจากหน่วยการวิเคราะห์หนึ่ง</li>
-</ul>
-</div>
-<div style="font-size:80%;">
-<ul>
-<li><strong>ข้อมูล (Data)</strong> : เซตของค่าสังเกตหลาย ๆ หน่วยสังเกต</li>
-</ul>
-</div>
-</div><div class="column" style="width:55%;">
-<div style="font-size:30%;">
-<p><br></p>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">glimpse</span>(char_data, <span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 62
-Columns: 4
-$ student_id    &lt;chr&gt; "student29", "student47", "student10…
-$ student_level &lt;chr&gt; "มัธยมศึกษาปีที่ 6", "มัธยมศึกษาปีที่ 6", "มัธย…
-$ score_value   &lt;dbl&gt; -0.710936508, -0.120636508, 1.000000…
-$ attribute     &lt;chr&gt; "ศีลธรรม", "ศีลธรรม", "ศีลธรรม", "ศีลธรร…</code></pre>
-</div>
-</div>
-</div></div>
-</section>
-<section id="data-visualization-3" class="slide level2 smaller">
-<h2>Data Visualization</h2>
+</section><section id="data-visualization-2" class="slide level2 smaller"><h2>Data Visualization</h2>
 <div style="font-size:150%;">
 <blockquote>
 <p>One picture is worth a thousand words</p>
 </blockquote>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="do">## summary statistics</span></span>
-<span id="cb8-2"><a href=""></a><span class="fu">summary</span>(char_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="do">## summary statistics</span></span>
+<span id="cb12-2"><a href=""></a><span class="fu">summary</span>(gapminder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  student_id        student_level       score_value       attribute        
- Length:62          Length:62          Min.   :-0.8728   Length:62         
- Class :character   Class :character   1st Qu.:-0.5801   Class :character  
- Mode  :character   Mode  :character   Median : 0.7326   Mode  :character  
-                                       Mean   : 0.3084                     
-                                       3rd Qu.: 0.9522                     
-                                       Max.   : 1.0000                     </code></pre>
+<pre><code>        country        continent        year         lifeExp           pop              gdpPercap       
+ Afghanistan:  12   Africa  :624   Min.   :1952   Min.   :23.60   Min.   :6.001e+04   Min.   :   241.2  
+ Albania    :  12   Americas:300   1st Qu.:1966   1st Qu.:48.20   1st Qu.:2.794e+06   1st Qu.:  1202.1  
+ Algeria    :  12   Asia    :396   Median :1980   Median :60.71   Median :7.024e+06   Median :  3531.8  
+ Angola     :  12   Europe  :360   Mean   :1980   Mean   :59.47   Mean   :2.960e+07   Mean   :  7215.3  
+ Argentina  :  12   Oceania : 24   3rd Qu.:1993   3rd Qu.:70.85   3rd Qu.:1.959e+07   3rd Qu.:  9325.5  
+ Australia  :  12                  Max.   :2007   Max.   :82.60   Max.   :1.319e+09   Max.   :113523.1  
+ (Other)    :1632                                                                                       </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"average score:"</span>, <span class="fu">mean</span>(char_data<span class="sc">$</span>score_value), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"average score:"</span>, <span class="fu">mean</span>(gapminder<span class="sc">$</span>gdpPercap), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>average score: 0.3083848 </code></pre>
+<pre><code>average score: 7215.327 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"standard deviation:"</span>, <span class="fu">sd</span>(char_data<span class="sc">$</span>score_value), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"standard deviation:"</span>, <span class="fu">sd</span>(gapminder<span class="sc">$</span>gdpPercap), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>standard deviation: 0.7354129 </code></pre>
+<pre><code>standard deviation: 9857.455 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"median score:"</span>, <span class="fu">median</span>(char_data<span class="sc">$</span>score_value), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"median score:"</span>, <span class="fu">median</span>(gapminder<span class="sc">$</span>gdpPercap), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>median score: 0.7326183 </code></pre>
+<pre><code>median score: 3531.847 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"quantiles:</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">quantile</span>(char_data<span class="sc">$</span>score_value, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"quantiles:</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">quantile</span>(gapminder<span class="sc">$</span>gdpPercap, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>quantiles:
- -0.5801157 0.7326183 0.9522105 </code></pre>
+ 1202.06 3531.847 9325.462 </code></pre>
 </div>
 </div>
-</section>
-<section id="data-visualization-visual-representation" class="slide level2">
-<h2>Data Visualization: Visual Representation</h2>
+</section><section id="data-visualization-3" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization</h2>
+<div style="font-size:150%;">
+<blockquote>
+<p>One picture is worth a thousand words</p>
+</blockquote>
+</div>
+<ul>
+<li><p>ความแตกต่างของ <code>gdpPercap</code> ระหว่างทวีปต่าง ๆ</p></li>
+<li><p>ความสัมพันธ์ระหว่าง <code>gdrPercap</code> กับ <code>lifeExp</code></p></li>
+</ul>
+<div style="font-size:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb22-1" class="hljs-ln-code"><a href=""></a><span class="fu">library</span>(psych)</span>
+<span id="cb22-2" class="hljs-ln-code"><a href=""></a><span class="fu">describeBy</span>(gapminder<span class="sc">$</span>gdpPercap, gapminder<span class="sc">$</span>continent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Descriptive statistics by group 
+group: Africa
+   vars   n    mean      sd  median trimmed    mad    min      max    range skew kurtosis     se
+X1    1 624 2193.75 2827.93 1192.14 1557.04 775.32 241.17 21951.21 21710.05 3.53    15.78 113.21
+------------------------------------------------------------------------------------------ 
+group: Americas
+   vars   n    mean      sd  median trimmed     mad     min      max    range skew kurtosis     se
+X1    1 300 7136.11 6396.76 5465.51  5823.6 3269.33 1201.64 42951.65 41750.02 2.83     9.42 369.32
+------------------------------------------------------------------------------------------ 
+group: Asia
+   vars   n    mean       sd  median trimmed     mad min      max    range skew kurtosis     se
+X1    1 396 7902.15 14045.37 2646.79 4915.85 2820.83 331 113523.1 113192.1 4.42    25.56 705.81
+------------------------------------------------------------------------------------------ 
+group: Europe
+   vars   n     mean      sd   median  trimmed     mad    min      max    range skew kurtosis     se
+X1    1 360 14469.48 9355.21 12081.75 13532.97 8846.05 973.53 49357.19 48383.66 0.85     0.14 493.06
+------------------------------------------------------------------------------------------ 
+group: Oceania
+   vars  n     mean      sd  median  trimmed    mad     min      max    range skew kurtosis      se
+X1    1 24 18621.61 6358.98 17983.3 18059.97 6459.1 10039.6 34435.37 24395.77 0.71    -0.21 1298.02</code></pre>
+</div>
+</div>
+</div>
+</section><section id="data-visualization-4" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization</h2>
+<div style="font-size:150%;">
+<blockquote>
+<p>One picture is worth a thousand words</p>
+</blockquote>
+</div>
+<ul>
+<li><p>ความแตกต่างของ <code>gdpPercap</code> ระหว่างทวีปต่าง ๆ</p></li>
+<li><p>ความสัมพันธ์ระหว่าง <code>gdrPercap</code> กับ <code>lifeExp</code></p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"Pearson Correlation between gdpPercap and lifeExp: "</span>, </span>
+<span id="cb24-2"><a href=""></a>    <span class="fu">cor</span>(gapminder<span class="sc">$</span>gdpPercap, gapminder<span class="sc">$</span>lifeExp), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pearson Correlation between gdpPercap and lifeExp:  0.5837062 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">cat</span>(<span class="st">"R2: "</span>, <span class="fu">cor</span>(gapminder<span class="sc">$</span>gdpPercap, gapminder<span class="sc">$</span>lifeExp)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R2:  0.340713</code></pre>
+</div>
+</div>
+</section><section id="data-visualization-visual-representation" class="slide level2"><h2>Data Visualization: Visual Representation</h2>
 <p>กระบวนการแปลงข้อมูลที่มีให้อยู่ในรูปของแผนภาพ หรืออาจกล่าวว่าเป็นกระบวนการตัดสินใจเลือกใช้แผนภาพที่เหมาะสมสำหรับแสดงสาระสำคัญของข้อมูล</p>
 <blockquote>
 <p>Chart = Mark + Attribute</p>
@@ -454,108 +699,295 @@ $ attribute     &lt;chr&gt; "ศีลธรรม", "ศีลธรรม", "�
 </ul>
 </div>
 </div></div>
-</section>
-<section id="data-visualization-visual-representation-1" class="slide level2">
-<h2>Data Visualization: Visual Representation</h2>
+</section><section id="data-visualization-visual-representation-1" class="slide level2"><h2>Data Visualization: Visual Representation</h2>
 
-<img data-src="https://datakruroo.github.io/DataVisualization/week01/img/data_representation.png" class="r-stretch"></section>
-<section id="data-visualization-visual-representation-2" class="slide level2">
-<h2>Data Visualization: Visual Representation</h2>
+<img data-src="https://datakruroo.github.io/DataVisualization/week01/img/data_representation.png" class="r-stretch"></section><section id="data-visualization-visual-representation-2" class="slide level2"><h2>Data Visualization: Visual Representation</h2>
 <div style="font-size:60%; text-align: center;">
 <div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="https://datakruroo.github.io/DataVisualization/week01/img/The-Mackinlay-ranking-of-perceptual-task.png"></p>
-<figcaption>Source: https://www.researchgate.net/figure/The-Mackinlay-ranking-of-perceptual-task_fig2_221098028</figcaption>
-</figure>
+<figure><p><img data-src="https://datakruroo.github.io/DataVisualization/week01/img/The-Mackinlay-ranking-of-perceptual-task.png"></p>
+<figcaption>Source: https://www.researchgate.net/figure/The-Mackinlay-ranking-of-perceptual-task_fig2_221098028</figcaption></figure>
 </div>
 </div>
-</section>
-<section id="data-visualization-4" class="slide level2 smaller">
-<h2>Data Visualization</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
+</section><section id="data-visualization-5" class="slide level2 smaller"><h2>Data Visualization</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">summary</span>(char_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">summary</span>(gapminder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  student_id        student_level       score_value       attribute        
- Length:62          Length:62          Min.   :-0.8728   Length:62         
- Class :character   Class :character   1st Qu.:-0.5801   Class :character  
- Mode  :character   Mode  :character   Median : 0.7326   Mode  :character  
-                                       Mean   : 0.3084                     
-                                       3rd Qu.: 0.9522                     
-                                       Max.   : 1.0000                     </code></pre>
+<pre><code>        country        continent        year         lifeExp           pop              gdpPercap       
+ Afghanistan:  12   Africa  :624   Min.   :1952   Min.   :23.60   Min.   :6.001e+04   Min.   :   241.2  
+ Albania    :  12   Americas:300   1st Qu.:1966   1st Qu.:48.20   1st Qu.:2.794e+06   1st Qu.:  1202.1  
+ Algeria    :  12   Asia    :396   Median :1980   Median :60.71   Median :7.024e+06   Median :  3531.8  
+ Angola     :  12   Europe  :360   Mean   :1980   Mean   :59.47   Mean   :2.960e+07   Mean   :  7215.3  
+ Argentina  :  12   Oceania : 24   3rd Qu.:1993   3rd Qu.:70.85   3rd Qu.:1.959e+07   3rd Qu.:  9325.5  
+ Australia  :  12                  Max.   :2007   Max.   :82.60   Max.   :1.319e+09   Max.   :113523.1  
+ (Other)    :1632                                                                                       </code></pre>
 </div>
 </div>
 
-<img data-src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*LFG6Hyp7Py80nc1d.jpg" class="r-stretch"></section>
-<section id="data-visualization-ggplot2" class="slide level2 smaller">
-<h2>Data Visualization : ggplot2</h2>
+<img data-src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*LFG6Hyp7Py80nc1d.jpg" class="r-stretch"></section><section id="data-visualization-ggplot2" class="slide level2 smaller"><h2>Data Visualization : ggplot2</h2>
 <p>ggplot2 เป็น package ที่ใช้ในการสร้างกราฟใน R โดยมีหลักการทำงานที่เรียกว่า “Grammar of Graphics” ซึ่งช่วยให้ผู้ใช้สามารถสร้างกราฟได้อย่างยืดหยุ่นและมีประสิทธิภาพ</p>
 <ul>
 <li><p>สร้างวัตถุเชิงกราฟฟิก หรือ canvas ด้วย <code>ggplot()</code> ขั้นตอนนี้กำหนดอาร์กิวเมนท์ <code>data</code> เป็นข้อมูลที่ต้องการใช้ในการสร้างกราฟ</p></li>
 <li><p>เพิ่ม layer เรียกว่า aesthetic mappings ด้วย <code>aes()</code> เพื่อจับคู่ระหว่างตัวแปรกับ visual element ในแผนภาพ</p></li>
 <li><p>เพิ่ม layer แสดงผลข้อมูลด้วย <code>geom_xxx()</code> เช่น <code>geom_histogram()</code>, <code>geom_boxplot()</code>, <code>geom_bar()</code>, <code>geom_line()</code>, <code>geom_point()</code> เป็นต้น</p></li>
+</ul></section><section id="data-visualization-ggplot2-1" class="slide level2 smaller"><h2>Data Visualization : ggplot2</h2>
+<p>layer จำเป็นสำหรับการแสดงผลลัพธ์ด้วย ggplot2</p>
+<ul>
+<li><p><code>data</code> + aesthetic mappings</p></li>
+<li><p>geometric objects (Marks) + statistical transformations</p></li>
+<li><p>Scales</p></li>
+<li><p>Coordinate System</p></li>
+</ul></section><section id="data-visualization-ggplot2-2" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb30-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder) <span class="co"># data layer</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch"></section><section id="data-visualization-ggplot2-3" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb31-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="co"># data layer</span></span>
+<span id="cb31-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap)) <span class="co"># aesthetic mappings</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"></section><section id="data-visualization-ggplot2-4" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb32-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="co"># data layer</span></span>
+<span id="cb32-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap))<span class="sc">+</span> <span class="co"># aesthetic mappings</span></span>
+<span id="cb32-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_histogram</span>() <span class="co"># geometric objects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"></section><section id="data-visualization-ggplot2-5" class="slide level2 smaller"><h2>Data Visualization : ggplot2</h2>
+<p>ปรับแต่งการนำเสนอผลผ่าน argument ของ <code>geom_xxx()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder,</span>
+<span id="cb33-2"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap))<span class="sc">+</span></span>
+<span id="cb33-3"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section><section id="data-visualization-ggplot2-6" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<ul>
+<li><p>เปลี่ยน <code>geom_xxx()</code> = เปลี่ยน Mark</p></li>
+<li><p>เปลี่ยนมุมมองในการทำความเข้าใจข้อมูล</p></li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb34-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder,</span>
+<span id="cb34-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, <span class="at">y =</span> <span class="st">""</span>))<span class="sc">+</span></span>
+<span id="cb34-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.5</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"></section><section id="data-visualization-ggplot2-7" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<ul>
+<li><p>แต่ละแผนภาพสามารถเพิ่ม layer ของ attribute ได้</p></li>
+<li><p>ช่วยให้พิจารณาหลายตัวแปรไปพร้อมกันในแผนภาพเดียว</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb35-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder,</span>
+<span id="cb35-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, <span class="at">y =</span> continent, </span>
+<span id="cb35-3" class="hljs-ln-code"><a href=""></a>                     <span class="at">fill =</span> continent))<span class="sc">+</span></span>
+<span id="cb35-4" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section><section id="data-visualization-ggplot2-8" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<ul>
+<li><p><code>scale_xxx_xxx()</code> ใช้ควบคุมลักษณะของ attribute ในแผนภาพ</p></li>
+<li><p>มีความสัมพันธ์กับ aesthetic mapping ของแผนภาพ</p></li>
+</ul>
+<div style="font-size:80%;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 41%">
+<col style="width: 36%">
+</colgroup>
+<thead><tr class="header">
+<th>องค์ประกอบ</th>
+<th>หน้าที่</th>
+<th>ตัวอย่าง</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>aes()</code></td>
+<td>จับคู่ <strong>ตัวแปร</strong> กับ <strong>attribute</strong> เช่น x, y, color, size</td>
+<td><code>aes(x = gdpPercap, y = continent, fill = continent)</code></td>
+</tr>
+<tr class="even">
+<td><code>scale_xxx_xxx()</code></td>
+<td>ปรับรูปแบบของค่าที่จับคู่ไปแล้วใน <code>aes()</code> เช่น สี ขนาด หรือแกน</td>
+<td>
+<code>scale_fill_manual()</code>, <code>scale_x_continuous()</code>, <code>score_y_discrete()</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>theme()</code></td>
+<td>ปรับองค์ประกอบของกราฟที่ <strong>ไม่เกี่ยวกับข้อมูลโดยตรง</strong> เช่น ตัวอักษร เส้น แกน สีพื้นหลัง</td>
+<td>
+<code>theme_minimal()</code>, <code>theme(axis.text.x = element_text(angle = 45))</code>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section><section id="data-visualization-ggplot2-9" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36" data-code-line-numbers="5-12|13-14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb36-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder,</span>
+<span id="cb36-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, <span class="at">y =</span> continent, </span>
+<span id="cb36-3" class="hljs-ln-code"><a href=""></a>                     <span class="at">fill =</span> continent))<span class="sc">+</span></span>
+<span id="cb36-4" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb36-5" class="hljs-ln-code"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Asia"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Europe"</span> <span class="ot">=</span> <span class="st">"blue"</span>, </span>
+<span id="cb36-6" class="hljs-ln-code"><a href=""></a>                                <span class="st">"Africa"</span> <span class="ot">=</span> <span class="st">"green"</span>, <span class="st">"Americas"</span> <span class="ot">=</span> <span class="st">"yellow"</span>, </span>
+<span id="cb36-7" class="hljs-ln-code"><a href=""></a>                                <span class="st">"Oceania"</span> <span class="ot">=</span> <span class="st">"purple"</span>))<span class="sc">+</span></span>
+<span id="cb36-8" class="hljs-ln-code"><a href=""></a>  <span class="fu">scale_y_discrete</span>(<span class="at">name =</span> <span class="st">"Continent"</span>,</span>
+<span id="cb36-9" class="hljs-ln-code"><a href=""></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"Asia"</span>, <span class="st">"Europe"</span>, <span class="st">"Africa"</span>, <span class="st">"Americas"</span>, <span class="st">"Oceania"</span>))<span class="sc">+</span></span>
+<span id="cb36-10" class="hljs-ln-code"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">name =</span> <span class="st">"</span><span class="sc">\n</span><span class="st"> GDP per Capita"</span>,</span>
+<span id="cb36-11" class="hljs-ln-code"><a href=""></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">100000</span>, <span class="dv">25000</span>),</span>
+<span id="cb36-12" class="hljs-ln-code"><a href=""></a>                     <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">dollar_format</span>(<span class="at">prefix =</span> <span class="st">"$"</span>, <span class="at">suffix =</span> <span class="st">" USD"</span>))<span class="sc">+</span></span>
+<span id="cb36-13" class="hljs-ln-code"><a href=""></a>  <span class="fu">theme_light</span>()<span class="sc">+</span></span>
+<span id="cb36-14" class="hljs-ln-code"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section><section id="visualizing-distribution" class="slide level2 smaller"><h2>Visualizing distribution</h2>
+<ul>
+<li><p>ขอบเขตของข้อมูล</p></li>
+<li><p>แนวโน้มการพบข้อมูล</p></li>
+</ul></section><section id="visualizing-distribution-categorical-variables" class="slide level2 smaller"><h2>Visualizing distribution: Categorical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb37-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> continent))<span class="sc">+</span></span>
+<span id="cb37-3"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch"></section><section id="visualizing-distribution-categorical-variables-1" class="slide level2 smaller"><h2>Visualizing distribution: Categorical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb38-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">fct_infreq</span>(continent)))<span class="sc">+</span></span>
+<span id="cb38-3"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch"></section><section id="visualizing-distribution-numerical-variables" class="slide level2 smaller"><h2>Visualizing distribution: Numerical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb39-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> lifeExp))<span class="sc">+</span></span>
+<span id="cb39-3"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section><section id="visualizing-distribution-numerical-variables-1" class="slide level2 smaller"><h2>Visualizing distribution: Numerical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb40-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">y =</span> <span class="fu">after_stat</span>(density)))<span class="sc">+</span></span>
+<span id="cb40-3"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"grey80"</span>)<span class="sc">+</span></span>
+<span id="cb40-4"><a href=""></a>  <span class="fu">geom_density</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section><section id="visualizing-distribution-numerical-variables-2" class="slide level2 smaller"><h2>Visualizing distribution: Numerical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb41-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> lifeExp))<span class="sc">+</span></span>
+<span id="cb41-3"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">binwidth =</span> <span class="fl">0.5</span>)</span>
+<span id="cb41-4"><a href=""></a></span>
+<span id="cb41-5"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb41-6"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> lifeExp))<span class="sc">+</span></span>
+<span id="cb41-7"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">binwidth =</span> <span class="dv">5</span>)</span>
+<span id="cb41-8"><a href=""></a></span>
+<span id="cb41-9"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, </span>
+<span id="cb41-10"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> lifeExp))<span class="sc">+</span></span>
+<span id="cb41-11"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">binwidth =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-27-1.png" width="1152" class="r-stretch"></section><section id="visualizing-relationship" class="slide level2 smaller"><h2>Visualizing Relationship</h2>
+<ul>
+<li>
+<p>ความสัมพันธ์ระหว่างตัวแปร คือ สถานการณ์ที่การเปลี่ยนแปลงค่าของตัวแปรหนึ่งแปรผันร่วมกับการเปลี่ยนแปลงค่าของตัวแปรอื่น</p>
+<ul>
+<li><p>ความสัมพันธ์ระหว่าง numeric กับ categorical variable</p></li>
+<li><p>ความสัมพันธ์ระหว่าง numeric variables</p></li>
+<li><p>ความสัมพันธ์ระหว่าง categorical variables</p></li>
+</ul>
+</li>
+</ul></section><section id="visualizing-relationship-numeric-vs-categorical-variables" class="slide level2 smaller"><h2>Visualizing Relationship: numeric vs categorical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="fu">aes</span>(<span class="at">x =</span> continent, <span class="at">y =</span> lifeExp)) <span class="sc">+</span></span>
+<span id="cb42-2"><a href=""></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-28-1.png" width="960" class="r-stretch"></section><section id="visualizing-relationship-numeric-vs-categorical-variables-1" class="slide level2 smaller"><h2>Visualizing Relationship: numeric vs categorical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="fu">aes</span>(<span class="at">x =</span> continent, <span class="at">y =</span> lifeExp)) <span class="sc">+</span></span>
+<span id="cb43-2"><a href=""></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb43-3"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section><section id="visualizing-relationship-numeric-vs-categorical-variables-2" class="slide level2 smaller"><h2>Visualizing Relationship: numeric vs categorical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">col =</span> continent)) <span class="sc">+</span></span>
+<span id="cb44-2"><a href=""></a>  <span class="fu">geom_density</span>(<span class="at">bw =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section><section id="visualizing-relationship-numeric-vs-categorical-variables-3" class="slide level2 smaller"><h2>Visualizing Relationship: numeric vs categorical variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="fu">aes</span>(<span class="at">x =</span> lifeExp, <span class="at">fill =</span> continent)) <span class="sc">+</span></span>
+<span id="cb45-2"><a href=""></a>  <span class="fu">geom_density</span>(<span class="at">bw =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>)<span class="sc">+</span></span>
+<span id="cb45-3"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section><section id="visualizing-relationship-numeric-vs-numeric-variables" class="slide level2 smaller"><h2>Visualizing Relationship: numeric vs numeric variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, <span class="at">y =</span> lifeExp)) <span class="sc">+</span></span>
+<span id="cb46-2"><a href=""></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch"></section><section id="visualizing-relationship-numeric-vs-numeric-variables-1" class="slide level2 smaller"><h2>Visualizing Relationship: numeric vs numeric variables</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder, <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, <span class="at">y =</span> lifeExp)) <span class="sc">+</span></span>
+<span id="cb47-2"><a href=""></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb47-3"><a href=""></a>  <span class="fu">facet_grid</span>(year<span class="sc">~</span>continent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-33-1.png" width="960" class="r-stretch"></section><section id="visualizing-relationship-categorical-vs-categorical-variables" class="slide level2 smaller"><h2>Visualizing Relationship: categorical vs categorical variables</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div style="font-size:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48" data-code-line-numbers="1|2|3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder[gapminder<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">2007</span>,], </span>
+<span id="cb48-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> continent, <span class="at">fill =</span> lifeExp <span class="sc">&gt;</span> <span class="dv">60</span>))<span class="sc">+</span></span>
+<span id="cb48-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div style="font-size:80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49" data-code-line-numbers="1|2|3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> gapminder[gapminder<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">2007</span>,], </span>
+<span id="cb49-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> continent, <span class="at">fill =</span> lifeExp <span class="sc">&gt;</span> <span class="dv">60</span>))<span class="sc">+</span></span>
+<span id="cb49-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-35-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section><section id="saving-ggplot2-plot" class="slide level2 smaller"><h2>Saving ggplot2 plot</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a>stackbar_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> gapminder[gapminder<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">2007</span>,], </span>
+<span id="cb50-2"><a href=""></a>       <span class="fu">aes</span>(<span class="at">x =</span> continent, <span class="at">fill =</span> lifeExp <span class="sc">&gt;</span> <span class="dv">60</span>))<span class="sc">+</span></span>
+<span id="cb50-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>)</span>
+<span id="cb50-4"><a href=""></a></span>
+<span id="cb50-5"><a href=""></a>stackbar_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-36-1.png" width="960" class="r-stretch"><div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a><span class="fu">library</span>(here)</span>
+<span id="cb51-2"><a href=""></a><span class="fu">ggsave</span>(stackbar_plot, <span class="at">filename =</span> <span class="fu">here</span>(<span class="st">"Week2/output/plots"</span>, <span class="st">"stackbar_plot.png"</span>),</span>
+<span id="cb51-3"><a href=""></a>       <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>, <span class="at">dpi =</span> <span class="dv">200</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
 </section>
-<section id="data-visualization-ggplot2-1" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb20-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> char_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
 </div>
-<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"></section>
-<section id="data-visualization-ggplot2-2" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb21-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> char_data,</span>
-<span id="cb21-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> score_value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
-<section id="data-visualization-ggplot2-3" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb22-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> char_data,</span>
-<span id="cb22-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> score_value))<span class="sc">+</span></span>
-<span id="cb22-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section>
-<section id="data-visualization-ggplot2-4" class="slide level2">
-<h2>Data Visualization : ggplot2</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> char_data,</span>
-<span id="cb23-2"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> score_value))<span class="sc">+</span></span>
-<span id="cb23-3"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
-<section id="data-visualization-ggplot2-5" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> char_data,</span>
-<span id="cb24-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> score_value, <span class="at">y =</span> <span class="st">""</span>))<span class="sc">+</span></span>
-<span id="cb24-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.5</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
-<section id="data-visualization-ggplot2-6" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Data Visualization : ggplot2</h2>
-<p>คุณลักษณะอันพึงประสงค์ด้านศีลธรรมของนักเรียนในโรงเรียนเป็นอย่างไร ?</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> char_data,</span>
-<span id="cb25-2" class="hljs-ln-code"><a href=""></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> score_value, <span class="at">y =</span> <span class="st">""</span>, </span>
-<span id="cb25-3" class="hljs-ln-code"><a href=""></a>                     <span class="at">fill =</span> student_level))<span class="sc">+</span></span>
-<span id="cb25-4" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-
-<img data-src="Week2_Handout_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"></section>
-    </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -563,23 +995,7 @@ $ attribute     &lt;chr&gt; "ศีลธรรม", "ศีลธรรม", "�
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="Week2_Handout_files/libs/revealjs/dist/reveal.js"></script>
-  <!-- reveal.js plugins -->
-  <script src="Week2_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-  
-
-  <script src="Week2_Handout_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="Week2_Handout_files/libs/revealjs/plugin/math/math.js"></script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
-
-  <script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="Week2_Handout_files/libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="Week2_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/quarto-support/support.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/notes/notes.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/search/search.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/zoom/zoom.js"></script><script src="Week2_Handout_files/libs/revealjs/plugin/math/math.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -770,9 +1186,7 @@ $ attribute     &lt;chr&gt; "ศีลธรรม", "ศีลธรรม", "�
           RevealZoom
         ]
       });
-    </script>
-    
-    <script>
+    </script><script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
@@ -807,9 +1221,7 @@ $ attribute     &lt;chr&gt; "ศีลธรรม", "ศีลธรรม", "�
         }
 
       })();
-    </script>
-
-    <script id="quarto-html-after-body" type="application/javascript">
+    </script><script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -976,6 +1388,6 @@ $ attribute     &lt;chr&gt; "ศีลธรรม", "ศีลธรรม", "�
         }
       });
       </script>
-    
+
 
 </body></html>

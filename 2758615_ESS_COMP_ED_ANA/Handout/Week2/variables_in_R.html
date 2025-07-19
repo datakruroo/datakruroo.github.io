@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.17">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Untitled</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="variables_in_R_files/libs/clipboard/clipboard.min.js"></script>
+<script src="variables_in_R_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="variables_in_R_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="variables_in_R_files/libs/quarto-html/popper.min.js"></script>
+<script src="variables_in_R_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="variables_in_R_files/libs/quarto-html/anchor.min.js"></script>
+<link href="variables_in_R_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="variables_in_R_files/libs/quarto-html/quarto-syntax-highlighting-da03d714c310c60cec1d83284c92da2c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="variables_in_R_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="variables_in_R_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="variables_in_R_files/libs/bootstrap/bootstrap-be9206a58a27969b3ea3001da8f26fef.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Untitled</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>#1. แนะนำ R</p>
+<p>เนื้่อหาส่วนนี้อยู่ใน ppt หน้า</p>
+<p>#2. ตัวแปรและข้อมูล</p>
+<section id="ตวแปร-variable" class="level2">
+<h2 class="anchored" data-anchor-id="ตวแปร-variable">ตัวแปร (variable)</h2>
+<p>คุณลักษณะของสิ่งต่างๆ ของคน องค์กร สัตว์ หรือสิ่งของ โดยที่คุณลักษณะดังกล่าวมีการเปลี่ยนแปลงค่าได้ไปตามหน่วยของสิ่งนั้น(เรียกว่า หน่วยข้อมูล)</p>
+<ul>
+<li><p>ตัวแปรเชิงปริมาณ (quantitative variable) vs ตัวแปรจัดประเภท (categorical variable)</p></li>
+<li><p>ตัวแปรตาม (dependent variable) vs ตัวแปรอิสระ (independent variable)</p></li>
+<li><p>ตัวแปรต่อเนื่อง (continuous variable) vs ตัวแปรไม่ต่อเนื่อง (discrete variable)</p></li>
+</ul>
+</section>
+<section id="ขอมล-data" class="level2">
+<h2 class="anchored" data-anchor-id="ขอมล-data">ข้อมูล (data)</h2>
+<p>ข้อเท็จจริงหรือค่าสังเกตุที่ถูกบันทึกหรือวัดค่าตามตัวแปรที่นักวิจัยกำหนด ซึ่งเป็นข้อเท็จจริงที่ได้นี้มาจากหน่วยตัวอย่างในการศึกษา อาจอยู่ในรูปตัวเลข ตัวอักษร ข้อความ สัญลักษณ์ต่างๆ โดยผลที่ได้จากการวัด (measurement) เรียกว่าค่าสังเกต (observations) ของตัวแปร</p>
+</section>
+<section id="กจกรรม-แอปเปล-มะละกอ-กลวย" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-แอปเปล-มะละกอ-กลวย">กิจกรรม : แอปเปิ้ล มะละกอ กล้วย</h2>
+<p>ตะกร้าของขวัญใบหนึ่ง มีแอปเปิ้ลจํานวน 25 ผล มะละกอ จํานวน 47 ผล กล้วยจํานวน 18 ลูก และส้มอีกจํานวนหนึ่ง ถ้าตะกร้านี้มีผลไม้ รวมกันทั้งหมด 126 ลูก จงหาว่าตะกร้าของขวัญนี้</p>
+<ol type="1">
+<li>มีจำนวนแอปเปิ้ล กล้วย ส้ม รวมกันกี่ผล</li>
+<li>ถ้าตะกร้าใบที่2มี แอปเปิ้ล มะละกอ กล้วย ส้ม จำนวน 14 , 27, 8 และ 12 ผล ตามลำดับ จงหาว่ารวม 2 ตะกร้ามีผลไม้แต่ละชนิดเท่าไรบ้าง</li>
+<li>ถ้าแบ่งผลไม้จากตะกร้าที่ 1 อย่างละ 5 ผลมาใส่ตะกร้าที่2 จะมีผลไม้แต่ละชนิดเท่าไรในแต่ละตะกร้า</li>
+</ol>
+</section>
+<section id="ตวแปรใน-r" class="level1">
+<h1>3. ตัวแปรใน R</h1>
+<section id="ตวแปรใน-r-1" class="level2">
+<h2 class="anchored" data-anchor-id="ตวแปรใน-r-1">ตัวแปรใน R</h2>
+<p>เป็นวัตถุประเภทหนึ่งภายใต้สภาพแวดล้อมของ R ทำหน้าที่</p>
+<ul>
+<li><p><strong>เก็บข้อมูล</strong>ที่ผู้วิเคราะห์นำเข้าสู่โปรแกรม</p></li>
+<li><p><strong>เก็บผลลัพธ์</strong>ที่ได้จากการประมวลผลของโปรแกรม</p></li>
+</ul>
+<p>การเก็บค่าไว้ในตัวแปรทำให้ผู้วิเคราะห์สามารถเรียกดูหรือนำผลลัพธ์ไปใช้ต่อได้ โดยที่ไม่จำเป็นต้องป้อนข้อมูลหรือประมวลผลใหม่</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co">#assign 10 to x (x is a variable)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">15</span> <span class="co">#assign 15 to y (y is a variable)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> x<span class="sc">+</span>y <span class="co">#assign x+y to z (z also a variable)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>z<span class="sc">/</span><span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5</code></pre>
+</div>
+</div>
+</section>
+<section id="ขอ-1-มจำนวนแอปเปล-กลวย-สม-รวมกนกผล" class="level2">
+<h2 class="anchored" data-anchor-id="ขอ-1-มจำนวนแอปเปล-กลวย-สม-รวมกนกผล">ข้อ 1 : มีจำนวนแอปเปิ้ล กล้วย ส้ม รวมกันกี่ผล</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>apple <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="co"># number of apple</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>papaya <span class="ot">&lt;-</span> <span class="dv">47</span> <span class="co"># number of papaya</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>banana <span class="ot">&lt;-</span> <span class="dv">18</span> <span class="co"># number of banana</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>total <span class="ot">&lt;-</span> <span class="dv">126</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># number of orange</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>orange <span class="ot">&lt;-</span> total <span class="sc">-</span> (apple<span class="sc">+</span>papaya<span class="sc">+</span>banana)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate answer</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>answer <span class="ot">&lt;-</span> apple <span class="sc">+</span> banana <span class="sc">+</span> orange </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># printout</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Apple + Banana + Orange ="</span>, answer) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Apple + Banana + Orange = 79"</code></pre>
+</div>
+</div>
+</section>
+<section id="ขอ-2-ถาตะกราใบท-2-ม-แอปเปล-มะละกอ-กลวย-สม-จำนวน-14-27-8-และ-12-ผล-ตามลำดบ-จงหาวารวม-2-ตะกรามผลไมแตละชนดเทาไรบาง" class="level2">
+<h2 class="anchored" data-anchor-id="ขอ-2-ถาตะกราใบท-2-ม-แอปเปล-มะละกอ-กลวย-สม-จำนวน-14-27-8-และ-12-ผล-ตามลำดบ-จงหาวารวม-2-ตะกรามผลไมแตละชนดเทาไรบาง">ข้อ 2 : ถ้าตะกร้าใบที่ 2 มี แอปเปิ้ล มะละกอ กล้วย ส้ม จำนวน 14 , 27, 8 และ 12 ผล ตามลำดับ จงหาว่ารวม 2 ตะกร้ามีผลไม้แต่ละชนิดเท่าไรบ้าง</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>apple2 <span class="ot">&lt;-</span> <span class="dv">14</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>papaya2 <span class="ot">&lt;-</span> <span class="dv">28</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>banana2 <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>orange2 <span class="ot">&lt;-</span> <span class="dv">12</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>total2 <span class="ot">&lt;-</span> apple2 <span class="sc">+</span> papaya2 <span class="sc">+</span> banana2 <span class="sc">+</span> orange2 </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Grand Total = "</span>, total <span class="sc">+</span> total2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Grand Total =  188"</code></pre>
+</div>
+</div>
+</section>
+<section id="ขอ-3-ถาแบงผลไมจากตะกราท-1-อยางละ-5-ผลมาใสตะกราท2-จะมผลไมแตละชนดเทาไรในแตละตะกรา" class="level2">
+<h2 class="anchored" data-anchor-id="ขอ-3-ถาแบงผลไมจากตะกราท-1-อยางละ-5-ผลมาใสตะกราท2-จะมผลไมแตละชนดเทาไรในแตละตะกรา">ข้อ 3 ถ้าแบ่งผลไม้จากตะกร้าที่ 1 อย่างละ 5 ผลมาใส่ตะกร้าที่2 จะมีผลไม้แต่ละชนิดเท่าไรในแต่ละตะกร้า</h2>
+</section>
+<section id="ประเภทของตวแปรใน-r-1" class="level2">
+<h2 class="anchored" data-anchor-id="ประเภทของตวแปรใน-r-1">ประเภทของตัวแปรใน R (1)</h2>
+<p>ตัวแปรใน R สามารถจำแนกได้หลายประเภท ขึ้นอยู่กับเกณฑ์การพิจารณา</p>
+<p><strong>จำแนกตามลักษณะของข้อมูลในตัวแปร</strong></p>
+<ul>
+<li><p>ตัวแปรตัวเลข (numeric variable)</p></li>
+<li><p>ตัวแปรตัวอักษร (character/string variable)</p></li>
+<li><p>ตัวแปรตรรกะ (logical variable)</p></li>
+</ul>
+</section>
+<section id="ตวแปรตวเลข-numeric-variables" class="level2">
+<h2 class="anchored" data-anchor-id="ตวแปรตวเลข-numeric-variables">ตัวแปรตัวเลข (numeric variables)</h2>
+<p>ตัวแปรตัวเลข คือ ตัวแปรที่ข้อมูลที่จัดเก็บภายในตัวแปรเป็นตัวเลขจำนวนจริง ตัวแปรประเภทนี้สามารถนำไปดำเนินการทางคณิตศาสตร์ได้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>science <span class="ot">&lt;-</span> <span class="dv">45</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="dv">15000</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>science;age;income</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 45</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 15000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(science)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(income)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+</section>
+<section id="ตวแปรตวอกษร-character-variables" class="level2">
+<h2 class="anchored" data-anchor-id="ตวแปรตวอกษร-character-variables">ตัวแปรตัวอักษร (character variables)</h2>
+<p>การเก็บค่าข้อมูลประเภทตัวอักษรไว้ในตัวแปรจะต้องเขียนสัญลักษณ์ <code>" "</code> (อ่านว่า quotation) คร่อมข้อมูลตัวอักษรด้วย</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gender1 <span class="ot">&lt;-</span> <span class="st">"FEMALE"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>gender2 <span class="ot">&lt;-</span> <span class="st">"MALE"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>gender1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "FEMALE"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gender1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+</section>
+<section id="ตวแปรตรรกะ" class="level2">
+<h2 class="anchored" data-anchor-id="ตวแปรตรรกะ">ตัวแปรตรรกะ</h2>
+<p>เป็นตัวแปรที่ข้อมูลภายในตัวแปรเป็นค่าความจริงของประพจน์ โดยปกติตัวแปรประเภทนี้มักเป็นผลลัพธ์ที่เกิดขึ้นจากการตรวจสอบเงื่อนไข</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>result1<span class="ot">&lt;-</span>science<span class="sc">&gt;</span><span class="dv">55</span> <span class="co"># Is science score greater than 55?</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>result1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>result2<span class="ot">&lt;-</span>age <span class="sc">==</span> <span class="dv">20</span> <span class="co">#Is age is equal to 20 year?</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>result2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>result3<span class="ot">&lt;-</span><span class="cn">FALSE</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>result3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+</div>
+</section>
+<section id="ประเภทของตวแปรใน-r-2" class="level2">
+<h2 class="anchored" data-anchor-id="ประเภทของตวแปรใน-r-2">ประเภทของตัวแปรใน R (2)</h2>
+<p><strong>จำแนกตามโครงสร้างการจัดเก็บข้อมูล</strong></p>
+<ul>
+<li><p>สเกลาร์ (scalars)</p></li>
+<li><p>เวกเตอร์ (vectors)</p></li>
+<li><p>เมทริกซ์ (matrices)</p></li>
+<li><p>อาร์เรย์ (arrays or tensors)</p></li>
+<li><p>ชุดข้อมูล (dataframes)</p></li>
+<li><p>Tibbles</p></li>
+<li><p>อื่น ๆ อีกมากมาย</p></li>
+</ul>
+</section>
+</section>
+<section id="เวกเตอร" class="level1">
+<h1>4. เวกเตอร์</h1>
+<section id="เวกเตอร-vectors" class="level2">
+<h2 class="anchored" data-anchor-id="เวกเตอร-vectors">เวกเตอร์ (vectors)</h2>
+<ul>
+<li><p>เป็นตัวแปรที่มีโครงสร้างสำหรับจัดเก็บข้อมูลคล้ายกับตารางที่มีจำนวน 1 คอลัมน์</p></li>
+<li><p>หากกำหนดให้ <span class="math inline">\(u\)</span> เป็นเวกเตอร์ที่เก็บข้อมูลส่วนสูงของนักเรียน 4 คน ที่มีค่าเท่ากับ 170, 175, 166 และ 168 cm.</p></li>
+<li><p>ในทางคณิตศาสตร์สามารถเขียนสัญลักษณ์แทนเวกเตอร์ <span class="math inline">\(u\)</span> ได้ดังนี้</p></li>
+</ul>
+<p><span class="math display">\[
+u = \begin{pmatrix}
+170 \\
+175 \\
+166\\
+168 \\
+\end{pmatrix}
+\]</span></p>
+</section>
+<section id="การสรางตวแปรเวกเตอรใน-r" class="level2">
+<h2 class="anchored" data-anchor-id="การสรางตวแปรเวกเตอรใน-r">การสร้างตัวแปรเวกเตอร์ใน R</h2>
+<p>การสร้างเวกเตอร์เพื่อเก็บข้อมูลในโปรแกรม R สามารถทําได้โดยง่ายด้วยฟังก์ชัน <code>c()</code> (เรียกว่า ฟังก์ชัน concatenate) ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">53</span>,<span class="dv">69</span>,<span class="dv">52</span>,<span class="dv">62</span>,<span class="dv">57</span>,<span class="dv">54</span>,<span class="dv">55</span>,<span class="dv">67</span>,<span class="dv">53</span>,<span class="dv">58</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>score</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 53 69 52 62 57 54 55 67 53 58</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(score) <span class="co"># length of vector score</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+</div>
+</section>
+<section id="การอางองสมาชกภายในเวกเตอร" class="level2">
+<h2 class="anchored" data-anchor-id="การอางองสมาชกภายในเวกเตอร">การอ้างอิงสมาชิกภายในเวกเตอร์</h2>
+<pre><code>vectorname[i]</code></pre>
+<p>โดยที่ <code>i</code> คือลำดับของสมาชิกที่ต้องการ การกำหนด <code>i</code> สามารถทำได้หลายลักษณะดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>score [<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 69</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>score [<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 62 57 54</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>score [<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">8</span><span class="sc">:</span><span class="dv">10</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 53 52 57 55 67 53 58</code></pre>
+</div>
+</div>
+</section>
+<section id="การแกไขเปลยนแปลงขอมลในเวกเตอร" class="level2">
+<h2 class="anchored" data-anchor-id="การแกไขเปลยนแปลงขอมลในเวกเตอร">การแก้ไข/เปลี่ยนแปลงข้อมูลในเวกเตอร์</h2>
+<p>สมมุติว่ามีการบันทึกข้อมูลคะแนนของนักเรียนคนที่ 5 ผิดไป โดยต้องแก้ไขเป็น 60 คะแนน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>score[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="dv">60</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>score</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 53 69 52 62 60 54 55 67 53 58</code></pre>
+</div>
+</div>
+<p>เราสามารถแก้ไขข้อมูลหลายค่าพร้อมกันได้ในคำสั่งเดียว ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>score[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">8</span>)]<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">55</span>,<span class="dv">65</span>,<span class="dv">70</span>,<span class="dv">95</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>score</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 55 65 52 70 60 54 55 95 53 58</code></pre>
+</div>
+</div>
+</section>
+<section id="ประเภทของเวกเตอร" class="level2">
+<h2 class="anchored" data-anchor-id="ประเภทของเวกเตอร">ประเภทของเวกเตอร์</h2>
+<p>เวกเตอร์ใน R ยังจำแนกได้อีก 3 ประเภทตามลักษณะของข้อมูลภายในเวกเตอร์</p>
+<ul>
+<li><p>เวกเตอร์ตัวเลข (numeric vector) : เวกเตอร์ที่มีสมาชิกเป็นตัวเลข</p></li>
+<li><p>เวกเตอร์ตัวอักษร (character vector) : เวกเตอร์ที่มีสมาชิกเป็นตัวอักษร</p></li>
+<li><p>เวกเตอร์ตรรกะ (logical vector) : เวกเตอร์ที่มีสมาชิกเป็นค่าความจริง</p></li>
+</ul>
+</section>
+<section id="ตวอยางเวกเตอรตวอกษร" class="level2">
+<h2 class="anchored" data-anchor-id="ตวอยางเวกเตอรตวอกษร">ตัวอย่างเวกเตอร์ตัวอักษร</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create string vector of gender</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>gender <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>,<span class="st">"F"</span>,<span class="st">"M"</span>,<span class="st">"M"</span>,<span class="st">"M"</span>,<span class="st">"F"</span>,<span class="st">"M"</span>,<span class="st">"F"</span>,<span class="st">"F"</span>,<span class="st">"M"</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print gender</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>gender</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "M" "F" "M" "M" "M" "F" "M" "F" "F" "M"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># class of gender</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+</section>
+<section id="ตวอยางเวกเตอรตรรกะ" class="level2">
+<h2 class="anchored" data-anchor-id="ตวอยางเวกเตอรตรรกะ">ตัวอย่างเวกเตอร์ตรรกะ</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create logical vector from score</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> score <span class="sc">&gt;=</span><span class="dv">55</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print result</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># class of gender</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+</div>
+</section>
+<section id="การดำเนนการระหวางเวกเตอร" class="level2">
+<h2 class="anchored" data-anchor-id="การดำเนนการระหวางเวกเตอร">การดำเนินการระหว่างเวกเตอร์</h2>
+<ul>
+<li><strong>การดำเนินการระหว่างเวกเตอร์กับสเกลาร์</strong> เป็นการนำสเกลาร์ที่กำหนดไปดำเนินการ (เช่น บวก ลบ คูณ หาร) กับสมาชิกทุกตัวภายในเวกเตอร์</li>
+</ul>
+<!-- -->
+<ul>
+<li><strong>การดำเนินการระหว่างเวกเตอร์กับเวกเตอร์</strong> การบวก ลบ คูณ หาร ระหว่างเวกเตอร์​ 2 ตัวแบบทั่วไป มีเงื่อนไขคือสมาชิกของเวกเตอร์ทั้งสองต้องเท่ากัน และการดำเนินการดังกล่าวจะเป็นการนำสมาชิกที่อยู่ในตำแหน่งเดียวกันของเวกเตอร์ทั้งสอง มาดำเนินการตามที่กำหนด</li>
+</ul>
+</section>
+<section id="การดำเนนการระหวางเวกเตอรกบสเกลาร" class="level2">
+<h2 class="anchored" data-anchor-id="การดำเนนการระหวางเวกเตอรกบสเกลาร">การดำเนินการระหว่างเวกเตอร์กับสเกลาร์</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">170</span>,<span class="dv">150</span>,<span class="dv">160</span>,<span class="dv">165</span>,<span class="dv">180</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>height<span class="sc">+</span><span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 175 155 165 170 185</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>height<span class="dv">-10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 160 140 150 155 170</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>height<span class="sc">*</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 340 300 320 330 360</code></pre>
+</div>
+</div>
+</section>
+<section id="การดำเนนการระหวางเวกเตอรกบเวกเตอร" class="level2">
+<h2 class="anchored" data-anchor-id="การดำเนนการระหวางเวกเตอรกบเวกเตอร">การดำเนินการระหว่างเวกเตอร์กับเวกเตอร์</h2>
+<p>ตารางด้านล่างแสดงคะแนนสอบของนักเรียน 5 คน หากการรวมคะแนนทั้งสองจะต้องมีการถ่วงน้ำหนัก ขอให้ผู้เรียนหาคะแนนรวมของนักเรียนแต่ละคน</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">คะแนนสอบกลางภาค (40%)</th>
+<th style="text-align: center;">คะแนนสอบปลายภาค (60%)</th>
+<th style="text-align: center;">คะแนนรวม</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">77</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">90</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">70</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">88</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="เมทรกซ" class="level1">
+<h1>5. เมทริกซ์</h1>
+<section id="เมทรกซ-matrices" class="level2">
+<h2 class="anchored" data-anchor-id="เมทรกซ-matrices">เมทริกซ์ (matrices)</h2>
+<ul>
+<li><p>เมทริกซ์เป็นกรณีทั่วไปของเวกเตอร์ เพราะมีลักษณะเป็นการรวมกลุ่มของเวกเตอร์หลาย ๆ ตัว เข้าไว้ด้วยกัน</p></li>
+<li><p>เมทริกซ์เป็นตัวแปรที่ใช้สำหรับเก็บข้อมูลอีกประเภทหนึ่ง มีลักษณะโครงการเป็นตารางแบบ 2 มิติ ดังตัวอย่างในรูป</p></li>
+</ul>
+</section>
+<section id="การสรางเมทรกซ-1" class="level2">
+<h2 class="anchored" data-anchor-id="การสรางเมทรกซ-1">การสร้างเมทริกซ์ (1)</h2>
+<p>การสร้างเมทริกซ์สามารถทําได้หลายวิธีการ วิธีการหนึ่งคือ การใช้ฟังก์ชัน <code>cbind()</code> ที่มีหน้าที่รวมเวกเตอร์หลายเวกเตอร์เข้าด้วยกันโดยเชื่อมต่อเวกเตอร์ดังกล่าวตามคอลัมน์ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>thai <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">87</span>,<span class="dv">72</span>,<span class="dv">68</span>,<span class="dv">78</span>,<span class="dv">81</span>,<span class="dv">92</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>math <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">72</span>,<span class="dv">63</span>,<span class="dv">65</span>,<span class="dv">74</span>,<span class="dv">89</span>,<span class="dv">91</span>)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co">#create matrix using cbind function</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>score_matrix <span class="ot">&lt;-</span> <span class="fu">cbind</span>(thai, math)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="co"># print score matrix</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>score_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     thai math
+[1,]   87   72
+[2,]   72   63
+[3,]   68   65
+[4,]   78   74
+[5,]   81   89
+[6,]   92   91</code></pre>
+</div>
+</div>
+</section>
+<section id="การสรางเมทรกซ-2" class="level2">
+<h2 class="anchored" data-anchor-id="การสรางเมทรกซ-2">การสร้างเมทริกซ์​ (2)</h2>
+<p>อีกวิธีการหนึ่งคือ การใช้ฟังก์ชัน <code>rbind()</code> ที่มีหน้าที่รวมเวกเตอร์โดยเชื่อมต่อเวกเตอร์ดังกล่าวตามแถว</p>
+</section>
+<section id="มตของเมทรกซ" class="level2">
+<h2 class="anchored" data-anchor-id="มตของเมทรกซ">มิติของเมทริกซ์</h2>
+<p>การระบุมิติของเมทริกซ์จะใช้ตัวเลขสองตัวที่เขียนในรูปแบบ m x n โดยที่ เลขตัวแรก m ใช้แทนจำนวนแถว (row) และเลขตัวที่สอง n ใช้แทนจำนวนคอลัมส์ (column)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(score_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6 2</code></pre>
+</div>
+</div>
+</section>
+<section id="กจกรรม-การสรางเมทรกซ-1" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-การสรางเมทรกซ-1"><strong>กิจกรรม : การสร้างเมทริกซ์</strong> (1)</h2>
+<p>ขอให้ผู้เรียนลองสร้างเมทริกซ์เพื่อเก็บข้อมูลจำนวนนักเรียน และระดับการมีปฏิสัมพันธ์ของนักเรียนในห้องเรียน</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>student <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">7</span>,<span class="dv">6</span>,<span class="dv">20</span>,<span class="dv">3</span>,<span class="dv">8</span>,<span class="dv">15</span>) <span class="co"># import number of student</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>interaction <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">5</span>) <span class="co"># import interaction level</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     student interaction
+[1,]       0           0
+[2,]       7           0
+[3,]       6           3
+[4,]      20           5
+[5,]       3           5
+[6,]       8           4
+[7,]      15           5</code></pre>
+</div>
+</div>
+</section>
+<section id="การอางองสมาชกในเมทรกซ" class="level2">
+<h2 class="anchored" data-anchor-id="การอางองสมาชกในเมทรกซ">การอ้างอิงสมาชิกในเมทริกซ์</h2>
+</section>
+<section id="กจกรรม-การอางองสมาชกในเมทรกซ" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-การอางองสมาชกในเมทรกซ">กิจกรรม : การอ้างอิงสมาชิกในเมทริกซ์</h2>
+<ol type="1">
+<li>จงเรียกดูข้อมูลจำนวนนักเรียนของห้องเรียนที่ 5</li>
+<li>จงเรียกดูข้อมูลระดับการมีปฏิสัมพันธ์ของนักเรียนห้องเรียนที่ 3</li>
+<li>จงเรียกดูข้อมูลของห้องเรียนที่ 7</li>
+<li>จงเรียกดูข้อมูลของห้องเรียนที่ 1 ถึง 4</li>
+<li>จงเรียกดูข้อมูลของห้องเรียนที่ 1, 3, 4 และ 7</li>
+<li>จงเรียกดูข้อมูลระดับการมีปฏิสัมพันธ์ของทุกห้องเรียน</li>
+<li>จงเรียกดูข้อมูลระดับการมีปฏิสัมพันธ์ของห้องเรียนที่ 1 ถึง 4</li>
+</ol>
+</section>
+<section id="กจกรรม-สรปเมทรกซ" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-สรปเมทรกซ">กิจกรรม : สรุปเมทริกซ์</h2>
+<p>ตารางแสดงน้ำหนักและส่วนสูงของนักเรียน<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">นักเรียน</th>
+<th style="text-align: center;">เพศ</th>
+<th style="text-align: center;">อายุ (ปี)</th>
+<th style="text-align: center;">น้ำหนัก (กิโลกรัม)</th>
+<th style="text-align: center;">ส่วนสูง (เซนติเมตร)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Male</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">59</td>
+<td style="text-align: center;">142</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Female</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">135</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Male</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">75</td>
+<td style="text-align: center;">150</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">Male</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Female</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">63</td>
+<td style="text-align: center;">141</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">Male</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">108</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">Male</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">47</td>
+<td style="text-align: center;">142</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">Female</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">59</td>
+<td style="text-align: center;">155</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="กจกรรม-สรปเมทรกซ-1" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-สรปเมทรกซ-1">กิจกรรม : สรุปเมทริกซ์</h2>
+<ol type="1">
+<li><p>สร้างเวกเตอร์ 4 ตัวจากข้อมูลของตัวแปร เพศ อายุ น้ำหนัก และส่วนสูง</p></li>
+<li><p>ตรวจสอบสถานะของข้อมูลในเวกเตอร์แต่ละตัวด้วยฟังก์ชัน <code>class()</code></p></li>
+<li><p>สร้างเมทริกซ์ชื่อ <code>data</code> จากการรวมตัวแปรเวกเตอร์ทั้ง 4 ตัวเข้าด้วยกัน</p></li>
+</ol>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     gender   age  weight height
+[1,] "Male"   "10" "59"   "142" 
+[2,] "Female" "10" "35"   "35"  
+[3,] "Male"   "11" "75"   "150" 
+[4,] "Male"   "2"  "20"   "95"  
+[5,] "Female" "9"  "63"   "141" 
+[6,] "Male"   "4"  "23"   "108" 
+[7,] "Male"   "10" "47"   "142" 
+[8,] "Female" "14" "59"   "155" </code></pre>
+</div>
+</div>
+</section>
+<section id="กจกรรม-สรปเมทรกซ-2" class="level2">
+<h2 class="anchored" data-anchor-id="กจกรรม-สรปเมทรกซ-2">กิจกรรม : สรุปเมทริกซ์</h2>
+<ol start="4" type="1">
+<li>เพิ่มข้อมูลของนักเรียนคนที่ 9 เข้าสู่เมทริกซ์ <code>data</code> โดยข้อมูลของนักเรียนคนที่ 9 เป็นดังนี้</li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">นักเรียน</th>
+<th style="text-align: center;">เพศ</th>
+<th style="text-align: center;">อายุ (ปี)</th>
+<th style="text-align: center;">น้ำหนัก (กิโลกรัม)</th>
+<th style="text-align: center;">ส่วนสูง (เซนติเมตร)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Female</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">168</td>
+</tr>
+</tbody>
+</table>
+<ol start="5" type="1">
+<li>สร้างตัวแปรเวกเตอร์ใหม่ชื่อ bmi เพื่อคำนวณค่าดัชนีมวลกาย (body mass index: bmi) ตามสูตร <span class="math inline">\(bmi = \frac{weight}{(height/100)^2}\)</span> โดยให้ใช้ข้อมูลที่เก็บอยู่ในเมทริกซ์ <code>data</code></li>
+<li>ผลที่ได้รับจากข้อ 5. เป็นอย่างไร และเหตุใดจึงได้ผลลัพธ์ในลักษณะดังกล่าว</li>
+</ol>
+</section>
+<section id="ขอจำกดของเมทรกซ" class="level2">
+<h2 class="anchored" data-anchor-id="ขอจำกดของเมทรกซ">ข้อจำกัดของเมทริกซ์</h2>
+<ul>
+<li><p>เมทริกซ์ตัวแปรใน R ที่สามารถเก็บข้อมูลได้เพียงประเภทเดียวเท่านั้น</p></li>
+<li><p>หากมีการใส่ข้อมูลที่สถานะแตกต่างกันเข้าไปในเมทริกซ์เดียวกัน โปรแกรม R จะพยายามแปลงสถานะของข้อมูลทั้งหมดให้เป็นข้อมูลประเภทเดียวกัน</p></li>
+</ul>
+</section>
+</section>
+<section id="list" class="level1">
+<h1>6. List</h1>
+<ul>
+<li><p>List เป็นตัวแปรใน R อีกประเภทหนึ่ง มีโครงสร้างการเก็บข้อมูลในลักษณะที่เป็นลำดับคล้ายเวกเตอร์</p></li>
+<li><p>สมาชิกภายใน list สามารถเป็นข้อมูลหรือตัวแปรประเภทใดก็ได้ และสามารถมีสถานะที่แตกต่างกันได้</p></li>
+</ul>
+<section id="การสราง-list" class="level2">
+<h2 class="anchored" data-anchor-id="การสราง-list">การสร้าง List</h2>
+<p>การสร้าง list สามารถทำได้โดยใช้ฟังก์ชัน <code>list()</code> โดยมีลักษณะการเขียนคำสั่งเหมือนกับฟังก์ชัน concatenate</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>student <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">7</span>,<span class="dv">6</span>,<span class="dv">20</span>,<span class="dv">3</span>,<span class="dv">8</span>,<span class="dv">15</span>) <span class="co"># import number of student</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>interaction <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">5</span>) <span class="co"># import interaction level</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(student, interaction)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>mylist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fl">3.234</span>,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Male"</span>,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>               <span class="st">"TRUE"</span>,<span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">10</span>,<span class="dv">2</span>),</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>               mat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ผู้เรียนลองเรียกดู <code>mylist</code> ผลลัพธ์ที่ได้เป็นอย่างไร</p>
+</section>
+<section id="การอางองสมาชกภายใน-list" class="level2">
+<h2 class="anchored" data-anchor-id="การอางองสมาชกภายใน-list">การอ้างอิงสมาชิกภายใน List</h2>
+<ul>
+<li><p>การอ้างอิงสมาชิกภายใน list สามารถทำได้ในทำนองเดียวกับเวกเตอร์</p></li>
+<li><p>ใช้การระบุลำดับของสมาชิกที่ต้องการจาก <code>[[i]]</code> เมื่อ <code>i</code> คือลำดับของสมาชิกภายใน list</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>mylist[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.234</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>mylist[[<span class="dv">3</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "TRUE"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>mylist[[<span class="dv">5</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     student interaction
+[1,]       0           0
+[2,]       7           0
+[3,]       6           3
+[4,]      20           5
+[5,]       3           5
+[6,]       8           4
+[7,]      15           5</code></pre>
+</div>
+</div>
+</section>
+<section id="การอางองสมาชกภายใน-list-1" class="level2">
+<h2 class="anchored" data-anchor-id="การอางองสมาชกภายใน-list-1">การอ้างอิงสมาชิกภายใน List</h2>
+<p>สำหรับสมาชิกของ list ที่มีโครงสร้างซับซ้อน เช่น เป็น เวกเตอร์ หรือเมทริกซ์ ภายใน list เราสามารถอ้างอิงสมาชิกภายในสมาชิกดังกล่าวได้โดยใช้คำสั่งลักษณะดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>mylist[[<span class="dv">5</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     student interaction
+[1,]       0           0
+[2,]       7           0
+[3,]       6           3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>mylist[[<span class="dv">5</span>]][,<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 0 3 5 5 4 5</code></pre>
+</div>
+</div>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>ที่มา : สิวะโชติ ศรีสุทธิยากร (2564)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
