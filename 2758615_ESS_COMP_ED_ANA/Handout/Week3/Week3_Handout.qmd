@@ -1,0 +1,690 @@
+---
+title: "Week3 : Data Import & Tidying"
+author: "Assistant Prof. Siwachoat Srisuttiyakorn"
+institute: |
+  Department of Educational Research and Psychology <br>
+  Faculty of Education Chulalongkorn University
+date: 2024-09-12
+format:
+  revealjs:
+    slide-number: c/t
+    footer: |
+      Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br>
+      Department of Educational Research and Psychology <br>
+      Faculty of Education Chulalongkorn University
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: [default, theme.scss]
+    css: my_css.css
+    scrollable: false
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: false
+    code-overflow: scroll
+    code-link: true
+    code-line-numbers: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;
+      }
+      </style>
+---
+
+```{r}
+library(tidyverse)
+```
+
+## ประเภทไฟล์ข้อมูล {.smaller}
+
+R สามารถดำเนินการร่วมกับไฟล์ข้อมูลที่หลากหลายประเภท
+
+::::: columns
+::: {.column width="50%"}
+-   Flat files
+
+-   MS Excel
+
+-   Statistical Softwares
+
+-   Databases
+
+-   Internet
+
+-   Documents
+
+-   ...
+
+หัวข้อนี้จะกล่าวถึงการนำเข้าไฟล์ประเภท rectangular data โดยจะใช้ library ได้แก่ `readr`, `readxl`, และ `haven`
+:::
+
+::: {.column width="50%"}
+![](images/clipboard-2839092663.png){width="70%"}
+:::
+:::::
+
+## Flat Files {.smaller}
+
+-   เป็น rectangular data ประเภทหนึ่ง แต่ไม่ได้มีโครงสร้างตารางแบบ spreadsheet ทั่วไป
+
+-   โดยปกติจะใช้ตัวคั่นระหว่างข้อมูล เช่น comma, tab, space, หรือ semicolon
+
+![](images/clipboard-1137932452.png){width="100%"}
+
+## `read_csv()` {.smaller}
+
+การนําข้อมูล .csv เข้าสู่โปรแกรมสามารถใช้ฟังก์ชัน `read_csv()` โดยมีรูปแบบของคําสั่งดังนี้
+
+```{r eval=F, echo = T}
+read_csv(file = "file.csv", 
+         delim = NULL, # ประเภทของตัวคั่นระหว่างข้อมูล
+         col_names = TRUE, # ไฟล์ต้นฉบับมีชื่อคอลัมน์หรือไม่)
+         col_types = NULL)
+```
+
+<br>
+
+ประเภทข้อมูลใน R ทั่วไป
+
+-   numeric
+
+-   character
+
+-   factor
+
+-   logical/boolean
+
+## `read_csv()` {.smaller}
+
+นอกจากนำเข้าไฟล์ข้อมูล ฟังก์ชัน `read_csv()` จะแสดงผลลัพธ์เป็น message ที่แสดงข้อมูลเบื้องต้นของไฟล์ที่นำเข้า
+
+-   จำนวน row, columns
+
+-   ชื่อและประเภทของข้อมูลในแต่ละคอลัมน์ (column specifications)
+
+-   library-`readr` จะเดาประเภทของข้อมูลในแต่ละคอลัมน์โดยพิจารณาข้อมูล 1000 แถวแรก
+
+```{r echo = T, message = T}
+student_data <- read_csv("https://pos.it/r4ds-students-csv")
+```
+
+## การสำรวจข้อมูลเบื้องต้น {.smaller}
+
+เมื่อนำเข้าไฟล์ข้อมูล ผู้วิเคราะห์สามารถสำรวจข้อมูลเบื้องต้นได้หลายวิธีการ
+
+-   `names()`
+
+-   `dplyr::glimpse()` หรือ `str()`
+
+-   `head()`, `tail()`
+
+-   `summary()` หรือ `skimr::skim()`
+
+-   `table()` หรือ `dplyr::count()`
+
+## **กิจกรรม : นำเข้า CSV file** {.smaller}
+
+> เงินเดือนของอาจารย์สาขาวิชา A แตกต่างจากสาขาวิชา B อย่างไร?
+
+1.  สร้าง R project สำหรับ Week3
+
+2.  ดาวน์โหลด TeacherSalaryData.csv
+
+3.  นำเข้าไฟล์ข้อมูล TeacherSalaryData.csv โดยพิมพ์คำสั่งต่อไปนี้
+
+4.  ตอบคำถามต่อไปนี้
+
+    -   ชุดข้อมูลนี้มีหน่วยข้อมูลกี่หน่วย
+    -   มีตัวแปรกี่ตัว อะไรบ้าง
+    -   ข้อมูลของตัวแปรแต่ละตัวถูกกำหนดให้เป็นประเภทใดบ้าง
+    -   ผู้วิเคราะห์ควรจัดระเบียบข้อมูลอย่างไรเพื่อให้เหมาะสำหรับการดำเนินการต่อไป
+
+```{r}
+teacher_salary_data <- read_csv("TeacherSalaryData.csv")
+```
+
+## การจัดระเบียบข้อมูล (data tidying) {.smaller}
+
+-   โดยปกติเมื่อนำเข้าข้อมูลดิบใน R สิ่งที่ผู้วิเคราะห์ควรดำเนินการเป็นอันดับแรกคือการจัดระเบียบข้อมูลให้มีโครงสร้างและรูปแบบที่เหมาะสำหรับการดำเนินการวิเคราะห์
+
+-   Checklist สำหรับการตรวจสอบและจัดระเบียบข้อมูล
+
+    -   ชื่อของตัวแปรในแต่ละคอลัมน์อยู่ในรูปแบบที่เหมาะสมหรือไม่ (เช่น snake_case)
+
+    -   ประเภทของตัวแปรถูกกำหนดอย่างถูกต้องหรือไม่
+
+    -   ข้อมูลถูกจัดเก็บอยู่ในโครงสร้างแบบ tidy data แล้วหรือไม่
+
+    -   มี missing value ในชุดข้อมูลหรือไม่ มีการลงรหัสไว้อย่างไร ถูกต้องหรือไม่
+
+    -   ...
+
+## Syntactic Names: Principle {.smaller}
+
+ชื่อของตัวแปรใน R หรือโปรแกรมภาษาอื่น ๆ ควรกำหนดให้เป็นไปตามหลักต่อไปนี้
+
+-   ต้องขึ้นต้นด้วยตัวอักษร (A-Z, a-z) หรือจุด (.) และหากขึ้นต้นด้วย (.) ตัวอักษรถัดไปต้องไม่ใช่ตัวเลข
+
+-   หลังจากตัวอักษรแรกแล้วลำดับถัดมาสามารถเป็นไปได้ทั้งตัวอักษรและตัวเลข (0-9) หรือจุด (.) หรือ underscore (\_)
+
+-   ไม่ควรมีช่องว่าง
+
+-   ห้ามมีอักขระพิเศษ เช่น \@, #, \$, %, \^, &, \*, (, ), +, =, {, }, \[, \], , \|, :, ;, ", ', \<, \>, ?, /
+
+-   การกำหนดชื่อตัวแปรใน R เป็น case sensitive เช่น `Age` กับ `age` ถือเป็นคนละตัวแปร แนะนำว่าถ้าไม่มีความจำเป็นควรใช้ตัวพิมพ์เล็กทั้งหมด
+
+## Syntactic Names: `names()` {.smaller}
+
+การปรับชื่อของตัวแปรให้เป็นไปตามหลักข้างต้นสามารถทำได้หลายวิธี เช่น การใช้ฟังก์ชัน names()
+
+```{r echo = T}
+names(teacher_salary_data)[1] <- "teacher_id"
+names(teacher_salary_data)[c(2,4,5)] <- c("teacher_position", "yrs_since_phd", "yrs_service")
+teacher_salary_data
+```
+
+## Syntactic Names: `rename()` {.smaller}
+
+```{r}
+teacher_salary_data <- read_csv("TeacherSalaryData.csv")
+```
+
+```{r echo = T}
+rename(teacher_salary_data, 
+       teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex")
+```
+
+## Syntactic Names: `clean_names()` {.smaller}
+
+-   อีกวิธีการหนึ่งคือใช้ฟังก์ชัน `clean_names()` จาก library `janitor`
+
+-   ฟังก์ชันนี้จะทำความสะอาด column ที่ไม่เป็นระเบียบให้เป็นไปตามหลัก Syntactic Names โดยอัตโนมัติ
+
+```{r echo = T}
+library(janitor)
+clean_names(teacher_salary_data)
+```
+
+## Column Specification: การตรวจสอบประเภทตัวแปร {.smaller}
+
+```{r}
+teacher_salary_data <- rename(teacher_salary_data, 
+       teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex")
+```
+
+การตรวจสอบ column specification สามารถทำได้หลายวิธีการ
+
+-   วิธีการแรกคือเรียกชุดข้อมูลขึ้นมาดูโดยตรง
+
+```{r echo = T}
+teacher_salary_data
+```
+
+## Column Specification: การตรวจสอบประเภทตัวแปร {.smaller}
+
+-   อีกวิธีการคือการใช้ `glimpse()` หรือ `str()`
+
+```{r echo = T}
+glimpse(teacher_salary_data)
+```
+
+## Column Specification: การตรวจสอบประเภทตัวแปร {.smaller}
+
+-   ฟังก์ชัน `spec()` สามารถใช้ตรวจสอบ column specification ของชุดข้อมูลที่นำเข้าด้วยฟังก์ชัน `read_csv()` และฟังก์ชันนำเข้าอื่น ๆ ของ library-`readr`
+
+```{r echo = T}
+spec(teacher_salary_data)
+```
+
+## Column Specification: การปรับเปลี่ยนประเภทตัวแปร {.smaller}
+
+การแก้ไขหรือปรับเปลี่ยนประเภทของตัวแปรใน R สามารถทำได้หลายวิธีการ
+
+-   ปรับเปลี่ยนตั้งแต่ตอนนำเข้าข้อมูล ผ่าน argument `col_types` ของฟังก์ชัน `read_csv()`
+
+```{r echo = T}
+adjusted_coltype <- cols(
+  ...1 = col_double(),
+  `teacher position` = col_factor(
+                       levels = c("AsstProf","AssocProf","Prof"),
+                       order = TRUE),
+  discipline = col_factor(levels = c("A","B")),
+  yrs.since.phd = col_double(),
+  yrs.service = col_double(),
+  sex = col_factor(),
+  salary = col_double()
+)
+read_csv("TeacherSalaryData.csv",
+         col_types = adjusted_coltype)
+```
+
+## Column Specification: การปรับเปลี่ยนประเภทตัวแปร {.smaller}
+
+-   ปรับเปลี่ยนโดยใช้ฟังก์ชันพื้นฐาน
+
+    -   `as.numeric()`, `as.integer()`, `as.double()`
+
+    -   `as.character()`
+
+    -   `factor()`
+
+```{r echo = T, R.options = list(width = 100)}
+teacher_salary_data$teacher_position <- factor(teacher_salary_data$teacher_position,
+                                        levels = c("AsstProf","AssocProf","Prof"),
+                                        ordered = TRUE)
+teacher_salary_data$discipline <- factor(teacher_salary_data$discipline,
+                                         levels = c("A","B"),
+                                         labels = c("Science","Social_Science"))
+teacher_salary_data$gender <- factor(teacher_salary_data$gender)
+teacher_salary_data
+```
+
+## Column Specification: การปรับเปลี่ยนประเภทตัวแปร {.smaller}
+
+```{r}
+teacher_salary_data <- read_csv("TeacherSalaryData.csv")
+```
+
+```{r}
+teacher_salary_data <- rename(teacher_salary_data, 
+       teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex")
+```
+
+-   อีกวิธีการหนึ่งน่าจะต้องรู้จักมาก ๆ คือ การใช้ฟังก์ชัน `mutate()` ร่วมกับฟังก์ชันพื้นฐาน
+
+```{r echo = T, R.options = list(width = 100)}
+teacher_salary_data <- mutate(teacher_salary_data,
+       teacher_position = factor(teacher_position,
+                                 levels = c("AsstProf","AssocProf","Prof"),
+                                 ordered = TRUE),
+       discipline = factor(discipline, levels = c("A","B"), labels = c("Science","Social_Science")))
+
+teacher_salary_data
+```
+
+## การลงรหัส Missing Value {.smaller}
+
+-   ข้อมูลสูญหาย (missing value) เป็นปัญหาที่พบได้บ่อยในชุดข้อมูลดิบ
+
+-   แหล่งข้อมูลที่แตกต่างกันอาจมีการลงรหัส missing value ที่แตกต่างกัน เช่น `NA, NULL, NaN, N/A, ., -, 9999, -99, 0` ดังนั้นผู้วิเคราะห์ควรตรวจสอบและจัดการกับ missing value ให้เหมาะสม
+
+-   `read_csv()` รวมทั้งฟังก์ชันอื่น ๆ ภายใต้ library-`readr` มีอาร์กิวเมนท์ `na` ที่สามารถใช้ระบุรหัสหรือค่าของข้อมูลที่ต้องการให้ถือเป็น missing value
+
+```{r}
+teacher_salary_data$teacher_position <- factor(teacher_salary_data$teacher_position,
+                                        levels = c("AsstProf","AssocProf","Prof"),
+                                        ordered = TRUE)
+teacher_salary_data$discipline <- factor(teacher_salary_data$discipline,
+                                         levels = c("A","B"),
+                                         labels = c("Science","Social_Science"))
+teacher_salary_data$gender <- factor(teacher_salary_data$gender)
+summary(teacher_salary_data)
+```
+
+## การลงรหัส Missing Value {.smaller}
+
+-   วิธีการแรกคือการกำหนดรหัสของ missing value ไว้ตั้งแต่ตอนนำเข้าข้อมูล
+
+```{r echo = T}
+read_csv(file = "TeacherSalaryData.csv",
+         na = c("N/A", "-999"))
+```
+
+## การลงรหัส Missing Value {.smaller}
+
+```{r}
+teacher_salary_data <- read_csv("TeacherSalaryData.csv")
+```
+
+```{r}
+teacher_salary_data <- rename(teacher_salary_data, 
+       teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex")
+```
+
+-   อีกวิธีการหนึ่งคือการใช้ฟังก์ชัน `na_if()` จาก library-`dplyr` เพื่อเปลี่ยนค่าที่ไม่ต้องการให้เป็น missing value
+
+```{r echo = T}
+mutate(teacher_salary_data,
+       discipline = na_if(discipline, "N/A"),
+       yrs_since_phd = na_if(yrs_since_phd, -999),
+       salary = na_if(salary, -999))
+```
+
+## การลบ Missing Value ออกจากชุดข้อมูล {.smaller}
+
+```{r echo = T}
+teacher_salary_data <- read_csv("TeacherSalaryData.csv",
+         na = c("N/A", "-999"))
+na.omit(teacher_salary_data)
+```
+
+## ทบทวน {.smaller}
+
+-   นำเข้าข้อมูล `read_csv()`
+
+-   ปรับชื่อตัวแปร `names()`, `rename()`, `clean_names()`
+
+-   ปรับเปลี่ยนประเภทของตัวแปร `mutate()` ร่วมกับ `as.numeric()`, `as.character()`, `factor()`
+
+-   การลงรหัส missing value `mutate()` ร่วมกับ `na_if()`
+
+::: {style="font-size:90%;"}
+```{r echo = T, eval = F}
+## 1. importing data
+teacher_salary_data <- read_csv("TeacherSalaryData.csv")
+## 2. renaming variables
+teacher_salary_data <- rename(teacher_salary_data, 
+       teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex")
+## 3. การลงรหัส Missing Value
+teacher_salary_data <- mutate(teacher_salary_data, 
+                              discipline = na_if(discipline, "N/A"),
+                              yrs_since_phd = na_if(yrs_since_phd, -999),
+                              salary = na_if(salary, -999))
+## 4. adjusting variable types
+teacher_salary_data <- mutate(teacher_salary_data,
+       teacher_position = factor(teacher_position,
+                                 levels = c("AsstProf","AssocProf","Prof"),
+                                 ordered = TRUE),
+       discipline = factor(discipline, levels = c("A","B"), labels = c("Science","Social_Science")),
+       gender = factor(gender))
+```
+:::
+
+## Pipe Operator (1) {.smaller}
+
+-   Pipe Operator (`|>` และ `%>%`) เป็นเครื่องมือในภาษา R ที่ช่วยให้การเขียนโค้ดอ่านง่ายและสะอาดขึ้น
+
+-   `|>` เป็น pipe operator ของ base R ถูกเพิ่มเข้ามาใน R เวอร์ชัน 4.1.0 (2021) ส่วน `%>%` เป็น pipe operator ของ library-`magrittr` ที่ได้รับความนิยมมาก่อนหน้านี้
+
+-   มีประโยชน์มากโดยเฉพาะกรณีที่ต้องทำงานเป็นกระบวนการที่มีหลายขั้นตอน
+
+-   ความแตกต่างระหว่าง `|>` และ `%>%` คือ
+
+    -   `|>` เป็น pipe operator ของ base R ที่ไม่ต้องติดตั้ง library เพิ่มเติม
+
+    -   `%>%` เป็น pipe operator ของ library-`magrittr` ที่มีฟังก์ชันเพิ่มเติม เช่น การใช้ `.` เพื่อระบุตำแหน่งของข้อมูลที่ถูกส่งผ่าน
+
+    -   โดยปกติ `|>` สามารถประมวลผลได้ไวกว่า
+
+<center>
+
+![หลักการของ pipe operator (สิวะโชติ ศรีสุทธิยากร, 2564)](images/clipboard-3106638243.png){width="70%"}
+
+</center>
+
+## Pipe Operator (2) {.smaller}
+
+![](images/clipboard-2572921888.png){width="100%"}
+
+## Pipe Operator (3) {.smaller}
+
+```{r echo = T, eval = F}
+## 1. importing data
+teacher_salary_data <- read_csv("TeacherSalaryData.csv") |> 
+## 2. renaming variables
+  rename(
+    teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex") |> 
+## 3. การลงรหัส Missing Value
+  mutate(
+    discipline = na_if(discipline, "N/A"),
+    yrs_since_phd = na_if(yrs_since_phd, -999),
+    salary = na_if(salary, -999)) |> 
+## 4. adjusting variable types
+  mutate(
+    teacher_position = factor(teacher_position,
+                                 levels = c("AsstProf","AssocProf","Prof"),
+                                 ordered = TRUE),
+       discipline = factor(discipline, levels = c("A","B"), labels = c("Science","Social_Science")),
+       gender = factor(gender)) |> 
+## 5. excluding missing values
+  na.omit()
+```
+
+## `TeacherSalaryData.csv` {.smaller}
+
+> เงินเดือนของอาจารย์สาขาวิชา A แตกต่างจากสาขาวิชา B อย่างไร?
+
+```{r}
+## 1. importing data
+teacher_salary_data <- read_csv("TeacherSalaryData.csv") |> 
+## 2. renaming variables
+  rename(
+    teacher_id = 1, 
+       teacher_position = `teacher position`,
+       yrs_since_phd = yrs.since.phd,
+       yrs_service = 5,
+       "gender" = "sex") |> 
+## 3. การลงรหัส Missing Value
+  mutate(
+    discipline = na_if(discipline, "N/A"),
+    yrs_since_phd = na_if(yrs_since_phd, -999),
+    salary = na_if(salary, -999)) |> 
+## 4. adjusting variable types
+  mutate(
+    teacher_position = factor(teacher_position,
+                                 levels = c("AsstProf","AssocProf","Prof"),
+                                 ordered = TRUE),
+       discipline = factor(discipline, levels = c("A","B"), labels = c("Science","Social_Science")),
+       gender = factor(gender)) |> 
+## 5. excluding missing values
+  na.omit()
+```
+
+```{r echo = T, R.options = list(width = 100)}
+teacher_salary_data
+```
+
+## Tidy Data {.smaller}
+
+> “Happy families are all alike; every unhappy family is unhappy in its own way.”
+>
+> — Leo Tolstoy
+
+> “Tidy datasets are all alike, but every messy dataset is messy in its own way.”
+>
+> — Hadley Wickham
+
+## Tidy Data {.smaller}
+
+-   ข้อมูลแต่ละชุดสามารถ represent ในรูปแบบตารางได้หลายลักษณะ
+
+```{r}
+table1 <- teacher_salary_data
+table2 <- teacher_salary_data |> 
+  pivot_longer(cols = c(yrs_since_phd, yrs_service, salary), 
+               names_to = "variable", values_to = "value") |> 
+  mutate(variable = factor(variable, levels = c("yrs_since_phd", "yrs_service", "salary")))
+table3 <- teacher_salary_data |> 
+    pivot_longer(cols = c(yrs_since_phd, yrs_service, salary), 
+               names_to = "variable", values_to = "value") |> 
+    group_by(discipline, teacher_position, gender) |> 
+    count()
+```
+
+```{r echo = T}
+table1
+```
+
+## Tidy Data {.smaller}
+
+-   ข้อมูลแต่ละชุดสามารถ represent ในรูปแบบตารางได้หลายลักษณะ
+
+```{r echo = T}
+table2
+```
+
+## Tidy Data {.smaller}
+
+-   ข้อมูลแต่ละชุดสามารถ represent ในรูปแบบตารางได้หลายลักษณะ
+
+```{r echo = T}
+table3
+```
+
+## Tidy Data {.smaller}
+
+ข้อมูลที่มีโครงสร้าง tidy data จะต้องมีลักษณะดังนี้
+
+-   แต่ละตัวแปร (variable) จะต้องอยู่ในคอลัมน์ (column) ของตาราง
+
+-   แต่ละค่าสังเกต (observation) หรือหน่วยการวิเคราะห์ (unit of analysis ) จะต้องอยู่ในแถว (row) ของตาราง
+
+-   แต่ละค่าของตัวแปรจะต้องอยู่ในเซลล์ (cell) ของตาราง
+
+![](https://r4ds.hadley.nz/images/tidy-1.png)
+
+## กิจกรรม : สำรวจชุดข้อมูล {.smaller}
+
+1.  นำเข้าไฟล์ `messy_data.xlsx`
+
+2.  พิจารณาว่าชุดข้อมูลดังกล่าวมีโครงสร้างเป็น tidy data หรือไม่ อย่างไร
+
+3.  นิสิตคิดว่า tidy data ของข้อมูลชุดนี้ควรมีลักษณะอย่างไร
+
+
+Note: การนำเข้า MS Excel จะใช้ฟังก์ชัน `read_excel()` จาก library-`readxl` 
+
+- `read_excel(path, sheet, col_name = TRUE, col_types = NULL, na = " ")` 
+
+- `excel_sheets(path)` ใช้ตรวจสอบชื่อ sheet ในไฟล์ Excel
+
+## Tidying Data: ข้อมูลอยู่ในชื่อคอลัมน์ {.smaller}
+
+พิจารณาชุดข้อมูล `billboard` หากวัตถุประสงค์คือ การสำรวจแนวโน้มความนิยมของเพลงในแต่ละสัปดาห์ ชุดข้อมูลนี้เป็น tidy data หรือไม่
+
+```{r echo = T}
+billboard
+```
+
+## Creating long format data: `pivot_longer()` {.smaller}
+
+![](images/clipboard-2140708970.png){width="60%"}
+
+```{r echo = T}
+billboard |> 
+  pivot_longer(
+    cols = starts_with("wk"),
+    names_to = "week",
+    values_to = "rank"
+  )
+```
+
+
+## Helper Functions {.smaller}
+
+ใน `dplyr` มีฟังก์ชันหลายตัวที่ช่วยผู้วิเคราะห์ในการเลือกคอลัมน์ที่ต้องการได้อย่างสะดวก
+
+- `starts_with("prefix)`
+
+- `ends_with("suffix")`
+
+- `contains("string")`
+
+- `matches("regex")`
+
+- `everything()`
+
+## กิจกรรม
+
+1. ปรับ `billboard` ให้เป็น tidy data 
+
+2. สร้างกราฟเส้นเพื่อสำรวจแนวโน้มความนิยมของแต่ละเพลงในแต่ละสัปดาห์
+
+
+## กิจกรรม
+
+จากชุดข้อมูล `messy_data.xlsx` ลองใช้ `pivot_longer()` เพื่อปรับโครงสร้างของข้อมูล ผลลัพธ์ที่ได้เป็น tidy data แล้วหรือไม่
+
+## Creating wide format data: pivot_wider() {.smaller}
+
+```{r}
+billboard |> 
+  pivot_longer(
+    cols = starts_with("wk"),
+    names_to = "week",
+    values_to = "rank"
+  ) |> 
+  pivot_wider(
+    names_from = "week",
+    values_from = "rank"
+  )
+```
+
+## Separate/Unite Columns {.smaller}
+
+- ผลลัพธ์ด้านล่างแสดงให้เห็นว่า คอลัมน์ `method` มีค่าของตัวแปร 2 ตัวรวมอยู่ใน cell เดียว
+
+- ฟังก์ชัน `separate()` และ `unite()` ใช้สำหรับแยกหรือรวมคอลัมน์ในชุดข้อมูล
+
+```{r echo = T}
+library(readxl)
+messy_data <- read_excel("messydata.xlsx")
+messy_data |> 
+  rename(student_id = 1) |> 
+  janitor::clean_names() |> 
+  pivot_longer(
+    cols = 2:5,
+    names_to = "method",
+    values_to = "score"
+  )
+```
+
+## `separate()` {.smaller}
+
+```{r echo = T}
+messy_data |> 
+  rename(student_id = 1) |> 
+  janitor::clean_names() |> 
+  pivot_longer(
+    cols = 2:5,
+    names_to = "method",
+    values_to = "score"
+  ) |> 
+  separate(method, into = c("method", "time"), sep = "_")
+```
+
+## `unite()` {.smaller}
+
+```{r echo = T}
+messy_data |> 
+  rename(student_id = 1) |> 
+  janitor::clean_names() |> 
+  pivot_longer(
+    cols = 2:5,
+    names_to = "method",
+    values_to = "score"
+  ) |> 
+  separate(method, into = c("method", "time"), sep = "_") |> 
+  unite("method_time", method, time, sep = "_")
+```
+
