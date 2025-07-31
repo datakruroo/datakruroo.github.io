@@ -1,0 +1,40 @@
+---
+title: "my_workflow"
+format: html
+editor: visual
+---
+
+## 1. Importing Data
+
+นำข้อมูล `TeacherSalaryData.csv` เข้าโดยใช้ script file ชื่อว่า `01_importing_data.R`
+
+```{r message = F}
+source("Week3/02_functions_sourcecodes/01_importing_data.R")
+teacher_salary_data 
+```
+
+
+## 2. Exploring Data
+
+```{r}
+source("Week3/02_functions_sourcecodes/02_boxplot_salary_by_discipline.R")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

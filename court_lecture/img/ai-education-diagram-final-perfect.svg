@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+  <!-- สีพื้นหลัง -->
+  <rect width="1000" height="600" fill="white"/>
+  
+  <!-- กรอบสำหรับ AI & Digital Integration in Education -->
+  <rect x="30" y="225" width="250" height="170" rx="10" ry="10" fill="#F5F5F5" stroke="#333" stroke-width="2"/>
+  <text x="155" y="205" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold">AI & Digital Integration in Education</text>
+  
+  <!-- AI Competency - เพิ่มระยะห่างจาก Digital Technologies -->
+  <rect x="55" y="245" width="200" height="50" rx="5" ry="5" fill="#FFA500" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="155" y="275" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">AI Competency</text>
+  
+  <!-- Digital Technologies in Education - เพิ่มระยะห่างจาก AI Competency -->
+  <rect x="55" y="325" width="200" height="50" rx="5" ry="5" fill="#FFA500" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="155" y="345" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">Digital Technologies</text>
+  <text x="155" y="365" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">in Education</text>
+  
+  <!-- เส้นเชื่อมระหว่าง AI Competency และ Digital Technologies -->
+  <path d="M 105 295 L 105 325" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 205 325 L 205 295" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  
+  <!-- ข้อความบนเส้นเชื่อม - ปรับตำแหน่ง -->
+  <text x="65" y="310" text-anchor="middle" font-family="Arial" font-size="10">เสริมความรู้</text>
+  <text x="245" y="310" text-anchor="middle" font-family="Arial" font-size="10">สร้างโอกาส</text>
+  
+  <!-- กล่องหลักทั้ง 5 ด้านขวา - เพิ่มระยะห่างจากกล่องซ้าย -->
+  
+  <!-- ด้านที่ 1 -->
+  <rect x="450" y="80" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="115" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">1. ส่งเสริมการเรียนรู้แบบส่วนบุคคล</text>
+  
+  <!-- ด้านที่ 2 -->
+  <rect x="450" y="160" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="195" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">2. ปรับปรุงคุณภาพการเรียนรู้</text>
+  
+  <!-- ด้านที่ 3 -->
+  <rect x="450" y="340" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="375" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">3. สนับสนุนการจัดการระบบการศึกษา</text>
+  
+  <!-- ด้านที่ 4 -->
+  <rect x="450" y="420" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="550" y="455" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">4. เพิ่มโอกาสการเข้าถึงการศึกษา</text>
+  
+  <!-- ด้านที่ 5 -->
+  <rect x="750" y="270" width="200" height="60" rx="5" ry="5" fill="#FFFFFF" stroke="#FFA500" stroke-width="2"/>
+  <text x="850" y="305" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">5. พัฒนาทักษะสำหรับอนาคต</text>
+  
+  <!-- เส้นเชื่อมจากกรอบใหญ่ไปยังกล่องหลัก 1-4 ปรับ opacity เป็น 0.7 -->
+  <path d="M 280 240 L 450 110" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น - ขยับไปทางขวาและลงล่างอีกหน่อย -->
+  <text x="345" y="155" text-anchor="middle" font-family="Arial" font-size="11">ปรับแต่งเนื้อหา</text>
+  <text x="345" y="170" text-anchor="middle" font-family="Arial" font-size="11">ตามผู้เรียน</text>
+  
+  <path d="M 280 260 L 450 190" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น - ขยับไปทางขวาและลงล่างอีกหน่อย -->
+  <text x="365" y="210" text-anchor="middle" font-family="Arial" font-size="11">สนับสนุน</text>
+  <text x="365" y="225" text-anchor="middle" font-family="Arial" font-size="11">การวิเคราะห์ข้อมูล</text>
+  
+  <path d="M 280 340 L 450 370" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น -->
+  <text x="335" y="335" text-anchor="middle" font-family="Arial" font-size="11">เพิ่มประสิทธิภาพ</text>
+  <text x="335" y="350" text-anchor="middle" font-family="Arial" font-size="11">การบริหาร</text>
+  
+  <path d="M 280 360 L 450 450" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <!-- ปรับข้อความให้เป็น 2 บรรทัด และไม่ทับเส้น -->
+  <text x="330" y="385" text-anchor="middle" font-family="Arial" font-size="11">ลดอุปสรรค</text>
+  <text x="330" y="400" text-anchor="middle" font-family="Arial" font-size="11">ด้านการเข้าถึง</text>
+  
+  <!-- เส้นตรงผ่ากลางจากกรอบใหญ่ไปยังกล่องที่ 5 -->
+  <path d="M 280 300 L 750 300" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <text x="515" y="285" text-anchor="middle" font-family="Arial" font-size="12">พัฒนาทักษะดิจิทัลและ AI</text>
+  
+  <!-- เส้นเชื่อมจากกล่องหลัก 1-4 ไปยังกล่องที่ 5 -->
+  <path d="M 650 110 L 750 270" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 650 190 L 750 280" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 650 370 L 750 320" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  <path d="M 650 450 L 750 330" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+  
+  <!-- กำหนดหัวลูกศร -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+</svg>
