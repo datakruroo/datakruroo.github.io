@@ -538,21 +538,18 @@ AI hallucination หมายถึงกรณีที่ระบบปัญ
 
 ## เทคนิคการออกแบบ Prompt : In-Context Learning Strategy {.smaller}
 
--   **Basic Prompting**
+-   Zero-Shot Prompting
 
-    -   Zero-Shot Prompting
+-   One-Shot Prompting
 
-    -   One-Shot Prompting
+-   Few-Shot Prompting
 
-    -   Few-Shot Prompting
+-   Chain-of-Thought
 
--   **Advance Prompting**
+-   Template Design
 
-    -   Chain-of-Thought
 
-    -   Constitutional Prompting
 
-    -   Template Design
 
 ## Zero-shot prompting
 
@@ -676,6 +673,9 @@ Chain-of-Thought Prompting คือเทคนิคการออกแบ�
 :::
 
 ผลลัพธ์ที่ได้เป็นอย่างไร แตกต่างกันหรือไม่?
+
+
+
 
 ## The ABCDE Framework for Legal Professionals
 
