@@ -1,0 +1,16 @@
+---
+title: "บทความทั้งหมด"
+subtitle: "รวมบทความ Data Science สำหรับการศึกษา"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: true
+  filter-ui: true
+  page-size: 10
+  fields: [date, title, author, categories, description]
+page-layout: full
+---
+
+ค้นหาบทความที่สนใจได้จากการเลือกหมวดหมู่ หรือใช้ช่องค้นหาด้านบน

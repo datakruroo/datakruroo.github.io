@@ -1,0 +1,54 @@
+project:
+  type: website
+
+website:
+  title: "Data KruRoo"
+  description: "Data Science สำหรับการศึกษา"
+  favicon: favicon.ico
+  site-url: "https://datakruroo.github.io/Data_KruRoo_Blog"
+  repo-url: "https://github.com/datakruroo/datakruroo.github.io"
+  
+  navbar:
+    title: "Data KruRoo"
+    logo: logo.png
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "บทความ"
+        href: posts.qmd
+      - text: "หมวดหมู่"
+        href: categories.qmd
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/datakruroo/datakruroo.github.io
+        aria-label: GitHub
+      - icon: rss
+        href: index.xml
+        aria-label: RSS
+        
+  page-footer:
+    left: "© 2024 Data KruRoo"
+    right: "สร้างด้วย [Quarto](https://quarto.org/)"
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    css: styles.css
+    toc: true
+    toc-location: right
+    code-fold: false
+    code-tools: true
+    code-copy: true
+    highlight-style: github
+    mainfont: "Kanit, sans-serif"
+    monofont: "Fira Code, monospace"
+
+editor: visual
+
+execute:
+  freeze: auto
+  cache: true
+

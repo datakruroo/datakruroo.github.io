@@ -1,0 +1,179 @@
+---
+title: "การวิเคราะห์ข้อมูลคะแนนนักเรียนด้วย R"
+subtitle: "ตัวอย่างการใช้ R ในการวิเคราะห์ข้อมูลการศึกษา"
+author: "Data KruRoo Team"
+date: "2024-01-15"
+categories: ["R Programming", "Data Analysis", "การศึกษา", "สถิติ"]
+description: "เรียนรู้การวิเคราะห์ข้อมูลคะแนนสอบของนักเรียน ตั้งแต่การโหลดข้อมูล การสร้างกราฟ ไปจนถึงการทำสถิติเชิงพรรณนา"
+image: "plot-histogram.png"
+draft: false
+---
+
+## บทนำ
+
+ในบทความนี้ เราจะเรียนรู้วิธีการวิเคราะห์ข้อมูลคะแนนสอบของนักเรียนโดยใช้ภาษา R ซึ่งเป็นเครื่องมือที่ทรงพลังสำหรับการวิเคราะห์ข้อมูลทางการศึกษา
+
+### สิ่งที่จะได้เรียนรู้
+
+- การโหลดและตรวจสอบข้อมูล
+- การสร้างกราฟแสดงการกระจายของคะแนน  
+- การคำนวณสถิติเชิงพรรณนา
+- การเปรียบเทียบคะแนนระหว่างกลุ่ม
+
+## การเตรียมข้อมูล
+
+เริ่มต้นด้วยการโหลดไลบรารีที่จำเป็นและสร้างข้อมูลตัวอย่าง:
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# โหลดไลบรารีที่จำเป็น
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+
+# สร้างข้อมูลตัวอย่างคะแนนสอบ
+set.seed(123)
+student_data <- data.frame(
+  student_id = 1:100,
+  class = rep(c("A", "B", "C"), length.out = 100),
+  math_score = round(rnorm(100, mean = 75, sd = 12), 1),
+  science_score = round(rnorm(100, mean = 72, sd = 15), 1),
+  english_score = round(rnorm(100, mean = 78, sd = 10), 1)
+)
+
+# ดูข้อมูลตัวอย่างแรก 6 แถว
+head(student_data)
+```
+
+## การสำรวจข้อมูลเบื้องต้น
+
+ลองดูข้อมูลภาพรวมของชุดข้อมูล:
+
+```{r}
+#| label: data-exploration
+
+# ดูโครงสร้างของข้อมูล
+str(student_data)
+
+# สถิติเชิงพรรณนาเบื้องต้น
+summary(student_data[, c("math_score", "science_score", "english_score")])
+```
+
+## การสร้างกราฟแสดงการกระจายของคะแนน
+
+### Histogram แสดงการกระจายคะแนนคณิตศาสตร์
+
+```{r}
+#| label: histogram-math
+#| fig-cap: "การกระจายของคะแนนคณิตศาสตร์"
+
+ggplot(student_data, aes(x = math_score)) +
+  geom_histogram(bins = 20, fill = "skyblue", color = "black", alpha = 0.7) +
+  labs(
+    title = "การกระจายของคะแนนคณิตศาสตร์",
+    x = "คะแนนคณิตศาสตร์",
+    y = "จำนวนนักเรียน"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14),
+    axis.title = element_text(size = 12)
+  )
+```
+
+### Box Plot เปรียบเทียบคะแนนระหว่างห้อง
+
+```{r}
+#| label: boxplot-comparison
+#| fig-cap: "เปรียบเทียบคะแนนคณิตศาสตร์ระหว่างห้องเรียน"
+
+ggplot(student_data, aes(x = class, y = math_score, fill = class)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(
+    title = "เปรียบเทียบคะแนนคณิตศาสตร์ระหว่างห้องเรียน",
+    x = "ห้องเรียน",
+    y = "คะแนนคณิตศาสตร์"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14),
+    legend.position = "none"
+  ) +
+  scale_fill_brewer(palette = "Set2")
+```
+
+## การคำนวณสถิติเชิงพรรณนา
+
+### สถิติแยกตามห้องเรียน
+
+```{r}
+#| label: descriptive-stats
+
+# คำนวณสถิติเชิงพรรณนาแยกตามห้อง
+class_stats <- student_data %>%
+  group_by(class) %>%
+  summarise(
+    n = n(),
+    math_mean = round(mean(math_score), 2),
+    math_sd = round(sd(math_score), 2),
+    math_min = min(math_score),
+    math_max = max(math_score),
+    .groups = 'drop'
+  )
+
+print(class_stats)
+```
+
+### Correlation Matrix ระหว่างวิชา
+
+```{r}
+#| label: correlation
+
+# สร้าง correlation matrix
+score_cols <- c("math_score", "science_score", "english_score")
+cor_matrix <- cor(student_data[score_cols])
+
+print("ความสัมพันธ์ระหว่างคะแนนแต่ละวิชา:")
+round(cor_matrix, 3)
+```
+
+### Scatter Plot แสดงความสัมพันธ์
+
+```{r}
+#| label: scatter-plot
+#| fig-cap: "ความสัมพันธ์ระหว่างคะแนนคณิตศาสตร์และวิทยาศาสตร์"
+
+ggplot(student_data, aes(x = math_score, y = science_score)) +
+  geom_point(alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(
+    title = "ความสัมพันธ์ระหว่างคะแนนคณิตศาสตร์และวิทยาศาสตร์",
+    x = "คะแนนคณิตศาสตร์",
+    y = "คะแนนวิทยาศาสตร์"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 12))
+```
+
+## สรุปผลการวิเคราะห์
+
+จากการวิเคราะห์ข้อมูลคะแนนสอบ เราพบว่า:
+
+1. **การกระจายของคะแนน**: คะแนนคณิตศาสตร์มีการกระจายแบบ Normal Distribution
+2. **ความแตกต่างระหว่างห้อง**: ห้องเรียนต่างๆ มีคะแนนเฉลี่ยไม่แตกต่างกันมาก  
+3. **ความสัมพันธ์**: พบความสัมพันธ์เชิงบวกระหว่างคะแนนคณิตศาสตร์และวิทยาศาสตร์
+
+## การประยุกต์ใช้
+
+การวิเคราะห์แบบนี้สามารถนำไปใช้ใน:
+
+- **การประเมินผลการเรียนการสอน** - ดูประสิทธิภาพของการสอนในแต่ละห้อง
+- **การวางแผนการสอนแก้ไข** - ระบุนักเรียนที่ต้องการความช่วยเหลือเพิ่มเติม
+- **การพัฒนาหลักสูตร** - ปรับปรุงเนื้อหาตามผลการวิเคราะห์
+
+---
+
+*บทความนี้เป็นส่วนหนึ่งของชุดเนื้อหาการเรียนรู้ R เพื่อการวิเคราะห์ข้อมูลทางการศึกษา หากมีคำถามสามารถสอบถามได้ที่ [GitHub Issues](https://github.com/datakruroo/datakruroo.github.io/issues)*
