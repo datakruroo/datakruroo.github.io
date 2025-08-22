@@ -1,0 +1,997 @@
+---
+title: "Data-Driven Classroom" 
+subtitle: "Part II: Intentional Assessment"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+institute: คณะครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+date: 2025-08-18
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "Siwachoat Srisuttiyakorn,<br> Faculty of Education Chulalongkorn University"
+    logo: images/EDU_CU.png
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: true
+bibliography: "reference.bib"
+code-link: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;; 
+      }
+      
+      </style>
+---
+
+## Data-Driven Classroom Cycle {.smaller}
+
+<center>
+
+::: {style="font-size:55%;"}
+![@bolz2023datadriven](img/personalized.png){width="100%"}
+:::
+
+</center>
+
+## Intentional Assessment {.smaller}
+
+![](img/decision.png)
+
+การประเมินแบบมีเป้าหมาย (intentional assessment) คือกระบวนการเก็บและใช้ข้อมูลการเรียนรู้อย่างมีวัตถุประสงค์ชัดเจน เชื่อมโยงกับเป้าหมายการเรียนรู้ เพื่อพัฒนาผู้เรียนอย่างต่อเนื่อง
+
+-   ทำความเข้าใจทั้งความก้าวหน้าและอุปสรรคของผู้เรียน
+
+-   ให้ข้อเสนอแนะที่นำไปใช้ได้จริง (actionable feedback)
+
+-   ใช้เป็นฐานในการวางแผนช่วยเหลือเชิงรุกอย่างแม่นยำและทันท่วงที เพื่อการพัฒนาผู้เรียนอย่างต่อเนื่อง
+
+> The word "assessment" originates from the Latin word "assidere," meaning "to sit beside". In education, this translates to teachers sitting beside students, observing their work, and gathering information about their learning progress.
+
+## Principles of Intentional Assessment {.smaller}
+
+กรอบแนวคิด 4P ของ Intentional Assessment
+
+**1. Propose-Driven (ตามเป้าหมาย)**\
+- ประเมินเฉพาะสิ่งที่สอดคล้องกับเป้าหมายการเรียนรู้\
+- หลักฐานที่ได้ต้องมีความหมาย ไม่ใช่แค่ตัวเลข\
+- การประเมินไม่ได้ทำเพื่อเก็บคะแนน แต่หา insight เพื่อสนับสนุนการเรียนรู้ของผู้เรียน
+
+**2. Process-Enhanced (เน้นกระบวนการ)**\
+- มุ่งวัดทั้ง “กระบวนการเรียนรู้” ไม่ใช่แค่ผลลัพธ์\
+- พยายามให้เห็นกระบวนการคิด กระบวนการทำงาน\
+- ใช้งานจริง/สร้างสรรค์ เช่น portfolio, reflection, project\
+- Nested Assessment, Multi-Modal Assessment, Authentic Tasks
+
+**3. Personalized (สอดคล้องผู้เรียน)**\
+- ออกแบบการประเมินที่ยืดหยุ่นกับแต่ละคน\
+- Feedback และคำแนะนำที่ตรงกับความต้องการ
+
+**4. Proactive Prevention (ป้องกันเชิงรุก)**\
+- ใช้การประเมินตรวจจับสัญญาณเสี่ยงล่วงหน้า\
+- รีบวางแผนช่วยเหลือก่อนปัญหาจะบานปลาย
+
+## Intentional Assessment {.smaller}
+
+:::::: columns
+::: {.column width="40%"}
+![](images/clipboard-205431663.png)
+:::
+
+:::: {.column width="60%"}
+::: {style="font-size:80%;"}
+<br>
+
+-   ผลการตอบคำถามปรนัย
+
+-   คุณภาพของการตอบคำถามอัตนัย
+
+-   submit time ของนักเรียน
+
+-   การส่งและไม่ส่งการบ้านของนักเรียน
+:::
+::::
+::::::
+
+## Intentional Assessment {.smaller}
+
+**Propose-Driven** -- คุณภาพคำตอบ\
+- ตรวจสอบว่าเข้าใจ learning goal\
+- ประเมินจากตัวเลือกที่เลือกใน quiz แบบ multiple choice\
+- ประเมินจากคุณภาพคำตอบอัตนัยด้วยใช้ rubric
+
+::: fragment
+**Process-Enhanced** -- เวลา & รูปแบบการตอบ\
+- submit ทัน/ช้า = วินัย & การจัดการเวลา & ความรับผิดชอบ\
+- คำตอบอัตนัยสั้น/ยาว = วิธีคิดที่ต่างกัน\
+- คำตอบที่ผิดปกติในเชิง logic หรือกระบวนการคิด
+:::
+
+::: fragment
+**Personalized** -- คุณภาพคำตอบรายบุคคล - เห็นความต่างของแต่ละคน\
+- Feedback เฉพาะบุคคล (ชี้ให้เห็นจุดแข็ง + ชี้สิ่งที่ควรพัฒนา)\
+- ตรวจการลอกงาน -\> ถ้าคำตอบซ้ำกันเกินพอดี -\> ...
+:::
+
+::: fragment
+**Proactive Prevention** -- การส่ง/ไม่ส่งงาน\
+- ไม่ส่ง/ส่งช้า = สัญญาณเสี่ยง -\> เฝ้าระวังในอนาคต\
+- ครูเรียกคุย/เสริมกิจกรรมก่อนปัญหาจะบานปลาย\
+- ในอนาคตหากนักเรียนคนเดิมมีพฤติกรรมลอกซ้ำ ๆ = แนวโน้มเสี่ยงมากขึ้น -\> ?\
+- คำตอบที่ผิดปกติมาก ๆ อาจสะท้อนว่านักเรียนมีปัญหาในการทำความเข้าใจบทเรียน
+:::
+
+## ตัวอย่างผลการวิเคราะห์การบ้าน (ปรนัย)
+
+```{r}
+# ===== 1) Packages =====
+library(tidyverse)
+library(forcats)
+library(scales)
+
+# ===== 2) Raw data -> data.frame =====
+responses_df <- tribble(
+  ~question_id, ~question, ~option, ~responses,
+  # Q1
+  "Q1","แนวคิด Data-Driven Classroom",
+  "ปรับการสอนด้วยข้อมูลผู้เรียนรายบุคคลต่อเนื่อง", 189,
+  "Q1","แนวคิด Data-Driven Classroom",
+  "ให้นักเรียนเรียนรู้ด้วยตนเองทั้งหมดด้วยเทคโนโลยี", 1,
+  # Q2
+  "Q2","Education 4.0 ที่สอดรับการเปลี่ยนแปลงอุตสาหกรรม 4.0",
+  "ส่งเสริมความคิดสร้างสรรค์ ยืดหยุ่น และการเรียนรู้ตลอดชีวิต", 179,
+  "Q2","Education 4.0 ที่สอดรับการเปลี่ยนแปลงอุตสาหกรรม 4.0",
+  "มุ่งเชี่ยวชาญเฉพาะทางเพื่อแข่งขันกับ AI", 5,
+  "Q2","Education 4.0 ที่สอดรับการเปลี่ยนแปลงอุตสาหกรรม 4.0",
+  "จดจำข้อมูลเร็วเพื่อใช้กับเทคโนโลยีดิจิทัล", 5,
+  "Q2","Education 4.0 ที่สอดรับการเปลี่ยนแปลงอุตสาหกรรม 4.0",
+  "ใช้ Automation แทนครู", 1,
+  # Q3
+  "Q3","บทบาทของ Analytics/AI ใน Data-Driven Classroom",
+  "วิเคราะห์พฤติกรรม/ผลลัพธ์เพื่อช่วยสอนและออกแบบช่วยเหลือเฉพาะบุคคล", 188,
+  "Q3","บทบาทของ Analytics/AI ใน Data-Driven Classroom",
+  "สร้างแบบฝึกหัดซ้ำเพื่อให้ชำนาญ", 2,
+  # Q4
+  "Q4","กรณีตัวอย่าง Data Literacy ของนักเรียน A",
+  "Communicating Data (การสื่อสารข้อมูล)", 164,
+  "Q4","กรณีตัวอย่าง Data Literacy ของนักเรียน A",
+  "Working with Data (การจัดการข้อมูล)", 12,
+  "Q4","กรณีตัวอย่าง Data Literacy ของนักเรียน A",
+  "Reading Data (การอ่าน Insight จากข้อมูล)", 12,
+  "Q4","กรณีตัวอย่าง Data Literacy ของนักเรียน A",
+  "Data Engineering (การสร้างระบบจัดเก็บข้อมูล)", 2,
+  # Q5
+  "Q5","จับคู่ขั้นตอนกับประเภทของ Intentional Assessment",
+  "1) Predictive, 2) Responsive, 3) Summative", 175,
+  "Q5","จับคู่ขั้นตอนกับประเภทของ Intentional Assessment",
+  "1) Responsive, 2) Predictive, 3) Summative", 8,
+  "Q5","จับคู่ขั้นตอนกับประเภทของ Intentional Assessment",
+  "1) Summative, 2) Predictive, 3) Responsive", 4,
+  "Q5","จับคู่ขั้นตอนกับประเภทของ Intentional Assessment",
+  "1) Summative, 2) Summative, 3) Predictive", 3
+) %>%
+  group_by(question_id) %>%
+  mutate(total = sum(responses),
+         pct   = responses/total,
+         is_top_choice = responses == max(responses)) %>%
+  ungroup()
+
+# ===== 3) สรุประดับข้อ (สำหรับกราฟสรุป) =====
+summary_df <- responses_df %>%
+  filter(is_top_choice) %>%
+  group_by(question_id, question) %>%
+  summarise(majority_option = first(option),
+            majority_count  = first(responses),
+            total           = first(total),
+            majority_pct    = majority_count/total,
+            .groups = "drop") %>%
+  arrange(question_id)
+
+# ===== 4) Theme พื้นฐาน =====
+theme_set(
+  theme_minimal(base_size = 16) +
+    theme(text = element_text(family = "ChulaCharasNew"),
+          axis.text = element_text(size = 16),
+          plot.title.position = "plot",
+          axis.title.x = element_blank())
+)
+
+# ===== 5) ฟังก์ชันกราฟแท่งรายข้อ =====
+plot_item <- function(qid) {
+  dat <- responses_df %>%
+    filter(question_id == qid) %>%
+    mutate(option = fct_reorder(option, responses))   # เรียงตามจำนวน
+
+  ymax <- max(dat$responses) * 1.25
+
+  ggplot(dat, aes(x = option, y = responses)) +
+    geom_col() +
+    # label อยู่ตรงกลางแท่ง
+    geom_text(aes(label = responses, y = responses/2),
+              color = "white", size = 4, hjust = 0, vjust = 0.5) +
+    coord_flip(ylim = c(0, ymax)) +
+    labs(title = paste0(dat$question_id[1], ": ", dat$question[1]),
+         y = "จำนวนคำตอบ", x = NULL)
+}
+
+# ใช้งาน: สร้างกราฟทั้ง 5 ข้อ
+p_q1 <- plot_item("Q1")+coord_flip()
+p_q2 <- plot_item("Q2")+coord_flip()
+p_q3 <- plot_item("Q3")+coord_flip()
+p_q4 <- plot_item("Q4")+coord_flip()
+p_q5 <- plot_item("Q5")+coord_flip()
+```
+
+```{r}
+# ===== 6) กราฟสรุป % ที่เลือกคำตอบข้างมากต่อข้อ =====
+p_summary <- ggplot(summary_df,
+                    aes(x = question_id, y = majority_pct)) +
+  geom_col(fill = "steelblue") +
+  geom_text(aes(label = percent(majority_pct, accuracy = 0.1)),
+            vjust = -0.2, size = 4) +
+  coord_cartesian(ylim = c(0, 1.1)) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(title = "ร้อยละของนักเรียนที่ตอบถูก",
+       x = "ข้อคำถาม", y = "ร้อยละ")
+p_summary
+```
+
+## ตัวอย่างผลการวิเคราะห์การบ้าน (ปรนัย) {.smaller}
+
+บางกรณี intentional assessment สามารถให้ข้อมูลป้อนกลับเกี่ยวกับการจัดการเรียนรู้ และการวัดประเมินของผู้สอนได้ด้วย
+
+```{r}
+library(patchwork)
+p_q4/p_q5
+```
+
+## ตัวอย่างผลการวิเคราะห์การบ้าน (อัตนัย) {.smaller}
+
+1.  ครูในยุคปัจจุบันควรใช้ข้อมูลของนักเรียนไปทำอะไร\
+2.  ทำไมการวัดผลแบบมีเป้าหมายจึงสำคัญต่อการช่วยนักเรียนให้เรียนดีขึ้น
+
+```{r}
+# ===== Packages =====
+library(tidyverse)
+library(scales)
+
+# ถ้าต้องการบังคับฟอนต์ไทยบนบางเครื่อง:
+# install.packages("showtext")
+# library(showtext); showtext_auto()
+# # ถ้าฟอนต์ไม่ได้ติดตั้งระดับระบบ ให้ font_add() ชี้ไฟล์ .ttf ของ ChulaCharasNew
+# # font_add("ChulaCharasNew", "/path/to/ChulaCharasNew.ttf")
+
+theme_set(
+  theme_minimal(base_size = 14) +
+    theme(text = element_text(family = "ChulaCharasNew"))
+)
+
+# ===== Data =====
+df <- readr::read_csv("/Users/choat/Documents/GitHub/stat_info_ed_68_1/outputs/2758501_Quiz1_Week1.csv")
+
+dims <- c("Essay_Dimension1_Score",
+          "Essay_Dimension2_Score",
+          "Essay_Dimension3_Score")
+
+long <- df |>
+  select(all_of(dims)) |>
+  pivot_longer(everything(),
+               names_to = "dimension",
+               values_to = "score") |>
+  mutate(
+    # ปรับชื่อแกน/หัวข้อให้อ่านง่าย (เปลี่ยนได้ตามที่ใช้จริง)
+    dimension = recode(dimension,
+      Essay_Dimension1_Score = "ด้าน 1",
+      Essay_Dimension2_Score = "ด้าน 2",
+      Essay_Dimension3_Score = "ด้าน 3"
+    ),
+    score = factor(score, levels = sort(unique(score), na.last = NA))
+  )
+
+# ===== แผนภูมิแท่ง: "สัดส่วนผู้เรียน (%)" ต่อคะแนน (facet 3 ด้าน) =====
+p_pct <- long |>
+  drop_na(score) |>
+  count(dimension, score) |>
+  group_by(dimension) |>
+  mutate(pct = n / sum(n)) |>
+  ungroup() |>
+  ggplot(aes(x = score, y = pct)) +
+  geom_col(aes(fill = dimension)) +
+  geom_text(aes(label = percent(pct, accuracy = 0.1)),
+            vjust = -0.25, size = 4) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  facet_wrap(~ dimension, nrow = 1) +
+  labs(
+    title = "สัดส่วนคะแนนรายด้าน (เปอร์เซ็นต์)",
+    x = "คะแนน", y = "% ของผู้เรียนในด้านนั้น"
+  ) +
+  coord_cartesian(ylim = c(0, 1.1))+
+  theme(legend.position = "none")
+p_pct
+```
+
+## Data
+
+คือ ข้อเท็จจริง (fact) หรือ หลักฐาน (evidence) ที่สามารถวัดหรือสังเกตได้ และสามารถบ่งชี้สภาพของสิ่งใดสิ่งหนึ่ง ไม่ว่าจะเป็นตัวผู้เรียน กระบวนการเรียนรู้ หรือบริบทการเรียนรู้
+
+-   เป็นวัตถุดิบสำหรับ intentional assessment และ data-driven classroom
+
+-   data ไม่ใช่เฉพาะตัวเลข แต่รวมทุกอย่างที่เป็นข้อเท็ํจจริง หรือหลักฐานการเรียนรู้ของผู้เรียน
+
+![](img/decision.png)
+
+## Type of Data {.smaller}
+
+-   ข้อมูลเชิงปริมาณ (quantitative data) คือข้อมูลที่มีการเก็บบันทึกค่าเป็นตัวเลขที่มีความหมาย เช่น น้ำหนัก ส่วนสูง คะแนนสอบ จำนวนครั้งที่เข้าเรียนของนักเรียน เวลาท่ี่นักเรียนใช้ในการทำแบบฝึกหัด (นาที) จำนวนครั้งที่นักเรียนเข้าดูเนื้อหาในระบบ LMS ผลการประเมินการบ้าน (คะแนน)
+
+-   ข้อมูลจัดประเภท (categorical data) คือข้อมูลที่ค่าของข้อมูลไม่ได้มีความหมายในเชิงปริมาณ แต่มีความหมายในเชิงคุณลักษณะ หรือการแบ่งกลุ่ม/หมวดหมู่ของหน่วยข้อมูล เช่น เพศของนักเรียน สถานะการเข้าเรียน (เข้าเรียน/ขาดเรียน) ผลการประเมินโครงงาน (ดี/พอใช้/ต้องปรับปรุง) สถานะการส่งการบ้านของนักเรียน (ตรงเวลา/ล่าช้า)
+
+<center>![](img/type_data.png){width="70%"}</center>
+
+## Type of (Classroom) Data {.smaller}
+
+![](img/type_of_data2.png){width="50%"}
+
+## Assessment Tools {.smaller}
+
+> Assessment tool = วิธีการเก็บหลักฐานการเรียนรู้ที่เหมาะสมกับเป้าหมาย
+
+คือ วิธีการหรือสื่อที่ผู้สอนใช้ในการรวบรวมข้อมูลเกี่ยวกับผู้เรียน เพื่อนำมาสะท้อนระดับการเรียนรู้ ความก้าวหน้า ทักษะ พฤติกรรม หรือบริบท ซึ่งข้อมูลเหล่านี้จะถูกใช้เป็นหลักฐาน (evidence) สำหรับการตัดสินใจด้านการเรียนการสอน
+
+-   อาจอยู่ในรูปของแบบทดสอบ แบบสอบถาม การสังเกต การสัมภาษณ์ Portfolio Project หรือการวิเคราะห์พฤติกรรมการเรียนรู้
+
+-   แก่นสำคัญ: ต้องเลือกให้ สอดคล้องกับวัตถุประสงค์การประเมินและเป้าหมายการเรียนรู้
+
+## Assessment Tools {.smaller}
+
+**Academic Data**
+
+-   Task: ข้อสอบ แบบฝึกหัด หรือโปรเจค
+
+-   Tool: Rubric หรือแนวทางการให้คะแนน
+
+**Behavioral Data**
+
+-   Task: การมีส่วนร่วมในชั้นเรียน การเข้าเรียน การส่งงาน ระยะเวลาที่ใช้ทำงาน ...
+
+-   Tool: แบบบันทึกพฤติกรรม (Behavior Log) หรือแบบประเมินตนเอง
+
+**Contextual Data**
+
+-   Task: ความพร้อมด้านเทคโนโลยี การสนับสนุนจากครอบครัว
+
+-   Tool: แบบสำรวจ
+
+## Three-Tier Framework {.smaller}
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+# สร้างข้อมูลตาราง
+df <- data.frame(
+  "Assessment Tier" = c(
+    "Tier 1: Predictive Assessment",
+    "Tier 2: Responsive Assessment",
+    "Tier 3: Summative/Intensive Assessment"
+  ),
+  "Primary Data Types" = c(
+    "Academic, Behavioral, Demographic, Contextual",
+    "Academic, Behavioral, Contextual",
+    "All types: Academic, Behavioral, Contextual,\nWell-being & Social, Demographic"
+  ),
+  "Analytical Approach" = c(
+    "**Predictive Analytics**: ใช้ข้อมูลย้อนหลัง 2–3 ปี เพื่อสร้างแบบจำลองคาดการณ์ความเสี่ยงของผู้เรียนก่อนเริ่มเรียน หากไม่มีข้อมูลเพียงพอ Tier นี้จะทำงานได้ไม่เต็มที่",
+    "**Descriptive & Diagnostic Analytics**: กำกับติดตาม/วิเคราะห์หาสาเหตุของปัญหาการเรียน เช่น วิเคราะห์จุดอ่อนของผู้เรียนผ่านงาน การตอบคำถาม หรือพฤติกรรม",
+    "**Evaluative Data Mining**: การประเมินว่าระบบการทำนาย การวินิจฉัย และ intervention ที่ใช้ในกระบวนการจัดการเรียนรู้ที่ผ่านมาได้ผลจริงหรือไม่ ผู้สอนอาจทำ mini-summative assessment สำหรับ intensive support"
+  )
+)
+
+# แสดงตาราง
+kable(df, "html", escape = FALSE, align = "l", booktabs = TRUE) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"), position = "center", font_size = 22) %>%
+  row_spec(0, bold = TRUE, background = "#003366", color = "white") %>%
+  column_spec(1, bold = TRUE, color = "#003366") %>%
+  column_spec(2, width = "18em") %>%
+  column_spec(3, width = "30em")
+```
+
+## Generative AI: What It Is and Why It Matters {.smaller}
+
+<br>
+
+::::::::: columns
+::::::: {.column width="60%"}
+::: {.fragment .fade-in style="font-size:80%;"}
+**Generative AI** คือระบบปัญญาประดิษฐ์ที่สามารถสร้างข้อมูลใหม่ เช่น ข้อความ รูปภาพ เสียง โค้ด หรือวิดีโอ โดยอิงจากรูปแบบ (*patterns*) และโครงสร้าง (*structures*) ที่เรียนรู้จากข้อมูลจำนวนมาก
+:::
+
+::: {.fragment .fade-in style="font-size:80%;"}
+กระบวนการสร้างไม่ได้เกิดจากการสุ่ม แต่เป็นการ **คำนวณทางสถิติ**\
+เพื่อหา “ผลลัพธ์ที่มีความเป็นไปได้สูงสุด” ภายใต้บริบทที่กำหนด
+:::
+
+::: {.fragment .fade-in style="font-size:80%;"}
+การสร้างเนื้อหาต้องอาศัย:
+
+-   **Context**: บริบท เช่น ข้อความก่อนหน้า หรือข้อมูลแวดล้อม
+-   **Prompt**: คำกระตุ้นที่ระบุภารกิจ รูปแบบ หรือเจตนาของผู้ใช้
+:::
+
+::: {.fragment .fade-in style="font-size:80%;"}
+ผลลัพธ์ที่ได้จึงไม่ใช่ “ของใหม่โดยสมบูรณ์” (original content) แต่เป็นการจัดเรียงองค์ประกอบใหม่ตามความน่าจะเป็นของการเกิดร่วมกันของคำหรือพิกเซล ที่ คล้ายคลึงกับสิ่งที่เคยเรียนรู้มา แต่มีความยืดหยุ่นและสร้างสรรค์เพียงพอที่จะใช้งานในหลากหลายบริบท และตรงตามวัตถุประสงค์
+:::
+:::::::
+
+::: {.column width="40%"}
+![https://wordlift.io/blog/en/generative-ai-for-seo/](https://wordlift.io/blog/en/wp-content/uploads/sites/3/2023/07/Generative-AI-for-SEO-landscape-1.png)
+:::
+:::::::::
+
+## Generative AI: หลักการทำงาน {.smaller}
+
+<br>
+
+::: {style="font-size:80%;"}
+![](images/paste-26.png)
+:::
+
+## ChatGPT {.smaller}
+
+:::::: columns
+:::: {.column width="50%"}
+::: {style="font-size:90%;"}
+1.  เข้าไปที่เว็บไซต์ [chat.openai.com](chat.openai.com)
+2.  ลงทะเบียนหรือเข้าสู่ระบบ
+3.  เลือกโมเดลที่ต้องการใช้
+4.  ลองพิมพ์คำถามหรือคำสั่งในช่องข้อความ
+5.  ตรวจสอบคำตอบที่ได้รับ ปรับปรุง และนำผลลัพธ์ไปใช้
+
+![](images/paste-22.png){width="605"}
+:::
+::::
+
+::: {.column width="50%"}
+![https://openai.com/chatgpt/pricing/](images/paste-27.png)
+:::
+::::::
+
+## ChatGPT {.smaller}
+
+:::::: columns
+:::: {.column width="50%"}
+::: {style="font-size:90%;"}
+1.  เข้าไปที่เว็บไซต์ [chat.openai.com](chat.openai.com)
+2.  ลงทะเบียนหรือเข้าสู่ระบบ
+3.  เลือกโมเดลที่ต้องการใช้
+4.  ลองพิมพ์คำถามหรือคำสั่งในช่องข้อความ
+5.  ตรวจสอบคำตอบที่ได้รับ ปรับปรุง และนำผลลัพธ์ไปใช้
+
+![](images/paste-22.png){width="605"}
+:::
+::::
+
+::: {.column width="50%"}
+![](images/paste-28.png)
+:::
+::::::
+
+## ChatGPT {.smaller}
+
+:::::: columns
+:::: {.column width="50%"}
+::: {style="font-size:90%;"}
+1.  เข้าไปที่เว็บไซต์ [chat.openai.com](chat.openai.com)
+2.  ลงทะเบียนหรือเข้าสู่ระบบ
+3.  เลือกโมเดลที่ต้องการใช้
+4.  ลองพิมพ์คำถามหรือคำสั่งในช่องข้อความ
+5.  ตรวจสอบคำตอบที่ได้รับ ปรับปรุง และนำผลลัพธ์ไปใช้
+
+![](images/paste-22.png){width="605"}
+:::
+::::
+
+::: {.column width="50%"}
+![https://teamai.com/blog/large-language-models-llms/understanding-different-chatgpt-models/](images/paste-29.png)
+:::
+::::::
+
+## Generative AI for Intensional Assessment {.smaller}
+
+-   **Item/Quiz Generator**
+
+-   **Task Generator**
+
+-   **Differentiate/Adaptive Tasks**
+
+-   **Rubric Generator**
+
+-   **Automated Scoring & Automated Essay Scoring**
+
+-   **Feedback Generator**
+
+## ตัวอย่างการใช้งาน Generative AI {.smaller}
+
+> ช่วยออกข้อสอบ data-driven classroom เกี่ยวกับ intentional assessment ให้ข้อนึงสิ
+
+![](images/clipboard-3131793591.png){width="409"}
+
+## ตัวอย่างการใช้งาน Generative AI {.smaller}
+
+::::::: columns
+:::: {.column width="50%"}
+::: {style="font-size:60%;"}
+กรอบแนวคิด 4P ของ Intentional Assessment
+
+1.  Propose-Driven (ตามเป้าหมาย)
+
+-ประเมินเฉพาะสิ่งที่สอดคล้องกับเป้าหมายการเรียนรู้\
+-หลักฐานที่ได้ต้องมีความหมาย ไม่ใช่แค่ตัวเลข\
+-การประเมินไม่ได้ทำเพื่อเก็บคะแนน แต่หา insight เพื่อสนับสนุนการเรียนรู้ของผู้เรียน
+
+2.  Process-Enhanced (เน้นกระบวนการ)
+
+-มุ่งวัดทั้ง “กระบวนการเรียนรู้” ไม่ใช่แค่ผลลัพธ์\
+-พยายามให้เห็นกระบวนการคิด กระบวนการทำงาน\
+-ใช้งานจริง/สร้างสรรค์ เช่น portfolio, reflection, project\
+-Nested Assessment, Multi-Modal Assessment, Authentic Tasks
+
+3.  Personalized (สอดคล้องผู้เรียน)
+
+-ออกแบบการประเมินที่ยืดหยุ่นกับแต่ละคน\
+-Feedback และคำแนะนำที่ตรงกับความต้องการ
+
+4.  Proactive Prevention (ป้องกันเชิงรุก)
+
+-ใช้การประเมินตรวจจับสัญญาณเสี่ยงล่วงหน้า\
+-รีบวางแผนช่วยเหลือก่อนปัญหาจะบานปลาย
+:::
+::::
+
+:::: {.column width="50%"}
+::: {style="font-size:60%;"}
+ขอให้ AI ทำหน้าที่เป็นคืออาจารย์ในรายวิชา data-driven classroom ระดับปริญญาตรี
+
+ช่วยสร้างข้อสอบ multiple choice 1 ข้อ (4 ตัวเลือก)
+
+Learning Outcome: นิสิตเข้าใจและสามารถประยุกต์ใช้หลัก 4P ของ Intentional Assessment ในสถานการณ์สอนจริง
+
+ระดับความคิด: Apply
+
+เงื่อนไข: ข้อสอบต้องอยู่ในรูปสถานการณ์ (case-based) ที่สมจริง ครูเจอได้จริงในชั้นเรียน ห้ามเป็นโจทย์ท่องจำ
+
+โปรดแสดงผลลัพธ์เป็น: คำถาม + ตัวเลือก A–D + เฉลย + คำอธิบายเหตุผลของเฉลย
+:::
+::::
+:::::::
+
+## ตัวอย่างการใช้งาน Generative AI {.smaller}
+
+![](images/clipboard-2204119445.png){width="405"}
+
+## ปัญหา Hallucination
+
+![](images/clipboard-1569774724.png)
+
+## ปัญหา Hallucination {.smaller}
+
+<left> ![](images/paste-30.png){width="45%"} </left>
+
+<br>
+
+AI hallucination หมายถึงกรณีที่ระบบปัญญาประดิษฐ์ (AI) สร้างเนื้อหาหรือคำตอบที่ **ไม่ได้อิงจากข้อมูลจริงหรือข้อมูลที่ได้รับมา** ซึ่งอาจทำให้ AI สร้างข้อมูลที่**ไม่ถูกต้อง นำไปสู่ความเข้าใจผิด หรือแต่งขึ้นทั้งหมด** ซึ่งอาจก่อให้เกิดปัญหาในหลายบริบทของการใช้งาน
+
+-   **สร้างข้อมูลเท็จโดยสิ้นเชิง (total fabrication)** -- สร้างแก่นของเรื่องราวที่ไม่มีอยู่จริงขึ้นมาทั้งหมด เช่น อ้างอิงหลักฐานข้อมูลผิด ให้เหตุผลผิด นำไปสู่การสร้างข้อสรุปผิด
+
+-   **ผสมผสานระหว่างข้อมูลจริงและเท็จ (mixing true & false)** -- หลักการโดยรวมถูกต้อง แต่อาจยกตัวอย่างหรือหลักฐานข้อมูลประกอบที่ไม่มีอยู่จริง
+
+-   **สรุปความเกินจริง (faulty inference)** -- ข้อมูลตั้งต้นถูก แต่ข้อสรุปตีความเกินขอบเขตการอ้างอิงของข้อมูล
+
+## ปัจจัยที่มีผลต่อความถูกต้อง/เหมาะสมของผลลัพธ์ {.smaller}
+
+::: {style="font-size:85%;"}
+-   **Model**
+
+    -   พื้นความรู้เดิม (Knowledge Base) โมเดลถูก train มาด้วยข้อมูลอะไรบ้าง สิ้นสุด ณ ตอนไหน มีความเป็นปัจจุบันมากน้อยแค่ไหน
+
+    -   สถาปัตยกรรมของโมเดล
+
+    -   ขนาดและความสามารถในการให้เหตุผล โมเดลขนาดใหญ่มักมีความสามารถในการคิดเชิงเหตุผล หรือคิดในปัญหาซับซ้อนได้ดีกว่า
+
+    -   การปรับจูนเฉพาะทาง (Fine-tuning) ช่วยให้โมเดลเข้าใจบริบทเฉพาะทางได้ดีขึ้น
+
+-   **Prompt**
+
+    -   กระบวนการกระตุ้นเพื่อให้ LLM แสดงผลลัพธ์ตามที่ต้องการ
+
+    -   Prompt ชัดเจน ไม่กำกวม และบอกสิ่งที่ต้องการอย่างละเอียด จะได้ผลลัพธ์ที่ดีกว่า
+
+    -   เทคนิคการ Prompt ที่แตกต่างกันอาจให้ผลลัพธ์แตกต่างกันไปด้วย (อาจไม่จริงเสมอไปโดยเฉพาะกับโมเดลขนาดใหญ่ที่มีประสิทธิภาพสูง เช่น gpt-o1, gpt-o3)
+
+-   **Context**
+
+    -   ข้อมูลแวดล้อมที่ป้อนเข้าไปพร้อมกับ Prompt เช่น เนื้อหาจากเอกสาร, บทสนทนาก่อนหน้า, หรือข้อมูลเฉพาะที่โมเดลไม่เคยรู้มาก่อน
+
+    -   กระบวนการจัดหา Context ที่ถูกต้องก็เป็นปัจจัยที่มีผลด้วย
+:::
+
+## เทคนิคการออกแบบ Prompt : In-Context Learning Strategy {.smaller}
+
+-   Zero-Shot Prompting
+
+-   One-Shot Prompting
+
+-   Few-Shot Prompting
+
+-   Chain-of-Thought
+
+-   Template Design
+
+## Template Design
+
+> "คุณภาพของ prompt ส่งผลต่อคุณภาพของผลลัพธ์"
+
+<center>
+
+![https://llmnanban.akmmusai.pro/Introductory/Prompt-Elements/](https://llmnanban.akmmusai.pro/images/elements.png){width="50%"}
+
+</center>
+
+## Template Design {.smaller}
+
+<br>
+
+:::::: columns
+:::: {.column width="“60%”"}
+::: {style="font-size: 80%;"}
+> “คุณคือครูประจำชั้น ช่วยร่างข้อความแจ้งผู้ปกครองเรื่องเปลี่ยนวันประชุมผู้ปกครอง จากวันที่ 13 มิถุนายน 2568 เป็นวันที่ 20 มิถุนายน 2568 โดยใช้ภาษาสุภาพ เหมาะสมกับการสื่อสารทางการศึกษา ความยาวไม่เกิน 10 บรรทัด”
+
+| องค์ประกอบของ Prompt | เนื้อหาใน prompt |
+|----------------------|--------------------------------------------------|
+| 1\. Task | ช่วยร่างข้อความแจ้งผู้ปกครอง |
+| 2\. Context | เรื่องเปลี่ยนวันประชุมผู้ปกครอง จากวันที่ 13 <br> เป็นวันที่ 20 มิ.ย. 2568 |
+| 3\. Specification | ใช้ภาษาสุภาพ เหมาะกับการสื่อสารทางการศึกษา <br> ไม่เกิน 10 บรรทัด |
+:::
+::::
+
+::: {.column width="“40%”"}
+<center>Prompt ที่ดีนำไปสู่ผลลัพธ์ที่ดี</center>
+
+<center>
+
+![https://llmnanban.akmmusai.pro/Introductory/Prompt-Elements/](https://llmnanban.akmmusai.pro/images/elements.png){width="100%"}
+
+</center>
+:::
+::::::
+
+## Chain-of-Thought (CoT) (1) {.smaller}
+
+Chain-of-Thought Prompting คือเทคนิคการออกแบบ prompt ที่ให้โมเดลภาษารู้จักการคิดแบบมีเหตุผลเป็นขั้นเป็นตอน หรือแสดงวิธีคิด/วิธีทำออกมาก่อนจะสรุปเป็นคำถามสุดท้าย (step-by-step reasoning)
+
+แทนที่จะให้โมเดลตอบทันที...
+
+> ใช้ prompt กระตุ้นให้โมเดลแจกแจงกระบวนการคิด การให้เหตุผล วิธีการคำนวณ หรือการดำเนินงานเพื่อนำไปสู่ผลลัพธ์ออกมาทีละขั้น
+
+-   ลดปัญหา Hallucination
+
+-   เพิ่มความโปร่งใส คุณภาพคำตอบดีขึ้น
+
+-   สอดคล้องกับหลักการ Human in the Loop/Human Center Mindset
+
+## Chain-of-Thought (CoT) (2) {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+![](https://datakruroo.github.io/ai_powered/handout/img/interview.png){width="70%"}
+
+-   [สถานการณ์ตัวอย่าง](https://docs.google.com/document/d/1Zmtc2qQCtYHI5ZGR3fwY8lnCGLGZeIsN/edit?usp=sharing&ouid=118010069578157348024&rtpof=true&sd=true)
+
+-   [CoT in ChatGPT](https://chatgpt.com/share/67a7c1b1-1c68-8003-ae6f-fc0415db40b1)
+:::
+
+::: {.column width="50%"}
+![](https://datakruroo.github.io/ai_powered/handout/img/diagram.png){width="70%"}
+:::
+:::::
+
+## Zero-Shot Prompting + Context {.smaller}
+
+![](images/clipboard-3475561955.png)
+
+## AI Usage Framework {.smaller}
+
+:::::: columns
+::: {.column width="40%"}
+![](img/ai_maturity.png){width="100%"}
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="40%"}
+<br> <br>
+
+**Human in the Loop Framework**
+
+![https://www.doubleword.ai/glossary/human-in-the-loop](img/Human_inthe_loop.webp){width="100%"}
+:::
+::::::
+
+## Generative AI for Intentional Assessment {.smaller}
+
+-   Item/Quiz and Task Generator
+
+-   Rubric Generator
+
+-   Automated Scoring & Automated Essay Scoring
+
+-   Feedback Generator
+
+## Item/Quiz Generator {.smaller}
+
+::: {style="font-size:100%;"}
+Generative AI สามารถ
+
+-   สร้างข้อสอบตาม learning objective
+
+-   ปรับข้อสอบตาม Bloom's Taxonomy หรือกรอบแนวคิดอื่น ๆ ตามที่กำหนด
+
+-   ใส่บริบทที่เหมาะสมกับผู้เรียน
+
+-   อธิบายเหตุผลของคำตอบเพื่อการตรวจสอบและการเรียนรู้
+
+โครงสร้าง prompt ที่ดีควรประกอบด้วย --\> [ตัวอย่าง](https://chatgpt.com/share/6818ca61-2f44-8003-a43e-9ab0c1e3312f)
+:::
+
+::: {style="font-size:100%;"}
+```         
+- วิชา / หัวข้อ
+- กลุ่มเป้าหมาย (ระดับชั้น, ความรู้พื้นฐาน)
+- วัตถุประสงค์การเรียนรู้
+- เนื้อหา
+- ประเภทข้อสอบ (MCQ, Short Answer, Essay)
+- จำนวนข้อ
+- ระดับความยาก
+- บริบท/สถานการณ์ (Contextualization)
+- เฉลย + คำอธิบาย + Rationales
+...
+```
+:::
+
+## Item Analysis + Generator (1)
+
+![](img/PISA_analysis.png)
+
+## Item Analysis + Generator (2)
+
+![](img/PISA_parallel.png)
+
+## Differentiated Items
+
+::::: columns
+::: {.column width="50%"}
+![](img/math_inequality.png){width="70%"}
+
+![](img/claude2.png){width="70%"}
+
+![](img/claude3.png){width="70%"}
+:::
+
+::: {.column width="50%"}
+![](img/claude4.png){width="70%"}
+:::
+:::::
+
+## Differentiated Items {.smaller}
+
+::::: columns
+::: {.column width="50%"}
+![](img/claude5.png)
+:::
+
+::: {.column width="50%"}
+![](img/claude6.png)
+:::
+:::::
+
+## Problems/Tasks Analysis
+
+:::::: columns
+::: {.column width="30%"}
+![](img/problem_analysis.png)
+:::
+
+:::: {.column width="70%"}
+<center>
+
+::: {style="font-size:80%;"}
+![[ดู Chat ฉบับเต็ม](https://chatgpt.com/share/6818d162-b900-8003-a4b8-9b94a7c7a91f)](img/TDC2.png){width="80%"}
+:::
+
+</center>
+::::
+::::::
+
+## Problem-based/Tasks Generator
+
+:::::: columns
+::::: {.column width="50%"}
+:::: {style="font-size:40%;"}
+สร้าง Assignment สำหรับนิสิตระดับปริญญาโท สาขาสถิติและวิทยาการข้อมูลการศึกษา ในรายวิชา Machine Learning โดยมีรายละเอียดดังนี้:
+
+วัตถุประสงค์ เพื่อ พัฒนาโมเดลเพื่อจำแนกผลสัมฤทธิ์ของนักเรียนจากชุดข้อมูล student-mat.csv โดยใช้ tidymodels ใน R
+
+นิสิตต้องดำเนินการดังต่อไปนี้:
+
+1.  ดำเนินการทำ feature engineering โดยใช้แนวทางการจัดการข้อมูล 3 แบบ ดังนี้ 1.1 ทำ basic preprocessing มีแค่ standardized หรือแปลงตัวแปรจัดประเภทเป็น dummy ตามเหมาะสม
+
+1.2 เพิ่มจาก basic preprocessing ให้มีการ explore interaction term เพื่อจับส่วนความสัมพันธ์แบบ non-linear
+
+1.3 เลือก 1.1 หรือ 1.2 มาเพิ่ม ให้มีการแปลงค่าของตัวแปรต่อเนื่องที่เบ้ หรือตัวแปรต่อเนื่องที่มีการแจกแจงไม่ปกติให้เป็นตัวแปรจัดประเภท
+
+2.  ฝึกสอนโมเดล Linear Regression, Lasso Regression และ Ridge regression
+
+3.  ประเมินประสิทธิภาพของโมเดลโดยใช้ Accuracy, Sensitivity, Specificity, F-measure และ AUC
+
+4.  เปรียบเทียบประสิทธิภาพของ วิธีการจัดการข้อมูล และ โมเดลที่แตกต่างกัน
+
+5.  สรุปและแปลความหมายของผลลัพธ์
+
+เน้นให้นิสิตเขียนแสดงกระบวนการและเขียนเหตุผลเป็นระยะ ๆ ตามแนวคิด nested assessment แนะนำให้นิสิตในข้อ 4. ด้วยว่าควรมีการออกแบบการเปรียบเทียบอย่างไร
+
+::: {style="font-size:70%"}
+[คลิกดูผลลัพธ์ที่ได้](https://chatgpt.com/canvas/shared/67a79cb6b35881918195dc330ee736b7)
+:::
+::::
+:::::
+::::::
+
+## Rubric Generator
+
+::::: columns
+::: {.column width="40%"}
+![](img/assignment.png)
+:::
+
+::: {.column width="60%"}
+[![](img/rubric.png){width="90%"}](https://chatgpt.com/share/67a76476-2840-8003-8532-8d33b0b44271)
+:::
+:::::
+
+## Automated Scoring + Feedback {transition="fade-in fade-out"}
+
+::: {style="font-size:65%;"}
+-   Gen AI เช่น ChatGPT สามารถตรวจคำตอบของโจทย์ปัญหาได้ และยังสามารถตรวจให้ผู้เรียนเป็นรายบุคคลโดยอัตโนมัติ
+
+-   ถ้าคำถามมีความซับซ้อนอาจแบ่งการป้อน prompt เป็นส่วนย่อย ๆ เช่น ส่วนสอนหรือปรับแต่งเฉลยคำตอบ ส่วนตรวจให้คะแนน และส่วนให้ผลป้อนกลับ
+:::
+
+::::: columns
+::: {.column width="50%"}
+![](img/question.png)
+:::
+
+::: {.column width="50%"}
+![](img/answer.png){width="100%"}
+:::
+:::::
+
+## Automated Scoring + Feedback {transition="fade"}
+
+::: {style="font-size:65%;"}
+-   Gen AI เช่น ChatGPT สามารถตรวจคำตอบของโจทย์ปัญหาได้ และยังสามารถตรวจให้ผู้เรียนเป็นรายบุคคลโดยอัตโนมัติ
+
+-   ถ้าคำถามมีความซับซ้อนอาจแบ่งการป้อน prompt เป็นส่วนย่อย ๆ เช่น ส่วนสอนหรือปรับแต่งเฉลยคำตอบ ส่วนตรวจให้คะแนน และส่วนให้ผลป้อนกลับ
+:::
+
+::::: columns
+::: {.column width="50%"}
+![](img/question.png)
+:::
+
+::: {.column width="50%"}
+![](img/check_answer_all.png){width="40%"}
+:::
+:::::
+
+## Automated Scoring + Feedback
+
+::: {style="font-size:65%;"}
+Gen AI สามารถส่งไฟล์ผลการประเมินและการให้ feedback กลับมาเพื่อนำไปใช้ต่อได้
+:::
+
+![](img/check_answer5.png){width="100%"}
+
+## Automated Scoring + Feedback
+
+::::: columns
+::: {.column width="35%"}
+![](img/score_viewer2.png){width="80%"}
+:::
+
+::: {.column width="35%"}
+![](img/score_viewer1.png){width="80%"}
+:::
+:::::
+
+## Automate Essay Scoring {.smaller}
+
+::::::: r-stack
+:::::: columns
+:::: {.column width="40%"}
+<center>![](img/essay_question.png){width="80%"}</center>
+
+::: {style="font-size:40%;"}
+```         
+### prompt 1
+หากจะพัฒนาทัศนภาพข้อมูลข้างต้นให้ดียิ่งขึ้น นิสิตคิดว่าควรพัฒนา/ปรับเปลี่ยนทัศนภาพข้อมูลในประเด็นใดบ้าง
+
+แนวทางเฉลย: 
+
+1. ทัศนภาพข้อมูลนี้ใช้ pie chart แทนปริมาณที่เป็นคะแนนเฉลี่ยรายวิชาคณิตศาสตร์ที่จำแนกตามกลุ่มนักเรียน ซึ่งไม่เหมาะสม ควรใช้ bar chart หรือทัศนภาพอื่นที่ใช้นำเสนอปริมาณไม่ใช่สัดส่วน ---> Untrustworthy
+2. ใช้จานสีแบบ sequential แทนที่จะเป็น qualitative palette แทนกลุ่มนักเรียน ---> not accessible
+
+ดังนั้นประเด็นการพัฒนาปรับเปลี่ยนให้ดีขึ้นต้องตอบ 2 ประเด็น
+
+1. เปลี่ยนทัศนภาพข้อมูลให้เป็นแผนภูมิแท่ง หรือแผนภูมิอื่นที่ใช้นำเสนอปริมาณ/เปรียบเทียบข้อมูล ไม่ใช่สัดส่วน
+2. เลือกจานสีแบบ qualitative palette ให้เหมาะกับประเภทตัวแปรสไตล์การเรียนรู้ 
+
+จำไว้ก่อน
+
+### prompt 2
+ไฟล์นี้เป็นผลการตอบคำถามแบบอัตนัยรายคนของนักเรียนในข้อสอบข้างต้น ช่วยตรวจความถูกต้องโดยให้คะแนนเป็นรายคนดังนี้
+2 คะแนน ตอบถูกต้องทั้งสองประเด็น
+1 คะแนน ตอบถูกต้อง 1 ประเด็น
+0 คะแนน ไม่ถูกต้องเลย
+
+แล้วสร้างผลการตรวจเป็นคอลัมน์ที่ 5 แล้วส่งไฟล์กลับมาหน่อย
+```
+:::
+::::
+
+::: {.column width="60%"}
+![](img/automated_essay.png){width="80%"}
+:::
+::::::
+
+<center>![](img/automate_essay2.png){.fragment width="80%"}</center>
+:::::::
+
+## AI Automation
+
+![](img/automation_n8n.jpg)
+
+## AI Automation
+
+![](img/automation_ocr.jpg)
+
+## AI Usage Framework {.smaller}
+
+:::::: columns
+::: {.column width="40%"}
+![](img/ai_maturity.png){width="100%"}
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="40%"}
+<br> <br>
+
+**Human in the Loop Framework**
+
+![https://www.doubleword.ai/glossary/human-in-the-loop](img/Human_inthe_loop.webp){width="100%"}
+:::
+::::::
+
+## References

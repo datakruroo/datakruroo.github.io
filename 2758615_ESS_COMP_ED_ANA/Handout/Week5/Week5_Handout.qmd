@@ -1,0 +1,699 @@
+---
+title: "Week 5 : Exploratory Data Analysis"
+author: "Assistant Prof. Siwachoat Srisuttiyakorn"
+institute: |
+  Department of Educational Research and Psychology <br>
+  Faculty of Education Chulalongkorn University
+date: today
+format:
+  revealjs:
+    slide-number: c/t
+    footer: |
+      Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br>
+      Department of Educational Research and Psychology <br>
+      Faculty of Education Chulalongkorn University
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: [default, theme.scss]
+    css: my_css.css
+    scrollable: false
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: false
+    code-overflow: scroll
+    code-link: true
+    code-line-numbers: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;
+      }
+      </style>
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+## Data Science Workflow
+
+![](https://r4ds.had.co.nz/diagrams/data-science-explore.png)
+
+![](https://datakruroo.github.io/IPST/PPT/img/typeofanalytic.png){width="70%"}
+
+
+## Exploratory Data Analysis (EDA) {.smaller}
+
+<div style="font-size:90%;">
+
+เป็นกระบวนการวิเคราะห์สำรวจข้อมูลเบื้องต้น โดยมีวัตถุประสงค์หลักเพื่อ
+
+- **ทำความเข้าใจข้อมูล** ตรวจสอบผู้เรียนที่มีลักษณะเฉพาะ
+
+  - การสำรวจการแจกแจงของข้อมูล (distribution)
+  
+  - ตรวจสอบคุณภาพข้อมูล เช่น ค่าสูญหาย ค่าผิดปกติ ...
+
+  - การเปรียบเทียบข้อมูล (comparison)
+ 
+  - การสำรวจแนวโน้มของข้อมูล (trend)
+  
+  
+- **สำรวจ/ค้นหารูปแบบความสัมพันธ์**
+
+  - การเปรียบเทียบข้อมูล (comparison)
+  
+  - การวิเคราะห์ความสัมพันธ์ (relationship)
+  
+  - จัดหมวดหมู่ข้อมูล (clustering)
+  
+  - ลดมิติข้อมูล สำรวจโครงสร้างแฝง (dimensionality reduction)
+
+- **สนับสนุนการตั้งสมมุติฐานเพื่อนำไปสู่การวิเคราะห์เพื่อตอบวัตถุประสงค์หลักของโครงการ** เช่น การวิเคราะห์เชิงวินิจฉัย หรือการวิเคราะห์เชิงทำนาย
+
+</div>
+
+## Exploratory Data Analysis (EDA) {.smaller}
+
+- Statistical Approaches -- มีความเป็นปรนัยสูง แต่ขาดการบรรยายภาพรวมของข้อมูลได้อย่างครอบคลุม และในบางกรณีหากข้อมูลไม่เป็นไปตามข้อตกลงเบื้องต้น ผลการวิเคราะห์ที่ได้อาจมีความคลาดเคลื่อน
+ 
+- Graphical Approaches (Data Visualization) -- ให้สารสนเทศที่เป็นสภาพจริงของข้อมูลมากกว่า แต่อาจขาดความเป็นปรนัยในเชิงของการตีความหมายของผู้รับสาร เพราะไม่ได้มีการแสดงผลในเชิงปริมาณที่ชัดเจน
+
+![](img/levels.png)
+
+
+## EDA ↔ Descriptive–Diagnostic
+
+<br>
+
+<div style="font-size:26px; line-height:1.2">
+
+| **กิจกรรม** | **ประเภท** | **หมายเหตุ** |
+|---|---|---|
+| Summary stats (mean, var) | Descriptive | เล่าภาพรวมข้อมูล |
+| Distribution (hist, density) | Descriptive | ดูรูปแบบ/แนวโน้ม |
+| Missing / Outliers | Descriptive → Diagnostic | ตรวจคุณภาพ/ความผิดปกติ |
+| Correlation / Scatter | Diagnostic | สำรวจความสัมพันธ์ |
+| Grouping / Cross-tab | Diagnostic | เทียบความต่างระหว่างกลุ่ม |
+| Clustering | Diagnostic | สำรวจโครงสร้าง/หมวดหมู่เบื้องต้น |
+| Visualization (box, heatmap) | Descriptive–Diagnostic | ทั้งเล่าเรื่องและตีความ |
+| Dimensionality reduction <br> (PCA, t-SNE) | Diagnostic | สำรวจ pattern แฝง / ย่อมิติ |
+
+</div>
+
+
+
+## EDA vs CDA
+
+
+<left>
+![](img/EDA.png){width="40%"}
+</left>
+
+
+
+## ขั้นตอนการทำ EDA
+
+<div style="font-size:80%;">
+
+> “There are no routine statistical questions, only questionable statistical routines.” — [Sir David Roxbee Cox](https://en.wikipedia.org/wiki/David_Cox_(statistician))
+
+
+> EDA is not a formal process with a strict set of rules. More than anything, EDA is a state of mind. During the initial phases of EDA you should feel free to investigate every idea that occurs to you. Some of these ideas will pan out, and some will be dead ends. As your exploration continues, you will home in on a few particularly productive areas that you’ll eventually write up and communicate to others. (Wickham & Grolemund, 2023)
+
+</div>
+
+
+
+## EDA vs Statistical Problem Process {.smaller}
+
+- ทำความเข้าใจข้อมูลเบื้องต้นก่อนดำเนินการวิเคราะห์
+
+- ปรับแต่งคำถาม/สมมุติฐานให้เหมาะสม
+
+- เป็นการวิเคราะห์เบื้องต้นของการวิเคราะห์เชิงยืนยัน
+
+
+![](https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png)
+
+
+
+## กิจกรรม: Anscombe dataset (1)
+
+:::: {style="font-size: 65%;"}
+
+ชุดข้อมูล `anscombe` ประกอบด้วยข้อมูลของตัวแปรตาม `y` กับตัวแปรอิสระ `x` จำนวน 4 ชุด วัตถุประสงค์ของการวิเคราะห์นี้คือเพื่อวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม y กับตัวแปรอิสระ x ของข้อมูลแต่ละชุด
+
+```{r echo = T}
+glimpse(anscombe)
+```
+
+```{r echo = F}
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), 
+               names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), 
+               names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  group_by(ind, dep) |> 
+  nest() |> 
+  mutate(reg_model = map(data, ~lm(Y ~ X, data = .x))) -> temp
+```
+
+1. ลองคำนวณค่าสถิติบรรยายของตัวแปรตามกับตัวแปรอิสระในแต่ละชุดข้อมูล
+
+```{r}
+anscombe |> 
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") |> 
+  group_by(variable) |> 
+  summarise(mean = mean(value),
+              sd = sd(value))
+```
+
+::::
+
+## EDA: Anscombe dataset (2) 
+
+:::: {style="font-size: 65%;"}
+
+2. ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระของข้อมูลแต่ละชุดด้วย correlation
+
+```{r}
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), 
+               names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), 
+               names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  group_by(ind, dep) |> 
+  nest() |> 
+  mutate(cor = map(.x = data, .f = ~cor(.x)[,2])) |> 
+  unnest("cor") |> 
+  slice(c(1,3,5,7)) |> 
+  select(ind,dep,4) |> 
+  rename(correlation = 3) |> 
+  ungroup() |> 
+  data.frame()
+```
+
+
+3. ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression $y_i = \beta_0 + \beta_1x + \epsilon_i$
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+library(broom)
+names(temp$reg_model)<-paste0("Dataset",1:4)
+temp$reg_model |> map(~tidy(.x))->temp1
+temp1[1:2]
+```
+
+:::
+
+
+
+::: {.column width="50%"}
+
+```{r}
+temp1[3:4]
+```
+
+:::
+
+::::
+
+::::
+
+## EDA: Anscombe dataset (3) {.hidden}
+
+```{r}
+
+anscombe |> 
+  pivot_longer(cols = starts_with("x"), names_to = "ind", values_to ="X") |> 
+  pivot_longer(cols = starts_with("y"), names_to = "dep", values_to ="Y") |> 
+  filter(str_extract(ind, "(\\d)") == str_extract(dep, "(\\d)")) |> 
+  ggplot(aes(x=X, y=Y))+
+  geom_point()+
+  geom_smooth(method = "lm", linewidth = 1, se=F)+
+  facet_wrap(~ind)+
+  theme_light()
+
+
+```
+
+
+## EDA: Anscombe dataset (4)
+
+
+
+> “Far better an approximate answer to the right question, which is often vague, than an exact answer to the wrong question, which can always be made precise.” <br> — [John Tukey](https://en.wikipedia.org/wiki/John_Tukey)
+
+
+
+##  การวิเคราะห์ที่เป็นไปได้
+
+::: {style="font-size: 80%;"}
+
+- การสํารวจโครงสร้างชุดข้อมูล เช่น `glimpse()`, `str()`, `head()`, `tail()`
+
+- สำรวจสภาพ/การแจกแจงของข้อมูล
+
+  - สถิติพื้นฐาน เช่น การแจกแจงความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน ...
+  - ทัศนภาพข้อมูล เช่น แผนภูมิแท่ง ฮิสโทแกรม แผนภาพความหนาแน่น ...
+
+- เปรียบเทียบข้อมูล/สำรวจความสัมพันธ์ระหว่างตัวแปร (Covariation/Relation)
+  - เปรียบเทียบการแจกแจงของข้อมูล ค่าเฉลี่ย แผนภาพกล่อง
+  - สหสัมพันธ์ แผนภาพการกระจาย
+  - การวิเคราะห์การถดถอย
+  - Decision tree หรืออื่น ๆ 
+
+- การวิเคราะห์จัดกลุ่ม เช่น K-means clustering, Hierarchical clustering, ...
+
+- การลดมิติข้อมูล เช่น PCA, PLS หรือ t-SNE
+
+:::
+
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+
+::: {style="font-size: 80%;"}
+
+เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
+
+วัตถุประสงค์หลักของการวิเคราะห์คือ
+
+1. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
+
+2. ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
+
+3. ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
+
+4. สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
+
+
+:::
+
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+
+::: {style="font-size: 80%;"}
+
+เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
+
+วัตถุประสงค์หลักของการวิเคราะห์คือ
+
+1. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
+
+2. ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
+
+3. ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
+
+4. สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
+
+เรียก library-tidyverse และนำข้อมูลเข้า R
+
+```{r echo = T}
+
+library(tidyverse)
+
+```
+
+:::
+
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+
+::: {style="font-size: 80%;"}
+
+เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
+
+วัตถุประสงค์หลักของการวิเคราะห์คือ
+
+1. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
+
+2. ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
+
+3. ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
+
+4. สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
+
+เรียก library-tidyverse และนำข้อมูลเข้า R
+
+
+```{r echo = T}
+library(tidyverse)
+## importing data
+data <- read_csv("learning_data.csv")
+```
+
+:::
+
+
+
+## 0. ชุดข้อมูลที่ใช้เป็นตัวอย่าง {.smaller auto-animate="true"}
+
+```{r echo = T}
+## print some of data
+data
+```
+
+
+## 1. สำรวจโครงสร้างชุดข้อมูล
+
+::: {style="font-size: 80%;"}
+
+- ชุดข้อมูลนี้มีตัวแปรกี่ตัว/มีหน่วยข้อมูลกี่หน่วย หน่วยข้อมูลเป็นอะไร?
+
+- ตัวแปรในชุดข้อมูลมีตัวแปรอะไรบ้าง สามารถจำแนกประเภทของตัวแปรได้หรือไม่ อย่างไร?
+
+- สถานะการเก็บค่าของตัวแปรแต่ละตัวเหมาะสมที่จะนำไปวิเคราะห์แล้วหรือไม่?
+
+- ควรจะต้องมีการจัดระเบียบหรือจัดกระทำอะไรเพิ่มเติมมั้ย?
+
+
+จากผลลัพธ์ที่ได้จาก `glimpse()` พบว่าชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลที่มีหน่วยข้อมูลเป็นนักเรียนจำนวน 385 คน ซึ่งประกอบด้วยข้อมูลจำนวน 11 คอลัมน์ คอลัมน์แรกเป็น `student_id` ไม่นับเป็นตัวแปร ส่วนที่เหลือเป็นตัวแปรที่เกี่ยวข้องกับความรู้/ทักษะทางด้านสถิติ พฤติกรรมการเรียน ภูมิหลัง และผลสัมฤทธิ์ทางการเรียนในรายวิชาวิจัย
+
+
+
+```{r echo = T}
+glimpse(data, 80)
+```
+
+:::
+
+
+## 1. สำรวจโครงสร้างชุดข้อมูล
+
+::: {style="font-size: 70%;"}
+
+เมื่อพิจารณาสถานะการเก็บค่าของตัวแปรพบว่าตัวแปรเชิงปริมาณทั้งหมดมีการเก็บค่าแบบ `dbl` ซึ่งเหมาะสมแล้ว อย่างไรก็ตามตัวแปรภูมิหลังได้แก่ `gender` และ `department` มีการเก็บค่าเป็น `chr` อยู่ซึ่งควรเปลี่ยนเป็น `fct` และเมื่อพิจารณาชุดข้อมูลพบว่าจัดเก็บอยู่ในลักษณะ tidy data แล้วไม่จำเป็นต้องมีการจัดระเบียบอะไรเพิ่มเติม ยกเว้นจะมีวัตถุประสงค์อื่น ๆ จะแสดงให้เห็นในส่วนต่อไป
+
+คำสั่งด้านล่างแสดงการเปลี่ยนสถานะของ `gender` และ `department` เป็น `fct` ตัวอย่างด้านล่างเลือกใช้ฟังก์ชัน `mutate_if()` เพื่อแปลงตัวแปร `chr` ทั้งสองตัวพร้อมกัน จะได้ไม่ต้องเขียนคำสั่งหลายบรรทัด
+
+```{r echo = T}
+data <- data |> 
+  mutate_if(is.character, factor)
+```
+
+ลองใช้ `glimpse()` ดูอีกทีว่าสถานะของตัวแปรทั้งสองถูกเปลี่ยนเป็น `fct` เรียบร้อยแล้วหรือไม่
+
+:::
+
+<br>
+
+::: {.callout-tip}
+
+ในการแปลงสถานะของตัวแปรเราสามารถเขียนคำสั่งในลักษณะอื่นได้อีกหรือไม่ อย่างไร?
+
+:::
+
+
+
+## 2. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง? {.smaller}
+
+::: {style="font-size: 80%;"}
+
+- นิสิตคิดว่ามีตัวแปรอะไรบ้างที่น่าจะเกี่ยวข้องกับการวิเคราะห์เพื่อตอบคำถามนี้
+
+- ลองสำรวจการแจกแจงของตัวแปรที่เกี่ยวข้อง
+
+:::
+
+
+<div style="font-size: 120%;">
+::: {.callout-note}
+
+## **การแจกแจงของข้อมูล (Distribution of Data)**
+
+ให้สารสนเทศเกี่ยวกับ
+
+- ขอบเขตของข้อมูล/ค่าที่เป็นไปได้ของข้อมูล
+
+- ประกอบการประเมินความสมเหตุสมผลของข้อมูล 
+
+- แนวโน้มสู่ส่วนกลาง และการกระจายของข้อมูล
+
+:::
+
+</div>
+
+::: {style="font-size: 80%;"}
+
+- **การแจกแจงความถี่**
+
+- **ค่าสถิติพื้นฐาน** เช่น ค่าเฉลี่ย มัธยฐาน ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด สูงสุด และ quantile
+
+- **แผนภาพต่าง ๆ** เช่น
+  - Bar chart
+  - Histogram/Density plot
+  - Boxplot
+
+:::
+
+
+## 2.1 การแจกแจงความถี่
+
+::: {style="font-size: 80%;"}
+
+การแจกแจงความถี่จำแนกได้ 2 ลักษณะ คือการแจกแจงความถี่สำหรับตัวแปรจัดประเภท และการแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ 
+
+- การแจกแจงความถี่สำหรับตัวแปรจัดประเภท
+
+- การแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ
+
+:::
+
+
+## การแจกแจงความถี่ตัวแปรจัดประเภท
+
+::: {style="font-size: 80%;"}
+
+  - `summary()`
+  - `table()`
+  - `count()`
+  - `barplot()`
+  - `ggplot(aes(x))+geom_bar()`
+
+:::
+
+
+## การแจกแจงความถี่ของตัวแปรเชิงปริมาณ
+
+::: {style="font-size: 70%;"}
+
+การแจกแจงความถี่ของตัวแปรเชิงปริมาณ โดยปกติมักจะต้องมีการแบ่งข้อมูลของตัวแปรเชิงปริมาณออกเป็นช่วงย่อยเรียกว่า อันตรภาคชั้น (class interval) จากนั้นจึงดำเนินการแจงนับจำนวนข้อมูลในแต่ละอันตรภาคชั้น
+
+  - `summary()`
+  - ใช้ `cut()` ร่วมกับ `summary()`, `table()` หรือ `count()`
+  - `hist()`
+  - `ggplot(aes(x))+geom_histogram()`
+  - `ggplot(aes(x))+geom_density()`
+
+
+```{r echo = T}
+## สร้างอันตรภาคชั้นของตัวแปรด้วย `cut()`
+data |> 
+  mutate(research_score_interval = cut(research_score,
+                                       breaks = 10)) |>  ## ลองเปลี่ยน breaks เป็นค่าอื่นแล้วสังเกตผลดู
+  select(research_score_interval) |> 
+  count(research_score_interval)
+
+```
+
+:::
+
+
+
+## แนะนำ [library-patchwork](https://patchwork.data-imaginist.com/)
+
+::: {style="font-size: 60%;"}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+![](https://cran.r-project.org/web/packages/patchwork/readme/man/figures/logo.png)
+
+library-patchwork เป็นส่วนต่อขยายของ library-ggplot2 ทำหน้าที่จัดเรียงและผสานแผนภาพหลาย ๆ อันเข้าด้วยกัน ช่วยให้การวางเลย์เอาต์ของกราฟหลาย ๆ อันเป็นเรื่องง่ายและมีความยืดหยุ่นสูง
+
+:::
+
+::: {.column width="60%"}
+
+ตัวอย่างการใช้ library-patchwork
+
+```{r echo = T}
+## install.packages("patchwork")
+library(patchwork)
+p1 <- data |> 
+  ggplot(aes(x=research_score))+
+  geom_histogram(fill = "steelblue", col = "white")+
+  xlim(40,100)
+
+p2 <- data |> 
+  ggplot(aes(x=research_score, y=""))+
+  geom_boxplot()+
+  xlim(40,100)
+
+p1/p2 + plot_layout(heights = c(3, 1))
+  
+```
+
+:::
+
+::::
+:::
+
+
+
+
+
+
+
+## 2.2 สถิติพื้นฐาน {.smaller}
+
+
+- `summary()` ใช้แจกแจงความถี่และคำนวณค่าสถิติพื้นฐาน
+
+- `summarise()` ของ library-dplyr โดยใช้ร่วมกับฟังก์ชันที่เกี่ยวข้อง เช่น `mean()`, `sd()`, `quantile()`, `median()`, `min()` และ `max()`
+
+- `describe()` ของ library-psych 
+
+- `skim()` ของ library-skimr
+
+
+```{r eval = F, echo = T}
+## 1. -- summarise() ใน dplyr
+data |> 
+  summarise_at(vars("research_score"),
+              list(avg = mean,
+                   sd = sd,
+                   min = min,
+                   max = max))
+
+## 2. -- describe() ใน library-psych
+#install.packages("psych")
+library(psych)
+describe(data$research_score)
+## describe(data)
+
+## 3. -- skim() ใน library-skimr
+library(skimr)
+skim(data)
+```
+
+
+## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
+
+
+ตัวอย่างต่อไปนี้แสดงการสำรวจข้อมูลด้วยการแจกแจงความถี่และสถิติพื้นฐานในชุดข้อมูล `learning_data.csv`
+
+- สำรวจค่าสูญหายคร่าว ๆ
+
+```{r echo = T}
+library(naniar)
+data |> 
+  miss_var_summary()
+```
+
+
+## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
+
+- แจกแจงความถี่ตัวแปรเชิงปริมาณ
+
+```{r echo = T}
+### สำรวจตัวแแปรเชิงปริมาณ
+data |> 
+  select(-student_id) |> 
+  select_if(is.numeric) |> 
+  pivot_longer(cols = everything(), names_to ="variable", values_to = "value") |> 
+  ggplot(aes(x = value))+
+  geom_histogram(bins = 30)+
+  facet_wrap(~variable, scales = "free_x") ## แบ่ง panel ตามตัวแปร
+```
+
+
+## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
+
+
+- สร้างตารางสถิติพื้นฐาน
+
+```{r echo = T}
+data |> 
+  select(-student_id) |> 
+  select_if(is.numeric) |> 
+  rename_with(~str_remove_all(., pattern = "_")) |> 
+  summarise(across(everything(), 
+                   list(mean = ~ mean(.x, na.rm = TRUE), 
+                        sd = ~ sd(.x, na.rm = TRUE),
+                        min = ~ min(.x, na.rm = TRUE),
+                        max = ~ max(.x, na.rm = TRUE)), 
+                   .names = "{.col}_{.fn}")) |>
+  pivot_longer(cols = everything()) |> 
+  separate(col = "name", into = c("variable","statistics")) |> 
+  pivot_wider(names_from = "statistics", values_from = "value")
+
+```
+
+ผลการสำรวจข้างต้นให้สารสนเทศอะไร และนำไปสู่การดำเนินการอะไรได้บ้างในการวิเคราะห์ข้อมูลเพื่อตอบวัตถุประสงค์หลัก
+
+## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
+
+- แจกแจงความถี่ตัวแปรจัดประเภท
+
+```{r echo = T}
+### สำรวจตัวแแปรจัดประเภท
+data |> 
+  select_if(is.factor) |> 
+  pivot_longer(cols = everything()) |> 
+  ggplot(aes(x = value))+
+  geom_bar()+
+  facet_wrap(~name, scales = "free_y")+
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  coord_flip()
+
+```
+
+
+## 2.4 วางแผนการสำรวจปัญหาในการเรียนของนักเรียน
+
+- ต้องใช้ตัวแปรอะไรบ้างในการวิเคราะห์
+
+- ข้อมูลของตัวแปรที่ดำเนินการวิเคราะห์มีสภาพเป็นอย่างไร มีข้อสังเกตหรือปัญหาอะไรหรือไม่
+
+- วางแผนว่าจะสำรวจข้อมูลโดยใช้การวิเคราะห์อะไร
+
+- ต้องมีการจัดกระทำข้อมูลอะไรเพิ่มเติมหรือไม่ อย่างไร
+
+- ผลการสำรวจที่ได้เป็นอย่างไร
+
+
+## 3. การสำรวจความสัมพันธ์ระหว่างตัวแปร {.smaller}
+
+   - Scatter plot/Boxplot
+   - Locally Estimated Scatterplot Smoothing (LOESS)
+   - การแจกแจงความถี่สองทาง (contingency table)
+   - Correlation Coefficients
+   - Decision tree 
+   - Machine Learning + XAI
+
+
+
+## 3.1 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่?
+
+- ตัวแปรที่เกี่ยวข้องควรมีอะไรบ้าง
+
+- เราสามารถใช้การสำรวจความสัมพันธ์เพื่อช่วยตอบคำถามนี้ได้อย่างไร
+
+- การวิเคราะห์จะต้องมีการจัดกระทำตัวแปรอย่างไรบ้างหรือไม่
+
+- สรุปเราควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นหรือไม่
+
+

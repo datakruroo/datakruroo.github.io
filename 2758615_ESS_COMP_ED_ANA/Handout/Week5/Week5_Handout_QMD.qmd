@@ -1,0 +1,107 @@
+---
+title: "Handout Week5"
+format: html
+editor: visual
+---
+
+
+```{r}
+library(tidyverse)
+library(here)
+library(readxl)
+```
+
+
+## 1. เฉลยการบ้าน
+
+## 1.1 ขอให้นิสิตดำเนินการต่อไปนี้
+
+
+- นำเข้าข้อมูลจาก sheet "teracher_ratio" และ "achievement" ต่อไปจะเรียกว่าชุดข้อมูล A และ B ตามลำดับ
+
+```{r}
+## file path
+url <- here("Week5/data","education_data.xlsx")
+## explore sheet names
+sheet <- excel_sheets(url)
+## importing data
+teacher_ratio_data <- read_excel(url, sheet = sheet[1])
+ach_data <- read_excel(url, sheet = sheet[2])
+```
+
+- คัดกรองชุดข้อมูล B ให้เหลือเฉพาะ "ระดับชั้นประถมศึกษาปีที่ 6"
+
+```{r}
+ach_data_p6 <- ach_data %>%
+  filter(student_level == "ประถมศึกษาปีที่ 6")
+ach_data_p6 %>% glimpse()
+```
+
+
+- รวมชุดข้อมูลทั้งสองชุดโดยให้ x = A และ y = B ใช้ตัวแปรจังหวัด และอำเภอ เป็นตัวแปรอ้างอิง ด้วยฟังก์ชัน 
+
+- `full_join()`
+- `inner_join()`
+- `left_join()`
+- `right_join()`
+
+
+```{r}
+## join
+join <- join_by(province, amphor)
+
+## full join
+full_join_data <- teacher_ratio_data %>% 
+  full_join(ach_data_p6, by = join)
+
+## inner join
+inner_join_data <- teacher_ratio_data %>% 
+  inner_join(ach_data_p6, by = join)
+
+## left join
+left_join_data <- teacher_ratio_data %>% 
+  left_join(ach_data_p6, by = join)
+
+## right join
+right_join_data <- teacher_ratio_data %>% 
+  right_join(ach_data_p6, by = join)
+```
+
+
+
+แล้วใช้ผลลัพธ์ที่ได้จากการดำเนินการข้างต้นเพื่อตอบคำถามต่อไปนี้
+
+1. ผลลัพธ์จากการรวมด้วย full_join() มีจำนวนกี่อำเภอ (ตอบเฉพาะตัวเลข)
+
+```{r}
+full_join_data %>% 
+  distinct(province, amphor) %>% 
+  nrow()
+```
+
+
+2. ผลลัพธ์จากการรวมด้วย inner_join() มีจำนวนกี่อำเภอ (ตอบเฉพาะตัวเลข)
+
+```{r}
+inner_join_data %>% 
+  distinct(province, amphor) %>% 
+  nrow()
+```
+
+3. ผลลัพธ์จากการรวมด้วย left_join() มีจำนวนกี่อำเภอ (ตอบเฉพาะตัวเลข)
+
+```{r}
+left_join_data %>% 
+  distinct(province, amphor) %>% 
+  nrow()
+```
+
+
+4. ผลลัพธ์จากการรวมด้วย right_join() มีจำนวนกี่อำเภอ (ตอบเฉพาะตัวเลข)
+
+```{r}
+right_join_data %>% 
+  distinct(province, amphor) %>% 
+  nrow()
+```
+

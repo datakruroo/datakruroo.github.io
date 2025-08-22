@@ -24,13 +24,7 @@ execute:
   freeze: auto
 ---
 
-## Outline
-
-- Data splitting
-
-- Creating models
-
-- Model evaluation
+# Part 1 : Overview of Modelling Process
 
 ## Modeling Process {.smaller}
 
@@ -56,7 +50,15 @@ execute:
 
 ::::
 
+
+## ML Modelling Cycle {.smaller}
+
+![https://www.linkedin.com/pulse/4-stages-machine-learning-ml-modeling-cycle-maurice-chang](img/1520230635424.jpeg)
+
+
 ## Frame the Problem {.smaller}
+
+วัตถุประสงค์หลักคือ การสร้างโมเดลสำหรับทำนายแนวโน้มของผลลัพธ์การเรียนรู้ของผู้เรียนแต่ละบุคคล เราอาจจำแนกโมเดลได้เป็น 2 ประเภทหลัก
 
 - Regression: ใช้ G3 - final grade (numeric: from 0 to 20) เป็นตัวแปรตาม
  
@@ -70,13 +72,17 @@ glimpse(data)
 
 ## Frame the Problem {.smaller}
 
+เนื้อหาในวันนี้เราเน้นความเข้าใจภาพรวมของกระบวนการ ส่วนที่เกี่ยวกับ feature engineering และการจัดการกับข้อมูลที่ไม่สมบูรณ์ต่าง ๆ จะกล่าวในบทเรียนถัด ๆ ไป
+
+เราวางแผนการสร้างโมเดลในวันนี้ออกเป็น 3 โมเดล ได้แก่
+
 - Model A: ใช้ทุกตัวแปรเป็นตัวแปรทำนาย
 
 - Model B: ตัด G2-second period grade (numeric: from 0 to 20) ออกจากตัวแปรทำนาย
 
 - Model C: ตัด G1-first period grade (numeric: from 0 to 20) ออกจากตัวแปรทำนายเพิ่ม
 
-## Data Splitting {.smaller}
+## Manage Data {.smaller}
 
 เพื่อให้การฝึกสอนและประเมินประสิทธิภาพของโมเดลเป็นไปได้อย่างถูกต้อง ผู้วิเคราะห์จำเป็นต้องแบ่งข้อมูลออกเป็นสองส่วน
 
@@ -91,15 +97,23 @@ glimpse(data)
 - จำนวนตัวแปรอิสระ
 
 
-## Data Leakage {.smaller}
+## Manage Data: Data Leakage {.smaller}
 
-ปัญหาที่เกิดขึ้นจากการที่ข้อมูลที่ไม่ควรใช้ในกระบวนการพัฒนาโมเดลถูกนำมาใช้โดยไม่ได้ตั้งใจ ส่งผลให้โมเดลมีประสิทธิภาพสูงเกินจริงในขั้นตอนการประเมิน แต่ไม่สามารถนำไปใช้งานจริงได้อย่างน่าเชื่อถือ เช่น
+ปัญหาที่ข้อมูลในอนาคตหรือจากชุดข้อมูลทดสอบปนเข้ามาในกระบวนการเรียนรู้ของโมเดล ซึ่งทำให้ performance ของโมเดลระหว่างการฝึกสอนดูสูงเกินจริง แต่เมื่อนำโมเดลไปใช้พบว่าได้ผลลัพธ์ที่แย่
 
-- มีข้อมูลใน test data เข้ามามีส่วนในกระบวนการสร้างโมเดล
+- **Target Leakage:** ข้อมูลตัวแปรตามหรือตัวบ่่งชี้ของตัวแปรตามหรือ proxy ของตัวแปรตามถูกใช้เป็นตัวแปรอิสระในการสร้างโมเดล
 
-- ข้อมูลที่เกี่ยวข้องกับตัวแปรตามหรือเป็นตัวชี้วัดของตัวแปรตามถูกใช้เป็นตัวแปรอิสระ
+- **Train-Test Contamination:** ข้อมูลจาก test data ปนเข้ามาใน training data ทั้งทางตรงและทางอ้อม
 
-- การเอา id ของข้อมูลมาเป็นตัวแปรทำนาย
+  - นำ test data มารวมใน training data
+  
+  - กระบวนการ data preprocessing ที่ fit preprocessing model จากข้อมูลที่มี test data ด้วย ตัวอย่างกระบวนการพวกนี้ เช่น normalization, imputation, feature selection, imbalanced class handling, etc.
+
+- **Temporal Leakage:** เกิดจากการละเมิดลำดับของข้อมูลหรือเวลา เช่น ใช้ข้อมูลอนาคตไปทำนายอดีต หรือสลับลำดับข้อมูลอนุกรมเวลา
+
+- **Identifier Leakage:** นำ id ของ observation เข้ามาเป็น feature ทำให้โมเดลจำคนแทนที่จะเรียนรู้ pattern ความสัมพันธ์ระหว่างตัวแปรอิสระกับตัวแปรตาม
+
+
 
 ## กิจกรรม 1: Data Splitting {.smaller}
 
@@ -144,7 +158,56 @@ test_strat <- testing(strat_split)
 
 ## Data Splitting: Distribution Consistency {.smaller}
 
-```{r echo = F, fig.height = 3}
+การแบ่งชุดข้อมูลเป็น training data และ test data ควรคำนึงถึงการรักษาการแจกแจงของตัวแปรตาม (target variable) ให้สอดคคล้องกันระหว่าง training data และ test data
+
+การเปรียบเทียบด้วย histogram
+
+```{r echo = T, fig.height = 3, eval = F}
+library(patchwork)
+p1 <- train_srs %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "black",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("training data (SRS)")+
+  ylim(0,0.2)
+
+p2 <- test_srs %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "steelblue",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("test data (SRS)")+
+  ylim(0,0.2)
+
+
+p3 <- train_strat %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "black",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("training data (STR)")+
+  ylim(0,0.25)
+
+p4 <- test_strat %>% 
+  ggplot(aes(x = G3, y = after_stat(density)))+
+  geom_histogram(col = "white", 
+                 fill = "steelblue",
+                 bins = 20)+
+  theme_light()+
+  ggtitle("test data (STR)")+
+  ylim(0,0.25)
+
+(p1+p2)/(p3+p4)
+
+```
+
+## Data Splitting: Distribution Consistency {.smaller}
+
+```{r echo = F, fig.height = 3, eval = T}
 library(patchwork)
 p1 <- train_srs %>% 
   ggplot(aes(x = G3, y = after_stat(density)))+
@@ -167,7 +230,8 @@ p2 <- test_srs %>%
 p1+p2
 ```
 
-```{r echo = F , fig.height = 3}
+
+```{r echo = F, fig.height = 3, eval = T}
 p1 <- train_strat %>% 
   ggplot(aes(x = G3, y = after_stat(density)))+
   geom_histogram(col = "white", 
@@ -189,11 +253,33 @@ p2 <- test_strat %>%
 p1+p2
 ```
 
+## Data Splitting: Distribution Consistency {.smaller}
+
+การเปรียบเทียบด้วย CDF ร่วมกับ Komogorov-Smirnov test วิธีการนี้ช่วยให้ได้ทัศนภาพของการแจกแจงในเชิงการเปรียบเทียบที่ชัดเจนกว่า histogram
+
+```{r}
+p3 <- train_srs %>% 
+  mutate(dataset = "training") %>% 
+  bind_rows(test_srs %>% mutate(dataset = "test")) %>% 
+  select(dataset, everything()) %>% 
+  ggplot(aes(x = G3))+
+  stat_ecdf(aes(col = dataset))
+ks.test(train_srs$G3, test_srs$G3)
+p3 ## print CDF plot
+```
+
+การแบ่งชุดข้อมูลแบบ stratified มีความสอดคล้องที่แตกต่างไปจาก simple random sampling อย่างไร ?
+
 ## Data Splitting: Class Imbalances {.smaller}
 
 - เกิดขึ้นในปัญหาแบบ classification เมื่อตัวแปรตามมีการแจกแจงที่ไม่สมดุล
 
 - มีผลกระทบสูงต่อประสิทธิภาพการเรียนรู้และการทำนายของโมเดล
+
+- ระมัดระวังมาก ๆ กับ class ที่หายไปจาก test data เลย
+
+- stratified sampling ช่วยลดปัญหานี้ได้
+
 
 ```{r eval = F}
 binary_data <- data %>% mutate(result = ifelse(G3>=10,"pass","fail")) %>% select(-G3)
@@ -234,6 +320,9 @@ p2 <- test_strat_class %>%
 
 p1+p2
 ```
+
+
+# Part 2 : Exploring Data 
 
 ## Explore the (Training) Data {.smaller}
 
@@ -373,6 +462,9 @@ results %>% arrange(desc(rsq)) %>%
 :::
 
 ::::
+
+
+# Part 3: Train Model
 
 ## Creating Models {.smaller}
 
@@ -688,8 +780,10 @@ predicted_value <- fit_logit %>%
           type = "prob") %>% 
   bind_cols(test_strat) %>% 
   select(.pred_pass, result)
-predicted_value  %>%roc_curve(truth = "result", .pred_pass)
-predicted_value  %>% roc_auc(truth = "result", .pred_pass)
+predicted_value  %>% 
+  roc_curve(truth = "result", .pred_pass)
+predicted_value  %>% 
+  roc_auc(truth = "result", .pred_pass)
 ```
 
 :::
@@ -698,7 +792,6 @@ predicted_value  %>% roc_auc(truth = "result", .pred_pass)
 ::: {.column width="50%"}
 
 ```{r echo = F, fig.width = 4.5}
-
 fit_logit %>% 
   predict(new_data = test_strat,
           type = "prob") %>% 
@@ -723,6 +816,31 @@ fit_logit %>%
 
 :::: 
 
+## Syntax for ROC & AUC plot {.smaller}
+
+```{r echo = T, fig.width = 4.5, eval = F}
+fit_logit %>% 
+  predict(new_data = test_strat,
+          type = "prob") %>% 
+  bind_cols(test_strat) %>% 
+  select(.pred_pass, result) %>% 
+  roc_curve(truth = "result", .pred_pass) %>% 
+  ggplot(aes(x = 1-specificity, y=sensitivity))+
+  geom_path(col = "steelblue", linewidth = 1.5)+
+  geom_abline(slope = 1, intercept = 0, linetype = 2)+
+  geom_point()+
+  geom_text(aes(x = 0.35, y= 0.6, label = "AUC = 0.902"), size = 5)+
+  theme_light()+
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 15))+
+  xlab("\n False Positive Rate")+
+  ylab("True Positive Rate \n")+
+  coord_obs_pred()+
+  ggtitle("ROC")
+```
+
+
+
 
 ## F1 Score {.smaller}
 
@@ -740,6 +858,33 @@ fit_logit %>%
   select(.pred_class, result) %>% 
   f_meas(truth = result, estimate = .pred_class)
 ```
+
+
+# Part 4: Fine-Tuning Models {.smaller}
+
+Supervised learning models มักจะมี hyperparameters ที่ต้องปรับแต่งเพื่อเพิ่มประสิทธิภาพของโมเดล การปรับแต่ง hyperparameters เป็นกระบวนการที่สำคัญในการสร้างโมเดลที่มีประสิทธิภาพสูง
+
+## Hyperparameters and Fine-Tuning {.smaller}
+
+- **Hyperparameters** → ค่าที่ควบคุมกระบวนการเรียนรู้ เช่น  
+  - ค่า \(k\) ใน k-NN  
+  - ค่า depth ของ decision tree  
+  - ค่า regularization strength \(\lambda\) ใน LASSO  
+- **Fine-tuning** → กระบวนการเลือกค่า hyperparameters ที่ทำให้โมเดลมีประสิทธิภาพดีที่สุดกับข้อมูล  
+- การปรับ hyperparameters ที่เหมาะสมช่วยเพิ่มทั้ง **accuracy ** และ **generaliability** ของโมเดล
+
+## Fine-tuning methods {.smaller}
+
+- กระบวนการปรับแต่ง hyperparameters เป็นกระบวนการเฟ้นหาค่าที่เหมาะสมที่สุดสำหรับ hyperparameters ของโมเดลโดยใช้ตัวชี้วัดประสิทธิภาพของโมเดลเป็นเกณฑ์ 
+
+- hyperparameters ไม่สามารถประมาณค่าโดยตรงจากข้อมูลได้เหมือนกับพารามิเตอร์ของโมเดล ดังนั้นกระบวนการเฟ้นหาดังกล่าวจึงเป็นลักษณะของการค้นหาแบบมีกลยุทธ์ เช่น
+
+  - grid search
+  
+  - random search
+  
+  - optimization methods
+
 
 ## LASSO Regression {.smaller}
 
@@ -862,13 +1007,19 @@ ggplot(rmse_results, aes(x = lambda)) +
 
 ## Validation Approach: K-fold CV {.smaller}
 
-- ชุด training set (ชุดฝึกฝนใหม่)
+- train-test strategy แบบดั้งเดิมไม่เพียงพอที่จะทำให้กระบวนการปรับแต่ง hyperparameters ดำเนินไปได้อย่างมีประสิทธิภาพและมีความน่าเชื่อถือ
 
-- ชุด validation set (หรือเรียกว่า holdout set) อย่างไรก็ตามการใช้ validation set เพียงชุดเดียวมีโอกาสสูงที่ผลการประเมินจะขาดความเสถียร มีอคติ ไม่น่าเชื่อถือ
+- Cross-validation techniques (CV) จึงถูกนำมาใช้ภายใต้กระบวนการ train model (คนละส่วนกับ test model) เพื่อปรับแต่งโมเดลและประเมินประสิทธิภาพของโมเดลที่ผ่านการปรับแต่ง
+
+- เทคนิค CV จะมีการแบ่งส่วน training data ออกเป็นอีกสองส่วนย่อย ได้แก่
+
+  - ชุด training folds ที่ใช้สำหรับ train โมเดล
+
+  - ชุด validation folds (หรือเรียกว่า holdout set) อย่างไรก็ตามการใช้ validation set เพียงชุดเดียวมีโอกาสสูงที่ผลการประเมินจะขาดความเสถียร มีอคติ ไม่น่าเชื่อถือ
 
 ![](img/kfold.png)
 
-## Resampling: Cross-validation {.smaller}
+## Validation Approach: K-fold CV {.smaller}
 
 ![](img/cv.png)
 
@@ -887,11 +1038,19 @@ ggplot(rmse_results, aes(x = lambda)) +
 
 - การทำ k-Fold CV ซ้ำ (repeated k-Fold CV) สามารถเพิ่มความแม่นยำของการประเมินผล เช่น ใช้ 10-Fold CV ทำซ้ำ 5-10 ครั้งเพื่อเพิ่มความน่าเชื่อถือ
 
-## Validation Approach: K-fold CV {.smaller}
+## Model Workflow in Tidymodels 
+
+- ป้องกันความผิดพลาดเชิงกระบวนการ เพราะเป็นการ wrapping ทั้งส่วน data preprocessing และ model fitting ใน training data ไว้ใน workflow เดียวกัน ลดความเสี่ยงการเกิด data leakage โดยไม่ได้ตั้งใจ
+
+- Modularity มีส่วนประกอบสองส่วนหลัก ได้แก่ preprocessing (recipe) และ model ซึ่งทำให้การปรับเปลี่ยนรายละเอียดในกระบวนการทำได้ง่าย
+
+- ช่วยให้ syntax สามารถ reproducible ได้ง่าย
+
+- สนับสนุนทั้งด้านการวิเคราะห์/ปรับแต่งและประเมินผลโมเดล (CV, resampling, tuning) การนำโมเดลไปใช้ในอนาคต และการบำรุงรักษาโมเดล
 
 ![](https://www.tmwr.org/premade/proper-workflow.svg)
 
-## Validation Approach: K-fold CV {.smaller}
+## Syntax {.smaller}
 
 
 ```{r}
@@ -903,11 +1062,18 @@ logit_mod <- logistic_reg(
   set_engine("glmnet") %>% 
   set_mode("classification")
 
-# สร้าง workflow
+# สร้าง workflow!!!
 logit_wf <- workflow() %>%
   add_formula(result ~.) %>%
+  ## workflow นี้ยังขาดการระบุ recipe ที่เป็นส่วน data preprocessing
   add_model(logit_mod)
 
+logit_wf
+```
+
+## Syntax {.smaller}
+
+```{r}
 # สร้าง resamples สำหรับ Cross-Validation
 set.seed(123)
 cv_folds <- vfold_cv(train_strat, v = 10, repeats = 3)
@@ -927,22 +1093,20 @@ tune_results <- tune_grid(
 )
 ```
 
-## Validation Approach: K-fold CV {.smaller}
+## Cross-validation results {.smaller}
 
 
 ```{r fig.height = 6}
 autoplot(tune_results)
 ```
 
-## Validation Approach: K-fold CV {.smaller}
+## Cross-validation results {.smaller}
 
-- `collect_metrics()` เป็นฟังก์ชันที่ช่วยให้ผู้วิเคราะห์เข้าถึงผลที่ได้จากการทดลอง fit model ในเงื่อนไขต่าง ๆ พร้อมค่าบ่งชี้ประสิทธิภาพ
+`collect_metrics()` เป็นฟังก์ชันที่ช่วยให้ผู้วิเคราะห์เข้าถึงผลที่ได้จากการทดลอง fit model ในเงื่อนไขต่าง ๆ พร้อมค่าบ่งชี้ประสิทธิภาพ
 
 ```{r}
 tune_results %>% collect_metrics()
 ```
-
-
 
 
 ## Finalized Workflows {.smaller}
@@ -957,17 +1121,57 @@ final_wf <- logit_wf %>%
   finalize_workflow(best_params)
 
 ## last fit
-final_wf %>%
-  fit(data = train_strat) %>% extract_fit_engine() %>% plot(xvar = "lambda")
+lasso_final <- final_wf %>%
+  fit(data = train_strat)
+
+lasso_final
 ```
 
-## Finalized Workflows {.smaller}
+## Finalized Workflows: `last_fit` {.smaller}
 
 ```{r}
-final_wf %>% last_fit(strat_split,
-                       metrics = metric_set(accuracy, roc_auc, 
-                                            sens, spec, precision)) %>% 
-  collect_metrics()
+lasso_final <- final_wf %>% 
+  last_fit(strat_split,
+           metrics = metric_set(accuracy, roc_auc, 
+                                sens, spec, precision)) 
+## performance metrics บน test data
+lasso_final %>% collect_metrics()
+```
+
+## `Extract_fit_engine()` {.smaller}
+
+เราอาจเรียกดูผลลัพธ์ของโมเดลสุดท้าย ที่ได้จาก `last_fit()` ได้โดยใช้ `extract_fit_engine()` ซึ่งจะให้โมเดลที่ถูก fit ด้วยข้อมูล training set
+
+```{r}
+best_lambda <- best_params$penalty
+extract_lasso <- lasso_final %>% 
+  extract_fit_engine()
+
+coefs_mat <- as.matrix(coef(extract_lasso, s = best_lambda))  # s = lambda ที่อยากได้
+
+coefs_tbl <- tibble(
+  term = rownames(coefs_mat),
+  estimate = as.numeric(coefs_mat)
+) %>%
+  dplyr::filter(term != "(Intercept)", estimate != 0)
+
+relative_importance_plot <- coefs_tbl %>% 
+  ggplot(aes(x = estimate, y = reorder(term, abs(estimate))))+
+  geom_col(aes(fill = estimate > 0 ))+
+  theme_light()+
+  ylab("")+
+  xlab("\n estimated coefficients (LASSO)")
+```
+
+## relative_importance_plot {.smaller}
+
+```{r echo = F}
+coefs_tbl %>% 
+  ggplot(aes(x = estimate, y = reorder(term, abs(estimate))))+
+  geom_col(aes(fill = estimate > 0 ))+
+  theme_light()+
+  ylab("")+
+  xlab("\n estimated coefficients (LASSO)")
 ```
 
 
