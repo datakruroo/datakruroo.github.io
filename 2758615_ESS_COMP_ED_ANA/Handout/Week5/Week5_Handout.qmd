@@ -41,62 +41,55 @@ include-in-header:
 library(tidyverse)
 ```
 
-
 ## Data Science Workflow
 
 ![](https://r4ds.had.co.nz/diagrams/data-science-explore.png)
 
 ![](https://datakruroo.github.io/IPST/PPT/img/typeofanalytic.png){width="70%"}
 
-
 ## Exploratory Data Analysis (EDA) {.smaller}
 
-<div style="font-size:90%;">
-
+::: {style="font-size:90%;"}
 เป็นกระบวนการวิเคราะห์สำรวจข้อมูลเบื้องต้น โดยมีวัตถุประสงค์หลักเพื่อ
 
-- **ทำความเข้าใจข้อมูล** ตรวจสอบผู้เรียนที่มีลักษณะเฉพาะ
+-   **ทำความเข้าใจข้อมูล** ตรวจสอบผู้เรียนที่มีลักษณะเฉพาะ
 
-  - การสำรวจการแจกแจงของข้อมูล (distribution)
-  
-  - ตรวจสอบคุณภาพข้อมูล เช่น ค่าสูญหาย ค่าผิดปกติ ...
+    -   การสำรวจการแจกแจงของข้อมูล (distribution)
 
-  - การเปรียบเทียบข้อมูล (comparison)
- 
-  - การสำรวจแนวโน้มของข้อมูล (trend)
-  
-  
-- **สำรวจ/ค้นหารูปแบบความสัมพันธ์**
+    -   ตรวจสอบคุณภาพข้อมูล เช่น ค่าสูญหาย ค่าผิดปกติ ...
 
-  - การเปรียบเทียบข้อมูล (comparison)
-  
-  - การวิเคราะห์ความสัมพันธ์ (relationship)
-  
-  - จัดหมวดหมู่ข้อมูล (clustering)
-  
-  - ลดมิติข้อมูล สำรวจโครงสร้างแฝง (dimensionality reduction)
+    -   การเปรียบเทียบข้อมูล (comparison)
 
-- **สนับสนุนการตั้งสมมุติฐานเพื่อนำไปสู่การวิเคราะห์เพื่อตอบวัตถุประสงค์หลักของโครงการ** เช่น การวิเคราะห์เชิงวินิจฉัย หรือการวิเคราะห์เชิงทำนาย
+    -   การสำรวจแนวโน้มของข้อมูล (trend)
 
-</div>
+-   **สำรวจ/ค้นหารูปแบบความสัมพันธ์**
+
+    -   การเปรียบเทียบข้อมูล (comparison)
+
+    -   การวิเคราะห์ความสัมพันธ์ (relationship)
+
+    -   จัดหมวดหมู่ข้อมูล (clustering)
+
+    -   ลดมิติข้อมูล สำรวจโครงสร้างแฝง (dimensionality reduction)
+
+-   **สนับสนุนการตั้งสมมุติฐานเพื่อนำไปสู่การวิเคราะห์เพื่อตอบวัตถุประสงค์หลักของโครงการ** เช่น การวิเคราะห์เชิงวินิจฉัย หรือการวิเคราะห์เชิงทำนาย
+:::
 
 ## Exploratory Data Analysis (EDA) {.smaller}
 
-- Statistical Approaches -- มีความเป็นปรนัยสูง แต่ขาดการบรรยายภาพรวมของข้อมูลได้อย่างครอบคลุม และในบางกรณีหากข้อมูลไม่เป็นไปตามข้อตกลงเบื้องต้น ผลการวิเคราะห์ที่ได้อาจมีความคลาดเคลื่อน
- 
-- Graphical Approaches (Data Visualization) -- ให้สารสนเทศที่เป็นสภาพจริงของข้อมูลมากกว่า แต่อาจขาดความเป็นปรนัยในเชิงของการตีความหมายของผู้รับสาร เพราะไม่ได้มีการแสดงผลในเชิงปริมาณที่ชัดเจน
+-   Statistical Approaches -- มีความเป็นปรนัยสูง แต่ขาดการบรรยายภาพรวมของข้อมูลได้อย่างครอบคลุม และในบางกรณีหากข้อมูลไม่เป็นไปตามข้อตกลงเบื้องต้น ผลการวิเคราะห์ที่ได้อาจมีความคลาดเคลื่อน
+
+-   Graphical Approaches (Data Visualization) -- ให้สารสนเทศที่เป็นสภาพจริงของข้อมูลมากกว่า แต่อาจขาดความเป็นปรนัยในเชิงของการตีความหมายของผู้รับสาร เพราะไม่ได้มีการแสดงผลในเชิงปริมาณที่ชัดเจน
 
 ![](img/levels.png)
-
 
 ## EDA ↔ Descriptive–Diagnostic
 
 <br>
 
-<div style="font-size:26px; line-height:1.2">
-
+::: {style="font-size:26px; line-height:1.2"}
 | **กิจกรรม** | **ประเภท** | **หมายเหตุ** |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | Summary stats (mean, var) | Descriptive | เล่าภาพรวมข้อมูล |
 | Distribution (hist, density) | Descriptive | ดูรูปแบบ/แนวโน้ม |
 | Missing / Outliers | Descriptive → Diagnostic | ตรวจคุณภาพ/ความผิดปกติ |
@@ -105,50 +98,33 @@ library(tidyverse)
 | Clustering | Diagnostic | สำรวจโครงสร้าง/หมวดหมู่เบื้องต้น |
 | Visualization (box, heatmap) | Descriptive–Diagnostic | ทั้งเล่าเรื่องและตีความ |
 | Dimensionality reduction <br> (PCA, t-SNE) | Diagnostic | สำรวจ pattern แฝง / ย่อมิติ |
-
-</div>
-
-
+:::
 
 ## EDA vs CDA
 
-
-<left>
-![](img/EDA.png){width="40%"}
-</left>
-
-
+<left> ![](img/EDA.png){width="40%"} </left>
 
 ## ขั้นตอนการทำ EDA
 
-<div style="font-size:80%;">
-
+::: {style="font-size:80%;"}
 > “There are no routine statistical questions, only questionable statistical routines.” — [Sir David Roxbee Cox](https://en.wikipedia.org/wiki/David_Cox_(statistician))
 
-
 > EDA is not a formal process with a strict set of rules. More than anything, EDA is a state of mind. During the initial phases of EDA you should feel free to investigate every idea that occurs to you. Some of these ideas will pan out, and some will be dead ends. As your exploration continues, you will home in on a few particularly productive areas that you’ll eventually write up and communicate to others. (Wickham & Grolemund, 2023)
-
-</div>
-
-
+:::
 
 ## EDA vs Statistical Problem Process {.smaller}
 
-- ทำความเข้าใจข้อมูลเบื้องต้นก่อนดำเนินการวิเคราะห์
+-   ทำความเข้าใจข้อมูลเบื้องต้นก่อนดำเนินการวิเคราะห์
 
-- ปรับแต่งคำถาม/สมมุติฐานให้เหมาะสม
+-   ปรับแต่งคำถาม/สมมุติฐานให้เหมาะสม
 
-- เป็นการวิเคราะห์เบื้องต้นของการวิเคราะห์เชิงยืนยัน
-
+-   เป็นการวิเคราะห์เบื้องต้นของการวิเคราะห์เชิงยืนยัน
 
 ![](https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png)
 
-
-
 ## กิจกรรม: Anscombe dataset (1)
 
-:::: {style="font-size: 65%;"}
-
+::: {style="font-size: 65%;"}
 ชุดข้อมูล `anscombe` ประกอบด้วยข้อมูลของตัวแปรตาม `y` กับตัวแปรอิสระ `x` จำนวน 4 ชุด วัตถุประสงค์ของการวิเคราะห์นี้คือเพื่อวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม y กับตัวแปรอิสระ x ของข้อมูลแต่ละชุด
 
 ```{r echo = T}
@@ -167,7 +143,7 @@ anscombe |>
   mutate(reg_model = map(data, ~lm(Y ~ X, data = .x))) -> temp
 ```
 
-1. ลองคำนวณค่าสถิติบรรยายของตัวแปรตามกับตัวแปรอิสระในแต่ละชุดข้อมูล
+1.  ลองคำนวณค่าสถิติบรรยายของตัวแปรตามกับตัวแปรอิสระในแต่ละชุดข้อมูล
 
 ```{r}
 anscombe |> 
@@ -176,14 +152,12 @@ anscombe |>
   summarise(mean = mean(value),
               sd = sd(value))
 ```
+:::
 
-::::
+## EDA: Anscombe dataset (2)
 
-## EDA: Anscombe dataset (2) 
-
-:::: {style="font-size: 65%;"}
-
-2. ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระของข้อมูลแต่ละชุดด้วย correlation
+:::::: {style="font-size: 65%;"}
+2.  ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระของข้อมูลแต่ละชุดด้วย correlation
 
 ```{r}
 anscombe |> 
@@ -203,35 +177,25 @@ anscombe |>
   data.frame()
 ```
 
+3.  ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression $y_i = \beta_0 + \beta_1x + \epsilon_i$
 
-3. ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression $y_i = \beta_0 + \beta_1x + \epsilon_i$
-
-:::: {.columns}
-
+::::: columns
 ::: {.column width="50%"}
-
 ```{r}
 library(broom)
 names(temp$reg_model)<-paste0("Dataset",1:4)
 temp$reg_model |> map(~tidy(.x))->temp1
 temp1[1:2]
 ```
-
 :::
 
-
-
 ::: {.column width="50%"}
-
 ```{r}
 temp1[3:4]
 ```
-
 :::
-
-::::
-
-::::
+:::::
+::::::
 
 ## EDA: Anscombe dataset (3) {.hidden}
 
@@ -250,74 +214,62 @@ anscombe |>
 
 ```
 
-
 ## EDA: Anscombe dataset (4)
-
-
 
 > “Far better an approximate answer to the right question, which is often vague, than an exact answer to the wrong question, which can always be made precise.” <br> — [John Tukey](https://en.wikipedia.org/wiki/John_Tukey)
 
-
-
-##  การวิเคราะห์ที่เป็นไปได้
+## การวิเคราะห์ที่เป็นไปได้
 
 ::: {style="font-size: 80%;"}
+-   การสํารวจโครงสร้างชุดข้อมูล เช่น `glimpse()`, `str()`, `head()`, `tail()`
 
-- การสํารวจโครงสร้างชุดข้อมูล เช่น `glimpse()`, `str()`, `head()`, `tail()`
+-   สำรวจสภาพ/การแจกแจงของข้อมูล
 
-- สำรวจสภาพ/การแจกแจงของข้อมูล
+    -   สถิติพื้นฐาน เช่น การแจกแจงความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน ...
+    -   ทัศนภาพข้อมูล เช่น แผนภูมิแท่ง ฮิสโทแกรม แผนภาพความหนาแน่น ...
 
-  - สถิติพื้นฐาน เช่น การแจกแจงความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน ...
-  - ทัศนภาพข้อมูล เช่น แผนภูมิแท่ง ฮิสโทแกรม แผนภาพความหนาแน่น ...
+-   เปรียบเทียบข้อมูล/สำรวจความสัมพันธ์ระหว่างตัวแปร (Covariation/Relation)
 
-- เปรียบเทียบข้อมูล/สำรวจความสัมพันธ์ระหว่างตัวแปร (Covariation/Relation)
-  - เปรียบเทียบการแจกแจงของข้อมูล ค่าเฉลี่ย แผนภาพกล่อง
-  - สหสัมพันธ์ แผนภาพการกระจาย
-  - การวิเคราะห์การถดถอย
-  - Decision tree หรืออื่น ๆ 
+    -   เปรียบเทียบการแจกแจงของข้อมูล ค่าเฉลี่ย แผนภาพกล่อง
+    -   สหสัมพันธ์ แผนภาพการกระจาย
+    -   การวิเคราะห์การถดถอย
+    -   Decision tree หรืออื่น ๆ
 
-- การวิเคราะห์จัดกลุ่ม เช่น K-means clustering, Hierarchical clustering, ...
+-   การวิเคราะห์จัดกลุ่ม เช่น K-means clustering, Hierarchical clustering, ...
 
-- การลดมิติข้อมูล เช่น PCA, PLS หรือ t-SNE
-
+-   การลดมิติข้อมูล เช่น PCA, PLS หรือ t-SNE
 :::
 
-
-## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"}
 
 ::: {style="font-size: 80%;"}
-
 เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
 
 วัตถุประสงค์หลักของการวิเคราะห์คือ
 
-1. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
+1.  ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
 
-2. ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
+2.  ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
 
-3. ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
+3.  ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
 
-4. สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
-
-
+4.  สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
 :::
 
-
-## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"}
 
 ::: {style="font-size: 80%;"}
-
 เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
 
 วัตถุประสงค์หลักของการวิเคราะห์คือ
 
-1. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
+1.  ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
 
-2. ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
+2.  ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
 
-3. ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
+3.  ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
 
-4. สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
+4.  สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
 
 เรียก library-tidyverse และนำข้อมูลเข้า R
 
@@ -326,37 +278,31 @@ anscombe |>
 library(tidyverse)
 
 ```
-
 :::
 
-## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"} 
+## ชุดข้อมูลที่ใช้เป็นตัวอย่าง {auto-animate="true"}
 
 ::: {style="font-size: 80%;"}
-
 เนื้อหาส่วนนี้จะใช้ชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลตัวอย่าง
 
 วัตถุประสงค์หลักของการวิเคราะห์คือ
 
-1. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
+1.  ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง
 
-2. ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
+2.  ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่
 
-3. ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
+3.  ปัจจัยใดที่มีความสัมพันธ์กับความสำเร็จ/ล้มเหลวในการเรียนวิจัย
 
-4. สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
+4.  สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร
 
 เรียก library-tidyverse และนำข้อมูลเข้า R
-
 
 ```{r echo = T}
 library(tidyverse)
 ## importing data
 data <- read_csv("learning_data.csv")
 ```
-
 :::
-
-
 
 ## 0. ชุดข้อมูลที่ใช้เป็นตัวอย่าง {.smaller auto-animate="true"}
 
@@ -365,35 +311,27 @@ data <- read_csv("learning_data.csv")
 data
 ```
 
-
 ## 1. สำรวจโครงสร้างชุดข้อมูล
 
 ::: {style="font-size: 80%;"}
+-   ชุดข้อมูลนี้มีตัวแปรกี่ตัว/มีหน่วยข้อมูลกี่หน่วย หน่วยข้อมูลเป็นอะไร?
 
-- ชุดข้อมูลนี้มีตัวแปรกี่ตัว/มีหน่วยข้อมูลกี่หน่วย หน่วยข้อมูลเป็นอะไร?
+-   ตัวแปรในชุดข้อมูลมีตัวแปรอะไรบ้าง สามารถจำแนกประเภทของตัวแปรได้หรือไม่ อย่างไร?
 
-- ตัวแปรในชุดข้อมูลมีตัวแปรอะไรบ้าง สามารถจำแนกประเภทของตัวแปรได้หรือไม่ อย่างไร?
+-   สถานะการเก็บค่าของตัวแปรแต่ละตัวเหมาะสมที่จะนำไปวิเคราะห์แล้วหรือไม่?
 
-- สถานะการเก็บค่าของตัวแปรแต่ละตัวเหมาะสมที่จะนำไปวิเคราะห์แล้วหรือไม่?
-
-- ควรจะต้องมีการจัดระเบียบหรือจัดกระทำอะไรเพิ่มเติมมั้ย?
-
+-   ควรจะต้องมีการจัดระเบียบหรือจัดกระทำอะไรเพิ่มเติมมั้ย?
 
 จากผลลัพธ์ที่ได้จาก `glimpse()` พบว่าชุดข้อมูล `learning_data.csv` เป็นชุดข้อมูลที่มีหน่วยข้อมูลเป็นนักเรียนจำนวน 385 คน ซึ่งประกอบด้วยข้อมูลจำนวน 11 คอลัมน์ คอลัมน์แรกเป็น `student_id` ไม่นับเป็นตัวแปร ส่วนที่เหลือเป็นตัวแปรที่เกี่ยวข้องกับความรู้/ทักษะทางด้านสถิติ พฤติกรรมการเรียน ภูมิหลัง และผลสัมฤทธิ์ทางการเรียนในรายวิชาวิจัย
-
-
 
 ```{r echo = T}
 glimpse(data, 80)
 ```
-
 :::
-
 
 ## 1. สำรวจโครงสร้างชุดข้อมูล
 
 ::: {style="font-size: 70%;"}
-
 เมื่อพิจารณาสถานะการเก็บค่าของตัวแปรพบว่าตัวแปรเชิงปริมาณทั้งหมดมีการเก็บค่าแบบ `dbl` ซึ่งเหมาะสมแล้ว อย่างไรก็ตามตัวแปรภูมิหลังได้แก่ `gender` และ `department` มีการเก็บค่าเป็น `chr` อยู่ซึ่งควรเปลี่ยนเป็น `fct` และเมื่อพิจารณาชุดข้อมูลพบว่าจัดเก็บอยู่ในลักษณะ tidy data แล้วไม่จำเป็นต้องมีการจัดระเบียบอะไรเพิ่มเติม ยกเว้นจะมีวัตถุประสงค์อื่น ๆ จะแสดงให้เห็นในส่วนต่อไป
 
 คำสั่งด้านล่างแสดงการเปลี่ยนสถานะของ `gender` และ `department` เป็น `fct` ตัวอย่างด้านล่างเลือกใช้ฟังก์ชัน `mutate_if()` เพื่อแปลงตัวแปร `chr` ทั้งสองตัวพร้อมกัน จะได้ไม่ต้องเขียนคำสั่งหลายบรรทัด
@@ -404,99 +342,78 @@ data <- data |>
 ```
 
 ลองใช้ `glimpse()` ดูอีกทีว่าสถานะของตัวแปรทั้งสองถูกเปลี่ยนเป็น `fct` เรียบร้อยแล้วหรือไม่
-
 :::
 
 <br>
 
-::: {.callout-tip}
-
+::: callout-tip
 ในการแปลงสถานะของตัวแปรเราสามารถเขียนคำสั่งในลักษณะอื่นได้อีกหรือไม่ อย่างไร?
-
 :::
-
-
 
 ## 2. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง? {.smaller}
 
 ::: {style="font-size: 80%;"}
+-   นิสิตคิดว่ามีตัวแปรอะไรบ้างที่น่าจะเกี่ยวข้องกับการวิเคราะห์เพื่อตอบคำถามนี้
 
-- นิสิตคิดว่ามีตัวแปรอะไรบ้างที่น่าจะเกี่ยวข้องกับการวิเคราะห์เพื่อตอบคำถามนี้
-
-- ลองสำรวจการแจกแจงของตัวแปรที่เกี่ยวข้อง
-
+-   ลองสำรวจการแจกแจงของตัวแปรที่เกี่ยวข้อง
 :::
 
-
-<div style="font-size: 120%;">
-::: {.callout-note}
-
+:::: {style="font-size: 120%;"}
+::: callout-note
 ## **การแจกแจงของข้อมูล (Distribution of Data)**
 
 ให้สารสนเทศเกี่ยวกับ
 
-- ขอบเขตของข้อมูล/ค่าที่เป็นไปได้ของข้อมูล
+-   ขอบเขตของข้อมูล/ค่าที่เป็นไปได้ของข้อมูล
 
-- ประกอบการประเมินความสมเหตุสมผลของข้อมูล 
+-   ประกอบการประเมินความสมเหตุสมผลของข้อมูล
 
-- แนวโน้มสู่ส่วนกลาง และการกระจายของข้อมูล
-
+-   แนวโน้มสู่ส่วนกลาง และการกระจายของข้อมูล
 :::
-
-</div>
+::::
 
 ::: {style="font-size: 80%;"}
+-   **การแจกแจงความถี่**
 
-- **การแจกแจงความถี่**
+-   **ค่าสถิติพื้นฐาน** เช่น ค่าเฉลี่ย มัธยฐาน ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด สูงสุด และ quantile
 
-- **ค่าสถิติพื้นฐาน** เช่น ค่าเฉลี่ย มัธยฐาน ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด สูงสุด และ quantile
+-   **แผนภาพต่าง ๆ** เช่น
 
-- **แผนภาพต่าง ๆ** เช่น
-  - Bar chart
-  - Histogram/Density plot
-  - Boxplot
-
+    -   Bar chart
+    -   Histogram/Density plot
+    -   Boxplot
 :::
-
 
 ## 2.1 การแจกแจงความถี่
 
 ::: {style="font-size: 80%;"}
+การแจกแจงความถี่จำแนกได้ 2 ลักษณะ คือการแจกแจงความถี่สำหรับตัวแปรจัดประเภท และการแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ
 
-การแจกแจงความถี่จำแนกได้ 2 ลักษณะ คือการแจกแจงความถี่สำหรับตัวแปรจัดประเภท และการแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ 
+-   การแจกแจงความถี่สำหรับตัวแปรจัดประเภท
 
-- การแจกแจงความถี่สำหรับตัวแปรจัดประเภท
-
-- การแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ
-
+-   การแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ
 :::
-
 
 ## การแจกแจงความถี่ตัวแปรจัดประเภท
 
 ::: {style="font-size: 80%;"}
-
-  - `summary()`
-  - `table()`
-  - `count()`
-  - `barplot()`
-  - `ggplot(aes(x))+geom_bar()`
-
+-   `summary()`
+-   `table()`
+-   `count()`
+-   `barplot()`
+-   `ggplot(aes(x))+geom_bar()`
 :::
-
 
 ## การแจกแจงความถี่ของตัวแปรเชิงปริมาณ
 
 ::: {style="font-size: 70%;"}
-
 การแจกแจงความถี่ของตัวแปรเชิงปริมาณ โดยปกติมักจะต้องมีการแบ่งข้อมูลของตัวแปรเชิงปริมาณออกเป็นช่วงย่อยเรียกว่า อันตรภาคชั้น (class interval) จากนั้นจึงดำเนินการแจงนับจำนวนข้อมูลในแต่ละอันตรภาคชั้น
 
-  - `summary()`
-  - ใช้ `cut()` ร่วมกับ `summary()`, `table()` หรือ `count()`
-  - `hist()`
-  - `ggplot(aes(x))+geom_histogram()`
-  - `ggplot(aes(x))+geom_density()`
-
+-   `summary()`
+-   ใช้ `cut()` ร่วมกับ `summary()`, `table()` หรือ `count()`
+-   `hist()`
+-   `ggplot(aes(x))+geom_histogram()`
+-   `ggplot(aes(x))+geom_density()`
 
 ```{r echo = T}
 ## สร้างอันตรภาคชั้นของตัวแปรด้วย `cut()`
@@ -507,26 +424,19 @@ data |>
   count(research_score_interval)
 
 ```
-
 :::
-
-
 
 ## แนะนำ [library-patchwork](https://patchwork.data-imaginist.com/)
 
-::: {style="font-size: 60%;"}
-
-:::: {.columns}
-
+:::::: {style="font-size: 60%;"}
+::::: columns
 ::: {.column width="40%"}
 ![](https://cran.r-project.org/web/packages/patchwork/readme/man/figures/logo.png)
 
 library-patchwork เป็นส่วนต่อขยายของ library-ggplot2 ทำหน้าที่จัดเรียงและผสานแผนภาพหลาย ๆ อันเข้าด้วยกัน ช่วยให้การวางเลย์เอาต์ของกราฟหลาย ๆ อันเป็นเรื่องง่ายและมีความยืดหยุ่นสูง
-
 :::
 
 ::: {.column width="60%"}
-
 ตัวอย่างการใช้ library-patchwork
 
 ```{r echo = T}
@@ -545,29 +455,19 @@ p2 <- data |>
 p1/p2 + plot_layout(heights = c(3, 1))
   
 ```
-
 :::
-
-::::
-:::
-
-
-
-
-
-
+:::::
+::::::
 
 ## 2.2 สถิติพื้นฐาน {.smaller}
 
+-   `summary()` ใช้แจกแจงความถี่และคำนวณค่าสถิติพื้นฐาน
 
-- `summary()` ใช้แจกแจงความถี่และคำนวณค่าสถิติพื้นฐาน
+-   `summarise()` ของ library-dplyr โดยใช้ร่วมกับฟังก์ชันที่เกี่ยวข้อง เช่น `mean()`, `sd()`, `quantile()`, `median()`, `min()` และ `max()`
 
-- `summarise()` ของ library-dplyr โดยใช้ร่วมกับฟังก์ชันที่เกี่ยวข้อง เช่น `mean()`, `sd()`, `quantile()`, `median()`, `min()` และ `max()`
+-   `describe()` ของ library-psych
 
-- `describe()` ของ library-psych 
-
-- `skim()` ของ library-skimr
-
+-   `skim()` ของ library-skimr
 
 ```{r eval = F, echo = T}
 ## 1. -- summarise() ใน dplyr
@@ -589,13 +489,11 @@ library(skimr)
 skim(data)
 ```
 
-
 ## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
-
 
 ตัวอย่างต่อไปนี้แสดงการสำรวจข้อมูลด้วยการแจกแจงความถี่และสถิติพื้นฐานในชุดข้อมูล `learning_data.csv`
 
-- สำรวจค่าสูญหายคร่าว ๆ
+-   สำรวจค่าสูญหายคร่าว ๆ
 
 ```{r echo = T}
 library(naniar)
@@ -603,10 +501,9 @@ data |>
   miss_var_summary()
 ```
 
-
 ## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
 
-- แจกแจงความถี่ตัวแปรเชิงปริมาณ
+-   แจกแจงความถี่ตัวแปรเชิงปริมาณ
 
 ```{r echo = T}
 ### สำรวจตัวแแปรเชิงปริมาณ
@@ -619,11 +516,9 @@ data |>
   facet_wrap(~variable, scales = "free_x") ## แบ่ง panel ตามตัวแปร
 ```
 
-
 ## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
 
-
-- สร้างตารางสถิติพื้นฐาน
+-   สร้างตารางสถิติพื้นฐาน
 
 ```{r echo = T}
 data |> 
@@ -646,7 +541,7 @@ data |>
 
 ## 2.3 Code Example: สำรวจการแจกแจง {.smaller}
 
-- แจกแจงความถี่ตัวแปรจัดประเภท
+-   แจกแจงความถี่ตัวแปรจัดประเภท
 
 ```{r echo = T}
 ### สำรวจตัวแแปรจัดประเภท
@@ -661,39 +556,357 @@ data |>
 
 ```
 
-
 ## 2.4 วางแผนการสำรวจปัญหาในการเรียนของนักเรียน
 
-- ต้องใช้ตัวแปรอะไรบ้างในการวิเคราะห์
+-   ต้องใช้ตัวแปรอะไรบ้างในการวิเคราะห์
 
-- ข้อมูลของตัวแปรที่ดำเนินการวิเคราะห์มีสภาพเป็นอย่างไร มีข้อสังเกตหรือปัญหาอะไรหรือไม่
+-   ข้อมูลของตัวแปรที่ดำเนินการวิเคราะห์มีสภาพเป็นอย่างไร มีข้อสังเกตหรือปัญหาอะไรหรือไม่
 
-- วางแผนว่าจะสำรวจข้อมูลโดยใช้การวิเคราะห์อะไร
+-   วางแผนว่าจะสำรวจข้อมูลโดยใช้การวิเคราะห์อะไร
 
-- ต้องมีการจัดกระทำข้อมูลอะไรเพิ่มเติมหรือไม่ อย่างไร
+-   ต้องมีการจัดกระทำข้อมูลอะไรเพิ่มเติมหรือไม่ อย่างไร
 
-- ผลการสำรวจที่ได้เป็นอย่างไร
-
+-   ผลการสำรวจที่ได้เป็นอย่างไร
 
 ## 3. การสำรวจความสัมพันธ์ระหว่างตัวแปร {.smaller}
 
-   - Scatter plot/Boxplot
-   - Locally Estimated Scatterplot Smoothing (LOESS)
-   - การแจกแจงความถี่สองทาง (contingency table)
-   - Correlation Coefficients
-   - Decision tree 
-   - Machine Learning + XAI
+-   Scatter plot/Boxplot
+-   Locally Estimated Scatterplot Smoothing (LOESS)
+-   การแจกแจงความถี่สองทาง (contingency table)
+-   Correlation Coefficients
+-   Decision tree
+-   Machine Learning + XAI
 
+## 3.1 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่? {.smaller}
 
+-   ตัวแปรที่เกี่ยวข้องควรมีอะไรบ้าง
 
-## 3.1 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่?
+-   เราสามารถใช้การสำรวจความสัมพันธ์เพื่อช่วยตอบคำถามนี้ได้อย่างไร
 
-- ตัวแปรที่เกี่ยวข้องควรมีอะไรบ้าง
+-   การวิเคราะห์จะต้องมีการจัดกระทำตัวแปรอย่างไรบ้างหรือไม่
 
-- เราสามารถใช้การสำรวจความสัมพันธ์เพื่อช่วยตอบคำถามนี้ได้อย่างไร
+-   สรุปเราควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นหรือไม่
 
-- การวิเคราะห์จะต้องมีการจัดกระทำตัวแปรอย่างไรบ้างหรือไม่
+```{r}
+glimpse(data)
+```
 
-- สรุปเราควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นหรือไม่
+## 3.2 Scatter plot {.smaller}
 
+-   เหมาะสำหรับสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ 2 ตัว (ในบางกรณีสามารถสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับจัดประเภทได้ด้วย)
+
+-   ช่วยให้เห็นแนวโน้มความสัมพันธ์ในธรรมชาติ
+
+-   อาจขาดความเป็นปรนัยในการวิเคราะห์
+
+```{r echo = T, fig.width = 6}
+data %>% 
+  mutate(stat_knowledge = rowMeans(select(.,choose_method:interpretation)),
+         .before = "choose_method") %>% 
+  ggplot(aes(x = stat_knowledge, y = research_score))+
+  geom_point(col = "steelblue", size = 2.5)+
+  theme_bw()
+```
+
+## 3.3 Scatter plot + ols regression line {.smaller}
+
+-   การใช้ scatterplot ร่วมกับเส้น regression line ช่วยให้ผู้วิเคราะห์สำรวจแนวโน้มหลักของความสัมพันธ์ระหว่างตัวแปรว่ามีลักษณะเป็นเชิงเส้นตรงมากน้อยแค่ไหน
+
+-   รวมทั้งแนวโน้มขนาดความสัมพันธ์ระหว่างตัวแปรดังกล่าวด้วย
+
+```{r echo = T, fig.width = 6}
+#| code-line-numbers: "6|7"
+data %>% 
+  mutate(stat_knowledge = rowMeans(select(.,choose_method:interpretation)),
+         .before = "choose_method") %>% 
+  ggplot(aes(x = stat_knowledge, y = research_score))+
+  geom_point(col = "steelblue", size = 2)+
+  geom_smooth(method = "lm", col = "orange", se=F,
+              formula = y ~ x)+
+  theme_bw()
+```
+
+## 3.3 Scatter plot + ols regression line {.smaller}
+
+-   การใช้ scatterplot ร่วมกับเส้น regression line ช่วยให้ผู้วิเคราะห์สำรวจแนวโน้มหลักของความสัมพันธ์ระหว่างตัวแปรว่ามีลักษณะเป็นเชิงเส้นตรงมากน้อยแค่ไหน
+
+-   รวมทั้งแนวโน้มขนาดความสัมพันธ์ระหว่างตัวแปรดังกล่าวด้วย
+
+```{r echo = T}
+#| code-line-numbers: "7"
+x = rnorm(100,0,1)
+y = 0.5-0.2*(x-0.5)^2 + rnorm(100,0,0.1)
+data.frame(x,y) %>% 
+  ggplot(aes(x = x, y = y))+
+  geom_point(col = "steelblue", size = 2)+
+  geom_smooth(method = "lm", col = "orange", se=F,
+              formula = y ~ poly(x,2))+
+  theme_bw()
+```
+
+## 3.4 Scatter plot + LOESS regression {.smaller}
+
+-   การใช้ scatterplot ร่วมกับเส้น LOESS regression ช่วยให้ผู้วิเคราะห์สำรวจแนวโน้มหลักของความสัมพันธ์ระหว่างตัวแปรได้อย่างยืดหยุ่นมากขึ้น
+
+-   LOESS regression เป็นการประมาณเส้นโค้งที่เหมาะสมกับข้อมูลในแต่ละช่วงของตัวแปรต้น โดยไม่ต้องกำหนดรูปแบบสมการล่วงหน้า วิธีการนี้จัดอยู่ในกลุ่ม non-parametric regression
+
+-   ผลลัพธ์ที่ได้จะได้เส้นแนวโน้มความสัมพันธ์แต่จะไม่ได้สมการทำนาย เป็นเทคนิคที่เหมาะสำหรับการสำรวจข้อมูลมากกว่าที่จะวิเคราะห์เพื่อยืนยันความสัมพันธ์
+
+```{r echo = T}
+p1 <- data %>% 
+  mutate(stat_knowledge = rowMeans(select(.,choose_method:interpretation)),
+         .before = "choose_method") %>% 
+  ggplot(aes(x = stat_knowledge, y = research_score))+
+  geom_point(col = "steelblue", size = 2)+
+  geom_smooth(method = "loess", col = "orange", se=F)+
+  theme_bw()
+
+p2 <- data.frame(x,y) %>% 
+  ggplot(aes(x = x, y = y))+
+  geom_point(col = "steelblue", size = 2)+
+  geom_smooth(method = "loess", col = "orange", se=F)+
+  theme_bw()
+```
+
+## 3.4 Scatter plot + LOESS regression {.smaller}
+
+```{r fig.width = 9, fig.height=4}
+p1 + p2
+```
+
+## 3.5 Boxplot + Jitter plot {.smaller auto-animate="true"}
+
+การใช้ boxplot หรือ jitter plot ช่วยให้ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทได้
+
+```{r echo = T, fig.width = 5, fig.height=3}
+data %>% 
+  ggplot(aes(x = concepts > 50, y = research_score))+
+  geom_boxplot(fill = "steelblue", alpha = 0.6)+
+  theme_bw()
+```
+
+## 3.5 Boxplot + Jitter plot {.smaller auto-animate="true"}
+
+การใช้ boxplot หรือ jitter plot ช่วยให้ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทได้
+
+```{r echo = T, fig.width = 5, fig.height=3}
+#| code-line-numbers: "4"
+data %>% 
+  ggplot(aes(x = concepts > 50, y = research_score))+
+  geom_boxplot(fill = "steelblue", alpha = 0.6)+
+  geom_jitter(width = 0.1, col = "grey40", alpha = 0.5)+
+  theme_bw()
+```
+
+## 3.5 Boxplot + Jitter plot {.smaller auto-animate="true"}
+
+การใช้ boxplot หรือ jitter plot ช่วยให้ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทได้
+
+```{r echo = T, fig.width = 5, fig.height=3}
+#| code-line-numbers: "4-5"
+data %>% 
+  ggplot(aes(x = concepts > 50, y = research_score))+
+  geom_boxplot(fill = "steelblue", alpha = 0.6)+
+  geom_jitter(data = . %>% 
+                sample_n(size = 200),
+                width = 0.1, col = "grey40", alpha = 0.5)+
+  theme_bw()
+```
+
+## 3.6 Contingency table {.smaller}
+
+ตารางแจกแจงความถี่สองทางและ Bar plot สามารถใช้เพื่อสำรวจความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ ตัวอย่างด้านล่างแสดงการแจกแจงความถี่แบบ Count
+
+```{r echo = T}
+data %>% 
+  mutate(
+    choose_method = case_when(
+    choose_method >= 70 ~ "good",
+    choose_method < 60 & choose_method >= 50 ~ "fair",
+    TRUE ~ "poor"),
+    concepts = case_when(
+      concepts >= 70 ~ "good",
+      concepts < 60 & concepts >= 50 ~ "fair",
+      TRUE ~ "poor")
+    ) %>% 
+  count(choose_method, concepts)
+```
+
+## 3.6 Contingency table {.smaller}
+
+ตารางแจกแจงความถี่สองทางและ Bar plot สามารถใช้เพื่อสำรวจความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ ตัวอย่างด้านล่างแสดงการแจกแจงความถี่แบบร้อยละ
+
+```{r echo = T}
+data %>% 
+  mutate(
+    choose_method = case_when(
+    choose_method >= 70 ~ "good",
+    choose_method < 60 & choose_method >= 50 ~ "fair",
+    TRUE ~ "poor"),
+    concepts = case_when(
+      concepts >= 70 ~ "good",
+      concepts < 60 & concepts >= 50 ~ "fair",
+      TRUE ~ "poor")
+    ) %>% 
+  count(choose_method, concepts) %>% 
+  mutate(prop = n/sum(n)) ## percent total
+```
+
+## 3.6 Contingency table {.smaller}
+
+ตารางแจกแจงความถี่สองทางและ Bar plot สามารถใช้เพื่อสำรวจความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ ตัวอย่างด้านล่างแสดงการแจกแจงความถี่แบบร้อยละ
+
+```{r echo = T}
+data %>% 
+  mutate(
+    choose_method = case_when(
+    choose_method >= 70 ~ "good",
+    choose_method < 60 & choose_method >= 50 ~ "fair",
+    TRUE ~ "poor"),
+    concepts = case_when(
+      concepts >= 70 ~ "good",
+      concepts < 60 & concepts >= 50 ~ "fair",
+      TRUE ~ "poor")
+    ) %>% 
+  count(choose_method, concepts) %>% 
+  group_by(choose_method) %>%
+  mutate(prop = n/sum(n)) ## percent in choose_method
+```
+
+## 3.6 Contingency table {.smaller}
+
+เราสามารถปรับตารางนี้ให้เป็นแบบ human readable ได้อย่างไร
+
+```{r}
+data %>% 
+  mutate(
+    choose_method = case_when(
+    choose_method >= 70 ~ "good",
+    choose_method < 60 & choose_method >= 50 ~ "fair",
+    TRUE ~ "poor"),
+    concepts = case_when(
+      concepts >= 70 ~ "good",
+      concepts < 60 & concepts >= 50 ~ "fair",
+      TRUE ~ "poor")
+    ) %>% 
+  count(choose_method, concepts)
+```
+
+## 3.7 Heatmap {.smaller}
+
+-   การสร้าง heatmap จาก contingency table ช่วยให้ผู้วิเคราะห์มองเห็นแนวโน้มความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ชัดเจนขึ้น ลองพิจารณารูปต่อไปนี้
+
+> ทักษะการเลือกสถิติวิเคราะห์และมโนทัศน์ทางสถิติของนักเรียนมีความสัมพันธ์กันหรือไม่
+
+```{r}
+data %>% 
+  mutate(
+    choose_method = case_when(
+    choose_method >= 70 ~ "good",
+    choose_method < 60 & choose_method >= 50 ~ "fair",
+    TRUE ~ "poor"),
+    concepts = case_when(
+      concepts >= 70 ~ "good",
+      concepts < 60 & concepts >= 50 ~ "fair",
+      TRUE ~ "poor")
+    ) %>% 
+  group_by(choose_method) %>% 
+  count(choose_method, concepts) %>% 
+  mutate(prop = n/sum(n)) %>%  ## percent in choose_method
+  ungroup() %>% 
+  mutate(across(c("choose_method", "concepts"), 
+                ~ fct_relevel(.x, rev(c("good", "fair", "poor")))))  %>% 
+  ggplot(aes(x = choose_method, y = concepts, fill = prop))+
+  geom_tile()+
+  geom_text(aes(label = paste0(round(prop*100,1),"%")), col = "white", size = 6)+
+  scale_fill_viridis_c() +
+  theme_bw()+
+  ggtitle("% in choose_method")
+```
+
+## 3.8 Stacked Barplot {.smaller}
+
+```{r echo = T}
+p <- data %>% 
+  mutate(
+    choose_method = case_when(
+    choose_method >= 70 ~ "good",
+    choose_method < 60 & choose_method >= 50 ~ "fair",
+    TRUE ~ "poor"),
+    concepts = case_when(
+      concepts >= 70 ~ "good",
+      concepts < 60 & concepts >= 50 ~ "fair",
+      TRUE ~ "poor")
+    ) %>% 
+  mutate(across(c("choose_method", "concepts"), 
+                ~ fct_relevel(.x, c("good", "fair", "poor"))))  %>% 
+  ggplot(aes(x = choose_method, fill = concepts))+
+  geom_bar(position = "fill")+
+  scale_fill_brewer(palette = "RdYlBu", direction = -1)+
+  ggtitle("100% Stacked Barplot")+
+  theme_bw()
+```
+
+## 3.8 Stacked Barplot {.smaller}
+
+```{r}
+p
+```
+
+## 3.9 Correlation {.smaller}
+
+-   สหสัมพันธ์ (Correlation) คือการวัดความสัมพันธ์ระหว่างตัวแปรสองตัว โดยแสดงทั้ง ทิศทาง (ไปในทางเดียวกันหรือตรงข้ามกัน) และ ความแข็งแรงของความสัมพันธ์ (สัมพันธ์กันมากหรือน้อยเพียงใด)
+
+-   การวิเคราะห์สหสัมพันธ์นิยมใช้ควบคู่กับ การใช้ visualization เพื่อช่วยให้การตีความหมายมีความเป็นปรนัยมากขึ้นและเพิ่มความน่าเชื่อถือของผลการวิเคราะห์
+
+## 3.9 ประเภทของ Correlation {.smaller}
+
+การแบ่งประเภททำได้หลายลักษณะ หากพิจารณาตามลักษณะความสัมพันธ์ สามารถจำแนกได้ดังนี้
+
+-   Linear Correlation: วัดความสัมพันธ์เชิงเส้นตรงระหว่างตัวแปรสองตัว (linear association)
+
+    -   Pearson correlation
+
+    -   Point-Biserial correlation
+
+    -   Multiple correlation
+
+-   Monotonic Correlation: ความสัมพันธ์แบบ monotonic (monotonic association)เป็นความสัมพันธ์ในลักษณะที่เปลี่ยนแปลงของตัวแปรที่มีความสัมพันธ์กันจะมีทิศทางเดียวกันเสมอ กล่าวคือ ถ้าตัวแปรหนึ่งมีแนวโน้มเพิ่มขึ้น อีกตัวแปรหนึ่งจะไม่ลดลง (monotonic increasing) ในทางกลับกันถ้าตัวแปรหนึ่งมีแนวโน้มลดลง อีกตัวแปรหนึ่งจะไม่เพิ่มขึ้น (monotonic decreasing)
+
+    -   Spearman's rank correlation
+
+    -   Kendall's tau correlation
+
+-   Categorical association: วัดความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัว
+
+    -   Cramér's V
+
+    -   Phi coefficient
+
+## 3.9 Pearson Correlation vs Spearman Correlation {.smaller}
+
+เปรียบเทียบสัมประสิทธิ์สหสัมพันธ์ของเพียร์สันและสเปียร์แมนภายใต้สถานการณ์ที่ตัวแปร สองตัวมีความสัมพันธ์แบบทางเดียว โดยที่ความสัมพันธ์ดังกล่าวไม่ใช่เส้นตรง
+
+![สิวะโชติ ศรีสุทธิยากร (2564)](images/clipboard-1023193391.png)
+
+## 3.10 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่? {.smaller}
+
+-   คัดเลือกตัวแปรที่เกี่ยวข้อง
+
+-   สำรวจสภาพของตัวแปรที่เกี่ยวข้อง
+
+-   ออกแบบการวิเคราะห์เพื่อตอบคำถามข้างต้น
+
+-   ผลการวิเคราะห์ที่ได้เป็นอย่างไร
+
+```{r}
+data %>% 
+  ggplot(aes(x = submit_time))+
+  geom_histogram(fill = "#415E72", col = "white", alpha = 0.7, bins = 30)+
+  geom_segment(x = 168, xend = 168, y = 0, yend = Inf,
+               col = "black", linetype = 3)+
+  geom_text(x = 168, y = 0, label = "168 ชั่วโมง", family = "ChulaCharasNew",
+            vjust = 1.5)+
+  theme_light()
+```
 

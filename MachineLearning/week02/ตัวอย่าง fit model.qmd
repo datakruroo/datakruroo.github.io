@@ -1,0 +1,180 @@
+---
+title: "กิจกรรม week2"
+format: html
+editor: visual
+---
+
+## 1. Importing data
+
+นำเข้าข้อมูลทั้งหมดใน R
+
+```{r}
+## install.packages("tidyverse")
+library(tidyverse)
+#read_csv()
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week02/student/student-mat.csv", delim = ";")
+glimpse(data, 70) ##  variable view
+data # data view
+```
+
+## 2. Data Splitting
+
+- แบ่งข้อมูลเป็น 2 ส่วน คือ training set และ test set
+
+- เราจะใช้ฟังก์ชันชื่อว่า `initial_split()` จากแพ็กเกจ `rsample` เพื่อแบ่งข้อมูล
+
+- ต้องใช้ร่วมกับฟังก์ชัน `training()` และ `testing()` เพื่อดึงข้อมูล training set และ test set ตามลำดับ
+
+```{r}
+## install.packages("rsample")
+library(rsample)
+
+## 1.สร้างตัวแบ่งข้อมูล การแบ่งแบบ simple random sampling (SRS)
+set.seed(123) ## กำหนดค่าเริ่มต้นของการสุ่มให้คงที่ เพื่อให้ผลลัพธ์ที่ได้สามารถทำซ้ำได้
+split <- initial_split(data, prop = 0.8)
+split
+## 2. สร้างชุดข้อมูล training
+train_data <- training(split)
+train_data[1,]
+## 3. สร้างชุดข้อมูล test data
+test_data <- testing(split)
+```
+
+- บางครั้ง distribution ของตัวแปรตามมันมีความเบ้ หรือมีความไม่สมดุลสูง การแบ่งแบบ SRS อาจจะทำให้ training set และ test set มีความไม่สมดุลกันได้
+
+- กระบวนการสุ่มแบบชั้นภูมิ (stratified sampling) จะช่วยให้การแบ่งข้อมูลมีความสมดุลมากขึ้น
+
+```{r}
+## 1.สร้างตัวแบ่งข้อมูล การแบ่งแบบ simple random sampling (SRS)
+set.seed(123) ## กำหนดค่าเริ่มต้นของการสุ่มให้คงที่ เพื่อให้ผลลัพธ์ที่ได้สามารถทำซ้ำได้
+split <- initial_split(data, prop = 0.8, 
+                       strata = "G3", breaks = 5)
+split
+## 2. สร้างชุดข้อมูล training
+train_data <- training(split)
+train_data[1,]
+## 3. สร้างชุดข้อมูล test data
+test_data <- testing(split)
+
+
+data$G3 %>% hist()
+```
+
+
+## 3. Train model แบบบ้าน ๆ 
+
+- เร่ิมจากเอา  training_data ที่สร้างขึ้นไปให้โมเดลเรียนรู้ จากนั้นดู performance ของโมเดลใน training data ว่ามันประมาณไหน รับได้มั้ย ถ้ารับไม่ได้เราอาจจะ fine-tune โมเดลเพิ่มเติม (ทำได้กับโมเดลส่วนใหญ่) หรืออาจจะต้องเปลี่ยนอัลกอริธึมใหม่ไปเลยถ้ามันห่วยจริง ๆ 
+
+- ในงานนี้เราจะใช้แค่ linear regression ธรรมดา
+
+- การเอา train data มาประมาณพารามิเตอร์ใน linear regression นั่นเอง
+
+- ใน linear regression รองรับตัวแปรอิสระทั้งแบบเชิงปริมาณ และจัดประเภท แต่ว่าถ้าเป็นตัวแปรแบบจัดประเภทผู้วิเคราะห์จะต้องแปลงให้เป็น dummy ก่อน
+
+- อย่างไรก็ตามผู้ใช้ R ไม่จำเป็นต้องสร้าง dummy variable เอง เพราะว่า R จะทำให้โดยอัตโนมัติเมื่อใช้ฟังก์ชัน `lm()`
+
+- สมัยโบราณฟังก์ชันสำหรับรัน linear regression `lm()` มันไม่รับ character แสดงว่าผู้วิเคราะห์จะต้องแปลงให้เป็นตัวแปรประเภทที่เรียกว่า factor ก่อน 
+
+```{r}
+names(train_data)
+train_data %>% names()
+## fit multiple regression กับ train_data ---> fitted model
+fit_lm <- lm(formula = G3 ~ . , data = train_data)
+fit_lm2 <- lm(formula = G3 ~ . , data = train_data %>% select(-G2))
+fit_lm3 <- lm(formula = G3 ~ . , data = train_data %>% select(-G2, -G1))
+
+## output ของกระบวนการ train model เรียกว่า model
+fit_lm
+```
+
+
+
+
+
+เราสามารถประเมินประสิทธิภาพของโมเดลบน training data ได้จากการพิจารณาดัชนีหรือตัวชี้วัดที่เรียกรวม ๆ ว่า bias ของโมเดล เช่น
+
+- R2 นิยามใน ML ค่ากำลังสองขอ correlation ระหว่างค่าจริงกับค่าทำนาย
+
+- RMSE (root mean square error)
+
+$$
+RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+$$
+
+```{r}
+dim(train_data)
+## หาค่าทำนายใน training data
+pred_train <- predict(fit_lm)
+pred_train2 <- predict(fit_lm2)
+pred_train3 <- predict(fit_lm3)
+
+train_data %>% 
+  bind_cols(pred_train = pred_train) %>% 
+  mutate(residual = G3 - pred_train) %>% 
+  mutate(res2 = residual^2) %>% 
+  summarise(SSE = sum(res2)) %>% 
+  mutate(MSE = SSE/314) %>% 
+  mutate(RMSE = sqrt(MSE))
+
+train_metric <- train_data %>% 
+  bind_cols(pred_train = pred_train,
+            pred_train2 = pred_train2,
+            pred_train3 = pred_train3) %>% 
+  summarise(cor_value = cor(G3, pred_train),
+            r2_train = cor_value^2,
+            rmse = sqrt(mean((G3 - pred_train)^2)))
+train_metric
+```
+
+
+## 4. Test Model
+
+- การทดสอบโมเดลจะทดสอบโดยใช้ชุดข้อมูลทดสอบ test data
+
+- การนำโมเดลที่ train แล้วไปทำนายหรือจำแนกข้อมูลใน test_data หรือชุดข้อมูลอื่นที่โมเดลไม่เคยเรียนรู้มาก่อน โครงสร้างของชุดข้อมูลที่จะนำเข้าใน `predict()` จะต้องเหมือนกับชุดข้อมูลที่ใช้ในการ train โมเดล
+
+```{r}
+pred_test <- predict(fit_lm, newdata = test_data)
+
+test_metric <- test_data %>% 
+  bind_cols(pred_test = pred_test) %>% 
+summarise(cor_value = cor(G3, pred_test),
+            r2_train = cor_value^2,
+            rmse = sqrt(mean((G3 - pred_test)^2)))
+
+train_metric %>% 
+  mutate(set = "train") %>% 
+  bind_rows(
+    test_metric %>% 
+      mutate(set = "test")
+  ) %>% 
+  ggplot(aes(x = set, y = rmse))+
+  geom_col()
+
+```
+
+
+## 5. อื่น ๆ 
+
+
+สมมุติว่าตอน train เราต้องการ standardized ค่าของตัวแปรอิสระเชิงปริมาณก่อนที่จะ train เราจะต้องทำแบบนี้
+
+```{r}
+train_data_standard <- train_data %>% 
+  mutate_if(is.numeric, scale)
+
+fit_lm_standard <- lm(formula = G3 ~ . , data = train_data_standard)
+
+## ตรวจสอบประสิทธิภาพใน test_data
+test_data_standard <- test_data %>% 
+  mutate_if(is.numeric, scale)
+
+pred_test <- predict(fit_lm_standard, newdata = test_data)
+```
+
+
+
+
+
+
+

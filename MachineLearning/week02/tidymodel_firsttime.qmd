@@ -1,0 +1,416 @@
+---
+title: "myfirst_tidymodel"
+format: html
+editor: visual
+---
+
+
+## 1. Importing data
+
+นำเข้าข้อมูลทั้งหมดใน R
+
+```{r}
+## install.packages("tidyverse")
+library(tidyverse)
+#read_csv()
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week02/student/student-mat.csv", delim = ";")
+glimpse(data, 70) ##  variable view
+data # data view
+```
+
+## 2. Data Splitting
+
+- แบ่งข้อมูลเป็น 2 ส่วน คือ training set และ test set
+
+- เราจะใช้ฟังก์ชันชื่อว่า `initial_split()` จากแพ็กเกจ `rsample` เพื่อแบ่งข้อมูล
+
+- ต้องใช้ร่วมกับฟังก์ชัน `training()` และ `testing()` เพื่อดึงข้อมูล training set และ test set ตามลำดับ
+
+```{r}
+## install.packages("rsample")
+library(rsample)
+
+## 1.สร้างตัวแบ่งข้อมูล การแบ่งแบบ simple random sampling (SRS)
+set.seed(123) ## กำหนดค่าเริ่มต้นของการสุ่มให้คงที่ เพื่อให้ผลลัพธ์ที่ได้สามารถทำซ้ำได้
+split <- initial_split(data, prop = 0.8)
+split
+## 2. สร้างชุดข้อมูล training
+train_data <- training(split)
+train_data[1,]
+## 3. สร้างชุดข้อมูล test data
+test_data <- testing(split)
+```
+
+- บางครั้ง distribution ของตัวแปรตามมันมีความเบ้ หรือมีความไม่สมดุลสูง การแบ่งแบบ SRS อาจจะทำให้ training set และ test set มีความไม่สมดุลกันได้
+
+- กระบวนการสุ่มแบบชั้นภูมิ (stratified sampling) จะช่วยให้การแบ่งข้อมูลมีความสมดุลมากขึ้น
+
+```{r}
+## 1.สร้างตัวแบ่งข้อมูล การแบ่งแบบ simple random sampling (SRS)
+set.seed(123) ## กำหนดค่าเริ่มต้นของการสุ่มให้คงที่ เพื่อให้ผลลัพธ์ที่ได้สามารถทำซ้ำได้
+split <- initial_split(data, prop = 0.8, 
+                       strata = "G3", breaks = 5)
+split
+## 2. สร้างชุดข้อมูล training
+train_data <- training(split)
+train_data[1,]
+## 3. สร้างชุดข้อมูล test data
+test_data <- testing(split)
+
+
+data$G3 %>% hist()
+```
+
+
+## 3. Job 1 Model Fitting and Evaluation
+
+- งานส่วนนี้เราจะเอา train_data และ test-data มาสร้างและประเมินผลโมเดลเฉย ๆ ยังไม่ได้มีการปรับแต่งโมเดล
+
+
+- การ fit และประเมินผลโมเดลที่ใช้ใน Job 1 นี้จะเรียกว่า train-test strategy เพราะเป็นกระบวนการที่เราสร้างโมเดลทำนายบน training data แล้วไปประเมินผลโมเดลบน test data ซึ่งเป็นข้อมูลที่โมเดลไม่เคยเห็นมาก่อน
+
+- มีการเปรียบเทียบระหว่าง train_data vs test_data เพื่อดูว่าโมเดลมี bias และ variance เท่าใด
+
+### 3.1 Model Specification
+
+```{r}
+library(tidymodels)
+tidymodels_prefer()
+## 3.1 การระบุโมเดล/อัลกอริทึมการเรียนรู้ที่ต้องการ ทำผ่าน parsnip
+## -- model specification
+lm_spec <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+lm_spec
+```
+
+### 3.2 Model Fitting
+
+```{r}
+lm_fit <- lm_spec %>% 
+  fit(G3 ~ ., data = train_data)
+lm_fit
+```
+
+สำหรับโมเดลกลุ่มที่เน้นการตีความ/แปลความหมายความสัมพันธ์ระหว่างตัวแปร โดยเฉพาะโมเดลกลุ่ม linear model เราสามารถใช้ฟังก์ชัน `extract_fit_engine()` เพื่อดึงเอา object ของโมเดลที่ถูกสร้างขึ้นมาได้
+
+```{r}
+lm_fit %>%  ## parsnip object
+  extract_fit_engine() %>%  ## lm object
+  summary() ## old fashion output
+
+library(broom)
+lm_fit %>%  ## parsnip object
+  extract_fit_engine() %>%  ## lm object
+  tidy() ## tibble output ซึ่งเชื่อมต่อกับ workflow ของ tidyverse ได้ดี
+
+lm_fit %>%  ## parsnip object
+  extract_fit_engine() %>%  ## lm object
+  glance() ## tibble output ซึ่งเชื่อมต่อกับ workflow ของ tidyverse ได้ดี
+
+lm_fit %>% 
+  augment(train_data) %>% 
+  ggplot(aes(x = .pred, y= .resid))+
+  geom_point()+
+  ggtitle("residual analysis")
+```
+
+
+
+### 3.3 Model Evaluation
+
+การประเมินประสิทธิภาพของโมเดลจะทำบน train_data vs test_data เพื่อประเมิน bias และ variance ของโมเดลที่สร้างขึ้น
+
+```{r}
+## 1. หาค่าทำนายของ y บน test_data ก่อน
+test_data %>% 
+  bind_cols(
+    predict(lm_fit, new_data = test_data)
+  ) %>% 
+  rename(pred_G3_lm = .pred) %>% 
+  ggplot(aes(x = G3, y = pred_G3_lm))+
+  geom_point()+
+  geom_abline(intercept = 0, slope = 1, linetype = 2)+
+  theme_light()+
+  coord_obs_pred()+
+  xlab("\n Actual G3")+
+  ylab("predicted value of G3 \n ")
+```
+
+
+
+```{r}
+## 2. เราจะประเมินประสิทธิภาพของโมเดลผ่าน metrices ต่าง ๆ บน test_data
+pred_test_data <- test_data %>% 
+  bind_cols(
+    predict(lm_fit, new_data = test_data)
+  ) %>% 
+  rename(pred_G3_lm = .pred) 
+
+my_metrices <- metric_set(yardstick::rmse, rsq, mae)
+
+pred_test_data %>% 
+  my_metrices(truth = G3, estimate = pred_G3_lm)
+```
+
+
+```{r}
+## 3. ประเมินประสิทธิภาพของโมเดลผ่าน metrices ต่าง ๆ บน train_data
+pred_train_data <- train_data %>% 
+  bind_cols(
+    predict(lm_fit, new_data = train_data)
+  ) %>% 
+  rename(pred_G3_lm = .pred) 
+
+my_metrices <- metric_set(yardstick::rmse, rsq, mae)
+
+pred_train_data %>% 
+  my_metrices(truth = G3, estimate = pred_G3_lm)
+```
+
+
+```{r}
+### สร้าง function สำหรับการประเมินผลโมเดล
+model_performance_cal <- function(my_data){
+
+pred_mydata <- my_data %>% 
+  bind_cols(
+    predict(lm_fit, new_data = my_data)
+  ) 
+ 
+my_metrices <- metric_set(yardstick::rmse, rsq, mae)
+
+metric_results <- pred_mydata %>% 
+  my_metrices(truth = G3, estimate = .pred)
+
+return(metric_results)
+}
+
+model_performance_cal(test_data) %>% 
+  mutate(set = "test_data") %>% 
+  bind_rows(
+    model_performance_cal(train_data) %>% 
+      mutate(set = "train_data")
+  ) %>% 
+  ggplot(aes(x = .metric, y = .estimate, fill = set))+
+  geom_col(position = "dodge")+
+  facet_wrap(~.metric, scale="free")
+```
+
+
+## Job 2 : Fit Regularized Regression (LASSO regression)
+
+วัตถุประสงค์
+
+พัฒนาโมเดลทำนาย G3 โดยใช้ข้อมูลทั้งหมดที่มี และกำหนดให้อัลกอริทึมการเรียนรู้ที่ใช้มี 2 ตัวได้แก่ linear regression (ols) และ lasso regression
+
+- สร้างและปรับแต่งโมเดลทั้งสองตัว
+
+- การเปรียบเทียบประสิทธิภาพของโมเดลทั้งสองบน test data
+
+
+## 2.1 data splitting
+
+แบ่งชุดข้อมูลออกเป็น 2 ส่วน ได้แก่ train_data และ test_data
+
+- train_data ใช้สำหรับสร้างโมเดลและปรับแต่ง hyperparameters
+
+- test_data ใช้สำหรับประเมินประสิทธิภาพของโมเดลที่สร้างขึ้น
+
+```{r}
+## install.packages("rsample")
+library(rsample)
+## 1.สร้างตัวแบ่งข้อมูล การแบ่งแบบ simple random sampling (SRS)
+set.seed(123) ## กำหนดค่าเริ่มต้นของการสุ่มให้คงที่ เพื่อให้ผลลัพธ์ที่ได้สามารถทำซ้ำได้
+split <- initial_split(data, prop = 0.8)
+split
+## 2. สร้างชุดข้อมูล training
+train_data <- training(split)
+## 3. สร้างชุดข้อมูล test data
+test_data <- testing(split)
+```
+
+
+## 2.2 Data Preprocessing
+
+การเตรียมข้อมูลเบื้องต้น (data preprocessing) เป็นขั้นตอนสำคัญที่มีผลต่อประสิทธิภาพของโมเดลที่สร้างขึ้น
+
+งานนี้เราจะข้าม data preprocessing ไปก่อน
+
+## 2.3 Model Specification
+
+https://www.tidymodels.org/find/parsnip/ 
+
+
+ในงานนี้เราจะกำหนดโมเดล 3 ตัว ดังนี้
+
+```{r}
+## 1. ols regression using lm
+lm_spec <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+
+## 2. ols regression using glm
+glm_spec <- linear_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("regression")
+
+## 3. lasso regression using glmnet
+lasso_spec <- linear_reg(penalty = tune(),  ## tuning hyperparameter
+                         mixture = 1) %>%  ## lasso regression
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+```
+## 2.4 Model Fitting and Hyperparameter Tuning
+
+```{r}
+## สร้าง CV ก่อน
+set.seed(123)
+my_folds <- vfold_cv(train_data, v = 5, repeats = 3)
+## ในแต่ละ fold ถูกแบ่งออกเป็น training set และ validation set
+
+## สร้าง grid space ของ penalty ใน lasso regression
+lasso_grid <- grid_regular(penalty(range = c(-3,0)), 
+                                   levels = 10)
+
+
+## สร้าง workflow สำหรับแต่ละโมเดล
+lm_wf <- workflow() %>% 
+  add_formula(G3 ~ .) %>% 
+  add_model(lm_spec)
+
+glm_wf <- workflow() %>%
+  add_formula(G3 ~ .) %>% 
+  add_model(glm_spec)
+
+lasso_wf <- workflow() %>%
+  add_formula(G3 ~ .) %>% 
+  add_model(lasso_spec)
+```
+
+ขั้นต่อมาเราจะ fit model ทั้ง 3 บน train_data ด้วยกระบวนการ cross-validation (CV)
+
+```{r}
+lm_fit_resample <- lm_wf %>% 
+  fit_resamples(
+    resamples = my_folds,
+    metrics = metric_set(rmse, rsq, mae),
+    control = control_resamples(save_pred = TRUE)
+  )
+
+lm_fit_resample %>% collect_metrics()
+```
+
+
+```{r}
+glm_fit_resample <- glm_wf %>% 
+  fit_resamples(
+    resamples = my_folds,
+    metrics = metric_set(rmse, rsq, mae),
+    control = control_resamples(save_pred = TRUE)
+  )
+
+glm_fit_resample %>% collect_metrics()
+```
+
+
+
+```{r}
+lasso_tuned <- lasso_wf %>% 
+  tune_grid(
+    resamples = my_folds,
+    grid = lasso_grid,
+    metrics = metric_set(rmse, rsq, mae),
+    control = control_grid(save_pred = TRUE)
+  )
+
+lasso_performance_tuned <- lasso_tuned %>% 
+  collect_metrics() ## รายงาน performance ของโมเดลในแต่ละ grid จำแนกตาม metric ที่กำหนดไว้ด้วย
+```
+
+
+
+```{r fig.width = 9, fig.height = 3}
+lasso_performance_tuned %>% 
+  ggplot(aes(x = penalty, y = mean))+ ## สร้าง canvas และกำหนดการ mapping ระหว่างตัวแปรกับ visual elements
+  geom_line()+
+  geom_point()+
+  theme_bw() +
+  facet_wrap(~.metric, scale = "free_y")
+```
+```{r}
+lasso_tuned  %>% 
+  show_best(metric = "rmse", n = 3)
+```
+
+
+## 2.5 Model Evaluation on test data
+
+การที่เราจะเอาโมเดลไปประเมินบน test data ได้เราจะต้องทำการ fit model ใหม่บน training data ก่อน
+
+```{r}
+lm_final_fit <- lm_wf %>% 
+  last_fit(split)
+  
+lm_test_metrics <- lm_final_fit %>% collect_metrics() ## test data performance of lm
+```
+
+
+
+```{r}
+final_lasso_wf <- lasso_wf %>% 
+  finalize_workflow(
+    select_best(lasso_tuned, metric = "rmse")
+  )
+
+lasso_final_fit <- final_lasso_wf %>% 
+  last_fit(split)
+
+lasso_test_metrics <- lasso_final_fit %>% collect_metrics() ## test data performance
+```
+
+
+
+
+
+
+```{r}
+lm_test_metrics %>% 
+  mutate(model = "lm") %>% 
+  bind_rows(
+    lasso_test_metrics %>% 
+      mutate(model = "lasso")
+  ) %>% 
+  ggplot(aes(x = .metric, y = .estimate, fill = model))+
+  geom_col(position = "dodge")+ ## แผนภูมิแท่งเปรียบเทียบ
+  facet_wrap(~.metric, scale="free")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

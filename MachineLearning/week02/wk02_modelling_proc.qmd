@@ -1038,7 +1038,7 @@ ggplot(rmse_results, aes(x = lambda)) +
 
 - การทำ k-Fold CV ซ้ำ (repeated k-Fold CV) สามารถเพิ่มความแม่นยำของการประเมินผล เช่น ใช้ 10-Fold CV ทำซ้ำ 5-10 ครั้งเพื่อเพิ่มความน่าเชื่อถือ
 
-## Model Workflow in Tidymodels 
+## Model Workflow in Tidymodels {.smaller}
 
 - ป้องกันความผิดพลาดเชิงกระบวนการ เพราะเป็นการ wrapping ทั้งส่วน data preprocessing และ model fitting ใน training data ไว้ใน workflow เดียวกัน ลดความเสี่ยงการเกิด data leakage โดยไม่ได้ตั้งใจ
 
@@ -1047,6 +1047,9 @@ ggplot(rmse_results, aes(x = lambda)) +
 - ช่วยให้ syntax สามารถ reproducible ได้ง่าย
 
 - สนับสนุนทั้งด้านการวิเคราะห์/ปรับแต่งและประเมินผลโมเดล (CV, resampling, tuning) การนำโมเดลไปใช้ในอนาคต และการบำรุงรักษาโมเดล
+
+## Model Workflow in Tidymodels {.smaller}
+
 
 ![](https://www.tmwr.org/premade/proper-workflow.svg)
 

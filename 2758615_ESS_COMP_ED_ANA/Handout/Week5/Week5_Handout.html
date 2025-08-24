@@ -6,18 +6,18 @@
 <script src="Week5_Handout_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="Week5_Handout_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Week5_Handout_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="Week5_Handout_files/libs/quarto-html/quarto-syntax-highlighting-2577ed9d2f9b020f727002863c1eb492.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.17">
-
-  <meta name="author" content="Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn">
-  <meta name="dcterms.date" content="2025-08-17">
-  <title>Week 5&nbsp;: Exploratory Data Analysis</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="Week5_Handout_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="Week5_Handout_files/libs/revealjs/dist/reveal.css">
-  <style>
+<link href="Week5_Handout_files/libs/quarto-html/quarto-syntax-highlighting-2577ed9d2f9b020f727002863c1eb492.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.17">
+<meta name="author" content="Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn">
+<meta name="dcterms.date" content="2025-08-24">
+<title>Week 5&nbsp;: Exploratory Data Analysis</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+<link rel="stylesheet" href="Week5_Handout_files/libs/revealjs/dist/reset.css">
+<link rel="stylesheet" href="Week5_Handout_files/libs/revealjs/dist/reveal.css">
+<style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -95,13 +95,13 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="Week5_Handout_files/libs/revealjs/dist/theme/quarto-cb1ed36e8cdf59da670ef55b215fa2c0.css">
-  <link rel="stylesheet" href="my_css.css">
-  <link href="Week5_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="Week5_Handout_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-  <style type="text/css">
+<link rel="stylesheet" href="Week5_Handout_files/libs/revealjs/dist/theme/quarto-cb1ed36e8cdf59da670ef55b215fa2c0.css">
+<link rel="stylesheet" href="my_css.css">
+<link href="Week5_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+<link href="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+<link href="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+<link href="Week5_Handout_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+<style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -188,7 +188,7 @@
       margin-right: 0; 
     }
   </style>
-  <style>
+<style>
   #title-slide .title {
     font-size: 1.5em;
     color: #C5705D;
@@ -199,8 +199,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Week 5&nbsp;: Exploratory Data Analysis</h1>
+<section id="title-slide" class="quarto-title-block center"><h1 class="title">Week 5&nbsp;: Exploratory Data Analysis</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -208,51 +207,48 @@
 Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn 
 </div>
         <p class="quarto-title-affiliation">
-            </p><p>Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University</p>
-          <p></p>
+            </p>
+<p>Department of Educational Research and Psychology <br> Faculty of Education Chulalongkorn University</p>
+          
     </div>
 </div>
 
-  <p class="date">2025-08-17</p>
-</section>
-<section id="data-science-workflow" class="slide level2">
-<h2>Data Science Workflow</h2>
+  <p class="date">2025-08-24</p>
+</section><section id="data-science-workflow" class="slide level2"><h2>Data Science Workflow</h2>
 <p><img data-src="https://r4ds.had.co.nz/diagrams/data-science-explore.png"></p>
 <p><img data-src="https://datakruroo.github.io/IPST/PPT/img/typeofanalytic.png" style="width:70.0%"></p>
-</section>
-<section id="exploratory-data-analysis-eda" class="slide level2 smaller">
-<h2>Exploratory Data Analysis (EDA)</h2>
+</section><section id="exploratory-data-analysis-eda" class="slide level2 smaller"><h2>Exploratory Data Analysis (EDA)</h2>
 <div style="font-size:90%;">
 <p>เป็นกระบวนการวิเคราะห์สำรวจข้อมูลเบื้องต้น โดยมีวัตถุประสงค์หลักเพื่อ</p>
 <ul>
-<li><p><strong>ทำความเข้าใจข้อมูล</strong> ตรวจสอบผู้เรียนที่มีลักษณะเฉพาะ</p>
+<li>
+<p><strong>ทำความเข้าใจข้อมูล</strong> ตรวจสอบผู้เรียนที่มีลักษณะเฉพาะ</p>
 <ul>
 <li><p>การสำรวจการแจกแจงของข้อมูล (distribution)</p></li>
 <li><p>ตรวจสอบคุณภาพข้อมูล เช่น ค่าสูญหาย ค่าผิดปกติ …</p></li>
 <li><p>การเปรียบเทียบข้อมูล (comparison)</p></li>
 <li><p>การสำรวจแนวโน้มของข้อมูล (trend)</p></li>
-</ul></li>
-<li><p><strong>สำรวจ/ค้นหารูปแบบความสัมพันธ์</strong></p>
+</ul>
+</li>
+<li>
+<p><strong>สำรวจ/ค้นหารูปแบบความสัมพันธ์</strong></p>
 <ul>
 <li><p>การเปรียบเทียบข้อมูล (comparison)</p></li>
 <li><p>การวิเคราะห์ความสัมพันธ์ (relationship)</p></li>
 <li><p>จัดหมวดหมู่ข้อมูล (clustering)</p></li>
 <li><p>ลดมิติข้อมูล สำรวจโครงสร้างแฝง (dimensionality reduction)</p></li>
-</ul></li>
+</ul>
+</li>
 <li><p><strong>สนับสนุนการตั้งสมมุติฐานเพื่อนำไปสู่การวิเคราะห์เพื่อตอบวัตถุประสงค์หลักของโครงการ</strong> เช่น การวิเคราะห์เชิงวินิจฉัย หรือการวิเคราะห์เชิงทำนาย</p></li>
 </ul>
 </div>
-</section>
-<section id="exploratory-data-analysis-eda-1" class="slide level2 smaller">
-<h2>Exploratory Data Analysis (EDA)</h2>
+</section><section id="exploratory-data-analysis-eda-1" class="slide level2 smaller"><h2>Exploratory Data Analysis (EDA)</h2>
 <ul>
 <li><p>Statistical Approaches – มีความเป็นปรนัยสูง แต่ขาดการบรรยายภาพรวมของข้อมูลได้อย่างครอบคลุม และในบางกรณีหากข้อมูลไม่เป็นไปตามข้อตกลงเบื้องต้น ผลการวิเคราะห์ที่ได้อาจมีความคลาดเคลื่อน</p></li>
 <li><p>Graphical Approaches (Data Visualization) – ให้สารสนเทศที่เป็นสภาพจริงของข้อมูลมากกว่า แต่อาจขาดความเป็นปรนัยในเชิงของการตีความหมายของผู้รับสาร เพราะไม่ได้มีการแสดงผลในเชิงปริมาณที่ชัดเจน</p></li>
 </ul>
 
-<img data-src="img/levels.png" class="r-stretch"></section>
-<section id="eda-descriptivediagnostic" class="slide level2">
-<h2>EDA ↔︎ Descriptive–Diagnostic</h2>
+<img data-src="img/levels.png" class="r-stretch"></section><section id="eda-descriptivediagnostic" class="slide level2"><h2>EDA ↔︎ Descriptive–Diagnostic</h2>
 <p><br></p>
 <div style="font-size:26px; line-height:1.2">
 <table class="caption-top">
@@ -261,13 +257,11 @@ Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn
 <col style="width: 33%">
 <col style="width: 33%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th><strong>กิจกรรม</strong></th>
 <th><strong>ประเภท</strong></th>
 <th><strong>หมายเหตุ</strong></th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td>Summary stats (mean, var)</td>
@@ -312,13 +306,9 @@ Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn
 </tbody>
 </table>
 </div>
-</section>
-<section id="eda-vs-cda" class="slide level2">
-<h2>EDA vs CDA</h2>
+</section><section id="eda-vs-cda" class="slide level2"><h2>EDA vs CDA</h2>
 
-<img data-src="img/EDA.png" style="width:40.0%" class="r-stretch"></section>
-<section id="ขนตอนการทำ-eda" class="slide level2">
-<h2>ขั้นตอนการทำ EDA</h2>
+<img data-src="img/EDA.png" style="width:40.0%" class="r-stretch"></section><section id="ขนตอนการทำ-eda" class="slide level2"><h2>ขั้นตอนการทำ EDA</h2>
 <div style="font-size:80%;">
 <blockquote>
 <p>“There are no routine statistical questions, only questionable statistical routines.” — <a href="https://en.wikipedia.org/wiki/David_Cox_(statistician)">Sir David Roxbee Cox</a></p>
@@ -327,18 +317,14 @@ Assistant Prof.&nbsp;Siwachoat Srisuttiyakorn
 <p>EDA is not a formal process with a strict set of rules. More than anything, EDA is a state of mind. During the initial phases of EDA you should feel free to investigate every idea that occurs to you. Some of these ideas will pan out, and some will be dead ends. As your exploration continues, you will home in on a few particularly productive areas that you’ll eventually write up and communicate to others. (Wickham &amp; Grolemund, 2023)</p>
 </blockquote>
 </div>
-</section>
-<section id="eda-vs-statistical-problem-process" class="slide level2 smaller">
-<h2>EDA vs Statistical Problem Process</h2>
+</section><section id="eda-vs-statistical-problem-process" class="slide level2 smaller"><h2>EDA vs Statistical Problem Process</h2>
 <ul>
 <li><p>ทำความเข้าใจข้อมูลเบื้องต้นก่อนดำเนินการวิเคราะห์</p></li>
 <li><p>ปรับแต่งคำถาม/สมมุติฐานให้เหมาะสม</p></li>
 <li><p>เป็นการวิเคราะห์เบื้องต้นของการวิเคราะห์เชิงยืนยัน</p></li>
 </ul>
 
-<img data-src="https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png" class="r-stretch"></section>
-<section id="กจกรรม-anscombe-dataset-1" class="slide level2">
-<h2>กิจกรรม: Anscombe dataset (1)</h2>
+<img data-src="https://datakruroo.github.io/diagnostic%20analytics/img/ASA_framwork1.png" class="r-stretch"></section><section id="กจกรรม-anscombe-dataset-1" class="slide level2"><h2>กิจกรรม: Anscombe dataset (1)</h2>
 <div style="font-size: 65%;">
 <p>ชุดข้อมูล <code>anscombe</code> ประกอบด้วยข้อมูลของตัวแปรตาม <code>y</code> กับตัวแปรอิสระ <code>x</code> จำนวน 4 ชุด วัตถุประสงค์ของการวิเคราะห์นี้คือเพื่อวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม y กับตัวแปรอิสระ x ของข้อมูลแต่ละชุด</p>
 <div class="cell">
@@ -375,9 +361,7 @@ $ y4 &lt;dbl&gt; 6.58, 5.76, 7.71, 8.84, 8.47, 7.04, 5.25, 12.50, 5.56, 7.91, 6.
 </div>
 </div>
 </div>
-</section>
-<section id="eda-anscombe-dataset-2" class="slide level2">
-<h2>EDA: Anscombe dataset (2)</h2>
+</section><section id="eda-anscombe-dataset-2" class="slide level2"><h2>EDA: Anscombe dataset (2)</h2>
 <div style="font-size: 65%;">
 <ol start="2" type="1">
 <li>ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระของข้อมูลแต่ละชุดด้วย correlation</li>
@@ -392,7 +376,8 @@ $ y4 &lt;dbl&gt; 6.58, 5.76, 7.71, 8.84, 8.47, 7.04, 5.25, 12.50, 5.56, 7.91, 6.
 </div>
 </div>
 <ol start="3" type="1">
-<li>ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression <span class="math inline">\(y_i = \beta_0 + \beta_1x + \epsilon_i\)</span></li>
+<li>ลองวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระในข้อมูลแต่ละชุดด้วย simple regression <span class="math inline">\(y_i = \beta_0 + \beta_1x + \epsilon_i\)</span>
+</li>
 </ol>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -433,41 +418,37 @@ $Dataset4
 </div>
 </div></div>
 </div>
-</section>
-<section id="eda-anscombe-dataset-3" class="slide level2 hidden">
-<h2>EDA: Anscombe dataset (3)</h2>
+</section><section id="eda-anscombe-dataset-3" class="slide level2 hidden"><h2>EDA: Anscombe dataset (3)</h2>
 
-<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
-<section id="eda-anscombe-dataset-4" class="slide level2">
-<h2>EDA: Anscombe dataset (4)</h2>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section><section id="eda-anscombe-dataset-4" class="slide level2"><h2>EDA: Anscombe dataset (4)</h2>
 <blockquote>
 <p>“Far better an approximate answer to the right question, which is often vague, than an exact answer to the wrong question, which can always be made precise.” <br> — <a href="https://en.wikipedia.org/wiki/John_Tukey">John Tukey</a></p>
 </blockquote>
-</section>
-<section id="การวเคราะหทเปนไปได" class="slide level2">
-<h2>การวิเคราะห์ที่เป็นไปได้</h2>
+</section><section id="การวเคราะหทเปนไปได" class="slide level2"><h2>การวิเคราะห์ที่เป็นไปได้</h2>
 <div style="font-size: 80%;">
 <ul>
-<li><p>การสํารวจโครงสร้างชุดข้อมูล เช่น <code>glimpse()</code>, <code>str()</code>, <code>head()</code>, <code>tail()</code></p></li>
-<li><p>สำรวจสภาพ/การแจกแจงของข้อมูล</p>
+<li><p>การสํารวจโครงสร้างชุดข้อมูล เช่น <code>glimpse()</code>, <code><a href="https://rdrr.io/r/utils/str.html">str()</a></code>, <code><a href="https://rdrr.io/r/utils/head.html">head()</a></code>, <code><a href="https://rdrr.io/r/utils/head.html">tail()</a></code></p></li>
+<li>
+<p>สำรวจสภาพ/การแจกแจงของข้อมูล</p>
 <ul>
 <li>สถิติพื้นฐาน เช่น การแจกแจงความถี่ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน …</li>
 <li>ทัศนภาพข้อมูล เช่น แผนภูมิแท่ง ฮิสโทแกรม แผนภาพความหนาแน่น …</li>
-</ul></li>
-<li><p>เปรียบเทียบข้อมูล/สำรวจความสัมพันธ์ระหว่างตัวแปร (Covariation/Relation)</p>
+</ul>
+</li>
+<li>
+<p>เปรียบเทียบข้อมูล/สำรวจความสัมพันธ์ระหว่างตัวแปร (Covariation/Relation)</p>
 <ul>
 <li>เปรียบเทียบการแจกแจงของข้อมูล ค่าเฉลี่ย แผนภาพกล่อง</li>
 <li>สหสัมพันธ์ แผนภาพการกระจาย</li>
 <li>การวิเคราะห์การถดถอย</li>
 <li>Decision tree หรืออื่น ๆ</li>
-</ul></li>
+</ul>
+</li>
 <li><p>การวิเคราะห์จัดกลุ่ม เช่น K-means clustering, Hierarchical clustering, …</p></li>
 <li><p>การลดมิติข้อมูล เช่น PCA, PLS หรือ t-SNE</p></li>
 </ul>
 </div>
-</section>
-<section id="ชดขอมลทใชเปนตวอยาง" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
+</section><section id="ชดขอมลทใชเปนตวอยาง" class="slide level2" data-auto-animate="true"><h2 data-id="quarto-animate-title">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
 <div style="font-size: 80%;">
 <p>เนื้อหาส่วนนี้จะใช้ชุดข้อมูล <code>learning_data.csv</code> เป็นชุดข้อมูลตัวอย่าง</p>
 <p>วัตถุประสงค์หลักของการวิเคราะห์คือ</p>
@@ -478,9 +459,7 @@ $Dataset4
 <li><p>สามารถจัดหมวดหมู่นักเรียนตามลักษณะของการเรียนรู้ได้หรือไม่ แต่ละกลุ่มจะมีลักษณะเป็นอย่างไร</p></li>
 </ol>
 </div>
-</section>
-<section id="ชดขอมลทใชเปนตวอยาง-1" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
+</section><section id="ชดขอมลทใชเปนตวอยาง-1" class="slide level2" data-auto-animate="true"><h2 data-id="quarto-animate-title">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
 <div style="font-size: 80%;">
 <p>เนื้อหาส่วนนี้จะใช้ชุดข้อมูล <code>learning_data.csv</code> เป็นชุดข้อมูลตัวอย่าง</p>
 <p>วัตถุประสงค์หลักของการวิเคราะห์คือ</p>
@@ -495,9 +474,7 @@ $Dataset4
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb7-1" class="hljs-ln-code"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section>
-<section id="ชดขอมลทใชเปนตวอยาง-2" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
+</section><section id="ชดขอมลทใชเปนตวอยาง-2" class="slide level2" data-auto-animate="true"><h2 data-id="quarto-animate-title">ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
 <div style="font-size: 80%;">
 <p>เนื้อหาส่วนนี้จะใช้ชุดข้อมูล <code>learning_data.csv</code> เป็นชุดข้อมูลตัวอย่าง</p>
 <p>วัตถุประสงค์หลักของการวิเคราะห์คือ</p>
@@ -514,9 +491,7 @@ $Dataset4
 <span id="cb8-3" class="hljs-ln-code"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"learning_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section>
-<section id="ชดขอมลทใชเปนตวอยาง-3" class="slide level2 smaller" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">0. ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
+</section><section id="ชดขอมลทใชเปนตวอยาง-3" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">0. ชุดข้อมูลที่ใช้เป็นตัวอย่าง</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb9-1" class="hljs-ln-code"><a href=""></a><span class="do">## print some of data</span></span>
 <span id="cb9-2" class="hljs-ln-code"><a href=""></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -539,9 +514,7 @@ $Dataset4
 #   learning_performance &lt;dbl&gt;, cheat_index &lt;dbl&gt;</code></pre>
 </div>
 </div>
-</section>
-<section id="สำรวจโครงสรางชดขอมล" class="slide level2">
-<h2>1. สำรวจโครงสร้างชุดข้อมูล</h2>
+</section><section id="สำรวจโครงสรางชดขอมล" class="slide level2"><h2>1. สำรวจโครงสร้างชุดข้อมูล</h2>
 <div style="font-size: 80%;">
 <ul>
 <li><p>ชุดข้อมูลนี้มีตัวแปรกี่ตัว/มีหน่วยข้อมูลกี่หน่วย หน่วยข้อมูลเป็นอะไร?</p></li>
@@ -569,9 +542,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 </div>
 </div>
 </div>
-</section>
-<section id="สำรวจโครงสรางชดขอมล-1" class="slide level2">
-<h2>1. สำรวจโครงสร้างชุดข้อมูล</h2>
+</section><section id="สำรวจโครงสรางชดขอมล-1" class="slide level2"><h2>1. สำรวจโครงสร้างชุดข้อมูล</h2>
 <div style="font-size: 70%;">
 <p>เมื่อพิจารณาสถานะการเก็บค่าของตัวแปรพบว่าตัวแปรเชิงปริมาณทั้งหมดมีการเก็บค่าแบบ <code>dbl</code> ซึ่งเหมาะสมแล้ว อย่างไรก็ตามตัวแปรภูมิหลังได้แก่ <code>gender</code> และ <code>department</code> มีการเก็บค่าเป็น <code>chr</code> อยู่ซึ่งควรเปลี่ยนเป็น <code>fct</code> และเมื่อพิจารณาชุดข้อมูลพบว่าจัดเก็บอยู่ในลักษณะ tidy data แล้วไม่จำเป็นต้องมีการจัดระเบียบอะไรเพิ่มเติม ยกเว้นจะมีวัตถุประสงค์อื่น ๆ จะแสดงให้เห็นในส่วนต่อไป</p>
 <p>คำสั่งด้านล่างแสดงการเปลี่ยนสถานะของ <code>gender</code> และ <code>department</code> เป็น <code>fct</code> ตัวอย่างด้านล่างเลือกใช้ฟังก์ชัน <code>mutate_if()</code> เพื่อแปลงตัวแปร <code>chr</code> ทั้งสองตัวพร้อมกัน จะได้ไม่ต้องเขียนคำสั่งหลายบรรทัด</p>
@@ -595,9 +566,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 </div>
 </div>
 </div>
-</section>
-<section id="ปญหาในการเรยนของนกเรยนหองนมอะไรบาง" class="slide level2 smaller">
-<h2>2. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง?</h2>
+</section><section id="ปญหาในการเรยนของนกเรยนหองนมอะไรบาง" class="slide level2 smaller"><h2>2. ปัญหาในการเรียนของนักเรียนห้องนี้มีอะไรบ้าง?</h2>
 <div style="font-size: 80%;">
 <ul>
 <li><p>นิสิตคิดว่ามีตัวแปรอะไรบ้างที่น่าจะเกี่ยวข้องกับการวิเคราะห์เพื่อตอบคำถามนี้</p></li>
@@ -628,17 +597,17 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <ul>
 <li><p><strong>การแจกแจงความถี่</strong></p></li>
 <li><p><strong>ค่าสถิติพื้นฐาน</strong> เช่น ค่าเฉลี่ย มัธยฐาน ส่วนเบี่ยงเบนมาตรฐาน ค่าต่ำสุด สูงสุด และ quantile</p></li>
-<li><p><strong>แผนภาพต่าง ๆ</strong> เช่น</p>
+<li>
+<p><strong>แผนภาพต่าง ๆ</strong> เช่น</p>
 <ul>
 <li>Bar chart</li>
 <li>Histogram/Density plot</li>
 <li>Boxplot</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 </div>
-</section>
-<section id="การแจกแจงความถ" class="slide level2">
-<h2>2.1 การแจกแจงความถี่</h2>
+</section><section id="การแจกแจงความถ" class="slide level2"><h2>2.1 การแจกแจงความถี่</h2>
 <div style="font-size: 80%;">
 <p>การแจกแจงความถี่จำแนกได้ 2 ลักษณะ คือการแจกแจงความถี่สำหรับตัวแปรจัดประเภท และการแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ</p>
 <ul>
@@ -646,27 +615,24 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <li><p>การแจกแจงความถี่สำหรับตัวแปรเชิงปริมาณ</p></li>
 </ul>
 </div>
-</section>
-<section id="การแจกแจงความถตวแปรจดประเภท" class="slide level2">
-<h2>การแจกแจงความถี่ตัวแปรจัดประเภท</h2>
+</section><section id="การแจกแจงความถตวแปรจดประเภท" class="slide level2"><h2>การแจกแจงความถี่ตัวแปรจัดประเภท</h2>
 <div style="font-size: 80%;">
 <ul>
-<li><code>summary()</code></li>
-<li><code>table()</code></li>
+<li><code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code></li>
+<li><code><a href="https://rdrr.io/r/base/table.html">table()</a></code></li>
 <li><code>count()</code></li>
-<li><code>barplot()</code></li>
+<li><code><a href="https://rdrr.io/r/graphics/barplot.html">barplot()</a></code></li>
 <li><code>ggplot(aes(x))+geom_bar()</code></li>
 </ul>
 </div>
-</section>
-<section id="การแจกแจงความถของตวแปรเชงปรมาณ" class="slide level2">
-<h2>การแจกแจงความถี่ของตัวแปรเชิงปริมาณ</h2>
+</section><section id="การแจกแจงความถของตวแปรเชงปรมาณ" class="slide level2"><h2>การแจกแจงความถี่ของตัวแปรเชิงปริมาณ</h2>
 <div style="font-size: 70%;">
 <p>การแจกแจงความถี่ของตัวแปรเชิงปริมาณ โดยปกติมักจะต้องมีการแบ่งข้อมูลของตัวแปรเชิงปริมาณออกเป็นช่วงย่อยเรียกว่า อันตรภาคชั้น (class interval) จากนั้นจึงดำเนินการแจงนับจำนวนข้อมูลในแต่ละอันตรภาคชั้น</p>
 <ul>
-<li><code>summary()</code></li>
-<li>ใช้ <code>cut()</code> ร่วมกับ <code>summary()</code>, <code>table()</code> หรือ <code>count()</code></li>
-<li><code>hist()</code></li>
+<li><code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code></li>
+<li>ใช้ <code><a href="https://rdrr.io/r/base/cut.html">cut()</a></code> ร่วมกับ <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, <code><a href="https://rdrr.io/r/base/table.html">table()</a></code> หรือ <code>count()</code>
+</li>
+<li><code><a href="https://rdrr.io/r/graphics/hist.html">hist()</a></code></li>
 <li><code>ggplot(aes(x))+geom_histogram()</code></li>
 <li><code>ggplot(aes(x))+geom_density()</code></li>
 </ul>
@@ -694,9 +660,8 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 </div>
 </div>
 </div>
-</section>
-<section id="แนะนำ-library-patchwork" class="slide level2">
-<h2>แนะนำ <a href="https://patchwork.data-imaginist.com/">library-patchwork</a></h2>
+</section><section id="แนะนำ-library-patchwork" class="slide level2"><h2>แนะนำ <a href="https://patchwork.data-imaginist.com/">library-patchwork</a>
+</h2>
 <div style="font-size: 60%;">
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -720,20 +685,17 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <span id="cb16-13"><a href=""></a>p1<span class="sc">/</span>p2 <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
-<figure>
-<p><img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+<figure><p><img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
 </div>
-</section>
-<section id="สถตพนฐาน" class="slide level2 smaller">
-<h2>2.2 สถิติพื้นฐาน</h2>
+</section><section id="สถตพนฐาน" class="slide level2 smaller"><h2>2.2 สถิติพื้นฐาน</h2>
 <ul>
-<li><p><code>summary()</code> ใช้แจกแจงความถี่และคำนวณค่าสถิติพื้นฐาน</p></li>
-<li><p><code>summarise()</code> ของ library-dplyr โดยใช้ร่วมกับฟังก์ชันที่เกี่ยวข้อง เช่น <code>mean()</code>, <code>sd()</code>, <code>quantile()</code>, <code>median()</code>, <code>min()</code> และ <code>max()</code></p></li>
+<li><p><code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> ใช้แจกแจงความถี่และคำนวณค่าสถิติพื้นฐาน</p></li>
+<li><p><code>summarise()</code> ของ library-dplyr โดยใช้ร่วมกับฟังก์ชันที่เกี่ยวข้อง เช่น <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>, <code><a href="https://rdrr.io/r/stats/quantile.html">quantile()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>, <code><a href="https://rdrr.io/r/base/Extremes.html">min()</a></code> และ <code><a href="https://rdrr.io/r/base/Extremes.html">max()</a></code></p></li>
 <li><p><code>describe()</code> ของ library-psych</p></li>
 <li><p><code>skim()</code> ของ library-skimr</p></li>
 </ul>
@@ -756,9 +718,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <span id="cb17-16"><a href=""></a><span class="fu">library</span>(skimr)</span>
 <span id="cb17-17"><a href=""></a><span class="fu">skim</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="code-example-สำรวจการแจกแจง" class="slide level2 smaller">
-<h2>2.3 Code Example: สำรวจการแจกแจง</h2>
+</section><section id="code-example-สำรวจการแจกแจง" class="slide level2 smaller"><h2>2.3 Code Example: สำรวจการแจกแจง</h2>
 <p>ตัวอย่างต่อไปนี้แสดงการสำรวจข้อมูลด้วยการแจกแจงความถี่และสถิติพื้นฐานในชุดข้อมูล <code>learning_data.csv</code></p>
 <ul>
 <li>สำรวจค่าสูญหายคร่าว ๆ</li>
@@ -784,9 +744,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 11 learning_performance      0    0    </code></pre>
 </div>
 </div>
-</section>
-<section id="code-example-สำรวจการแจกแจง-1" class="slide level2 smaller">
-<h2>2.3 Code Example: สำรวจการแจกแจง</h2>
+</section><section id="code-example-สำรวจการแจกแจง-1" class="slide level2 smaller"><h2>2.3 Code Example: สำรวจการแจกแจง</h2>
 <ul>
 <li>แจกแจงความถี่ตัวแปรเชิงปริมาณ</li>
 </ul>
@@ -801,9 +759,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <span id="cb20-8"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>variable, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="do">## แบ่ง panel ตามตัวแปร</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section>
-<section id="code-example-สำรวจการแจกแจง-2" class="slide level2 smaller">
-<h2>2.3 Code Example: สำรวจการแจกแจง</h2>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section><section id="code-example-สำรวจการแจกแจง-2" class="slide level2 smaller"><h2>2.3 Code Example: สำรวจการแจกแจง</h2>
 <ul>
 <li>สร้างตารางสถิติพื้นฐาน</li>
 </ul>
@@ -836,9 +792,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 </div>
 </div>
 <p>ผลการสำรวจข้างต้นให้สารสนเทศอะไร และนำไปสู่การดำเนินการอะไรได้บ้างในการวิเคราะห์ข้อมูลเพื่อตอบวัตถุประสงค์หลัก</p>
-</section>
-<section id="code-example-สำรวจการแจกแจง-3" class="slide level2 smaller">
-<h2>2.3 Code Example: สำรวจการแจกแจง</h2>
+</section><section id="code-example-สำรวจการแจกแจง-3" class="slide level2 smaller"><h2>2.3 Code Example: สำรวจการแจกแจง</h2>
 <ul>
 <li>แจกแจงความถี่ตัวแปรจัดประเภท</li>
 </ul>
@@ -854,19 +808,14 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <span id="cb23-9"><a href=""></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
-<section id="วางแผนการสำรวจปญหาในการเรยนของนกเรยน" class="slide level2">
-<h2>2.4 วางแผนการสำรวจปัญหาในการเรียนของนักเรียน</h2>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section><section id="วางแผนการสำรวจปญหาในการเรยนของนกเรยน" class="slide level2"><h2>2.4 วางแผนการสำรวจปัญหาในการเรียนของนักเรียน</h2>
 <ul>
 <li><p>ต้องใช้ตัวแปรอะไรบ้างในการวิเคราะห์</p></li>
 <li><p>ข้อมูลของตัวแปรที่ดำเนินการวิเคราะห์มีสภาพเป็นอย่างไร มีข้อสังเกตหรือปัญหาอะไรหรือไม่</p></li>
 <li><p>วางแผนว่าจะสำรวจข้อมูลโดยใช้การวิเคราะห์อะไร</p></li>
 <li><p>ต้องมีการจัดกระทำข้อมูลอะไรเพิ่มเติมหรือไม่ อย่างไร</p></li>
 <li><p>ผลการสำรวจที่ได้เป็นอย่างไร</p></li>
-</ul>
-</section>
-<section id="การสำรวจความสมพนธระหวางตวแปร" class="slide level2 smaller">
-<h2>3. การสำรวจความสัมพันธ์ระหว่างตัวแปร</h2>
+</ul></section><section id="การสำรวจความสมพนธระหวางตวแปร" class="slide level2 smaller"><h2>3. การสำรวจความสัมพันธ์ระหว่างตัวแปร</h2>
 <ul>
 <li>Scatter plot/Boxplot</li>
 <li>Locally Estimated Scatterplot Smoothing (LOESS)</li>
@@ -874,19 +823,317 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 <li>Correlation Coefficients</li>
 <li>Decision tree</li>
 <li>Machine Learning + XAI</li>
-</ul>
-</section>
-<section id="ควรใหเวลาทำการบานกบนกเรยนมากขนกวาเดมหรอไม" class="slide level2">
-<h2>3.1 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่?</h2>
+</ul></section><section id="ควรใหเวลาทำการบานกบนกเรยนมากขนกวาเดมหรอไม" class="slide level2 smaller"><h2>3.1 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่?</h2>
 <ul>
 <li><p>ตัวแปรที่เกี่ยวข้องควรมีอะไรบ้าง</p></li>
 <li><p>เราสามารถใช้การสำรวจความสัมพันธ์เพื่อช่วยตอบคำถามนี้ได้อย่างไร</p></li>
 <li><p>การวิเคราะห์จะต้องมีการจัดกระทำตัวแปรอย่างไรบ้างหรือไม่</p></li>
 <li><p>สรุปเราควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นหรือไม่</p></li>
 </ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 385
+Columns: 11
+$ student_id           &lt;dbl&gt; 6341150327, 6341182427, 6441001627, 6441002227, 6…
+$ choose_method        &lt;dbl&gt; 60, 40, 40, 20, 10, 20, 20, 40, 50, 60, 20, 40, 4…
+$ concepts             &lt;dbl&gt; 57.14286, 57.14286, 42.85714, 50.00000, 21.42857,…
+$ interpretation       &lt;dbl&gt; 56.25000, 31.25000, 50.00000, 43.75000, 50.00000,…
+$ research_score       &lt;dbl&gt; 72, 72, 71, 72, 62, 75, 82, 76, 85, 73, 76, 83, 9…
+$ submit_time          &lt;dbl&gt; 156.41160, 145.08406, 141.08420, 150.26853, 129.1…
+$ percent_submit       &lt;dbl&gt; 66.66667, 100.00000, 100.00000, 88.88889, 100.000…
+$ gender               &lt;fct&gt; ช, ช, ญ, ญ, ช, ญ, ญ, ญ, ญ, ญ, ญ, ญ, ช, ญ, ญ, ญ, ญ…
+$ department           &lt;fct&gt; ไทยสังคม, ภาษาอังกฤษ, ประถมศึกษา, ประถมศึกษา, ประถมศึก…
+$ learning_performance &lt;dbl&gt; 95.00000, 73.33333, 93.21429, 90.00000, 95.00000,…
+$ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0.997…</code></pre>
+</div>
+</div>
+</section><section id="scatter-plot" class="slide level2 smaller"><h2>3.2 Scatter plot</h2>
+<ul>
+<li><p>เหมาะสำหรับสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณ 2 ตัว (ในบางกรณีสามารถสำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับจัดประเภทได้ด้วย)</p></li>
+<li><p>ช่วยให้เห็นแนวโน้มความสัมพันธ์ในธรรมชาติ</p></li>
+<li><p>อาจขาดความเป็นปรนัยในการวิเคราะห์</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">stat_knowledge =</span> <span class="fu">rowMeans</span>(<span class="fu">select</span>(.,choose_method<span class="sc">:</span>interpretation)),</span>
+<span id="cb25-3"><a href=""></a>         <span class="at">.before =</span> <span class="st">"choose_method"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-4"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> stat_knowledge, <span class="at">y =</span> research_score))<span class="sc">+</span></span>
+<span id="cb25-5"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="fl">2.5</span>)<span class="sc">+</span></span>
+<span id="cb25-6"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-</section>
-    </div>
+</div>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-22-1.png" width="576" class="r-stretch"></section><section id="scatter-plot-ols-regression-line" class="slide level2 smaller"><h2>3.3 Scatter plot + ols regression line</h2>
+<ul>
+<li><p>การใช้ scatterplot ร่วมกับเส้น regression line ช่วยให้ผู้วิเคราะห์สำรวจแนวโน้มหลักของความสัมพันธ์ระหว่างตัวแปรว่ามีลักษณะเป็นเชิงเส้นตรงมากน้อยแค่ไหน</p></li>
+<li><p>รวมทั้งแนวโน้มขนาดความสัมพันธ์ระหว่างตัวแปรดังกล่าวด้วย</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" data-code-line-numbers="6|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">stat_knowledge =</span> <span class="fu">rowMeans</span>(<span class="fu">select</span>(.,choose_method<span class="sc">:</span>interpretation)),</span>
+<span id="cb26-3"><a href=""></a>         <span class="at">.before =</span> <span class="st">"choose_method"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> stat_knowledge, <span class="at">y =</span> research_score))<span class="sc">+</span></span>
+<span id="cb26-5"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb26-6"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">se=</span>F,</span>
+<span id="cb26-7"><a href=""></a>              <span class="at">formula =</span> y <span class="sc">~</span> x)<span class="sc">+</span></span>
+<span id="cb26-8"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-23-1.png" width="576" class="r-stretch"></section><section id="scatter-plot-ols-regression-line-1" class="slide level2 smaller"><h2>3.3 Scatter plot + ols regression line</h2>
+<ul>
+<li><p>การใช้ scatterplot ร่วมกับเส้น regression line ช่วยให้ผู้วิเคราะห์สำรวจแนวโน้มหลักของความสัมพันธ์ระหว่างตัวแปรว่ามีลักษณะเป็นเชิงเส้นตรงมากน้อยแค่ไหน</p></li>
+<li><p>รวมทั้งแนวโน้มขนาดความสัมพันธ์ระหว่างตัวแปรดังกล่าวด้วย</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" data-code-line-numbers="7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb27-2"><a href=""></a>y <span class="ot">=</span> <span class="fl">0.5-0.2</span><span class="sc">*</span>(x<span class="fl">-0.5</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>,<span class="dv">0</span>,<span class="fl">0.1</span>)</span>
+<span id="cb27-3"><a href=""></a><span class="fu">data.frame</span>(x,y) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-4"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y))<span class="sc">+</span></span>
+<span id="cb27-5"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb27-6"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">se=</span>F,</span>
+<span id="cb27-7"><a href=""></a>              <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x,<span class="dv">2</span>))<span class="sc">+</span></span>
+<span id="cb27-8"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section><section id="scatter-plot-loess-regression" class="slide level2 smaller"><h2>3.4 Scatter plot + LOESS regression</h2>
+<ul>
+<li><p>การใช้ scatterplot ร่วมกับเส้น LOESS regression ช่วยให้ผู้วิเคราะห์สำรวจแนวโน้มหลักของความสัมพันธ์ระหว่างตัวแปรได้อย่างยืดหยุ่นมากขึ้น</p></li>
+<li><p>LOESS regression เป็นการประมาณเส้นโค้งที่เหมาะสมกับข้อมูลในแต่ละช่วงของตัวแปรต้น โดยไม่ต้องกำหนดรูปแบบสมการล่วงหน้า วิธีการนี้จัดอยู่ในกลุ่ม non-parametric regression</p></li>
+<li><p>ผลลัพธ์ที่ได้จะได้เส้นแนวโน้มความสัมพันธ์แต่จะไม่ได้สมการทำนาย เป็นเทคนิคที่เหมาะสำหรับการสำรวจข้อมูลมากกว่าที่จะวิเคราะห์เพื่อยืนยันความสัมพันธ์</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>p1 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">stat_knowledge =</span> <span class="fu">rowMeans</span>(<span class="fu">select</span>(.,choose_method<span class="sc">:</span>interpretation)),</span>
+<span id="cb28-3"><a href=""></a>         <span class="at">.before =</span> <span class="st">"choose_method"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-4"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> stat_knowledge, <span class="at">y =</span> research_score))<span class="sc">+</span></span>
+<span id="cb28-5"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb28-6"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">se=</span>F)<span class="sc">+</span></span>
+<span id="cb28-7"><a href=""></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb28-8"><a href=""></a></span>
+<span id="cb28-9"><a href=""></a>p2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(x,y) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-10"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y))<span class="sc">+</span></span>
+<span id="cb28-11"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb28-12"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">col =</span> <span class="st">"orange"</span>, <span class="at">se=</span>F)<span class="sc">+</span></span>
+<span id="cb28-13"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="scatter-plot-loess-regression-1" class="slide level2 smaller"><h2>3.4 Scatter plot + LOESS regression</h2>
+
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-26-1.png" width="864" class="r-stretch"></section><section id="boxplot-jitter-plot" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">3.5 Boxplot + Jitter plot</h2>
+<p>การใช้ boxplot หรือ jitter plot ช่วยให้ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทได้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb29-1" class="hljs-ln-code"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb29-2" class="hljs-ln-code"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> concepts <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="at">y =</span> research_score))<span class="sc">+</span></span>
+<span id="cb29-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb29-4" class="hljs-ln-code"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-27-1.png" width="480" class="r-stretch"></section><section id="boxplot-jitter-plot-1" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">3.5 Boxplot + Jitter plot</h2>
+<p>การใช้ boxplot หรือ jitter plot ช่วยให้ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทได้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb30-1" class="hljs-ln-code"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2" class="hljs-ln-code"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> concepts <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="at">y =</span> research_score))<span class="sc">+</span></span>
+<span id="cb30-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb30-4" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"grey40"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>)<span class="sc">+</span></span>
+<span id="cb30-5" class="hljs-ln-code"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-28-1.png" width="480" class="r-stretch"></section><section id="boxplot-jitter-plot-2" class="slide level2 smaller" data-auto-animate="true"><h2 data-id="quarto-animate-title">3.5 Boxplot + Jitter plot</h2>
+<p>การใช้ boxplot หรือ jitter plot ช่วยให้ผู้วิเคราะห์สำรวจความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทได้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" data-code-line-numbers="4-5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb31-1" class="hljs-ln-code"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2" class="hljs-ln-code"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> concepts <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="at">y =</span> research_score))<span class="sc">+</span></span>
+<span id="cb31-3" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb31-4" class="hljs-ln-code"><a href=""></a>  <span class="fu">geom_jitter</span>(<span class="at">data =</span> . <span class="sc">%&gt;%</span> </span>
+<span id="cb31-5" class="hljs-ln-code"><a href=""></a>                <span class="fu">sample_n</span>(<span class="at">size =</span> <span class="dv">200</span>),</span>
+<span id="cb31-6" class="hljs-ln-code"><a href=""></a>                <span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"grey40"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>)<span class="sc">+</span></span>
+<span id="cb31-7" class="hljs-ln-code"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-29-1.png" width="480" class="r-stretch"></section><section id="contingency-table" class="slide level2 smaller"><h2>3.6 Contingency table</h2>
+<p>ตารางแจกแจงความถี่สองทางและ Bar plot สามารถใช้เพื่อสำรวจความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ ตัวอย่างด้านล่างแสดงการแจกแจงความถี่แบบ Count</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-3"><a href=""></a>    <span class="at">choose_method =</span> <span class="fu">case_when</span>(</span>
+<span id="cb32-4"><a href=""></a>    choose_method <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb32-5"><a href=""></a>    choose_method <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> choose_method <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb32-6"><a href=""></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>),</span>
+<span id="cb32-7"><a href=""></a>    <span class="at">concepts =</span> <span class="fu">case_when</span>(</span>
+<span id="cb32-8"><a href=""></a>      concepts <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb32-9"><a href=""></a>      concepts <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> concepts <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb32-10"><a href=""></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>)</span>
+<span id="cb32-11"><a href=""></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-12"><a href=""></a>  <span class="fu">count</span>(choose_method, concepts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 3
+  choose_method concepts     n
+  &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;
+1 fair          fair        21
+2 fair          good         6
+3 fair          poor        29
+4 good          fair         8
+5 good          good         8
+6 good          poor         5
+7 poor          fair        80
+8 poor          good        19
+9 poor          poor       209</code></pre>
+</div>
+</div>
+</section><section id="contingency-table-1" class="slide level2 smaller"><h2>3.6 Contingency table</h2>
+<p>ตารางแจกแจงความถี่สองทางและ Bar plot สามารถใช้เพื่อสำรวจความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ ตัวอย่างด้านล่างแสดงการแจกแจงความถี่แบบร้อยละ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-3"><a href=""></a>    <span class="at">choose_method =</span> <span class="fu">case_when</span>(</span>
+<span id="cb34-4"><a href=""></a>    choose_method <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb34-5"><a href=""></a>    choose_method <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> choose_method <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb34-6"><a href=""></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>),</span>
+<span id="cb34-7"><a href=""></a>    <span class="at">concepts =</span> <span class="fu">case_when</span>(</span>
+<span id="cb34-8"><a href=""></a>      concepts <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb34-9"><a href=""></a>      concepts <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> concepts <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb34-10"><a href=""></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>)</span>
+<span id="cb34-11"><a href=""></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-12"><a href=""></a>  <span class="fu">count</span>(choose_method, concepts) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-13"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="do">## percent total</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+  choose_method concepts     n   prop
+  &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;  &lt;dbl&gt;
+1 fair          fair        21 0.0545
+2 fair          good         6 0.0156
+3 fair          poor        29 0.0753
+4 good          fair         8 0.0208
+5 good          good         8 0.0208
+6 good          poor         5 0.0130
+7 poor          fair        80 0.208 
+8 poor          good        19 0.0494
+9 poor          poor       209 0.543 </code></pre>
+</div>
+</div>
+</section><section id="contingency-table-2" class="slide level2 smaller"><h2>3.6 Contingency table</h2>
+<p>ตารางแจกแจงความถี่สองทางและ Bar plot สามารถใช้เพื่อสำรวจความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ ตัวอย่างด้านล่างแสดงการแจกแจงความถี่แบบร้อยละ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-3"><a href=""></a>    <span class="at">choose_method =</span> <span class="fu">case_when</span>(</span>
+<span id="cb36-4"><a href=""></a>    choose_method <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb36-5"><a href=""></a>    choose_method <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> choose_method <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb36-6"><a href=""></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>),</span>
+<span id="cb36-7"><a href=""></a>    <span class="at">concepts =</span> <span class="fu">case_when</span>(</span>
+<span id="cb36-8"><a href=""></a>      concepts <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb36-9"><a href=""></a>      concepts <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> concepts <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb36-10"><a href=""></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>)</span>
+<span id="cb36-11"><a href=""></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-12"><a href=""></a>  <span class="fu">count</span>(choose_method, concepts) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-13"><a href=""></a>  <span class="fu">group_by</span>(choose_method) <span class="sc">%&gt;%</span></span>
+<span id="cb36-14"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">prop =</span> n<span class="sc">/</span><span class="fu">sum</span>(n)) <span class="do">## percent in choose_method</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+# Groups:   choose_method [3]
+  choose_method concepts     n   prop
+  &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;  &lt;dbl&gt;
+1 fair          fair        21 0.375 
+2 fair          good         6 0.107 
+3 fair          poor        29 0.518 
+4 good          fair         8 0.381 
+5 good          good         8 0.381 
+6 good          poor         5 0.238 
+7 poor          fair        80 0.260 
+8 poor          good        19 0.0617
+9 poor          poor       209 0.679 </code></pre>
+</div>
+</div>
+</section><section id="contingency-table-3" class="slide level2 smaller"><h2>3.6 Contingency table</h2>
+<p>เราสามารถปรับตารางนี้ให้เป็นแบบ human readable ได้อย่างไร</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 3
+  choose_method concepts     n
+  &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;
+1 fair          fair        21
+2 fair          good         6
+3 fair          poor        29
+4 good          fair         8
+5 good          good         8
+6 good          poor         5
+7 poor          fair        80
+8 poor          good        19
+9 poor          poor       209</code></pre>
+</div>
+</div>
+</section><section id="heatmap" class="slide level2 smaller"><h2>3.7 Heatmap</h2>
+<ul>
+<li>การสร้าง heatmap จาก contingency table ช่วยให้ผู้วิเคราะห์มองเห็นแนวโน้มความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัวได้ชัดเจนขึ้น ลองพิจารณารูปต่อไปนี้</li>
+</ul>
+<blockquote>
+<p>ทักษะการเลือกสถิติวิเคราะห์และมโนทัศน์ทางสถิติของนักเรียนมีความสัมพันธ์กันหรือไม่</p>
+</blockquote>
+
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-34-1.png" width="960" class="r-stretch"></section><section id="stacked-barplot" class="slide level2 smaller"><h2>3.8 Stacked Barplot</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a>p <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb39-2"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-3"><a href=""></a>    <span class="at">choose_method =</span> <span class="fu">case_when</span>(</span>
+<span id="cb39-4"><a href=""></a>    choose_method <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb39-5"><a href=""></a>    choose_method <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> choose_method <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb39-6"><a href=""></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>),</span>
+<span id="cb39-7"><a href=""></a>    <span class="at">concepts =</span> <span class="fu">case_when</span>(</span>
+<span id="cb39-8"><a href=""></a>      concepts <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">~</span> <span class="st">"good"</span>,</span>
+<span id="cb39-9"><a href=""></a>      concepts <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> concepts <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"fair"</span>,</span>
+<span id="cb39-10"><a href=""></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"poor"</span>)</span>
+<span id="cb39-11"><a href=""></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-12"><a href=""></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"choose_method"</span>, <span class="st">"concepts"</span>), </span>
+<span id="cb39-13"><a href=""></a>                <span class="sc">~</span> <span class="fu">fct_relevel</span>(.x, <span class="fu">c</span>(<span class="st">"good"</span>, <span class="st">"fair"</span>, <span class="st">"poor"</span>))))  <span class="sc">%&gt;%</span> </span>
+<span id="cb39-14"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> choose_method, <span class="at">fill =</span> concepts))<span class="sc">+</span></span>
+<span id="cb39-15"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>)<span class="sc">+</span></span>
+<span id="cb39-16"><a href=""></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"RdYlBu"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb39-17"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"100% Stacked Barplot"</span>)<span class="sc">+</span></span>
+<span id="cb39-18"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="stacked-barplot-1" class="slide level2 smaller"><h2>3.8 Stacked Barplot</h2>
+
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-36-1.png" width="960" class="r-stretch"></section><section id="correlation" class="slide level2 smaller"><h2>3.9 Correlation</h2>
+<ul>
+<li><p>สหสัมพันธ์ (Correlation) คือการวัดความสัมพันธ์ระหว่างตัวแปรสองตัว โดยแสดงทั้ง ทิศทาง (ไปในทางเดียวกันหรือตรงข้ามกัน) และ ความแข็งแรงของความสัมพันธ์ (สัมพันธ์กันมากหรือน้อยเพียงใด)</p></li>
+<li><p>การวิเคราะห์สหสัมพันธ์นิยมใช้ควบคู่กับ การใช้ visualization เพื่อช่วยให้การตีความหมายมีความเป็นปรนัยมากขึ้นและเพิ่มความน่าเชื่อถือของผลการวิเคราะห์</p></li>
+</ul></section><section id="ประเภทของ-correlation" class="slide level2 smaller"><h2>3.9 ประเภทของ Correlation</h2>
+<p>การแบ่งประเภททำได้หลายลักษณะ หากพิจารณาตามลักษณะความสัมพันธ์ สามารถจำแนกได้ดังนี้</p>
+<ul>
+<li>
+<p>Linear Correlation: วัดความสัมพันธ์เชิงเส้นตรงระหว่างตัวแปรสองตัว (linear association)</p>
+<ul>
+<li><p>Pearson correlation</p></li>
+<li><p>Point-Biserial correlation</p></li>
+<li><p>Multiple correlation</p></li>
+</ul>
+</li>
+<li>
+<p>Monotonic Correlation: ความสัมพันธ์แบบ monotonic (monotonic association)เป็นความสัมพันธ์ในลักษณะที่เปลี่ยนแปลงของตัวแปรที่มีความสัมพันธ์กันจะมีทิศทางเดียวกันเสมอ กล่าวคือ ถ้าตัวแปรหนึ่งมีแนวโน้มเพิ่มขึ้น อีกตัวแปรหนึ่งจะไม่ลดลง (monotonic increasing) ในทางกลับกันถ้าตัวแปรหนึ่งมีแนวโน้มลดลง อีกตัวแปรหนึ่งจะไม่เพิ่มขึ้น (monotonic decreasing)</p>
+<ul>
+<li><p>Spearman’s rank correlation</p></li>
+<li><p>Kendall’s tau correlation</p></li>
+</ul>
+</li>
+<li>
+<p>Categorical association: วัดความสัมพันธ์ระหว่างตัวแปรจัดประเภทสองตัว</p>
+<ul>
+<li><p>Cramér’s V</p></li>
+<li><p>Phi coefficient</p></li>
+</ul>
+</li>
+</ul></section><section id="pearson-correlation-vs-spearman-correlation" class="slide level2 smaller"><h2>3.9 Pearson Correlation vs Spearman Correlation</h2>
+<p>เปรียบเทียบสัมประสิทธิ์สหสัมพันธ์ของเพียร์สันและสเปียร์แมนภายใต้สถานการณ์ที่ตัวแปร สองตัวมีความสัมพันธ์แบบทางเดียว โดยที่ความสัมพันธ์ดังกล่าวไม่ใช่เส้นตรง</p>
+
+<img data-src="images/clipboard-1023193391.png" class="r-stretch quarto-figure-center"><p class="caption">สิวะโชติ ศรีสุทธิยากร (2564)</p></section><section id="ควรใหเวลาทำการบานกบนกเรยนมากขนกวาเดมหรอไม-1" class="slide level2 smaller"><h2>3.10 ควรให้เวลาทำการบ้านกับนักเรียนมากขึ้นกว่าเดิมหรือไม่?</h2>
+<ul>
+<li><p>คัดเลือกตัวแปรที่เกี่ยวข้อง</p></li>
+<li><p>สำรวจสภาพของตัวแปรที่เกี่ยวข้อง</p></li>
+<li><p>ออกแบบการวิเคราะห์เพื่อตอบคำถามข้างต้น</p></li>
+<li><p>ผลการวิเคราะห์ที่ได้เป็นอย่างไร</p></li>
+</ul>
+
+
+<img data-src="Week5_Handout_files/figure-revealjs/unnamed-chunk-37-1.png" width="960" class="r-stretch"></section>
+</div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -894,23 +1141,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="Week5_Handout_files/libs/revealjs/dist/reveal.js"></script>
-  <!-- reveal.js plugins -->
-  <script src="Week5_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-  
-
-  <script src="Week5_Handout_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="Week5_Handout_files/libs/revealjs/plugin/math/math.js"></script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
-
-  <script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="Week5_Handout_files/libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="Week5_Handout_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/quarto-support/support.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/notes/notes.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/search/search.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/zoom/zoom.js"></script><script src="Week5_Handout_files/libs/revealjs/plugin/math/math.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -1101,9 +1332,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
           RevealZoom
         ]
       });
-    </script>
-    
-    <script>
+    </script><script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
@@ -1138,9 +1367,7 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
         }
 
       })();
-    </script>
-
-    <script id="quarto-html-after-body" type="application/javascript">
+    </script><script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -1307,6 +1534,6 @@ $ cheat_index          &lt;dbl&gt; 0.9143358, 0.5934895, 0.8394027, 0.8664958, 0
         }
       });
       </script>
-    
+
 
 </body></html>
