@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-08-30">
+<meta name="dcterms.date" content="2025-08-31">
 
 <title>รายงานผลการตรวจงาน Tidymodels</title>
 <style>
@@ -82,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 30, 2025</p>
+      <p class="date">August 31, 2025</p>
     </div>
   </div>
   
@@ -106,7 +106,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>คะแนนรวม:</strong> 88/100 (เกรด B+)</p>
+<p><strong>คะแนนรวม:</strong> 87.5/100 (เกรด B+)</p>
 </div>
 </div>
 <section id="จดเดน" class="level3" data-number="1.1">
@@ -346,9 +346,9 @@ Note
 </tr>
 <tr class="even">
 <td style="text-align: left;">การอธิบาย Linear vs Lasso</td>
+<td style="text-align: center;">3.5</td>
 <td style="text-align: center;">4</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: left;">✅ อธิบาย feature selection และ noise reduction ได้ชัดเจน</td>
+<td style="text-align: left;">✅ อธิบาย feature selection และ noise reduction ได้แต่… อ่านต่อด้านล่าง</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">คุณภาพโค้ด</td>
@@ -379,17 +379,27 @@ Note
 <li>การทำ residual analysis ก่อน modeling แสดงว่าเข้าใจ linear regression assumptions อย่างไรก็ตามยังไม่เห็นว่ามีการนำผลการวิเคราะห์นี้ไปใช้ปรับปรุงการ train model (จริง ๆ เข้าใจได้เพราะเรียนไปนิดเดียว) แต่เวลานักวิเคราะห์เลือกนำเสนอผลใดลงในรายงานผลการวิเคราะห์ ผลการวิเคราะห์ดังกล่าวความมีประโยชน์ต่องานในระดับนึง</li>
 <li>การวิเคราะห์ coefficient comparison ระหว่าง lm และ lasso ได้ดีมาก</li>
 </ul>
-<p><strong>การวิเคราะห์ Relative Importance ที่โดดเด่น:</strong> - ระบุตัวแปรสำคัญได้ชัดเจน: G2 (ค่าสัมประสิทธิ์ 0.838) เป็นตัวทำนายที่สำคัญที่สุด ตามด้วย G1 (0.158) - ตัวแปรที่มีผลลบ: reasonother (-0.122) และ failures (-0.0837) ซึ่งสอดคล้องกับทฤษฎีการศึกษา - การเปรียบเทียบ coefficient ระหว่าง lm และ lasso แสดงให้เห็นว่า lm มี noise มากกว่า</p>
+<p><strong>การวิเคราะห์ Relative Importance ที่โดดเด่น:</strong></p>
+<ul>
+<li><p>ระบุตัวแปรสำคัญได้ชัดเจน: G2 (ค่าสัมประสิทธิ์ 0.838) เป็นตัวทำนายที่สำคัญที่สุด ตามด้วย G1 (0.158)</p></li>
+<li><p>ตัวแปรที่มีผลลบ: reasonother (-0.122) และ failures (-0.0837) ซึ่งสอดคล้องกับทฤษฎีการศึกษา</p></li>
+<li><p>“lm โมเดลนั้นนําทุกตัวแปรเข้าสู่การทํานาย โดยไม่มีการเลือกเหมือนกับ lasso โมเดลที่คัดเลือกเฉพาะตัวแปรสําคัญ ทําให้ lm โมเดลอาจเกิด noise ได้มากกว่า” &lt;– วรรคนี้ยังไม่ถูกต้องนัก เพราะ feature selection กับ noise reduction ไม่ใช่สิ่งเดียวกัน (อ่านต่อด้านล่าง)</p></li>
+</ul>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <ul>
 <li>รายงานมีโครงสร้างชัดเจน แบ่งหัวข้อเป็นระเบียบ</li>
 <li>การอธิบายการเปรียบเทียบ SRS vs Stratified sampling ได้ยอดเยี่ยม</li>
 <li>Visualization หลากหลายและมีคุณภาพสูง: histogram comparison, CDF plot, residual plot, coefficient comparison</li>
-<li>การตีความผลลัพธ์เชื่อมโยงกับแนวคิด feature selection และ noise reduction ได้ดี</li>
+<li>การตีความผลลัพธ์ที่เชื่อมโยงกับแนวคิด feature selection และ noise reduction ถือว่าเป็นจุดแข็ง เพราะช่วยสะท้อนความเข้าใจว่าทั้งสองแนวคิดมีเป้าหมายร่วมกันในการทำให้โมเดลมีความแม่นยำและ generalization ดีขึ้น อย่างไรก็ตามควรระมัดระวังการใช้คำว่า noise reduction ในบริบทของ feature selection โดยตรง เนื่องจากแม้ทั้งสองแนวคิดจะเกี่ยวข้องกัน แต่ไม่สามารถใช้แทนกันได้ทั้งหมด — feature selection มุ่งเน้นการเลือกหรือตัดทอนตัวแปรที่ไม่จำเป็น ขณะที่ noise reduction มุ่งเน้นการจัดการคุณภาพข้อมูลภายในตัวแปร เช่น การลด outlier หรือการทำ smoothing ดังนั้น ควรอธิบายให้ชัดเจนถึงความแตกต่างเพื่อป้องกันความสับสนทางแนวคิด</li>
 <li>ควรเพิ่มบทนำที่อธิบายภาพรวมของโครงการ และข้อเสนอแนะเชิงปฏิบัติในท้ายเรื่อง</li>
 </ul>
-<p><strong>ข้อสังเกตเพิ่มเติมเรื่อง Coefficient Analysis:</strong> - การตีความว่า G2 สำคัญที่สุดสมเหตุสมผล เพราะเป็นคะแนนช่วงที่ 2 ซึ่งใกล้เคียงกับ G3 มากที่สุด - LASSO ทำ feature selection ได้ดี โดยเหลือเพียง 7 ตัวแปรจาก 32 ตัวแปรเดิม? (ยังไม่เห็นการวิพากษ์ประเด็นนี้) - การที่ LASSO คงไว้เพียง 7 ตัวแปรอาจบ่งบอกว่าข้อมูลมี multicollinearity สูง (รึเปล่า?)</p>
+<p><strong>ข้อสังเกตเพิ่มเติมเรื่อง Coefficient Analysis:</strong></p>
+<ul>
+<li><p>การตีความว่า G2 สำคัญที่สุดสมเหตุสมผล เพราะเป็นคะแนนช่วงที่ 2 ซึ่งใกล้เคียงกับ G3 มากที่สุด</p></li>
+<li><p>LASSO ทำ feature selection ได้ดี โดยเหลือเพียง 7 ตัวแปรจาก 32 ตัวแปรเดิม? (ยังไม่เห็นการวิพากษ์ประเด็นนี้)</p></li>
+<li><p>การที่ LASSO คงไว้เพียง 7 ตัวแปรอาจบ่งบอกว่าข้อมูลมี multicollinearity สูง (รึเปล่า?)</p></li>
+</ul>
 </div>
 </div>
 </div>
