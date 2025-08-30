@@ -4,23 +4,60 @@
 .reveal .caption {
   text-align: center;
   color: #C5705D;
-  font-size: 0.9em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
-  margin-top: -1.5em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: -0.2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
 }
 
 .reveal .caption2 {
-  text-align: center;
+  text-align: right;
   color: #C5705D;
-  font-size: 0.5em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
-  margin-top: 0.5em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
-  margin-left: 1em;
+  font-size: 0.8em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
+  margin-top: 1em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+  margin-right: 2em;
 }
 
 .reveal .caption3 {
-    text-align: right;
+    text-align: left;
     color: #C5705D;
     font-size: 0.7em; /* ปรับขนาดฟอนต์ถ้าต้องการ */
-    margin-top: 2em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
-    margin-left: 3em;
+    margin-top: 0.1em; /* ปรับระยะห่างจากรูปถ้าต้องการ */
+    margin-left: 0em;
   }
 
+
+  .reveal .slide.title-slide .footnote {
+    display: none;
+  }
+
+
+.white-header h2 {
+  color: white;
+}
+
+.reveal .slides section .quarto-figure {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.reveal .slides section img {
+  margin: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+@font-face {
+  font-family: 'ChulaCharasNew';
+  src: url('ChulaCharasNewReg.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+section *::selection {
+  background: #ffcc00 !important; /* สีแถบ selection */
+  color: #000000 !important;      /* สีตัวอักษรตอนเลือก */
+}
+
+section *::-moz-selection {
+  background: #ffcc00 !important;
+  color: #000000 !important;
+}

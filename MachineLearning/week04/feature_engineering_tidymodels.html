@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+<script src="feature_engineering_tidymodels_files/libs/clipboard/clipboard.min.js"></script>
+<script src="feature_engineering_tidymodels_files/libs/quarto-html/tabby.min.js"></script>
+<script src="feature_engineering_tidymodels_files/libs/quarto-html/popper.min.js"></script>
+<script src="feature_engineering_tidymodels_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="feature_engineering_tidymodels_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="feature_engineering_tidymodels_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="feature_engineering_tidymodels_files/libs/quarto-html/quarto-syntax-highlighting-2577ed9d2f9b020f727002863c1eb492.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.17">
+<meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
+<meta name="dcterms.date" content="2025-08-30">
+<title>Week 3: Feature Engineering</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+<link rel="stylesheet" href="feature_engineering_tidymodels_files/libs/revealjs/dist/reset.css">
+<link rel="stylesheet" href="feature_engineering_tidymodels_files/libs/revealjs/dist/reveal.css">
+<style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+<link rel="stylesheet" href="feature_engineering_tidymodels_files/libs/revealjs/dist/theme/quarto-cb1ed36e8cdf59da670ef55b215fa2c0.css">
+<link rel="stylesheet" href="my_css.css">
+<link href="feature_engineering_tidymodels_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+<link href="feature_engineering_tidymodels_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+<link href="feature_engineering_tidymodels_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+<link href="feature_engineering_tidymodels_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+<style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+<link href="feature_engineering_tidymodels_files/libs/xaringanExtra-extra-styles-0.2.6/xaringanExtra-extra-styles.css" rel="stylesheet">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="img/ML.jpg" data-background-opacity="8%" data-background-size="full" class="quarto-title-block center"><h1 class="title">Week 3: Feature Engineering</h1>
+  <p class="subtitle">recipess • Workflows • Leakage Safety • Explainability</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+ผศ.ดร.สิวะโชติ ศรีสุทธิยากร 
+</div>
+</div>
+</div>
+
+  <p class="date">2025-08-30</p>
+</section><section class="slide level2"><div class="cell">
+<div class="cell-output-display">
+
+</div>
+</div>
+</section><section><section id="part1-บทนำ" class="title-slide slide level1 smaller center"><h1>Part1 : บทนำ</h1>
+<blockquote>
+<p>อย่าลืมว่า modelling เป็นเพียงส่วนหนึ่งของกระบวนการทาง data science ทั้งหมด</p>
+</blockquote>
+
+<img data-src="https://www.tmwr.org/premade/data-science-model.svg" class="r-stretch quarto-figure-center"><p class="caption">https://www.tmwr.org/software-modeling.html#model-phases</p></section><section id="tidymodels-core-packages" class="slide level2 smaller"><h2>Tidymodels core packages</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><code>rsample:</code> general methods for resampling</p>
+<p><code>recipes:</code> unified interface to data preprocessing <code>parsnip:</code> unified interface to modeling</p>
+<p><code>workflows:</code> combine model blueprints and preprocessing recipes</p>
+<p><code>dials:</code> create tuning parameters</p>
+<p><code>tune:</code> hyperparameter tuning</p>
+<p><code>broom:</code> tidy model outputs</p>
+<p><code>yardstick:</code> model evaluation</p>
+</div><div class="column" style="width:60%;">
+<p><img data-src="https://simonschoe.github.io/ml-with-tidymodels/img/tidymodels-hex.PNG"></p>
+</div></div>
+</section><section id="ชดขอมลตวอยาง" class="slide level2 smaller"><h2>ชุดข้อมูลตัวอย่าง</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href=""></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"student_data.csv"</span>)</span>
+<span id="cb1-4"><a href=""></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">student_id =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(data)[<span class="dv">1</span>], <span class="at">.before =</span> <span class="fu">everything</span>())</span>
+<span id="cb1-5"><a href=""></a><span class="fu">glimpse</span>(data, <span class="dv">80</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,200
+Columns: 21
+$ student_id             &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, …
+$ age                    &lt;dbl&gt; 23, 22, 21, 20, 24, 24, 22, 21, 18, 18, 18, 22,…
+$ years_study            &lt;dbl&gt; 2, 2, 4, 2, 2, 3, 4, 2, 2, 1, 1, 3, 2, 5, 3, 3,…
+$ major                  &lt;chr&gt; "Business", "Science", "Science", "Science", "E…
+$ level                  &lt;chr&gt; "Undergraduate", "Undergraduate", "Undergraduat…
+$ work_status            &lt;chr&gt; NA, "Not Working", "Working", "Not Working", "N…
+$ gpa                    &lt;dbl&gt; 0.88, 3.39, 2.27, 3.23, 3.33, 1.36, 4.00, 1.30,…
+$ credits_per_term       &lt;dbl&gt; 13, 15, 11, 11, 14, 10, 14, 19, 19, 20, 11, 12,…
+$ withdrawal_count       &lt;dbl&gt; 2, 0, 1, 0, 0, 4, 0, 1, 0, 2, 0, 1, 0, 0, 1, 0,…
+$ failed_courses         &lt;dbl&gt; 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 1, 1, 2, 0,…
+$ scholarship_status     &lt;chr&gt; "None", "None", "None", "None", "Full", "None",…
+$ family_income          &lt;dbl&gt; 127856, NA, 35622, NA, 31053, 2587, 44786, 4733…
+$ monthly_expense        &lt;dbl&gt; 9393, 12666, 15042, 15135, 12895, 10711, 12275,…
+$ payment_status         &lt;chr&gt; "Current", NA, "Current", NA, "Current", "Delay…
+$ absence_count          &lt;dbl&gt; 11, 0, 14, 0, 0, 20, 3, 11, 0, 10, 9, 25, 4, 2,…
+$ activity_participation &lt;dbl&gt; 2, 2, 0, 6, 3, 0, 4, 2, 4, 2, 1, 0, 5, 2, 1, 3,…
+$ library_usage          &lt;dbl&gt; 2, 8, 6, 7, 6, 5, 9, 3, 9, 3, 4, 3, 3, NA, 4, 4…
+$ distance_from_home     &lt;dbl&gt; 73, 220, 26, 341, 42, 66, 62, 159, 10, 598, 98,…
+$ accommodation_type     &lt;chr&gt; "Apartment", "Dormitory", "Home", "Dormitory", …
+$ commute_hours          &lt;dbl&gt; 0.8, 1.0, 1.0, 1.1, 0.5, 2.6, 2.5, 1.3, 0.5, 0.…
+$ academic_risk          &lt;chr&gt; "High Risk", "Low Risk", "Medium Risk", "Low Ri…</code></pre>
+</div>
+</div>
+</section><section id="ชดขอมลตวอยาง-1" class="slide level2 smaller"><h2>ชุดข้อมูลตัวอย่าง</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">library</span>(naniar)</span>
+<span id="cb3-2"><a href=""></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href=""></a>  <span class="fu">miss_var_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 3
+   variable       n_miss pct_miss
+   &lt;chr&gt;           &lt;int&gt;    &lt;num&gt;
+ 1 payment_status    395     32.9
+ 2 family_income     255     21.2
+ 3 library_usage     169     14.1
+ 4 work_status       156     13  
+ 5 student_id          0      0  
+ 6 age                 0      0  
+ 7 years_study         0      0  
+ 8 major               0      0  
+ 9 level               0      0  
+10 gpa                 0      0  
+# ℹ 11 more rows</code></pre>
+</div>
+</div>
+</section><section id="feature-engineering" class="slide level2 smaller"><h2>Feature Engineering</h2>
+<blockquote>
+<p>ประสิทธิภาพโมเดลมักได้มาจาก <strong>คุณภาพฟีเจอร์</strong> มากกว่าความซับซ้อนของอัลกอริทึม</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>Feature Engineering</strong> คือกระบวนการแปลงหรือปรับแต่งข้อมูลดิบ (raw data) ให้อยู่ในรูปแบบที่เหมาะสมสำหรับการสร้างโมเดลการเรียนรู้ของเครื่อง</p>
+<ul>
+<li><p>เพิ่มประสิทธิภาพการเรียนรู้ของโมเดล –&gt; ประสิทธิภาพในการทำนาย</p></li>
+<li><p>แก้ไขปัญหาลดข้อจำกัดที่เกิดขึ้นในข้อมูล</p></li>
+<li><p>ช่วยให้การตีความหมายผลลัพธ์ของโมเดลทำได้ง่ายขึ้น</p></li>
+</ul>
+</li>
+<li><p><strong>Feature Engineering</strong> = ศาสตร์/ศิลป์ แปลงข้อมูลดิบให้กลายเป็น features ที่เครื่องสามารถเรียนรู้ได้ดี</p></li>
+<li>
+<p>แยกเป็น 2 มิติ</p>
+<ul>
+<li><p>Data Preprocessing (ให้โมเดลทำงานได้)</p></li>
+<li><p>Feature Creation (ทำให้โมเดลทำงานได้ดี)</p></li>
+</ul>
+</li>
+</ul></section><section id="ควรทำ-feature-engineering-ตอนไหน" class="slide level2 smaller scrollable"><h2>ควรทำ feature engineering ตอนไหน?</h2>
+<ol type="1">
+<li><p>ก่อนที่จะ train model</p></li>
+<li><p>ระหว่างที่ train model</p></li>
+<li><p>หลังจากที่ train model แล้ว</p></li>
+</ol></section><section id="แนวคดหลก" class="slide level2 smaller"><h2>แนวคิดหลัก</h2>
+<div style="font-size: 0.4em;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead><tr class="header">
+<th>ประเภท</th>
+<th>เป้าหมายหลัก</th>
+<th>ตัวอย่าง <code>step_*</code> (คละ basic/advance)</th>
+<th>เมื่อควรใช้ / ข้อควรระวัง</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<strong>Data Preprocessing</strong><br>(ทำให้โมเดล “ทำงานได้”)</td>
+<td>แก้ NA, แปลงชนิดข้อมูล, ปรับสเกล/รูปแจกแจง, ตัด noise/redundancy</td>
+<td>
+<code>step_impute_knn</code>, <code>step_impute_bag</code>, <code>step_unknown</code>, <code>step_novel</code> • <code>step_other</code>, <code>step_dummy</code> • <code>step_log</code>, <code>step_YeoJohnson</code>, <code>step_BoxCox</code> • <code>step_normalize</code>, <code>step_spatialsign</code> • <code>step_zv</code>, <code>step_nzv</code>, <code>step_corr</code>, <code>step_lincomb</code> • <code>step_date</code>, <code>step_holiday</code> • <code>themis::step_smote</code>¹, <code>themis::step_downsample</code>, <code>themis::step_upsample</code>
+</td>
+<td>- ใช้ <code>prep()</code> กับ <strong>train เท่านั้น</strong> เพื่อกัน leakage; sampling steps (เช่น <code>step_smote</code>) ใส่ <code>skip=TRUE</code> เพื่อ <strong>ไม่</strong> ใช้กับข้อมูลใหม่.<br>- ใส่ลำดับให้ถูก: encode → scale → filter; ตัวอย่าง interaction ควรเกิด <strong>หลัง</strong> dummy</td>
+</tr>
+<tr class="even">
+<td>
+<strong>Feature Creation</strong><br>(ทำให้โมเดล “ทำงานได้ดีขึ้น”)</td>
+<td>สร้างสัญญาณใหม่ จับ nonlinearity/interaction โครงสร้างเวลา/ข้อความ</td>
+<td>
+<code>step_interact</code> • <code>step_poly</code>, <code>step_ns</code> • <code>step_discretize</code> • <code>step_mutate</code> (row-wise ratios/logs) • <code>step_pca</code>, <code>step_kpca</code>, <code>step_ica</code> • <code><a href="https://embed.tidymodels.org/reference/step_umap.html">embed::step_umap</a></code>² • <code><a href="https://embed.tidymodels.org/reference/step_lencode_glm.html">embed::step_lencode_glm</a></code>, <code><a href="https://embed.tidymodels.org/reference/step_lencode_mixed.html">embed::step_lencode_mixed</a></code>² (impact/target-based encoding ภายใต้การควบคุม) • <code>textrecipess::step_tokenize</code>, <code>textrecipess::step_stopwords</code>, <code>textrecipess::step_ngram</code>, <code>textrecipess::step_tfidf</code>³</td>
+<td>- เลี่ยง leakage เมื่อใช้ encoding อิงเป้าหมาย: ทำภายใน resampling ที่ถูกต้องเท่านั้น (ผ่าน <code>fit_resamples</code>).<br>- <code>step_mutate</code> ให้คงเป็น <strong>row-wise</strong> (เช่น <code>x/y</code>, <code>log(x)</code>); อย่าคำนวณสถิติทั้งคอลัมน์ใน <code>bake()</code>
+</td>
+</tr>
+<tr class="odd">
+<td><strong>Boundary / Hybrid</strong></td>
+<td>ลดยุ่งเหยิง/มิติ พร้อมคงสัญญาณ</td>
+<td>
+<code>step_other</code> (ก่อน dummy), <code>step_corr</code> (ลด redundancy) • <code>step_pca</code> (หลัง normalize) • <code><a href="https://embed.tidymodels.org/reference/step_umap.html">embed::step_umap</a></code>²</td>
+<td>- ชั่งน้ำหนักระหว่าง <strong>ตีความได้</strong> (filter selection) กับ <strong>พลังทำนาย</strong> (feature extraction).<br>- ตรวจสอบผลด้วย metric ทั้งเชิงพยากรณ์และความอธิบายได้.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>เชิงอ้างอิง/บันทึก</strong><br>
+1) <code>themis</code> เหมาะกับ class imbalance (<code>step_smote</code>, <code>step_downsample</code>, <code>step_upsample</code>); ใส่ไว้ <strong>ก่อน</strong> โมเดลและใช้เฉพาะ train fold (<code>skip=TRUE</code>).<br>
+2) <code>embed</code> ให้เครื่องมือ encoding/embedding ขั้นสูง (<code>step_lencode_*</code>, <code>step_umap</code>).<br>
+3) <code>textrecipess</code> ใช้กับข้อมูลข้อความทั้งสาย (tokenize → clean → n-gram → tf-idf ฯลฯ).</p>
+</div>
+</section><section id="หลกการของ-recipes" class="slide level2 smaller scrollable"><h2>หลักการของ <code>recipes</code>
+</h2>
+<p>library-<code>recipes</code> เป็น framework ที่ีรวบรวมฟังก์ชันสำหรับการเตรียมข้อมูลและการทำ feature engineering ซึ่งทำงานร่วมกับ <code>tidymodels</code> ได้เป็นอย่างดี</p>
+<ol type="1">
+<li>นิยามการแปลงข้อมูลแยกจากนิยามโมเดล นำ recipes เดียวไปรันกับหลายโมเดลได้</li>
+<li>ทุกขั้นตอนถูกเก็บใน <strong>recipes object</strong> เดียว ตรวจสอบ ทำซ้ำ ปรับปรุง และส่งต่อได้</li>
+<li>การ preprocessing จะคำนวณพารามิเตอร์จาก <strong>train เท่านั้น</strong> แล้วจึงนำพารามิเตอร์ดังกล่าวไปใช้ในการ preprocess ข้อมูลใหม่ (test/validation) ซึ่งช่วยป้องกันปัญหา data leakage ได้อย่างมีประสิทธิภาพ</li>
+</ol></section><section id="หลกการของ-recipes-1" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<p>แต่ละ recipe ประกอบด้วยการแปลงข้อมูลหลายขั้นตอนที่เชื่อมโยงกัน กระบวนการนี้ต้องเริ่มต้นจาก การสร้าง recipe object ก่อน โดยใช้ฟังก์ชัน <code>recipe()</code> ที่มีอาร์กิวเมนท์ 2 ตัวได้แก่</p>
+<ul>
+<li><p><code>formula</code> — สูตรระบุความสัมพันธ์ระหว่างตัวแปรตาม (response) และตัวแปรอิสระ (predictors) ซึ่งจะเขียนในรูปแบบ <code>y ~ x1 + x2 + ...</code> หรือ <code>y ~ .</code> (ทุกตัวแปรยกเว้น y)</p></li>
+<li><p><code>data</code> — ชุดข้อมูลที่จะใช้ในกระบวนการ preprocessing</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="at">formula =</span> academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data)</span>
+<span id="cb5-2"><a href=""></a>rec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 20</code></pre>
+</div>
+</div>
+</section><section id="หลกการของ-recipes-2" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<p>หลังจากสร้าง recipe object แล้ว เราสามารถเพิ่มขั้นตอนการแปลงข้อมูลต่าง ๆ ลงใน recipe ได้โดยใช้ฟังก์ชัน <code>step_*()</code> ซึ่งมีหลายประเภท เช่น</p>
+<ul>
+<li>ขั้นแรกจะใช้ <code>update_role()</code> เพื่อกำหนดบทบาทของตัวแปร (เช่น เปลี่ยน <code>student_id</code> เป็น ID variable)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>rec <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>)</span>
+<span id="cb12-3"><a href=""></a>rec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 19
+ID:         1</code></pre>
+</div>
+</div>
+</section><section id="หลกการของ-recipes-3" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<ul>
+<li><p><code>step_impute_median()</code> — แทนค่าขาดหายด้วยค่ามัธยฐาน (เหมาะกับข้อมูลที่มี outliers)</p></li>
+<li><p>ผู้เรียนลองสำรวจผลลัพธ์ที่ได้จากการทดแทนค่าสูญหายได้ โดยพิมพ์คำสั่ง <code>rec %&gt;% prep() %&gt;% juice()</code> จากนั้นนำผลลัพธ์ที่ได้ไปสำรวจ</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>rec <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href=""></a>  <span class="fu">step_impute_median</span>(family_income)</span>
+<span id="cb19-3"><a href=""></a>rec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 19
+ID:         1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Operations </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Median imputation for: family_income</code></pre>
+</div>
+</div>
+</section><section id="หลกการของ-recipes-4" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<ul>
+<li><p><code>step_normalize()</code> ใช้้ปรับสเกลตัวแปรเชิงปริมาณให้มีสเกลแบบคะแนนมาตรฐาน (standardized score) กล่าวคือ มีค่าเฉลี่ยเป็น 0 และส่วนเบี่ยงเบนมาตรฐานเป็น 1</p></li>
+<li><p><code>step_range()</code> ใช้ปรับสเกลตัวแปรเชิงปริมาณให้มีสเกลแบบ normalized score กล่าวคือมีค่าอยู่ในช่วง [0,1] สเกลนี้เรียกอีกชื่อว่า min-max scaling</p></li>
+</ul>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>rec <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span> </span>
+<span id="cb29-2"><a href=""></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb29-3"><a href=""></a>rec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 19
+ID:         1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Operations </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Median imputation for: family_income</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Centering and scaling for: all_numeric_predictors()</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<p><br><br></p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>เราสามารถใช้ helper functions จาก dplyr เช่น <code>starts_with()</code>, <code>ends_with()</code>, <code>contains()</code>, <code>matches()</code>, <code>num_range()</code> หรือใช้ selectors จาก <code>tidyselect</code> เช่น <code>all_numeric_predictors()</code>, <code>all_nominal_predictors()</code> เพื่อเลือกตัวแปรที่ต้องการได้</p>
+</div>
+</div>
+</div>
+</div></div>
+</section><section id="หลกการของ-recipes-5" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<ul>
+<li><p><code>step_dummy()</code> ใช้แปลงตัวแปรเชิงหมวดหมู่ (categorical) ให้เป็นตัวแปรจำลอง (dummy/indicator variables) โดยค่าเริ่มต้นจะสร้าง k-1 dummy variables เพื่อหลีกเลี่ยงปัญหา multicollinearity</p></li>
+<li><p>ส่วนใหญ่เหมาะกับโมเดลเชิงเส้น (linear models) และโมเดลที่อิงระยะห่าง (distance-based models) เช่น k-NN, SVM, K-means</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>rec <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href=""></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb40-3"><a href=""></a>rec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="หลกการของ-recipes-6" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<p>สมมุติว่าเรากำหนด preprocessing steps ครบแล้ว ขั้นตอนที่ 3 คือการ fit (prep) recipe กับข้อมูล train เพื่อคำนวณพารามิเตอร์ต่าง ๆ ที่จำเป็นสำหรับการแปลงข้อมูล</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>rec_preped <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span> <span class="fu">prep</span>(<span class="at">retain =</span> T)</span>
+<span id="cb41-2"><a href=""></a>rec_preped</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 19
+ID:         1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Training information </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Training data contained 960 data points and 504 incomplete rows.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Operations </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Median imputation for: family_income | Trained</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Centering and scaling for: age, years_study, gpa, ... | Trained</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Dummy variables from: major, level, work_status, ... | Trained</code></pre>
+</div>
+</div>
+</section><section id="data-leakage-และการปองกนดวย-prep" class="slide level2"><h2>Data Leakage และการป้องกันด้วย <code>prep()</code>
+</h2>
+<div class="callout callout-caution callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Caution</strong></p>
+</div>
+<div class="callout-content">
+<p>เมื่อเราใช้ <code>prep()</code> กับ recipe สุดท้าย<br>
+ระบบจะ <strong>fit recipe เฉพาะกับ training set</strong> (ตามที่ระบุใน <code>recipe()</code>)<br>
+ซึ่งช่วยป้องกันปัญหา <strong>data leakage</strong> ได้!</p>
+</div>
+</div>
+</div>
+<div style="font-size: 70%;">
+<p><strong>Data Leakage คืออะไร?</strong></p>
+<ul>
+<li>ข้อมูลจาก <strong>นอก training set</strong> (เช่น test set) รั่วเข้ามาในขั้นตอน train model</li>
+<li>ส่งผลให้โมเดลดูเหมือนทำงานได้ดีเกินจริง เพราะมันได้เห็น test set บางส่วนมาแล้ว</li>
+<li>มักเกิดขึ้นเมื่อมีการคำนวณค่าทางสถิติจาก <strong>ทั้ง dataset</strong> แทนที่จะใช้เฉพาะ training set</li>
+</ul>
+<p><strong>ผลกระทบจาก Data Leakage</strong></p>
+<ul>
+<li>โมเดลมี performance สูงเกินจริงบน test set</li>
+<li>แต่เมื่อเจอ <strong>ข้อมูลใหม่จริง ๆ</strong> ประสิทธิภาพจะตกลง</li>
+<li>สร้างความเข้าใจผิดในการประเมินโมเดล</li>
+</ul>
+</div>
+</section><section id="note-imperatives-vs-declarative-programming" class="slide level2 smaller"><h2>Note: Imperatives vs Declarative Programming</h2>
+<p><strong>Imperative Programming</strong><br>
+- เขียนคำสั่ง → <em>รันทันที</em><br>
+- ได้ผลลัพธ์ออกมาในตอนนั้นเลย<br>
+- สิ่งที่ผู้ใช้ R ส่วนใหญ่คุ้นเคย เช่น</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a>x <span class="ot">&lt;-</span> <span class="fu">scale</span>(mydata<span class="sc">$</span>x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Declarative Programming</strong><br>
+- เขียนคำสั่งแบบ “ประกาศ” ว่า <em>จะทำอะไร</em> พร้อมข้อกำหนด (constraints)<br>
+- การรันจริงจะเกิดขึ้น “ทีหลัง” ตามที่ผู้ใช้หรือโปรแกรมกำหนด<br>
+- เช่น การสร้าง recipe ใน tidymodels</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href=""></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">|&gt;</span></span>
+<span id="cb57-2"><a href=""></a>    <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="หลกการของ-recipes-7" class="slide level2 smaller"><h2>หลักการของ <code>recipes</code>
+</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href=""></a><span class="fu">bake</span>(rec_preped, <span class="at">new_data =</span> <span class="cn">NULL</span>)  <span class="co"># แปลง train</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 960 × 27
+   student_id     age years_study    gpa credits_per_term withdrawal_count
+        &lt;int&gt;   &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+ 1         12  0.380        0.189 -1.49            -0.458            0.301
+ 2         26 -1.41         0.880 -0.405           -0.974            0.301
+ 3         29 -1.41         2.26  -1.87            -2.01             1.27 
+ 4         51 -0.515        2.26  -1.69            -0.458            0.301
+ 5         62  0.827       -0.501 -1.55             0.315            1.27 
+ 6         74 -0.0675       0.880 -2.67             0.315            3.21 
+ 7        103  1.27         0.880 -1.89            -0.200            2.24 
+ 8        145  0.827        2.26  -1.57            -2.01             2.24 
+ 9        151 -1.41         1.57  -1.35            -0.200            1.27 
+10        170  2.17         0.189 -2.08             0.315            1.27 
+# ℹ 950 more rows
+# ℹ 21 more variables: failed_courses &lt;dbl&gt;, family_income &lt;dbl&gt;,
+#   monthly_expense &lt;dbl&gt;, absence_count &lt;dbl&gt;, activity_participation &lt;dbl&gt;,
+#   library_usage &lt;dbl&gt;, distance_from_home &lt;dbl&gt;, commute_hours &lt;dbl&gt;,
+#   academic_risk &lt;fct&gt;, major_Engineering &lt;dbl&gt;, major_Liberal.Arts &lt;dbl&gt;,
+#   major_Medicine &lt;dbl&gt;, major_Science &lt;dbl&gt;, level_Undergraduate &lt;dbl&gt;,
+#   work_status_Working &lt;dbl&gt;, scholarship_status_None &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</section><section id="ตวอยางโครงสรางของ-recipe" class="slide level2 smaller"><h2>ตัวอย่างโครงสร้างของ recipe</h2>
+
+<img data-src="https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/recipes.png" style="width:80.0%" class="r-stretch quarto-figure-center"><p class="caption">https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/recipes.png</p><div class="sourceCode" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href=""></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb60-2"><a href=""></a></span>
+<span id="cb60-3"><a href=""></a>rec <span class="ot">&lt;-</span> <span class="fu">recipes</span>(y <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">|&gt;</span></span>
+<span id="cb60-4"><a href=""></a>  <span class="fu">step_impute_knn</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb60-5"><a href=""></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb60-6"><a href=""></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb60-7"><a href=""></a></span>
+<span id="cb60-8"><a href=""></a>rec_prep <span class="ot">&lt;-</span> <span class="fu">prep</span>(rec, <span class="at">training =</span> train_data)  <span class="co"># เรียนรู้จาก train เท่านั้น</span></span>
+<span id="cb60-9"><a href=""></a>x_train  <span class="ot">&lt;-</span> <span class="fu">bake</span>(rec_prep, <span class="at">new_data =</span> <span class="cn">NULL</span>)   <span class="co"># แปลง train</span></span>
+<span id="cb60-10"><a href=""></a>x_test   <span class="ot">&lt;-</span> <span class="fu">bake</span>(rec_prep, <span class="at">new_data =</span> test_data)  <span class="co"># แปลง test โดยไม่คำนวณใหม่</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="processing-tools" class="slide level2 smaller"><h2>Processing Tools</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a><span class="fu">grep</span>(<span class="st">"^step_"</span>, <span class="fu">ls</span>(<span class="st">"package:recipes"</span>), <span class="at">value =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "step_arrange"            "step_bagimpute"         
+ [3] "step_bin2factor"         "step_BoxCox"            
+ [5] "step_bs"                 "step_center"            
+ [7] "step_classdist"          "step_classdist_shrunken"
+ [9] "step_corr"               "step_count"             
+[11] "step_cut"                "step_date"              
+[13] "step_depth"              "step_discretize"        
+[15] "step_dummy"              "step_dummy_extract"     
+[17] "step_dummy_multi_choice" "step_factor2string"     
+[19] "step_filter"             "step_filter_missing"    
+[21] "step_geodist"            "step_harmonic"          
+[23] "step_holiday"            "step_hyperbolic"        
+[25] "step_ica"                "step_impute_bag"        
+[27] "step_impute_knn"         "step_impute_linear"     
+[29] "step_impute_lower"       "step_impute_mean"       
+[31] "step_impute_median"      "step_impute_mode"       
+[33] "step_impute_roll"        "step_indicate_na"       
+[35] "step_integer"            "step_interact"          
+[37] "step_intercept"          "step_inverse"           
+[39] "step_invlogit"           "step_isomap"            
+[41] "step_knnimpute"          "step_kpca"              
+[43] "step_kpca_poly"          "step_kpca_rbf"          
+[45] "step_lag"                "step_lincomb"           
+[47] "step_log"                "step_logit"             
+[49] "step_lowerimpute"        "step_meanimpute"        
+[51] "step_medianimpute"       "step_modeimpute"        
+[53] "step_mutate"             "step_mutate_at"         
+[55] "step_naomit"             "step_nnmf"              
+[57] "step_nnmf_sparse"        "step_normalize"         
+[59] "step_novel"              "step_ns"                
+[61] "step_num2factor"         "step_nzv"               
+[63] "step_ordinalscore"       "step_other"             
+[65] "step_pca"                "step_percentile"        
+[67] "step_pls"                "step_poly"              
+[69] "step_poly_bernstein"     "step_profile"           
+[71] "step_range"              "step_ratio"             
+[73] "step_regex"              "step_relevel"           
+[75] "step_relu"               "step_rename"            
+[77] "step_rename_at"          "step_rm"                
+[79] "step_rollimpute"         "step_sample"            
+[81] "step_scale"              "step_select"            
+[83] "step_shuffle"            "step_slice"             
+[85] "step_spatialsign"        "step_spline_b"          
+[87] "step_spline_convex"      "step_spline_monotone"   
+[89] "step_spline_natural"     "step_spline_nonnegative"
+[91] "step_sqrt"               "step_string2factor"     
+[93] "step_time"               "step_unknown"           
+[95] "step_unorder"            "step_window"            
+[97] "step_YeoJohnson"         "step_zv"                </code></pre>
+</div>
+</div>
+</section></section><section><section id="part2-techniques" class="title-slide slide level1 smaller center"><h1>Part2 : Techniques</h1>
+
+</section><section id="imputation" class="slide level2 smaller"><h2>2.1 Imputation</h2>
+<p>ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ</p>
+<div style="font-size: 90%;">
+<ul>
+<li>
+<p><strong>การแก้ปัญหา missing ใน inferential statistics</strong></p>
+<ul>
+<li><p>เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย</p></li>
+<li><p>พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน</p></li>
+<li><p>เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI</p></li>
+<li><p>ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล</p></li>
+</ul>
+</li>
+<li>
+<p><strong>การแก้ปัญหา missing ใน predictive modeling</strong></p>
+<ul>
+<li><p>เน้นสร้างโมเดลที่มีความแม่นยำ</p></li>
+<li><p>การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด</p></li>
+<li><p>เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด</p></li>
+<li><p>การอนุมานหรืออธิบายความสัมพันธ์ในประชากรไม่ใช่วัตถุประสงค์หลัก</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</section><section id="imputation-1" class="slide level2 smaller"><h2>2.1 Imputation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>?<span class="fu">step_naomit</span>() <span class="do">## listwise deletion</span></span>
+<span id="cb63-2"><a href=""></a>?<span class="fu">step_impute_mean</span>()</span>
+<span id="cb63-3"><a href=""></a>?<span class="fu">step_impute_median</span>()</span>
+<span id="cb63-4"><a href=""></a>?<span class="fu">step_impute_mode</span>()</span>
+<span id="cb63-5"><a href=""></a>?<span class="fu">step_impute_linear</span>()</span>
+<span id="cb63-6"><a href=""></a>?<span class="fu">step_impute_knn</span>()</span>
+<span id="cb63-7"><a href=""></a>?<span class="fu">step_impute_bag</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ในส่วนนี้จะใช้ชุดข้อมูล <code>exam.csv</code> เป็นตัวอย่าง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a>complete_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"exam.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="imputation-2" class="slide level2 smaller"><h2>2.1 Imputation</h2>
+<p>ลองสร้างการสูญหายใช้ตัวแปร <code>learning_performance</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb65-2"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb65-3"><a href=""></a>missing_data <span class="ot">&lt;-</span> complete_data <span class="sc">%&gt;%</span> </span>
+<span id="cb65-4"><a href=""></a>  <span class="do">## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage</span></span>
+<span id="cb65-5"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb65-6"><a href=""></a>     ach <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">|</span> engage <span class="sc">==</span> <span class="st">"moderate engage"</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, learning_performance) ,</span>
+<span id="cb65-7"><a href=""></a>    <span class="at">.default =</span> learning_performance</span>
+<span id="cb65-8"><a href=""></a>  )</span>
+<span id="cb65-9"><a href=""></a>  )</span>
+<span id="cb65-10"><a href=""></a>p1<span class="ot">&lt;-</span>missing_data <span class="sc">%&gt;%</span> </span>
+<span id="cb65-11"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb65-12"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb65-13"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb65-14"><a href=""></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb65-15"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb65-16"><a href=""></a>        <span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb65-17"><a href=""></a>p2<span class="ot">&lt;-</span>missing_data<span class="sc">%&gt;%</span> </span>
+<span id="cb65-18"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb65-19"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb65-20"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb65-21"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb65-22"><a href=""></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="imputation-3" class="slide level2 smaller"><h2>2.1 Imputation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href=""></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section><section id="imputation-4" class="slide level2 smaller"><h2>2.1 Imputation</h2>
+<p>ลองพิจารณาผลลัพธ์ต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a>split_missing <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(missing_data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> ach)</span>
+<span id="cb67-2"><a href=""></a>train_missing <span class="ot">&lt;-</span> <span class="fu">training</span>(split_missing)</span>
+<span id="cb67-3"><a href=""></a>test_missing <span class="ot">&lt;-</span> <span class="fu">testing</span>(split_missing)</span>
+<span id="cb67-4"><a href=""></a></span>
+<span id="cb67-5"><a href=""></a><span class="do">## mean imputation</span></span>
+<span id="cb67-6"><a href=""></a><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-7"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-8"><a href=""></a>  <span class="fu">step_impute_mean</span>(learning_performance_mar) <span class="sc">%&gt;%</span></span>
+<span id="cb67-9"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb67-10"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb67-11"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
+<span id="cb67-12"><a href=""></a>  <span class="fu">geom_point</span>()</span>
+<span id="cb67-13"><a href=""></a></span>
+<span id="cb67-14"><a href=""></a><span class="do">## knn imputation</span></span>
+<span id="cb67-15"><a href=""></a><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-16"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
+<span id="cb67-17"><a href=""></a>  <span class="fu">step_impute_knn</span>(learning_performance_mar) <span class="sc">%&gt;%</span></span>
+<span id="cb67-18"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb67-19"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb67-20"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
+<span id="cb67-21"><a href=""></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="encoding-ตวแปรจดประเภท" class="slide level2 smaller"><h2>2.2 Encoding ตัวแปรจัดประเภท</h2>
+<p>วัตถุประสงค์คือการแปลงข้อมูลจัดประเภทให้อยู่ในรูปแบบที่สามารถนำไปวิเคราะห์ได้ด้วยโมเดลการเรียนรู้ของเครื่อง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a><span class="fu">step_string2factor</span>()</span>
+<span id="cb68-2"><a href=""></a><span class="fu">step_factor2string</span>()</span>
+<span id="cb68-3"><a href=""></a><span class="fu">step_num2factor</span>()</span>
+<span id="cb68-4"><a href=""></a><span class="fu">step_unorder</span>()</span>
+<span id="cb68-5"><a href=""></a><span class="fu">step_dummy</span>()</span>
+<span id="cb68-6"><a href=""></a><span class="fu">step_other</span>()</span>
+<span id="cb68-7"><a href=""></a><span class="fu">step_unknown</span>()</span>
+<span id="cb68-8"><a href=""></a><span class="fu">step_novel</span>()</span>
+<span id="cb68-9"><a href=""></a></span>
+<span id="cb68-10"><a href=""></a><span class="fu">step_discretize</span>()</span>
+<span id="cb68-11"><a href=""></a><span class="fu">step_discretize_cart</span>()</span>
+<span id="cb68-12"><a href=""></a><span class="fu">step_discretize_xgb</span>()</span>
+<span id="cb68-13"><a href=""></a></span>
+<span id="cb68-14"><a href=""></a><span class="fu">step_lencode_glm</span>()</span>
+<span id="cb68-15"><a href=""></a><span class="fu">step_lencode_bayes</span>()</span>
+<span id="cb68-16"><a href=""></a><span class="fu">step_lencode_mixed</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="encoding-ตวแปรจดประเภท-1" class="slide level2 smaller scrollable"><h2>2.2 Encoding ตัวแปรจัดประเภท</h2>
+<div style="font-size: 70%;">
+<ul>
+<li><p><code>step_discretize_cart()</code> และ <code>step_discretize_xgb()</code> ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ</p></li>
+<li><p><code>step_lencode_glm()</code> เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้</p></li>
+</ul>
+<ol type="1">
+<li><p>สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor</p></li>
+<li><p>ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ</p></li>
+</ol>
+<ul>
+<li><p><code>step_lencode_bayes()</code> หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ <code>step_lencode_bayes()</code> จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม</p></li>
+<li><p><code>step_lencode_mixed()</code> หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data</p></li>
+</ul>
+</div>
+</section><section id="scaling-transform" class="slide level2 smaller"><h2>2.3 Scaling &amp; Transform</h2>
+<p>คือการแปลงคะแนนของตัวแปรเชิงปริมาณให้มีลักษณะการแจกแจงหรืออยู่ในรูปแบบที่เหมาะสำหรับการนำไปวิเคราะห์ด้วยโมเดลการเรียนรู้ของเครื่อง หรือในบางกรณีเป็นการสร้างตัวแปรใหม่เพื่อเพิ่มประสิทธิภาพการเรียนรู้ของโมเดล</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>?<span class="fu">step_log</span>()</span>
+<span id="cb69-2"><a href=""></a>?<span class="fu">step_sqrt</span>()</span>
+<span id="cb69-3"><a href=""></a>?<span class="fu">step_BoxCox</span>()</span>
+<span id="cb69-4"><a href=""></a>?<span class="fu">step_YeoJohnson</span>()</span>
+<span id="cb69-5"><a href=""></a></span>
+<span id="cb69-6"><a href=""></a>?<span class="fu">step_normalize</span>() <span class="do">## z-score = (x-mean)/sd</span></span>
+<span id="cb69-7"><a href=""></a>?<span class="fu">step_range</span>() <span class="do">## normalization --&gt; N = (x-min)/(max-min)</span></span>
+<span id="cb69-8"><a href=""></a>?<span class="fu">step_scale</span>() <span class="do">## x/sd ---&gt; ทำให้ variance  sd = 1</span></span>
+<span id="cb69-9"><a href=""></a>?<span class="fu">step_center</span>() <span class="do">## centering x-mean</span></span>
+<span id="cb69-10"><a href=""></a>?<span class="fu">step_percentile</span>() <span class="do">## แปลงข้อมูลเชิงปริมาณให้เป็นค่า percentile </span></span>
+<span id="cb69-11"><a href=""></a>?<span class="fu">step_mutate</span>()</span>
+<span id="cb69-12"><a href=""></a></span>
+<span id="cb69-13"><a href=""></a></span>
+<span id="cb69-14"><a href=""></a>?<span class="fu">step_poly</span>()</span>
+<span id="cb69-15"><a href=""></a></span>
+<span id="cb69-16"><a href=""></a></span>
+<span id="cb69-17"><a href=""></a>?<span class="fu">step_pca</span>()</span>
+<span id="cb69-18"><a href=""></a>?<span class="fu">step_pls</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="scaling-transform-1" class="slide level2 smaller"><h2>2.3 Scaling &amp; Transform</h2>
+<ul>
+<li>
+<code>step_pls()</code> คือ Partial Least Squares (PLS) ซึ่งเป็นเทคนิค supervised dimensionality reduction และ feature extraction เพื่อสร้างตัวแปรใหม่ที่เป็น linear combination ของตัวแปรเดิมที่มีอยู่ (องค์ประกอบ) ที่มีความสัมพันธ์กับ outcome มากที่สุด</li>
+</ul>
+<p>จะใช้ฟังก์ชันนี้ได้จะต้องมี library-mixOmics ติดตั้งก่อน ซึ่ง library ดังกล่าวอยู่ใน Bioconductor server สามารถติดตั้งได้ดังนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a><span class="co"># install.packages("pak")</span></span>
+<span id="cb70-2"><a href=""></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"mixOmics"</span>)</span>
+<span id="cb70-3"><a href=""></a></span>
+<span id="cb70-4"><a href=""></a><span class="fu">recipe</span>(G3 <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-5"><a href=""></a>  <span class="fu">step_pls</span>(<span class="fu">all_numeric_predictors</span>(), <span class="at">num_comp =</span> <span class="dv">3</span>, <span class="at">outcome =</span> <span class="st">"G3"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-6"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-7"><a href=""></a>  <span class="fu">juice</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section></section>
+</div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>week 2: 2758623 Machine Learning Principles and Application<br> ผศ.ดร.สิวะโชติ ศรีสุทธิยากร</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="feature_engineering_tidymodels_files/libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/quarto-support/support.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/notes/notes.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/search/search.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/zoom/zoom.js"></script><script src="feature_engineering_tidymodels_files/libs/revealjs/plugin/math/math.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'fade',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script><script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script><script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+
+
+</body></html>

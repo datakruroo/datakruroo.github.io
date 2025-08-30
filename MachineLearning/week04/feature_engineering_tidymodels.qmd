@@ -1,0 +1,537 @@
+---
+title: "Week 3: Feature Engineering"
+subtitle: "recipess • Workflows • Leakage Safety • Explainability"
+author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+date: today
+lang: th
+format:
+  revealjs:
+    slide-number: c/t
+    footer: "week 2: 2758623 Machine Learning Principles and Application<br>
+            ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: theme.scss
+    css: my_css.css
+    scrollable: true
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    title-slide-attributes:
+      data-background-image: img/ML.jpg
+      data-background-opacity: 8%
+      data-background-size: full
+code-link: true
+execute:
+  echo: true
+  freeze: auto
+---
+
+```{r echo = F}
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,         #<<
+  mute_unhighlighted_code = TRUE  #<<
+)
+```
+
+# Part1 : บทนำ {.smaller}
+
+> อย่าลืมว่า modelling เป็นเพียงส่วนหนึ่งของกระบวนการทาง data science ทั้งหมด
+
+![https://www.tmwr.org/software-modeling.html#model-phases](https://www.tmwr.org/premade/data-science-model.svg)
+
+## Tidymodels core packages {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+`rsample:` general methods for resampling
+
+`recipes:` unified interface to data preprocessing `parsnip:` unified interface to modeling
+
+`workflows:` combine model blueprints and preprocessing recipes
+
+`dials:` create tuning parameters 
+
+`tune:` hyperparameter tuning 
+
+`broom:` tidy model outputs 
+
+`yardstick:` model evaluation
+
+:::
+
+::: {.column width="60%"}
+
+![](https://simonschoe.github.io/ml-with-tidymodels/img/tidymodels-hex.PNG)
+:::
+
+::::
+
+## ชุดข้อมูลตัวอย่าง {.smaller}
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("student_data.csv")
+data <- data %>% mutate(student_id = 1:dim(data)[1], .before = everything())
+glimpse(data, 80)
+```
+
+## ชุดข้อมูลตัวอย่าง {.smaller}
+
+
+```{r}
+library(naniar)
+data %>% 
+  miss_var_summary()
+```
+
+
+
+
+```{r echo = F}
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = academic_risk)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
+## Feature Engineering {.smaller}
+
+> ประสิทธิภาพโมเดลมักได้มาจาก **คุณภาพฟีเจอร์** มากกว่าความซับซ้อนของอัลกอริทึม
+
+-   **Feature Engineering** คือกระบวนการแปลงหรือปรับแต่งข้อมูลดิบ (raw data) ให้อยู่ในรูปแบบที่เหมาะสมสำหรับการสร้างโมเดลการเรียนรู้ของเครื่อง
+
+    -   เพิ่มประสิทธิภาพการเรียนรู้ของโมเดล --\> ประสิทธิภาพในการทำนาย
+
+    -   แก้ไขปัญหาลดข้อจำกัดที่เกิดขึ้นในข้อมูล
+
+    -   ช่วยให้การตีความหมายผลลัพธ์ของโมเดลทำได้ง่ายขึ้น
+
+-   **Feature Engineering** = ศาสตร์/ศิลป์ แปลงข้อมูลดิบให้กลายเป็น features ที่เครื่องสามารถเรียนรู้ได้ดี
+
+-   แยกเป็น 2 มิติ
+
+    -   Data Preprocessing (ให้โมเดลทำงานได้)
+
+    -   Feature Creation (ทำให้โมเดลทำงานได้ดี)
+
+## ควรทำ feature engineering ตอนไหน? {.smaller}
+
+1.  ก่อนที่จะ train model
+
+2.  ระหว่างที่ train model
+
+3.  หลังจากที่ train model แล้ว
+
+## แนวคิดหลัก {.smaller}
+
+::: {style="font-size: 0.4em;"}
+| ประเภท | เป้าหมายหลัก | ตัวอย่าง `step_*` (คละ basic/advance) | เมื่อควรใช้ / ข้อควรระวัง |
+|------------------|------------------|------------------|------------------|
+| **Data Preprocessing**<br/>(ทำให้โมเดล “ทำงานได้”) | แก้ NA, แปลงชนิดข้อมูล, ปรับสเกล/รูปแจกแจง, ตัด noise/redundancy | `step_impute_knn`, `step_impute_bag`, `step_unknown`, `step_novel` • `step_other`, `step_dummy` • `step_log`, `step_YeoJohnson`, `step_BoxCox` • `step_normalize`, `step_spatialsign` • `step_zv`, `step_nzv`, `step_corr`, `step_lincomb` • `step_date`, `step_holiday` • `themis::step_smote`¹, `themis::step_downsample`, `themis::step_upsample` | \- ใช้ `prep()` กับ **train เท่านั้น** เพื่อกัน leakage; sampling steps (เช่น `step_smote`) ใส่ `skip=TRUE` เพื่อ **ไม่** ใช้กับข้อมูลใหม่.<br/>- ใส่ลำดับให้ถูก: encode → scale → filter; ตัวอย่าง interaction ควรเกิด **หลัง** dummy |
+| **Feature Creation**<br/>(ทำให้โมเดล “ทำงานได้ดีขึ้น”) | สร้างสัญญาณใหม่ จับ nonlinearity/interaction โครงสร้างเวลา/ข้อความ | `step_interact` • `step_poly`, `step_ns` • `step_discretize` • `step_mutate` (row-wise ratios/logs) • `step_pca`, `step_kpca`, `step_ica` • `embed::step_umap`² • `embed::step_lencode_glm`, `embed::step_lencode_mixed`² (impact/target-based encoding ภายใต้การควบคุม) • `textrecipess::step_tokenize`, `textrecipess::step_stopwords`, `textrecipess::step_ngram`, `textrecipess::step_tfidf`³ | \- เลี่ยง leakage เมื่อใช้ encoding อิงเป้าหมาย: ทำภายใน resampling ที่ถูกต้องเท่านั้น (ผ่าน `fit_resamples`).<br/>- `step_mutate` ให้คงเป็น **row-wise** (เช่น `x/y`, `log(x)`); อย่าคำนวณสถิติทั้งคอลัมน์ใน `bake()` |
+| **Boundary / Hybrid** | ลดยุ่งเหยิง/มิติ พร้อมคงสัญญาณ | `step_other` (ก่อน dummy), `step_corr` (ลด redundancy) • `step_pca` (หลัง normalize) • `embed::step_umap`² | \- ชั่งน้ำหนักระหว่าง **ตีความได้** (filter selection) กับ **พลังทำนาย** (feature extraction).<br/>- ตรวจสอบผลด้วย metric ทั้งเชิงพยากรณ์และความอธิบายได้. |
+
+**เชิงอ้างอิง/บันทึก**\
+1) `themis` เหมาะกับ class imbalance (`step_smote`, `step_downsample`, `step_upsample`); ใส่ไว้ **ก่อน** โมเดลและใช้เฉพาะ train fold (`skip=TRUE`).\
+2) `embed` ให้เครื่องมือ encoding/embedding ขั้นสูง (`step_lencode_*`, `step_umap`).\
+3) `textrecipess` ใช้กับข้อมูลข้อความทั้งสาย (tokenize → clean → n-gram → tf-idf ฯลฯ).
+:::
+
+## หลักการของ `recipes` {.smaller}
+
+library-`recipes` เป็น framework ที่ีรวบรวมฟังก์ชันสำหรับการเตรียมข้อมูลและการทำ feature engineering ซึ่งทำงานร่วมกับ `tidymodels` ได้เป็นอย่างดี
+
+1.  นิยามการแปลงข้อมูลแยกจากนิยามโมเดล นำ recipes เดียวไปรันกับหลายโมเดลได้
+2.  ทุกขั้นตอนถูกเก็บใน **recipes object** เดียว ตรวจสอบ ทำซ้ำ ปรับปรุง และส่งต่อได้
+3.  การ preprocessing จะคำนวณพารามิเตอร์จาก **train เท่านั้น** แล้วจึงนำพารามิเตอร์ดังกล่าวไปใช้ในการ preprocess ข้อมูลใหม่ (test/validation) ซึ่งช่วยป้องกันปัญหา data leakage ได้อย่างมีประสิทธิภาพ
+
+## หลักการของ `recipes` {.smaller}
+
+แต่ละ recipe ประกอบด้วยการแปลงข้อมูลหลายขั้นตอนที่เชื่อมโยงกัน กระบวนการนี้ต้องเริ่มต้นจาก การสร้าง recipe object ก่อน โดยใช้ฟังก์ชัน `recipe()` ที่มีอาร์กิวเมนท์ 2 ตัวได้แก่
+
+- `formula` — สูตรระบุความสัมพันธ์ระหว่างตัวแปรตาม (response) และตัวแปรอิสระ (predictors) ซึ่งจะเขียนในรูปแบบ `y ~ x1 + x2 + ...` หรือ `y ~ .` (ทุกตัวแปรยกเว้น y)
+
+- `data` — ชุดข้อมูลที่จะใช้ในกระบวนการ preprocessing
+
+```{r echo = T, message = T, results = T}
+rec <- recipe(formula = academic_risk ~ ., data = train_data)
+rec
+```
+
+## หลักการของ `recipes` {.smaller}
+
+หลังจากสร้าง recipe object แล้ว เราสามารถเพิ่มขั้นตอนการแปลงข้อมูลต่าง ๆ ลงใน recipe ได้โดยใช้ฟังก์ชัน `step_*()` ซึ่งมีหลายประเภท เช่น
+
+- ขั้นแรกจะใช้ `update_role()` เพื่อกำหนดบทบาทของตัวแปร (เช่น เปลี่ยน `student_id` เป็น ID variable)
+
+```{r echo = T, message = T, results = T}
+rec <- rec %>% 
+  update_role(student_id, new_role = "ID")
+rec
+```
+
+
+## หลักการของ `recipes` {.smaller}
+
+- `step_impute_median()` — แทนค่าขาดหายด้วยค่ามัธยฐาน (เหมาะกับข้อมูลที่มี outliers)
+
+- ผู้เรียนลองสำรวจผลลัพธ์ที่ได้จากการทดแทนค่าสูญหายได้ โดยพิมพ์คำสั่ง `rec %>% prep() %>% juice()` จากนั้นนำผลลัพธ์ที่ได้ไปสำรวจ
+
+```{r echo = T, message = T, results = T}
+rec <- rec %>% 
+  step_impute_median(family_income)
+rec
+```
+
+
+## หลักการของ `recipes` {.smaller}
+
+- `step_normalize()` ใช้้ปรับสเกลตัวแปรเชิงปริมาณให้มีสเกลแบบคะแนนมาตรฐาน (standardized score) กล่าวคือ มีค่าเฉลี่ยเป็น 0 และส่วนเบี่ยงเบนมาตรฐานเป็น 1
+
+- `step_range()` ใช้ปรับสเกลตัวแปรเชิงปริมาณให้มีสเกลแบบ normalized score กล่าวคือมีค่าอยู่ในช่วง [0,1] สเกลนี้เรียกอีกชื่อว่า min-max scaling
+
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+```{r echo = T, message = T, results = T}
+rec <- rec %>% 
+  step_normalize(all_numeric_predictors())
+rec
+```
+
+:::
+
+::: {.column width="30%"}
+
+<br>
+<br>
+
+
+::: callout-note
+
+เราสามารถใช้ helper functions จาก dplyr เช่น `starts_with()`, `ends_with()`, `contains()`, `matches()`, `num_range()` หรือใช้ selectors จาก `tidyselect` เช่น `all_numeric_predictors()`, `all_nominal_predictors()` เพื่อเลือกตัวแปรที่ต้องการได้
+
+:::
+
+:::
+
+::::
+
+
+
+## หลักการของ `recipes` {.smaller}
+
+- `step_dummy()` ใช้แปลงตัวแปรเชิงหมวดหมู่ (categorical) ให้เป็นตัวแปรจำลอง (dummy/indicator variables) โดยค่าเริ่มต้นจะสร้าง k-1 dummy variables เพื่อหลีกเลี่ยงปัญหา multicollinearity
+
+- ส่วนใหญ่เหมาะกับโมเดลเชิงเส้น (linear models) และโมเดลที่อิงระยะห่าง (distance-based models) เช่น k-NN, SVM, K-means
+
+```{r}
+rec <- rec %>% 
+  step_dummy(all_nominal_predictors())
+rec
+```
+
+
+## หลักการของ `recipes` {.smaller}
+
+สมมุติว่าเรากำหนด preprocessing steps ครบแล้ว ขั้นตอนที่ 3 คือการ fit (prep) recipe กับข้อมูล train เพื่อคำนวณพารามิเตอร์ต่าง ๆ ที่จำเป็นสำหรับการแปลงข้อมูล
+
+```{r echo = T, message = T, results = T}
+rec_preped <- rec %>% prep(retain = T)
+rec_preped
+```
+
+## Data Leakage และการป้องกันด้วย `prep()`
+
+::: callout-caution
+
+เมื่อเราใช้ `prep()` กับ recipe สุดท้าย  
+ระบบจะ **fit recipe เฉพาะกับ training set** (ตามที่ระบุใน `recipe()`)  
+ซึ่งช่วยป้องกันปัญหา **data leakage** ได้!
+
+:::
+
+<div style="font-size: 70%;">
+
+**Data Leakage คืออะไร?**
+
+- ข้อมูลจาก **นอก training set** (เช่น test set) รั่วเข้ามาในขั้นตอน train model
+- ส่งผลให้โมเดลดูเหมือนทำงานได้ดีเกินจริง เพราะมันได้เห็น test set บางส่วนมาแล้ว
+- มักเกิดขึ้นเมื่อมีการคำนวณค่าทางสถิติจาก **ทั้ง dataset** แทนที่จะใช้เฉพาะ training set
+
+**ผลกระทบจาก Data Leakage**
+
+- โมเดลมี performance สูงเกินจริงบน test set
+- แต่เมื่อเจอ **ข้อมูลใหม่จริง ๆ** ประสิทธิภาพจะตกลง
+- สร้างความเข้าใจผิดในการประเมินโมเดล
+
+</div>
+
+## Note: Imperatives vs Declarative Programming {.smaller}
+
+**Imperative Programming**  
+- เขียนคำสั่ง → *รันทันที*  
+- ได้ผลลัพธ์ออกมาในตอนนั้นเลย  
+- สิ่งที่ผู้ใช้ R ส่วนใหญ่คุ้นเคย เช่น  
+
+```{r eval=F}
+x <- scale(mydata$x)
+```
+  
+**Declarative Programming**  
+- เขียนคำสั่งแบบ “ประกาศ” ว่า *จะทำอะไร* พร้อมข้อกำหนด (constraints)  
+- การรันจริงจะเกิดขึ้น “ทีหลัง” ตามที่ผู้ใช้หรือโปรแกรมกำหนด  
+- เช่น การสร้าง recipe ใน tidymodels  
+
+```{r eval = F}
+rec <- recipe(y ~ ., data = train) |>
+    step_normalize(all_numeric_predictors())
+```
+
+## หลักการของ `recipes` {.smaller}
+
+```{r}
+bake(rec_preped, new_data = NULL)  # แปลง train
+```
+
+
+
+## ตัวอย่างโครงสร้างของ recipe {.smaller}
+
+
+![https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/recipes.png](https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/recipes.png){width="80%"}
+
+```r
+library(tidymodels)
+
+rec <- recipes(y ~ ., data = train_data) |>
+  step_impute_knn(all_predictors()) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_normalize(all_numeric_predictors())
+
+rec_prep <- prep(rec, training = train_data)  # เรียนรู้จาก train เท่านั้น
+x_train  <- bake(rec_prep, new_data = NULL)   # แปลง train
+x_test   <- bake(rec_prep, new_data = test_data)  # แปลง test โดยไม่คำนวณใหม่
+```
+
+
+## Processing Tools {.smaller}
+
+```{r}
+grep("^step_", ls("package:recipes"), value = TRUE)
+```
+
+
+# Part2 : Techniques {.smaller}
+
+
+## 2.1 Imputation {.smaller}
+
+
+ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ
+
+<div style="font-size: 90%;">
+
+- **การแก้ปัญหา missing ใน inferential statistics**
+
+
+    -   เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย
+
+    -   พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน
+
+    -   เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI
+
+    -   ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล
+
+
+- **การแก้ปัญหา missing ใน predictive modeling**
+
+    -   เน้นสร้างโมเดลที่มีความแม่นยำ
+
+    -   การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด
+
+    -   เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด
+
+    -   การอนุมานหรืออธิบายความสัมพันธ์ในประชากรไม่ใช่วัตถุประสงค์หลัก
+
+</div>
+
+
+## 2.1 Imputation {.smaller}
+
+```{r eval = F}
+?step_naomit() ## listwise deletion
+?step_impute_mean()
+?step_impute_median()
+?step_impute_mode()
+?step_impute_linear()
+?step_impute_knn()
+?step_impute_bag()
+```
+
+ในส่วนนี้จะใช้ชุดข้อมูล `exam.csv` เป็นตัวอย่าง
+
+```{r}
+complete_data <- read_csv("exam.csv")
+```
+
+
+## 2.1 Imputation {.smaller}
+
+ลองสร้างการสูญหายใช้ตัวแปร `learning_performance`
+
+```{r}
+library(patchwork)
+set.seed(123)
+missing_data <- complete_data %>% 
+  ## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage
+  mutate(learning_performance_mar = case_when(
+     ach < 40 | engage == "moderate engage"  ~ ifelse(runif(387,0,1)<0.8,NA, learning_performance) ,
+    .default = learning_performance
+  )
+  )
+p1<-missing_data %>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x=value))+
+  geom_histogram(aes(fill = name))+
+  labs(fill = "")+
+  theme(legend.position = "none",
+        legend.direction = "horizontal")
+p2<-missing_data%>% 
+  pivot_longer(cols=starts_with("learning")) %>% 
+  ggplot(aes(x = value, y=name))+
+  geom_boxplot(aes(fill = name))+
+  ylab("")+
+    theme(legend.position = "none")
+
+
+```
+
+## 2.1 Imputation {.smaller}
+
+```{r}
+p1+p2
+```
+
+## 2.1 Imputation {.smaller}
+
+ลองพิจารณาผลลัพธ์ต่อไปนี้
+
+```{r eval = F}
+split_missing <- initial_split(missing_data, prop = 0.8, strata = ach)
+train_missing <- training(split_missing)
+test_missing <- testing(split_missing)
+
+## mean imputation
+recipe(ach ~ ., data = train_missing) %>% 
+  step_rm(learning_performance) %>% 
+  step_impute_mean(learning_performance_mar) %>%
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = learning_performance_mar, y= ach))+
+  geom_point()
+
+## knn imputation
+recipe(ach ~ ., data = train_missing) %>% 
+  step_rm(learning_performance) %>% 
+  step_impute_knn(learning_performance_mar) %>%
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = learning_performance_mar, y= ach))+
+  geom_point()
+```
+
+
+## 2.2 Encoding ตัวแปรจัดประเภท {.smaller}
+
+วัตถุประสงค์คือการแปลงข้อมูลจัดประเภทให้อยู่ในรูปแบบที่สามารถนำไปวิเคราะห์ได้ด้วยโมเดลการเรียนรู้ของเครื่อง
+
+```{r eval = F}
+step_string2factor()
+step_factor2string()
+step_num2factor()
+step_unorder()
+step_dummy()
+step_other()
+step_unknown()
+step_novel()
+
+step_discretize()
+step_discretize_cart()
+step_discretize_xgb()
+
+step_lencode_glm()
+step_lencode_bayes()
+step_lencode_mixed()
+```
+
+
+## 2.2 Encoding ตัวแปรจัดประเภท {.smaller}
+
+<div style="font-size: 70%;">
+
+
+-   `step_discretize_cart()` และ `step_discretize_xgb()` ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ
+
+-   `step_lencode_glm()` เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้
+
+1.  สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor
+
+2.  ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ
+
+-   `step_lencode_bayes()` หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ `step_lencode_bayes()` จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม
+
+-   `step_lencode_mixed()` หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data
+
+</div>
+
+
+## 2.3 Scaling & Transform {.smaller}
+
+คือการแปลงคะแนนของตัวแปรเชิงปริมาณให้มีลักษณะการแจกแจงหรืออยู่ในรูปแบบที่เหมาะสำหรับการนำไปวิเคราะห์ด้วยโมเดลการเรียนรู้ของเครื่อง หรือในบางกรณีเป็นการสร้างตัวแปรใหม่เพื่อเพิ่มประสิทธิภาพการเรียนรู้ของโมเดล
+
+```{r eval = F}
+
+?step_log()
+?step_sqrt()
+?step_BoxCox()
+?step_YeoJohnson()
+
+?step_normalize() ## z-score = (x-mean)/sd
+?step_range() ## normalization --> N = (x-min)/(max-min)
+?step_scale() ## x/sd ---> ทำให้ variance  sd = 1
+?step_center() ## centering x-mean
+?step_percentile() ## แปลงข้อมูลเชิงปริมาณให้เป็นค่า percentile 
+?step_mutate()
+
+
+?step_poly()
+
+
+?step_pca()
+?step_pls()
+```
+
+## 2.3 Scaling & Transform {.smaller}
+
+
+-   `step_pls()` คือ Partial Least Squares (PLS) ซึ่งเป็นเทคนิค supervised dimensionality reduction และ feature extraction เพื่อสร้างตัวแปรใหม่ที่เป็น linear combination ของตัวแปรเดิมที่มีอยู่ (องค์ประกอบ) ที่มีความสัมพันธ์กับ outcome มากที่สุด
+
+จะใช้ฟังก์ชันนี้ได้จะต้องมี library-mixOmics ติดตั้งก่อน ซึ่ง library ดังกล่าวอยู่ใน Bioconductor server สามารถติดตั้งได้ดังนี้
+
+```{r eval = F}
+# install.packages("pak")
+pak::pak("mixOmics")
+
+recipe(G3 ~ ., data = train) %>% 
+  step_pls(all_numeric_predictors(), num_comp = 3, outcome = "G3") %>% 
+  prep() %>% 
+  juice()
+```
+

@@ -1,0 +1,272 @@
+---
+title: "Feature Engineering"
+format: html
+editor: visual
+---
+
+## 0. Importing data
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("student_data.csv")
+dim(data)[2]
+data <- data %>%
+          mutate(student_id = 1:dim(data)[1], .before = "age")
+glimpse(data, 70)
+```
+
+กำหนดวัตถุประสงค์ของการ train model
+
+- สร้าง classification model เพื่อจำแนกความเสี่ยงในการเรียนของนักเรียน (academic_risk) ด้วย features ต่าง ๆ ที่เกี่ยวข้อง
+
+- เราคาดหวังว่า โมเดลที่สร้างขึ้นควรจะต้องสามารถแยกแยะหรือทำนายได้ว่า นักเรียนคนนั้นคนนี้มีความเสี่ยงที่จะเรียนรู้อยู่ในระดับไหน
+
+- สร้างระบบที่เรียกว่า early warning system (EWS) เพื่อช่วยให้ครูผู้สอนสามารถติดตามและดูแลนักเรียนที่มีความเสี่ยงในการเรียนได้อย่างเหมาะสม
+
+
+## 1. train-test split
+
+```{r}
+## EDA
+data %>% 
+  ggplot(aes(x = academic_risk)) +
+  geom_bar()
+```
+
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.7, strata = academic_risk)
+train_data <- training(split)
+test_data <- testing(split)
+
+library(patchwork)
+p1 <- train_data %>% 
+  ggplot(aes(x = academic_risk)) +
+  geom_bar()+
+  ggtitle("Train data")
+
+p2 <- test_data %>% 
+  ggplot(aes(x = academic_risk)) +
+  geom_bar()+
+  ggtitle("Test data")
+
+p1+p2
+```
+
+กระบวนการภาพใหญ่
+
+- importing data
+
+- train-test split
+
+----- workflow -----
+
+- data preprocessing/feature engineering --> ระบุผ่าน recipe object
+
+- model training --> ระบุผ่าน parsnip
+
+-------- end ---------
+
+- model evaluation
+
+- model deployment
+
+data ใหม่ -----> model -----> output <--- user อ่านผ่าน  ui ของ app หรือ dashboard
+
+
+
+## 2. recipes step: data preprocessing model
+
+```{r}
+train_data %>% 
+  glimpse(80)
+```
+
+สำรวจ missing value
+
+```{r}
+library(naniar)
+missing_var <- train_data %>% 
+  miss_var_summary() %>% 
+  slice(1:4) %>% 
+  pull(variable)
+
+train_data %>% 
+  select(all_of(missing_var))
+
+
+train_data %>% 
+  miss_case_summary() %>% 
+  filter(n_miss > 0)
+```
+
+
+
+```{r}
+academic_rec <- recipe(formula = academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "student_id") %>% 
+  step_rm(gpa) %>% 
+  ## step_naomit(all_predictors()) ## listwise deletion 
+  step_impute_mean(family_income, library_usage) %>% 
+  step_impute_mode(payment_status, work_status) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors())
+
+academic_rec
+```
+
+แอบดูผลลัพธ์ที่ได้จากการวาง preprocessing ผ่าน recipe
+
+```{r}
+academic_rec %>% 
+  prep() %>%  ## สั่งให้ recipe คำนวณพารามิเตอร์สำหรับ data preprocesssing model
+  juice() %>% 
+  glimpse(80)
+```
+
+
+```{r}
+academic_rec %>% 
+  prep()
+```
+
+
+
+```{r}
+p1 <- train_data %>% 
+  ggplot(aes(x = family_income))+
+  geom_histogram()+
+  ylim(0,350)+
+  ggtitle("listwise deletion")
+
+
+p2 <- academic_rec %>% 
+  prep() %>%  ## สั่งให้ recipe คำนวณพารามิเตอร์สำหรับ data preprocesssing model
+  juice() %>% 
+  ggplot(aes(x = family_income))+
+  geom_histogram()+
+  ylim(0,350)+
+  ggtitle("mean imputation")
+
+p1+p2
+```
+
+
+## 3. model specification : learning model
+
+- งานนี้วางแผนว่าจะใช้ regularized regression แบบ classification ซึ่งก็คือ multinomial logistic regression นั่นเอง 
+
+- เราจะทำ lasso regression (L1 regularization) เพื่อให้ได้ model ที่ง่ายและไม่ซับซ้อนเกินไป
+
+```{r}
+multinomial_spec <- multinom_reg(penalty = tune(), 
+                                 mixture = 1) %>%  #lasso regression
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+```
+
+
+
+## 4. create workflow ของการ train model
+
+
+```{r}
+multinomial_wf <- workflow() %>%  ## สร้าง workflow object
+  add_recipe(academic_rec) %>%
+  add_model(multinomial_spec)
+multinomial_wf
+```
+
+## 5. hyperparameter tuning
+
+- การ tune hyperparameter เราจะใช้กระบวนการ resampling เข้ามาช่วยประมาณ validation error ซึ่งจะใช้ในการประเมินว่า hyperparameter แบบไหนจะเหมาะกับการเรียนรู้ของแต่ละอัลกอริทึม
+
+- ในกรณีนี้เราเลือก k-folds CV ที่เป็นกระบวนการ cross validation หนึ่งที่เหมาะกับการพัฒนา predictive model
+
+
+```{r}
+## 5.1 สร้าง CV dataset
+set.seed(123)
+my_folds <- vfold_cv(train_data, v = 5, strata = academic_risk)
+my_folds$splits[[1]] %>% analysis()
+my_folds$splits[[1]] %>% assessment()
+my_folds$splits[[2]] %>% analysis()
+my_folds$splits[[2]] %>% assessment()
+```
+
+
+```{r}
+## 5.2 กำหนด grid ของ hyperparameter ที่จะ tune ในที่นี้คือ penalty (lambda)
+lambda_grid1 <- grid_regular(penalty(range = c(-4, 0)), levels = 20)
+
+lambda_grid2 <- tibble(
+  penalty = seq(10^-4, 1,0.01)
+)
+
+lambda_grid1
+```
+
+
+
+```{r}
+my_metrics <- metric_set(accuracy, roc_auc, sens, spec, f_meas, precision)
+
+multinomial_tuned <- multinomial_wf %>% 
+  tune_grid(
+    resamples = my_folds,
+    grid = lambda_grid1,
+    metrics = my_metrics
+  )
+
+multinomial_tuned  %>% autoplot()
+  collect_metrics()
+```
+
+
+```{r}
+### ---
+select_best(multinomial_tuned, metric =  "accuracy")
+my_best <- select_best(multinomial_tuned, metric = "roc_auc")
+###---
+select_best(multinomial_tuned, metric = "sens")
+select_best(multinomial_tuned, metric = "f_meas")
+
+```
+
+
+```{r}
+multinomial_tuned  %>% 
+  collect_metrics() %>% 
+  filter(.config %in% c("Preprocessor1_Model05", "Preprocessor1_Model06")) %>% 
+  mutate(model = case_when(
+    .config == "Preprocessor1_Model05" ~ "concentrated_on_f1",
+    .config == "Preprocessor1_Model06" ~ "concentreted_on_roc"
+  )) %>% 
+  ggplot(aes(y = mean, x= model))+
+  geom_col() +
+  facet_wrap(~.metric)+
+  coord_flip()
+```
+
+## 6. finalized workflow
+
+```{r}
+final_wf <- multinomial_wf %>% 
+  finalize_workflow(my_best)
+
+
+## last fit เพื่อประเมินโมเดลใน test_data
+last_fit_multinomial <- final_wf %>% 
+  last_fit(split,
+           metrics = my_metrics) 
+
+last_fit_multinomial %>% 
+  collect_metrics()
+```
+
+
+
+
+
