@@ -1,0 +1,267 @@
+---
+title: "การสำรวจความสัมพันธ์ระหว่างตัวแปร"
+format: html
+editor: visual
+---
+
+## 1. Importing data
+
+```{r echo = T}
+library(tidyverse)
+library(here)
+## importing data
+url <- here("Week5", "learning_data2.csv")
+data <- read_csv(url)
+```
+
+
+
+## 2. สำรวจความสัมพันธ์ระหว่างคะแนนสอบสถิติกับคะแนนสอบวิจัย
+
+```{r}
+## งาน 1 เราจะต้องจัดการข้อมูลให้สอดคล้องกับโจทย์ --> รวมคะแนนสถิติ 3 ด้านเข้าด้วยกัน
+data %>% 
+  mutate(stat_score = (choose_method + concepts + interpretation)/3,
+         .before = "choose_method") %>% 
+## งาน 2 จะสำรวจความสัมพันธ์ระหว่างตัวแปรคะแนนสอบสถิติและคะแนนสอบวิจัย
+## วางแผนว่าเราจะทำ scatter plot
+  ggplot(aes(x = stat_score, y = research_score)) +
+  geom_point(col = "steelblue") +
+  xlab("คะแนนสอบสถิติ") +
+  ylab("คะแนนสอบวิจัย") +
+  theme_light()+
+  theme(text = element_text(family= "ChulaCharasNew"))
+```
+
+
+## 3. สำรวจความสัมพันธ์ระหว่างคะแนนสอบสถิติกับคะแนนสอบวิจัย
+
+```{r}
+data %>% 
+  mutate(stat_score = (choose_method + concepts + interpretation)/3,
+         .before = "choose_method") %>% 
+## วางแผนว่าเราจะทำ scatter plot ที่มีสมการถดถอยเชิงเส้นตรง (ols) พาดลงไป
+  ggplot(aes(x = stat_score, y = research_score)) +
+  geom_point(col = "steelblue") +
+  geom_smooth(method = "loess", se = F) + ## จะให้สมการเส้นตรง และช่วงความคลาดเคลื่อนมาตรฐานของการทำนาย (standard error of prediction)
+  xlab("คะแนนสอบสถิติ") +
+  ylab("คะแนนสอบวิจัย") +
+  theme_light()+
+  theme(text = element_text(family= "ChulaCharasNew"))
+```
+
+
+```{r}
+set.seed(123)
+## ผมจำลองข้อมูลที่มีความสัมพันธ์แบบเส้นโค้งขึ้นมา
+x = rnorm(100,0,1)
+y = 0.5-0.2*(x-0.5)^2 + rnorm(100,0,0.1)
+data.frame(x,y) %>% 
+  ggplot(aes(x = x , y = y))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F,
+              formula = y ~ poly(x,2))
+```
+
+
+
+```{r}
+data.frame(x,y) %>% 
+  ggplot(aes(x = x , y = y))+
+  geom_point()+
+  geom_smooth(method = "loess", se = F)
+```
+
+```{r}
+data %>% 
+  ggplot(aes(x = concepts > 50, y = research_score))+
+  geom_violin()+
+  geom_boxplot(fill = "steelblue", alpha = 0.6, width = 0.2)+
+  #geom_point()+
+  geom_jitter(width = 0.1, col = "grey40", alpha = 0.5)+
+  theme_bw()
+```
+
+```{r}
+data %>% 
+  count(department, gender) %>% 
+  mutate(gender = factor(gender, levels = c("ช","ญ"),
+                         labels = c("male","female"))) %>% 
+  mutate(percent = n*100/sum(n)) %>%   ## total percent
+  select(-n) %>% 
+  pivot_wider(names_from = "gender", 
+              values_from = "percent")
+  
+  
+```
+
+```{r}
+## heatmap
+data %>% 
+  count(department, gender) %>% 
+  mutate(gender = factor(gender, levels = c("ช","ญ"),
+                         labels = c("male","female"))) %>% 
+  mutate(percent = n*100/sum(n)) %>%   ## total percent
+  select(-n) %>% 
+  ggplot(aes(x = gender, y = department, fill = percent))+
+  geom_tile()+
+  geom_text(aes(label = paste0(round(percent,2),"%")), 
+            col = "white", size = 3,
+            family = "ChulaCharasNew")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+
+```{r}
+
+## heatmap
+data %>% 
+  count(department, gender) %>% 
+  mutate(gender = factor(gender, levels = c("ช","ญ"),
+                         labels = c("male","female"))) %>% 
+  group_by(department) %>% 
+  mutate(percent = n*100/sum(n)) %>%   ## row percent (percent in department)
+  select(-n) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = gender, y = department, fill = percent))+
+  geom_tile()+
+  geom_text(aes(label = paste0(round(percent,2),"%")), 
+            col = "white", size = 3,
+            family = "ChulaCharasNew")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+
+```{r}
+data %>% 
+  count(department, gender) %>% 
+  mutate(gender = factor(gender, levels = c("ช","ญ"),
+                         labels = c("male","female"))) %>% 
+  group_by(gender) %>% 
+  mutate(percent = n*100/sum(n)) %>%   ## column percent (percent in gender)
+  select(-n) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = gender, y = department, fill = percent))+
+  geom_tile()+
+  geom_text(aes(label = paste0(round(percent,2),"%")), 
+            col = "white", size = 3,
+            family = "ChulaCharasNew")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+## 100% stacked bar
+
+ใน ggplot2 `geom_bar()` ทำหน้าที่สองอย่างได้แก่ การแจกแจงความถี่ของข้อมูลให้ตามที่ผู้วิเคราะห์กำหนด และ visualization ผลการแจกแจงความถี่ให้เป็น barplot
+
+```{r}
+## stacked bar
+data %>% 
+  ggplot(aes(y = department, fill = gender))+
+  geom_bar(position = "stack")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+
+
+## 100%stacked bar
+data %>% 
+  ggplot(aes(y = department, fill = gender))+
+  geom_bar(position = "fill")+
+  theme(text = element_text(family = "ChulaCharasNew"))
+```
+
+```{r}
+data %>% 
+  select(research_score, submit_time, learning_performance, cheat_index) %>% 
+  mutate(submit_time = case_when(
+    submit_time <= 75 ~ "early",
+    submit_time > 75 & submit_time <= 125 ~ "on time1",
+    submit_time > 125 & submit_time <= 168 ~ "on time2",
+    submit_time > 168 ~ "late"
+  )) %>% 
+  mutate(submit_time = factor(submit_time,
+                              levels = c("early","on time1","on time2","late"))) %>% 
+  ggplot(aes(x = submit_time, y = learning_performance))+
+  geom_boxplot()
+           
+   
+library(patchwork)        
+ p1 <- data %>% 
+  select(research_score, submit_time, learning_performance, cheat_index) %>% 
+  mutate(submit_time = case_when(
+    submit_time <= 75 ~ "early",
+    submit_time > 75 & submit_time <= 125 ~ "on time1",
+    submit_time > 125 & submit_time <= 168 ~ "on time2",
+    submit_time > 168 ~ "late"
+  )) %>% 
+  mutate(submit_time = factor(submit_time,
+                              levels = c("early","on time1","on time2","late"))) %>% 
+  ggplot(aes(x = submit_time, y = research_score))+
+  geom_boxplot()
+           
+ p2 <- data %>% 
+  select(research_score, submit_time, learning_performance, cheat_index) %>% 
+   ggplot(aes(x = submit_time > 168, y = research_score))+
+   geom_boxplot()
+ 
+ p1+p2
+```
+
+
+
+```{r}
+cut(data$submit_time, breaks = c(-Inf,75,125,168,Inf))
+
+data %>% 
+  select(research_score, submit_time, learning_performance, cheat_index,
+         choose_method, concepts, interpretation) %>% 
+  mutate(stat_score = (choose_method + concepts + interpretation)/3,
+         .before = "choose_method") %>% 
+  mutate(submit_time = cut(submit_time, breaks = c(-Inf,75,125,168,Inf),
+                           labels = c("early","on time1","on time2","late"))) %>%
+  ggplot(aes(x = submit_time, y= stat_score))+
+  geom_boxplot()
+  
+```
+
+
+
+
+
+
+```{r}
+data %>% 
+  select(research_score, submit_time, learning_performance, cheat_index) %>% 
+  mutate(submit_time = cut(submit_time,
+                           breaks = c(-Inf,75,125,168,Inf))) %>% 
+  ggplot(aes(x = submit_time, y= research_score))+
+  geom_boxplot()+
+  geom_jitter()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
