@@ -57,9 +57,9 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#data-preparation-splitting-1820" id="toc-data-preparation-splitting-1820" class="nav-link" data-scroll-target="#data-preparation-splitting-1820"><span class="header-section-number">2.1</span> <strong>1. Data Preparation &amp; Splitting (18/20)</strong></a></li>
   <li><a href="#model-building-tuning-1925" id="toc-model-building-tuning-1925" class="nav-link" data-scroll-target="#model-building-tuning-1925"><span class="header-section-number">2.2</span> <strong>2. Model Building &amp; Tuning (19/25)</strong></a></li>
-  <li><a href="#model-evaluation-metrics-2020" id="toc-model-evaluation-metrics-2020" class="nav-link" data-scroll-target="#model-evaluation-metrics-2020"><span class="header-section-number">2.3</span> <strong>3. Model Evaluation &amp; Metrics (20/20)</strong></a></li>
-  <li><a href="#comparison-visualization-1315" id="toc-comparison-visualization-1315" class="nav-link" data-scroll-target="#comparison-visualization-1315"><span class="header-section-number">2.4</span> <strong>4. Comparison &amp; Visualization (13/15)</strong></a></li>
-  <li><a href="#interpretation-code-quality-1820" id="toc-interpretation-code-quality-1820" class="nav-link" data-scroll-target="#interpretation-code-quality-1820"><span class="header-section-number">2.5</span> <strong>5. Interpretation &amp; Code Quality (18/20)</strong></a></li>
+  <li><a href="#model-evaluation-metrics-1620" id="toc-model-evaluation-metrics-1620" class="nav-link" data-scroll-target="#model-evaluation-metrics-1620"><span class="header-section-number">2.3</span> <strong>3. Model Evaluation &amp; Metrics (16/20)</strong></a></li>
+  <li><a href="#comparison-visualization-1215" id="toc-comparison-visualization-1215" class="nav-link" data-scroll-target="#comparison-visualization-1215"><span class="header-section-number">2.4</span> <strong>4. Comparison &amp; Visualization (12/15)</strong></a></li>
+  <li><a href="#interpretation-code-quality-1920" id="toc-interpretation-code-quality-1920" class="nav-link" data-scroll-target="#interpretation-code-quality-1920"><span class="header-section-number">2.5</span> <strong>5. Interpretation &amp; Code Quality (19/20)</strong></a></li>
   </ul></li>
   <li><a href="#ความเหนเพมเตม" id="toc-ความเหนเพมเตม" class="nav-link" data-scroll-target="#ความเหนเพมเตม"><span class="header-section-number">3</span> ความเห็นเพิ่มเติม</a></li>
   <li><a href="#สงทควรปรบปรงในครงตอไป" id="toc-สงทควรปรบปรงในครงตอไป" class="nav-link" data-scroll-target="#สงทควรปรบปรงในครงตอไป"><span class="header-section-number">4</span> สิ่งที่ควรปรับปรุงในครั้งต่อไป</a></li>
@@ -106,18 +106,18 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>คะแนนรวม:</strong> 87.5/100 (เกรด B+)</p>
+<p><strong>คะแนนรวม:</strong> 85/100 (เอาไปเกรด B+)</p>
 </div>
 </div>
 <section id="จดเดน" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="จดเดน"><span class="header-section-number">1.1</span> ✅ <strong>จุดเด่น:</strong></h3>
 <ul>
-<li>วิเคราะห์เปรียบเทียบ SRS vs Stratified sampling พร้อมให้เหตุผล</li>
-<li>ใช้ Kolmogorov-Smirnov test ตรวจสอบ distribution consistency ได้ยอดเยี่ยม</li>
-<li>มี residual analysis ก่อนทำ modeling แสดงความเข้าใจ assumptions</li>
+<li>วิเคราะห์เปรียบเทียบ SRS vs Stratified sampling อย่างเป็นระบบ พร้อมให้เหตุผล</li>
+<li>ใช้ Kolmogorov-Smirnov test ตรวจสอบ distribution consistency ได้ดีมาก</li>
+<li>มี residual analysis ก่อนทำ modeling แสดงความเข้าใจว่า linear regression มี assumptions ที่เข้มงวด</li>
 <li>Visualization หลากหลายและมีคุณภาพสูง (histogram, CDF plot, coefficient comparison)</li>
-<li>มีการวิเคราะห์ coefficient และ feature selection ของ LASSO</li>
-<li>โค้ดเป็นระเบียบ มี comment ดี</li>
+<li>การวิเคราะห์ coefficient และ feature selection ของ LASSO ได้ดี</li>
+<li>โค้ดเป็นระเบียบ มี comment ครบถ้วน ทำตามขั้นตอน tidymodels อย่างเป็นระบบ</li>
 </ul>
 </section>
 <section id="จดทตองปรบปรง" class="level3" data-number="1.2">
@@ -125,6 +125,8 @@ Note
 <ul>
 <li>ระบุชัดเจนว่า “ละการ preprocessing” (ไม่มี recipe)</li>
 <li>ไม่มี predicted vs actual plots สำหรับประเมิน prediction quality</li>
+<li><strong>ขาดการวิพากษ์ผลต่อจาก residual analysis</strong> - ทำแล้วแต่ไม่ได้วิเคราะห์ลึกว่าจาก residual สะท้อนอะไรบ้าง และควรทำอะไรต่อหรือแก้ปัญหาอย่างไรต่อจากผลการวิเคราะห์ residual นี้</li>
+<li><strong>ขาดการวิพากษ์เชิงลึกจากผล coefficient comparison</strong> - แสดงผลได้ดีแต่ยังไม่ได้อธิบายความหมายเชิงสถิติ</li>
 <li>ขาดโครงสร้างบทนำที่อธิบายวัตถุประสงค์และภาพรวมโครงการ</li>
 </ul>
 </section>
@@ -133,8 +135,9 @@ Note
 <ul>
 <li>เพิ่ม recipe สำหรับ preprocessing (normalize, dummy variables)</li>
 <li>สร้างกราฟ predicted vs actual เพื่อดู prediction quality</li>
-<li>เพิ่มบทนำและสรุปที่ให้ข้อเสนอแนะเชิงปฏิบัติ</li>
-<li>งานนี้แสดงความเข้าใจลึกซึ้งมาก ควรนำไปต่อยอดในโปรเจกต์ที่ซับซ้อนขึ้น</li>
+<li><strong>วิพากษ์ผล residual analysis</strong> - residual analysis สามารถใช้สะท้อนปัญหาความไม่สอดคล้องของข้อมูลกับเงื่อนไขของการวิเคราะห์ linear regression ได้หลายข้อ เช่น outliers, ตรวจสอบ heteroscedasticity, เสนอแนะวิธีแก้ไข สารสนเทศส่วนนี้นำไปสู่การเปลี่ยนอัลกอริทึมและโมเดลการเรียนรู้ หรือนำไปสู่การออกแบบ recipe เพื่อกำหนด datapreprocessing model ที่เหมาะสมสำหรับข้อมูลนี้</li>
+<li><strong>เพิ่มการตีความเชิงสาเหตุ</strong> - อธิบายว่าทำไม LASSO ถึงเลือกตัวแปรเหล่านี้ และผลกระทบต่อการทำนาย กล่าวคือถึงแม้เราจะได้โมเดลที่มีประสิทธิภาพดีขึ้น แต่เราควรทำความเข้าใจได้บ้างว่าโมเดลกำลังคิดอะไร หรือมีกระบวนการทำนายอย่างไรผ่านค่า coefficient ที่ได้ และระมัดระวังว่า coefficient ที่ได้จาก regularized regression มันถูก penalized มา ไม่สามารถอ่านผลในเชิงความสัมพันธ์เชิงสาเหตุโดยตรงเหมือนกับ ols regression แต่สามารถใช้ในเชิงการเปรียบเทียบความสำคัญและทิศทางของความสัมพันธ์ได้</li>
+<li>เพิ่มบทนำและสรุปที่ให้ข้อเสนอแนะเชิงปฏิบัติ : ควรมีการเขียนบทนำ เพื่อกล่าวถึงภาพรวมของงาน ทั้งส่วนความเป็นมาสั้น ๆ (ถึงแม่้จะเป็นงาน assign ก็ฝึกเขียนไว้) วัตถุประสงค์ของงาน ข้อมูลเบื้องต้นเกี่ยวกับชุดข้อมูลที่ใช้ในการวิเคราะห์ แสดงสถิติบรรยายคร่าว ๆ และ methodology ที่ใช้ในการวิเคราะห์</li>
 </ul>
 </section>
 </section>
@@ -186,7 +189,7 @@ Note
 <td style="text-align: left;">การอธิบายขั้นตอน</td>
 <td style="text-align: center;">5</td>
 <td style="text-align: center;">2</td>
-<td style="text-align: left;">✅ อธิบายเหตุผลได้ดีมาก</td>
+<td style="text-align: left;">✅ อธิบายเหตุผลได้ยอดเยี่ยมเกินคะแนนเต็ม</td>
 </tr>
 </tbody>
 </table>
@@ -213,7 +216,7 @@ Note
 <td style="text-align: left;">Recipe creation</td>
 <td style="text-align: center;">0</td>
 <td style="text-align: center;">6</td>
-<td style="text-align: left;">❌ “ไม่พบการทำ datapreprocessing”</td>
+<td style="text-align: left;">❌ ระบุว่า “ละการ preprocessing”</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Model specification</td>
@@ -242,9 +245,15 @@ Note
 </tbody>
 </table>
 </section>
-<section id="model-evaluation-metrics-2020" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="model-evaluation-metrics-2020"><span class="header-section-number">2.3</span> <strong>3. Model Evaluation &amp; Metrics (20/20)</strong></h3>
+<section id="model-evaluation-metrics-1620" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="model-evaluation-metrics-1620"><span class="header-section-number">2.3</span> <strong>3. Model Evaluation &amp; Metrics (16/20)</strong></h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 22%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">รายการประเมิน</th>
@@ -268,21 +277,21 @@ Note
 </tr>
 <tr class="odd">
 <td style="text-align: left;">การตรวจสอบ overfitting</td>
+<td style="text-align: center;">3</td>
 <td style="text-align: center;">5</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: left;">✅ มีการเปรียบเทียบ test error</td>
+<td style="text-align: left;">⚠️ มีการเปรียบเทียบดัชนีบน test data แต่ยังไม่เห็นการกล่าวถึง overfitting ชัด ๆแต่ก็เข้าใจได้ว่าตรวจสอบ ส่วน residual analysis เราสามารถทำบน test data ได้ด้วย ซึ่งจะให้ทัศนภาพของ error ใน test data เติมเต็มส่วนที่เป็นดัชนีดังกล่าวได้ด้วย แผนภาพนี้เทียนบได้กับ predicted vs actual plots แต่นำเสนอต่างกัน</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">การนำเสนอผลลัพธ์</td>
+<td style="text-align: center;">2</td>
 <td style="text-align: center;">3</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: left;">✅ นำเสนอเป็นระเบียบ</td>
+<td style="text-align: left;">⚠️ นำเสนอดีแต่ขาดการวิเคราะห์เชิงลึก</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="comparison-visualization-1315" class="level3" data-number="2.4">
-<h3 data-number="2.4" class="anchored" data-anchor-id="comparison-visualization-1315"><span class="header-section-number">2.4</span> <strong>4. Comparison &amp; Visualization (13/15)</strong></h3>
+<section id="comparison-visualization-1215" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="comparison-visualization-1215"><span class="header-section-number">2.4</span> <strong>4. Comparison &amp; Visualization (12/15)</strong></h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -313,15 +322,15 @@ Note
 </tr>
 <tr class="even">
 <td style="text-align: left;">คุณภาพ visualization</td>
-<td style="text-align: center;">4</td>
+<td style="text-align: center;">3</td>
 <td style="text-align: center;">2</td>
-<td style="text-align: left;">✅ กราฟหลากหลาย สวย ชัดเจน เกินคะแนนเต็ม</td>
+<td style="text-align: left;">✅ กราฟหลากหลาย สวย ชัดเจน</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="interpretation-code-quality-1820" class="level3" data-number="2.5">
-<h3 data-number="2.5" class="anchored" data-anchor-id="interpretation-code-quality-1820"><span class="header-section-number">2.5</span> <strong>5. Interpretation &amp; Code Quality (18/20)</strong></h3>
+<section id="interpretation-code-quality-1920" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="interpretation-code-quality-1920"><span class="header-section-number">2.5</span> <strong>5. Interpretation &amp; Code Quality (19/20)</strong></h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 22%">
@@ -340,15 +349,15 @@ Note
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">การตีความผลลัพธ์</td>
+<td style="text-align: center;">6</td>
 <td style="text-align: center;">8</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: left;">✅ ตีความลึกซึ้ง วิเคราะห์ coefficient ได้ดีมาก</td>
+<td style="text-align: left;">⚠️ ตีความได้ดีแต่ในระดับป.เอกอยากให้มีการวิพากษ์ที่ลึกมากกว่านี้</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">การอธิบาย Linear vs Lasso</td>
-<td style="text-align: center;">3.5</td>
 <td style="text-align: center;">4</td>
-<td style="text-align: left;">✅ อธิบาย feature selection และ noise reduction ได้แต่… อ่านต่อด้านล่าง</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">✅ อธิบาย feature selection ได้ชัดเจน</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">คุณภาพโค้ด</td>
@@ -358,9 +367,9 @@ Note
 </tr>
 <tr class="even">
 <td style="text-align: left;">สรุปและข้อเสนอแนะ</td>
-<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
 <td style="text-align: center;">4</td>
-<td style="text-align: left;">⚠️ มีการสรุปแต่ขาดการอภิปราย/วิพากษ์</td>
+<td style="text-align: left;">⚠️ ยังไม่เห็นว่ามีการสรุปและข้อเสนอแนะแต่ระหว่างทางเห็นมีสรุปเป็นส่วน ๆ อยู่บ้าง</td>
 </tr>
 </tbody>
 </table>
@@ -373,33 +382,23 @@ Note
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <ul>
-<li>โค้ดมีคุณภาพสูง เป็นระเบียบ มีการใช้ pipe operator และ tidyverse ได้ดี</li>
+<li>โค้ดมีคุณภาพสูง เป็นระเบียบ ทำตามขั้นตอน tidymodels อย่างเป็นระบบ</li>
 <li>ระบุชัดเจนว่า “ละการ preprocessing” ซึ่งเป็นส่วนสำคัญของ tidymodels workflow</li>
 <li>มีการใช้สถิติเพื่อตรวจสอบข้อสมมติ (KS test) แสดงความเข้าใจลึกซึ้ง</li>
-<li>การทำ residual analysis ก่อน modeling แสดงว่าเข้าใจ linear regression assumptions อย่างไรก็ตามยังไม่เห็นว่ามีการนำผลการวิเคราะห์นี้ไปใช้ปรับปรุงการ train model (จริง ๆ เข้าใจได้เพราะเรียนไปนิดเดียว) แต่เวลานักวิเคราะห์เลือกนำเสนอผลใดลงในรายงานผลการวิเคราะห์ ผลการวิเคราะห์ดังกล่าวความมีประโยชน์ต่องานในระดับนึง</li>
-<li>การวิเคราะห์ coefficient comparison ระหว่าง lm และ lasso ได้ดีมาก</li>
+<li><strong>ปัญหาหลัก: ขาดการวิพากษ์ผลต่อจาก residual analysis</strong> - ทำได้ดีแล้วแต่หยุดแค่การแสดงกราฟ ไม่ได้วิเคราะห์ว่าควรทำอะไรต่อกับ pattern ที่พบ</li>
+<li><strong>การวิเคราะห์ coefficient comparison ยังไม่ลึกพอ</strong> - แสดงผลได้สวยแต่ขาดการอธิบายความหมายเชิงสถิติ</li>
 </ul>
-<p><strong>การวิเคราะห์ Relative Importance ที่โดดเด่น:</strong></p>
-<ul>
-<li><p>ระบุตัวแปรสำคัญได้ชัดเจน: G2 (ค่าสัมประสิทธิ์ 0.838) เป็นตัวทำนายที่สำคัญที่สุด ตามด้วย G1 (0.158)</p></li>
-<li><p>ตัวแปรที่มีผลลบ: reasonother (-0.122) และ failures (-0.0837) ซึ่งสอดคล้องกับทฤษฎีการศึกษา</p></li>
-<li><p>“lm โมเดลนั้นนําทุกตัวแปรเข้าสู่การทํานาย โดยไม่มีการเลือกเหมือนกับ lasso โมเดลที่คัดเลือกเฉพาะตัวแปรสําคัญ ทําให้ lm โมเดลอาจเกิด noise ได้มากกว่า” &lt;– วรรคนี้ยังไม่ถูกต้องนัก เพราะ feature selection กับ noise reduction ไม่ใช่สิ่งเดียวกัน (อ่านต่อด้านล่าง)</p></li>
-</ul>
+<p><strong>ข้อสังเกตการทำงาน:</strong> - แสดงความตั้งใจเรียนและพยายามทำความเข้าใจเนื้อหาในชั้นเรียนสูงมาก - ทำตามเอกสารและขั้นตอนได้อย่างเคร่งครัด ซึ่งเป็นพื้นฐานที่ดี - อย่างไรก็ตาม ควรเพิ่มการคิดวิเคราะห์เชิงวิพากษ์ให้มากขึ้น แทนการทำตามขั้นตอนเพียงอย่างเดียว</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <ul>
 <li>รายงานมีโครงสร้างชัดเจน แบ่งหัวข้อเป็นระเบียบ</li>
 <li>การอธิบายการเปรียบเทียบ SRS vs Stratified sampling ได้ยอดเยี่ยม</li>
 <li>Visualization หลากหลายและมีคุณภาพสูง: histogram comparison, CDF plot, residual plot, coefficient comparison</li>
-<li>การตีความผลลัพธ์ที่เชื่อมโยงกับแนวคิด feature selection และ noise reduction ถือว่าเป็นจุดแข็ง เพราะช่วยสะท้อนความเข้าใจว่าทั้งสองแนวคิดมีเป้าหมายร่วมกันในการทำให้โมเดลมีความแม่นยำและ generalization ดีขึ้น อย่างไรก็ตามควรระมัดระวังการใช้คำว่า noise reduction ในบริบทของ feature selection โดยตรง เนื่องจากแม้ทั้งสองแนวคิดจะเกี่ยวข้องกัน แต่ไม่สามารถใช้แทนกันได้ทั้งหมด — feature selection มุ่งเน้นการเลือกหรือตัดทอนตัวแปรที่ไม่จำเป็น ขณะที่ noise reduction มุ่งเน้นการจัดการคุณภาพข้อมูลภายในตัวแปร เช่น การลด outlier หรือการทำ smoothing ดังนั้น ควรอธิบายให้ชัดเจนถึงความแตกต่างเพื่อป้องกันความสับสนทางแนวคิด</li>
+<li>การตีความผลลัพธ์เชื่อมโยงกับแนวคิด feature selection และ noise reduction ได้ดี</li>
 <li>ควรเพิ่มบทนำที่อธิบายภาพรวมของโครงการ และข้อเสนอแนะเชิงปฏิบัติในท้ายเรื่อง</li>
 </ul>
-<p><strong>ข้อสังเกตเพิ่มเติมเรื่อง Coefficient Analysis:</strong></p>
-<ul>
-<li><p>การตีความว่า G2 สำคัญที่สุดสมเหตุสมผล เพราะเป็นคะแนนช่วงที่ 2 ซึ่งใกล้เคียงกับ G3 มากที่สุด</p></li>
-<li><p>LASSO ทำ feature selection ได้ดี โดยเหลือเพียง 7 ตัวแปรจาก 32 ตัวแปรเดิม? (ยังไม่เห็นการวิพากษ์ประเด็นนี้)</p></li>
-<li><p>การที่ LASSO คงไว้เพียง 7 ตัวแปรอาจบ่งบอกว่าข้อมูลมี multicollinearity สูง (รึเปล่า?)</p></li>
-</ul>
+<p><strong>การวิเคราะห์ Relative Importance ที่ต้องปรับปรุง:</strong> - ระบุตัวแปรสำคัญได้: G2 (0.838), G1 (0.158), reasonother (-0.122), failures (-0.0837) - <strong>แต่ยังขาดการวิพากษ์เชิงลึก:</strong> ทำไม G2 ถึงสำคัญมาก? มีความเสี่ยง data leakage หรือไม่? - <strong>ขาดการวิเคราะห์ความสมเหตุสมผล:</strong> ตัวแปรที่ LASSO เลือกมีเหตุผลทางทฤษฎีการศึกษาหรือไม่? - <strong>ไม่ได้อธิบายผลกระทบต่อการทำนาย:</strong> การที่ lasso ตัดตัวแปรออกไปส่งผลอย่างไรต่อประสิทธิภาพโมเดล?</p>
 </div>
 </div>
 </div>
@@ -407,13 +406,20 @@ Note
 <section id="สงทควรปรบปรงในครงตอไป" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="สงทควรปรบปรงในครงตอไป"><span class="header-section-number">4</span> สิ่งที่ควรปรับปรุงในครั้งต่อไป</h2>
 <ol type="1">
-<li><strong>เพิ่ม recipe()</strong> สำหรับ data preprocessing - ห้ามข้ามส่วนนี้</li>
+<li><strong>เพิ่ม recipe()</strong> สำหรับ data preprocessing</li>
 <li><strong>สร้าง predicted vs actual plots</strong> เพื่อประเมิน prediction quality<br>
 </li>
-<li><strong>เพิ่มโครงสร้างรายงาน</strong> ลองเพิ่มบทนำที่กล่าวภาพรวมของงาน วัตถุประสงค์ ขอบเขตและผลการสำรวจข้อมูลเบื้องต้น รวมทั้ง methodology ที่ใช้ในการวิเคราะห์ นอกจากนี้เมื่อวิเคราะห์แล้ว การมีสรุป และอภิปรายผลการวิเคราะห์ได้สั้น ๆ ก็น่าจะดี</li>
-<li><strong>ให้ข้อเสนอแนะเชิงปฏิบัติ</strong> สำหรับการนำไปใช้จริง</li>
-<li>คราวหน้าพยายามเลือกผลการวิเคราะห์และนำเสนอโดยมีเหตุผลสนับสนุนประกอบ อาจจะไม่จำเป็นต้องเอาทุกอย่างที่เรียนมาใส่ทั้งหมด</li>
-<li>ด้วยการที่เป็นนิสิตระดับปริญญาเอก อยากเห็นงานที่แสดงการเขียนในเชิงวิพากษ์มากขึ้น</li>
+<li><strong>วิพากษ์ผลต่อจาก residual analysis</strong> - หาค่า outliers, ตรวจสอบ heteroscedasticity, เสนอวิธีแก้ไข</li>
+<li><strong>เพิ่มการวิพากษ์ coefficient comparison อย่างลึกซึ้ง:</strong>
+<ul>
+<li>วิเคราะห์ความสมเหตุสมผลของตัวแปรที่ LASSO เลือก</li>
+<li>อธิบายความหมายเชิงทฤษฎีของ coefficient ที่ได้</li>
+<li>ตรวจสอบความเสี่ยงจาก data leakage (G1, G2)</li>
+<li>โยงผลการเปรียบเทียบกับประสิทธิภาพของโมเดลที่แตกต่างกัน</li>
+</ul></li>
+<li><strong>เพิ่มการตีความเชิงสาเหตุ</strong> - อธิบายความสัมพันธ์เชิงสาเหตุอย่างระมัดระวัง</li>
+<li><strong>เพิ่มโครงสร้างรายงาน</strong> ให้มีบทนำและสรุปที่ครบถ้วน</li>
+<li><strong>พัฒนาทักษะการคิดวิเคราะห์เชิงวิพากษ์</strong> - ไม่หยุดแค่การทำตามขั้นตอน แต่ควรวิเคราะห์ลึกและเสนอทางเลือก</li>
 </ol>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -427,7 +433,8 @@ Tip
 <div class="callout-body-container callout-body">
 <p><strong>โดยรวม:</strong></p>
 <ol type="1">
-<li><p>งานนี้แสดงความเข้าใจและทักษะการวิเคราะห์ข้อมูลที่ยอดเยี่ยม โดยเฉพาะการใช้สถิติเพื่อตรวจสอบข้อสมมติ และการสร้าง visualization ที่หลากหลาย สะท้อนว่ามีการทบทวนบทเรียนและเข้าใจสิ่งที่เรียนไปในชั้นเรียน อย่างไรก็ตามอยากให้ลองออกแบบการเขียนรายงานที่มีเหตุผลของการเลือกนำเสนอผลการวิเคราะห์ และเขียนรายงานในเชิงวิพากษ์มากขึ้น</p></li>
+<li><p>งานนี้แสดงความตั้งใจเรียนและการปฏิบัติตามขั้นตอนอย่างเป็นระบบดีมาก แต่ยังขาดการวิเคราะห์เชิงวิพากษ์ที่จะทำให้งานสมบูรณ์ยิ่งขึ้น</p></li>
+<li><p>การทำตามเอกสารและขั้นตอนอย่างเคร่งครัดเป็นพื้นฐานที่ดี แต่ควรเพิ่มการคิดวิเคราะห์ต่อยอดจาก findings ที่ได้</p></li>
 <li><p>เรื่อง <code>recipe()</code> ยังไม่ได้สอนในคลาส แต่เป็นส่วนสำคัญของ workflow การประเมินทำเพื่อให้ทราบไว้เฉย ๆ คะแนนที่ได้ก็เป็น feedback ไม่ได้เอามาตัดคะแนนงานครับ</p></li>
 </ol>
 </div>
