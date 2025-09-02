@@ -32,6 +32,7 @@ tidymodels_prefer()
 ## `learningdata.csv` {.smaller}
 
 ```{r}
+library(naniar)
 data <- read_csv("learningdata.csv")
 glimpse(data, 60)
 ```
