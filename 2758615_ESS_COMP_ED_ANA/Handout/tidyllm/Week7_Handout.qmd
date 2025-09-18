@@ -1,0 +1,1162 @@
+---
+title: "LLMs for Data Science"
+author: "Assistant Prof. Siwachoat Srisuttiyakorn"
+institute: |
+  Department of Educational Research and Psychology <br>
+  Faculty of Education Chulalongkorn University
+date: today
+format:
+  revealjs:
+    slide-number: c/t
+    footer: |
+      Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br>
+      Department of Educational Research and Psychology <br>
+      Faculty of Education Chulalongkorn University
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: [default, theme.scss]
+    css: my_css.css
+    scrollable: false
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: false
+    code-overflow: scroll
+    code-link: true
+    code-line-numbers: true
+    bibliography: reference.bib
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 2em;
+        color: #C5705D;
+      }
+      </style>
+---
+
+```{r}
+library(tidyverse)
+library(tidyllm)
+```
+
+
+## ปัญญาประดิษฐ์ {.smaller}
+
+<center>
+![@HuaweiTechnologies_Co_Ltd2023](img/ai.webp){width="50%"}
+</center>
+
+## Generative AI {.smaller}
+
+Generative AI คือระบบปัญญาประดิษฐ์ที่สามารถสร้างข้อมูลใหม่ เช่น ข้อความ รูปภาพ เสียง โค้ด หรือวิดีโอ โดยอาศัยแบบจำลองทางสถิติและโครงสร้างที่เรียนรู้จากข้อมูลจำนวนมาก กระบวนการสร้างไม่ได้เกิดจากการสุ่มล้วน ๆ แต่เป็นการคำนวณเชิงความน่าจะเป็นเพื่อหาผลลัพธ์ที่ “สมเหตุสมผลที่สุด” ภายใต้บริบทที่กำหนด
+
+
+
+:::: {.columns}
+
+
+::: {.column width="47%"}
+
+
+<center>
+![https://www.gptbots.ai/blog/llm-vs-generative-ai](https://img.gptbots.cc/article/llm-generative-ai.jpg)
+</center>
+
+
+:::
+
+::: {.column width="6%"}
+
+:::
+
+
+::: {.column width="47%"}
+
+<center>
+![https://www.xenonstack.com/blog/generative-ai-applications](img/generative-ai-application-landscape.webp)
+</center>
+:::
+
+::::
+
+
+
+## LLMs {.smaller}
+
+<div style="font-size:80%;">
+
+- LLMs เป็น Generative AI ประเภทหนึ่งที่มีความสามารถในการสังเคราะห์เนื้อหาในลักษณะข้อความภาษามนุษย์ มีความสามารถทั้งในด้าน
+
+  - การเข้าใจ/สร้างข้อความ (text understanding & generation)
+  
+  - การสรุปความ (summarization)
+  
+  - การแปลภาษา (translation)
+  
+  - การตอบคำถาม (question answering)
+  
+  - การวิเคราะห์ข้อความ (text analysis)
+  
+  - การเขียนชุดคำสั่ง (code generation)
+
+กระบวนการสร้างข้อความไม่ได้เกิดจากการสุ่ม แต่เป็นการ คำนวณทางสถิติ
+เพื่อหา “ผลลัพธ์ที่มีความเป็นไปได้สูงสุด” ภายใต้บริบทที่กำหนด
+
+การสร้างเนื้อหาต้องอาศัย:
+
+- Context: บริบท เช่น ข้อความก่อนหน้า หรือข้อมูลแวดล้อม
+
+- Prompt: คำกระตุ้นที่ระบุภารกิจ รูปแบบ หรือเจตนาของผู้ใช้
+
+
+ผลลัพธ์ที่ได้จึงไม่ใช่ “ของใหม่โดยสมบูรณ์” (original content) แต่เป็นการจัดเรียงองค์ประกอบใหม่ตามความน่าจะเป็นของการเกิดร่วมกันของคำหรือพิกเซล ที่ คล้ายคลึงกับสิ่งที่เคยเรียนรู้มา แต่มีความยืดหยุ่นและสร้างสรรค์เพียงพอที่จะใช้งานในหลากหลายบริบท และตรงตามวัตถุประสงค์
+
+</div>
+
+
+## ประเภทของ LLM {.smaller}
+
+- **Cloud-hosted LLMs หรือ Proprietary LLM Services** เป็นโมเดลภาษาขนาดใหญ่ที่ให้บริการอยู่บน cloud โมเดลประเภทนี้จะรับข้อมูลจากผู้ใช้ผ่าน API และประมวลผลข้อมูลบน cloud
+
+  - Subscription-based
+  
+  - Pay-as-you-go
+  
+- **Local LLMs** เป็นโมเดลภาษาขนาดใหญ่ที่ผู้ใช้ติดตั้งและประมวลผลเองบนเครื่องส่วนบุคคล หรือ server ภายในองค์กร 
+
+  - Open-source เช่น LLaMA, Deepseek, Mistral, GPT-oss -- Hugging Face เป็นชุมชน open-source ที่รวบรวมและเผยแพร่ LLMs 
+  
+  - On-premise deployment เก็บประมวลผลและข้อมูล ภายในองค์กร ลดการส่งข้อมูลออกภายนอก
+
+::: {.callout-note}
+
+ไม่ว่าจะเลือกใช้ LLMs แบบไหน จำเป็นต้องประมวลผลผ่าน API (REST/HTTP + JSON) ทั้งนี้เพื่อให้โปรแกรมของผู้ใช้สามารถสื่อสาร/แลกเปลี่ยนข้อมูลกับ LLMs ได้
+
+:::
+
+
+## Application Programming Interface (API) {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="47%"}
+
+<div style="font-size:70%;">
+
+- ช่องทางการสื่อสารระหว่างโปรแกรมคอมพิวเตอร์
+
+- ช่วยให้โปรแกรมต่าง ๆ สามารถแลกเปลี่ยนข้อมูล และสามารถใช้ฟังก์ชันหรือบริการของกันและกันได้
+
+- คำสำคัญ
+
+  - Request-Response: โปรแกรมผู้ใช้ (client) ส่งคำขอ (request) ไปยังโปรแกรมให้บริการ (server) และรอรับคำตอบ (response) กลับมา
+  
+  - Protocol ที่ใช้ในการรับส่งข้อมูลคือ HTTP (HyperText Transfer Protocol) -- มาตรฐานการสื่อสารบน internet 
+
+</div>
+
+![](img/generativeAI_copy.png)
+
+:::
+
+::: {.column width="6%"}
+
+
+:::
+
+::: {.column width="47%"}
+
+<div style="font-size:70%;">
+
+... ใช้งาน LLM ผ่าน subscription plan (UI จะส่งคำสั่งเพื่อเรียก API เบื้องหลังให้เรา)
+
+</div>
+
+![](img/chatgpt.png)
+:::
+
+::::
+
+
+
+## Cloud-hosted LLMs: OpenAI API {.smaller}
+
+<center>
+![https://openai.com/](img/chatgpt_api.png){width="80%"}
+</center>
+
+## OpenRouter API {.smaller}
+
+<center>
+![https://openrouter.ai/](img/open_router.png){width="85%"}
+</center>
+
+
+
+## HTTP Methods {.smaller}
+
+> 95% ของ API ที่ให้บริการ LLMs ใช้ HTTP POST method
+
+
+- **POST** → ส่งข้อมูลใหม่/สั่งงานไปยัง server
+- **GET** → ขอข้อมูลจาก server
+- **PUT** → อัปเดตข้อมูล (replace)
+- **DELETE** → ลบข้อมูลที่มีอยู่บน server
+
+
+## ส่วนประกอบของข้อความ Request {.smaller}
+
+- **URL** → ที่อยู่ปลายทาง (Endpoint) ของ API  
+- **Header** → ข้อมูลเสริม เช่น API key, Content-Type  
+- **Body** → ข้อมูลจริงที่ส่งไป การทำงานกับ LLMs ส่วนใหญ่จะส่งข้อมูลในรูปแบบ JSON
+
+
+## ตัวอย่างข้อความ Response {.smaller}
+
+- **Status code** → 200 = สำเร็จ, 401 = key ผิด, 429 = เกิน limit, 500 = server error  
+- **Header** → metadata เช่น เวอร์ชัน, quota  
+- **Body** → คำตอบจริงจาก server (เช่น JSON ที่มีข้อความจาก LLM)
+
+
+
+## Calling LLMs API from R {.smaller}
+
+เวลาจะใช้ LLM ผ่าน API → จะต้อง ส่ง request ไปที่ endpoint ของโมเดล พร้อมข้อมูลดังนี้
+
+- URL (endpoint) เช่น
+
+  - OpenAI: `https://api.openai.com/v1/chat/completions`
+  
+  - OpenRouter: `https://openrouter.ai/api/v1/chat/completions`
+  
+  - Ollama (local: `http://localhost:11434/api/chat`
+
+- Header เช่น
+
+  - Authorization: Bearer <API_KEY>
+  
+  - Content-Type: application/json
+  
+- Body (JSON) 
+
+  - ระบุ model
+  
+  - ข้อความ
+  
+  - parameter ต่าง ๆ ของโมเดลภาษา เช่น temperature
+
+
+## ตัวอย่างการเรียก OpenAI API จาก R {.smaller}
+
+<div style="font-size:70%;">
+
+1. เพิ่ม API Key ไว้ใน R Environment
+
+```{r eval = F, echo = T}
+## ใน R Console
+usethis::edit_r_environ()
+```
+
+จากนั้นเพิ่มบรรทัด api key ของ openai ลงไปในไฟล์ `.Renviron` ที่เปิดขึ้นมา ดังนี้
+
+```{text eval = F, echo = T}
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxx
+```
+
+
+บันทึกไฟล์และ Restart R session ...
+
+2. เรียก OpenAI API จาก R โดยใช้ method POST
+
+```{r eval = F, echo = T}
+library(httr)
+library(jsonlite)
+
+## ดึง api key จาก environment
+api_key <- Sys.getenv("OPENAI_API_KEY")
+
+response <- POST(
+  ## 1. URL
+  url = "https://api.openai.com/v1/chat/completions",
+  ## 2. Header
+  add_headers(
+    Authorization = paste("Bearer", api_key),
+    `Content-Type` = "application/json"
+  ),
+  ## 3. Body
+  body = toJSON(list(
+    model = "gpt-5-nano",
+    messages = list(
+      list(role = "user", content = "สวัสดี")
+    )
+  ), auto_unbox = TRUE)
+)
+```
+
+</div>
+
+## ตัวอย่างการเรียก OpenAI API จาก R {.smaller}
+
+
+<div style="font-size:70%;">
+
+3. ตรวจสอบสถานะการตอบกลับ
+
+```{r eval = F, echo = T}
+content(response)$choices[[1]]$message$content
+```
+
+```{text echo = T}
+#| code-line-numbers: false
+
+$index
+[1] 0
+
+$message
+$message$role
+[1] "assistant"
+
+$message$content
+[1] "สวัสดีครับ/ค่ะ มีอะไรให้ช่วยบอกได้เลยนะครับ/ค่ะ"
+
+$message$refusal
+NULL
+
+$message$annotations
+list()
+
+
+$finish_reason
+[1] "stop"
+```
+
+**Note:** เราอาจเขียน helper function ช่วยสำหรับดึงข้อความจาก response ได้
+
+```{r eval=F, echo = T}
+get_llm_text <- function(response) {
+  content(response)$choices[[1]]$message$content
+}
+get_llm_text(response)
+```
+
+```{text echo = T}
+#| code-line-numbers: false
+[1] "สวัสดีครับ/ค่ะ มีอะไรให้ช่วยบอกได้เลยนะครับ/ค่ะ"
+```
+
+
+</div>
+
+
+## LLMs for Data Science {.smaller}
+
+<div style="font-size:100%;">
+
+- ในการวิเคราะห์ข้อมูลสมัยใหม่ ผู้วิเคราะห์สามารถใช้ API เป็นช่องทางในการเข้าถึงเครื่องมือและบริการต่าง ๆ โดยเฉพาะโมเดลภาษาขนาดใหญ่ (LLM) ทำให้ผู้วิเคราะห์สามารถนำความสามารถของ LLM มาใช้ในการวิเคราะห์ข้อมูลได้อย่างมีประสิทธิภาพ
+
+  - **Text Preprocessing**: การแปลงข้อมูลที่ไม่มีโครงสร้าง เช่น ข้อความให้อยู่ในรูปแบบโครงสร้าง การทำความสะอาดข้อความ (ลบ stopword, normalized, ...) หรือสร้างตัวแปรใหม่ เช่น sentiment score, keyword extraction
+  
+  - **Content & Text Analysis**: สรุปข้อมูล จัดหมวดหมู่ข้อความ หรือดึงสารสนเทศจากข้อความหรือเอกสารที่เกี่ยวข้อง วิเคราะห์ผลการตอบสนอง/คำตอบปลายเปิดของนักเรียน ให้คะแนน หรือสร้าง label ให้กับหน่วยข้อมูล
+  
+  - **Decision Support & Communication**: เขียน/สร้างรายงานอัตโนมัติ แปลความหมายผลลัพธ์ทางสถิติ หรือสร้าง syntax สำหรับกาารวิเคราะห์ข้อมูลที่ซับซ้อน ออกแบบการสื่อสารข้อมูลที่เหมาะสมกับกลุ่มเป้าหมาย
+  
+  - **ML Augmentaion**: เพื่อเสริมความสามารถในกระบวนการเรียนรู้ของเครื่อง เช่น การสร้างข้อมูลสังเคราะห์เพื่อทดสอบโมเดล การทำความสะอาดข้อมูล การจัดระเบียบชุดข้อมุล การทำ feature engineering และการทำ explainable AI 
+  
+</div>
+
+
+## LLMs Development Process {.smaller}
+
+![https://www.superannotate.com/blog/llm-fine-tuning](img/LLM_lifecycle.png){width="90%"}
+
+
+## LLMs Selection {.smaller}
+
+![https://llm-stats.com/](img/llm_stat.png)
+
+
+
+## LLMs adaptation methods {.smaller}
+
+ผู้ใช้สามารถปรับแต่งการทำงานของ LLMs ให้เหมาะสมกับงานเฉพาะทางได้หลายวิธี และสามารถไล่ระดับตามความซับซ้อนได้ดังนี้
+
+1. Prompt Engineering
+
+2. Retrieval-Augmented Generation (RAG)
+
+3. Fine-tuning
+
+4. Training from Scratch
+
+## Prompt Engineering {.smaller}
+
+
+การออกแบบ prompt ที่ชัดเจนและมีบริบทที่เหมาะสม เพื่อให้ LLM เข้าใจความต้องการของผู้ใช้และสามารถตอบสนองได้อย่างถูกต้อง
+
+  - กระตุ้นการทำงานด้วยคำสั่งอย่างเดียว ไม่ได้เกี่ยวข้องกับการปรับแต่งโมเดล
+  
+  - กลยุทธ์การออกแบบ prompt เป็นสิ่งสำคัญ เช่น
+    - Zero-shot prompting: ให้คำสั่งอย่างเดียว
+    - Few-shot prompting: ให้ตัวอย่างคำถาม-คำตอบ พร้อมคำสั่ง
+    - Role-playing: กำหนดบทบาท เช่น “คุณคืออาจารย์มหาวิทยาลัย”
+    - Chain-of-thought prompting: ใช้ prompt กระตุ้นให้โมเดลแจกแจงกระบวนการคิด การให้เหตุผล วิธีการคำนวณ หรือการดำเนินงานเพื่อนำไปสู่ผลลัพธ์ออกมาทีละขั้น
+
+## Prompt Engineering {.smaller}
+
+:::: {.columns}
+
+::: {.column width="47%"}
+
+![](img/basic_prompt.png)
+  
+:::
+
+::: {.column width="6%"}
+
+:::
+
+::: {.column width="47%"}
+
+![](img/few_shot_cot.png)
+
+
+:::
+
+::::
+
+
+## Retrieval-Augmented Generation {.smaller}
+
+การผสมผสานระหว่าง LLM กับระบบการค้นคืนข้อมูล (retrieval system) เพื่อให้โมเดลสามารถเข้าถึงข้อมูลภายนอกที่เกี่ยวข้องกับคำถามหรือบริบทที่กำหนด
+
+:::: {.columns}
+
+::: {.column width="47%"}
+
+  - เหมาะสำหรับงานที่ต้องการความแม่นยำสูง -- การตอบคำถามจากฐานความรู้เฉพาะทาง หรือข้อมูลที่มีการ update/เปลี่ยนแปลงเป็นประจำ เช่น การเชื่อม LLMs กับฐานข้อมูลงานวิจัย กฎหมาย หรือข้อมูลขององค์กร
+  
+  - ขั้นตอนทั่วไปของ RAG
+  
+    1. รับคำถามจากผู้ใช้
+    
+    2. ใช้ระบบค้นคืนข้อมูลเพื่อดึงเอกสารหรือข้อมูลที่เกี่ยวข้อง
+    
+    3. รวมข้อมูลที่ได้กับคำถามและส่งไปยัง LLM เพื่อสร้างคำตอบที่มีบริบทมากขึ้น
+
+:::
+
+::: {.column width="6%"}
+
+:::
+
+::: {.column width="47%"}
+
+<br>
+
+
+<center>
+![https://www.anthropic.com/news/contextual-retrieval](img/RAG.png)
+</center>
+
+:::
+
+::::
+
+
+## Retrieval-Augmented Generation {.smaller}
+
+การผสมผสานระหว่าง LLM กับระบบการค้นคืนข้อมูล (retrieval system) เพื่อให้โมเดลสามารถเข้าถึงข้อมูลภายนอกที่เกี่ยวข้องกับคำถามหรือบริบทที่กำหนด
+
+:::: {.columns}
+
+::: {.column width="47%"}
+
+  - เหมาะสำหรับงานที่ต้องการความแม่นยำสูง -- การตอบคำถามจากฐานความรู้เฉพาะทาง หรือข้อมูลที่มีการ update/เปลี่ยนแปลงเป็นประจำ เช่น การเชื่อม LLMs กับฐานข้อมูลงานวิจัย กฎหมาย หรือข้อมูลขององค์กร
+  
+  - ขั้นตอนทั่วไปของ RAG
+  
+    1. รับคำถามจากผู้ใช้
+    
+    2. ใช้ระบบค้นคืนข้อมูลเพื่อดึงเอกสารหรือข้อมูลที่เกี่ยวข้อง
+    
+    3. รวมข้อมูลที่ได้กับคำถามและส่งไปยัง LLM เพื่อสร้างคำตอบที่มีบริบทมากขึ้น
+
+:::
+
+::: {.column width="6%"}
+
+:::
+
+::: {.column width="47%"}
+
+<br>
+
+
+<center>
+![https://www.anthropic.com/news/contextual-retrieval](img/RAG2.png)
+</center>
+
+:::
+
+::::
+
+
+
+## Fine-tuning {.smaller}
+
+การปรับโมเดลด้วยชุดข้อมูลใหม่ เพื่อให้ทำงานตรงตามความต้องการเฉพาะ
+
+- มีทั้งแบบ full fine-tuning (ปรับทุกพารามิเตอร์) และแบบ parameter-efficient tuning เช่น LoRA/QLoRA (ปรับเฉพาะบางส่วน)
+
+- ใช้ในงานที่ต้องการความ สม่ำเสมอ เช่น ตรวจข้อสอบ วิเคราะห์งานเขียน chatbot เฉพาะองค์กร
+
+
+![](img/Gemini_Generated_Image_y0n7vvy0n7vvy0n7.png)
+
+
+## LLM APIs in R: Hands-on with HTTP {.smaller}
+
+1. โหลด library ที่จำเป็น
+
+2. เก็บ API key อย่างปลอดภัย
+
+3. ส่ง HTTP POST request ไปยัง endpoint ของ LLM
+
+
+## พารามิเตอร์พื้นฐานของการเรียก OpenAI API {.smaller}
+
+- **Messages** -- Container ของข้อความทั้งหมด โดยปกติมี 3 บทบาท (role) ได้แก่
+
+  - System -- ข้อความพิเศษที่ใช้กำหนดบทบาท บริบท หรือกติกาของโมเดล อาจใส่หรือไม่ใส่ก็ได้ แต่การใส่อย่างเหมาะสมจะช่วยดึงบริบทของโมเดลให้สอดคล้องกับบริบทการใช้งาน ซึ่งช่วยให้แนวโน้มที่จะได้ผลการตอบที่มีคุณภาพมีสูงขึ้น
+
+  - User -- คำสั่ง/เนื้อหาที่ผู้ใช้ส่งให้โมเดลในรูปแบบข้อความ เพื่อกระตุ้นให้โมเดลนำไปประมวลผลต่อยอดเพื่อสังเคราะห์เนื้อหาที่ต้องการ
+  
+  - Assistant -- ข้อความที่โมเดลสร้างขึ้นเพื่อตอบกลับคำสั่ง/ข้อความของผู้ใช้ (user) โดยอิงจากบริบทที่ได้รับจาก system และ user
+  
+- **Model** -- ชื่อของโมเดลที่ต้องการใช้ เช่น gpt-4o, gpt-4o-mini, gpt-5-nano หรือของค่ายอื่น ๆ แต่ละรุ่นมีความสามารถ คุณภาพ และค่าใช้จ่ายที่แตกต่างกัน
+  
+
+- **Temperature** -- ค่าควบคุม randomness ของการสังเคราะห์เนื้อหา กล่าวคือ ถ้าค่าต่ำ (0.0 - 0.2) ผลการตอบจะคงเส้นคงวา เหมาะกับงานตรวจ/วิเคราะห์หรืองานที่ต้องอาศัยความแม่นยำของผลการตอบ และถ้ากำหนดค่าสูง (0.7-1.0) ผลการตอบจะมีความหลากหลายและสร้างสรรค์มากขึ้น เหมาะกับงานที่ต้องการไอเดียใหม่ ๆ หรือการเขียนเชิงสร้างสรรค์
+
+
+
+## พารามิเตอร์พื้นฐานของการเรียก OpenAI API {.smaller}
+
+- **Max tokens** -- เพดานของจำนวน token ที่โมเดลสร้างขึ้นในแต่ละคำตอบ พารามิเตอร์นี้ใช้ควบคุมความยาวของผลการตอบสนอง และควบคุมค่าใช้จ่ายด้วย (ถ้ามี)
+
+- **Base URL** -- ที่อยู่ server ของผู้ใช้บริการ
+
+  - OpenAI: `https://api.openai.com`
+  
+  - Local host: `http://localhost:11434`
+  
+- **Path (Endpoint)** -- เส้นทางเฉพาะของ API เช่น `/v1/chat/completions` 
+
+- **API Key** -- รหัสใช้เพื่อยืนยันตัวตนผู้ใช้และสิทธิ์การเข้าถึง API (ความลับอย่าให้หลุด)
+
+- **Timeout** -- เวลารอสูงสุดที่รอการตอบกลับจาก server เช่น 60 วินาที
+
+
+
+## พารามิเตอร์พื้นฐานของการเรียก OpenAI API {.smaller}
+
+
+- **Response format** -- ใช้ระบุลักษณะผลการตอบสนองของโมเดล เช่น JSON การระบุรูปแบบอาจทำได้สองลักษณะ
+
+  - Soft constraint -- เขียนบอกโมเดลตรง ๆ ใน system หรือ user message 
+  - Hard constraint -- กำหนดในพารามิเตอร์ของ API 
+
+  
+```{text echo = T}
+#| code-line-numbers: false
+
+## -- soft contraint
+คุณคือผู้ตรวจข้อสอบ จงตอบเป็น JSON object เท่านั้น 
+โดยมี key: {"rubric1": int, "rubric2": int, "total": int}
+```
+
+<br>
+ 
+```{text echo = T}
+#| code-line-numbers: false
+
+## -- hard contraint
+"response_format": {
+  "type": "json_object",
+    "json_object": {
+        "rubric1": "integer",
+        "rubric2": "integer",
+        "total": "integer"
+    }
+}
+```
+
+
+## ตัวอย่างการเรียก OpenAI API จาก R {.smaller}
+
+<div style="font-size:60%;">
+
+```{r eval = F, echo = T}
+library(httr)
+library(jsonlite)
+
+## API key
+api_key <- Sys.getenv("OPENAI_API_KEY")
+
+## URL
+base_url <- "https://api.openai.com"
+endpoint <- "/v1/chat/completions"
+
+## สร้าง request
+response <- POST(
+  ## 1. URL
+  url = paste0(base_url, endpoint),
+  
+  ## 2. Header
+  add_headers(
+    Authorization = paste("Bearer", api_key),
+    `Content-Type` = "application/json"
+  ),
+  
+  ## 3. Body
+  body = toJSON(list(
+    model = "gpt-4o-mini",
+    messages = list(
+      list(role = "system", content = "คุณคือครูสถิติทำหน้าที่ออกข้อสอบรายวิชาสถิติระดับปริญญาตรี"),
+      list(role = "user",   content = "ช่วยออกข้อสอบเรื่อง one-sample t-test จำนวน 1 ข้อ เกี่ยวกับการคำนวณค่า p-value")
+    ),
+    temperature = 0.2,      # คุมความสุ่ม
+    max_tokens  = 600       # จำกัดความยาวคำตอบ
+  ), auto_unbox = TRUE),
+  
+  ## 4. Timeout
+  timeout(60)               # รอได้สูงสุด 60 วินาที
+)
+```
+
+</div>
+
+
+## Response {.smaller}
+
+เมื่อส่ง request สำเร็จโมเดลจะตอบกลับด้วย response object ที่มีรายละเอียดต่าง ๆ เช่น
+
+- **Status code** เช่น 200 -- สำเร็จ, 401 -- Unauthorized, 429 -- Too Many Requests, 500 -- server error
+
+- **Header**  เป็นข้อมูลกำกับ เช่น model version, ...
+
+- **Body**  เนื้อหาหลักของผลการตอบสนอง มักส่งกลับมาเป็น JSON
+
+```{r eval = F, echo = T}
+response
+```
+
+```{text echo = T}
+#| code-line-numbers: false
+
+Show in New Window
+Response [https://api.openai.com/v1/chat/completions]
+  Date: 2025-09-10 16:15
+  Status: 200
+  Content-Type: application/json
+  Size: 3.67 kB
+{
+  "id": "chatcmpl-CEHl7AUNnwPh1Q5OhMdqxnNv43Iy5",
+  "object": "chat.completion",
+  "created": 1757520893,
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+...
+
+```
+
+
+## การ Extract ผลการตอบสนอง {.smaller}
+
+หลังจากได้รับ response object แล้ว เราสามารถดึงข้อความที่โมเดลสร้างขึ้นมาได้ด้วยฟังก์ชัน `content()` จากแพ็กเกจ `httr`
+
+```{r eval = F, echo = T}
+## ถ้าไม่ขึ้นผลลัพธ์แสดงว่า status code = 200 
+stop_for_status(response)
+## parse JSON ให้เป็น character vector
+content(response)$choices[[1]]$message$content
+```
+
+หรือใช้ helper function ที่สร้างไว้ก่อนหน้า
+
+```{r eval = F, echo = T}
+get_llm_text(response) %>% cat()
+```
+
+```{text echo = T}
+#| code-line-numbers: false
+
+**ข้อสอบ: One-Sample t-Test**
+
+**คำสั่ง:** ให้นักศึกษาอ่านข้อมูลด้านล่างและทำการคำนวณค่า p-value โดยใช้ One-Sample t-Test
+
+**ข้อมูล:** นักวิจัยต้องการทราบว่าเวลาที่ใช้ในการทำการบ้านของนักเรียนในชั้นเรียนหนึ่งมีค่าเฉลี่ยเท่ากับ 2 ชั่วโมงต่อวันหรือไม่ โดยได้สุ่มตัวอย่างนักเรียนจำนวน 10 คน และได้เวลาที่ใช้ในการทำการบ้านดังนี้ (ชั่วโมง):
+
+1. 1.5
+2. 2.2
+3. 1.8
+4. 2.5
+5. 2.0
+6. 1.7
+7. 2.3
+8. 1.9
+9. 2.1
+10. 1.6
+
+**คำถาม:**
+
+1. คำนวณค่าเฉลี่ย (mean) และส่วนเบี่ยงเบนมาตรฐาน (standard deviation) ของข้อมูลที่ให้มา
+2. ทดสอบสมมติฐานที่ว่าเวลาที่ใช้ในการทำการบ้านมีค่าเฉลี่ยเท่ากับ 2 ชั่วโมง โดยใช้ระดับนัยสำคัญที่ 0.05
+3. คำนวณค่า t-statistic และ p-value สำหรับการทดสอบนี้
+4. สรุปผลการทดสอบสมมติฐาน
+
+**หมายเหตุ:** ให้นักศึกษาแสดงขั้นตอนการคำนวณทั้งหมดอย่างละเอียด
+
+---
+
+**เฉลย (สำหรับอาจารย์):**
+
+1. **คำนวณค่าเฉลี่ย (mean) และส่วนเบี่ยงเบนมาตรฐาน (standard deviation):**
+   - ค่าเฉลี่ย (mean) = (1.5 + 2.2 + 1.8 + 2.5 + 2.0 + 1.7 + 2.3 + 1.9 + 2.1 + 1.6) / 10 = 1.81
+   - ส่วนเบี่ยงเบนมาตรฐาน (SD) = √[(Σ(x - mean)²) / (n-1)]
+
+2. **ทดสอบสมมติฐาน:**
+   - สมมติฐานศูนย์ (H0): μ = 2
+   - สมมติฐานทางเลือก (H1): μ ≠ 2
+
+3. **คำนวณค่า t-statistic:**
+   - t = (mean - μ) / (SD / √n)
+
+4. **คำนวณ p-value:**
+   - ใช้ตาราง t หรือโปรแกรมสถิติในการหาค่า p-value จาก t-statistic ที่คำนวณได้
+
+5. **สรุปผลการทดสอบ:**
+   - เปรียบเทียบ p-value กับระดับนัย
+```
+
+
+## Helper Function {.smaller}
+
+เนื่องจากการเรียก API มี syntax ที่ยาวค่อนข้างลำบากในการเรียกซ้ำหลายครั้ง การเขียน helper function จะช่วยให้การเรียกใช้งานสะดวกขึ้น
+
+
+```{r eval = F, echo = T}
+library(here)
+url <- here("tidyllm/scripts", "call_openai_api.R")
+source(url)
+response <- exam_generator_api(
+  prompt = "ช่วยออกข้อสอบเรื่อง ONE-WAY ANOVA จำนวน 1 ข้อ เกี่ยวกับ Sum Squares",
+  model = "gpt-4o-mini",
+  temp = 0.5,
+  maximum_token = 600
+)
+get_llm_text(response) %>% cat()
+```
+
+
+```{text echo = T}
+#| code-line-numbers: false
+
+ข้อสอบ: ONE-WAY ANOVA
+
+**คำสั่ง:** ให้นักศึกษาใช้ข้อมูลด้านล่างในการคำนวณหาค่า Sum of Squares (SS) สำหรับการวิเคราะห์ One-Way ANOVA
+
+**ข้อมูล:**
+กลุ่มตัวอย่างแบ่งออกเป็น 3 กลุ่ม โดยมีข้อมูลดังนี้
+
+- กลุ่ม A: 12, 15, 14, 10, 13
+- กลุ่ม B: 22, 25, 24, 20, 21
+- กลุ่ม C: 30, 32, 31, 29, 28
+
+**คำถาม:**
+1. คำนวณค่าเฉลี่ย (Mean) ของแต่ละกลุ่ม
+2. คำนวณค่า Total Sum of Squares (SST)
+3. คำนวณค่า Between-Group Sum of Squares (SSB)
+4. คำนวณค่า Within-Group Sum of Squares (SSW)
+
+**หมายเหตุ:** 
+- ให้แสดงขั้นตอนการคำนวณอย่างละเอียด
+- ใช้สูตรที่เหมาะสมในการคำนวณค่า Sum of Squares
+
+**คะแนน:** 20 คะแนน
+
+---
+
+**เฉลย** (สำหรับครู):
+
+1. **ค่าเฉลี่ยของแต่ละกลุ่ม:**
+   - กลุ่ม A: (12 + 15 + 14 + 10 + 13) / 5 = 12.8
+   - กลุ่ม B: (22 + 25 + 24 + 20 + 21) / 5 = 22.4
+   - กลุ่ม C: (30 + 32 + 31 + 29 + 28) / 5 = 30
+
+2. **Total Sum of Squares (SST):**
+   - ค่าเฉลี่ยรวม (Grand Mean) = (12 + 15 + 14 + 10 + 13 + 22 + 25 + 24 + 20 + 21 + 30 + 32 + 31 + 29 + 28) / 15 = 22.2
+   - SST = Σ(Xi - Grand Mean)²
+   - คำนวณค่าต่าง ๆ และหาผลรวม
+
+3. **Between-Group Sum of Squares (SSB):**
+   - SSB = n * Σ(Group Mean - Grand Mean)²
+   - n = จำนวนตัวอย่างในแต่ละกลุ่ม (ในที่นี้ n = 5)
+
+4. **Within-Group Sum of Squares (SSW):**
+   - SSW = Σ(Xij - Group Mean)² สำหรับแต่ละกลุ่ม
+   - คำนวณค่าต่าง ๆ และหาผลรวม
+
+**หมายเหตุ:** นักเรียนควรทำการคำนวณและแสดงวิธีการอย่างละเอียดเพื่อให้ได้คะแนนตามที่กำหนด
+```
+
+
+## Local LLM {.smaller}
+
+- โมเดลภาษาขนาดใหญ่ที่สามารถติดตั้งและประมวลผลบนเครื่องคอมพิวเตอร์ส่วนบุคคลหรือเซิร์ฟเวอร์ภายในองค์กร
+
+- Hugging Face Hub → คลังโมเดลภาษาขนาดใหญ่ที่ใหญ่ที่สุดตอนนี้ ~ Github ของโมเดล AI
+
+<center>
+![<br> https://huggingface.co/](img/hugging_face.png){width="80%"}
+</center>
+
+
+## [Ollama](https://ollama.com/): runtime สำหรับ local LLM {.smaller}
+
+<div style="font-size:85%;">
+
+- Runtime -- สภาพแวดล้อมที่ทำให้โมเดลสามารถรันได้จริง ช่วยบริหารจัดการเรื่องทางเทคนิคที่อาจไม่จำเป็นในการใช้งานทั่วไป 
+
+  - โหลดโมเดลจาก registry
+  
+  - run inference
+  
+  - เปิด REST API ที่ `localhost:11434` เพื่อให้เรียกใช้งานผ่าน HTTP ได้
+
+- เปิดช่องทางให้สามารถเรียกใช้งาน local llms ผ่าน API endpoint ได้เหมือนกับการเรียกใช้งานผ่าน cloud llms
+
+คำสั่งสำคัญ เช่น (สั่งงานบน terminal)
+
+
+```{bash eval=F, echo = T}
+ollama pull llama3
+ollama list
+ollama run llama3
+ollama rm llama3
+```
+
+เรียกดู port ที่ใช้เชื่อมต่อ
+
+- สำหรับ MacOS
+
+```{r eval = F, echo = T}
+lsof -iTCP -sTCP:LISTEN | grep ollama
+```
+
+- สำหรับ Windows
+
+```{bash eval = F, echo = T}
+netstat -an | grep 11434
+```
+
+</div>
+
+## `tidyllm` {.smaller}
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![](https://github.com/edubruell/tidyllm/raw/main/man/figures/logo.png)
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="75%"}
+
+
+tidyllm เป็น R package ที่ออกแบบมาเพื่อทำให้การทำงานกับ Large Language Models ใน R environment มีความสะดวก เข้ากันได้ดีกับ tidyverse ecosystem และมีความยืดหยุ่นสูง
+
+- Message-centric Interface: จัดการข้อความในรูปแบบ data frame ที่เข้ากันได้กับ tidyverse workflow
+
+
+- Provider Agnostic: รองรับผู้ให้บริการ LLM หลายรายโดยใช้ interface เดียวกัน สามารถใช้ได้ทั้ง Open Source LLMs และ Commercial LLMs
+
+- Schema-Driven Output: มี feature ช่วยควบคุมการแสดงผลลัพธ์ด้วย JSON schema เพื่อให้ได้ผลลัพธ์ที่มีโครงสร้างและง่ายต่อการนำไปใช้งานต่อ (อย่างไรก็ตามการควบคุมผลลัพธ์นี้ขึ้นกับ LLMs ที่เลือกใช้ด้วย)
+
+- Functional Programming Style: ใช้แนวคิด functional programming ใน R เพื่อให้การเรียกใช้งาน LLMs มีความชัดเจนและง่ายต่อการอ่านสำหรับผู้ใช้ R
+
+:::
+
+::::
+
+## เปรียบเทียบ tidyllm กับ httr {.smaller}
+
+<div style="font-size:75%">
+
+:::: {.columns}
+
+::: {.column width="47.5%"}
+
+**การเรียก Raw API (httr + jsonlite)**
+
+```{r eval = F, echo = T}
+library(httr)
+library(jsonlite)
+
+response <- POST(
+  url = paste0(base_url, endpoint),
+  add_headers(
+    Authorization = paste("Bearer", api_key),
+    `Content-Type` = "application/json"
+  ),
+  body = toJSON(list(
+    model = "gpt-4o-mini",
+    messages = list(
+      list(role = "system", content = sys_prompt),
+      list(role = "user", content = user_prompt)
+    ),
+    temperature = 0.2
+  ), auto_unbox = TRUE)
+)
+
+# ต้องจัดการ error handling เพิ่ม
+result <- content(response)$choices[[1]]$message$content
+```
+
+
+
+:::
+
+
+::: {.column width="5%"}
+
+
+:::
+
+::: {.column width="47.5%"}
+
+**tidyllm approach**
+
+```{eval = F, echo = T}
+library(tidyverse)
+library(tidyllm)
+
+msgs <- tibble(
+  role = c("system", "user"),
+  content = c(sys_prompt, user_prompt)
+) %>% df_llm_message()
+
+result <- msgs %>% 
+  chat(openai(), 
+       .model = "gpt-4o-mini",
+       .temperature = 0.2) %>%
+get_reply_text()
+```
+
+
+
+:::
+
+::::
+
+</div>
+
+## การติดตั้งและตั้งค่าเบื้องต้น {.smaller}
+
+<div style="font-size:75%">
+
+1. ติดตั้ง library
+
+```{r echo = T, eval = F}
+install.packages("tidyllm")
+library(tidyllm)
+```
+
+<div style="font-size:1%;">
+<br>
+</div>
+
+2. ตั้งค่า API key ในไฟล์ `.Renviron` (ถ้าเลือกค่ายเสียตัง)
+
+::: {.callout-caution title="ข้อควรระวัง"}
+
+ห้ามเปิดเผย API key ต่อสาธารณะเด็ดขาด เตือนแล้วนะ!!!
+
+:::
+
+ข้อแนะนำควรเก็บ API key ในไฟล์ `.Renviron` ที่อยู่ใน home directory ของผู้ใช้ (เช่น `C:/Users/username/.Renviron` บน Windows หรือ `/Users/username/.Renviron` บน MacOS)
+
+```{r echo = T, eval = F}
+# ตัวอย่าง .Renviron
+usethis::edit_r_environ()
+```
+
+จากนั้นเพิ่มบรรทัด api key ของ openai ลงไปในไฟล์ .Renviron ที่เปิดขึ้นมา ดังนี้
+
+```{text echo = T}
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxx
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxx
+```
+
+<div style="font-size:1%;">
+<br>
+</div>
+
+3. สำหรับผู้ใช้ Ollama (Local LLM) ให้ตั้งค่า server url ไปที่ 
+
+```{text echo = T}
+server_url <- "http://localhost:11434"
+```
+
+</div>
+
+## การติดตั้งและตั้งค่าเบื้องต้น {.smaller}
+
+4. ทดลองใช้งานเบื้องต้น (openai)
+
+
+```{r echo = T}
+llm_message(
+  .system_prompt = "คุณคือ อ.อี่ ผู้เชี่ยวชาญสถิติแห่งชาติ  ทุกครั้งที่ตอบต้องแนะนำตัวก่อนว่า `ผมคือ อ.อี่ ผู้เชี่ยวชาญด้านสถิติแห่งชาติจะขอตอบ... อนึ่งว่า เมื่อตอบเสร็จให้ลงท้ายว่า ชะเอิงเอิงเอย`",
+  .prompt = "สวัสดี ช่วยอธิบาย correlation หน่อย"
+) %>% 
+chat(openai(),
+     .model = "gpt-5-nano")
+```
+
+## การติดตั้งและตั้งค่าเบื้องต้น {.smaller}
+
+5. ทดลองใช้งานเบื้องต้น (Ollama) {.smaller}
+
+
+เรียกดูโมเดลที่มีบนเครื่อง
+
+```{r}
+ollama_list_models()
+```
+
+
+
+```{r echo = T}
+llm_message(
+  .system_prompt = "คุณคือ อ.อี่ ผู้เชี่ยวชาญสถิติแห่งชาติ  ทุกครั้งที่ตอบต้องแนะนำตัวก่อนว่า `ผมคือ อ.อี่ ผู้เชี่ยวชาญด้านสถิติแห่งชาติจะขอตอบ... อนึ่งว่า เมื่อตอบเสร็จให้ลงท้ายว่า ชะเอิงเอิงเอย` ตอบภาษาไทยเท่านั้น",
+  .prompt = "สวัสดี ช่วยอธิบาย correชlation หน่อย"
+) %>% 
+  chat(ollama(),
+       .model = "llama3:latest",
+       .temperature = 0.5)
+```
+
+## JSON Schema Integration {.smaller}
+
+จุดแข็งสำคัญของ tidyllm คือการใช้ JSON Schema เพื่อควบคุมรูปแบบผลลัพธ์ที่ได้จาก LLMs ซึ่งมีประโยชน์มากสำหรับงานที่ต้องการสร้างชุดข้อมูลที่มีโครงสร้างเพื่อนำไปใช้งานต่อ
+
+```{r echo = T}
+# สร้าง schema สำหรับการวิเคราะห์ sentiment
+sentiment_schema <- tidyllm_schema(
+  name = "sentiment_analysis",
+  sentiment_score = field_dbl("ค่าคะแนน sentiment (-1 ถึง 1)"),
+  sentiment_label = field_chr("ป้ายกำกับ: positive, negative, neutral"),
+  confidence = field_dbl("ระดับความมั่นใจ (0 ถึง 1)"),
+  reasoning = field_chr("เหตุผลการตัดสินใจ")
+)
+
+# ใช้ schema ในการเรียก LLM
+messages <- tibble(
+  role = c("system", "user"),
+  content = c(
+    "วิเคราะห์ sentiment ของข้อความต่อไปนี้",
+    "วันนี้อากาศดีมาก ไปเที่ยวสนุกมากเลย!"
+  )
+) %>% df_llm_message()
+
+result <- messages %>% 
+  chat(openai(), 
+       .model = "gpt-4o-mini",
+       .json_schema = sentiment_schema) %>%
+  get_reply_data()
+
+# ได้ structured data พร้อมใช้
+str(result)
+```
+
+
+## กิจกรรม : ปรับแต่ง LLM เพื่อใช้สำหรับตรวจข้อสอบอัตนัย {.smaller}
+
+<div style="font-size:140%;">
+
+::: {.callout-note title="คำถาม"}
+
+
+จากที่คุณได้เรียนรู้แนวคิดเบื้องต้นเกี่ยวกับ Data-Driven Classroom และ Intentional Assessment <br> จงอธิบายด้วยคำของคุณเองว่า
+
+1. ครูในยุคปัจจุบันควรใช้ข้อมูลของนักเรียนไปทำอะไร
+
+2. ทำไมการวัดผลแบบมีเป้าหมายจึงสำคัญต่อการช่วยนักเรียนให้เรียนดีขึ้น
+
+:::
+
+</div>
+
+<div style="font-size:80%;">
+
+**แนวเฉลย**
+
+**คำตอบข้อ 1**  
+ครูในยุคปัจจุบันควรใช้ข้อมูลของนักเรียนเพื่อทำความเข้าใจความแตกต่างระหว่างผู้เรียนแต่ละคน ทั้งจุดแข็งและจุดที่ควรพัฒนา ข้อมูลนี้สามารถนำไปใช้ปรับวิธีการสอน การออกแบบกิจกรรมการเรียนรู้ และการให้คำแนะนำรายบุคคล เพื่อช่วยให้นักเรียนเรียนรู้ได้อย่างมีประสิทธิภาพมากขึ้น
+
+**คำตอบข้อ 2**  
+การวัดผลแบบมีเป้าหมายสำคัญเพราะช่วยให้ครูเก็บข้อมูลที่ตรงกับวัตถุประสงค์การเรียนรู้ สามารถสะท้อนให้เห็นว่านักเรียนบรรลุผลตามที่ตั้งไว้หรือไม่ และชี้สาเหตุของปัญหาได้อย่างชัดเจน ส่งผลให้ครูสามารถออกแบบการสนับสนุนที่เหมาะสมและช่วยนักเรียนพัฒนาต่อไปได้อย่างตรงจุด
+
+</div>
+
+## แนวการตรวจให้คะแนน {.smaller}
+
+<div style="font-size:60%;">
+
+**Rubric 1: การอธิบายการใช้ข้อมูลของครู (ใช้ตรวจข้อ 1)**
+
+- **ระดับดี (3 pts):**  
+  อธิบายชัดเจนว่าครูใช้ข้อมูลเพื่อเข้าใจนักเรียนหรือปรับการสอนอย่างไร  
+- **ระดับพอใช้ (2 pts):**  
+  พูดถึงการใช้ข้อมูลทั่วไป แต่ยังไม่ชัดเจนว่าจะใช้ข้อมูลเพื่อเข้าใจนักเรียนหรือปรับการสอนได้อย่างไร  
+- **ต้องปรับปรุง (1 pt):**  
+  ไม่เชื่อมโยงบทบาทของข้อมูล หรืออธิบายไม่ตรง  
+
+**Rubric 2: การอธิบายความสำคัญของการวัดผลแบบมีเป้าหมาย (ใช้ตรวจข้อ 2)**
+
+- **ระดับดี (3 pts):**  
+  เชื่อมโยงได้ว่าการวัดช่วยให้เข้าใจนักเรียนหรือแก้ปัญหาได้อย่างไร  
+- **ระดับพอใช้ (2 pts):**  
+  บอกว่าการวัดช่วยได้ แต่ไม่ชัดว่าอย่างไร  
+- **ต้องปรับปรุง (1 pt):**  
+  มองว่าการวัดมีไว้เพื่อตัดเกรดหรือไม่อธิบายเลย  
+
+**Rubric 3: การสื่อสารและโครงสร้างของคำตอบ (ใช้ตรวจทั้งสองข้อ)**
+
+- **ระดับดี (3 pts):**  
+  เขียนเป็นลำดับขั้น เข้าใจง่าย ใช้ภาษาสอดคล้องกับเนื้อหาเหมาะสม  
+- **ระดับพอใช้ (2 pts):**  
+  เขียนพอเข้าใจได้ แต่ยังไม่เป็นลำดับ หรือมีบางส่วนคลุมเครือ  
+- **ต้องปรับปรุง (1 pt):**  
+  เขียนไม่เข้าใจ หรือสับสนมาก  
+
+</div>
+
+## 
+
+

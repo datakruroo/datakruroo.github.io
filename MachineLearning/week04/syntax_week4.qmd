@@ -1,0 +1,398 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+ใน linear regression จะมี assumption หลัก  ๆ 3-4 ข้อ
+
+$$
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_k x_{ik} + \epsilon_i
+$$
+
+1. normality
+
+2. homoscedasticity
+
+3. independence
+
+4. no multicollinearity
+
+5. no outliers
+
+
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+data <- read_csv("student_data.csv")
+data <- data %>% 
+  mutate(student_id = 1:dim(data)[1], .before = everything())
+glimpse(data)
+
+p1 <- data %>% 
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram()
+
+
+p2 <- data %>% 
+  ggplot(aes(x = distance_from_home, y = gpa))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+p1 + p2
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+hist(data$distance_from_home)
+hist(log(data$distance_from_home))
+```
+
+
+```{r}
+data %>% 
+  mutate(log_distance = log(distance_from_home)) %>% 
+  ggplot(aes(x = log_distance, y = gpa))+
+  geom_point()
+```
+
+
+## log-transformation in recipe
+
+```{r echo = F}
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = academic_risk)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+```{r}
+x <- seq(-3,3,1)
+x^2
+```
+
+$$
+log(x + 11)
+$$
+
+
+
+```{r}
+## data preprocessing model
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id, gpa) %>% 
+  step_log(distance_from_home,
+           base = exp(1),
+           offset = 0) %>% 
+  prep() %>% 
+  juice()
+```
+
+
+$$
+y = b_0 + b_1x
+$$
+
+$$
+y = b_0 + b_1 ln(x)
+$$
+
+
+
+
+
+```{r}
+## tidy() --- library(broom)
+## data preprocessing model
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id, gpa) %>% 
+  step_BoxCox(distance_from_home, credits_per_term) %>% 
+  step_normalize(distance_from_home, credits_per_term) %>% 
+  prep() %>% tidy(2)
+  juice() %>% 
+  select(credits_per_term, distance_from_home) %>% 
+  summary()
+```
+
+
+```{r}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id, gpa) %>% 
+  step_YeoJohnson(distance_from_home, credits_per_term) %>%
+  step_normalize(distance_from_home, credits_per_term) %>% 
+  prep() %>% tidy(2)
+  juice() %>% 
+  select(credits_per_term, distance_from_home) %>% 
+  summary()
+```
+
+
+
+```{r}
+train_data %>% 
+  ggplot(aes(x = credits_per_term))+
+  geom_histogram()
+
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id, gpa) %>% 
+  step_BoxCox(distance_from_home, credits_per_term) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = credits_per_term))+
+  geom_histogram()
+```
+
+
+
+
+```{r}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id, gpa) %>% 
+  step_range(distance_from_home,
+             min = 0,
+             max = 1) %>% ## แปลงตัวแปรให้อยู่ในช่วง -1, 1
+  prep() %>% 
+  juice() %>% 
+  select(distance_from_home) %>% 
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram()
+```
+
+
+
+
+
+```{r}
+install.packages("devtools")
+library(devtools)
+install_github("EmilHvitfeldt/extrasteps")
+library(extrasteps)
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id, gpa) %>% 
+  step_robust(distance_from_home) %>% 
+  prep() %>% 
+  juice() %>% 
+  select(distance_from_home) %>% 
+  summary()
+```
+
+
+```{r}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id) %>% 
+  step_discretize(absence_count,
+                  num_breaks = 5,
+                  min_unique = 2) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = absence_count, fill = academic_risk))+
+  geom_bar(position = "fill")
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id) %>% 
+  step_discretize_cart(
+    outcome = "academic_risk",
+    absence_count,
+    cost_complexity = tune()) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = absence_count, fill = academic_risk))+
+  geom_bar(position = "fill")
+  
+
+
+```
+
+
+## category
+
+
+
+```{r}
+level_major <- train_data %>% count(major) %>% pull(major)
+level_major <- level_major[c(3,1,2,4,5)]
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id) %>% 
+  step_mutate(major = factor(major, levels = level_major)) %>% 
+  step_dummy(
+    major,
+    one_hot = TRUE, ## dummy encoding
+  ) %>% 
+  prep() %>% 
+  juice()  %>% glimpse()
+
+```
+
+
+
+
+```{r}
+## label encoding
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id) %>% 
+  step_mutate(level = fct_relevel(level, "Undergraduate", "Graduate")) %>%
+  step_integer(level) %>% 
+  prep() %>% 
+  juice() %>% 
+  select(level) %>% 
+  bind_cols(train_data %>% select(level) %>% rename(original = level)) %>% 
+  count(level)
+  
+
+```
+
+```{r}
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id) %>% 
+  step_novel(work_status) %>% 
+  step_normalize(distance_from_home, skip = TRUE)
+```
+
+
+```{r}
+## install.packages("embed")
+library(embed)
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  step_rm(student_id) %>% 
+  step_mutate(major = factor(major)) %>% 
+  step_lencode_glm(major, outcome = "academic_risk") %>%
+    prep() %>% 
+  juice()
+  
+ 
+
+
+```
+
+
+
+## missing value
+
+```{r}
+complete_data <- read_csv("exam.csv")
+complete_data %>% 
+  glimpse()
+
+set.seed(123)
+missing_data <- complete_data %>% 
+  ## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage
+  mutate(learning_performance_mar = case_when(
+     ach < 40 | engage == "moderate engage"  ~ ifelse(runif(387,0,1)<0.8,NA, learning_performance) ,
+    .default = learning_performance
+  )
+  )
+
+missing_data %>% 
+  glimpse()
+```
+
+```{r}
+
+## complete dataset
+complete_dataset <- complete_data %>% 
+  select(learning_performance, ach) %>% 
+  mutate(dataset = "complete")
+
+
+## naomit -- listwise deletion
+naomit_dataset <- missing_data %>% 
+  recipe(ach ~ .) %>% 
+  step_rm(learning_performance) %>% 
+  step_naomit(all_predictors()) %>% 
+  prep() %>% 
+  juice() %>% 
+  select(learning_performance_mar, ach) %>% 
+  mutate(dataset = "naomit_dataset") %>% 
+  rename(learning_performance = learning_performance_mar)
+
+## mean imputation
+mean_imp_dataset <- missing_data %>% 
+  recipe(ach ~ .) %>% 
+  step_rm(learning_performance) %>% 
+  step_impute_mean(learning_performance_mar) %>%
+  prep() %>% 
+  juice() %>% 
+  select(learning_performance_mar, ach) %>% 
+  mutate(dataset = "mean_imp_dataset") %>% 
+  rename(learning_performance = learning_performance_mar)
+
+## linear regression imputation
+
+lm_imp_dataset <- missing_data %>% 
+  recipe(ach ~ .) %>% 
+  step_rm(learning_performance) %>% 
+  step_impute_linear(learning_performance_mar,
+                     impute_with = c(all_predictors(), "ach"),
+                     ) %>%
+   prep() %>% 
+  juice() %>% 
+  select(learning_performance_mar, ach) %>% 
+  mutate(dataset = "lm_imp_dataset") %>% 
+  rename(learning_performance = learning_performance_mar)
+
+
+
+database <- complete_dataset %>% 
+  bind_rows(naomit_dataset) %>% 
+  bind_rows(mean_imp_dataset) %>% 
+  bind_rows(lm_imp_dataset)
+
+database %>% 
+  filter(dataset %in% c("complete", "lm_imp_dataset", "naomit_dataset")) %>% 
+  ggplot(aes(x = learning_performance, col = dataset, fill = dataset)) +
+  geom_density(alpha = 0.5)+
+  theme_light()
+
+
+database %>% 
+  bind_rows(naomit_dataset) %>% 
+  bind_rows(mean_imp_dataset) %>%
+  filter(dataset %in% c("lm_imp_dataset", "complete")) %>% 
+  ggplot(aes(x = learning_performance, 
+             y = ach,
+             col = dataset, fill = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_light()
+  
+
+
+missing_data %>% 
+  select(-learning_performance) %>% 
+  write_excel_csv("missing_data.csv")
+```
+
+
+
+
+```{r}
+missing_data %>% any_na()
+library(naniar)
+ai_imp_dataset <- read_csv("missing_data_imputed.csv")
+ai_imp_dataset  %>% 
+  select(learning_performance_mar, ach) %>% 
+  mutate(dataset = "ai_imp_dataset") %>% 
+  rename(learning_performance = learning_performance_mar) %>% 
+  ggplot(aes(x = learning_performance, y = ach))+
+  geom_point()+
+  geom_smooth(method = "lm")
+```
+
+
+
+
+
+
+
+
+
+

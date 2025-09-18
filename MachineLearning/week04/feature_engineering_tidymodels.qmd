@@ -1,5 +1,5 @@
 ---
-title: "Week 3: Feature Engineering"
+title: "Week 3-4: Feature Engineering"
 subtitle: "recipess • Workflows • Leakage Safety • Explainability"
 author: "ผศ.ดร.สิวะโชติ ศรีสุทธิยากร"
 date: today
@@ -330,8 +330,424 @@ grep("^step_", ls("package:recipes"), value = TRUE)
 
 # Part2 : Techniques {.smaller}
 
+- Numeric Features
 
-## 2.1 Imputation {.smaller}
+- Categorical Features
+
+- Missing Data
+
+- Too Many Variables
+
+- Text Features
+
+- Outliers
+
+- Imbalanced Data
+
+## 2.1 Numeric Features {.smaller}
+
+> ตัวแปรเชิงปริมาณ คือ คุณลักษณะที่สามารถวัด/สังเกตค่าได้เป็นตัวเลข ที่มีความหมายในเชิงปริมาณ สามารถเปรียบเทียบและคำนวณทางคณิตศาสตร์ได้
+
+::: {.callout-note}
+
+การแก้/ลดข้อจำกัดดังกล่าวอาจช่วยให้โมเดลมีประสิทธิภาพที่ดียิ่งขึ้น
+
+:::
+
+- เช่น อายุ ส่วนสูง คะแนนสอบ รายได้ ...
+
+- เป็นข้อมูลที่ค่อนข้างมีความพร้อมในการนำไปวิเคราะห์ทางสถิติ หรือสร้างโมเดลการเรียนรู้ของเครื่อง
+
+
+## Logarithms {.smaller}
+
+ลอการิทึม (logarithms) เป็นเครื่องมือที่ใช้เพื่อจัดการกับข้อมูลที่มีการเบ้ (skewed) อย่างมาก
+
+
+```{r echo = F}
+library(patchwork)
+x <- seq(0.1, 800, by = 1)
+p1 <- data.frame(
+  x = x,
+  y = log(x)
+) %>% 
+  ggplot(aes(x = x, y = y))+
+  geom_line() +
+  xlab("Original") +
+  ylab("log(Original)") +
+  xlim(0,800)+
+  ylim(0,7.5) + 
+  ggtitle("logarithm")
+
+
+p2 <- train_data %>% 
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram()+
+  ggtitle("Original")
+
+p2 + p1
+  
+```
+
+
+## Logarithms {.smaller}
+
+
+```{r echo = T, eval = F}
+my_rec <- recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_log(distance_from_home)
+
+my_rec %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram()
+```
+
+
+## Logarithms {.smaller}
+
+```{r echo = F}
+my_rec <- recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_log(distance_from_home)
+
+my_rec %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram()
+```
+
+
+ข้อจำกัดของ log-transformation
+
+- ใช้ได้กับข้อมูลที่มีค่าเป็นบวกเท่านั้น (positive values)
+
+- การแปลงแบบ log ให้ผลลัพธ์เป็น normal distribution เสมอ ?
+
+- การแปลงแบบ log อาจทำให้การตีความผลลัพธ์ของโมเดลทำได้ยากขึ้น แต่ก็ไม่ได้ทำไม่ได้  
+
+## Square root {.smaller}
+
+$$
+y = sign(x) \sqrt{|x|}
+$$
+
+```{r echo = F, eval = T}
+p1 <- my_rec %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram(bins = 30) + 
+  ggtitle("log-transformation")
+
+p2 <- recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_sqrt(distance_from_home) %>% 
+  prep() %>%
+  juice() %>%
+  ggplot(aes(x = distance_from_home))+
+  geom_histogram(bins = 30) +
+  ggtitle("square root transformation")
+
+p1 + p2
+```
+
+
+
+## Box-Cox transformation {.smaller}
+
+- โดยปกติการแจกแจงที่ไม่เบ้มากเกินไปของตัวแปรทำนาย เพียงพอที่จะทำให้การเรียนรู้ของเครื่องทำงานได้อย่างมีประสิทธิภาพ (เพราะหลายเทคนิคไม่ได้ require normality ในตัวแปรทำนาย) แต่บางกรณีก็มีเงื่อนไข normality ในตัวแปรทำนาย เช่น linear discriminant analysis (LDA)
+
+- [Box-Cox transformation](https://en.wikipedia.org/wiki/Power_transform) เป็นเทคนิคที่ใช้แปลงตัวแปรเชิงปริมาณให้มีการแจกแจงใกล้เคียง normal distribution มากขึ้น 
+
+- หลักการทำงานคือ ใช้ maximum likelihood estimation (MLE) เพื่อประมาณค่าพารามิเตอร์การแปลง (\lambda) ในสมการที่กำหนด เพื่อหาการแปลงที่ทำให้ข้อมูลใกล้เคียงการแจกแจงแบบปกติมากที่สุด เราต้องประมาณค่าพารามิเตอร์ \lambda จาก training data set ก่อน แล้วจึงนำค่าที่ได้ไปใช้แปลงทั้ง training และ test data set เพื่อหลีกเลี่ยงปัญหา data leakage
+
+- เงื่อนไขที่สำคัญของ Box-Cox transformation คือ ตัวแปรต้องมีค่าบวกเท่านั้น (positive values)
+
+
+
+```{r echo = T, eval = F}
+
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_BoxCox(distance_from_home, 
+              limits = c(-5,5), # A length 2 numeric vector defining the range to compute the transformation parameter lambda.
+              lambdas = NULL) # A numeric vector of transformation values. This is NULL until computed by prep().
+
+```
+
+## Box-Cox transformation {.smaller}
+
+![](https://feaz-book.com/numeric-boxcox_files/figure-html/visualize_boxcox-normal-1.png)
+
+
+## Yeo-Johnson transformation {.smaller}
+
+- เป็นการแปลงในกลุ่มเดียวกับ Box-Cox transformation 
+
+- สามารถใช้กับข้อมูลที่มีค่าบวกและค่าลบได้ (positive and negative values)
+
+```{r echo = T, eval = F}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_YeoJohnson(distance_from_home)
+```
+
+
+![](https://feaz-book.com/numeric-yeojohnson_files/figure-html/visualize_yeojohnson-normal-1.png)
+
+## Yeo-Johnson transformation {.smaller}
+
+- Box-Cox และ Yeo-Johnson transformation ไม่ใช่่เครื่องมืออเนกประสงค์ ไม่ใช่ว่าจะแก้ปัญหาเรื่องการแจกแจงได้ในทุกกรณี ควรใช้อย่างมีเหตุผล
+
+![](https://feaz-book.com/numeric-yeojohnson_files/figure-html/visualize_yeojohnson-non-normal-1.png)
+
+## Percential Scaling {.smaller}
+
+- บางครั้งเรียกว่า Rank Scaling หรือ Quantile Scaling
+
+- เป็นวิธีการแปลงข้อมูลแบบไม่เป็นเชิงเส้น (non-linear transformation) โดยที่ค่าของแต่ละจุดข้อมูลจะถูกแทนที่ด้วย เปอร์เซ็นไทล์ (percentile) เมื่อเทียบกับข้อมูลในชุด training data
+
+
+::: {.callout-note}
+
+คำว่า percentile และ quantile ใช้แทนสิ่งเดียวกัน เพียงแต่ต่างกันที่วิธีการแสดงผล percentile แสดงเป็นเปอร์เซ็นต์ เช่น 10%, 20%, 30% ส่วน quantile แสดงเป็นทศนิยม เช่น 0.1, 0.2, 0.3 
+
+:::
+
+- ผลลัพธ์ที่ได้จากการแปลงจะได้สเกลใหม่ที่มีค่าอยู่ในช่วง [0,1] 
+
+- ระมัดระวังดี ๆ ว่าข้อมูลชุดอื่นที่จะนำมาใช้งานเช่น test data หรือ new data ควรต้องมีการแจกแจงในลักษณะใกล้เคียงกับชุดข้อมูล traning data
+
+
+```{r echo = T, eval = F}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_percentile(distance_from_home)
+```
+
+
+## Normalization {.smaller}
+
+- Normalization เป็นวิธีการปรับตัวแปรโดยนำค่าของมันมาลบด้วยค่าเฉลี่ย (mean) แล้วหารด้วยส่วนเบี่ยงเบนมาตรฐาน (standard deviation)
+
+- ผลลัพธ์ที่ได้จะเป็นสเกลใหม่ที่มีค่าเฉลี่ยเป็น 0 และส่วนเบี่ยงเบนมาตรฐานเป็น 1
+
+- อย่าลืมว่าการแปลงนี้จะคำนวณค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐานจาก training data เท่านั้น แล้วจึงนำค่าที่ได้ไปใช้แปลงทั้ง training และ test data เพื่อหลีกเลี่ยงปัญหา data leakage
+
+- นอกจากนี้ยังมี misconcept ที่ว่าการแปลงแบบนี้ช่วยให้ข้อมูลมีการแจกแจงแบบปกติ
+
+$$
+X_{scaled} = \frac{X - mean(X)}{SD(X)}
+$$
+## Normalization {.smaller}
+
+```{r}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_normalize(distance_from_home)
+```
+
+
+![](https://feaz-book.com/numeric-normalization_files/figure-html/fig-normalization-not-normal-1.png)
+
+
+## Range Scaling {.smaller}
+
+อีกชื่อหนึ่งคือ Min-Max Scaling เป็นวิธีการที่ช่วยแปลงตัวแปรเชิงปริมาณให้มีสเกลอยู่ในช่วง [0,1]
+
+$$
+X_{scaled} = \frac{X - min(X)}{max(X) - min(X)}
+$$
+
+
+```{r echo = T, eval = F}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_range(distance_from_home,
+             min = 0,
+             max = 0.5)
+```
+
+
+![](https://feaz-book.com/numeric-range_files/figure-html/fig-range-clipping-1.png)
+
+## Robust Scaling {.smaller}
+
+- เป็นวิธีการแปลงที่คล้ายการทำ normalization แต่ใช้ค่ามัธยฐาน (median) และช่วง interquartile range (IQR) แทนค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐาน
+
+- อย่างไรก็ตามวิธีตัวหาร IQR(X) อาจมีค่าเท่ากับ 0 ในบางชุดข้อมูล
+
+$$
+X_{scaled} = \frac{X - median(X)}{IQR(X)}
+$$
+
+- มีฟังก์ชันสำเร็จรูปใน [library-`extrasteps`](https://github.com/EmilHvitfeldt/extrasteps/)
+
+```{r eval = F, echo = T}
+## install.packages("extrasteps")
+library(extrasteps)
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_robust(distance_from_home)
+```
+
+## Binning {.smaller}
+
+- เป็นเทคนิคการแปลงข้อมูลเชิงปริมาณให้เป็นข้อมูลเชิงหมวดหมู่ (categorical) โดยการแบ่งช่วงค่าของตัวแปรเชิงปริมาณออกเป็นกลุ่มย่อย (bins) ตามเกณฑ์ที่กำหนด จากนั้นแทนค่าแต่ละช่วงด้วยตัวแปรใหม่
+
+- วิธีการนี้ช่วยให้สามารถจัดการความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรทำนายในลักษณะที่ไม่เป็นเชิงเส้นตรงได้
+
+- วิธีการนี้ถือว่าเป็น trained preprocessing step เพราะตำแหน่งและจำนวนของ bin ถูกกำหนดขึ้นจากชุดข้อมูล training data 
+
+ขั้นตอนวิธีการทำงาน
+
+1. แบ่งช่วง (intervals)
+
+2. แทนค่า -- กล่าวคือแต่ละ bin ถูกแทนด้วยค่าของตัวแปรใหม่ที่มีค่าเท่ากับ 1 ถ้าตัวแปรต้นฉบับมีค่าอยู่ใน bin นั้น และมีค่าเท่ากับ 0 ถ้าไม่ใช่ ผลลัพธ์ส่วนนี้จะได้ตัวแปร dummy หลายตัวที่แสดงการเป็นสมาชิกของ bin
+
+```{r eval = F, echo = T}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  step_rm(gpa) %>% 
+  step_discretize(distance_from_home,
+                  num_breaks = 4)
+```
+
+
+## Binning {.smaller}
+
+```{r eval = F, echo = T}
+recipe(academic_risk ~ ., data = train_data) %>% 
+  update_role(student_id, new_role = "ID") %>%
+  #step_rm(gpa) %>% 
+  step_discretize(distance_from_home,
+                  num_breaks = 4,
+                  min_unique = 10)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+![](https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-predictor-outcome-1.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-curves-1.png)
+
+:::
+
+::::
+
+## Binning {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://feaz-book.com/numeric-binning_files/figure-html/fig-discont-binning-different-num_breaks-1.png)
+
+:::
+
+::: {.column width="50%"}
+
+![](https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-different-num_breaks-1.png)
+
+:::
+
+::::
+
+
+- คำนวณได้รวดเร็ว (computationally efficient)
+
+- ทำนายนอกช่วงของตัวแปรทำนายได้เสถียร (predictable behavior outside the observed range)
+
+- การปัดค่าที่เกิดขึ้นโดยธรรมชาติของวิธีนี้ อาจทำให้ สูญเสียทั้งประสิทธิภาพและความหมายในการตีความ
+
+- อาจทำให้เกิด จำนวนตัวแปรใหม่มากเกินไป ส่งผลให้โมเดลซับซ้อน
+
+## Target-Based Bining {.smaller}
+
+```{r eval = F}
+
+step_discretize_cart()
+step_discretize_xgb()
+
+```
+
+`step_discretize_cart()` และ `step_discretize_xgb()` ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ
+
+
+## 2.2 Categorical Encoding {.smaller}
+
+- ข้อมูลอีกประเภทที่พบบ่อยคือ ตัวแปรจัดประเภท (categorical variables) ซึ่งเป็นตัวแปรที่ไม่สามารถวัดค่าได้เป็นตัวเลข แต่มีลักษณะเป็นกลุ่มหรือประเภท
+
+
+- โมเดลหลายประเภท เช่น linear regression, logistic regression, SVM, k-NN, neural networks ต้องการให้ข้อมูลเป็นตัวเลขทั้งหมด จึงจำเป็นต้องแปลงตัวแปรจัดประเภทให้เป็นตัวแปรเชิงปริมาณก่อนนำไปใช้สร้างโมเดล
+
+- โมเดลบางประเภท โดยเฉพาะกลุ่ม โมเดลเชิงต้นไม้ (tree-based models) เช่น decision trees, random forests, gradient boosting machines สามารถจัดการกับตัวแปรจัดประเภทได้โดยตรง โดยไม่ต้องแปลงเป็นตัวเลขก่อน
+
+## 2.2 Categorical Encoding {.smaller}
+
+มีประเด็นที่ควรพิจารณา ได้แก่
+
+- ค่าที่เป็นไปได้ของตัวแปรจัดประเภท -- ข้อมูลของตัวแปรจัดประเภทสามารถมีจำนวนค่าที่เป็นไปได้ทั้งแบบจำกัดค่าแน่นอน เช่น เพศ วันใน 1 สัปดาห์ หรือ วิธีการสอนที่ครูใช้ หรือ อาจมีค่าที่เป็นไปได้แบบไม่จำกัด/ไม่แน่นอน เช่น ชื่อโรงเรียน ชื่อผลิตภัณฑ์ ...
+
+- ลำดับของข้อมูล (ordering) -- ตัวแปรจัดประเภทบางตัวมีลำดับขั้นของข้อมูลในธรรมชาติ เช่น ขนาดโรงเรียน ระดับชั้นของนักเรียน
+
+- การเข้ารหัส (encoding) -- วิธีการเข้ารหัสที่แตกต่างกัน อาจมีผลต่อประสิทธิภาพของโมเดล
+
+## 2.2 Categorical Encoding {.smaller}
+
+<div style="font-size: 70%;">
+
+- **Dummy-based**
+
+  - Dummy encoding -- `step_dummy()` แปลง level ของ factor ให้เป็นตัวแปร 0, 1
+  
+  - Label encoding -- `step_integer()` แปลง level ของ factor ให้เป็นตัวเลขลำดับ
+
+- **Target-based**
+
+  -   `step_lencode_glm()` เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้ (1) สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor (2) ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ
+
+  -   `step_lencode_bayes()` หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ `step_lencode_bayes()` จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม
+
+  -   `step_lencode_mixed()` หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data
+  
+  
+- **Other methods**
+
+  - `step_num2factor()` แปลงตัวแปรเชิงปริมาณเป็นตัวแปรจัดประเภท
+  
+  - `step_unorder()` แปลงตัวแปรจัดประเภทที่มีลำดับขั้นเป็นตัวแปรจัดประเภทที่ไม่มีลำดับขั้น
+  
+  - `step_other()` รวม level ที่มีความถี่ต่ำเข้าด้วยกันเป็นกลุ่มใหม่เรียกว่า "other"
+  
+  - `step_unknown()` แทนที่ค่าที่ไม่รู้จัก (unknown) หรือ ค่าที่หายไป (missing) ด้วย level ใหม่ที่ชื่อว่า "unknown"
+  
+  - `step_novel()` แทนที่ค่าที่ไม่เคยพบใน training data ด้วย level ใหม่ที่ชื่อว่า "novel"
+
+</div>
+
+
+## 2.3 Imputation {.smaller}
 
 
 ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ
@@ -363,7 +779,7 @@ grep("^step_", ls("package:recipes"), value = TRUE)
 </div>
 
 
-## 2.1 Imputation {.smaller}
+## 2.3  Imputation {.smaller}
 
 ```{r eval = F}
 ?step_naomit() ## listwise deletion
@@ -382,7 +798,7 @@ complete_data <- read_csv("exam.csv")
 ```
 
 
-## 2.1 Imputation {.smaller}
+## 2.3  Imputation {.smaller}
 
 ลองสร้างการสูญหายใช้ตัวแปร `learning_performance`
 
@@ -413,125 +829,98 @@ p2<-missing_data%>%
 
 ```
 
-## 2.1 Imputation {.smaller}
+## 2.3  Imputation {.smaller}
 
 ```{r}
 p1+p2
 ```
 
-## 2.1 Imputation {.smaller}
+## 2.3 Imputation {.smaller}
 
 ลองพิจารณาผลลัพธ์ต่อไปนี้
 
-```{r eval = F}
+```{r eval = T, echo = T}
+library(naniar)
 split_missing <- initial_split(missing_data, prop = 0.8, strata = ach)
 train_missing <- training(split_missing)
 test_missing <- testing(split_missing)
 
 ## mean imputation
-recipe(ach ~ ., data = train_missing) %>% 
+p1<-recipe(ach ~ ., data = train_missing) %>% 
   step_rm(learning_performance) %>% 
   step_impute_mean(learning_performance_mar) %>%
   prep() %>% 
   juice() %>% 
+  select(learning_performance_mar, ach) %>%
+  bind_cols(train_missing %>% select(learning_performance_mar) %>%  bind_shadow() %>% 
+              select(-learning_performance_mar)) %>%  
   ggplot(aes(x = learning_performance_mar, y= ach))+
-  geom_point()
+  geom_point(aes(col = learning_performance_mar_NA))+
+  ggtitle("mean imputation")+
+  theme(legend.position = "top")
+
+## linear model imputation
+p2<-recipe(ach ~ ., data = train_missing) %>% 
+  step_rm(learning_performance) %>% 
+  step_impute_linear(learning_performance_mar) %>% 
+  prep() %>% 
+  juice() %>% 
+  select(learning_performance_mar, ach) %>%
+  bind_cols(train_missing %>% select(learning_performance_mar) %>%  bind_shadow() %>% 
+              select(-learning_performance_mar)) %>%  
+  ggplot(aes(x = learning_performance_mar, y= ach))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  ggtitle("linear model imputation")+
+  theme(legend.position = "top")
 
 ## knn imputation
-recipe(ach ~ ., data = train_missing) %>% 
+p3<-recipe(ach ~ ., data = train_missing) %>% 
   step_rm(learning_performance) %>% 
   step_impute_knn(learning_performance_mar) %>%
   prep() %>% 
   juice() %>% 
+  select(learning_performance_mar, ach) %>%
+  bind_cols(train_missing %>% select(learning_performance_mar) %>%  bind_shadow() %>% 
+              select(-learning_performance_mar)) %>%  
   ggplot(aes(x = learning_performance_mar, y= ach))+
-  geom_point()
-```
+  geom_point(aes(col = learning_performance_mar_NA))+
+  ggtitle("knn imputation")+
+  theme(legend.position = "top")
 
 
-## 2.2 Encoding ตัวแปรจัดประเภท {.smaller}
-
-วัตถุประสงค์คือการแปลงข้อมูลจัดประเภทให้อยู่ในรูปแบบที่สามารถนำไปวิเคราะห์ได้ด้วยโมเดลการเรียนรู้ของเครื่อง
-
-```{r eval = F}
-step_string2factor()
-step_factor2string()
-step_num2factor()
-step_unorder()
-step_dummy()
-step_other()
-step_unknown()
-step_novel()
-
-step_discretize()
-step_discretize_cart()
-step_discretize_xgb()
-
-step_lencode_glm()
-step_lencode_bayes()
-step_lencode_mixed()
-```
-
-
-## 2.2 Encoding ตัวแปรจัดประเภท {.smaller}
-
-<div style="font-size: 70%;">
-
-
--   `step_discretize_cart()` และ `step_discretize_xgb()` ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ
-
--   `step_lencode_glm()` เป็นฟังก์ชันในกลุ่ม Supervised Factor Conversion มีหน้าที่แปลง Factor ให้เป็นตัวเลขโดยใช้โมเดล Generalized Linear Model (GLM) เราอาจอธิบายหลักการทำงานคร่าว ๆ ได้ดังนี้
-
-1.  สร้าง glm ที่ทำนาย outcome ของโมเดลกับ predictor ที่เป็น factor
-
-2.  ใช้ค่าสัมประสิทธิ์ของโมเดลที่ได้จาก glm เป็นคะแนนของระดับปัจจัยแต่ละระดับ
-
--   `step_lencode_bayes()` หลักการเดียวกับ glm แต่เปลี่ยนการประมาณค่าพารามิเตอร์ในโมเดลเป็น bayesian glm ผลลัพธ์ที่ได้จะมีความแกร่งว่าการใช้ glm แบบปกติโดยเฉพาะกรณีขนาดตัวอย่างเล็ก ความแตกต่างอีกส่วนนึงที่น่าสนใจคือ `step_lencode_bayes()` จะให้ solution ที่แตกต่างกันไปในแต่ละครั้ง เนื่องจากการประมาณค่าพารามิเตอร์ใช้ Markov Chain Monte Carlo (MCMC) ที่อิงกับตัวเลขสุ่ม
-
--   `step_lencode_mixed()` หลักการเดียวกับ glm แต่ใช้ mixed-effects model แทน เหมาะกับข้อมูลที่มีโครงสร้างแบบ hierarchical หรือ panel data
-
-</div>
-
-
-## 2.3 Scaling & Transform {.smaller}
-
-คือการแปลงคะแนนของตัวแปรเชิงปริมาณให้มีลักษณะการแจกแจงหรืออยู่ในรูปแบบที่เหมาะสำหรับการนำไปวิเคราะห์ด้วยโมเดลการเรียนรู้ของเครื่อง หรือในบางกรณีเป็นการสร้างตัวแปรใหม่เพื่อเพิ่มประสิทธิภาพการเรียนรู้ของโมเดล
-
-```{r eval = F}
-
-?step_log()
-?step_sqrt()
-?step_BoxCox()
-?step_YeoJohnson()
-
-?step_normalize() ## z-score = (x-mean)/sd
-?step_range() ## normalization --> N = (x-min)/(max-min)
-?step_scale() ## x/sd ---> ทำให้ variance  sd = 1
-?step_center() ## centering x-mean
-?step_percentile() ## แปลงข้อมูลเชิงปริมาณให้เป็นค่า percentile 
-?step_mutate()
-
-
-?step_poly()
-
-
-?step_pca()
-?step_pls()
-```
-
-## 2.3 Scaling & Transform {.smaller}
-
-
--   `step_pls()` คือ Partial Least Squares (PLS) ซึ่งเป็นเทคนิค supervised dimensionality reduction และ feature extraction เพื่อสร้างตัวแปรใหม่ที่เป็น linear combination ของตัวแปรเดิมที่มีอยู่ (องค์ประกอบ) ที่มีความสัมพันธ์กับ outcome มากที่สุด
-
-จะใช้ฟังก์ชันนี้ได้จะต้องมี library-mixOmics ติดตั้งก่อน ซึ่ง library ดังกล่าวอยู่ใน Bioconductor server สามารถติดตั้งได้ดังนี้
-
-```{r eval = F}
-# install.packages("pak")
-pak::pak("mixOmics")
-
-recipe(G3 ~ ., data = train) %>% 
-  step_pls(all_numeric_predictors(), num_comp = 3, outcome = "G3") %>% 
+## bagging imputation
+p4<-recipe(ach ~ ., data = train_missing) %>% 
+  step_rm(learning_performance) %>% 
+  step_impute_bag(learning_performance_mar, trees = 50,
+                  impute_with = all_predictors()) %>%
   prep() %>% 
-  juice()
+  juice() %>% 
+  select(learning_performance_mar, ach) %>%
+  bind_cols(train_missing %>% select(learning_performance_mar) %>%  bind_shadow() %>% 
+              select(-learning_performance_mar)) %>%  
+  ggplot(aes(x = learning_performance_mar, y= ach))+
+  geom_point(aes(col = learning_performance_mar_NA))+
+  ggtitle("bagging imputation")+
+  theme(legend.position = "top")
 ```
 
+## 2.3 Imputation {.smaller}
+
+```{r echo = F, fig.height = 8}
+(p1+p2)/(p3+p4)
+```
+
+
+## 2.4 Too Many Variables
+
+- `step_corr()` - กำจัดตัวแปรที่ correlation สูง
+
+- `step_nzv()` - กำจัด near-zero variance
+
+- `step_rm()` - เลือกตัวแปรที่ต้องการออก
+
+- `step_pca()` - Principal Component Analysis
+
+- `step_pls()` - Partial Least Squares
+
+- นอกจากนี้ยังสามารถใช้ lasso regression เป็นวิธีการเลือกตัวแปรได้

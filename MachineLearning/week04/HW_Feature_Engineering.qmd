@@ -1,0 +1,128 @@
+---
+title: "HW_Feature_Engineering"
+format: html
+execute: 
+  eval: false
+---
+
+## 1. วัตถุประสงค์
+
+วัตถุประสงค์ของงานชิ้นนี้คือการพัฒนาโมเดลเพื่อจำแนกผลสัมฤทธิ์ของนักเรียนจากชุดข้อมูล student_data.csv ด้วย tidymodels ใน R โดยที่นิสิตจะต้องดำเนินการต่อไปนี้:
+
+1. ดำเนินการทำ feature engineering โดยใช้แนวทางการจัดการข้อมูล 3 แบบ
+
+2. ฝึกสอนโมเดลการเรียนรู้ของเครื่อง 3 โมเดล ได้แก่ Linear Regression, Lasso Regression และ Ridge Regression
+
+3. ประเมินประสิทธิภาพของโมเดลจำแนกโดยใช้ Accuracy, Sensitivity, Specificity, F-measure และ AUC
+
+4. เปรียบเทียบประสิทธิภาพของวิธีการจัดการข้อมูลที่แตกต่างกันและโมเดลที่แตกต่างกัน
+
+5. สรุปและแปลความหมายผลลัพธ์
+
+
+## 2. รายละเอียด
+
+- ขั้นตอนที่ 1 : เรียก library ที่จำเป็น
+
+```{r eval = F}
+library(tidyverse)
+library(tidymodels)
+```
+
+
+- ขั้นตอนที่ 2 : นำเข้าและสำรวจข้อมูลเบื้องต้น
+
+```{r eval = F}
+data <- read_delim("student-mat.csv", delim = ";")
+```
+
+
+- ขั้นตอนที่ 3 : แบ่งชุดข้อมูลเป็น train และ test 
+
+```{r}
+split <- initial_split(data, prop = ..., strata = ...)
+train_data <- ... 
+test_data <- ...
+```
+
+
+- ขั้นตอนที่ 4 : ดำเนินการสำรวจข้อมูลด้วย EDA
+
+  - ตรวจสอบสถานะของตัวแปรว่าถูกต้องหรือยัง
+
+  - ตรวจสอบการแจกแจงของตัวแปร
+
+  - ตรวจสอบความสัมพันธ์ระหว่างตัวแปร และเนื่องจากเราจะใช้อัลกอริทึมในกลุ่ม linear regression มีแนวโน้มที่จะเกิดปัญหา multicollinerity หรือไม่? เพราะเหตุใด
+  
+**Note:** การสำรวจข้อมูลขอให้ใช้ทั้งวิธีการเชิงสถิติ และการใช้ทัศนภาพข้อมูลควบคู่กัน
+
+- ขั้นตอนที่ 5 : ออกแบบการเตรียมข้อมูล
+
+งานนี้ขอให้นิสิตทดลองเตรียมข้อมูลเพื่อนำไปสร้างโมเดลทำนาย 3 แบบ ได้แก่
+
+  - **แบบที่ 1: (basic recipe)**  ใช้ `step_dummy(one_hot = FALSE)` เพื่อแปลงตัวแปรจัดประเภทให้เป็น dummy variable "ระวังว่าอาร์กิวเมนท์ one_hot ต้องมีค่าเท่ากับ FALSE" (ทำไม? หาคำตอบแล้วเขียนบอกมาด้วยนะครับ)
+ใช้ step_normalize() เพื่อการแปลงคะแนนตัวแปรเชิงปริมาณให้เป็นคะแนนมาตรฐาน
+นิสิตต้องระวังการวางลำดับของ step_xxx() หลายครั้งการวางลำดับที่แตกต่างกันส่งผลกระทบต่ออัลกอริทึมการเรียนรู้แตกต่างกัน ควรจัดลำดับของการ preprocess ให้เหมาะสม เขียนบอกมาด้วยนะครับ ว่าเราจัดลำดับอย่างไร เพราะเหตุใด?
+
+  - **แบบที่ 2: (basic recipe + interaction)**
+ใช้ `step_dummy()` + `step_normalize()` เหมือนในแบบที่ 1
+ใช้ step_interact() เพื่อสร้าง term ปฏิสัมพันธ์ของตัวแปรอิสระ ตัวอย่างด้านล่างแสดงตัวอย่างการเขียนคำสั่ง
+step_interact(terms = ~x1:x10) ## สร้างปฏิสัมพันธ์ 1 เทอม ได้แก่ x1*x10
+step_interact(terms = ~x1:x2 + x2:x3) ## สร้างปฏิสัมพันธ์ 2 เทอมได้แก่ x1*x2 และ x2*x3
+step_interact(terms = ~x1:x2:x3) ## สร้างเทอม 3-ways interaction x1*x2*x3 จำนวน 1 เทอม
+step_interact(terms = ~x1:starts_with("x")) ## สร้างเทอมปฏิสัมพันธ์หลายเทอม ระหว่าง x1 กับตัวแปรทุกตัวที่ขึ้นต้นด้วย x
+จากตัวอย่างคำสั่งจะเห็นว่าเราสามารถสร้าง terms ปฏิสัมพันธ์หลาย ๆ เทอมได้ง่าย ๆ  จริง ๆ  เราสามารถสร้างเทอมปฏิสัมพันธ์ทุกเทอมที่เป็นไปได้เลยก็ได้แล้วนำเข้าสู่โมเดล อย่างไรก็ตามวิธีการนี้ไม่มประสิทธิภาพ
+
+การแก้ปัญหาข้างต้นทำได้โดยผู้วิเคราะห์อาจจะเลือกเทอมปฏิสัมพันธ์ที่น่าจะเป็นไปได้เข้าสู่การฝึกสอนโมเดล ซึ่งทำได้หลายวิธีการ เช่น (1) theory-driven และ (2) data-driven ในงานชิ้นนี้ขอให้นิสิตเลือกใช้แนวทาง data-driven โดยอิงกับ Principle of Interaction Search (Wu & Hamada, 2011) <-- อันนี้สอนไปแล้วรอบนึงในวิชา programming ถ้าจำไม่ได้ดูให้ handout ที่แจกให้ในคาบหัวข้อที่ 6. ครับ
+
+แบบที่ 3: Yeo-Johnson Transformation 
+ให้พิจารณาเลือกการเตรียมข้อมูลให้แบบที่ 1 หรือแบบที่  2 (เลือกมาแบบเดียวโดยมีเหตุผลประกอบ เขียนบอกมาด้วยนะครับ) ใช้ร่วมกับ step_YeoJohnson() นิสิตเลือกตัวแปรใดมาผ่านการแปลงด้วย Yeo-Johnson บ้างเพราะเหตุใด?
+ขั้นตอนที่ 6: ระบุโมเดลการเรียนรู้ 3 โมเดล
+
+ได้แก่ linear regression, lasso regression และ ridge regression (ตัวหลังนี้รันไปก่อน เดี๋ยวเราคุยกันในคาบเรียนครับ)
+
+lm_spec <-  linear_reg() %>%
+            set_engine("glm") %>%
+            set_mode("classification")
+lasso_spec <- linear_reg(penalty = tune() , mixture = 1) %>% ## การกำหนดให้ penalty = tune() แปลว่าเราจะปรับแต่ง hyperparameter ค่านี้
+            set_engine("glmnet") %>%
+            set_mode("classification")
+ridge_spec <- <- linear_reg(penalty = tune() , mixture = 0) %>% ## การกำหนดให้ mixture = 0 แปลว่าเราจะใช้ ridge regression
+set_engine("glmnet") %>%
+set_mode("classification")
+ขั้นตอนที่ 7 :  สร้าง workflow และ train model แต่ละตัว เช่น
+
+lasso_wf <- workflow() %>%
+               add_recipe(lasso_rec) %>%
+               add_model(lasso_spec)
+ขั้นตอนที่ 8 : ทดลอง train โมเดลการเรียนรู้บนค่า penalty ที่มีค่าเท่ากับ 0.0001, 0.001, 0.01, 0.1, 1 และ 10 โดยใช้ 5-folds CV ที่มีการทำซ้ำ 3 ครั้ง
+
+การปรับแต่งค่า hyperparameter จะใช้ฟังก์ชัน tune_grid() ที่มีตัวอย่างการเขียนคำสั่งดังนี้
+
+cv_folds <- vfold_cv(train_data , v = 5, repeats = 3) ## สร้างชุดข้อมูล k-fold CV ทำซ้ำ 3 ครั้ง
+my_metrics <- metric_set(accuracy, roc_auc, sens, spec, f_meas, precision)
+## สำหรับ linear regression ทำ cv จะใช้ fit_resamples() เพราะไม่มี hyperparameters ให้ tune ดังนี้
+lm_cv_results <- lm_wf %>%
+     fit_resamples(resamples = v, 
+                   metrics = my_metrics,
+                   control = control_resamples(save_pred = TRUE))
+## สำหรับ lasso regression ทำ cv เราต้องใช้ tune_grid() เพราะมี hyperparameters ให้ tune ดังนี้
+penalty_grid <- data.frame(penalty = c(0.0001,0.001,0.01,0.1,1,10)) ## สร้างเซตของ grid ที่ต้องการ
+lasso_tune_results <- lasso_wf %>%
+     tune_grid(
+      resamples = cv_folds,
+      grid = penalty_grid,
+      metrics = my_metrics,
+      control = control_grid(save_pred = TRUE)
+      )
+ขั้นตอนที่ 9 : เรียกดูผลการทดลอง
+
+เราสามารถเรียกดูผลการทดลองในขั้นตอนที่ 8 ได้หลายวิธีการ วิธีการพื้นฐานทำได้สองลักษณะ ได้แก่
+
+เรียกดูดัชนีวัดประสิทธิภาพของโมเดลที่กำหนดไว้ ใช้ฟังก์ชัน collect_metrics(summarize = FALSE) หรือ collect_metrics(summarize = TRUE) การกำหนดค่าอาร์กิวเมนท์ summarize ดังกล่าวแตกต่างกันมีผลอย่างไรเขียนตอบมาด้วยนะครับ  
+เรียกดูค่าทำนาย ใช้ฟังก์ชัน collect_predictions() จะให้ค่าทำนายและค่าจริงจากแต่ละ validation fold
+ขั้นตอนที่ 10 : รายงานผลการทดลอง
+
+เปรียบเทียบแนวทางการเตรียมข้อมูลที่แตกต่างกันและผลกระทบต่อประสิทธิภาพของโมเดล (วิเคราะห์จากผลการทดลองในข้อ 9 เลย)
+ระบุว่าแนวทางการเตรียมข้อมูลแบบใดคู่กับโมเดลการเรียนรู้แบบใดที่ได้ผลลัพธ์ดีที่สุด
+วิเคราะห์ประสิทธิภาพของ final model ที่ได้บน test_data

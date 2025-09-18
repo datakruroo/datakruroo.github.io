@@ -1,0 +1,204 @@
+---
+title: "K-Means Clustering"
+format: html
+editor: visual
+---
+
+
+## 0. Importing data
+
+```{r}
+library(tidyverse)
+# library(here)
+data <- read_csv("learning_data_use.csv")
+glimpse(data)
+```
+
+สร้างชุดข้อมูลใหม่ ที่มีเฉพาะตัวแปรเชิงปริมาณที่เหมาะสำหรับนำไปทำ K-Means Clustering
+
+สเกลมาตรฐานมีการทำได้หลายวิธีการมาก ๆ 
+
+- standardized score
+
+$$
+Z = \frac{X - mean(X)}{SD(X)}
+$$
+- min-max normalized score
+
+$$
+N = \frac{X - min(X)}{max(X) - min(X)}
+$$
+สร้างชุดข้อมูลที่ 1 ที่จะทำ standardized score (Z)
+
+```{r}
+z_data <-  data %>% 
+  ## เลือกตัวแปรที่จะใช้ทำ clustering
+  dplyr::select(-student_id, -gender, -department) %>% 
+  ## ปรับสเกลของคะแนนให้เป็นสเกลมาตรฐาน
+  mutate(across(everything(), scale))
+```
+
+
+สร้างชุดข้อมูลที่ 2 ที่จะทำ normalized score แทน Z
+
+```{r}
+library(here)
+url_minmax <- here("Week7/scripts","min_max_fn.R")
+## เรียกใช้ฟังก์ชันสำเร็จรูปที่เก็บไว้ใน .R ขึ้นมาใน workspace ของ R
+source(url_minmax)
+
+n_data <- data %>% 
+  ## เลือกตัวแปรที่จะใช้ทำ clustering
+  dplyr::select(-student_id, -gender, -department) %>% 
+  ## ปรับสเกลของคะแนนให้เป็นสเกลมาตรฐานแบบ normalized score
+  mutate(across(everything(), normalized))
+
+```
+
+
+## K-means clustering
+
+- กำหนดจำนวนกลุ่มเบื้องต้นไว้สัก 3 กลุ่ม
+
+- `kmeans()` จะไม่รองรับชุดข้อมูลที่มี missing value ดังนั้นถ้ามี missing เกิดขึ้น เราจะต้องจัดการก่อนนำเข้า
+
+ตรวจสอบ missing value ในชุดข้อมูล
+
+```{r}
+z_data_use <- z_data %>% 
+                na.omit() ## listwise deletion -- กำจัดหน่วยข้อมูลที่มีข้อมูลสูญหายอย่างน้อย 1 ตัวแปรออกไปจากชุดข้อมูล
+z_data_use
+```
+
+
+
+```{r}
+set.seed(123)
+z3_clustering <- kmeans(x = z_data_use, centers = 3, trace = FALSE)
+z3_clustering$centers ## centroids
+z3_clustering$cluster
+z3_clustering$totss
+  
+z_data %>% na.omit() %>% 
+  mutate(cluster_sol3 = z3_clustering$cluster) %>% 
+  group_by(cluster_sol3) %>% 
+  summarise(across(everything(), sd))
+
+z3_clustering$withinss
+z3_clustering$tot.withinss
+```
+
+
+
+```{r}
+set.seed(123)
+max_k <- 10 ## จำนวน cluster ที่สูงที่สุดที่ต้องการทดลอง
+wss <- numeric(max_k) ## สร้างตัวแปร wss เอาไว้เป็นที่เก็บของ
+
+for(i in 1:max_k) ## for loop
+  {
+    results <- kmeans(z_data_use, centers = i)
+    wss[i] <- results$tot.withinss 
+  }
+
+data.frame(
+  cluster = 1:10,
+  wss = wss
+) %>% 
+  ggplot(aes(x = cluster, y = wss))+
+  geom_line()+
+  geom_point()+
+  ggtitle("Elbow plot/Scree plot")+
+  scale_x_continuous(breaks = 1:10)+
+  theme_light() +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+```
+
+
+ประเมินความหมายของ cluster โดยละเอียดว่าแบบไหนที่เหมาะสมมากที่สุด
+
+```{r}
+set.seed(123)
+z2_clustering <- kmeans(x = z_data_use, centers = 2, trace = FALSE)
+kmeans(x = z_data_use, centers = 2, trace = FALSE)$cluster
+
+z_data_use  %>% 
+  bind_cols(cluster2 = z2_clustering$cluster) %>% 
+  bind_cols(cluster3 = kmeans(x = z_data_use, centers = 3, trace = FALSE)$cluster) %>% 
+  bind_cols(cluster4 = kmeans(x = z_data_use, centers = 4, trace = FALSE)$cluster) %>% 
+  pivot_longer(cols = 1:8, names_to = "variable", values_to = "value")  %>% 
+  ggplot(aes(x = value, y = variable))+
+    geom_boxplot()+
+   # geom_jitter(aes(col = value), height = 0.1, alpha = 0.4) +
+    geom_vline(xintercept = 0 ,linetype = 2) +
+    facet_wrap(~cluster3)+
+  theme_light() +
+  theme(
+    panel.grid = element_blank()
+  )
+
+
+```
+
+```{r}
+z_data_use  %>% 
+  bind_cols(cluster2 = z2_clustering$cluster) %>% 
+  bind_cols(cluster3 = kmeans(x = z_data_use, centers = 3, trace = FALSE)$cluster) %>% 
+  bind_cols(cluster4 = kmeans(x = z_data_use, centers = 4, trace = FALSE)$cluster) %>% 
+  pivot_longer(cols = 1:8, names_to = "variable", values_to = "value")  %>% 
+  group_by(cluster4, variable) %>% 
+  summarise(mean = mean(value)) %>% 
+  ggplot(aes(x = mean, y = variable))+
+    geom_col(aes(fill = mean > 0))+
+    geom_vline(xintercept = 0 ,linetype = 2) +
+    facet_wrap(~cluster4)+
+  theme_light() +
+  theme(
+    panel.grid = element_blank()
+  )
+```
+
+## silhouette score
+
+```{r}
+## install.packages("cluster")
+library(cluster)
+# คำนวณ silhouette score
+## 1. ผลลัพธ์การจัดกลุ่มจาก kmeans -- x
+cluster4 = kmeans(x = z_data_use, centers = 4, trace = FALSE)
+## 2. เมทริกซ์ระยะทางแบบ euclidean -- dist()
+dist_mat <- dist(z_data_use)
+
+sil_val <- cluster::silhouette(cluster4$cluster, dist_mat)
+sil_val
+z_data_use %>% 
+  bind_cols(
+  sil_val %>% data.frame()  
+  ) %>% 
+  group_by(cluster) %>% 
+  summarise(
+    mean_sil = mean(sil_width),
+    sd = sd(sil_width),
+    min = min(sil_width),
+    max = max(sil_width)
+  )
+
+
+z_data_use %>% 
+  bind_cols(
+  sil_val %>% data.frame()  
+  ) %>% 
+  ggplot(aes(x = sil_width, y= factor(cluster)))+
+  geom_boxplot()+
+  geom_jitter() +
+  geom_vline(xintercept = 0, linetype = 0)+
+  theme_light()+
+  theme(
+    panel.grid = element_blank()
+  )
+```
+
+
+

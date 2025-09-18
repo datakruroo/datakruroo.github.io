@@ -1,0 +1,506 @@
+---
+title: "Week 7 : Clustering"
+author: "Assistant Prof. Siwachoat Srisuttiyakorn"
+institute: |
+  Department of Educational Research and Psychology <br>
+  Faculty of Education Chulalongkorn University
+date: today
+format:
+  revealjs:
+    slide-number: c/t
+    footer: |
+      Assistant Prof. Dr. Siwachoat Srisuttiyakorn <br>
+      Department of Educational Research and Psychology <br>
+      Faculty of Education Chulalongkorn University
+    logo: https://github.com/ssiwacho/picture/blob/main/datakruroo.png?raw=true
+    theme: [default, theme.scss]
+    css: my_css.css
+    scrollable: false
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    embed-resources: false
+    code-overflow: scroll
+    code-link: true
+    code-line-numbers: true
+execute:
+  echo: false
+  freeze: auto
+  progress: true
+include-in-header:
+  - text: |
+      <style>
+      #title-slide .title {
+        font-size: 1.5em;
+        color: #C5705D;
+      }
+      </style>
+---
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+
+## Clustering {.smaller}
+
+นักเรียนในชั้นเรียนสามารถจัดเป็นหมวดหมู่ได้กี่กลุ่ม อะไรบ้าง ตามข้อมูลพฤจิกรรมและผลการเรียนรู้
+
+```{r}
+url <- here("Week7","learning_data_use.csv")
+data <- read_csv(url)
+glimpse(data)
+```
+
+## Clustering {.smaller}
+
+- Unsupervised Learning ที่ใช้ ค้นหากลุ่มที่มีลักษณะร่วมกันตามคุณลักษณะหรือตัวแปรของหน่วยข้อมูล โดยการจัดกลุ่มนี้ช่วยในการแบ่งข้อมูลออกเป็นกลุ่มย่อย ๆ ที่ภายในกลุ่มเดียวกันหน่วยข้อมูลจะมีลักษณะที่คล้ายคลึงกันมากที่สุด และระหว่างกลุ่มหน่วยข้อมูลจะมีความแตกต่างกันมากที่สุด
+
+  - Partitioning Clustering
+
+  - Hierarchical Clustering
+
+  - Density-Based Clustering
+
+  - Model-Based Clustering
+
+## Partitioning Clustering: K-Means Clustering {.smaller}
+
+- ตรงไปตรงมา กล่าวคือ พยายามแบ่งข้อมูลออกเป็น k กลุ่ม (ที่กำหนดไว้ล่วงหน้า)
+
+- หน่วยข้อมูลแต่ละหน่วยจะอยู่ในกลุ่มใดกลุ่มหนึ่งเท่านั้น (non-overlapping)
+
+- การจัดกลุ่มจะใช้ความแตกต่าง (distance) หรือความคล้าย (similarity) โดยพยายามจัดให้หน่วยข้อมูลที่มีความคล้ายกันอยู่ในกลุ่มเดียวกัน และหน่วยข้อมูลที่แตกต่างกันอยู่ต่างกลุ่มกัน
+
+- เหมาะกับ ข้อมูลที่มีความต่อเนื่อง (continuous data) และมีการกระจายตัวแบบทรงกลม (spherical clusters) โดยแต่ละกลุ่มมีขนาดใกล้เคียงกัน และไม่มีค่าผิดปกติ (outliers) มากเกินไป
+
+## K-Means Clustering {.smaller}
+
+<div style="font-size:90%;">
+
+1. เลือกจำนวนกลุ่ม k ที่ต้องการแบ่ง
+
+2. สุ่มเลือกตำแหน่งเริ่มต้นของจุดศูนย์กลาง (centroids) k จุด
+
+3. คำนวณระยะทางจากแต่ละหน่วยข้อมูลไปยังจุดศูนย์กลางทั้ง k จุด
+
+<div style="font-size:90%;">
+
+::: {.callout-note}
+
+- Euclidean Distance
+
+- Manhattan Distance
+
+- Cosine Similarity
+
+- Jaccard Similarity
+
+- Mahalanobis Distance
+
+- Hamming Distance
+
+:::
+
+</div>
+
+4. จัดแต่ละหน่วยข้อมูลเข้ากลุ่มที่มีจุดศูนย์กลางที่ใกล้ที่สุด
+
+5. คำนวณตำแหน่งใหม่ของจุดศูนย์กลางแต่ละกลุ่มจากค่าเฉลี่ยของหน่วยข้อมูลในกลุ่มนั้น
+
+6. ทำซ้ำขั้นตอนที่ 3-5 จนกว่าจุดศูนย์กลางจะไม่เปลี่ยนแปลงอีก หรือเปลี่ยนแปลงน้อยมาก
+
+7. ได้ผลลัพธ์การจัดกลุ่มสุดท้าย
+
+</div>
+
+## K-Means Clustering
+
+
+```{r}
+library(patchwork)
+url <- here("Week7/scripts","kmeans.R")
+source(url)
+kmeans_plot <- create_kmeans_tutorial()
+kmeans_plot$step1 + kmeans_plot$step2
+```
+
+
+
+## K-Means Clustering
+
+
+```{r}
+kmeans_plot$iter1_assign + kmeans_plot$iter1_update
+```
+
+
+
+
+## K-Means Clustering
+
+
+```{r}
+kmeans_plot$iter2_assign + kmeans_plot$iter2_update
+```
+
+
+
+## K-Means Clustering
+
+
+```{r}
+kmeans_plot$iter3_assign + kmeans_plot$final
+```
+
+
+## K-Means Clustering {.smaller}
+
+- เป็น special case ของ Gaussian Mixture
+
+- เหมาะสำหรับการจัดหมวดหมู่ข้อมูลโดยใช้ตัวแปรเชิงปริมาณ (numerical variables) 
+
+  - Spherical Clusters
+  
+  - Equal Cluster Sizes
+  
+  - Well-separated Clusters
+
+  - Convex Clusters
+  
+  - No Outliers
+  
+  
+## Spherical Clusters
+
+```{r}
+#| label: spherical-assumption
+#| echo: false
+#| fig-width: 12
+#| fig-height: 4
+
+
+#| label: setup
+#| include: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(patchwork)
+library(scales)
+library(MASS)  # สำหรับ mvrnorm
+
+
+# Color palette - colorblind friendly
+cluster_colors <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00")
+
+# Theme สำหรับ presentation
+theme_presentation <- function() {
+  theme_minimal() +
+  theme(
+    text = element_text(family = "ChulaCharasNew", size = 14),
+    plot.title = element_text(size = 16, hjust = 0.5, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    panel.grid.minor = element_blank(),
+    legend.position = "none",
+    plot.background = element_rect(fill = "white", color = NA),
+    aspect.ratio = 0.8
+  )
+}
+
+# สร้างข้อมูลสำหรับแสดง spherical vs non-spherical
+set.seed(42)
+
+# Spherical clusters (ดี)
+spherical_data <- tibble(
+  x = c(rnorm(50, 2, 0.8), rnorm(50, 6, 0.8), rnorm(50, 4, 0.8)),
+  y = c(rnorm(50, 2, 0.8), rnorm(50, 6, 0.8), rnorm(50, 9, 0.8)),
+  cluster = rep(1:3, each = 50),
+  type = "Spherical (เหมาะสม)"
+)
+
+# Elongated clusters (ไม่ดี)
+# สร้าง elongated clusters โดยใช้ rotation
+create_elongated <- function(n, center_x, center_y, angle = 0) {
+  x <- rnorm(n, 0, 2)  # ยาวในแกน x
+  y <- rnorm(n, 0, 0.5) # แคบในแกน y
+  
+  # Rotate
+  cos_a <- cos(angle)
+  sin_a <- sin(angle)
+  
+  x_rot <- x * cos_a - y * sin_a + center_x
+  y_rot <- x * sin_a + y * cos_a + center_y
+  
+  tibble(x = x_rot, y = y_rot)
+}
+
+elongated_data <- bind_rows(
+  create_elongated(50, 2, 3, pi/6) %>% mutate(cluster = 1),
+  create_elongated(50, 8, 6, -pi/4) %>% mutate(cluster = 2),
+  create_elongated(50, 5, 9, pi/3) %>% mutate(cluster = 3)
+) %>%
+  mutate(type = "Elongated (ไม่เหมาะสม)")
+
+# Combine data
+assumption_data <- bind_rows(spherical_data, elongated_data)
+
+# Plot comparison
+p1 <- assumption_data %>%
+  filter(type == "Spherical (เหมาะสม)") %>%
+  ggplot(aes(x, y, color = factor(cluster))) +
+  geom_point(size = 2, alpha = 0.7) +
+  #scale_color_manual(values = cluster_colors) +
+  labs(title = "Spherical Clusters", x = "X", y = "Y") +
+  theme_presentation()
+
+p2 <- assumption_data %>%
+  filter(type == "Elongated (ไม่เหมาะสม)") %>% 
+  ggplot(aes(x, y, color = factor(cluster))) +
+  geom_point(size = 2, alpha = 0.7) +
+ # scale_color_manual(values = cluster_colors) +
+  labs(title = "Elongated Clusters", x = "X", y = "Y") +
+  theme_presentation()
+
+# Run K-means on elongated data to show problem
+elongated_only <- assumption_data %>% filter(type == "Elongated (ไม่เหมาะสม)")
+kmeans_result <- kmeans(elongated_only[,c("x", "y")], centers = 3, nstart = 20)
+
+p3 <- elongated_only %>%
+  mutate(kmeans_cluster = kmeans_result$cluster) %>%
+  ggplot(aes(x, y, color = factor(kmeans_cluster))) +
+  geom_point(size = 2, alpha = 0.7) +
+  #scale_color_manual(values = cluster_colors) +
+  labs(title = "K-means บน Elongated Data", x = "X", y = "Y") +
+  theme_presentation()
+
+p1 + p2 + p3
+```
+
+
+## ขั้นตอนการดำเนินการ {.smaller}
+
+1. โหลด library ที่เกี่ยวข้อง
+
+2. นำเข้าข้อมูล ทำความสะอาด และปรับคะแนนมาตรฐาน
+
+3. เลือกจำนวน cluster
+
+4. ประมวลผลด้วย K-Means algorithm
+
+5. ประเมินคุณภาพ cluster เช่น Within-Cluster Sum of Squares (WCSS), Silhouette Score
+  
+6. merge ผลลัพธ์กับข้อมูลเดิม วิเคราะห์และแปลความหมาย จัดทำ profile ของ cluster
+
+
+## กิจกรรม K-Means Clustering {.smaller}
+
+```{r eval = T, echo = T}
+library(tidyverse)
+library(cluster)
+## 1. นำเข้าข้อมูล และเลือกตัวแปร
+data <- read_csv("learning_data.csv")
+kmeans_data <- data %>% 
+  dplyr::select(-gender, -department)
+## 2. ปรับคะแนนมาตรฐาน
+kmeans_data_standardized <- kmeans_data %>% 
+  mutate(across(2:9, scale))
+## 3 เลือกจำนวน cluster
+set.seed(123)
+kmeans_output <- kmeans(x = kmeans_data_standardized %>% 
+                          dplyr::select(2:9) %>% 
+                          na.omit(),centers = 3)
+```
+
+การประเมินคุณภาพของ cluster
+
+- Within-Cluster Sum of Squares (WCSS)
+
+- Silhouette Score
+
+- Cross-validation หรือ Stability
+
+
+## Within-Cluster Sum of Squares (WCSS) {.smaller}
+
+$$
+\text{WCSS} = \sum_{j=1}^{k} \sum_{x_i \in C_j} \| x_i - \mu_j \|^2
+$$
+
+- $k$ = จำนวนคลัสเตอร์  
+- $C_j$ = เซตของจุดข้อมูลในคลัสเตอร์ที่ $j$  
+- $x_i$ = ข้อมูลจุดที่ $i$
+- $\mu_j$ = centroid ของคลัสเตอร์ที่ $j$
+
+
+:::{.callout-note}
+
+- ค่า WCSS **เล็ก** → จุดในคลัสเตอร์กระจุกตัวใกล้ centroid  
+
+- ค่า WCSS **ใหญ่** → จุดกระจายกว้าง คลัสเตอร์ไม่ค่อย “แน่น”
+
+:::
+
+## Within-Cluster Sum of Squares (WCSS) {.smaller}
+
+```{r echo = T}
+## within-cluster sum of squares
+kmeans_output$withinss
+## between-cluster sum of squares
+kmeans_output$betweenss
+## total sum of squares
+kmeans_output$totss
+```
+
+
+## Silhouette Score {.smaller}
+
+Silhouette Score เป็นตัวชี้วัดคุณภาพการจัดกลุ่มที่บ่งชี้ว่าจุดข้อมูลแต่ละจุดถูกจัดกลุ่มได้ดีเพียงใด โดยพิจารณาจากความคล้ายคลึงภายในกลุ่มและความแตกต่างระหว่างกลุ่ม
+
+$$
+S(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}
+$$
+
+
+
+
+:::{.callout-note}
+
+- $a(i)$ =  ระยะเฉลี่ยของจุด i ไปยัง สมาชิกอื่น ๆ ในคลัสเตอร์เดียวกัน (intra-cluster distance or cohesion) -- ความเหนียวแน่น/ความกระชับของ cluster
+
+$$
+a(i) = \frac{1}{|C_A|-1} \sum_{\substack{x_j \in C_A \\ j \neq i}} \|x_i - x_j\|
+$$
+
+- $b(i)$ = ระยะเฉลี่ยที่น้อยที่สุดจากจุด i ไปยัง คลัสเตอร์อื่น ๆ (nearest-cluster distance or speration) -- ความห่างของ cluster
+
+$$
+b(i) = \min_{C_B \neq C_A}
+\left(
+\frac{1}{|C_B|} \sum_{x_j \in C_B} \|x_i - x_j\|
+\right)
+$$
+
+:::
+
+## การคำนวณ Silhouette Score {.smaller}
+
+```{r echo = T}
+library(cluster)
+# คำนวณ silhouette score
+## 1. ผลลัพธ์การจัดกลุ่มจาก kmeans -- x
+## 2. เมทริกซ์ระยะทางแบบ euclidean -- dist()
+silhouette_values <- cluster::silhouette(kmeans_output$cluster, 
+                                dist(kmeans_data_standardized %>% 
+                                       dplyr::select(2:9) %>% 
+                                       na.omit()))
+silhouette_values %>% data.frame() %>% head()
+```
+
+
+
+## การแปลผล Silhouette Score {.smaller}
+
+- ค่า Silhouette Score อยู่ในช่วง -1 ถึง 1
+
+  - ค่าใกล้ 1 (0.5–1.0): จุดข้อมูลถูกจัดกลุ่มได้ดี มี cohesion สูงและ separation สูง
+  
+  - ใกล้ 0: จุดข้อมูลนี้คลุมเครือในการจัดกลุ่ม
+  
+  - ค่าติดลบ: จุดนี้ใกล้กับคลัสเตอร์อื่นมากกว่าคลัสเตอร์ตัวเอง → อาจถูกจัดกลุ่มผิด หรือโครงสร้างข้อมูลไม่ชัด
+
+- การใช้งาน silhouette
+
+  - พิจารณารายหน่วยข้อมูล บ่งชี้ว่ามีหน่วยข้อมูลไหนที่มีปัญหาในการจัดกลุ่มบ้าง หรือหน่วยข้อมูลไหนที่จัดกลุ่มได้ดี
+  
+  - เฉลี่ยราย cluster บ่งชี้ว่าคลัสเตอร์ไหนมีปัญหา หรือคลัสเตอร์ไหนที่จัดกลุ่มได้ดี
+
+## for Loop {.smaller}
+
+for loop เป็นโครงสร้างการวนซ้ำ (iteration) ที่ใช้ในอัลกอริธึมเพื่อทำซ้ำชุดคำสั่งในโปรแกรมเป็นจำนวนครั้งที่กำหนดไว้ล่วงหน้า หรือสำหรับการทำงานกับทุกองค์ประกอบในชุดข้อมูล
+
+```{r eval = F, echo = T}
+for (variable in sequence) {
+  # คำสั่งที่จะทำในแต่ละรอบการวนซ้ำ
+}
+```
+
+ตัวอย่างการวนซ้ำ
+
+```{r echo = T}
+for (i in 1:5) {
+  print(i)
+}
+```
+
+
+เราสามารถใช้การวนซ้ำแบบ for นี้มาช่วยให้การทำงานด้าน data science ทำได้ง่ายมากขึ้น
+
+## Elbow Method {.smaller}
+
+```{r echo = T, eval = F}
+set.seed(123)
+max_k <- 10
+wss <- numeric(max_k)
+
+for(i in 1:max_k)
+  {
+    results <- kmeans(clustering_data, centers = i)
+    wss[i] <- results$tot.withinss 
+  }
+
+head(wss)
+```
+
+
+## New generation for loop: Purrr package {.smaller}
+
+![](https://datakruroo.github.io/Programming/EDA/img/logo.png){width="60%"}
+
+> `map()` = ฟังก์ชันใน purrr (tidyverse) ที่ใช้ “วนลูป” แบบ functional
+
+โครงสร้างของฟังก์ชันคือ
+
+```{r eval = F}
+map(.x, .f, ...)
+```
+
+- `.x` = object ที่เราจะวน (เช่น vector, list, tibble column)
+
+- `.f` = ฟังก์ชันที่เราจะใช้กับแต่ละองค์ประกอบใน `.x`
+
+- output = list (หรือ vector, tibble ขึ้นกับฟังก์ชันที่ใช้)
+
+มี variants เช่น `map_dbl()`, `map_int()`, `map_chr()`, `map_lgl()` ที่จะ return output เป็น vector ชนิดต่าง ๆ
+
+
+## New generation for loop: Purrr package {.smaller}
+
+
+```{r echo = T}
+map(1:5, sqrt)
+map_dbl(1:5, sqrt)
+```
+
+```{r echo = T}
+map_dbl(1:5, function(x) x^2)
+map(1:5, ~ .x^2)
+```
+
+
+## New generation for loop: Purrr package {.smaller}
+
+
+```{r echo = T, eval = F}
+wss_cal <- function(data,k) {
+  kmeans(data , centers = k, nstart = 10)$tot.withinss
+}
+
+k<-1:10
+wss_results <- map(.x = k, .f = ~wss_cal(clustering_data, .x))
+wss_results |> unlist() |> head()
+```
+
