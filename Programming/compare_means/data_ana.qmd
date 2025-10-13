@@ -1,0 +1,1269 @@
+---
+title: "data analysis"
+format: html
+editor: visual
+---
+
+## 0. Importing data
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Downloads/TeacherSalaryData.csv")
+data <- data %>% 
+  rename(teacher_id = 1) %>% 
+  mutate(discipline = factor(discipline, 
+                             levels=c("A","B"),
+                             labels=c("Pure","Applied")))
+glimpse(data)
+```
+
+## 1. Outline
+
+-   การวิเคราะห์เพื่อเปรียบเทียบค่าเฉลี่ย
+
+-   การวิเคราะห์ความสัมพันธ์ระหว่างตัวแปร
+
+## 2. การเปรียบเทียบค่าเฉลี่ยสองกลุ่มแบบอิสระ
+
+-   การเปรียบเทียบค่าเฉลี่ย คือ การวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตาม (เชิงปริมาณ) กับตัวแปรอิสระ (จัดประเภท)
+
+-   ความสัมพันธ์แบบภาษาทั่ว ๆ ไป คือสถานการณ์ที่ตัวแปรตัวหนึ่งมีการเปลี่ยนแปลงค่าที่สอดคล้องไปกับการเปลี่ยนแปลงของตัวแปรอีกตัวหนึ่ง
+
+```{mermaid}
+flowchart LR
+A[Grouping Variable]-->B[Dependent Variable]
+```
+
+คำถาม : อาจารย์มหาวิทยาลัยในสาขาวิชาที่แตกต่างกันมีเงินเดือนแตกต่างกันอย่างไร ?
+
+วัตถุประสงค์ของการวิเคราะห์ :
+
+-   เพื่อเปรียบเทียบความแตกต่างของค่าเฉลี่ยเงินเดือนอาจารย์มหาวิทยาลัยระหว่างสาขาวิชา pure science กับ applied science --\> t-test
+
+-   เพื่อเปรียบเทียบการแจกแจงของเงินเดือนอาจารย์มหาวิทยาลัยระหว่างสาขาวิชา pure science กับ applied science --\> Komogorov-Smirnov
+
+### 2.1 การเปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่าง
+
+เราอาจจำแนกวิธีการวิเคราะห์เพื่อเปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่างได้เป็น 2 แนวทางหลัก ๆ ได้แก่
+
+-   การใช้ทัศนภาพข้อมูลร่วมกับสถิติบรรยาย (data visualization + descriptive analysis)
+
+-   การใช้การทดสอบนัยสำคัญทางสถิติ -- ทำเมื่อคำถามวิจัยหรือวัตถุประสงค์ของการวิจัยต้องการหาคำตอบเกี่ยวกับความแตกต่างหรือความสัมพันธ์หรือสภาพของพารามิเตอร์ในประชากร โดยใช้ข้อมูลจากตัวอย่างเป็นหลักฐานอ้างอิง
+
+### 2.2 การใช้ทัศนภาพข้อมูลร่วมกับสถิติบรรยาย
+
+-   ใช้ค่าสถิติบรรยาย เช่น mean, sd, min, max, q1, q2, q3 จำแนกตามกลุ่ม
+
+-   boxplot/violin plot/jitter plot
+
+-   barchart ของค่าเฉลี่ย + error bar ที่ใช้ SD เป็นตัวกำหนดความกว้าง
+
+-   histogram, density plot
+
+```{r}
+## สถิติพื้นฐาน
+data %>% 
+  group_by(discipline) %>% 
+  summarise(n = n(),
+            mean = mean(salary),
+            sd = sd(salary),
+            min = min(salary),
+            q1 = quantile(salary, 0.25),
+            med = median(salary),
+            q3 = quantile(salary, 0.75),
+            max = max(salary))
+```
+
+-   boxplot
+
+```{r}
+data %>% 
+  ggplot(aes(x = discipline, y = salary, fill = discipline)) +
+  geom_boxplot()+
+  theme_light()+
+  theme(legend.position = "none")
+```
+
+-   barplot
+
+```{r}
+data %>% 
+  group_by(discipline) %>% 
+  summarise(
+    mean = mean(salary),
+    sd = sd(salary)
+  ) %>% 
+  ggplot(aes(x = discipline, y= mean))+
+  geom_col()+
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2)+
+  geom_point(size = 2)
+```
+
+-   density
+
+```{r}
+data %>% 
+  ggplot(aes(x = salary, fill = discipline)) +
+  geom_density(position = "identity", alpha = 0.5)+
+  theme_light()
+```
+
+### 2.3 การทดสอบนัยสำคัญเพื่อเปรียบเทียบค่าเฉลี่ย
+
+-   ในกรณีที่เราต้องการตรวจสอบว่า ความแตกต่างของค่าเฉลี่ยระหว่างกลุ่มตัวอย่างที่ต้องการเปรียบเทียบ มีความแตกต่างเกิดขึ้นจริง ๆ มั้ยในประชากร โดยอาศัยข้อมูลตัวอย่างเป็นฐาน ---\> เราจะใช้การทดสอบนัยสำคัญทางสถิติเป็นเครื่องมือ
+
+-   เนื่องจากการเปรียบเทียบค่าเฉลี่ยตัวอย่างตรง ๆ อาจมีปัจจัยแทรกซ้อนได้แก่ ความคลาดเคลื่อนของการคำนวณค่าเฉลี่ยตัวอย่างที่เกิดขึ้นจากการสุ่มตัวอย่าง (sampling error) ดังนั้นกระบวนการทดสอบนัยสำคัญทางสถิติ จึงเป็นกระบวนการที่จะต้องพิสูจน์ให้ได้ว่า ความแตกต่างของค่าเฉลี่ยตัวอย่างที่พบนี้ มีนัยสำคัญ (มีมากกว่าความคลาดเคลื่อนจากการสุ่มตัวอย่างจริง ๆ นะ)
+
+ขั้นตอนการทดสอบนัยสำคัญทางสถิติสำหรับการเปรียบเทียบค่าเฉลี่่ยสองกลุ่ม
+
+1.  กำหนดสมมุติฐานวิจัย
+
+2.  กำหนดสมมุติฐานการทดสอบ/สมมุติฐานทางสถิติ
+
+3.  กำหนดระดับนัยสำคัญ (α) = .05 (ในทางสังคมศาสตร์ค่านี้เรียกว่า standard significance level)
+
+4.  เลือกใช้การทดสอบที่เหมาะสม
+
+5.  คำนวณค่าทดสอบสถิติและค่าความน่าจะเป็น (p-value)
+
+6.  ตัดสินใจและสรุปผลการทดสอบ
+
+จากชุดข้อมูล `teachersalary` การเปรียบเทียบเงินเดือนอาจารย์มหาวิทยาลัยระหว่างสองสาขาวิชา มีสมมุติฐานการวิจัยว่า
+
+> อาจารย์สาขา applied จะมีเงินเดือนโดยเฉลี่ยสูงกว่าอาจารย์สาขา pure science
+
+กำหนดให้ $\mu$ แทนค่าเฉลี่ยเงินเดือนอาจารย์
+
+\$\$ H_0: \mu*{applied}* \leq \mu{pure} \\ H_1: \mu*{applied} \>* \mu{pure}
+
+\$\$ สถิติทดสอบ : Independent samples t-test
+
+```{r}
+t.test(salary ~ discipline, data = data,
+       var.equal = FALSE,
+       alternative = "greater")
+```
+
+```{r}
+data %>% 
+  mutate(discipline = fct_relevel(discipline, "Applied", "Pure")) %>% 
+  with(
+    t.test(salary ~ discipline,
+       var.equal = FALSE,
+       alternative = "greater")
+  )
+```
+
+เนื่องจาก p-value = .00094 \< .05 ดังนั้นปฏิเสธสมมุติฐาน H0 (ทดในใจ)
+
+จากผลการวิเคราะห์พบว่า อาจารย์มหาวิทยาลัยในกลุ่มสาขา applied science มีเงินเดือนโดยเฉลี่ยเท่ากับ 118028 บาท (SD = ) ซึ่งสูงกว่าสาขา pure science ที่มีค่าเฉลี่ยเท่ากับ 108548 บาท (SD= ) อย่างมีนัยสำคัญทางสถิติที่ระดับ .05 (p \< .01)
+
+ข้อตกลงเบื้องต้นของ t-test
+
+- โมเดลการวิเคราะห์ จริง ๆ แล้ว t-test เป็นโมเดลย่อยโมเดลหนึ่งภายใต้โมเดลทั่วไปที่เรียกว่า general linear model พูดใช้ชัดกว่าเดิม เราสามารถบอกได้ว่า t-test เป็นโมเดลย่อยภายใต้ regression with dummy
+
+กำหนดให้ $y_{ij}$ แทนตัวแปรตาม เช่น เงินเดือนอาจารย์มหาวิทยาลัย ของอาจารย์คนที่ $i$ ในกลุ่มสาขาวิชาที่ $j$
+
+ดังนั้นโมเดลการเปรียบเทียบค่าเฉลี่ยสองกลุ่มสามารถเขียนในรูปของโมเดลเชิงเส้นตรงได้แบบนี้
+
+$$
+y_{ij} = \mu_j + \epsilon_{ij}
+\\
+y_{ij} = f(x_{ij}) + \epsilon_{ij}
+
+$$
+$$
+\epsilon_{ij} \sim N(0,\sigma^2)
+$$
+ในทางปฏิบัติเราไม่ทราบค่า $\epsilon_{ij}$ แน่นอน เพราะเราไม่ทราบค่า $\mu_j$ แต่เราสามารถประมาณมันได้จากการหา residual หรือเศษเหลือ
+
+$$
+\hat{e}_{ij} = y_{ij} - \bar{y_j}
+$$
+
+- Independence
+
+- Normality : การแจกแจงของตัวแปรตามในแต่ละกลุ่มที่เปรียบเทียบจะต้องมีการแจกแจงแบบปกติ
+
+ตรวจสอบ normality จาก density plot
+
+```{r}
+data %>% 
+  ggplot(aes(x = salary, fill = discipline))+
+  geom_density(alpha = 0.5, adjust = 1.2)
+```
+
+นอกจากการใช้ density plot เรายังอาจเปรียบเทียบจากค่ากลาง
+
+```{r}
+data %>% 
+  group_by(discipline) %>% 
+  summarise(mean = mean(salary),
+            median = median(salary))
+```
+
+เราอาจใช้สถิติทดสอบการแจกแจงไม่ปกติของข้อมูล เช่น Shapiro-Wilk test
+
+กำหนดให้ $X$ เป็นตัวแปรเชิงปริมาณที่ต้องการตรวจสอบการแจกแจง
+
+$$
+H_0: X_j \sim N(\mu, \sigma^2)
+\\
+H_1: X_j \not\sim N(\mu, \sigma^2)
+$$
+โดยที่ $j$ คือกลุ่มสาขาวิชาที่มี 2 กลุ่ม
+
+ถ้าเราจะตรวจสอบข้อตกลงเบื้องต้นด้าน normality ของ t-test จากชุดข้อมูลข้างต้น เราจะต้องตรวจสอบที่เศษเหลือ จะดูฉลาดกว่าตรวจสอบที่ observation ตรง ๆ 
+
+
+```{r}
+## คำนวณเศษเหลือ --> e = y - group_mean
+## 1. หา group_mean
+## 2. หาเศษเหลือ
+res <- data %>% 
+  group_by(discipline) %>% 
+  mutate(group_mean = mean(salary)) %>% 
+  mutate(residual = salary - group_mean) %>% 
+  select(discipline, salary, residual) %>% 
+  ungroup()
+
+res %>% 
+  ggplot(aes(x = residual))+
+  geom_density(alpha = 0.5, adjust = 1.2)
+
+res %>% 
+  with(shapiro.test(residual))
+
+res %>% 
+  with(qqnorm(residual))
+
+res %>% 
+  ggplot(aes(sample = residual))+
+  stat_qq()+
+  stat_qq_line()
+```
+
+
+- Homogeneity of variances
+
+
+### 2.4 Bootstraping
+
+Bootstrap เหมาะกับสถานการณ์ที่เรา อยากประเมินความไม่แน่นอน (uncertainty) ของสถิติ เช่น ค่าเฉลี่ย ความต่างของค่าเฉลี่ย ค่าสหสัมพันธ์ ค่าสัมประสิทธิ์ใน regression ฯลฯ — โดยไม่ต้องอาศัยสมมติฐานเชิงทฤษฎีมากนัก
+
+ปกติเราใช้ bootstraping 
+
+1. เมื่อไม่มั่นใจในสมมติฐานทางสถิติแบบเดิม หรือข้อตกลงเบื้องต้นของการทดสอบไม่เป็นไปตามที่กำหนด
+
+- ขนาดตัวอย่างน้อย (n เล็ก)
+
+- การแจกแจงของข้อมูลไม่เป็น normal
+
+- ความแปรปรวนไม่เท่ากันระหว่างกลุ่ม
+
+- สมมติฐานที่ว่า “sampling distribution” ของค่าสถิติเป็น normal → bootstrap จะสร้าง empirical sampling distribution
+
+2. เมื่ออยากได้ช่วงความเชื่อมั่นของสถิติที่คำนวณยาก
+
+บางสถิติไม่มีสูตรคำนวณช่วงความเชื่อมั่นโดยตรง เช่น median, correlation, หรือค่าเฉลี่ยใน regression ที่มีการคัดเลือกตัวแปรแบบ LASSO → bootstrap สามารถประมาณ empirical distribution ของสถิตินั้นได้โดยตรง
+
+ขั้นตอนการทำ bootstraping
+
+1. เริ่มจากข้อมูลจริง (Original sample) ---> `data`
+
+2. สุ่มตัวอย่างซ้ำแบบมีการคืนตัว (Sampling with replacement)
+
+ผลคือเรามี B ชุดข้อมูลจำลองที่มีลักษณะคล้ายกับข้อมูลจริง โดยทั่วไปเรามักสร้างตัวอย่างจำลอง 1000 ชุด 5000 ชุด 10000 ชุด
+
+3. คำนวณสถิติที่สนใจในแต่ละชุด
+
+ในแต่ละ bootstrap sample เราคำนวณสถิติ เช่น
+
+- ค่าเฉลี่ย (mean)
+
+- ความต่างของค่าเฉลี่ยระหว่างกลุ่ม
+
+- ค่าสัมประสิทธิ์ของ regression
+
+4. สร้างการแจกแจงของสถิติ (Empirical distribution)
+
+ค่าทั้งหมดจากขั้นที่ 3 จะสร้าง “bootstrap distribution” ของสถิติ
+เราสามารถดูรูปร่างของการแจกแจงนี้ เช่น histogram เพื่อเข้าใจว่าค่าสถิติแปรผันแค่ไหน
+	
+5. คำนวณค่าประมาณและความไม่แน่นอน
+
+6. ตีความผล
+
+หากช่วงความเชื่อมั่นของ “ความต่างระหว่างกลุ่ม” ไม่ครอบศูนย์ → มีหลักฐานว่าสองกลุ่มต่างกันอย่างมีนัยสำคัญ
+แต่ทั้งหมดนี้เป็น “หลักฐานเชิงจำลองจากข้อมูลจริง” โดยไม่ต้องพึ่งสมมติฐานทางทฤษฎี (เช่น normality)
+
+
+> นิยามหลวม ๆ ของ sampling distribution คือ การแจกแจงของค่าสถิติที่สนใจ ที่เกิดขึ้นจากการสุ่มตัวอย่างซ้ำหลายชุดจากประชากรอนันต์
+
+
+```{r}
+##install.packages("rsample")
+library(rsample)
+### 1. ข้อมูลต้นฉบับ
+data$salary
+### salary### วัตถุประสงค์คือ เพื่อเปรียบเทียบค่าเฉลี่ยของเงินเดือนระหว่าง PUre กับ applied
+
+## 2. การสร้างตัวอย่างแบบ bootstrap -- การสร้างตัวอย่างโดยใช้การสุ่มตัวอย่างซ้ำแบบใส่คืนจากชุดข้อมูลต้นฉบับ
+set.seed(123)
+boots <- bootstraps(data = data, times = 1000, strata = "salary", breaks = 4)
+boots
+
+### bootstrap sample ชุดที่ 1
+analysis(boots$splits[[1]]) %>% 
+  group_by(discipline) %>% 
+  summarise(mean_salary = mean(salary))
+
+boots$splits
+
+### วนลูปเพื่อคำนวณ group_mean และ mean_difference ระหว่างกลุ่ม ภายในแต่ละ bootstrap sample
+boot_summary <- boots %>%
+  mutate(group_difference = map_dbl(
+    .x  = splits, 
+    .f = ~ {
+    temp <- analysis(.x)
+    mean_A <- mean(data$salary[temp$discipline == "Pure"])
+    mean_B <- mean(data$salary[temp$discipline == "Applied"])
+    mean_B - mean_A  # ค่าต่างของค่าเฉลี่ย (B - A)
+  }))
+boot_summary
+
+
+## 3. สร้างการแจกแจงของผลต่างของค่าเฉลี่ยสองกลุ่ม และใช้มันเป็นตัวแทนของ sampling distribution
+boot_summary %>% 
+  ggplot(aes(x = group_difference))+
+  geom_histogram(col = "white")+
+  theme_light()+
+  theme(panel.grid = element_blank())
+
+```
+
+
+```{r}
+## 4. คำนวณค่าประมาณและความไม่แน่นอน
+boot_summary %>% 
+  summarise(
+    ci_low = quantile(group_difference, 0.025),
+    ci_upper = quantile(group_difference, 0.975)
+  )
+
+boot_summary %>% 
+  summarise(
+    prop_more_than0 = mean(group_difference > 0)
+  )
+
+boot_summary %>% 
+  summarise(
+    prop_more_than0 = mean(group_difference < 0)
+  )
+```
+
+## 3. Paired-Sample t-test
+
+การวิเคราะห์นี้ใช้เปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่างที่มีความสัมพันธ์กัน ในเชิงทฤษฎีการทดสอบนี้คือ one-sample t-test ที่ใช้ผลต่างรายคู่ของคะแนนไปดำเนินการทดสอบ
+
+ชุดข้อมูลตัวอย่างสำหรับกรณีนี้จะใช้ gapminder  --- ข้อมูลความอยู่ดีมีสุข (well-being) ของประชากรในแต่ละประเทศ เก็บย้อนหลังหลายปี
+
+```{r}
+## install.packages("gapminder")
+library(gapminder)
+glimpse(gapminder)
+```
+
+```{r}
+gapminder %>% 
+  count(year)
+```
+
+
+
+### 3.1 วัตถุประสงค์การวิเคราะห์
+
+เพื่อเปรียบเทียบ gdpPercap ของประเทศระหว่างปี 1952 กับ 2007
+
+```{r}
+gapminder %>% 
+  select(country, year, gdpPercap) %>% 
+  filter(year %in% c(1952, 2007)) %>% 
+  mutate(year = factor(year)) %>% 
+  ggplot(aes(x = gdpPercap, fill = year))+
+  geom_density(alpha = 0.6, adjust = 2)
+```
+
+การเปรียบเทียบค่าเฉลี่ยสองกลุ่มที่มีความสัมพันธ์กัน จึงควรเปรียบเทียบจากคะแนนพัฒนาการ หรือคะแนนการเปลี่ยนแปลงรายหน่วยข้อมูลจะเหมาะสมกว่า
+
+
+```{r}
+gapminder %>% 
+  select(country, year, gdpPercap) %>% 
+  filter(year %in% c(1952, 2007)) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_")  %>% 
+  mutate(diff = gdp_year_2007 - gdp_year_1952) %>% 
+  ggplot(aes(x = diff))+
+  geom_histogram()
+```
+
+```{r}
+gapminder %>% 
+  select(country, year, gdpPercap) %>% 
+  filter(year %in% c(1952, 2007)) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_")  %>% 
+  mutate(diff = gdp_year_2007 - gdp_year_1952) %>% 
+  summarise(
+    n = n(),
+    mean_diff = mean(diff),
+    sd_diff = sd(diff),
+    min_diff = min(diff),
+    max_diff = max(diff)
+  )
+```
+
+> ในช่วงปีดังกล่าว ค่าเฉลี่ย gpdperCap เพิ่มขึ้นหรือไม่
+
+
+### การทดสอบสมมุติฐานเพื่อเปรียบเทียบค่าเฉล่ียสองกลุ่มสัมพันธ์กันโดยใช้สถิติทดสอบแบบ one-sample t-test
+
+การทดสอบสมมุติฐาน
+
+$$
+H_0 : \mu_{2007} \leq \mu_{1952} ---> \mu_{diff} \leq 0
+\\
+H_1 : \mu_{2007} > \mu_{1952} ---> \mu_{diff} > 0
+$$
+เราสามารถใช้การทดสอบที่เรียกว่า one-sample t-test มาช่วยในการเปรียบเทียบค่าเฉลี่ยของสองกลุ่มตัวอย่างที่มีความสัมพันธ์กันได้
+
+
+```{r}
+gapminder %>% 
+  select(country, year, gdpPercap) %>% 
+  filter(year %in% c(1952, 2007)) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_")  %>% 
+  mutate(diff = gdp_year_2007 - gdp_year_1952) %>% 
+  with(t.test(diff, mu = 0, alternative = "greater"))
+```
+จากผลการวิเคราะห์พบว่า พัฒนาการด้าน gdppercap ของแต่ละประเทศ ระหว่างปี 1952 ถึง 2007 มีค่าเฉลี่ยเท่ากับ 7954.796$ (sd = 11870.06) ซึ่งแสดงว่าพัฒนาการดังกล่าวดีขึ้น อย่างมีนัยสำคัญทางสถิติที่ระดับ .05
+
+### การทดสอบสมมุติฐานเพื่อเปรียบเทียบค่าเฉล่ียสองกลุ่มสัมพันธ์กันโดยใช้สถิติทดสอบแบบ paired-sample-t-test
+
+```{r}
+gapminder %>% 
+  filter(year %in% c(1952, 2007)) %>% 
+  mutate(year = factor(year, levels=c(2007,1952))) %>% 
+  select(country, year, gdpPercap) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_") %>% 
+  with(t.test(x = gdp_year_2007, y = gdp_year_1952,
+              paired = TRUE,
+              alternative = "greater"))
+```
+
+t-test ไม่ว่าจะเป็นแบบไหน ก็จะมี assumption เสมอ ในกรณีของ paired sample t-test กับ one-sample t-test ข้อตกลงเบื้องต้นคือ
+
+- independent
+
+- normality
+
+
+
+
+
+
+
+
+
+```{r}
+filtered_data <- gapminder %>% 
+  filter(year %in% c(1952,1957))
+```
+
+### 3.2 สมมุติฐานการทดสอบ
+
+$$
+H_0: \ \mu_{1957} \leq \mu_{1952}
+
+\\
+
+H_1: \ \mu_{1957}  >  \mu_{1952}
+$$
+### 3.3 การวิเคราะห์
+
+ส่วนแรกเป็นการวิเคราะห์ด้วยสถิติพื้นฐาน
+
+```{r}
+use_data <- filtered_data %>% 
+  select(-pop, -lifeExp) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_") %>% 
+  mutate(gdp_change = gdp_year_1957 - gdp_year_1952)
+use_data
+```
+
+```{r}
+use_data %>% 
+  summarise(mean_change = mean(gdp_change),
+            sd_change = sd(gdp_change))
+```
+
+ผลการวิเคราะห์ด้านล่างแสดงให้เห็นว่ามี 10 ประเทศที่มี gdp ลดลง
+
+```{r}
+use_data %>% 
+  mutate(gdp_change = ifelse(gdp_change > 0, 1, 0)) %>%
+  count(gdp_change)
+```
+
+
+```{r}
+use_data %>% 
+  ggplot(aes(x = gdp_change))+
+  geom_histogram(fill = "steelblue", col = "white")+
+  theme_light()
+```
+
+#### one-sample t-test approach
+
+```{r}
+use_data %>% 
+  with(t.test(gdp_change, mu = 0, alternative = "greater"))
+```
+
+
+#### paired-sample t-test approach
+
+`t.test()` มีอัลกอริทึมสำเร็จรูปสำหรับทำ paired-sample t-test โดยใช้ argument `paired = TRUE` ดังนั้นผู้วิเคราะห์ไม่ต้องจัดกระทำข้อมูลเองทั้งหมด
+
+```{r}
+filtered_data %>% 
+  select(-pop, -lifeExp) %>% 
+  pivot_wider(names_from = year, values_from = gdpPercap,
+              names_prefix = "gdp_year_") %>% 
+  with(t.test(x = gdp_year_1957,
+              y = gdp_year_1952,
+              paired = TRUE,
+              alternative = "greater"))
+```
+
+### 3.4 ข้อตกลงเบื้องต้นของ t-test
+
+paired t-test มีข้อตกลงเบื้องต้นเหมือน one-sample t-test
+
+- Independence
+
+- Normality
+
+
+## 4. One-Way ANOVA
+
+- โมเดลที่ใช้วิเคราะห์ความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรอิสระ
+
+- ตัวแปรตามเป็นตัวแปรต่อเนื่อง ตัวแปรอิสระเป็นตัวแปรจัดประเภท
+
+- การวิเคราะห์ความสัมพันธ์ในบริบทข้างต้น จึงเป็นการเปรียบเทียบค่าเฉลี่ยของตัวแปรตามระหว่างค่าที่เป็นไปได้ของตัวแปรอิสระ
+
+- ในกรณีที่ตัวแปรจัดประเภทมีค่าที่เป็นไปได้ 2 ระดับ one-way ANOVA จะให้ผลลัพธ์ที่เทียบเท่ากับ t-test ดังนั้นในกรณีนี้เราเลยใช้ t-test เป็นปกติไป
+
+- ในกรณที่ตัวแปรจัดประเภทมีค่าที่เป็นไปได้มากกว่า 2 ระดับ one-way ANOVA จะเหมาะสมกว่า t-test เหมาะสมกว่าในเชิงของการควบคุมความผิดพลาดของการปฏิเสธ H0 (Type I Error)
+
+
+```{r}
+library(tidyverse)
+data <- read_csv("TeacherSalaryData.csv")
+```
+
+![](img/anova.png){width="50%"}
+
+วัตถุประสงค์ของงานนี้ คือ การเปรียบเทียบเงินเดือนอาจารย์มหาวิทยาลัยที่มีตำแหน่งวิชาการแตกต่างกัน
+
+
+```{r}
+data %>% 
+  mutate(rank =fct_relevel(rank, "AsstProf","AssocProf","Prof")) %>% 
+  ggplot(aes(x=rank, y=salary))+
+  geom_boxplot()
+```
+$$
+H0: ยารักษาโรคไม่ได้
+\\
+H1: ยารักษาโรคได้
+$$
+
+
+Type I error ความผิดพลาดที่เกิดขึ้นจากการปฏิเสธ H0 โดยที่ H0 มันเป็นของจริง
+
+Type II error ความผิดพลาดที่เกิดขึ้นจากไม่ปฏิเสธ H0 ที่เป็นเท็จ
+
+
+**การเปรียบเทียบเงินเดือนอาจารย์มหาวิทยาลัยที่มีตำแหน่งวิชาการแตกต่างกัน**
+
+
+สมมุติว่าเราจะใช้ t-test เพ่ือเปรียบเทียบเงินเดือนดังกล่าว โดยกำหนดสมมุติฐานการทดสอบดังนี้
+
+- Asst vs Assoc มีการกำหนด alpha = .05 <-- type I error ที่ยอมรับได้ของ 1 การทดสอบ
+
+- Asst vs Prof มีการกำหนด alpha = .05
+
+- Assoc vs Prof มีการกำหนด alpha = .05
+
+ความผิดพลาดประเภทที่หนึ่งของชุดการทดสอบ (Family-wise Type I Error)
+
+P(ที่จะมีการทดสอบอย่างน้อย 1 การทดสอบผิดพลาด) = 1 - (1-alpha)^k
+
+```{r}
+## family-wise type I error
+1-(1-0.05)^3 ##<- inflation of type I error
+```
+
+```{r}
+k<-2:10
+fw_error <- 1-(1-0.05)^k
+plot(k,fw_error, type="b")
+```
+
+
+
+
+```{r}
+data %>% 
+  mutate(rank = fct_relevel(rank, "AsstProf","AssocProf","Prof")) %>% 
+  group_by(rank) %>% 
+  summarise(n = n(),
+            mean = mean(salary),
+            sd = sd(salary),
+            min = min(salary),
+            max = max(salary))
+
+data %>% 
+  mutate(rank = fct_relevel(rank, "AsstProf","AssocProf","Prof")) %>% 
+  ggplot(aes(x=rank, y=salary))+
+  geom_violin(aes(fill = rank), show.legend = F)+
+  geom_boxplot(width = 0.1)+
+  theme_light()
+```
+
+### 4.1 ANOVA and F-test
+
+$$
+H_0: \ \mu_{AsstProf} = \mu_{AssocProf} = \mu_{Prof}
+\\
+H_1: \text{At least one of the means is different}
+$$
+![](img/anova2.png)
+
+
+$$
+F-test = \frac{MSB}{MSW}
+$$
+
+เมื่อไหร่ก็ตามที่ F มีค่ามาก ๆ (p-value < .05) เราจะปฏิเสธ H0 มีความแตกต่างของค่าเฉลี่ยระหว่างกลุ่มอย่างน้อย 1 คู่
+
+```{r}
+anova_data <- data %>% 
+  mutate(rank =fct_relevel(rank, "AsstProf","AssocProf","Prof"))
+```
+
+```{r}
+7.162e+10/5.586e+08
+```
+
+```{r}
+### calculate traditional ANOVA
+fit_anova <- aov(salary ~ rank, data = anova_data)
+## ANOVA table and F-test
+summary(fit_anova)
+```
+ผลการวิเคราะห์ข้างต้นพบว่า p-value < .000
+
+ดังนั้นเราจะ reject H0 สรุปได้ว่าค่าเฉลี่ยเงินเดือนอาจารย์มหาวิทยาลัยมีความแตกต่างกันอย่างน้อย 1 คู่<-- รู้ว่ามีความแตกต่างกันของค่าเฉลี่ยเงินเดือนอาจารย์ที่มีตำแหน่งิวชาการต่างกัน แต่ยังสรุปไม่ได้ว่าความแตกต่างดังกล่าวเกิดขึ้นอย่างไรมีลักษณะอย่างไร
+
+
+การตรวจสอบ assumption ของ F-test 
+
+- normality
+
+```{r}
+library(patchwork)
+## ตัวแปรตามมีการแจกแจงแบบปกติในทุกกลุ่ม
+p1<- anova_data %>% 
+  ggplot(aes(x=salary))+
+  geom_histogram(bins=20)+
+  facet_wrap(~rank, scale = "free_x")
+
+p2<- anova_data %>% 
+  ggplot(aes(sample = salary))+
+  geom_qq()+
+  geom_qq_line()+
+  facet_wrap(~rank, scale = "free_x")
+
+p1/p2
+```
+
+```{r}
+library(purrr)
+## shapiro-wilk test
+anova_data %>% 
+  group_by(rank) %>% 
+  nest() %>% 
+  mutate(shapiro_test = map(data, ~shapiro.test(.x$salary))) %>% pull(shapiro_test)
+```
+
+```{r}
+anova_data %>% 
+  group_by(rank) %>% 
+  summarise(mean_salary = mean(salary))
+```
+
+
+```{r}
+## normality == ความคลาดเคลื่อนสุ่มของโมเดลมีการแจกแจงแบบปกติ
+## ความคลาดเคลื่อนสุ่มประมาณได้จาก residual ของโมเดล
+## residual = y - y.hat
+anova_data %>% 
+  bind_cols(resid = residuals(fit_anova)) %>% 
+  ggplot(aes(x=resid))+
+  geom_histogram()
+
+anova_data %>% 
+  bind_cols(resid = residuals(fit_anova)) %>% 
+  ggplot(aes(sample=resid))+
+  geom_qq()+
+  geom_qq_line()
+
+anova_data %>% 
+  bind_cols(resid = residuals(fit_anova)) %>% 
+  with(shapiro.test(.$resid))
+```
+
+- Homogeneity of variances
+
+```{r}
+anova_data %>% 
+  group_by(rank) %>% 
+  summarise(var_salary = var(salary))
+```
+
+Levene's Test
+
+$$
+H_0: \sigma^2_{assit} = \sigma^2_{assoc} = \sigma^2_{prof}
+\\
+H_1: not \ H_0
+$$
+
+
+```{r}
+##install.packages("car")
+library(car)
+leveneTest(salary ~ rank, data = anova_data)
+```
+
+```{r}
+### calculate Welch's F-test (Heterogeneity of variances F-test)
+fit_anova_welch<- oneway.test(salary ~ rank, data = anova_data)
+```
+
+### 4.2 การเปรียบเทียบรายคู่ภายหลัง (Multiple Comparisons)
+
+- `TukeyHSD()`
+
+- `pairwise.t.test()`
+
+- `ScheffeTest()`
+
+
+
+#### `TukeyHSD()`
+
+ใช้ทดสอบ multiple comparison ด้วยการทดสอบ Tukey's Honestly Significant Difference (HSD)
+
+- pairwise comparisons 
+
+- ควบคุม family-wise error rate คำนวณค่า p-value และ confidence interval จากการแจกแจง studentized range distribution
+
+- ใช้ได้กับทั้ง balance และ unbalance design
+
+- ทนทานต่อการ violate assumption normality และ homogeneity of variances
+
+```{r}
+TukeyHSD(fit_anova)
+```
+
+
+#### `pairwise.t.test()`
+
+ฟังก์ชันนี้สามารถเลือกวิธีการปรับค่า p-value ได้หลายวิธีการ
+
+- Bonferroni (ควบคุม family-wise error rate)
+
+- Holm (ควบคุม family-wise error rate)
+
+- Benjamini-Hochberg (ควบคุม false discovery rate)
+
+$$
+FDR = \frac{V}{R}
+$$
+โดยที่ $V$ คือจำนวนการทดสอบที่เป็น false positive และ $R$ คือจำนวนการทดสอบทั้งหมดที่พบนัยสำคัญทางสถิติ
+
+
+```{r}
+pairwise.t.test(x = anova_data$salary, 
+                g = anova_data$rank, 
+                p.adjust.method = "bonferroni")
+```
+
+```{r}
+pairwise.t.test(x = data$salary, 
+                g = data$rank, 
+                p.adjust.method = "holm")
+```
+
+```{r}
+pairwise.t.test(data$salary, 
+                data$rank, 
+                p.adjust.method = "BH")
+```
+
+
+#### `Scheffe's test`
+
+```{r}
+#install.packages("DescTools")
+library(DescTools)
+ScheffeTest(fit_anova)
+```
+
+### 4.3 ข้อตกลงเบื้องต้น
+
+$$
+y_{ij} = \mu + \alpha_j + \epsilon_{ij}
+\\
+\mu + \alpha_j = \mu_j
+$$
+
+$$
+\epsilon_{ij} \sim N(0,\sigma^2)
+$$
+
+- Independence
+
+- Normality
+
+  - การแจกแจงของตัวแปรตามในแต่ละกลุ่มมีการแจกแจงแบบปกติ
+  
+  - ความคลาดเคลื่อนสุ่มมีการแจกแจงแบบปกติ <-- ตรวจสอบที่ residual ของโมเดล
+
+- Homogeneity of variances
+
+```{r fig.height = 8}
+
+temp_data  <- data %>% 
+  bind_cols(resid = residuals(fit_anova),
+            predict = predict(fit_anova)) 
+
+p1 <- temp_data %>% 
+  ggplot(aes(x = resid))+
+  geom_histogram()
+
+p2 <- temp_data %>% 
+  ggplot(aes(sample = resid))+
+  geom_qq()+
+  geom_qq_line()
+
+p3 <- temp_data %>%
+  ggplot(aes(x=predict, y=scale(resid)))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype = 2)+
+  geom_smooth(se = F)
+
+p1/p2/p3
+```
+
+## 5. Multi-Way ANOVA
+
+### 5.1 การวิเคราะห์ความแปรปรวนหลายทาง
+
+```{r}
+fit_3way_anova  <- anova_data %>% 
+  with(aov(salary ~ rank + discipline + sex))
+## three-way ANOVA table
+summary(fit_3way_anova)
+```
+เมื่อควบคุมให้ปัจจัยอื่นคงที่
+
+- ตำแหน่งวิชาการของอาจารย์มีผลกระทบต่อเงินเดือนอาจารย์อย่างมีนัยสำคัญทางสถิติที่ระดับ .05
+
+- เงินเดือนของอาจารย์ระหว่างสาขาวิชา pure กับ applied มีความแตกต่างกันอย่างมีนัยสำคัญทางสถิติที่ระดับ .05
+
+- เงินเดือนของอาจารย์ไม่แตกต่างกันระหว่างเพศชายและหญิง ที่ระดับนัยสำคัญ .05
+
+
+### 5.2 Effect Size
+
+- effect size เป็นนัยสำคัญอีกประเภทหนึ่งที่เรียกว่า นัยสำคัญเชิงปฏิบัติ (practical significance)
+
+- ดัชนีวัดระดับ/ขนาดของผลกระทบหรือความสัมพันธ์ระหว่างตัวแปรอิสระกับตัวแปรตาม
+
+- โดยมากมันจะเป็นดัชนีที่มีขอบเขต (boundary)
+
+
+Eta squared
+
+สัดส่วนของความผันแปรในตัวแปรตามที่อธิบายได้ด้วยตัวแปรอิสระที่กำหนด
+
+$$
+\eta^2 = \frac{SS_{effect}}{SS_{total}}
+$$
+Partial Eta squared
+
+
+$$
+\eta^2 = \frac{SS_{effect}}{SS_{effect} + SS_{error}}
+$$
+
+
+Omega squared
+
+$$
+\omega^2 = \frac{SS_{effect} - (df_{effect} \times MS_{error})}{SS_{total} + MS_{error}}
+$$
+
+```{r}
+# install.packages("effectsize")
+library(effectsize)
+eta_squared(fit_3way_anova, partial = F)
+omega_squared(fit_3way_anova)
+```
+```{r}
+eta_squared(fit_3way_anova, partial = T)
+```
+
+### 5.3 Exploring Interaction Effect
+
+Interaction Effect คือสถานการณ์ที่อิทธิพลหรือผลกระทบของปัจจัยหนึ่งที่มีต่อตัวแปรตามไม่คงที่ แต่มีการเปลี่ยนแปลงหรือแปรผันไปตามค่าของปัจจัยหรือตัวแปรอิสระตัวอื่น
+
+
+![](img/interaction.png)
+
+
+จากรูปข้างต้นเมื่อพิจารณารูปซ้ายจะเห็นว่าอิทธิพลของวิธีการสอนซึ่งอยู่ในลักษณะความแตกต่างของผลสัมฤทธิ์ทางการเรียนระหว่างการสอนทั้งสองวิธี จากรูปจะเห็นว่าความแตกต่างดังกล่าวคงที่หรือใกล้เคียงกันทั้งในกลุ่มเพศชาย และเพศหญิง ลักษณะนี้เรียกว่า วิธีการสอนกับเพศ ไม่ได้มีปฏิสัมพันธ์ต่อ ผลสัมฤทธิ์ทางการเรียน
+
+ในทางกลับกันเมื่อพิจารณารูปขวามือ จะเห็นว่าความแตกต่างดังกล่าวมีแนวโน้มแตกต่างกันไปตามเพศ กล่าวคือ เพศชายจะตอบสนองกับการสอนแบบบรรยายได้ดีกว่าโครงการ ในทางกลับกันเพศหญิงจะตอบสนองกับการสอนแบบโครงงานได้ดีกว่าบรรยาย ลักษณะนี้เรียกว่า วิธีการสอนกับเพศ มีปฏิสัมพันธ์ต่อผลสัมฤทธิ์ทางการเรียนของนักเรียน
+
+โดยปกติเรามักวิเคราะห์อิทธิพลปฏิสัมพันธ์ผ่านโมเดลเชิงเส้น เช่น ANOVA, Regression ซึ่งมีแนวทางในการกำหนดโมเดลและวิเคราะห์หลายวิธีการ
+
+- Literature Review
+
+- Principle of Interaction Search (Wu and Hamada, 2011)
+
+- Machine Learning Approach
+
+#### 5.3.1  Principle of Interaction Search 
+
+  - First Principle: Interaction Hierarchy – higher order interaction มักมีความสัมพันธ์หรือมีผลกระทบต่อค่าทำนายน้อยกว่า lower order interaction และ main effects
+  
+  - Second Principle: Effect Sparsity – มีเพียงส่วนหนึ่งของผลกระทบที่เป็นไปได้ทั้งหมดเท่านั้นที่สามารถอธิบายความแปรปรวน/ทำนายตัวแปรตามได้อย่างมีนัยสำคัญ
+
+  - Third Principle: Effect Heredity – ปฏิสัมพันธ์ของตัวแปรต่างๆ อาจพิจารณาได้ก็ต่อเมื่อผลกระทบของตัวแปรที่เกิดก่อนปฏิสัมพันธ์นั้นมีประสิทธิภาพในการอธิบายความแปรปรวน/ทำนายตัวแปรตาม
+
+![Effect Sparsity](https://bookdown.org/max/FES/figures/interaction-effect-sparsity.png){width="70%"}
+
+![Effect Heredity](https://bookdown.org/max/FES/figures/interaction-effect-heredity.png){width="70%"}
+
+
+ขั้นตอนการวิเคราะห์ Interaction effect ตาม Principle of Interaction Search (Wu and Hamada, 2011) 
+
+0. สำรวจ interaction effect ด้วย descriptive ก่อน
+
+1. กำหนด Full Model ANOVA (หรือ Regression) กล่าวคือ spec โมเดลที่มีทั้ง main effect และ interaction term ที่เป็นไปได้ เนื่องจาก interaction มี order ที่ซับซ้อนได้ การกำหนด order สูงสุดของ interaction ในโมเดลจึงควรกำหนด order ต่ำ ๆ  ก่อนตาม First Principle 
+
+2. ประเมิน Effect Sparsity กล่าวคือภายหลังจาก fit โมเดลในข้อ 1 แล้ว ให้ตรวจสอบอิทธิพลที่มีนัยสำคัญ (เชิงสถิติหรือเชิงปฏิบัติ) และเลือกพิจารณาเฉพาะอิทธิพลที่มีนัยสำคัญ
+
+3. พิจารณา Effect Heredity กล่าวคือ interaction effects ที่ควรนำมาแปลผลหรือใช้งานควรเป็น interaction effect ที่อยู่ภายใต้ main effect ที่มีนัยสำคัญ
+
+4. กำหนด Reduced Model
+
+5. เปรียบเทียบความเหมาะสมของโมเดลด้วยดัชนีเปรียบเทียบต่าง ๆ 
+
+6. แปลความหมาย effect ต่าง ๆ  โมเดล ในกรณีที่พบว่า interaction effect มีนัยสำคัญการแปลผลต้องทำในลักษณะของการวิเคราะห์อิทธิพลอย่างง่าย (simple effect analysis)
+
+
+#### 5.3.2 ตัวอย่างการวิเคราะห์ interaction effect
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Documents/GitHub/datakruroo.github.io/Programming/dimensionality_reduction/learning_data2.csv")
+### เตรียมข้อมูลก่อนการวิเคราะห์
+use_data <- data %>% 
+  mutate(cheat_index = ifelse(is.na(cheat_index)==T, mean(data$cheat_index, na.rm = T), cheat_index)) %>% 
+  mutate(concepts = ifelse(concepts > 50, "good","fail"),
+         submit_time = ifelse(submit_time > 140, "slow","normal"),
+         cheat = ifelse(cheat_index > 0.97, "cheater", "not"),
+         percent_submit  = ifelse(percent_submit > 90, "consistent","not"),
+         learning_performance = case_when(
+           learning_performance < 70 ~ "low",
+           learning_performance >= 70 & learning_performance< 80 ~"moderate",
+           learning_performance >= 80 ~"high"
+         )) %>%
+  select(concepts, submit_time, percent_submit, department, research_score)
+use_data %>% glimpse()
+```
+
+การสร้างแผนภาพปฏิสัมพันธ์สามารถทำได้หลายวิธี
+
+##### (1) basic ggplot2
+
+วิธีการแรกคือการใช้ ggplot2 ปกติเลย 
+
+```{r fig.width = 12, fig.height = 4}
+library(patchwork)
+p1 <- use_data %>% 
+group_by(concepts, department) %>% 
+  summarise(mean = mean(research_score)) %>% 
+  ggplot(aes(x = concepts, y=mean, col = department))+
+  geom_line(aes(group = department))
+
+p2 <- use_data %>% 
+  group_by(concepts, percent_submit) %>% 
+  summarise(mean = mean(research_score)) %>% 
+  ggplot(aes(x = concepts, y=mean, col = percent_submit))+
+  geom_line(aes(group = percent_submit))
+
+p1+p2
+```
+
+##### (2) interaction.plot() function
+
+วิธีการที่สองคือใช้ฟังก์ชัน `interaction.plot()` ฟังก์ชันนี้ติดตั้งมาพร้อมกับ R ตัวพื้นฐานอยู่แล้ว
+
+```{r fig.height= 4, fig.width = 5}
+par(family = "ChulaCharasNew")
+interaction.plot(x.factor = use_data$concepts,
+                 trace.factor = use_data$percent_submit,
+                 response = use_data$research_score,
+                 col = c("steelblue","orange"),
+                 lwd = 2,
+                 trace.label = "cheat",
+                 type = "b",
+                 main = "Interaction plot")
+```
+
+##### (3) looping for interaction plot
+
+สถานการณ์ตัวอย่างมีคู่ของปฏิสัมพันธ์จำนวนมาก การสร้างไปทีละอันจะไม่ทันกิน ดังนั้นเราสามารถใช้การวนลูปเข้ามาช่วยได้ ตัวอย่างด้านล่างแสดงการเขียนฟังก์ชันที่นำไปประยุกต์ใช้งานได้
+
+```{r fig.width=12, fig.height=4}
+## 1. เขียนฟังก์ชันเพื่อสร้าง visualization ก่อน
+use_data %>% 
+group_by(concepts, percent_submit) %>% 
+  summarise(mean = mean(research_score)) %>% 
+  ggplot(aes(x = concepts, y=mean, col = percent_submit))+
+  geom_line(aes(group = percent_submit))
+
+## 2. สร้างฟังก์ชันสำหรับ plot ตาม template ใน 1.
+my_interaction_plot <- function(my_data,response ,x_var, trace_var)
+{
+  response <- sym(response)
+  x_var <- sym(x_var)
+  trace_var <- sym(trace_var)
+  
+  my_data %>% 
+  group_by(!!x_var, !!trace_var) %>% 
+  summarise(mean = mean(!!response, na.rm = TRUE)) %>% 
+  ggplot(aes(x = !!x_var, y= mean, col = !!trace_var))+
+  geom_line(aes(group = !!trace_var))+
+  theme(text = element_text(family = "ChulaCharasNew"))
+  
+}
+## ทดลองใช้งานดูว่า work มั้ย
+my_interaction_plot(use_data, response = "research_score",x_var =  "concepts", trace_var = "percent_submit")
+
+
+## 3. วนลูปเพื่อสร้าง visualization ทุกคู่ที่เป็นไปได้
+trace_vars <- c("percent_submit", "submit_time", "department") # เปลี่ยนเป็นชื่อคอลัมน์ที่ต้องการ
+# ใช้ map เพื่อสร้างกราฟสำหรับแต่ละ trace_var
+plots_concepts <- map(trace_vars, ~my_interaction_plot(use_data, 
+                                              response = "research_score", 
+                                              x_var = "concepts", 
+                                              trace_var = .x))
+# รวมกราฟทั้งหมดเข้าด้วยกันโดยใช้ patchwork
+combined_plot <- reduce(plots_concepts, `+`)
+combined_plot
+
+
+trace_vars <- c("concepts", "percent_submit", "submit_time") # เปลี่ยนเป็นชื่อคอลัมน์ที่ต้องการ
+plots_cheat <- map(trace_vars, ~my_interaction_plot(use_data, 
+                                              response = "research_score", 
+                                              x_var = "department", 
+                                              trace_var = .x))
+# รวมกราฟทั้งหมดเข้าด้วยกันโดยใช้ patchwork
+combined_plot <- reduce(plots_cheat, `+`)
+combined_plot
+```
+
+##### (4) Fit the Models
+
+
+```{r}
+## 1. Full model
+full_model <- use_data %>% 
+  with(aov(research_score ~ concepts*submit_time*percent_submit*department
+              )) 
+summary(full_model)
+coef(full_model) %>% data.frame()
+```
+
+```{r}
+## 2. Reduced Model
+reduced_model <- use_data %>% 
+  with(aov(research_score ~ concepts + submit_time+ percent_submit + department + 
+             concepts:department))
+summary(reduced_model)
+```
+
+##### (5) Comparing Models
+
+```{r}
+## 3. Compare Models
+library(broom)
+### 3.1 Compare using Fit Indices
+glance(full_model) %>% 
+  bind_rows(glance(reduced_model))
+```
+
+![](img/partial_F_test.png){width = 80%}
+
+```{r}
+### 3.2 Compare using Statistical Test: Partial F-test
+anova(full_model, reduced_model)
+```
+
+```{r}
+summary(reduced_model)
+```
+
+#### 5.3.3 Train-Test Strategy
+
+```{mermaid}
+flowchart LR
+
+A[Data]--"Train"-->B[Model]-->C["Fit Indices"]
+```
+
+
+การวิเคราะห์ข้างต้นเป็น data-driven แบบ 100% กล่าวคือแทบจะไม่ได้เอาทฤษฎีมาช่วยในการกำหนดโมเดลเลย จึงอาจมีคำถามว่าผลการวิเคราะห์นี้จะ generalized ได้จริง ๆ  หรือไม่ ปัญหาที่อาจเกิดขึ้นจากการวิเคราะห์ เปรียบเทียบและคัดเลือกโมเดลบนข้อมูลชุดเดียวได้แก่
+
+- overfitting หรือ data Snooping Bias:
+
+- lack of generalization
+
+การแก้ปัญหาข้างต้นสามารถทำได้โดยใช้การแบ่งข้อมูลออกเป็นสองส่วนได้แก่ train และ test dataset จากนั้นดำเนินการสร้างโมเดลบน train data แต่จะเปรียบเทียบและคัดเลือกโมเดลบน test data
+
+```{mermaid}
+flowchart LR
+
+A[Data] --> B{Split Data}
+B --> C["Train Data"]
+B --> D["Test Data"]
+E --> D
+C -->|train| E["Candidate Models"]
+D --> F["Evaluation
+        Metrics"]
+```
+
+
+แบ่งชุดข้อมูลออกเป็น train และ test dataset สามารถทำได้โดยใช้ฟังก์ชัน `initial_split()` จาก `rsample` package
+
+```{r}
+### install.packages("rsample")
+library(rsample)
+set.seed(123)
+split <- initial_split(use_data , prop = 0.8, strata = research_score)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+
+นำชุดข้อมูล `train_data` มาสร้างโมเดล
+
+```{r}
+## 1. Training the Models
+full_model_train <- train_data %>% 
+  with(aov(research_score ~ concepts*submit_time*percent_submit*department
+              )) 
+full_model_train %>% summary()
+```
+
+```{r}
+reduced_model_train <- train_data %>% 
+  with(aov(research_score ~ concepts + submit_time+ percent_submit + department + 
+             concepts:department))
+reduced_model_train %>% summary()
+```
+เรียกดู fit indices ของโมเดลทั้งสอง
+
+```{r}
+glance(full_model_train) %>% 
+  bind_rows(glance(reduced_model_train))
+```
+
+ประเมิน fit index ใน test_data
+
+```{r}
+library(yardstick)
+pred_full <- predict(full_model_train, newdata = test_data)
+pred_reduced <- predict(reduced_model_train, newdata = test_data)
+pred <- test_data %>% 
+  select(research_score) %>%
+  bind_cols(pred_full_test = pred_full, pred_reduced_test = pred_reduced)
+pred %>% 
+  pivot_longer(cols = c(pred_full_test, pred_reduced_test), names_to = "model", values_to = "prediction") %>% 
+  group_by(model) %>% 
+  rsq(truth = research_score, estimate = prediction)
+```
+
+เมื่อคัดเลือกโมเดลแล้ว ดำเนินการ fit final model ด้วยข้อมูลทั้งหมด
+
+```{r}
+final_model <- use_data %>% 
+  with(aov(research_score ~ concepts + submit_time+ percent_submit + department + 
+             concepts:department))
+summary(final_model)
+glance(final_model)
+```
+
+
+#### 5.3.4 Simple Effect Analysis
+
+หากพบอิทธิพลปฏิสัมพันธ์ในการวิเคราะห์ การเปรียบเทียบความแตกต่างของค่าเฉลี่ยหรือการวิเคราะห์อิทธิพลของตัวแปรอิสระที่มีต่อตัวแปรตามจะต้องทำไปทีละเงื่อนไข เรียกการวิเคราะห์นี้ว่า simple effect analysis
+
+
+```{r fig.width = 12}
+library(ggrepel)
+temp <- use_data %>% 
+  group_by(concepts, department) %>%
+  summarise(mean = mean(research_score))
+temp %>% 
+  ggplot(aes(x = concepts, y = mean, col = department))+
+  geom_line(aes(group = department))+
+  geom_text_repel(data = temp %>% filter(concepts == "good"),
+                  aes(label = department), hjust = 3.5, family = "ChulaCharasNew") + 
+  theme(text = element_text(family = "ChulaCharasNew"))+
+  ylim(50,100)
+```
+
+
+```{r}
+library(emmeans)
+emmeans(final_model, pairwise ~ concepts | department)
+emmeans(final_model, pairwise ~ concepts | department, adjust = "bh")
+```
+
+
+
+

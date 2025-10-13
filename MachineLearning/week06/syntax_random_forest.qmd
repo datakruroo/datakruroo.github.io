@@ -1,0 +1,194 @@
+---
+title: "SVM and Random Forest"
+format: html
+editor: visual
+---
+
+## 1. importing data
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+data <- read_csv("~/Documents/GitHub/datakruroo.github.io/MachineLearning/week05/student_data_complete.csv")
+glimpse(data)
+hist(data$gpax.y2)
+
+data <- data %>% 
+  mutate(gpax.y2 = ifelse(gpax.y2 > 2.5, "Pass", "Fail"))
+```
+
+สำรวจตัวแปรตามแบบจัดประเภทที่สร้างขึ้น
+
+```{r}
+data %>% 
+  ggplot(aes(x = gpax.y2))+
+  geom_bar()
+```
+
+### กิจกรรมที่ 1
+
+ใช้ EDA ลองสำรวจแววว่า เราจะสามารถใช้ feature ทั้งหมดที่มีมาทำนาย gpax.y2 ได้บ้างมั้ย
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = gpax.y2)
+train <- training(split)
+test <- testing(split)
+```
+
+
+```{r}
+library(naniar)
+```
+
+
+```{r}
+recipe(gpax.y2 ~. ,data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pls(all_numeric_predictors(), outcome = "gpax.y2", num_comp = 2) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = PLS1, y = PLS2, color = gpax.y2))+
+  geom_point()
+```
+
+
+### กิจกรรมที่ 2
+
+
+เราจะลองสร้างโมเดลจำแนกผลการเรียน `gpax.y2` โดยใช้อัลกอริทึมการเรียนรู้ทั้งหมด
+
+- regularized logistic regression
+
+- support vector machine (SVM) ทั้ง 3 ตัว
+
+- random forest
+
+```{r}
+library(themis)
+## preprocessing model
+
+rec_reg_rf <- recipe(gpax.y2 ~. ,data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>%
+  step_dummy(all_nominal_predictors()) %>% 
+  step_tomek(gpax.y2) %>% 
+  step_smote(gpax.y2, neighbors = 5)
+
+rec_svm <- recipe(gpax.y2 ~. ,data= train) %>%
+  step_dummy(all_nominal_predictors()) %>% 
+  step_normalize(all_numeric_predictors())%>% 
+  step_tomek(gpax.y2) %>% 
+  step_smote(gpax.y2, neighbors = 5)
+```
+
+
+```{r}
+## model specification
+
+mod_reg <- logistic_reg(penalty = tune(), mixture = tune()) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("classification")
+
+
+mod_svm_linear <- svm_linear(cost = tune()) %>%
+  set_engine("kernlab") %>% 
+  set_mode("classification")
+
+mod_svm_poly <- svm_poly(cost = tune(), degree = tune(), scale_factor = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("classification")
+
+mod_svm_rbf <- svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("classification")
+
+
+mod_rf <- rand_forest(mtry = tune(), min_n = 20, trees = 1000) %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+
+```
+
+
+
+```{r}
+## workflow set
+wf_set <- workflow_set(
+  preproc = list(rec_reg = rec_reg_rf,
+                 rec_svm = rec_svm,
+                 rec_svm = rec_svm,
+                 rec_svm = rec_svm,
+                 rec_rf = rec_reg_rf),
+  models = list(reg = mod_reg,
+                svm_linear = mod_svm_linear,
+                svm_poly = mod_svm_poly,
+                svm_rbf = mod_svm_rbf,
+                rf = mod_rf)
+)
+
+## tuning
+library(future)
+plan(multisession, workers = 13)
+folds <- vfold_cv(train, v = 5, repeats = 3, strata = gpax.y2)
+
+set.seed(123)
+tuned_results <- wf_set %>%
+  workflow_map("tune_grid",
+               resamples = folds,
+               grid = 30,
+               metrics = metric_set(accuracy, roc_auc, f_meas, sens, spec, precision),
+               control = control_grid(save_pred = TRUE))
+```
+
+
+```{r}
+tuned_results %>% autoplot()
+```
+
+
+```{r}
+rf_results <- tuned_results %>% extract_workflow_set_result(id = "rec_reg_rf")
+rf_results %>% 
+  collect_metrics() %>%
+  filter(.metric == "f_meas") %>%
+  arrange(desc(mean))
+
+
+rf_results %>% 
+  collect_predictions() %>%
+  filter(.config == "pre0_mod25_post0") %>% 
+  conf_mat(truth = gpax.y2, estimate = .pred_class)
+```
+
+
+```{r}
+best_rf <- select_best(rf_results, metric = "f_meas")
+
+final_rf_mod <- wf_set %>% 
+  extract_workflow(id = "rec_reg_rf") %>% 
+  finalize_workflow(best_rf) 
+
+final_rf_result <- final_rf_mod %>% 
+  last_fit(split,
+           metrics = metric_set(accuracy, roc_auc, f_meas, sens, spec, precision))
+
+final_rf_result %>% 
+  collect_metrics()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

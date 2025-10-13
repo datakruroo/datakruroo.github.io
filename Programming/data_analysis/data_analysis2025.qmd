@@ -1,0 +1,349 @@
+---
+title: "Data Analysis"
+author: "Siwachoat Srisuttiyakorn"
+format: html
+---
+
+## 0. Introduction
+
+
+บทเรียนนี้จะกล่าวถึงการวิเคราะห์ข้อมูลเบื้องต้น โดยใช้ภาษา R และแพ็กเกจต่าง ๆ ที่เกี่ยวข้อง เนื้อหาหลักประกอบด้วย
+
+- การเปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่าง
+
+- การวิเคราะห์สหสัมพันธ์และการวิเคราะห์การถดถอย
+
+ชุดข้อมูลสำหรับใช้เป็นตัวอย่าง
+
+- [TeacherSalaryData](https://datakruroo.github.io/Programming/data_analysis/TeacherSalaryData.csv) 
+
+- อีกชุดข้อมูลเป็นผลการตอบข้อสอบอัตนัยจากรายวิชาสถิติของนิสิตชั้นปีที่ 1 (แจกในห้องเรียน)
+
+
+## 1. การเปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่าง
+
+- การเปรียบเทียบว่ากลุ่มต่าง ๆ มีคุณลักษณะที่สนใจ (ตัวแปรตาม) แตกต่างกันอย่างไร และความแตกต่างดังกล่าวมีนัยสำคัญหรือไม่
+
+- การเปรียบเทียบคุณลักษณะดังกล่าวสามารถทำได้หลายมิติ มิติหลักที่นักสถิติมักใช้คือ ค่าเฉลี่ย ซึ่งเป็นแนวโน้มสู่ส่วนกลางของการแจกแจงของตัวแปร
+
+- อีกนัยนึงการเปรียบเทียบค่าเฉลี่ยสามารถมองเป็นการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปรเชิงปริมาณกับตัวแปรจัดประเภทก็ได้เช่นเดียวกัน ขึ้นอยู่กับว่าผู้วิเคราะห์จะใช้สารสนเทศในลักษณะใด
+
+
+```{mermaid}
+flowchart LR
+A[Grouping Variable]-->B[Dependent Variable]
+```
+
+การวิเคราะห์เพื่อเปรียบเทียบค่าเฉลี่ยระหว่างกลุ่มตัวอย่างอาจจำแนกได้เป็น 2 ลักษณะได้แก่
+
+1. การวิเคราะห์ด้วยทัศนภาพข้อมูล (data visualization) ร่วมกับสถิติบรรยาย ซึ่งมีหลายตัว/หลาย combination ที่สามารถนำมาใช้ได้
+
+- summary table
+
+- boxplot/violin/jitter plot
+
+- density plot
+
+- histogram/pyramid chart
+
+- cumulative distribution function plot (CDF plot)
+
+- bar chart/ bar chart + errorbar (ใช้ summary stat มา plot)
+
+
+2. การใช้สถิติวิเคราะห์ (statistical analysis) เช่น t-test, ANOVA หรือ Linear Model
+
+
+### 1.2 การใช้สถิติวิเคราะห์
+
+เราสามารถจำแนกสถิติวิเคราะห์สำหรับการเปรียบเทียบค่าเฉลี่ยได้หลายโมเดล แต่จริง ๆ ทั้งหมดอยู่ภายในโมเดลเดียวกับคือ General Linear Model (GLM) 
+
+#### Independent-sample t-test
+
+
+Independent two-sample t-test หรือบางครั้งเรียกว่า “Student’s t-test” ใช้เพื่อเปรียบเทียบค่าเฉลี่ยของตัวแปรต่อเนื่องระหว่างสองกลุ่มอิสระกัน เพื่อดูว่าค่าเฉลี่ยของทั้งสองกลุ่มมีความแตกต่างกันอย่างมีนัยสำคัญทางสถิติหรือไม่
+
+$$
+H_0: \mu_1 = \mu_2
+$$
+
+
+
+```{mermaid}
+flowchart TD
+A[Ind. Two-sample]-->B{"Levene's Test"}
+B{"Levene's Test"}--"Sig."-->C[Welch's t-test]
+B{"Levene's Test"}--"Not Sig."-->D[Student's t-test]
+```
+
+`t.test()` เป็นฟังก์ชันใน R ที่ใช้สำหรับการทดสอบ t-test ซึ่งสามารถใช้ได้ทั้งแบบ independent two-sample t-test และ paired t-test ขึ้นอยู่กับการกำหนดพารามิเตอร์ 
+
+- เราสามารถระบุการเปรียบเทียบได้สองลักษณะ คือ การใช้สูตร (formula interface) หรือการใช้เวกเตอร์ของข้อมูล (vector interface) ดังนี้ `t.test(y ~ group, data = your_data)` หรือ `t.test(x = group1, y = group2)` ทั้งนี้ขึ้นอยู่กับลักษณะของข้อมูลที่มี
+
+- `var.equal` เป็นพารามิเตอร์ที่ใช้ระบุว่าความแปรปรวนของสองกลุ่มที่เปรียบเทียบกันนั้นเท่ากันหรือไม่ (homogeneity of variance) 
+
+  - หากตั้งค่า `var.equal = TRUE` จะใช้ Student's t-test ซึ่งสมมติฐานคือความแปรปรวนของทั้งสองกลุ่มเท่ากัน
+
+  - หากตั้งค่า `var.equal = FALSE` จะใช้ Welch's t-test ซึ่งไม่สมมติฐานว่า ความแปรปรวนของทั้งสองกลุ่มต้องเท่ากัน
+
+- `alternative` เป็นพารามิเตอร์ที่ใช้ระบุทิศทางของการทดสอบสมมติฐาน (hypothesis test) โดยมีตัวเลือกหลัก ๆ ดังนี้
+
+  - `"two.sided"`: ทดสอบว่า ค่าเฉลี่ยของสองกลุ่มไม่เท่ากัน (ค่าเริ่มต้น)
+
+  - `"less"`: ทดสอบว่า ค่าเฉลี่ยของกลุ่มแรกน้อยกว่ากลุ่มที่สอง
+
+  - `"greater"`: ทดสอบว่า ค่าเฉลี่ยของกลุ่มแรกมากกว่ากลุ่มที่สอง
+
+
+```{r eval = F}
+data |> 
+    with(t.test(y ~ x, var.equal = TRUE, alternative = "greater"))
+```
+
+ผลการทดสอบนัยสำคัญที่ได้เป็นอย่างไร?
+
+ข้อตกลงเบื้องต้นของ independent two-sample t-test
+
+1. ตัวแปรตาม (dependent variable) เป็นตัวแปรเชิงปริมาณ (continuous variable)
+
+2. ตัวแปรอิสระ (independent variable) เป็นตัวแปรจัดประเภท (categorical variable) ที่มีสองกลุ่ม (two groups)
+
+3. กลุ่มตัวอย่างทั้งสองกลุ่มเป็นอิสระต่อกัน (independent samples) และเป็นอิสระซึ่งกันและกันภายในกลุ่มด้วย
+
+4. การแจกแจงของตัวแปรตามในแต่ละกลุ่มมีลักษณะใกล้เคียงกับการแจกแจงปกติ (normality assumption)
+
+5. ความแปรปรวนของตัวแปรตามในแต่ละกลุ่มมีความเท่ากัน (homogeneity of variance assumption) หรือจะไม่เท่าก็ได้ถ้าใช้ Welch's t-test
+
+```{r}
+## normality check
+library(ggpubr)
+ggqqplot(complete_df, "total_score", facet.by = "main_idea")
+```
+
+ตัวอย่าง
+
+1. ชุดข้อมูล TeacherSalaryData
+
+```{r}
+data <- read_csv('https://datakruroo.github.io/Programming/data_analysis/TeacherSalaryData.csv')
+glimpse(data)
+```
+
+คำถาม : เงินเดือนเฉลี่ยของอาจารย์มหาวิทยาลัยระหว่างสาขาวิชา Applied Science กับ Pure Science มีความแตกต่างกันอย่างไร??
+
+วัตถุประสงค์การวิเคราะห์ : เปรียบเทียบค่าเฉลี่ยเงินเดือนอาจารย์มหาวิทยาลัยระหว่างสองสาขาวิชา
+
+- สถิติพื้นฐาน
+
+- t-test
+
+
+2. ชุดข้อมูลจากการตอบข้อสอบอัตนัย
+
+ชุดข้อมูลตัวอย่างจะใช้ผลการตอบข้อสอบอัตนัยจากรายวิชาสถิติของนิสิตชั้นปีที่ 1 รายละเอียดดังนี้
+
+::: {.callout-note}
+question
+  คุณครูสมชายพบว่านักเรียนชั้น ม.2/1 ส่วนใหญ่มีคะแนนในแบบทดสอบท้ายบทเรื่อง การแก้โจทย์ปัญหาร้อยละ ซึ่งสะท้อนว่าน่าจะมีปัญหาในการทำความเข้าใจในแนวคิดดังกล่าว เพื่อแก้ปัญหานี้ คุณครูตัดสินใจนำหลักการของ ห้องเรียนที่ใช้ข้อมูลเป็นฐาน (Data-Driven Classroom) มาใช้ จากสถานการณ์ที่กำหนดให้ ขอให้ตอบคำถามต่อไปนี้ จากข้อมูลเบื้องต้นที่ครูสมชายมี 
+  
+  หากครูสมชายตัดสินใจแก้ปัญหาโดยการสอนทบทวนเนื้อหาซ้ำเดิมทั้งหมดอีกครั้ง นิสิตคิดว่าการตัดสินใจนี้มีความเหมาะสมหรือไม่ เพราะเหตุใด
+:::
+
+
+```{r importing_data, message = F}
+library(tidyverse)
+data_answer <- read_csv('/Users/choat/Documents/ตรวจข้อสอบสถิติ 68_1/section1_raw/ocr_section1_question1.csv')
+data_score <- read_csv('/Users/choat/Documents/ตรวจข้อสอบสถิติ 68_1/section1_raw/section1_question1_results.csv')
+```
+
+> คำถามของการวิเคราะห์นี้คือ นิสิตที่มีการกล่าวถึง main idea ของคำตอบในคำถามนี้ได้รับคะแนนจาก AI มากกว่านิสิตที่ไม่ได้กล่าวถึง main idea หรือไม่ (main idea คือ ครูสมชายมีการใช้ข้อมูลจากการประเมินเพื่อวิเคราะห์สาเหตุของปัญหา ไม่ได้ตัดสินจากความรู้สึก หรือตัดสินจากประสบการณ์ส่วนตัว)
+
+### 1.1 เตรียมข้อมูลให้พร้อมสำหรับการวิเคราะห์
+
+
+```{r eval = F}
+library(tidyllm)
+## 1) นิยาม Schema ด้วย tidyllm
+mainidea_schema <- tidyllm_schema(
+  name = "main_idea_decision",
+  main_idea    = field_dbl("ป้ายกำกับ 0/1: พบ main idea หรือไม่"),
+  evidence_span = field_chr("ข้อความยืนยันหลักฐาน (optional)")
+)
+
+## 2) กำหนด system prompt
+system_prompt <- paste(
+  "คุณเป็นผู้ตรวจข้อเขียนภาษาไทยแบบ rule-based.",
+  "งานของคุณคือระบุว่า 'มี main idea' หรือไม่ โดยยึดความหมาย (semantic) ไม่ยึดคำเป๊ะ ๆ.",
+  "",
+  "คำนิยาม main idea (ยืดหยุ่นต่อ OCR/การพิมพ์เพี้ยน และไม่บังคับให้กล่าวถึงชื่อครูสมชาย):",
+  "- เนื้อความสื่อว่า 'การตัดสินใจของครู/ผู้สอน/ผู้ประเมิน' อาศัย 'ข้อมูลจากการประเมิน' หรือ 'หลักฐานเชิงประเมิน' เพื่อ 'วิเคราะห์หาสาเหตุของปัญหา' อย่างเป็นระบบ",
+  "- และ/หรือ สื่อว่า 'ไม่ตัดสินจากความรู้สึก/สัญชาตญาณ/ประสบการณ์ส่วนตัว' (เช่น บอกให้หลีกเลี่ยงการตัดสินด้วยความรู้สึก)",
+  "ต้องมีการใช้ข้อมูลผู้เรียน และการวิเคราะห์สาเหตุอย่างชัดเจน",
+  "",
+  "ยอมรับถ้อยคำที่เทียบเท่า เช่น: ผลการประเมิน, คะแนนสอบ/การบ้าน, รูบริก/feedback, ดัชนี/analytics ของผู้เรียน, หลักฐานเชิงข้อมูลจากการเรียนรู้.",
+  "ยอมรับการสะกดเพี้ยนเล็กน้อยจาก OCR เช่น 'ผลปะเมิน', 'ครูสมชาน', 'รูบรก' ตราบใดที่ความหมายยังชัด.",
+  "ไม่จำเป็นต้องมีคำว่า 'ครูสมชาย' ในคำตอบ.",
+  "",
+  "หลักการตัดสิน:",
+  "1) ให้ main_idea = 1 เมื่อเห็นสัญญาณชัดเจนว่าใช้ 'ข้อมูล/ผลประเมิน' เพื่อ 'วิเคราะห์สาเหตุ' หรือย้ำ 'ไม่ใช้ความรู้สึก/ประสบการณ์ส่วนตัว'.",
+  "2) ให้ main_idea = 0 เมื่อกล่าวกว้าง ๆ ไม่พอ (เช่น แค่บอก 'สอนซ้ำ' หรือ 'คิดว่าน่าจะ…' โดยไม่อ้างข้อมูลประเมิน),",
+  "   หรือกล่าวอิงความรู้สึก/ประสบการณ์ส่วนตัวเป็นหลัก, หรือข้อความคลุมเครือ/สรุปไม่ได้.",
+  "3) เมื่อข้อความมีทั้งหนุนและแย้ง ให้ยึดท่าทีสุดท้าย/ส่วนที่สรุปชัด (final stance).",
+  "4) ห้ามเดา/แต่งข้อมูลเพิ่ม: พิจารณาเฉพาะข้อความที่ปรากฏ.",
+  "",
+  "รูปแบบผลลัพธ์: ส่งคืน JSON ที่ตรงสคีมาเท่านั้น (ไม่มีข้อความอื่นนอกเหนือจาก JSON).",
+  sep = "\n"
+)
+
+
+user_prompt <- paste(
+  "ตัดสินตามนิยามและตอบเป็น JSON (main_idea: int, evidence_span: string-optional).",
+  "ข้อความของนิสิตจะอยู่ใน:\n{TEXT}"
+)
+
+## 3) รันกับคอลัมน์ answer และ “บังคับ schema” ตอน chat()
+##    หมายเหตุ: ตั้ง .temperature = 0 ให้เสถียร
+label_llm <- function(data, text_col = answer, model = "gpt-5-nano"){
+
+text_sym <- rlang::enquo(text_col)
+txt_vec <- data |> pull(!!text_sym) |> as.character()
+
+message <- tibble(
+    role = c("system","user"),
+    content = c(system_prompt, glue::glue(user_prompt, TEXT = txt_vec))
+)
+
+out <- message |> 
+    df_llm_message() |> 
+    chat(openai(),
+    .model = model,
+    .json_schema = mainidea_schema) |> 
+    get_reply_data()
+
+return(out)
+}
+```
+
+
+ทดลองใช้งานฟังก์ชันกับข้อมูลจริง
+
+```{r eval = F}
+result <- label_llm(data_answer |> slice(1), answer, model = "gpt-5-nano")
+```
+
+วนลูปแบบ parallel ด้วย `furrr`
+
+
+```{r eval = F}
+library(furrr)
+library(purrr)
+plan(multisession, workers = 10) # ปรับจำนวน workers ตามความเหมาะสม
+
+output <- future_map(
+    .x = data_answer$answer,
+    .f = ~ label_llm(tibble(answer = .x), answer)
+)
+
+output |> bind_rows() -> results_df
+```
+
+สุดท้ายรวมชุดข้อมูลนี้กับคะแนนที่ได้จาก AI
+
+```{r eval = F}
+complete_df <- results_df |> 
+    bind_cols(data_score) |> 
+    select(student_id, main_idea, total_score) |> 
+    mutate(main_idea = factor(main_idea, levels = c(0,1), labels = c("No_Main_Idea", "Has_Main_Idea")))
+
+complete_df
+```
+
+1. สถิติพื้นฐาน
+
+2. t-test??
+
+
+ผลการตรวจสอบสถิติพื้นฐานจะเห็นปัญหา class imbalance อย่างรุนแรงในข้อมูล เราสามารถแก้ปัญหาอย่างไรได้บ้าง?
+
+- เลี่ยงไปใช้ one-sample t-test
+
+- bootstraping CI
+
+```{r}
+library(rsample)
+set.seed(123)
+# ฟังก์ชันคำนวณความต่างค่าเฉลี่ย (Has - No)
+mean_diff <- function(df) {
+  mean(df$total_score[df$main_idea == "Has_Main_Idea"], na.rm = TRUE) -
+    mean(df$total_score[df$main_idea == "No_Main_Idea"],  na.rm = TRUE)
+}
+
+# observed statistic
+obs_diff <- mean_diff(complete_df)
+# bootstrap โดย "stratified" ตาม main_idea เพื่อรักษาความไม่สมดุลตามจริง
+boot_res <- bootstraps(
+  complete_df,
+  times   = 5000,
+  strata  = main_idea,   # สำคัญ: สุ่มซ้ำภายในแต่ละกลุ่ม
+  apparent = FALSE
+) %>%
+  mutate(stat = map_dbl(splits, ~ mean_diff(analysis(.x))))
+
+boot_res |> 
+    ggplot(aes(x = stat)) +
+    geom_histogram(bins = 30, color = "white", alpha = 0.5) +
+    geom_vline(xintercept = obs_diff, color = "red", linetype = "dashed") +
+    labs(
+      title = "Bootstrap Distribution of Mean Difference",
+      x = "Mean Difference (Has_Main_Idea - No_Main_Idea)",
+      y = "Frequency"
+    )+
+    theme_light()+
+    theme(panel.grid = element_blank())
+
+# คำนวณ 95% bootstrap CI
+boot_ci <- quantile(boot_res$stat, probs = c(.025, .975), na.rm = TRUE)
+
+tibble(
+  observed_mean_diff = obs_diff,
+  boot_ci_low  = boot_ci[[1]],
+  boot_ci_high = boot_ci[[2]]
+)
+```
+
+- permutation test
+
+```{r}
+library(infer)
+# สร้างสถิติสังเกตจริง (เพื่อเทียบภายหลัง)
+obs_diff <- mean_diff(complete_df)
+
+set.seed(123)
+# สร้างการแจกแจงภายใต้สมมติฐาน (null distribution) โดยการสลับป้ายกำกับ
+null_dist <- map(.x = 1:5000, ~{
+  permuted_data <- complete_df |> 
+    mutate(main_idea = sample(main_idea))  # สลับป้ายกำกับแบบสุ่ม
+  mean_diff(permuted_data)  # คำนวณความต่างค่าเฉลี่ย
+})
+diff_data <- null_dist |> unlist() |> 
+   tibble(permute_diff = _)
+
+diff_data |> 
+    ggplot(aes(x = permute_diff)) +
+    geom_histogram(bins = 30, color = "white", alpha = 0.5) +
+    geom_vline(xintercept = obs_diff, color = "red", linetype = "dashed") +
+    labs(
+      title = "Null Distribution of Mean Difference (Permutation Test)",
+      x = "Mean Difference (Has_Main_Idea - No_Main_Idea)",
+      y = "Frequency"
+    )+
+    theme_light()+
+    theme(panel.grid = element_blank())
+## คำนวณ p-value
+p_val <- mean(abs(diff_data$permute_diff) >= abs(obs_diff))
+```
+
+#### Dependent-sample t-test
+
+
+

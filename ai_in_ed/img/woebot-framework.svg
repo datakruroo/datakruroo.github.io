@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 350">
+  <!-- Background -->
+  <rect width="1000" height="350" fill="white"/>
+  
+  <!-- Shapes and Connections -->
+  
+  <!-- Box: User Input -->
+  <rect x="30" y="150" width="70" height="70" fill="white" stroke="#8080D7" stroke-width="2" rx="4" ry="4"/>
+  <text x="65" y="175" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">User</text>
+  <text x="65" y="195" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Input</text>
+  
+  <!-- Arrow 1 -->
+  <line x1="100" y1="185" x2="140" y2="185" stroke="#000000" stroke-width="2"/>
+  <polygon points="139,180 149,185 139,190" fill="#000000"/>
+  
+  <!-- Box: Natural Language Processing -->
+  <rect x="150" y="150" width="150" height="70" fill="white" stroke="#8080D7" stroke-width="2" rx="4" ry="4"/>
+  <text x="225" y="175" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Natural Language</text>
+  <text x="225" y="195" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Processing</text>
+  
+  <!-- Arrow 2 with label -->
+  <line x1="300" y1="185" x2="395" y2="185" stroke="#000000" stroke-width="2"/>
+  <polygon points="394,180 404,185 394,190" fill="#000000"/>
+  <text x="352" y="160" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Emotion &amp;</text>
+  <text x="352" y="180" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Intent Recognition</text>
+  
+  <!-- Diamond: Machine Learning -->
+  <polygon points="405,185 460,130 515,185 460,240" fill="#E6E6FA" stroke="#8080D7" stroke-width="2"/>
+  <text x="460" y="190" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Machine</text>
+  <text x="460" y="210" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Learning</text>
+  
+  <!-- Arrow 3 with label -->
+  <line x1="460" y1="130" x2="605" y2="70" stroke="#000000" stroke-width="2"/>
+  <polygon points="600,68 610,65 604,75" fill="#000000"/>
+  <text x="530" y="85" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Pattern</text>
+  <text x="530" y="105" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Recognition</text>
+  
+  <!-- Diamond: CBT -->
+  <polygon points="610,70 690,25 770,70 690,115" fill="#E6E6FA" stroke="#8080D7" stroke-width="2"/>
+  <text x="690" y="60" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Cognitive Behavioral</text>
+  <text x="690" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Therapy (CBT)</text>
+  
+  <!-- Arrow 4 with label -->
+  <line x1="770" y1="70" x2="885" y2="70" stroke="#000000" stroke-width="2"/>
+  <polygon points="884,65 894,70 884,75" fill="#000000"/>
+  <text x="830" y="60" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Select Therapy</text>
+  <text x="830" y="80" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Technique</text>
+  
+  <!-- Box: Woebot Response -->
+  <rect x="895" y="150" width="75" height="70" fill="white" stroke="#8080D7" stroke-width="2" rx="4" ry="4"/>
+  <text x="932" y="175" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Woebot</text>
+  <text x="932" y="195" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#000000">Response</text>
+  
+  <!-- Arrow 5 from CBT to Response -->
+  <line x1="894" y1="70" x2="932" y2="150" stroke="#000000" stroke-width="2"/>
+  <polygon points="928,145 934,155 936,145" fill="#000000"/>
+  
+  <!-- Feedback Arrow -->
+  <path d="M 932 220 C 932 270 460 300 460 240" fill="none" stroke="#000000" stroke-width="2"/>
+  <polygon points="465,240 460,230 455,240" fill="#000000"/>
+  <text x="690" y="285" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#000000">Feedback</text>
+</svg>

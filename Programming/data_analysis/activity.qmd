@@ -1,0 +1,143 @@
+---
+title: "กิจกรรมการเปรียบเทียบค่าเฉลี่ย"
+format: html
+---
+
+ชุดข้อมูลตัวอย่างจะใช้ผลการตอบข้อสอบอัตนัยจากรายวิชาสถิติของนิสิตชั้นปีที่ 1 รายละเอียดดังนี้
+
+::: {.callout-note}
+question
+  คุณครูสมชายพบว่านักเรียนชั้น ม.2/1 ส่วนใหญ่มีคะแนนในแบบทดสอบท้ายบทเรื่อง การแก้โจทย์ปัญหาร้อยละ ซึ่งสะท้อนว่าน่าจะมีปัญหาในการทำความเข้าใจในแนวคิดดังกล่าว เพื่อแก้ปัญหานี้ คุณครูตัดสินใจนำหลักการของ ห้องเรียนที่ใช้ข้อมูลเป็นฐาน (Data-Driven Classroom) มาใช้ จากสถานการณ์ที่กำหนดให้ ขอให้ตอบคำถามต่อไปนี้ จากข้อมูลเบื้องต้นที่ครูสมชายมี 
+  
+  หากครูสมชายตัดสินใจแก้ปัญหาโดยการสอนทบทวนเนื้อหาซ้ำเดิมทั้งหมดอีกครั้ง นิสิตคิดว่าการตัดสินใจนี้มีความเหมาะสมหรือไม่ เพราะเหตุใด
+:::
+
+
+```{r importing_data, message = F}
+library(tidyverse)
+data_answer <- read_csv('/Users/choat/Documents/ตรวจข้อสอบสถิติ 68_1/section1_raw/ocr_section1_question1.csv')
+data_score <- read_csv('/Users/choat/Documents/ตรวจข้อสอบสถิติ 68_1/section1_raw/section1_question1_results.csv')
+```
+
+> คำถามของการวิเคราะห์นี้คือ นิสิตที่มีการกล่าวถึง main idea ของคำตอบในคำถามนี้ได้รับคะแนนจาก AI มากกว่านิสิตที่ไม่ได้กล่าวถึง main idea หรือไม่ (main idea คือ ครูสมชายมีการใช้ข้อมูลจากการประเมินเพื่อวิเคราะห์สาเหตุของปัญหา ไม่ได้ตัดสินจากความรู้สึก หรือตัดสินจากประสบการณ์ส่วนตัว)
+
+### 1.1 เตรียมข้อมูลให้พร้อมสำหรับการวิเคราะห์
+
+
+```{r eval = F}
+library(tidyllm)
+## 1) นิยาม Schema ด้วย tidyllm
+mainidea_schema <- tidyllm_schema(
+  name = "main_idea_decision",
+  main_idea    = field_dbl("ป้ายกำกับ 0/1: พบ main idea หรือไม่"),
+  evidence_span = field_chr("ข้อความยืนยันหลักฐาน (optional)")
+)
+
+## 2) กำหนด system prompt
+system_prompt <- "
+คุณเป็นผู้ตรวจข้อเขียนภาษาไทยแบบ rule-based และต้องตัดสินอย่างตรรกะ ไม่เดา ไม่ตีความเกินข้อความ.
+หน้าที่ของคุณคือระบุว่าคำตอบของนิสิตมี 'main idea' เกี่ยวกับการใช้ข้อมูลเป็นฐานในการตัดสินใจ (Data-Driven Decision Making) หรือไม่
+
+หลักการพิจารณา (ให้ใช้เชิงความหมาย ไม่ยึดคำเป๊ะ):
+✓ กล่าวถึงการใช้ 'ข้อมูลจากการประเมิน' หรือ 'แบบทดสอบ' เพื่อวิเคราะห์หรือปรับการสอน
+✓ มีการอธิบายว่าครู 'ใช้ข้อมูล' เพื่อหาสาเหตุของปัญหา แทนที่จะใช้ความรู้สึก
+✓ กล่าวถึงการใช้ 'หลักฐานเชิงประจักษ์ (empirical evidence)' หรือ 'ผลวัดผล/คะแนน' ในการออกแบบการแก้ปัญหา
+✓ หากมีการกล่าวถึง 'Data-Driven' หรือ 'การใช้ข้อมูลเป็นฐาน' โดยตรงและอธิบายว่าควรวิเคราะห์ข้อมูลจากการประเมินเพื่อหาสาเหตุถือว่ามี main_idea = 1
+✓ ระบุการ 'ประมวลผลข้อมูล' ก่อนตัดสินใจ
+✗ ไม่นับรวม: การพูดถึงคำว่า 'ข้อมูล' โดยไม่ได้ใช้ข้อมูลในการตัดสินใจ
+✗ ไม่นับรวม: การวิเคราะห์หรือหาสาเหตุด้วยความคิดส่วนตัวโดยไม่มีหลักฐานข้อมูล
+✗ ไม่นับรวม: การเสนอแนะวิธีสอนหรือเห็นด้วย/ไม่เห็นด้วยทั่วไปที่ไม่เชื่อมโยงกับข้อมูลประเมิน
+✗ ไม่นับรวม: คำตอบลักษณะ 'สอนซ้ำจะดีขึ้นเพราะเข้าใจมากขึ้น' โดยไม่มีการกล่าวถึงข้อมูล
+
+เกณฑ์การตัดสิน:
+1. main_idea = 1 เมื่อมีสัญญาณชัดเจนว่าครูใช้ข้อมูลจากการประเมินหรือผลวัดผลจริงเพื่อวิเคราะห์หรือปรับการสอน
+2. main_idea = 0 เมื่อกล่าวเพียงถึงการวิเคราะห์ทั่วไป, ความเห็นส่วนตัว, หรือข้อความคลุมเครือที่ไม่มีการอ้างข้อมูล
+3. เมื่อข้อความมีทั้งการพูดถึงข้อมูลและความเห็นส่วนตัว ให้ยึดเจตนาและข้อความสุดท้ายที่สรุปชัดเจน
+4. ห้ามเดาเพิ่มเติม — พิจารณาเฉพาะสิ่งที่อยู่ในข้อความเท่านั้น
+5. หากไม่แน่ใจให้ตอบ main_idea = 0
+
+รูปแบบผลลัพธ์:
+ส่งคืน JSON ตามสคีมาต่อไปนี้เท่านั้น (ไม่มีคำอธิบายอื่น):
+{
+  \"main_idea\": 0 หรือ 1,
+  \"evidence_span\": \"ข้อความหลักฐานที่ใช้ตัดสิน พร้อมเหตุผลของการให้คะแนน\" 
+}"
+
+user_prompt <- paste(
+  "ตัดสินตามนิยามและตอบเป็น JSON (main_idea: int, evidence_span: string-optional).",
+  "ข้อความของนิสิตจะอยู่ใน:\n{TEXT}"
+)
+
+## 3) รันกับคอลัมน์ answer และ “บังคับ schema” ตอน chat()
+##    หมายเหตุ: ตั้ง .temperature = 0 ให้เสถียร
+label_llm <- function(data, text_col = answer, model = "gpt-5-nano", temperature = NULL) {
+
+text_sym <- rlang::enquo(text_col)
+txt_vec <- data |> pull(!!text_sym) |> as.character()
+
+message <- tibble(
+    role = c("system","user"),
+    content = c(system_prompt, glue::glue(user_prompt, TEXT = txt_vec))
+)
+
+out <- message |> 
+    df_llm_message() |> 
+    chat(openai(),
+    .model = model,
+    .temperature = temperature,
+    .json_schema = mainidea_schema) |> 
+    get_reply_data()
+
+return(out)
+}
+```
+
+
+ทดลองใช้งานฟังก์ชันกับข้อมูลจริง
+
+```{r eval = F}
+result <- label_llm(data_answer |> slice(1), answer, model = "gpt-4.1-mini", temperature = 0)
+```
+
+วนลูปแบบ parallel ด้วย `furrr`
+
+
+```{r eval = F}
+library(furrr)
+library(purrr)
+plan(multisession, workers = 10) # ปรับจำนวน workers ตามความเหมาะสม
+
+output2 <- future_map(
+    .x = data_answer$answer,
+    .f = ~ label_llm(tibble(answer = .x), answer, model = "gpt-4.1-mini", temperature = 0)
+)
+
+output2 |> bind_rows() -> results_df2
+
+```
+
+
+```{r}
+results_df |> 
+    bind_cols(results_df2) |> 
+    bind_cols(data_answer) |> 
+    filter(main_idea...1 == 0) |> 
+    select(answer)
+```
+
+สุดท้ายรวมชุดข้อมูลนี้กับคะแนนที่ได้จาก AI
+
+```{r eval = F}
+complete_df <- results_df |> 
+    bind_cols(data_score) |> 
+    select(student_id, main_idea, total_score) |> 
+    mutate(main_idea = factor(main_idea, levels = c(0,1), labels = c("No_Main_Idea", "Has_Main_Idea")))
+
+complete_df |> 
+    group_by(main_idea) |> 
+    summarise(
+        n = n(),
+        mean_score = mean(total_score),
+        sd_score = sd(total_score)
+    )
+```

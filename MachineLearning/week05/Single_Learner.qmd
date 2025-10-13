@@ -1,0 +1,1569 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Introduction
+
+บทเรียนนี้จะกล่าวถึงการเรียนรู้ของเครื่องพื้นฐาน ได้แก่
+
+-   Regularized regression
+
+-   Principal Component and Partial Least Square regression
+
+-   K-Nearest Neighbors (KNN)
+
+-   Multinomial logistic regression
+
+-   Decision Tree
+
+## 1. Regularized Regression
+
+Regularized Regression คือเทคนิคการวิเคราะห์เชิงสถิติที่เพิ่มเงื่อนไขลงในฟังก์ชันวัดความคลาดเคลื่อน (loss function) หรือฟังก์ชันวัตถุประสงค์ เพื่อควบคุมขนาดของค่าสัมประสิทธิ์ในโมเดล ซึ่งช่วยในการประมาณค่าพารามิเตอร์ในโมเดลทำได้ดีขึ้น มีความเสถียรขึ้น ลดปัญหา overfitting และเพิ่มความสามารถในการทำนายข้อมูลใหม่
+
+โดยหลักการนี้จะมีการเพิ่ม “penalty term” เข้าไปในสมการการหาค่าสัมประสิทธิ์ ทำให้ค่าที่ได้ไม่สามารถมีค่าใหญ่เกินไปและลดความผันผวนในแบบจำลอง นอกจากนี้เทคนิคนี้ยังช่วยจัดการกับปัญหา multicollinearity ในกรณีที่มีตัวแปรอิสระจำนวนมาก
+
+รูปแบบหลักในการทำ regularization
+
+-   **L1 regularization (Lasso regression)** หรืออาจะเรียกว่า penalized regression ใช้การลงโทษโดยใช้ค่าปริมาณสัมบูรณ์ของค่าสัมประสิทธิ์ ซึ่งบางครั้งอาจทำให้ค่าสัมประสิทธิ์บางตัวถูกลดลงเป็นศูนย์ ช่วยในการคัดเลือกตัวแปร
+
+$$
+\text{minimize} \left( \text{RSS} + \lambda \sum_{j=1}^{p} |\beta_j| \right)
+$$
+
+-   **L2 regularization (Ridge regression)** ใช้การลงโทษโดยใช้ค่ากำลังสองของค่าสัมประสิทธิ์ ซึ่งจะทำให้ค่าสัมประสิทธิ์ถูกหดลงสม่ำเสมอแต่ไม่ลดลงเป็นศูนย์
+
+$$
+\text{minimize} \left( \text{RSS} + \lambda \sum_{j=1}^{p} \beta_j^2 \right)
+$$
+
+-   **Elastic Net** คือการผสมระหว่าง L1 และ L2 regularization โดยใช้ค่าเพิ่มเติม $\alpha$ (เรียกว่า mixture parameter) เพื่อควบคุมการใช้ L1 และ L2 regularization
+
+$$
+\text{minimize} \left( \text{RSS} + \lambda \left( \alpha \sum_{j=1}^{p} |\beta_j| + (1-\alpha) \sum_{j=1}^{p} \beta_j^2 \right) \right)
+$$
+
+```{r eval = F}
+library(tidymodels)
+
+rec <- recipe(y~. ,data = train) %>% 
+  step_normalize(all_numeric_predictors())
+
+## lasso regression
+ridge_spec <- linear_reg(penalty = tune(), mixture = 1) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+
+## ridge regression
+ridge_spec <- linear_reg(penalty = tune(), mixture = 0) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+
+## elastic-net regression
+elasticnet_spec <- linear_reg(penalty = tune(), mixture = tune()) %>% 
+  set_engine("glmnet") %>% 
+  set_mode("regression")
+```
+
+## 2. Principal Component Regression (PCR)
+
+PCA + Linear Regression
+
+Principal Component Regression (PCR) เป็นวิธีที่ผสมผสานระหว่างการวิเคราะห์องค์ประกอบหลัก (PCA) และการถดถอยเชิงเส้น (linear regression) โดยมีเป้าหมายหลักเพื่อลดปัญหา multicollinearity ที่เกิดจากตัวแปรอิสระที่มีความสัมพันธ์สูงกันและเพื่อลดมิติของข้อมูล
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+data <- read_csv("student_data_complete.csv")
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = gpax.y2)
+train <- training(split)
+test <- testing(split)
+```
+
+ทำ PCA ที่ตัวแปร Xs ---> ตัวแปรตาม
+
+1. ทำ PCA ที่ Xs
+
+2. เอาคะแนนองค์ประกอบที่ได้ไปทำ regression กับ y
+
+
+```{r}
+## recipe
+### eigenvalues
+recipe(gpax.y2 ~ ., data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>%  ## ค่าเฉลี่ย 0, sd = 1 --> Variance = 1
+  step_pca(all_numeric_predictors(), num_comp = 11) %>% 
+  prep() %>% 
+  tidy(2, type = "variance") %>% 
+  filter(terms == "cumulative percent variance") %>% 
+  ggplot(aes(x=component, y=value))+
+  geom_col(fill = "steelblue")+
+  theme_light()+
+  ggtitle("Scree plot")+
+  scale_x_continuous(breaks = 1:40)+
+  theme(panel.grid = element_blank())+
+  geom_hline(yintercept = 70, linetype = 2)
+```
+  
+```{r}  
+recipe(gpax.y2 ~ ., data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = 11) %>% 
+  prep() %>% 
+  tidy(2, type = "coef") %>% 
+  filter(component %in% paste0("PC",1:3)) %>% 
+  ggplot(aes(x = value, y = terms))+
+  geom_bar(stat = "identity", aes(fill = value >0 ))+
+  facet_wrap(~component)+
+  theme_light()
+  
+  
+  filter(terms == "cumulative percent variance") %>% 
+  ggplot(aes(x=component, y=value))+
+  geom_col(fill = "steelblue")+
+  theme_light()+
+  ggtitle("Scree plot")+
+  scale_x_continuous(breaks = 1:40)+
+  theme(panel.grid = element_blank())+
+  geom_hline(yintercept = 70, linetype =2)
+```
+
+```{r}
+## ทำ PCR
+pcr_rec <- recipe(gpax.y2 ~ ., data= train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = tune())
+
+reg_spec <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+
+reg_wf <- workflow() %>% 
+  add_recipe(pcr_rec) %>% 
+  add_model(reg_spec)
+
+## train pcr โดยการทำ CV
+set.seed(123)
+myfolds <- vfold_cv(train, v=5, repeats = 3, strata = gpax.y2)
+my_metrics <- metric_set(rsq, rmse)
+mygrid <- grid_regular(num_comp(range=c(6,10)), levels = 5)
+
+pcr_tune_res <- reg_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE, verbose = TRUE)
+  )
+
+pcr_tune_res %>% collect_metrics(summarize = TRUE)
+pcr_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(num_comp == 7)
+pcr_tune_res %>% autoplot()
+```
+
+Root Mean Square Error
+
+```{r}
+train %>% 
+  ggplot(aes(gpax.y2))+
+  geom_histogram()
+```
+
+**หลักการของ PCR**
+
+-   ลดมิติข้อมูล : PCR ใช้ PCA เพื่อแปลงตัวแปรอิสระที่มีความสัมพันธ์กันให้กลายเป็นชุดขององค์ประกอบหลัก (principal components) ซึ่งแต่ละองค์ประกอบเป็นการผสมผสานของตัวแปรต้นฉบับและมีความแปรปรวนไม่ซ้ำกัน โดยองค์ประกอบหลักที่ได้จะเรียงตามระดับความแปรปรวนที่อธิบายข้อมูล
+
+-   เลือกองค์ประกอบหลัก : โดยทั่วไปจะเลือกเฉพาะองค์ประกอบหลักบางส่วนที่อธิบายความแปรปรวนของข้อมูลในระดับที่เพียงพอ (เช่น 70-95%) เพื่อใช้เป็น predictors ในการถดถอย เมื่อเลือกองค์ประกอบหลักที่ลดทอนมิติของข้อมูลลงแล้วก็จะนำมาทดแทนตัวแปรต้นฉบับในขั้นตอนการถดถอย
+
+-   การวิเคราะห์การถดถอย : เมื่อได้องค์ประกอบหลักแล้วจะนำองค์ประกอบหลักดังกล่าวมาเป็นตัวแปรอิสระใน linear regression เพื่อทำนายตัวแปรตาม
+
+[PCR concept](https://claude.site/artifacts/82168d5b-b030-4e11-a389-4d703de77206)
+
+การทำ PCR ใน tidymodels สามารถทำได้ผ่าน recipe เพื่อแปลงตัวแปรอิสระให้เป็นองค์ประกอบหลักก่อน
+
+```{r eval = F}
+pcr_rec <- recipe(y~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), num_comp = 3)
+
+pcr_spec <- linear_reg() %>% 
+  set_engine("lm")
+
+pcr_workflow <- workflow() %>%
+  add_recipe(pcr_rec) %>%
+  add_model(pcr_spec)
+```
+
+Note:
+
+1.  กระบวนการ PCR ข้างต้นมี 2 ขั้นตอนใหญ่ ทั้งสองขั้นตอนแยกกันโดยอิสระ ดังนั้นการเลือกองค์ประกอบหลักในโมเดลจึงเป็นการพิจารณาจากความแปรปรวนของตัวแปรอิสระเท่านั้น ไม่ได้มีการคำนึงถึงความสัมพันธ์ระหว่างองค์ประกอบกับตัวแปรตามเลย แนวคิดนี้จึงอาจไม่เหมาะสมเพราะองค์ประกอลหลักที่มีความแปรปรวนสูงไม่ได้จำเป็นต้องเหมาะสมเสมอไป องค์ประกอบเล็กที่มีความแปรปรวนต่ำอาจมีความสัมพันธ์กับตัวแปรตามได้มากกว่า
+
+2.  PCR ทำให้การแปลความหมายทำได้ยาก ทั้งนี้เพราะองค์ประกอบหลักเป็นผลรวมเชิงเส้นของตัวแปรอิสระต้นฉบับ การนำโมเดล PCR ไปใช้ทำให้ยากต่ออธิบายความหมายให้กับผู้เกี่ยวข้อง โมเดลอาจทำหน้าที่ทำนายได้ดี แต่ไม่สามารถให้คำอธิบายหรือข้อมูลป้อนกลับได้ดีมากนัก
+
+3.  ความไวต่อสเกลของข้อมูล -- PCA มีความไวต่อสเกลหรือหน่วยของข้อมูล จึงมีความจำเป็นที่ผู้วิเคราะห์จะต้องแปลงข้อมูลต้นฉบับให้เป็นคะแนนมาตรฐานก่อน
+
+4.  missing data -- PCR ไม่สามารถจัดการกับข้อมูลที่ขาดหายได้โดยอัตโนมัติ จึงต้องมีการจัดการข้อมูลที่ขาดหายก่อนการวิเคราะห์
+
+5.  สมมุติฐานด้าน linearity -- PCA ใน PCR จะรวมข้อมูลให้เป็นองค์ประกอบตามความสัมพันธ์เชิงเส้นของข้อมูล ในกรณีที่องค์ประกอบมีรูปแบบความสัมพันธ์กับข้อมูลที่ไม่ใช้่เชิงเส้น ควรเปลี่ยนวิธีการวิเคราะห์องค์ประกอบหลักเป็นวิธีอื่น เช่น Kernel PCA, Autoencoder, t-SNE, UMAP หรืออื่น ๆ
+
+6.  Loss of Information -- การลดมิติด้วย PCA ทำให้สูญเสียข้อมูลบางส่วนไปจากการวิเคราะห์
+
+7.  Overfitting -- ถึงแม้ PCR จะถูกเคลมว่าช่วยแก้ปัญหา multicollinerity ซึ่งนำไปสู่การลดโอกาสการเกิดปัญหา overfitting ด้วย แต่หากเลือกจำนวนองค์ประกอบหลักมากเกินไปก็สามารถเพิ่มโอกาสการเกิดปัญหา overfitting ได้เช่นกัน
+
+8.  PCR ไม่ใช่ Feature Selection แต่เป็น Feature Extraction technique ตัวแปรอิสระต้นฉบับทั้งหมดยังคงมีส่วนร่วมในการสร้างโมเดลทำนาย แต่ไม่สามารถตีความได้โดยตรง
+
+## 3. Partial Least Square regression
+
+Partial Least Squares Regression (PLSR) เป็นเทคนิคทางสถิติที่ใช้สำหรับการสร้างโมเดลเชิงเส้นระหว่างชุดของตัวแปรอิสระ (predictors) กับชุดของตัวแปรตาม (responses) โดยการลดมิติของข้อมูลและการสกัดตัวแปรแฝง (latent variables) ที่อธิบายความสัมพันธ์ร่วมกันระหว่าง X และ Y ด้วยกัน
+
+[PLSR concept](https://claude.site/artifacts/a66aa74a-0962-4a7f-84e7-7410a9c89716)
+
+การทำ PLSR ใน tidymodels สามารถทำได้ดังนี้
+
+```{r}
+## install.packages("BiocManager")
+BiocManager::install("mixOmics")
+library(mixOmics)
+```
+
+Parsimonious
+
+```{r eval = F}
+### PCA
+pcr_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), 
+           num_comp = 4)
+### PLS
+plsr_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pls(all_numeric_predictors(), 
+           num_comp = 4, 
+           outcome = "gpax.y2")
+
+p1 <- pcr_rec %>% 
+  prep() %>% 
+  juice() %>% 
+  pivot_longer(cols = starts_with("PC"), 
+               names_to = "PC", 
+               values_to = "score") %>% 
+  ggplot(aes(x = score, y = gpax.y2))+
+  geom_point()+
+  facet_wrap(~PC, scales = "free_x")
+
+p2 <- plsr_rec %>% 
+  prep() %>% 
+  juice() %>% 
+  pivot_longer(cols = starts_with("PL"), 
+               names_to = "PLS", 
+               values_to = "score") %>% 
+  ggplot(aes(x = score, y = gpax.y2))+
+  geom_point()+
+  facet_wrap(~PLS, scales = "free_x")
+
+library(patchwork)
+p1
+p2
+```
+
+
+```{r}
+pcr_rec %>% 
+  prep() %>% 
+  tidy(2)
+
+plsr_rec %>% 
+  prep() %>% 
+  tidy(2) %>% 
+  ggplot(aes(x = value , y= terms))+
+  geom_col(aes(fill = value >0))+
+  facet_wrap(~component)
+```
+
+
+
+
+```{r}
+### PCA
+pcr_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pca(all_numeric_predictors(), 
+           num_comp = tune())
+### PLS
+plsr_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pls(all_numeric_predictors(), 
+           num_comp = tune(), 
+           outcome = "gpax.y2")
+
+## model spec
+reg_spec <- linear_reg() %>% 
+  set_engine("lm") %>% 
+  set_mode("regression")
+
+## workflow
+pcr_wf <- workflow() %>% 
+  add_recipe(pcr_rec) %>% 
+  add_model(reg_spec)
+
+pls_wf <- workflow() %>% 
+  add_recipe(plsr_rec) %>% 
+  add_model(reg_spec)
+
+## train pcr โดยการทำ CV
+set.seed(123)
+myfolds <- vfold_cv(train, v=5, repeats = 3, strata = gpax.y2)
+my_metrics <- metric_set(rsq, rmse)
+mygrid <- grid_regular(num_comp(range=c(2,11)), levels = 10)
+
+library(future)
+plan(multisession, workers = 10)
+
+## tuning PCR
+pcr_tune_res <- pcr_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE)
+  )
+
+## tuning PLSR
+plsr_tune_res <- pls_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE)
+  )
+
+pcr_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  mutate(model = "PCR") %>% 
+  bind_rows(
+plsr_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  mutate(model = "PLSR")
+) %>% 
+  ggplot(aes(x = num_comp, y= mean))+
+  geom_line(aes(col = model))+
+  geom_point(aes(col = model)) +
+  #geom_col(aes(fill = model), position = "dodge")+
+  facet_wrap(~.metric, scales = "free_y")
+
+```
+
+
+
+```{r}
+plsr_tune_res %>% collect_predictions()
+```
+
+
+```{r}
+plsr_tune_res %>% 
+  collect_predictions() %>% 
+  filter(num_comp == 7) %>% 
+  ggplot(aes(x = .pred, y = gpax.y2))+
+  geom_point(alpha = 0.2)+
+  geom_abline(intercept = 0, slope = 1, linetype = 2)+
+  coord_obs_pred()+
+  theme_light()
+  
+```
+
+Note:
+
+1.  PLSR สามารถรับมือกับปัญหา multicollinearity ได้ดี
+
+2.  เน้นการอธิบายความสัมพันธ์ระหว่าง X กับ Y โดยตรง ทำให้องค์ประกอบหลักที่ได้มีความสัมพันธ์กับตัวแปรตามมากกว่า PCR
+
+3.  มีปัญหาเดียวกับ PCR คือการแปลความหมายขององค์ประกอบหลักที่ได้ เนื่องจากองค์ประกอบหลักก็สร้างจากรวมกันของข้อมูลตัวแปรต้นฉบับทั้งหมด
+
+
+## 4. K-Nearest Neighbors (KNN)
+
+K-Nearest Neighbors (KNN) เป็นอัลกอริทึมการเรียนรู้แบบมีผู้สอน (supervised learning) ที่ใช้สำหรับทั้งงานจำแนกประเภท (classification) และการพยากรณ์ (regression) โดยอาศัยหลักการที่ว่า “จุดข้อมูลที่ใกล้กันมักจะมีความเหมือนกัน”
+
+หลักการของ KNN
+
+-   KNN เป็นอัลกอริทึม “lazy learning” ซึ่งหมายความว่ามันไม่สร้างโมเดลในขั้นตอนการฝึก (training) แต่เก็บข้อมูลการฝึกไว้อย่างครบถ้วนและใช้ข้อมูลเหล่านั้นในการทำนายเมื่อมีข้อมูลใหม่เข้ามา
+
+-   สำหรับการทำนายค่าของข้อมูลใหม่ KNN จะคำนวณระยะห่างระหว่างจุดข้อมูลใหม่กับทุกจุดในชุดข้อมูลฝึก โดยมักใช้ระยะทางแบบ Euclidean เป็นหลัก (สามารถใช้วิธีอื่นได้ขึ้นอยู่กับปัญหา)
+
+-   ค่า k เป็นจำนวนจุดข้อมูลที่ใกล้ที่สุด (neighbors) ที่จะนำมาพิจารณาในการทำนาย ค่านี้ส่งผลโดยตรงต่อประสิทธิภาพของอัลกอริทึม หาก k มีค่าน้อยเกินไปอาจทำให้มีความไวต่อ noise ในข้อมูล ในขณะที่ k ที่มีค่ามากเกินไปอาจทำให้โมเดล smooth เกินไปจนไม่สามารถทำนายข้อมูลได้ดี
+
+-   สำหรับงานจำแนกประเภท KNN จะใช้วิธี “majority voting” ในการตัดสินใจว่าจุดข้อมูลใหม่จะอยู่ในกลุ่มไหน โดยการนับจำนวนของคลาสที่เป็นไปได้จาก k จุดข้อมูลที่ใกล้ที่สุด และเลือกคลาสที่มีจำนวนมากที่สุด
+
+การทำ KNN ใน tidymodels สามารถทำได้ดังนี้
+
+
+```{r}
+## recipe spec
+knn_rec <- recipe(gpax.y2 ~. , data = train) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_pls(all_numeric_predictors(), 
+           num_comp = 5, 
+           outcome = "gpax.y2")
+
+## model spec
+knn_spec <- nearest_neighbor(
+  neighbors = tune(),
+  dist_power = tune(),
+  weight_func = "optimal"
+) %>% 
+  set_engine("kknn") %>% 
+  set_mode("regression")
+
+knn_wf <- workflow() %>% 
+  add_recipe(knn_rec) %>% 
+  add_model(knn_spec)
+
+## train pcr โดยการทำ CV
+set.seed(123)
+myfolds <- vfold_cv(train, v=5, repeats = 3, strata = gpax.y2)
+my_metrics <- metric_set(rsq, rmse)
+mygrid <- expand_grid(
+  neighbors = seq(3,10, by=1),
+  dist_power = seq(1,4, by=1)
+)
+```
+
+```{r}
+mygrid %>% 
+  ggplot(aes(x=neighbors, y=dist_power))+
+  geom_point()
+```
+
+```{r}
+knn_tune_res <- knn_wf %>% 
+  tune_grid(
+    resamples = myfolds,
+    metrics = my_metrics,
+    grid = mygrid,
+    control = control_grid(save_pred = TRUE)
+  )
+knn_tune_res %>% autoplot()
+```
+
+
+```{r}
+knn_tune_res %>% collect_metrics(summarize = TRUE)
+```
+
+
+```{r}
+knn_tune_res %>% collect_predictions() %>% 
+  filter(neighbors == 10, dist_power == 1) %>% 
+  ggplot(aes(x = .pred, y = gpax.y2))+
+  geom_point(alpha = 0.2)+
+  geom_abline(intercept = 0, slope = 1, linetype = 2)+
+  coord_obs_pred()+
+  theme_light()
+  
+knn_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(.metric == "rmse") %>% 
+  ggplot(aes(x=neighbors, y=dist_power))+
+  geom_tile(aes(fill = mean))+
+  theme_light()+
+  scale_fill_viridis_b(option = "C")
+
+```
+
+```{r}
+knn_tune_res %>% collect_metrics(summarize = TRUE) %>% 
+  filter(.metric == "rmse") %>% 
+  ggplot(aes(x=neighbors, y=dist_power))+
+  geom_point(aes(size = mean, col = mean))+
+  theme_light()+
+  scale_color_viridis_c(option = "A")+
+  ggtitle("RMSE: smaller is better")
+```
+
+Note:
+
+-   KNN เป็นอัลกอริทึมที่เข้าใจง่าย ใช้งานง่ายเพราะไม่มีข้อตกลงเบื้องต้นเกี่ยวกับการแจกแจงข้อมูลเหมือนกับ linear regression
+
+-   สามารถใช้ได้ทั้ง regression และ classification
+
+-   เนื่องจากการเรียนรู้แบบ lazy learning ทำให้ KNN จะมีปัญหากับข้อมูลขนาดใหญ่เนื่องจากจำเป็นต้องใช้ทรัพยากรจำนวนมากในการคำนวณระยะทาง
+
+-   ความแม่นยำขึ้นอยู่กับ hyperparameter k ที่เหมาะสม
+
+-   Data Preprocessing สำหรับ KNN
+
+    -   การปรับสเกลของข้อมูล (Scaling/Normalization)
+
+    -   การจัดการกับ missing data
+
+    -   การกำจัด Outliers และ Noise
+
+    -   การลดมิติ (Dimensionality Reduction) หรือ Feature Selection
+
+    -   การเข้ารหัส (Encoding) สำหรับข้อมูลจัดประเภท
+
+## 5. Decision Trees
+
+-   decision tree ที่เป็นอัลกอริทึมพื้นฐานตัวหนึ่งที่สามารถใช้ได้พัฒนาโมเดลทำนายทั้งที่เป็น regression และ classification model โดย decision tree จัดเป็นอัลกอริทึมที่อยู่ในกลุ่ม nonparametric ซึ่งแตกต่างจาก linear regression
+
+-   การเรียนรู้ของ decision tree มีลักษณะเป็นการสร้างกฎเกณฑ์ในการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกันภายใต้ feature space จากคุณลักษณะดังกล่าวทำให้ decision tree เป็นอัลกอริทึมที่มีความยืดหยุ่นมากกว่า linear regression และสามารถใช้เรียนรู้ความสัมพันธ์ที่ไม่ใช่เชิงเส้นได้ดีกว่า regression
+
+-   อย่างไรก็ตามด้วยความที่ decision tree มีความยืดหยุ่นสูง ย่อมทำให้ความเสี่ยงที่จะประสบปัญหา overfitting สูงขึ้น ซึ่งสามารถแก้ไขได้โดยการใช้เทคนิคต่างๆ เช่น pruning ผ่านการ tune hyperparameters อีกวิธีการหนึ่งคือการใช้ ensemble learning ซึ่งจะถูกกล่าวถึงในบทเรียนถัดไป
+
+### 5.1 ส่วนประกอบของ decision tree
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-549379503.png){width="70%"}
+
+อัลกริทึมสำหรับสร้างต้นไม้มีหลายตัว หัวข้อนี้จะกล่าวถึง CART ซึ่งเป็นอัลกอริทึมทั่วไปที่ใช้ในการสร้าง decision tree ที่ใช้ในการทำนายทั้ง regression และ classification
+
+### 5.2 Classification and Regression Trees (CART)
+
+CART เป็นการสร้างพื้นที่ปิดล้อมรูปสี่เหลี่ยมที่ไม่ทับซ้อนกันเพื่อแบ่งส่วนของข้อมูลภายใน feature space ออกเป็นส่วนย่อย ๆ โดยการแบ่งแต่ละครั้งจะทำให้เกิดส่วนย่อยใหม่ขึ้น 2 ส่วน และดำเนินการแบ่งพื้นที่ดังกล่าวทวนซ้ำไปเรื่อย ๆ จนกว่าจะถึงจุดที่หยุดกระบวนการ เรียกกระบวนการแบ่งส่วนของพื้นที่ดังกล่าวว่า binary recursive partitioning
+
+#### 5.2.1 Classification Tree with CART
+
+decision tree จะเลือกแบ่งพื้นที่ภายใน feature space ที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำสุด
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-2146096965.png){width="70%"}
+
+Impurity ที่มักใช้ในการคำนวณคือ Gini Impurity และ Entropy
+
+
+$$
+\text{Gini Impurity} = \sum_{i=1}^{k}p_i(1-p_i)  = 1 - \sum_{i=1}^{k} p_i^2
+$$ 
+
+
+$$
+\text{Entropy} = -\sum_{i=1}^{k}p_i\log_2(p_i)
+$$
+
+โดยที่ $p_i$ คือความน่าจะเป็นของคลาส $i$ ในพื้นที่นั้นหรือสัดส่วนของคลาส $i$ ในพื้นที่นั้น
+
+สมมุติว่าผู้วิเคราะห์ต้องการทำนาย deposit โดยใช้ตัวแปรอิสระจำนวน 3 ตัวได้แก่ default, housing และ loan ขั้นแรกของการพัฒนา decision tree คือการกำหนด root node ที่เหมาะสม คำถามคือ ควรใช้ตัวแปรอิสระตัวใดเป็น root node ดีเพราะเหตุใด?
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1262716711.png)
+
+การพิจารณาว่า root node ตัวใดเหมาะสมที่สุด สามารถพิจารณาได้จากความเป็นเอกพันธ์กันของค่าตัวแปรตามภายในกลุ่มย่อยที่แบ่งโดยตัวแปรอิสระ หรืออาจพิจารณาในทางกลับกันคือดูจากความไม่เป็นเอกพันธ์กันของค่าตัวแปรตามภายในกลุ่มย่อยดังกล่าว ความไม่เป็นเอกพันธ์นี้สามารถวัดได้โดยใช้สถิติในกลุ่มที่เรียกว่า impurity ดังที่ได้กล่าวไว้ข้างต้น
+
+decision tree จะเลือกตัวแปรและจุดแบ่งที่ทำให้ค่า impurity ดังกล่าวมีค่าต่ำที่สุด เพราะนั่นจะหมายถึงตัวแปรและจุดแบ่งดังกล่าวจะทำให้ decision tree สามารถทำนายค่าของตัวแปรตามได้ดีที่สุด จากรูปด้านล่างแสดงการเปรียบเทียบค่า total impurity จากการแบ่ง 3 แบบคือ การแบ่งด้วย Default, Housing และ Loan ซึ่งจะเห็นว่าการแบ่งด้วย Housing ให้ค่า impurity ต่ำที่สุด ดังนั้นการแบ่ง Housing ดังในรูปจึงถูกเลือกเป็น partition ตัวแรกของอัลกอริทึม และจะเรียก Housing ว่า Root node
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1755337911.png){width="70%"}
+
+จากการคำนวณ impurity ด้วย Gini index ข้างต้นจะเห็นว่า Housing เป็นตัวแปรอิสระที่ทำให้ impurity โดยรวมของการแบ่งส่วนย่อยทั้งสองส่วนมีค่าต่ำที่สุด จากเงื่อนไขในตัวอย่างที่กำหนดข้างต้น Housing จึงจะเป็นตัวแปรอิสระที่ถูกเลือกเป็น root node ก่อน ขั้นตอนถัดมาของอัลกอริทึมคือการพิจารณาหา internal nodes ที่จะแบ่งส่วนข้อมูลภายใต้เงื่อนไขของ root node แบ่งไว้ข้างต้น กล่าวง่าย ๆ คือ หาตัวแปรอิสระตัวอื่นมาแบ่งข้อมูลในแต่ละกิ่งของ root node ต่อ
+
+รูปด้านล่างแสดงการเปรียบเทียบ impurity ของตัวแปรตาม (deposit) ที่เกิดขึ้นจากการแบ่งส่วนข้อมูลภายใต้เงื่อนไขที่ Housing = Yes จากรูปจะเห็นว่าเมื่อใช้ Default เป็นตัวแบ่งจะได้ค่า impurity เท่ากับ 0.9731 แต่ถ้าใช้ Loan เป็นตัวแบ่งจะได้ค่า impurity เป็น 0.1420 ระหว่างตัวแปรอิสระสองตัวนี้ผู้อ่านคิดว่าควรเลือกตัวแปรอิสระใดมาเป็น internal node ในตำแหน่งดังกล่าว
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/images/image-1494665973.png)
+
+#### 5.2.2 Regression Tree with CART
+
+การสร้าง regression tree จะใช้วิธีการเดียวกันกับ classification tree แต่จะใช้ค่า SSE แทนค่า impurity ที่ใช้ในการคำนวณค่าของตัวแปรและจุดแบ่งที่เหมาะสม
+
+$$
+\text{SSE} = \sum_{i=1}^{n}(y_i - \hat{y})^2
+$$
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-2-1.png)
+
+เป้าหมายของอัลกอริทึม decision tree คือการจุดตัดที่ทำให้ค่า Total SSE ดังกล่าวมีค่าต่ำที่สุด ซึ่งจะหมายความว่าการแบ่งส่วนย่อยนั้นสามารถสร้าง decision tree ที่ทำนายค่าของตัวแปรตามได้ใกล้เคียงค่าจริงมากที่สุดเท่าที่จะเป็นไปได้
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-3-1.png)
+
+การแบ่งที่มีประสิทธิภาพสูงสุดคือ x = 2.7 (ทำไมนะ) ผลลัพธ์ในขั้นตอนนี้จะได้ต้นไม้ในลักษณะดังรูป
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-1.png)
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-4-2.png)
+
+จากนั้นทำการหาจุดแบ่งต่อจำแนกตามฝั่งซ้ายและฝั่งขวาของจุดตัดแรก
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-5-1.png)
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-5-2.png)
+
+การดำเนินการตามอัลกอริทึมข้างต้นจะดำเนินการทวนซ้ำไปเรื่อย ๆ จนกระทั่งค่า information gain ที่ได้จะมีค่าน้อยลู่เข้าสู่ 0 ซึ่งหมายความว่าโมเดลไม่สามารถเรียนรู้สารสนเทศใด ๆ จากข้อมูลได้เพิ่มเติมแล้ว รูปด้านล่างแสดงโมเดลทำนายภายหลังจากอัลกอริทึมดังกล่าวหยุดการดำเนินการทวนซ้ำแล้ว จะเห็นว่าการแบ่งส่วนย่อยตามอัลกอริทึม recursive binary partitioning ดังกล่าวทำให้ได้โมเดลทำนายที่สามารถเรียนรู้ความสัมพันธ์เชิงเส้นโค้งที่พบในข้อมูลได้อย่างมีประสิทธิภาพ
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-6-1.png)
+
+![](https://datakruroo.netlify.app/mlcourse/_site/documents/03TreeModels_files/figure-html/unnamed-chunk-6-2.png)
+
+
+### 5.3 Hyperparameters สำหรับ decision tree
+
+1.  `tree_depth`: จำนวนระดับของ decision tree นับตั้งแต่ root note ถึง leaf node
+
+2.  `min_n`: จำนวนตัวอย่างขั้นต่ำที่ต้องมีใน terminal node
+
+3.  `cost_complexity`: ค่า penalty ที่ใช้ชดเชย impurity หรือ Total SSE ของ decision tree การทำ penaty ใน tree จะช่วยลดความเสี่ยงที่จะเกิด overfitting
+
+$$
+Regularized \ Error = \text{Impurity} + \alpha \times \text{Tree Depth}
+$$
+
+### 5.4 Decision tree (CART) using tidymodels
+
+```{r}
+data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/เอกสารประกอบการสอน/2758615/EDA using R/learning_data.csv")
+data <- data %>% select(-student_id)
+glimpse(data)
+
+new_data <- data |> 
+  mutate(research_score = ifelse(research_score > 70, 1,0)) %>%  ## ทำนายความสำเร็จ
+  mutate(research_score = factor(research_score, levels=c(1,0), labels=c("success","not_success")))
+new_data %>% count(research_score)
+```
+
+```{r}
+set.seed(123)
+split <- initial_split(new_data, prop = 0.8, strata = research_score)
+train_data <- training(split)
+test_data <- testing(split)
+glimpse(train_data)
+summary(train_data)
+```
+
+```{r}
+library(naniar)
+miss_var_summary(train_data)
+
+```
+
+
+
+```{r}
+## library(themis)
+library(future)
+plan(multisession, workers = 10)
+
+## model specification
+dt_spec <- decision_tree(
+  tree_depth = tune(),
+  min_n = tune(),
+  cost_complexity = tune()) |> 
+  set_engine("rpart") |> 
+  set_mode("classification")
+
+## preprocessing model
+dt_rec <- recipe(research_score ~ ., data = train_data) |> 
+  #update_role(student_id, new_role = "id") %>% 
+  step_rm(department, gender) %>% 
+  step_impute_median(cheat_index)  
+##  step_adasyn(research_score)
+
+## dt_rec %>% prep() %>% juice() %>% count(research_score)
+
+## workflow
+dt_wf <- workflow() %>% 
+  add_recipe(dt_rec) %>% 
+  add_model(dt_spec)
+
+set.seed(123)
+folds <- vfold_cv(train_data , v=5, repeats = 3, strata = "research_score")
+grid <- grid_regular(cost_complexity(), 
+                     tree_depth(),
+                     min_n(),
+                     levels = 5)
+
+
+dt_tuned_results<- dt_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = grid,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+    )
+
+dt_tuned_results %>% autoplot()
+
+dt_tuned_results %>% select_best(metric = "roc_auc")
+
+dt_tuned_results %>% collect_metrics(summarize = TRUE) %>% 
+  ggplot(aes(x = cost_complexity, y = mean))+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~.metric)
+
+
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model056") %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+```
+
+
+```{r}
+dt_tuned_results %>% select_best(metric = "accuracy")
+```
+
+
+
+```{r}
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") %>% pull(.config)
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") 
+
+## confusion matrix
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config == best_models[2]) %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+
+
+model_1 <- dt_tuned_results %>% select_best(metric = "roc_auc") %>% pull(.config)
+model_2 <- dt_tuned_results %>% select_best(metric = "f_meas") %>% pull(.config)
+
+my_model <- c(model_1, model_2)
+
+## roc curve
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config %in% my_model) %>% 
+  group_by(.config) %>% 
+  roc_curve(truth = research_score, .pred_success)  %>% 
+  ggplot(aes(x = 1-specificity, y = sensitivity, col = .config))+
+  geom_line()+
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed")
+```
+
+
+```{r}
+## finalized model
+dt_final <- dt_wf %>% 
+  finalize_workflow(dt_tuned_results %>% select_best(metric = "roc_auc")) %>% 
+  last_fit(split,
+          metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+dt_final %>% class()
+
+dt_final %>% collect_metrics()
+
+## performance in training set
+dt_tuned_results %>% collect_metrics() %>% 
+  filter(.config == best_models[1]) %>% 
+  select(.metric, mean)
+
+## performance in test set
+dt_final %>% collect_metrics()
+```
+
+```{r message = F, warning = F}
+library(tidyverse)
+library(tidymodels)
+library(rpart.plot)
+dat <- read.csv("https://raw.githubusercontent.com/ssiwacho/2758688_ML/main/week%201/TeacherSalaryData.csv")
+dat<-dat[,-1]
+fit1 <- decision_tree(min_n=10, cost_complexity = 10^-5) %>%
+    set_mode("regression") %>%
+    fit(salary ~., data=dat)
+    
+fit2 <- decision_tree(min_n=10, cost_complexity = 10^-3) %>%
+    set_mode("regression") %>%
+    fit(salary ~., data=dat)
+    
+fit3 <- decision_tree(min_n=10, cost_complexity = 10^-2) %>%
+    set_mode("regression") %>%
+    fit(salary ~., data=dat)
+
+par(mfrow=c(3,1))
+fit1$fit %>% rpart.plot(main = "min_n=10, cost_complexity = 10^-5")
+fit2$fit %>% rpart.plot(main = "min_n=10, cost_complexity = 10^-3")
+fit3$fit %>% rpart.plot(main = "min_n=10, cost_complexity = 10^-2")
+```
+
+
+### 5.5 rpart plots
+
+decision tree เป็นอัลกอริทึมที่มีจุดเด่นนอกจากด้านความยืดหยุ่นแล้วยังแปลและนำเสนอผลได้ง่ายด้วย ผลลัพธ์ของ decision tree จะอยู่ในรูปแบบต้นไม้ที่แสดงเงื่อนไขหรือการแบ่งข้อมูลในตัวแปรอิสระ ที่สัมพันธ์กับผลลัพธ์หรือค่าสังเกตของตัวแปรตามที่สนใจ
+
+reference: http://www.milbo.org/rpart-plot/prp.pdf
+
+```{r}
+## install.packages("rpart.plot")
+library(rpart.plot)
+?brewer.pal
+display.brewer.all(type="div")
+
+
+
+dt_final %>% 
+  extract_fit_engine() %>% 
+  rpart.plot(type = 2, extra = 4,
+             box.palette = "-RdYlGn")
+```
+
+```{r}
+dt_spec2 <- decision_tree(tree_depth = 10,
+                         min_n = 5) |> 
+  set_engine("rpart") |> 
+  set_mode("classification")
+
+
+dt_wf2 <- workflow() %>%
+  add_model(dt_spec2) %>%
+  add_recipe(dt_rec)
+
+dt_wf2 %>% 
+  fit(data = train_data)->fit2
+fit2 %>% extract_fit_engine() %>% 
+  rpart.plot(type = 2, extra = 0, under = T,
+              clip.right.labs = FALSE, branch = .3)
+```
+
+```{r}
+
+final_tree %>% extract_fit_engine() %>% 
+  rpart.plot(type = 2, extra = 0, under = T,
+              clip.right.labs = FALSE, branch = .3)
+```
+
+### 5.6 Conditional Inference Trees
+
+Conditional Inference Trees หรือ ctree เป็นอัลกอริทึมที่ใช้การทำนายค่าของตัวแปรตามโดยการแบ่งข้อมูลออกเป็นส่วนย่อยที่ไม่ทับซ้อนกัน โดยการแบ่งข้อมูลในแต่ละระดับของ decision tree จะใช้การทำสถิติเพื่อคำนวณค่า p-value ของการแบ่งข้อมูลในแต่ละระดับ โดยที่ p-value ที่มีค่าน้อยกว่าค่าที่กำหนดจะถูกเลือกให้เป็นจุดแบ่งข้อมูลในระดับนั้น
+
+หลักการของ Conditional Inference Tree (ctree)
+
+	1.	เลือกตัวแปรที่จะใช้แบ่งข้อมูล
+	
+	- ctree ไม่ได้เลือกตัวแปรจากการลด impurity แบบ CART แต่เลือกจาก “ความสัมพันธ์เชิงสถิติ” ระหว่างตัวแปรอิสระ (predictor) กับตัวแปรตาม (outcome)
+	
+	- 	ใช้ permutation test เพื่อตรวจสอบความสัมพันธ์ → ตัวแปรที่ได้ p-value เล็กที่สุด (มีนัยสำคัญมากที่สุด) จะถูกเลือกเป็นตัวแบ่งที่ node นั้น
+	
+	2.	permutation test ทำงานยังไง (แบบง่าย ๆ)
+สมมติว่า X เป็นตัวแปรกลุ่ม (เช่น เพศ ชาย/หญิง) และ Y เป็นตัวเลข (เช่น คะแนนสอบ):
+
+	-	คำนวณผลต่างค่าเฉลี่ยของ Y ระหว่างสองกลุ่มจริง → เรียกว่า true difference
+	
+	-	จากนั้นสลับจับคู่ใหม่แบบสุ่ม (permute) เพื่อสร้าง “โลกจำลอง” ที่ X ไม่ได้มีผลต่อ Y
+	
+	-	คำนวณผลต่างค่าเฉลี่ยใหม่จากข้อมูลที่สุ่ม → เก็บไว้เป็น permuted difference
+	
+	-	ทำซ้ำหลาย ๆ ครั้ง → ได้การกระจายของ permuted difference
+	
+	-	ดูว่า true difference จากข้อมูลจริง “สุดขอบ” แค่ไหนเมื่อเทียบกับการสุ่ม ถ้ามันสุดขอบมาก แสดงว่ามีความสัมพันธ์จริง (p-value เล็ก)
+	
+	3.	หาจุดแบ่ง (split point)
+	
+	-	ถ้าตัวแปรที่เลือกเป็นตัวเลขต่อเนื่อง เช่น ชั่วโมงทบทวน หรือคะแนนการบ้าน → อัลกอริทึมจะลอง “ตัด” ที่จุดต่าง ๆ แล้วดูว่าตัดตรงไหนช่วยลดความแปรปรวนของ Y ได้ดีที่สุด
+	
+	- ใช้ permutation test ตรวจสอบว่าการตัดนั้น “มีนัยสำคัญ” ไหม
+	
+	- ถ้ามี → เก็บการตัดไว้ ถ้าไม่มี → node นั้นจะไม่แตกเพิ่มแล้ว
+	
+	4.	ทำซ้ำเป็นชั้น ๆ
+	
+	- เมื่อ node หนึ่งแบ่งสำเร็จ ก็ใช้วิธีเดียวกันกับ subset ของข้อมูลนั้น ๆ
+	
+	- ทำซ้ำจนไม่มี node ไหนที่การแบ่งมีนัยสำคัญทางสถิติอีก → ได้ต้นไม้สุดท้าย
+
+#### Concept ของ Ctree
+
+```{r}
+set.seed(123)
+n <- 300
+study_hours <- sample(0:10, n, replace = TRUE)
+homework    <- factor(sample(c("low","medium","high"), n, TRUE, prob = c(.3,.4,.3)))
+gender      <- factor(sample(c("male","female"), n, TRUE))
+
+# สร้างคะแนนที่ขึ้นกับชั่วโมงอ่าน + การบ้าน (gender ไม่มีผล)
+score  <- study_hours*5 + ifelse(homework=="low",10, ifelse(homework=="medium",20,30))
+score  <- score + rnorm(n, 0, 10)
+
+
+data.frame(study_hours, homework, gender, score) %>% 
+  ggplot(aes(x = study_hours, y=score))+
+  geom_point()
+
+data.frame(study_hours, homework, gender, score) %>% 
+  ggplot(aes(x =gender, y=score))+
+  geom_boxplot()
+
+
+data.frame(study_hours, homework, gender, score) %>% 
+  mutate(homework = fct_relevel(homework, "low","medium","high")) %>% 
+  ggplot(aes(x =homework, y=score))+
+  geom_boxplot()
+
+
+```
+
+
+
+```{r}
+# --- ทดสอบ 2 กลุ่ม: gender (คาดว่าไม่ต่าง) ---
+res_gender <- perm_test_cat_cont(gender, score, B = 10000)
+str(res_gender$p_value)     # ดูค่า p
+res_gender$p_value
+
+# --- ทดสอบ 3 กลุ่ม: homework (คาดว่าต่าง) ---
+res_hw <- perm_test_cat_cont(homework, score, B = 10000)
+res_hw$p_value
+
+plot_perm(res_gender, "Null dist: gender vs. score (2 groups)")
+plot_perm(res_hw,     "Null dist: homework vs. score (3 groups)")
+```
+
+#### ctree with tidymodels
+	
+การติดตั้ง library ที่จำเป็น	
+
+```{r}
+### -- do CTrees
+install.packages("partykit", dependencies = TRUE)
+install.packages("bonsai", dependencies = TRUE)
+
+library(partykit)
+library(bonsai)
+library(naniar)
+
+train_data %>% glimpse()
+train_data %>% miss_var_summary()
+```
+
+
+```{r}
+## model specification
+ct_spec <- decision_tree(tree_depth = 10,
+                         min_n = tune()) |> 
+  set_engine("partykit") |> 
+  set_mode("classification")
+
+## preprocessing model
+ct_rec <- recipe(research_score ~ ., data = train_data) |> 
+  ## update_role(student_id, new_role = "id") %>% 
+  ## step_rm(department, gender) %>% 
+  step_impute_median(cheat_index) 
+
+ct_spec
+ct_rec
+```
+
+
+
+```{r}
+ct_wf <- workflow() %>% 
+  add_model(ct_spec) %>% 
+  add_recipe(ct_rec)
+
+## ใช้ folds เดิมอันเดียวกับ decision tree
+## กำหนด grid space
+grid <- grid_regular(min_n(range = c(10L, 40L)),
+                     levels = 20)
+
+## สั่งทำ parallel
+library(future)
+plan(multisession, workers = 10)
+
+ct_tuned_results <- ct_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = grid,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+    )
+
+## overview
+ct_tuned_results %>% autoplot()
+
+ct_tuned_results %>% collect_metrics(summarize = TRUE) %>% 
+  filter(.metric == "accuracy") %>% 
+  ggplot(aes(x = min_n, y = mean))+
+  geom_point()+
+  geom_line()
+
+```
+
+```{r}
+ct_tuned_results %>% collect_metrics(summarize = TRUE) %>% 
+  filter(min_n == "40")
+```
+
+
+
+```{r}
+ct_tuned_results %>% collect_metrics() %>% 
+  filter(.metric == "precision") %>%
+  arrange(desc(mean))
+
+## model1
+best_parsimonous <- ct_tuned_results %>% collect_metrics(summarize = TRUE) %>% 
+  filter(.config == "Preprocessor1_Model20") %>% 
+  select(min_n, .config) %>% 
+  distinct()
+
+## model2 -- best model
+best_select <- ct_tuned_results %>% select_best(metric = "roc_auc")
+ct_tuned_results %>% show_best(metric = "roc_auc", n = 5)
+```
+
+```{r}
+ct_final1 <- ct_wf %>% finalize_workflow(best_parsimonous) %>% 
+  last_fit(split,
+           metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+ct_final2 <- ct_wf %>% finalize_workflow(best_select) %>% 
+  last_fit(split,
+           metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+```
+
+เปรียบเทียบ performance บน test data ระหว่าง สองโมเดล
+
+```{r}
+ct_final1 %>% collect_metrics() %>%
+  mutate(model = "model_A") %>% 
+  bind_rows(
+    ct_final2 %>% collect_metrics() %>%
+      mutate(model = "model_B")
+  ) 
+```
+
+
+
+
+```{r}
+library(ggparty)
+ct_final1 %>% 
+  extract_fit_engine() %>% plot()
+
+ct_final1 %>% 
+  extract_fit_engine() %>% 
+  ggparty()+
+  geom_edge() +
+  geom_edge_label() +
+  geom_node_label(aes(label = splitvar), ids = "inner") + 
+  geom_node_label(aes(label = info),
+                  ids = "terminal")
+```
+
+
+```{r}
+ct_final2 %>% 
+  extract_fit_engine() %>% plot()
+```
+
+
+# 6. Grid Search
+
+
+Grid Search เป็นวิธีการปรับจูนค่าพารามิเตอร์ของโมเดล (Hyperparameter Tuning) โดยการสร้างชุดของค่าพารามิเตอร์ที่เป็นไปได้ในรูปแบบตารางหรือกริด และทดลองฝึกโมเดลด้วยค่าพารามิเตอร์ทุกชุดในกริดนั้น จากนั้นประเมินประสิทธิภาพของโมเดลแต่ละชุดเพื่อหาค่าที่ให้ผลลัพธ์ดีที่สุด
+
+การปรับจูนพารามิเตอร์มีความสำคัญเพราะพารามิเตอร์เหล่านี้ส่งผลต่อประสิทธิภาพและความสามารถของโมเดลในการทำนายผลลัพธ์ การใช้ Grid Search ช่วยให้เราสามารถค้นหาค่าพารามิเตอร์ที่เหมาะสมที่สุดสำหรับปัญหาของเรา
+
+-   สร้าง grid แบบ manual --\> regular grid
+
+-   `grid_regular()`: สร้างกริดของค่าพารามิเตอร์แบบทุกค่าที่เป็นไปได้
+
+-   `grid_random()` : สร้างกริดของค่าพารามิเตอร์แบบสุ่ม\<-- simple random sampling
+
+-   `grid_max_entropy()`
+
+-   `grid_latin_hypercube()`
+
+
+## Manual grid -- `expand_grid()`
+
+-   แนวคิดแบบ exhaustive search
+
+-   เราจะกำหนดค่าของ hyperparameter ที่ต้องการวิเคราะห์เอง
+
+-   ตอนสร้าง grid เราจะสร้าง space ของ grid โดย cross ทุกค่าที่เป็นไปได้เข้าด้วยกัน
+
+-   การใช้วิธีการนี้ทำให้มั่นใจได้ว่าการทดลองของเราจะมีความครอบคลุมทุก combination ที่เป็นไปได้ของ hyperparameters ที่เราสนใจ แต่ก็ต้องแลกกับการใช้เวลาที่มากขึ้นในการทดลอง
+
+
+```{r}
+## กำหนดค่าพารามิเตอร์ที่ต้องการวิเคราะห์
+tree_depth = 2:10
+min_n = c(10,20,50)
+cost_complexity = c(0, 0.001, seq(0.01,0.1,0.02), 0.1)
+
+## สร้าง grid space
+my_grid <- expand_grid(tree_depth, min_n, cost_complexity)
+
+## สำรวจ grid space
+my_grid %>% 
+  ggplot(aes(x=cost_complexity, y = tree_depth, size = min_n))+
+  geom_point(alpha = 0.3,height = 0.5)
+```
+
+## `grid_regular()`
+
+- คือการแบ่งช่วงของแต่ละพารามิเตอร์ออกเป็นระดับ ๆ ที่เท่ากัน แล้วสร้าง combination จากระดับเหล่านั้น
+
+- แนวคิดนี้เรียกว่า systematic coverage
+
+- จะได้ grid space ที่มีความครอบคลุมสม่ำเสมอในช่วงที่กำหนด  ซึ่งมีแนวโน้มที่จะใช้ทรัพยากรมากเหมือนเดิมในกรณีที่มีพารามิเตอร์หลายตัว และมีระดับที่สนใจหลายระดับ
+
+```{r}
+?grid_regular()
+## วิธีการ 1 ในการเขียน grid_regular()
+grid <- grid_regular(cost_complexity(), 
+                     tree_depth(),
+                     min_n(),
+                     levels = 5)
+
+
+## กำหนด grid space จากช่วงที่เป็นไปได้
+p <- parameters(tree_depth(range = c(2, 10)), 
+                min_n(range = c(10, 40)),
+                cost_complexity())
+
+
+my_regular_grid <- grid_regular(x = p, levels = 5)
+
+## สำรวจ grid space
+p1<-my_regular_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+  theme(legend.position = "none")
+```
+
+## Random Grid Search -- `grid_random()`
+
+- คือการสุ่มเลือกค่าพารามิเตอร์จากช่วงที่กำหนด 
+
+- ใช้แนวคิดของการสุ่มตัวอย่างเข้ามาช่วยลดทรัพยากรที่ต้องใช้ในการทดลอง
+
+- อย่างไรก็ตามการทดลองอาจไม่ได้ครอบคลุมครบทุก combination และหากจุดที่ดีที่สุดไม่ได้อยู่ในช่วงที่สุ่มเลือกมา หรือระนาบของฟังก์ชันวัตถุประสงค์ไม่สามารถประมาณได้อย่างแม่นยำจากตัวอย่างของจุดที่เลือกมา ก็อาจทำให้การทดลองไม่สามารถหาค่าพารามิเตอร์ที่ดีที่สุดได้
+
+```{r}
+p <- parameters(tree_depth(range = c(2, 10)), 
+                min_n(range = c(10, 40)),
+                cost_complexity())
+## regular  grid
+grid_search <- grid_regular(x = p, levels = 5)
+## random grid
+set.seed(123)
+random_grid <- grid_random(x = p, size = 20)
+
+set.seed(123)
+
+grid_search %>% ggplot(aes(x = tree_depth, y = cost_complexity, size = min_n, col = min_n))+
+  geom_point(alpha = 0.1)+
+  ggtitle("grid search")
+
+
+random_grid %>% 
+   ggplot(aes(x = tree_depth, y = cost_complexity, size = min_n, col = min_n))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+    theme(legend.position = "none")+
+  ggtitle("random grid")
+
+
+
+```
+
+## Maximum Entropy Grid -- `grid_max_entropy()`
+
+- Entropy เป็นดัชนีที่ใช้วัดความไม่แน่นอนหรือความสุ่มของข้อมูล 
+
+- แนวคิดคือ พยายามสร้าง distribution ของ hyperparameters ที่มี entropy สูงสุด ซึ่งหมายความว่าการกระจายตัวของค่าพารามิเตอร์จะมีความหลากหลายและครอบคลุมมากที่สุด ภายใต้เงื่อนไขด้านจำนวนการทดลองที่กำหนด
+
+- แปลภาษาง่าย ๆ การ maximized entropy คือการพยายามกำหนด grid space ให้มีการแจกแจงใกล้เคียงกับ uniform distribution มากที่สุด --> maximized uncertainty
+
+```{r}
+p <- parameters(tree_depth(range = c(2, 10)), 
+                min_n(range = c(10, 40)),
+                cost_complexity())
+
+my_max_entropy_grid <- grid_space_filling(p, size = 50, type = "max_entropy")
+
+set.seed(123)
+p2
+p3 <- my_max_entropy_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+  theme(legend.position = "none")
+
+
+p1+p2+p3
+```
+
+## Latin Hypercube Grid -- `grid_latin_hypercube()`
+
+- Latin Hypercube Sampling (LHS) เป็นเทคนิคการสุ่มตัวอย่างที่ใช้ในการสำรวจพื้นที่ของพารามิเตอร์หลายมิติ โดยมีเป้าหมายเพื่อให้การกระจายตัวของตัวอย่างครอบคลุมพื้นที่ทั้งหมดอย่างมีประสิทธิภาพ
+
+- แนวคิดคือการสร้าง Cube ที่มีมิติเท่ากับจำนวนพารามิเตอร์ที่สนใจ แล้วแบ่งแต่ละมิติออกเป็นช่วง ๆ เท่า ๆ
+
+- จากนั้นสุ่มเลือกจุดจำนวน 1 จุด ในแต่ละช่วงของแต่ละมิติ 
+
+- สุ่มจับคู่จุดจากแต่ละแกนแบบ 1-1
+
+
+```{r}
+p <- parameters(tree_depth(range = c(2, 10)), 
+                min_n(range = c(10, 40)),
+                cost_complexity())
+
+
+my_latin_hypercube_grid <- grid_space_filling(p, size = 5, type = "latin_hypercube")
+
+p3
+p4 <- my_latin_hypercube_grid %>% 
+  ggplot(aes(x=cost_complexity, y=min_n, size = tree_depth))+
+  geom_jitter(aes(col = factor(tree_depth)),alpha = 0.5, height = 0.5, width = 0.1)+
+  scale_x_log10()+
+  theme(legend.position = "none")
+p4
+
+(p1+p2)/(p3+p4)
+```
+
+```{r}
+start <- Sys.time()
+dt_tuned_results <- dt_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = my_grid,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+    )
+elapsed_time_regulargrid <- Sys.time() - start
+
+
+start <- Sys.time()
+dt_tuned_results_latin <- dt_wf %>% 
+  tune_grid(
+    resamples = folds, 
+    grid = my_latin_hypercube_grid,
+    metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision),
+    control = control_grid(save_pred = TRUE)
+  )
+elapsed_time_latin <- Sys.time() - start
+
+
+dt_tuned_results_latin %>% collect_metrics() %>% 
+  filter(.metric == "f_meas") %>%
+  arrange(desc(mean)) 
+
+dt_tuned_results_latin %>% collect_metrics() %>% 
+  filter(.metric == "sens") %>%
+  arrange(desc(mean)) 
+
+dt_tuned_results_latin %>% collect_metrics()  %>% 
+  filter(cost_complexity > 0.075)
+```
+
+## 7. การประเมินประสิทธิภาพราย class สำหรับ multi-class classification
+
+โมเดลที่ดีที่สุดในมุมของ sensitivity จะทำนายแต่ละ class ได้ดีมากน้อยแค่ไหน
+
+```{r}
+temp_sens <- dt_tuned_results_latin %>% collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model07") %>% 
+  group_by(cost_complexity, tree_depth, min_n,.config,outcome) %>% 
+  sens(truth = outcome, estimate = .pred_class) 
+
+temp_f <- dt_tuned_results_latin %>% collect_predictions() %>% 
+  filter(.config == "Preprocessor1_Model07") %>% 
+  group_by(cost_complexity, tree_depth, min_n,.config,outcome) %>% 
+  f_meas(truth = outcome, estimate = .pred_class) 
+
+
+temp_sens %>% 
+  ggplot(aes(x= cost_complexity, y=.estimate))+
+  geom_line(aes(col = outcome))+
+  ylab("sensitivity")
+
+temp_sens %>% 
+  ggplot(aes(x=outcome, y= .estimate))+
+  geom_hline(yintercept = 0.5)+
+  geom_col()
+```
+
+```{r}
+best <- select_best(dt_tuned_results_latin, metric = "f_meas")
+```
+
+```{r}
+my_select_model <- dt_tuned_results_latin %>% collect_metrics() %>% 
+                filter(.config == "Preprocessor1_Model07") %>% 
+                select(cost_complexity, tree_depth, min_n, .config) %>% 
+                slice(1)
+```
+
+```{r}
+final_dt_multiclass <- dt_wf %>% 
+  finalize_workflow(my_select_model) %>%
+  last_fit(split, metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+final_dt_multiclass %>% collect_metrics()
+
+final_dt_multiclass %>% 
+  extract_fit_engine() %>%
+  rpart.plot()
+```
+
+```{r}
+library(tidymodels)
+p <- parameters(cost_complexity(),
+                min_n(range=c(10,40)))
+regular_grid <- grid_regular(p, levels=50)
+regular_grid %>% 
+  ggplot(aes(x = cost_complexity, y = min_n)) +
+  geom_point()
+```
+
+```{r}
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") %>% pull(.config)
+best_models <- dt_tuned_results %>% show_best(n=5, metric = "roc_auc") 
+
+## confusion matrix
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config == best_models[2]) %>% 
+  conf_mat(truth = research_score, estimate = .pred_class)
+
+## roc curve
+dt_tuned_results %>% collect_predictions() %>% 
+  filter(.config %in% best_models) %>% 
+  group_by(.config) %>% 
+  roc_curve(truth = research_score, .pred_success) %>% 
+  ggplot(aes(x = 1-specificity, y = sensitivity, color = .config))+
+  geom_line()+
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed")
+
+## finalized model
+dt_final <- dt_wf %>% 
+  finalize_workflow(best_models[1,]) %>% 
+  last_fit(split,
+          metrics = metric_set(roc_auc, f_meas, accuracy, sens, spec, precision))
+
+## performance in training set
+dt_tuned_results %>% collect_metrics() %>% 
+  filter(.config == best_models[1]) %>% 
+  select(.metric, mean)
+
+## performance in test set
+dt_final %>% collect_metrics()
+```
+
+
+# 8. Linear Discriminant Analysis (LDA)
+
+-   เป็นหนึ่งในเทคนิคการจำแนกประเภทที่ใช้ในการวิเคราะห์ข้อมูลที่มีลักษณะเป็นเชิงเส้น โดยมีจุดประสงค์เพื่อแยกแยะกลุ่มหรือคลาสของข้อมูลตามคุณลักษณะของข้อมูล (features)
+
+-   หลักพื้นฐานของ LDA คือพยายามหาเส้นแบ่งข้อมูล ที่ทำให้ความแตกต่างของกลุ่มข้อมูลมากที่สุด ภายใต้ข้อตกลงเบื้องต้นว่าข้อมูลในแต่ละ class มีการแจกแจงแบบปกติที่มีคุณสมบัติ homogeneity of covariance matrices
+
+-   การหาเส้นแบ่งข้อมูลด้วย LDA จะใช้หลักการลดมิติข้อมูล (เหมือน PCA) แต่แตกต่างกันตรงที่พยายามสกัดองค์ประกอบที่ทำให้ distribution ของข้อมูลแตกต่างกันมากที่สุด (maximize the ratio of between-class variance to within-class variance) เรียกสเกลองค์ประกอบที่สร้างขึ้นนี้ว่า discrimination function
+
+-   จากนั้นจะสร้างจุดแบ่ง class จาก discrimination function ที่ได้ โดยจุดแบ่งนี้จะเป็นเส้นตรงที่ทำให้ค่าเฉลี่ยของ discrimination score ระหว่างสองกลุ่มมีค่าสูงสุด
+
+![](https://sebastianraschka.com/images/blog/2014/linear-discriminant-analysis/lda_1.png){width="90%"}
+
+# 9. Quadratic Discriminant Analysis (QDA) {.smaller}
+
+-   Quadratic Discriminant Analysis (QDA) เป็นรูปแบบหนึ่งของ Discriminant Analysis ที่คล้ายกับ LDA แต่ ไม่สมมติว่าข้อมูลในแต่ละคลาสมี covariance matrix ที่เหมือนกัน ดังนั้น QDA จะสร้างเส้นแบ่งที่มีลักษณะเป็น quadratic (ไม่เชิงเส้น) เพื่อจำแนกข้อมูลระหว่างกลุ่มต่าง ๆ
+
+-   QDA ยังสมมุติการแจกแจงแบบปกติของข้อมูลในแต่ละ class อยู่ แต่ไม่สมมุติว่า covariance matrix ของข้อมูลในแต่ละ class เหมือนกันแล้ว
+
+-   เมื่อการแจกแจงมีการกระจายที่แตกต่างกันเส้นแบ่งระหว่าง class จึงมีลักษณะเป็นเส้นโค้ง
+
+![](https://mathformachines.com/images/quadratic-linear.png)
+
+-   QDA จะคำนวณ discriminant score สำหรับข้อมูลใหม่ในแต่ละคลาส โดยพิจารณาจาก covariance matrix และค่าเฉลี่ยของข้อมูลในแต่ละคลาส
+
+-   เส้นแบ่งจะเกิดขึ้นเมื่อ discriminant score ของสองคลาสมีค่าเท่ากัน ซึ่งหมายถึงข้อมูลมีโอกาสที่จะอยู่ในทั้งสองคลาสเท่ากัน
+
+## Example
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+data <- read_csv("/Users/choat/Library/CloudStorage/OneDrive-ChulalongkornUniversity/Documents/เอกสารประกอบการสอน/2758615/EDA using R/learning_data.csv")
+glimpse(data)
+```
+
+
+## 10. Imbalance Class Problem Solving {.smaller}
+
+ข้อมูลไม่สมดุลเกิดขึ้นเมื่อการกระจายตัวของคลาสเป้าหมายในชุดข้อมูลมีความแตกต่างกันอย่างมาก โดยคลาสส่วนน้อย (Minority Class) มักมีตัวอย่างน้อยกว่าคลาสส่วนมาก (Majority Class) เช่น 5 เท่า หรือ 10 เท่า
+
+จากตัวอย่างข้างต้นจะเห็นว่า ปัญหาข้อมูลไม่สมดุล (imbalance class) อาจส่งผลให้การจำแนกของโมเดลในบางคลาสมีประสิทธิภาพที่ต่ำ การแก้ปัญหาดังกล่าวสามารถทำได้หลายวิธีการ เช่น
+
+-   แบ่งคลาสใหม่ ในกรณีที่คลาสถูกสร้างขึ้นจากตัวแปรต่อเนื่อง
+
+-   การใช้การปรับน้ำหนักของคลาสในโมเดล
+
+-   ในเทคนิคการสุ่มซ้ำข้อมูลในคลาสที่มีจำนวนน้อย
+
+ใน R มี library-themis ที่ช่วยแก้ปัญหาดังกล่าวและสามารถทำงานร่วมกับ tidymodels ได้
+
+```{r eval = F}
+## install.packages("themis")
+library(themis)
+```
+
+ใน library มีวิธีการแก้ปัญหา 3 แนวทางหลัก ได้แก่
+
+1.  Undersampling
+
+2.  Oversampling
+
+3.  Hybrid sampling
+
+
+```{r}
+train_data %>% 
+  ggplot(aes(x=ach))+
+  geom_bar()+
+  ggtitle("train_data") 
+```
+
+
+### 10.1 Undersampling {.smaller}
+
+-   สุ่มลบตัวอย่างใน majority class จนได้อัตราส่วนที่ต้องการ `step_downsample()`
+
+-   สุ่มลบ/เลือกตัวอย่างแบบมีกลยุทธ์ มี 2 วิธีการได้แก่
+
+    -   `step_nearmiss()` -- เลือกลบตัวอย่างใน majority class ที่มีระยะห่างเฉลี่ยกับ minority class น้อยที่สุด
+
+    -   `step_tomek()` -- Tomek link คือคู่ของตัวอย่างที่มีคลาสต่างกันและอยู่ใกล้กันมากที่สุด วิธีการนี้คือการลบตัวอย่างที่เป็น Tomek link ออกจาก majority class
+
+
+### 10.2 Oversampling {.smaller}
+
+-   `step_smote()` -- Synthetic Minority Over-sampling Technique สร้างตัวอย่างสังเคราะห์ใน minority class โดยใช้การ interpolation ระหว่างตัวอย่างจริงที่มีอยู่ หลักการคร่าว ๆ คือ (1) เลือกตัวอย่างใน minority class แบบสุ่ม (2) หาเพื่อนบ้านที่ใกล้ที่สุด k ตัวจากตัวอย่างที่เลือกมา (3) สุ่มเลือก 1 เส้นทางระหว่างตัวอย่างที่เลือกกับเพื่อนบ้านมา (4) สร้างตัวอย่างใหม่โดยใช้ interpolation ระหว่างตัวอย่างที่เลือกกับเพื่อนบ้านที่ใกล้สุดดังกล่าว
+
+$$
+X_{syn} = X_{real} + \lambda(X_{neighbor-X_{real}}) \ \ ; \ \ \lambda \in [0,1]
+$$
+
+-   `step_bsmote()` -- Borderline SMOTE แก้ปัญหา SMOTE แบบดั้งเดิมที่อาจไปสร้างตัวอย่างใหม่ในพื้นที่ที่ไม่มีข้อมูลจริงมากเกินไป โดย BSMOTE จะเน้นสร้างตัวอย่างสังเคราะห์ที่อยู่ใกล้กับ decision boundary ระหว่าง minority class กับ majority class
+
+-   `step_adasyn()` -- Adaptive Synthetic Sampling ปรับปรุง SMOTE โดย เพิ่มข้อมูลเฉพาะจุดที่มีปัญหาความไม่สมดุลสูงที่สุด หมายความว่า จุดที่อยู่ใกล้ majority class มากเกินไป จะได้รับการ oversampling มากขึ้น
+
+
+-   `step_rose()` -- Random Over-Sampling Examples สร้างตัวอย่างใหม่ทั้งใน minority และ majority class โดยการสุ่มจาก kernal density estimation (KDE) โดยปกติใช้ normal distribution ผลลัพธ์ที่ได้จะได้ตัวอย่างใหม่รอบ ๆ ตัวอย่างที่เลือกมาเดิม ทั้งนี้จะมีการกำหนดอัตราส่วนระหว่างคลาส และการกระจายของการสุ่มตัวอย่างใหม่ เป็น hyperparameter ของอัลกอริทึม
+
+
+```{r fig.width=8, fig.height=6}
+library(themis)
+
+## no smote
+p1<-rec %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x=gpax.y1, y=learn.per2, col =ach))+
+  geom_point()
+
+## smote
+p2<-rec %>% 
+  step_smote(ach, over_ratio = 1,
+             neighbors = 5) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x=gpax.y1, y=learn.per2, col =ach))+
+  geom_point()
+
+
+(p1+p2)
+```
+
+### 10.3 Hybrid Sampling {.smaller}
+
+การผสมผสานระหว่าง undersampling และ oversampling ในบางกรณีช่วยให้การแก้ปัญหา imbalance class มีประสิทธิภาพมากขึ้นได้ แนวทาง hybrid มีหลายวิธีการดังนี้
+
+**SMOTE + Tomek Links**
+
+-   ใช้ SMOTE เพิ่มตัวอย่างใหม่ใน minority class
+
+-   ใช้ Tomek link ลบตัวอย่างใน majority class ที่อยู่ใกล้กับ minority มากเกินไป
+
+```{r}
+rec %>% 
+  step_smote(ach, over_ratio = 0.7,
+             neighbors = 5) %>% 
+  step_tomek(ach) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = ach))+
+  geom_bar()
+```
+
+
+**ANDASYN + NearMiss**
+
+-   ใช้ ADASYN เพิ่มตัวอย่างใหม่ใน minority class โดยเน้นจุดที่มีความไม่สมดุลสูง
+
+-   ใช้ Nearmiss เพื่อลบตัวอย่าง majority class ที่อยู่ใกล้ minority class มากที่สุดty
+
+```{r}
+rec %>% 
+  step_adasyn(ach, over_ratio = 0.7,
+             neighbors = 5) %>% 
+  step_nearmiss(ach) %>% 
+  prep() %>% 
+  juice() %>% 
+  ggplot(aes(x = ach))+
+  geom_bar()
+```
+
+
+
+### 10.4 กิจกรรม
+
+สร้างโมเดลจำแนกผลการเรียนดังนี้
+
+1. โมเดล baseline ไม่ต้องแก้ปัญหา imbalance class
+
+2. โมเดลที่แก้ปัญหา imbalance class ด้วย  undersampling 1 โมเดล
+
+3. โมเดลที่แก้ปัญหา imbalance class ด้วย  oversampling 2 โมเดล
+
+4. โมเดลที่แก้ปัญหา imbalance class ด้วย  hybrid sampling 1 โมเดล
+
+
+
+## 11. Support Vector Machine (SVM) {.smaller}
+
+-   Support Vector Machine (SVM) เป็น supervised learning algorithm ที่ใช้สำหรับการจำแนกประเภท (classification) และการวิเคราะห์การถดถอย (regression) หลักการทำงานคร่าว ๆ ของ SVM คือการสร้างเส้นแบ่งแยก (hyperplane) ที่สามารถแยกข้อมูลออกเป็นกลุ่ม/คลาสต่าง ๆ ในพื้นที่ P มิติให้ได้ดีที่สุด โดยที่ P คือจำนวน Features
+
+-   อย่างไรก็ตามการสร้างเส้นแบ่งดังกล่าวเป็นสิ่งที่โมเดลการเรียนรู้ต่าง ๆ ก็ทำเหมือนกัน ดังรูปด้านขวา จะเห็นเส้นแบ่งที่ดีที่สุดจากแต่ละอัลกอริทึม
+
+![](img/HMC.png)
+
+
+support vector machine มีหลักการเบื้องต้นคล้ายกับ classifier แบบ linear อย่างไรก็ตามการหาเส้นแบ่งของ SVM จะพิจารณาจาก support vector ที่เป็นข้อมูลที่อยู่ใกล้ขอบเขตการจำแนกข้อมูลมากที่สุดด้วย (มี contraint เพิ่มเติม) กล่าวคือ SVM จะพยายามหาเส้นแบ่งที่ทำให้ระยะห่างระหว่าง support vector กับเส้นแบ่งมีค่ามากที่สุด ดังรูป
+
+![](img/SVM1.png){width="60%"}
+
+
+การจำแนกข้อมูลด้วยอัลกอริทึมตามหลักข้างต้นจะเรียกว่า hard margin classification อย่างไรก็ตามอัลกอริทึมประเภทนี้มีข้อจำกัดในบางกรณี เช่น
+
+![](img/outlier.png){width="60%"}
+
+
+-   การแก้ปัญหาดังกล่าวคือการปรับให้โมเดลมีความยืดหยุ่นมากขึ้น โดยใช้ soft margin classification ซึ่งจะให้ความผิดพลาดได้มากขึ้น แต่ก็จะลดความเสี่ยงที่เกิดจากข้อมูลผิดปกติ
+
+-   แนวคิดดังกล่าวคือการเพิ่ม hyperparameter อีกตัวหนึ่งขึ้นมาเขียนแทนด้วย C (penalty term) ที่ใช้ควบคุมระยะห่างระหว่าง hyperplan กับข้อมูลที่ใกล้ที่สุดจากทั้งสองกลุ่ม (support vector)
+
+![](img/SMC.png)
+
+
+หลายกรณีความสัมพันธ์ระหว่างตัวแปรอาจมีความซับซ้อนทำให้เส้นแบ่งที่เป็นเส้นตรงไม่สามารถจำแนกข้อมูลได้ดี กรณีเช่นนี้ linear classifier ทั้งหลายอาจจะให้ประสิทธิภาพที่ต่ำ
+
+SVM แก้ปัญหานี้ด้วยการใช้ kernel trick ซึ่งเป็นการแปลงข้อมูลเป็นมิติสูงขึ้นเพื่อที่จะสามารถใช้เส้นตรง (hyperplane) แบ่งข้อมูลในมิติสูงอย่างมีประสิทธิภาพ
+
+![](img/nonlinearSVM.png)
+
+### Kernel Trick {.smaller}
+
+-   Linear Kernel
+
+-   Polynomial Kernel
+
+-   Radial Basis Function (RBF) Kernel (Gaussian Kernel)
+
+-   Sigmoid Kernel
+
+## Naive Bayes {.smaller}
+
+-- ดูเนื้อหาคลิปวิดิโอ —
+
+```{r eval = F}
+nb_spec <- naive_Bayes(smoothness = tune(), Laplace = tune()) %>%  
+  set_engine("klaR") %>%  
+  set_mode("classification")
+```
+
