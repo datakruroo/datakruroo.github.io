@@ -1,0 +1,37 @@
+project:
+  type: default
+
+title: |
+ | รายงานผลการประเมินการฝึกปฏิบัติ
+ | ประจำสัปดาห์ที่ 1
+
+format:
+  pdf:
+    pdf-engine: xelatex
+    toc: true
+    number-sections: true
+    include-in-header:
+      - "thai-preamble.tex"    # preamble ภาษาไทย
+      - text: |
+          % ใช้ background package เพื่อวางลายน้ำในทุกหน้าตั้งแต่หน้า 2 เป็นต้นไป
+          \usepackage{graphicx}
+          \usepackage{background}
+
+          % ปรับค่าต่อไปนี้ตามต้องการ:
+          % - opacity: ความทึบของลายน้ำ (0 = โปร่งใสสุด, 1 = ทึบสุด)
+          % - scale/width: ขนาดของรูป
+          % - pages={2-}: บอกให้วางเฉพาะหน้าที่ 2 เป็นต้นไป (ยกเว้นหน้าแรก)
+          \backgroundsetup{
+            scale=1,                     % ใช้ scale เป็น 1 แล้วควบคุมขนาดด้วย width ใน contents
+            opacity=0.1,                % ความชัด (ปรับค่าได้ เช่น 0.05-0.12)
+            angle=0,                     % หมุนรูป (องศา)
+            position={current page.center}, % ตำแหน่งแบบสัมพัทธ์ของหน้า
+            vshift=0pt,
+            hshift=0pt,
+            contents={\includegraphics[width=0.8\paperwidth]{deepdive.png}},
+            pages={2-}                   % วางลายน้ำตั้งแต่หน้า 2 ถึงหน้าสุดท้าย
+          }
+      - text: |
+          \usepackage{tcolorbox}
+          \newenvironment{myquote}{\begin{tcolorbox}[colback=gray!5,colframe=gray!30,sharp corners,boxrule=0.3pt]}{\end{tcolorbox}}
+    keep-tex: false

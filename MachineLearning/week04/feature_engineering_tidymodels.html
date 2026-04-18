@@ -6,11 +6,11 @@
 <script src="feature_engineering_tidymodels_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="feature_engineering_tidymodels_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="feature_engineering_tidymodels_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="feature_engineering_tidymodels_files/libs/quarto-html/quarto-syntax-highlighting-2577ed9d2f9b020f727002863c1eb492.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="feature_engineering_tidymodels_files/libs/quarto-html/quarto-syntax-highlighting-c403580d065d1ffe2e579f2a04363ffd.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.17">
+<meta name="generator" content="quarto-1.8.27">
 <meta name="author" content="ผศ.ดร.สิวะโชติ ศรีสุทธิยากร">
-<meta name="dcterms.date" content="2025-09-06">
+<meta name="dcterms.date" content="2026-02-11">
 <title>Week 3-4: Feature Engineering</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,8 +30,9 @@
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -42,7 +43,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -95,7 +96,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-<link rel="stylesheet" href="feature_engineering_tidymodels_files/libs/revealjs/dist/theme/quarto-cb1ed36e8cdf59da670ef55b215fa2c0.css">
+<link rel="stylesheet" href="feature_engineering_tidymodels_files/libs/revealjs/dist/theme/quarto-f5f69a03199ba1249b5343406bf5d757.css">
 <link rel="stylesheet" href="my_css.css">
 <link href="feature_engineering_tidymodels_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
 <link href="feature_engineering_tidymodels_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -206,18 +207,44 @@
 </div>
 </div>
 
-  <p class="date">2025-09-06</p>
+  <p class="date">2026-02-11</p>
 </section><section class="slide level2"><div class="cell">
 <div class="cell-output-display">
 
 </div>
 </div>
 </section><section><section id="part1-บทนำ" class="title-slide slide level1 smaller center"><h1>Part1 : บทนำ</h1>
+<ul>
+<li><p>Model-Centric</p></li>
+<li><p>Data-Centric</p></li>
+</ul></section><section id="modelling-process" class="slide level2 smaller"><h2>Modelling Process</h2>
 <blockquote>
 <p>อย่าลืมว่า modelling เป็นเพียงส่วนหนึ่งของกระบวนการทาง data science ทั้งหมด</p>
 </blockquote>
 
-<img data-src="https://www.tmwr.org/premade/data-science-model.svg" class="r-stretch quarto-figure-center"><p class="caption">https://www.tmwr.org/software-modeling.html#model-phases</p></section><section id="tidymodels-core-packages" class="slide level2 smaller"><h2>Tidymodels core packages</h2>
+<img data-src="https://www.tmwr.org/premade/data-science-model.svg" class="r-stretch quarto-figure-center"><p class="caption">https://www.tmwr.org/software-modeling.html#model-phases</p></section><section id="feature-engineering" class="slide level2 smaller"><h2>Feature Engineering</h2>
+<blockquote>
+<p>โมเดลที่ดี (Great Model) ไม่สามารถเกิดขึ้นได้ หากปราศจากข้อมูลที่ดี (Great Data)</p>
+</blockquote>
+<p>Feature Engineering คือศาสตร์และศิลป์ในการปรับแต่งและแปลงข้อมูลให้อยู่ในรูปแบบที่เหมาะสมที่สุดเพื่อแก้ปัญหาทาง ML รวมถึงการลดความซับซ้อนและอคติที่แฝงอยู่ในข้อมูล</p>
+
+<img data-src="https://www.tmwr.org/premade/data-science-model.svg" class="r-stretch quarto-figure-center"><p class="caption">https://www.tmwr.org/software-modeling.html#model-phases</p></section><section id="modelling-process-vs-feature-engineering" class="slide level2 smaller"><h2>Modelling Process vs Feature Engineering</h2>
+<blockquote>
+<p>FEAT ไม่ใช่ขั้นตอนที่แยกจาก ML modelling process แต่เป็นส่วนหนึ่งที่สำคัญของกระบวนการ</p>
+</blockquote>
+<p>กระบวนการย่อยของ FEAT เกี่ยวข้อง/เจาะลึกในกระบวนการที่เกี่ยวข้องกับการจัดการข้อมูลโดยเฉพาะ อาจจำแนกเป็น 4 ขั้นตอน ได้แก่</p>
+<ul>
+<li><p>Feature Understanding – วิเคราะห์ทำความเข้าใจคุณลักษณะของ feature แต่ละตัว เช่น การระบุสถานะของข้อมูล ความหมายเบืิ้องต้น การแจกแจงเบื้องต้น (ถ้าสามารถทำได้) และความสัมพันธ์กับตัวแปรเป้าหมาย</p></li>
+<li><p>Feature Structuring – แปลงข้อมูลที่ไม่มีโครงสร้าง เช่น ข้อความ รูปภาพ เสียง และอื่น ๆ ให้อยู่ในรูปแบบที่มีโครงสร้าง เพื่อให้ ML model สามารถนำไปใช้ได้</p></li>
+<li><p>Feature Optimization – ใช้เทคนิคต่าง ๆ ปรับแต่ง/ปรับปรุง feature ที่มีอยู่ หรือสร้าง feature ใหม่จากข้อมูลเดิม เพื่อให้ข้อมูลมีสัญญาณหลักที่ชัดเจนขึ้น มีความหมายที่ตีความได้ง่าย สมเหตุสมผล และเพิ่มประสิทธิภาพการทำนายของโมเดล</p></li>
+<li><p>Feature Evaluation – ประเมินคุณภาพของ feature ที่สร้างขึ้นหรือปรับแต่งแล้ว โดยใช้ metric ต่าง ๆ เช่น feature importance, correlation analysis, mutual information, predictive power analysis เป็นต้น</p></li>
+</ul></section><section id="ประเภทของ-feature-engineering" class="slide level2 smaller"><h2>ประเภทของ Feature Engineering</h2>
+<ul>
+<li><p>Feature Improvement – การปรับปรุงคุณภาพของ feature ที่มีอยู่ เช่น การจัดการกับค่าที่ขาดหาย การลด noise การปรับสเกล และการแปลงข้อมูล</p></li>
+<li><p>Feature Construction – การสร้าง feature ใหม่จากข้อมูลเดิม เช่น การสร้างตัวแปรเชิงปริมาณจากตัวแปรเชิงหมวดหมู่ การสร้างตัวแปร interaction และการสร้างดัชนีต่าง ๆ</p></li>
+<li><p>Feature Extraction – อัลกอริทึมสำหรับดึงสาระสำคัญ/ข้อมูลที่ต้องการ จากข้อมูลดิบออกมาเป็น feature เช่น PCA, autoencoders หรือ text embeddings</p></li>
+<li><p>Feature Learning – การใช้โมเดลการเรียนรู้ของเครื่อง เช่น neural networks เพื่อเรียนรู้และสร้าง feature ใหม่จากข้อมูลดิบ</p></li>
+</ul></section><section id="tidymodels-core-packages" class="slide level2 smaller"><h2>Tidymodels core packages</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
 <p><code>rsample:</code> general methods for resampling</p>
@@ -285,7 +312,7 @@ $ academic_risk          &lt;chr&gt; "High Risk", "Low Risk", "Medium Risk", "Lo
 # ℹ 11 more rows</code></pre>
 </div>
 </div>
-</section><section id="feature-engineering" class="slide level2 smaller"><h2>Feature Engineering</h2>
+</section><section id="feature-engineering-1" class="slide level2 smaller"><h2>Feature Engineering</h2>
 <blockquote>
 <p>ประสิทธิภาพโมเดลมักได้มาจาก <strong>คุณภาพฟีเจอร์</strong> มากกว่าความซับซ้อนของอัลกอริทึม</p>
 </blockquote>
@@ -332,7 +359,7 @@ $ academic_risk          &lt;chr&gt; "High Risk", "Low Risk", "Medium Risk", "Lo
 <strong>Data Preprocessing</strong><br>(ทำให้โมเดล “ทำงานได้”)</td>
 <td>แก้ NA, แปลงชนิดข้อมูล, ปรับสเกล/รูปแจกแจง, ตัด noise/redundancy</td>
 <td>
-<code>step_impute_knn</code>, <code>step_impute_bag</code>, <code>step_unknown</code>, <code>step_novel</code> • <code>step_other</code>, <code>step_dummy</code> • <code>step_log</code>, <code>step_YeoJohnson</code>, <code>step_BoxCox</code> • <code>step_normalize</code>, <code>step_spatialsign</code> • <code>step_zv</code>, <code>step_nzv</code>, <code>step_corr</code>, <code>step_lincomb</code> • <code>step_date</code>, <code>step_holiday</code> • <code>themis::step_smote</code>¹, <code>themis::step_downsample</code>, <code>themis::step_upsample</code>
+<code>step_impute_knn</code>, <code>step_impute_bag</code>, <code>step_unknown</code>, <code>step_novel</code> • <code>step_other</code>, <code>step_dummy</code> • <code>step_log</code>, <code>step_YeoJohnson</code>, <code>step_BoxCox</code> • <code>step_normalize</code>, <code>step_spatialsign</code> • <code>step_zv</code>, <code>step_nzv</code>, <code>step_corr</code>, <code>step_lincomb</code> • <code>step_date</code>, <code>step_holiday</code> • <code><a href="https://themis.tidymodels.org/reference/step_smote.html">themis::step_smote</a></code>¹, <code><a href="https://themis.tidymodels.org/reference/step_downsample.html">themis::step_downsample</a></code>, <code><a href="https://themis.tidymodels.org/reference/step_upsample.html">themis::step_upsample</a></code>
 </td>
 <td>- ใช้ <code>prep()</code> กับ <strong>train เท่านั้น</strong> เพื่อกัน leakage; sampling steps (เช่น <code>step_smote</code>) ใส่ <code>skip=TRUE</code> เพื่อ <strong>ไม่</strong> ใช้กับข้อมูลใหม่.<br>- ใส่ลำดับให้ถูก: encode → scale → filter; ตัวอย่าง interaction ควรเกิด <strong>หลัง</strong> dummy</td>
 </tr>
@@ -731,16 +758,248 @@ ID:         1</code></pre>
 [97] "step_YeoJohnson"         "step_zv"                </code></pre>
 </div>
 </div>
-</section></section><section><section id="part2-techniques" class="title-slide slide level1 smaller center"><h1>Part2 : Techniques</h1>
+</section><section id="part2-basic-feat" class="slide level2 smaller"><h2>Part2 : Basic FEAT</h2>
 <ul>
-<li><p>Numeric Features</p></li>
-<li><p>Categorical Features</p></li>
-<li><p>Missing Data</p></li>
-<li><p>Too Many Variables</p></li>
-<li><p>Text Features</p></li>
-<li><p>Outliers</p></li>
-<li><p>Imbalanced Data</p></li>
-</ul></section><section id="numeric-features" class="slide level2 smaller"><h2>2.1 Numeric Features</h2>
+<li><p>Feature Improvement</p></li>
+<li><p>Feature Construction</p></li>
+<li><p>Feature Selection</p></li>
+<li><p>Feature Extraction</p></li>
+<li><p>Feature Learning</p></li>
+</ul></section><section id="feature-improvement" class="slide level2 smaller"><h2>1. Feature Improvement</h2>
+<p>Feature Improvement คือ การทำให้ฟีเจอร์ที่มีอยู่ ใช้งานได้ถูกต้องและเหมาะสม สำหรับโมเดล โดย ไม่เปลี่ยนความหมายหลักของตัวแปร (ต่างจาก Feature Construction ที่สร้างตัวแปรใหม่) เป้าหมายคือทำให้ข้อมูลอยู่ในสภาพที่อัลกอริทึมเรียนรู้ได้ดี ลดปัญหาพื้นฐานที่ทำให้โมเดลพัง/เพี้ยน เช่น missing สเกลไม่เท่ากัน การแจกแจงของข้อมูล หรือหมวดหมู่จัดการไม่ถูก</p>
+<ul>
+<li><p>Missing Value Imputation</p></li>
+<li><p>Scaling/Normalization</p></li>
+<li><p>Distribution Transformation</p></li>
+<li><p>Categorical Encoding</p></li>
+</ul></section><section id="missing-value" class="slide level2 smaller"><h2>1.1 Missing Value</h2>
+<p>ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ</p>
+<div style="font-size: 90%;">
+<ul>
+<li>
+<p><strong>การแก้ปัญหา missing ใน inferential statistics</strong></p>
+<ul>
+<li><p>เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย</p></li>
+<li><p>พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน</p></li>
+<li><p>เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI</p></li>
+<li><p>ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล</p></li>
+</ul>
+</li>
+<li>
+<p><strong>การแก้ปัญหา missing ใน predictive modeling</strong></p>
+<ul>
+<li><p>เน้นสร้างโมเดลที่มีความแม่นยำ</p></li>
+<li><p>การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด</p></li>
+<li><p>เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด</p></li>
+<li><p>การอนุมานหรืออธิบายความสัมพันธ์ในประชากรไม่ใช่วัตถุประสงค์หลัก</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</section><section id="missing-values" class="slide level2 smaller"><h2>1.1 Missing Values</h2>
+<p>การจัดการกับ missing values ใน predictive modeling มีหลายวิธีการ เช่น</p>
+<ul>
+<li>Deletion : แนะนำให้ลบเมื่อ feature นั้นมีข้อมูลหายไปมากจนการทดแทนอาจทำให้เกิด bias มากกว่าแก้ปัญหา ยังไงก็ตามการลบข้อมูลในหลายกรณีก็อาจทำให้เกิด bias ในโมเดลได้เช่นกัน เช่น กลุ่มนักเรียนที่มีภาวะซึมเศร้า หรือเสี่ยงอาจไม่ยอมให้ข้อมูลที่เกี่ยวข้อง</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>?<span class="fu">step_naomit</span>() <span class="do">## listwise deletion</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-16-1.png" width="1152" class="r-stretch"></section><section id="missing-values-1" class="slide level2 smaller"><h2>1.1 Missing Values</h2>
+<blockquote>
+<p>ในทางปฏิบัติ การ “ไม่รู้” หรือ “ไม่มีข้อมูล” ถือเป็นข้อมูลชนิดหนึ่ง</p>
+</blockquote>
+<ul>
+<li>Encoding Missingness : วิธีการนี้คือการสร้าง indicator variable ให้กับตัวแปรจัดประเภท เพื่อเปลี่ยนค่า missing ในตัวแปรนั้นให้มีความหมาย ซึ่งอาจมีประสิทธิภาพได้บางกรณี โดยเฉพาะกรณี Structurally Missing (ข้อมูลที่ขาดหายไปเพราะไม่มีข้อมูลนั้นอยู่จริงอยู่แล้ว หรือข้อมูลที่ขาดหายไปเป็นประเภทหนึ่งของข้อมูล)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a>?<span class="fu">step_unknown</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note:</p>
+<ul>
+<li><p>การใช้งานฟังก์ชันนี้จำเป็นต้องใช้กับตัวแปรเชิงหมวดหมู่เท่านั้น และควรใช้ก่อน <code>step_dummy()</code> (ทำไม?)</p></li>
+<li><p>สำหรับข้อมูลเชิงปริมาณใช้วิธีนี้ไม่ได้ หากจะใช้จริง ๆ ต้องใช้ <code>step_indicate_na()</code> ก่อนแล้วค่อยตามด้วย <code>step_unknown()</code> อีกที (ทำไม?)</p></li>
+</ul></section><section id="imputation" class="slide level2 smaller"><h2>1.1 Imputation</h2>
+<p>การทดแทนค่าสูญหายคือการประมาณค่าที่ขาดหายไปด้วยค่าที่ได้จากวิธีการต่าง ๆ ซึ่งมีหลายวิธีการ เช่น</p>
+<ul>
+<li><p>K-NN : ประมาณค่าสูญหายจากหน่วยข้อมูล (เพื่อนบ้าน) ที่ใกล้เคียงที่สุด แต่อาจไม่เหมาะกับข้อมูลแบบจัดประเภท ในกรณีนี้ควรใช้ Gower distance แทน Euclidean distance (KNN เหมาะเมื่อมีตัวแปรไม่เยอะมาก และเรายอมรับตรรกะ ‘ยืมค่าจากคนที่คล้ายกัน’ ได้)</p></li>
+<li><p>Bagged Trees : โมเดลที่มีประสิทธิภาพสูงในการทำนาย ทนทานต่อค่าผิดปกติ และค่าสูญหาย เหมาะกับ ML-pipeline มากกว่า Stat Inference</p></li>
+<li><p>Linear Model : เหมาะกับข้อมูลเชิงปริมาณที่มีการแจกแจงแบบปกติและมีความสัมพันธ์เชิงเส้นกับตัวแปรอื่น</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a>?<span class="fu">step_impute_mean</span>()</span>
+<span id="cb65-2"><a href=""></a>?<span class="fu">step_impute_median</span>()</span>
+<span id="cb65-3"><a href=""></a>?<span class="fu">step_impute_mode</span>()</span>
+<span id="cb65-4"><a href=""></a>?<span class="fu">step_impute_linear</span>()</span>
+<span id="cb65-5"><a href=""></a>?<span class="fu">step_impute_knn</span>()</span>
+<span id="cb65-6"><a href=""></a>?<span class="fu">step_impute_bag</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="missing-values-example" class="slide level2 smaller"><h2>1.1 Missing Values Example</h2>
+<p>ในส่วนนี้จะใช้ชุดข้อมูล <code>exam.csv</code> เป็นตัวอย่าง</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href=""></a>complete_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"exam.csv"</span>)</span>
+<span id="cb66-2"><a href=""></a><span class="fu">glimpse</span>(complete_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 387
+Columns: 5
+$ ach                  &lt;dbl&gt; 52.159780, 30.784999, 39.607737, 55.985351, 31.80…
+$ learning_performance &lt;dbl&gt; 32.666667, 10.666667, 28.000000, 52.666667, 15.55…
+$ ontime_class         &lt;chr&gt; "used to late", "used to late", "never late", "us…
+$ engage               &lt;chr&gt; "no engage", "much engage", "much engage", "much …
+$ practice             &lt;chr&gt; "do practice", "do not praction", "do not practio…</code></pre>
+</div>
+</div>
+</section><section id="missing-values-example-1" class="slide level2 smaller"><h2>1.1 Missing Values Example</h2>
+<p>ลองสร้างการสูญหายใช้ตัวแปร <code>learning_performance</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb68-2"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb68-3"><a href=""></a>missing_data <span class="ot">&lt;-</span> complete_data <span class="sc">%&gt;%</span> </span>
+<span id="cb68-4"><a href=""></a>  <span class="do">## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage</span></span>
+<span id="cb68-5"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> <span class="fu">case_when</span>(</span>
+<span id="cb68-6"><a href=""></a>     ach <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">|</span> engage <span class="sc">==</span> <span class="st">"moderate engage"</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, learning_performance) ,</span>
+<span id="cb68-7"><a href=""></a>    <span class="at">.default =</span> learning_performance</span>
+<span id="cb68-8"><a href=""></a>  )</span>
+<span id="cb68-9"><a href=""></a>  )</span>
+<span id="cb68-10"><a href=""></a>p1<span class="ot">&lt;-</span>missing_data <span class="sc">%&gt;%</span> </span>
+<span id="cb68-11"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb68-12"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
+<span id="cb68-13"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb68-14"><a href=""></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb68-15"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb68-16"><a href=""></a>        <span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
+<span id="cb68-17"><a href=""></a>p2<span class="ot">&lt;-</span>missing_data<span class="sc">%&gt;%</span> </span>
+<span id="cb68-18"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb68-19"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
+<span id="cb68-20"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
+<span id="cb68-21"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">""</span>)<span class="sc">+</span></span>
+<span id="cb68-22"><a href=""></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="missing-values-example-2" class="slide level2 smaller"><h2>1.1 Missing Values Example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch"></section><section id="missing-values-example-3" class="slide level2 smaller"><h2>1.1 Missing Values Example</h2>
+<p>ลองพิจารณาผลลัพธ์ต่อไปนี้</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a><span class="fu">library</span>(naniar)</span>
+<span id="cb70-2"><a href=""></a>split_missing <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(missing_data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> ach)</span>
+<span id="cb70-3"><a href=""></a>train_missing <span class="ot">&lt;-</span> <span class="fu">training</span>(split_missing)</span>
+<span id="cb70-4"><a href=""></a>test_missing <span class="ot">&lt;-</span> <span class="fu">testing</span>(split_missing)</span>
+<span id="cb70-5"><a href=""></a></span>
+<span id="cb70-6"><a href=""></a><span class="do">## mean imputation</span></span>
+<span id="cb70-7"><a href=""></a>p1<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-8"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-9"><a href=""></a>  <span class="fu">step_impute_mean</span>(learning_performance_mar) <span class="sc">%&gt;%</span></span>
+<span id="cb70-10"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-11"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-12"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
+<span id="cb70-13"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-14"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb70-15"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
+<span id="cb70-16"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb70-17"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"mean imputation"</span>)<span class="sc">+</span></span>
+<span id="cb70-18"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb70-19"><a href=""></a></span>
+<span id="cb70-20"><a href=""></a><span class="do">## linear model imputation</span></span>
+<span id="cb70-21"><a href=""></a>p2<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-22"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-23"><a href=""></a>  <span class="fu">step_impute_linear</span>(learning_performance_mar) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-24"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-25"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-26"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
+<span id="cb70-27"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-28"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb70-29"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
+<span id="cb70-30"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb70-31"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"linear model imputation"</span>)<span class="sc">+</span></span>
+<span id="cb70-32"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb70-33"><a href=""></a></span>
+<span id="cb70-34"><a href=""></a><span class="do">## knn imputation</span></span>
+<span id="cb70-35"><a href=""></a>p3<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-36"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-37"><a href=""></a>  <span class="fu">step_impute_knn</span>(learning_performance_mar) <span class="sc">%&gt;%</span></span>
+<span id="cb70-38"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-39"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-40"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
+<span id="cb70-41"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-42"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb70-43"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
+<span id="cb70-44"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb70-45"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"knn imputation"</span>)<span class="sc">+</span></span>
+<span id="cb70-46"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb70-47"><a href=""></a></span>
+<span id="cb70-48"><a href=""></a></span>
+<span id="cb70-49"><a href=""></a><span class="do">## bagging imputation</span></span>
+<span id="cb70-50"><a href=""></a>p4<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-51"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-52"><a href=""></a>  <span class="fu">step_impute_bag</span>(learning_performance_mar, <span class="at">trees =</span> <span class="dv">50</span>,</span>
+<span id="cb70-53"><a href=""></a>                  <span class="at">impute_with =</span> <span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb70-54"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-55"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-56"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
+<span id="cb70-57"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb70-58"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb70-59"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
+<span id="cb70-60"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
+<span id="cb70-61"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"bagging imputation"</span>)<span class="sc">+</span></span>
+<span id="cb70-62"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="missing-values-example-4" class="slide level2 smaller"><h2>1.1 Missing Values Example</h2>
+
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch"></section><section id="scalingnormalization" class="slide level2 smaller"><h2>1.2 Scaling/Normalization</h2>
+<ul>
+<li><p>Normalization เป็นวิธีการปรับตัวแปรโดยนำค่าของมันมาลบด้วยค่าเฉลี่ย (mean) แล้วหารด้วยส่วนเบี่ยงเบนมาตรฐาน (standard deviation)</p></li>
+<li><p>ผลลัพธ์ที่ได้จะเป็นสเกลใหม่ที่มีค่าเฉลี่ยเป็น 0 และส่วนเบี่ยงเบนมาตรฐานเป็น 1</p></li>
+<li><p>อย่าลืมว่าการแปลงนี้จะคำนวณค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐานจาก training data เท่านั้น แล้วจึงนำค่าที่ได้ไปใช้แปลงทั้ง training และ test data เพื่อหลีกเลี่ยงปัญหา data leakage</p></li>
+<li><p>นอกจากนี้ยังมี misconcept ที่ว่าการแปลงแบบนี้ช่วยให้ข้อมูลมีการแจกแจงแบบปกติ</p></li>
+</ul>
+<p><span class="math display">\[
+X_{scaled} = \frac{X - mean(X)}{SD(X)}
+\]</span> ## Normalization {.smaller}</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb71-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-4"><a href=""></a>  <span class="fu">step_normalize</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="https://feaz-book.com/numeric-normalization_files/figure-html/fig-normalization-not-normal-1.png" class="r-stretch"></section><section id="scalingnormalization-range-scaling" class="slide level2 smaller"><h2>1.2 Scaling/Normalization : Range Scaling</h2>
+<p>อีกชื่อหนึ่งคือ Min-Max Scaling เป็นวิธีการที่ช่วยแปลงตัวแปรเชิงปริมาณให้มีสเกลอยู่ในช่วง [0,1]</p>
+<p><span class="math display">\[
+X_{scaled} = \frac{X - min(X)}{max(X) - min(X)}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb72-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb72-4"><a href=""></a>  <span class="fu">step_range</span>(distance_from_home,</span>
+<span id="cb72-5"><a href=""></a>             <span class="at">min =</span> <span class="dv">0</span>,</span>
+<span id="cb72-6"><a href=""></a>             <span class="at">max =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="https://feaz-book.com/numeric-range_files/figure-html/fig-range-clipping-1.png" class="r-stretch"></section><section id="scalingnormalization-robust-scaling" class="slide level2 smaller"><h2>1.2 Scaling/Normalization: Robust Scaling</h2>
+<ul>
+<li><p>เป็นวิธีการแปลงที่คล้ายการทำ normalization แต่ใช้ค่ามัธยฐาน (median) และช่วง interquartile range (IQR) แทนค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐาน</p></li>
+<li><p>อย่างไรก็ตามวิธีตัวหาร IQR(X) อาจมีค่าเท่ากับ 0 ในบางชุดข้อมูล</p></li>
+</ul>
+<p><span class="math display">\[
+X_{scaled} = \frac{X - median(X)}{IQR(X)}
+\]</span></p>
+<ul>
+<li>มีฟังก์ชันสำเร็จรูปใน <a href="https://github.com/EmilHvitfeldt/extrasteps/">library-<code>extrasteps</code></a>
+</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a><span class="do">## install.packages("extrasteps")</span></span>
+<span id="cb73-2"><a href=""></a><span class="fu">library</span>(extrasteps)</span>
+<span id="cb73-3"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-4"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb73-5"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-6"><a href=""></a>  <span class="fu">step_robust</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="distribution-transformation" class="slide level2 smaller"><h2>1.3 Distribution Transformation</h2>
 <blockquote>
 <p>ตัวแปรเชิงปริมาณ คือ คุณลักษณะที่สามารถวัด/สังเกตค่าได้เป็นตัวเลข ที่มีความหมายในเชิงปริมาณ สามารถเปรียบเทียบและคำนวณทางคณิตศาสตร์ได้</p>
 </blockquote>
@@ -763,22 +1022,22 @@ ID:         1</code></pre>
 </ul></section><section id="logarithms" class="slide level2 smaller"><h2>Logarithms</h2>
 <p>ลอการิทึม (logarithms) เป็นเครื่องมือที่ใช้เพื่อจัดการกับข้อมูลที่มีการเบ้ (skewed) อย่างมาก</p>
 
-<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch"></section><section id="logarithms-1" class="slide level2 smaller"><h2>Logarithms</h2>
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section><section id="logarithms-1" class="slide level2 smaller"><h2>Logarithms</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>my_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb63-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb63-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb63-4"><a href=""></a>  <span class="fu">step_log</span>(distance_from_home)</span>
-<span id="cb63-5"><a href=""></a></span>
-<span id="cb63-6"><a href=""></a>my_rec <span class="sc">%&gt;%</span> </span>
-<span id="cb63-7"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb63-8"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb63-9"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> distance_from_home))<span class="sc">+</span></span>
-<span id="cb63-10"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a>my_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb74-4"><a href=""></a>  <span class="fu">step_log</span>(distance_from_home)</span>
+<span id="cb74-5"><a href=""></a></span>
+<span id="cb74-6"><a href=""></a>my_rec <span class="sc">%&gt;%</span> </span>
+<span id="cb74-7"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb74-8"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb74-9"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> distance_from_home))<span class="sc">+</span></span>
+<span id="cb74-10"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="logarithms-2" class="slide level2 smaller"><h2>Logarithms</h2>
 
-<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"><p>ข้อจำกัดของ log-transformation</p>
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"><p>ข้อจำกัดของ log-transformation</p>
 <ul>
 <li><p>ใช้ได้กับข้อมูลที่มีค่าเป็นบวกเท่านั้น (positive values)</p></li>
 <li><p>การแปลงแบบ log ให้ผลลัพธ์เป็น normal distribution เสมอ ?</p></li>
@@ -788,7 +1047,7 @@ ID:         1</code></pre>
 y = sign(x) \sqrt{|x|}
 \]</span></p>
 
-<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section><section id="box-cox-transformation" class="slide level2 smaller"><h2>Box-Cox transformation</h2>
+<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section><section id="box-cox-transformation" class="slide level2 smaller"><h2>Box-Cox transformation</h2>
 <ul>
 <li><p>โดยปกติการแจกแจงที่ไม่เบ้มากเกินไปของตัวแปรทำนาย เพียงพอที่จะทำให้การเรียนรู้ของเครื่องทำงานได้อย่างมีประสิทธิภาพ (เพราะหลายเทคนิคไม่ได้ require normality ในตัวแปรทำนาย) แต่บางกรณีก็มีเงื่อนไข normality ในตัวแปรทำนาย เช่น linear discriminant analysis (LDA)</p></li>
 <li><p><a href="https://en.wikipedia.org/wiki/Power_transform">Box-Cox transformation</a> เป็นเทคนิคที่ใช้แปลงตัวแปรเชิงปริมาณให้มีการแจกแจงใกล้เคียง normal distribution มากขึ้น</p></li>
@@ -796,12 +1055,12 @@ y = sign(x) \sqrt{|x|}
 <li><p>เงื่อนไขที่สำคัญของ Box-Cox transformation คือ ตัวแปรต้องมีค่าบวกเท่านั้น (positive values)</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb64-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb64-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb64-4"><a href=""></a>  <span class="fu">step_BoxCox</span>(distance_from_home, </span>
-<span id="cb64-5"><a href=""></a>              <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>,<span class="dv">5</span>), <span class="co"># A length 2 numeric vector defining the range to compute the transformation parameter lambda.</span></span>
-<span id="cb64-6"><a href=""></a>              <span class="at">lambdas =</span> <span class="cn">NULL</span>) <span class="co"># A numeric vector of transformation values. This is NULL until computed by prep().</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb75-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb75-4"><a href=""></a>  <span class="fu">step_BoxCox</span>(distance_from_home, </span>
+<span id="cb75-5"><a href=""></a>              <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>,<span class="dv">5</span>), <span class="co"># A length 2 numeric vector defining the range to compute the transformation parameter lambda.</span></span>
+<span id="cb75-6"><a href=""></a>              <span class="at">lambdas =</span> <span class="cn">NULL</span>) <span class="co"># A numeric vector of transformation values. This is NULL until computed by prep().</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="box-cox-transformation-1" class="slide level2 smaller"><h2>Box-Cox transformation</h2>
 
@@ -811,10 +1070,10 @@ y = sign(x) \sqrt{|x|}
 <li><p>สามารถใช้กับข้อมูลที่มีค่าบวกและค่าลบได้ (positive and negative values)</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb65-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb65-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb65-4"><a href=""></a>  <span class="fu">step_YeoJohnson</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb76-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb76-4"><a href=""></a>  <span class="fu">step_YeoJohnson</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="https://feaz-book.com/numeric-yeojohnson_files/figure-html/visualize_yeojohnson-normal-1.png" class="r-stretch"></section><section id="yeo-johnson-transformation-1" class="slide level2 smaller"><h2>Yeo-Johnson transformation</h2>
@@ -845,125 +1104,23 @@ y = sign(x) \sqrt{|x|}
 <li><p>ระมัดระวังดี ๆ ว่าข้อมูลชุดอื่นที่จะนำมาใช้งานเช่น test data หรือ new data ควรต้องมีการแจกแจงในลักษณะใกล้เคียงกับชุดข้อมูล traning data</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb66-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb66-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb66-4"><a href=""></a>  <span class="fu">step_percentile</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb77-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-4"><a href=""></a>  <span class="fu">step_percentile</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="normalization" class="slide level2 smaller"><h2>Normalization</h2>
-<ul>
-<li><p>Normalization เป็นวิธีการปรับตัวแปรโดยนำค่าของมันมาลบด้วยค่าเฉลี่ย (mean) แล้วหารด้วยส่วนเบี่ยงเบนมาตรฐาน (standard deviation)</p></li>
-<li><p>ผลลัพธ์ที่ได้จะเป็นสเกลใหม่ที่มีค่าเฉลี่ยเป็น 0 และส่วนเบี่ยงเบนมาตรฐานเป็น 1</p></li>
-<li><p>อย่าลืมว่าการแปลงนี้จะคำนวณค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐานจาก training data เท่านั้น แล้วจึงนำค่าที่ได้ไปใช้แปลงทั้ง training และ test data เพื่อหลีกเลี่ยงปัญหา data leakage</p></li>
-<li><p>นอกจากนี้ยังมี misconcept ที่ว่าการแปลงแบบนี้ช่วยให้ข้อมูลมีการแจกแจงแบบปกติ</p></li>
-</ul>
-<p><span class="math display">\[
-X_{scaled} = \frac{X - mean(X)}{SD(X)}
-\]</span> ## Normalization {.smaller}</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb67-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb67-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb67-4"><a href=""></a>  <span class="fu">step_normalize</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-
-<img data-src="https://feaz-book.com/numeric-normalization_files/figure-html/fig-normalization-not-normal-1.png" class="r-stretch"></section><section id="range-scaling" class="slide level2 smaller"><h2>Range Scaling</h2>
-<p>อีกชื่อหนึ่งคือ Min-Max Scaling เป็นวิธีการที่ช่วยแปลงตัวแปรเชิงปริมาณให้มีสเกลอยู่ในช่วง [0,1]</p>
-<p><span class="math display">\[
-X_{scaled} = \frac{X - min(X)}{max(X) - min(X)}
-\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb68-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb68-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb68-4"><a href=""></a>  <span class="fu">step_range</span>(distance_from_home,</span>
-<span id="cb68-5"><a href=""></a>             <span class="at">min =</span> <span class="dv">0</span>,</span>
-<span id="cb68-6"><a href=""></a>             <span class="at">max =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-
-<img data-src="https://feaz-book.com/numeric-range_files/figure-html/fig-range-clipping-1.png" class="r-stretch"></section><section id="robust-scaling" class="slide level2 smaller"><h2>Robust Scaling</h2>
-<ul>
-<li><p>เป็นวิธีการแปลงที่คล้ายการทำ normalization แต่ใช้ค่ามัธยฐาน (median) และช่วง interquartile range (IQR) แทนค่าเฉลี่ยและส่วนเบี่ยงเบนมาตรฐาน</p></li>
-<li><p>อย่างไรก็ตามวิธีตัวหาร IQR(X) อาจมีค่าเท่ากับ 0 ในบางชุดข้อมูล</p></li>
-</ul>
-<p><span class="math display">\[
-X_{scaled} = \frac{X - median(X)}{IQR(X)}
-\]</span></p>
-<ul>
-<li>มีฟังก์ชันสำเร็จรูปใน <a href="https://github.com/EmilHvitfeldt/extrasteps/">library-<code>extrasteps</code></a>
-</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a><span class="do">## install.packages("extrasteps")</span></span>
-<span id="cb69-2"><a href=""></a><span class="fu">library</span>(extrasteps)</span>
-<span id="cb69-3"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb69-4"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb69-5"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb69-6"><a href=""></a>  <span class="fu">step_robust</span>(distance_from_home)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section><section id="binning" class="slide level2 smaller scrollable"><h2>Binning</h2>
-<ul>
-<li><p>เป็นเทคนิคการแปลงข้อมูลเชิงปริมาณให้เป็นข้อมูลเชิงหมวดหมู่ (categorical) โดยการแบ่งช่วงค่าของตัวแปรเชิงปริมาณออกเป็นกลุ่มย่อย (bins) ตามเกณฑ์ที่กำหนด จากนั้นแทนค่าแต่ละช่วงด้วยตัวแปรใหม่</p></li>
-<li><p>วิธีการนี้ช่วยให้สามารถจัดการความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรทำนายในลักษณะที่ไม่เป็นเชิงเส้นตรงได้</p></li>
-<li><p>วิธีการนี้ถือว่าเป็น trained preprocessing step เพราะตำแหน่งและจำนวนของ bin ถูกกำหนดขึ้นจากชุดข้อมูล training data</p></li>
-</ul>
-<p>ขั้นตอนวิธีการทำงาน</p>
-<ol type="1">
-<li><p>แบ่งช่วง (intervals)</p></li>
-<li><p>แทนค่า – กล่าวคือแต่ละ bin ถูกแทนด้วยค่าของตัวแปรใหม่ที่มีค่าเท่ากับ 1 ถ้าตัวแปรต้นฉบับมีค่าอยู่ใน bin นั้น และมีค่าเท่ากับ 0 ถ้าไม่ใช่ ผลลัพธ์ส่วนนี้จะได้ตัวแปร dummy หลายตัวที่แสดงการเป็นสมาชิกของ bin</p></li>
-</ol>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb70-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb70-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
-<span id="cb70-4"><a href=""></a>  <span class="fu">step_discretize</span>(distance_from_home,</span>
-<span id="cb70-5"><a href=""></a>                  <span class="at">num_breaks =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section><section id="binning-1" class="slide level2 smaller"><h2>Binning</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
-<span id="cb71-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb71-3"><a href=""></a>  <span class="co">#step_rm(gpa) %&gt;% </span></span>
-<span id="cb71-4"><a href=""></a>  <span class="fu">step_discretize</span>(distance_from_home,</span>
-<span id="cb71-5"><a href=""></a>                  <span class="at">num_breaks =</span> <span class="dv">4</span>,</span>
-<span id="cb71-6"><a href=""></a>                  <span class="at">min_unique =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-predictor-outcome-1.png"></p>
-</div><div class="column" style="width:50%;">
-<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-curves-1.png"></p>
-</div></div>
-</section><section id="binning-2" class="slide level2 smaller"><h2>Binning</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-discont-binning-different-num_breaks-1.png"></p>
-</div><div class="column" style="width:50%;">
-<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-different-num_breaks-1.png"></p>
-</div></div>
-<ul>
-<li><p>คำนวณได้รวดเร็ว (computationally efficient)</p></li>
-<li><p>ทำนายนอกช่วงของตัวแปรทำนายได้เสถียร (predictable behavior outside the observed range)</p></li>
-<li><p>การปัดค่าที่เกิดขึ้นโดยธรรมชาติของวิธีนี้ อาจทำให้ สูญเสียทั้งประสิทธิภาพและความหมายในการตีความ</p></li>
-<li><p>อาจทำให้เกิด จำนวนตัวแปรใหม่มากเกินไป ส่งผลให้โมเดลซับซ้อน</p></li>
-</ul></section><section id="target-based-bining" class="slide level2 smaller"><h2>Target-Based Bining</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href=""></a><span class="fu">step_discretize_cart</span>()</span>
-<span id="cb72-2"><a href=""></a><span class="fu">step_discretize_xgb</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><code>step_discretize_cart()</code> และ <code>step_discretize_xgb()</code> ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ</p>
-</section><section id="categorical-encoding" class="slide level2 smaller"><h2>2.2 Categorical Encoding</h2>
+</section><section id="categorical-encoding" class="slide level2 smaller"><h2>1.4 Categorical Encoding</h2>
 <ul>
 <li><p>ข้อมูลอีกประเภทที่พบบ่อยคือ ตัวแปรจัดประเภท (categorical variables) ซึ่งเป็นตัวแปรที่ไม่สามารถวัดค่าได้เป็นตัวเลข แต่มีลักษณะเป็นกลุ่มหรือประเภท</p></li>
 <li><p>โมเดลหลายประเภท เช่น linear regression, logistic regression, SVM, k-NN, neural networks ต้องการให้ข้อมูลเป็นตัวเลขทั้งหมด จึงจำเป็นต้องแปลงตัวแปรจัดประเภทให้เป็นตัวแปรเชิงปริมาณก่อนนำไปใช้สร้างโมเดล</p></li>
 <li><p>โมเดลบางประเภท โดยเฉพาะกลุ่ม โมเดลเชิงต้นไม้ (tree-based models) เช่น decision trees, random forests, gradient boosting machines สามารถจัดการกับตัวแปรจัดประเภทได้โดยตรง โดยไม่ต้องแปลงเป็นตัวเลขก่อน</p></li>
-</ul></section><section id="categorical-encoding-1" class="slide level2 smaller"><h2>2.2 Categorical Encoding</h2>
+</ul></section><section id="categorical-encoding-1" class="slide level2 smaller"><h2>1.4 Categorical Encoding</h2>
 <p>มีประเด็นที่ควรพิจารณา ได้แก่</p>
 <ul>
 <li><p>ค่าที่เป็นไปได้ของตัวแปรจัดประเภท – ข้อมูลของตัวแปรจัดประเภทสามารถมีจำนวนค่าที่เป็นไปได้ทั้งแบบจำกัดค่าแน่นอน เช่น เพศ วันใน 1 สัปดาห์ หรือ วิธีการสอนที่ครูใช้ หรือ อาจมีค่าที่เป็นไปได้แบบไม่จำกัด/ไม่แน่นอน เช่น ชื่อโรงเรียน ชื่อผลิตภัณฑ์ …</p></li>
 <li><p>ลำดับของข้อมูล (ordering) – ตัวแปรจัดประเภทบางตัวมีลำดับขั้นของข้อมูลในธรรมชาติ เช่น ขนาดโรงเรียน ระดับชั้นของนักเรียน</p></li>
 <li><p>การเข้ารหัส (encoding) – วิธีการเข้ารหัสที่แตกต่างกัน อาจมีผลต่อประสิทธิภาพของโมเดล</p></li>
-</ul></section><section id="categorical-encoding-2" class="slide level2 smaller"><h2>2.2 Categorical Encoding</h2>
+</ul></section><section id="categorical-encoding-2" class="slide level2 smaller"><h2>1.4 Categorical Encoding</h2>
 <div style="font-size: 70%;">
 <ul>
 <li>
@@ -993,151 +1150,130 @@ X_{scaled} = \frac{X - median(X)}{IQR(X)}
 </li>
 </ul>
 </div>
-</section><section id="imputation" class="slide level2 smaller"><h2>2.3 Imputation</h2>
-<p>ปัญหา missing value เป็นปัญหาที่พบบ่อยและอาจสร้างผลกระทบอย่างมากต่อโมเดลการเรียนรู้ของเครื่อง การจัดการ missing value มีหลายวิธีการ แต่ละวิธีการจะมีข้อดี ข้อจำกัดและเหมาะกับบริบทการใช้งานที่แตกต่างกัน เราอาจจำแนกบริบทการใช้งานได้เป็น 2 ลักษณะ</p>
-<div style="font-size: 90%;">
+</section><section id="feature-construction" class="slide level2 smaller"><h2>2. Feature Construction</h2>
+<p>Feature Construction คือการสร้างฟีเจอร์ใหม่ขึ้นมาโดยเจตนา จากฟีเจอร์เดิม เพื่อ ใส่ความรู้เชิงแนวคิด (conceptual / domain knowledge) เข้าไปในข้อมูล ให้โมเดลเห็นโครงสร้างของปัญหาได้ชัดกว่าที่ข้อมูลดิบเล่าเองได้</p>
 <ul>
-<li>
-<p><strong>การแก้ปัญหา missing ใน inferential statistics</strong></p>
-<ul>
-<li><p>เน้นอธิบาย เน้นอนุมานไปยังประชากร/กลุ่มเป้าหมาย</p></li>
-<li><p>พยายามรักษาความน่าเชื่อถือ/ความถูกต้องของการอนุมาน</p></li>
-<li><p>เน้นวิธีการ impute missing ที่สามารถ capture ความไม่แน่นอนของการทดแทนค่าสูญหายให้ได้ เช่น MI</p></li>
-<li><p>ปัจจัยสำคัญที่ใช้เลือกวิธีการ impute คือ กลไกการสูญหายของข้อมูล</p></li>
+<li><p>สร้างตัวแปรใหม่โดยใช้ทฤษฎี ตรรกะ หรือความรู้ที่เกี่ยวข้องกับบริบทการทำงาน</p></li>
+<li><p>จัดกลุ่มข้อมูล (binning/discretization) เป็นการแปลงข้อมูลเชิงปริมาณให้เป็นข้อมูลเชิงหมวดหมู่ เหมาะกับกรณีที่ความสัมพันธ์ของข้อมูลไม่ได้เป็นเส้นตรง หรือกรณีที่มีค่าผิดปกติในตัวแปร</p></li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href=""></a><span class="fu">step_discretize</span>() <span class="do">## แบ่งช่วงตาม quantile พยายามให้แต่ละ bin มีจำนวนข้อมูลเท่ากัน</span></span>
+<span id="cb78-2"><a href=""></a><span class="fu">step_cut</span>() <span class="do">## แบ่งช่วงตาม cut points ที่กำหนดเอง</span></span>
+<span id="cb78-3"><a href=""></a><span class="do">## ใช้ ML ช่วยในการแบ่งช่วงเพื่อหาจุดตัดที่เหมาะสมที่สุดในการทำนาย</span></span>
+<span id="cb78-4"><a href=""></a><span class="fu">step_discretize_cart</span>() <span class="do">## แบ่งช่วงโดยใช้ CART</span></span>
+<span id="cb78-5"><a href=""></a><span class="fu">step_discretize_xgb</span>() <span class="do">## แบ่งช่วงโดยใช้ XGBoost </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>สร้างตัวแปรปฏิสัมพันธ์ (interaction features) เป็นการนำตัวแปร 2 ตัวขึ้นไปมาคูณกันเป็นตัวแปรใหม่ เพื่อจับความสัมพันธ์เชิงปฏิสัมพันธ์ระหว่างตัวแปรเหล่านั้น ใช้ <code>step_interact()</code>
 </li>
-<li>
-<p><strong>การแก้ปัญหา missing ใน predictive modeling</strong></p>
+</ul></section><section id="manual-construction" class="slide level2 smaller"><h2>2.1 Manual Construction</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">%&gt;%</span></span>
+<span id="cb79-2"><a href=""></a>  <span class="fu">step_mutate</span>(</span>
+<span id="cb79-3"><a href=""></a>    <span class="at">income_per_member =</span> family_income <span class="sc">/</span> family_size,</span>
+<span id="cb79-4"><a href=""></a>    <span class="at">credits_per_year =</span> credits_per_term <span class="sc">*</span> <span class="dv">3</span>,</span>
+<span id="cb79-5"><a href=""></a>    <span class="at">absence_rate =</span> absence_count <span class="sc">/</span> total_days,</span>
+<span id="cb79-6"><a href=""></a>    <span class="at">withdrawal_rate =</span> withdrawal_count <span class="sc">/</span> years_study,</span>
+<span id="cb79-7"><a href=""></a>    <span class="at">academic_load =</span> (credits_per_term <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">+</span> (activity_participation <span class="sc">*</span> <span class="fl">0.5</span>),</span>
+<span id="cb79-8"><a href=""></a>    <span class="at">high_risk_student =</span> <span class="fu">if_else</span>(gpa <span class="sc">&lt;</span> <span class="fl">2.0</span> <span class="sc">&amp;</span> absence_count <span class="sc">&gt;</span> <span class="dv">10</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb79-9"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="binning" class="slide level2 smaller scrollable"><h2>2.2 Binning</h2>
 <ul>
-<li><p>เน้นสร้างโมเดลที่มีความแม่นยำ</p></li>
-<li><p>การจัดการ missing มีความสำคัญเพียงในขั้นตอน preprocessing เพื่อสร้างโมเดลทำนายที่ดีที่สุด</p></li>
-<li><p>เนื่องจากเน้นผลการทำนายที่ดี วิธีการที่ใช้จึงเน้นการทดแทนค่าสูญหายที่แม่นยำและทำให้โมเดลมีค่าทำนายที่แม่นยำที่สุด</p></li>
-<li><p>การอนุมานหรืออธิบายความสัมพันธ์ในประชากรไม่ใช่วัตถุประสงค์หลัก</p></li>
+<li><p>เป็นเทคนิคการแปลงข้อมูลเชิงปริมาณให้เป็นข้อมูลเชิงหมวดหมู่ (categorical) โดยการแบ่งช่วงค่าของตัวแปรเชิงปริมาณออกเป็นกลุ่มย่อย (bins) ตามเกณฑ์ที่กำหนด จากนั้นแทนค่าแต่ละช่วงด้วยตัวแปรใหม่</p></li>
+<li><p>วิธีการนี้ช่วยให้สามารถจัดการความสัมพันธ์ระหว่างตัวแปรตามกับตัวแปรทำนายในลักษณะที่ไม่เป็นเชิงเส้นตรงได้</p></li>
+<li><p>วิธีการนี้ถือว่าเป็น trained preprocessing step เพราะตำแหน่งและจำนวนของ bin ถูกกำหนดขึ้นจากชุดข้อมูล training data</p></li>
 </ul>
-</li>
-</ul>
-</div>
-</section><section id="imputation-1" class="slide level2 smaller"><h2>2.3 Imputation</h2>
+<p>ขั้นตอนวิธีการทำงาน</p>
+<ol type="1">
+<li><p>แบ่งช่วง (intervals)</p></li>
+<li><p>แทนค่า – กล่าวคือแต่ละ bin ถูกแทนด้วยค่าของตัวแปรใหม่ที่มีค่าเท่ากับ 1 ถ้าตัวแปรต้นฉบับมีค่าอยู่ใน bin นั้น และมีค่าเท่ากับ 0 ถ้าไม่ใช่ ผลลัพธ์ส่วนนี้จะได้ตัวแปร dummy หลายตัวที่แสดงการเป็นสมาชิกของ bin</p></li>
+</ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a>?<span class="fu">step_naomit</span>() <span class="do">## listwise deletion</span></span>
-<span id="cb73-2"><a href=""></a>?<span class="fu">step_impute_mean</span>()</span>
-<span id="cb73-3"><a href=""></a>?<span class="fu">step_impute_median</span>()</span>
-<span id="cb73-4"><a href=""></a>?<span class="fu">step_impute_mode</span>()</span>
-<span id="cb73-5"><a href=""></a>?<span class="fu">step_impute_linear</span>()</span>
-<span id="cb73-6"><a href=""></a>?<span class="fu">step_impute_knn</span>()</span>
-<span id="cb73-7"><a href=""></a>?<span class="fu">step_impute_bag</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb80-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb80-3"><a href=""></a>  <span class="fu">step_rm</span>(gpa) <span class="sc">%&gt;%</span> </span>
+<span id="cb80-4"><a href=""></a>  <span class="fu">step_discretize</span>(distance_from_home,</span>
+<span id="cb80-5"><a href=""></a>                  <span class="at">num_breaks =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>ในส่วนนี้จะใช้ชุดข้อมูล <code>exam.csv</code> เป็นตัวอย่าง</p>
+</section><section id="binning-1" class="slide level2 smaller"><h2>2.2 Binning</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a>complete_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"exam.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href=""></a><span class="fu">recipe</span>(academic_risk <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb81-2"><a href=""></a>  <span class="fu">update_role</span>(student_id, <span class="at">new_role =</span> <span class="st">"ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb81-3"><a href=""></a>  <span class="co">#step_rm(gpa) %&gt;% </span></span>
+<span id="cb81-4"><a href=""></a>  <span class="fu">step_discretize</span>(distance_from_home,</span>
+<span id="cb81-5"><a href=""></a>                  <span class="at">num_breaks =</span> <span class="dv">4</span>,</span>
+<span id="cb81-6"><a href=""></a>                  <span class="at">min_unique =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="imputation-2" class="slide level2 smaller"><h2>2.3 Imputation</h2>
-<p>ลองสร้างการสูญหายใช้ตัวแปร <code>learning_performance</code></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href=""></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb75-2"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb75-3"><a href=""></a>missing_data <span class="ot">&lt;-</span> complete_data <span class="sc">%&gt;%</span> </span>
-<span id="cb75-4"><a href=""></a>  <span class="do">## สร้างตัวแปรใหม่ที่สูญหายแบบ MAR โดยมีความสัมพันธ์กับ ach และ engage</span></span>
-<span id="cb75-5"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">learning_performance_mar =</span> <span class="fu">case_when</span>(</span>
-<span id="cb75-6"><a href=""></a>     ach <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">|</span> engage <span class="sc">==</span> <span class="st">"moderate engage"</span>  <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="dv">387</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;</span><span class="fl">0.8</span>,<span class="cn">NA</span>, learning_performance) ,</span>
-<span id="cb75-7"><a href=""></a>    <span class="at">.default =</span> learning_performance</span>
-<span id="cb75-8"><a href=""></a>  )</span>
-<span id="cb75-9"><a href=""></a>  )</span>
-<span id="cb75-10"><a href=""></a>p1<span class="ot">&lt;-</span>missing_data <span class="sc">%&gt;%</span> </span>
-<span id="cb75-11"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb75-12"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>value))<span class="sc">+</span></span>
-<span id="cb75-13"><a href=""></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
-<span id="cb75-14"><a href=""></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">""</span>)<span class="sc">+</span></span>
-<span id="cb75-15"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
-<span id="cb75-16"><a href=""></a>        <span class="at">legend.direction =</span> <span class="st">"horizontal"</span>)</span>
-<span id="cb75-17"><a href=""></a>p2<span class="ot">&lt;-</span>missing_data<span class="sc">%&gt;%</span> </span>
-<span id="cb75-18"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">starts_with</span>(<span class="st">"learning"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb75-19"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">y=</span>name))<span class="sc">+</span></span>
-<span id="cb75-20"><a href=""></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name))<span class="sc">+</span></span>
-<span id="cb75-21"><a href=""></a>  <span class="fu">ylab</span>(<span class="st">""</span>)<span class="sc">+</span></span>
-<span id="cb75-22"><a href=""></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section><section id="imputation-3" class="slide level2 smaller"><h2>2.3 Imputation</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href=""></a>p1<span class="sc">+</span>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section><section id="imputation-4" class="slide level2 smaller"><h2>2.3 Imputation</h2>
-<p>ลองพิจารณาผลลัพธ์ต่อไปนี้</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href=""></a><span class="fu">library</span>(naniar)</span>
-<span id="cb77-2"><a href=""></a>split_missing <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(missing_data, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> ach)</span>
-<span id="cb77-3"><a href=""></a>train_missing <span class="ot">&lt;-</span> <span class="fu">training</span>(split_missing)</span>
-<span id="cb77-4"><a href=""></a>test_missing <span class="ot">&lt;-</span> <span class="fu">testing</span>(split_missing)</span>
-<span id="cb77-5"><a href=""></a></span>
-<span id="cb77-6"><a href=""></a><span class="do">## mean imputation</span></span>
-<span id="cb77-7"><a href=""></a>p1<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-8"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-9"><a href=""></a>  <span class="fu">step_impute_mean</span>(learning_performance_mar) <span class="sc">%&gt;%</span></span>
-<span id="cb77-10"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-11"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-12"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
-<span id="cb77-13"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-14"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb77-15"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
-<span id="cb77-16"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
-<span id="cb77-17"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"mean imputation"</span>)<span class="sc">+</span></span>
-<span id="cb77-18"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
-<span id="cb77-19"><a href=""></a></span>
-<span id="cb77-20"><a href=""></a><span class="do">## linear model imputation</span></span>
-<span id="cb77-21"><a href=""></a>p2<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-22"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-23"><a href=""></a>  <span class="fu">step_impute_linear</span>(learning_performance_mar) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-24"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-25"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-26"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
-<span id="cb77-27"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-28"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb77-29"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
-<span id="cb77-30"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
-<span id="cb77-31"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"linear model imputation"</span>)<span class="sc">+</span></span>
-<span id="cb77-32"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
-<span id="cb77-33"><a href=""></a></span>
-<span id="cb77-34"><a href=""></a><span class="do">## knn imputation</span></span>
-<span id="cb77-35"><a href=""></a>p3<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-36"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-37"><a href=""></a>  <span class="fu">step_impute_knn</span>(learning_performance_mar) <span class="sc">%&gt;%</span></span>
-<span id="cb77-38"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-39"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-40"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
-<span id="cb77-41"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-42"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb77-43"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
-<span id="cb77-44"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
-<span id="cb77-45"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"knn imputation"</span>)<span class="sc">+</span></span>
-<span id="cb77-46"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
-<span id="cb77-47"><a href=""></a></span>
-<span id="cb77-48"><a href=""></a></span>
-<span id="cb77-49"><a href=""></a><span class="do">## bagging imputation</span></span>
-<span id="cb77-50"><a href=""></a>p4<span class="ot">&lt;-</span><span class="fu">recipe</span>(ach <span class="sc">~</span> ., <span class="at">data =</span> train_missing) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-51"><a href=""></a>  <span class="fu">step_rm</span>(learning_performance) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-52"><a href=""></a>  <span class="fu">step_impute_bag</span>(learning_performance_mar, <span class="at">trees =</span> <span class="dv">50</span>,</span>
-<span id="cb77-53"><a href=""></a>                  <span class="at">impute_with =</span> <span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb77-54"><a href=""></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-55"><a href=""></a>  <span class="fu">juice</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-56"><a href=""></a>  <span class="fu">select</span>(learning_performance_mar, ach) <span class="sc">%&gt;%</span></span>
-<span id="cb77-57"><a href=""></a>  <span class="fu">bind_cols</span>(train_missing <span class="sc">%&gt;%</span> <span class="fu">select</span>(learning_performance_mar) <span class="sc">%&gt;%</span>  <span class="fu">bind_shadow</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb77-58"><a href=""></a>              <span class="fu">select</span>(<span class="sc">-</span>learning_performance_mar)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb77-59"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> learning_performance_mar, <span class="at">y=</span> ach))<span class="sc">+</span></span>
-<span id="cb77-60"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">col =</span> learning_performance_mar_NA))<span class="sc">+</span></span>
-<span id="cb77-61"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"bagging imputation"</span>)<span class="sc">+</span></span>
-<span id="cb77-62"><a href=""></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section><section id="imputation-5" class="slide level2 smaller"><h2>2.3 Imputation</h2>
-
-<img data-src="feature_engineering_tidymodels_files/figure-revealjs/unnamed-chunk-33-1.png" width="960" class="r-stretch"></section><section id="too-many-variables" class="slide level2"><h2>2.4 Too Many Variables</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-predictor-outcome-1.png"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-curves-1.png"></p>
+</div></div>
+</section><section id="binning-2" class="slide level2 smaller"><h2>2.2 Binning</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-discont-binning-different-num_breaks-1.png"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="https://feaz-book.com/numeric-binning_files/figure-html/fig-binning-different-num_breaks-1.png"></p>
+</div></div>
 <ul>
-<li><p><code>step_corr()</code> - กำจัดตัวแปรที่ correlation สูง</p></li>
-<li><p><code>step_nzv()</code> - กำจัด near-zero variance</p></li>
-<li><p><code>step_rm()</code> - เลือกตัวแปรที่ต้องการออก</p></li>
-<li><p><code>step_pca()</code> - Principal Component Analysis</p></li>
-<li><p><code>step_pls()</code> - Partial Least Squares</p></li>
-<li><p>นอกจากนี้ยังสามารถใช้ lasso regression เป็นวิธีการเลือกตัวแปรได้</p></li>
+<li><p>คำนวณได้รวดเร็ว (computationally efficient)</p></li>
+<li><p>ทำนายนอกช่วงของตัวแปรทำนายได้เสถียร (predictable behavior outside the observed range)</p></li>
+<li><p>การปัดค่าที่เกิดขึ้นโดยธรรมชาติของวิธีนี้ อาจทำให้ สูญเสียทั้งประสิทธิภาพและความหมายในการตีความ</p></li>
+<li><p>อาจทำให้เกิด จำนวนตัวแปรใหม่มากเกินไป ส่งผลให้โมเดลซับซ้อน</p></li>
+</ul></section><section id="target-based-bining" class="slide level2 smaller"><h2>2.3 Target-Based Bining</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href=""></a><span class="fu">step_discretize_cart</span>()</span>
+<span id="cb82-2"><a href=""></a><span class="fu">step_discretize_xgb</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>step_discretize_cart()</code> และ <code>step_discretize_xgb()</code> ใช้การแบ่งกลุ่มของตัวแปรเชิงปริมาณให้เป็นกลุ่มหรือตัวแปรประเภท โดยใช้โมเดล Classification and Regression Trees (CART) และ Extreme Gradient Boosting (XGBoost) ตามลำดับ หลักการทำงานคร่าว ๆ ทั้งสองอัลกอริทึมเป็นกลุ่ม supervised discretization ใช้การเรียนรู้ของเครื่องช่วยแบ่งตัวแปรเชิงปริมาณให้ได้ผลลัพธ์เป็นตัวแปรจัดประเภทที่มีความสัมพันธ์กับตัวแปรตามมากที่สุด ทั้งสองฟังก์ชันสามารถ tune ค่า hyperparameter ได้เพื่อให้ได้ผลลัพธ์ที่ต้องการ</p>
+</section><section id="feature-selection" class="slide level2 smaller"><h2>3. Feature Selection</h2>
+<p>Feature Selection คือ การเลือกฟีเจอร์ที่สำคัญและเกี่ยวข้องกับตัวแปรตามมากที่สุด เพื่อนำไปใช้สร้างโมเดลการเรียนรู้ของเครื่อง</p>
+<ul>
+<li><p>แก้ปัญหา Curse of Dimensionality</p></li>
+<li><p>ลดความซ้ำซ้อน</p></li>
+<li><p>ป้องกัน Overfitting</p></li>
+<li><p>เพิ่มประสิทธิภาพในการประมวลผล</p></li>
+</ul>
+<p>โดยปกติอาจจำแนกวิธีการเลือกฟีเจอร์ออกเป็น 3 กลุ่ม ได้แก่</p>
+<ul>
+<li><p>Filter Methods</p></li>
+<li><p>Wrapper Methods</p></li>
+<li><p>Embedded Methods</p></li>
+</ul></section><section id="filter-methods" class="slide level2"><h2>3.1 Filter Methods</h2>
+<p>เป็นวิธีการตัดตัวแปรออกโดยใช้เกณฑ์คือคุณสมบัติของตัวแปร เช่น ความแปรปรวน (variance) หรือ ความสัมพันธ์ (correlation) กับตัวแปรตาม ในการเลือก</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href=""></a><span class="fu">step_rm</span>() <span class="do">## ลบตัวแปรที่ระบุ</span></span>
+<span id="cb83-2"><a href=""></a><span class="fu">step_nzv</span>() <span class="do">## near-zero variance</span></span>
+<span id="cb83-3"><a href=""></a><span class="fu">step_zv</span>() <span class="do">## zero variance</span></span>
+<span id="cb83-4"><a href=""></a><span class="fu">step_corr</span>() <span class="do">## high correlation</span></span>
+<span id="cb83-5"><a href=""></a><span class="fu">step_lincomb</span>() <span class="do">## linear combination</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="wrapper-methods" class="slide level2"><h2>3.2 Wrapper Methods</h2>
+<p>เป็นวิธีการเลือกตัวแปรโดยใช้โมเดลการเรียนรู้ของเครื่องเป็นตัวประเมินประสิทธิภาพของชุดตัวแปรที่เลือก</p>
+<ul>
+<li><p>Forward Selection</p></li>
+<li><p>Backward Elimination</p></li>
+<li><p>Stepwise Selection</p></li>
+</ul></section><section id="embedded-methods" class="slide level2"><h2>3.3 Embedded Methods</h2>
+<p>ใช้โมเดลการเรียนรู้ของเครื่องเป็นตัวคัดเลือกตัวแปร</p>
+<ul>
+<li><p>Lasso Regression</p></li>
+<li><p>Ridge Regression</p></li>
+<li><p>Elastic Net Regression</p></li>
+</ul></section><section id="feature-extraction" class="slide level2 smaller"><h2>4. Feature Extraction</h2>
+<p>คือเทคนิคสร้างตัวแปรชุดใหม่จากข้อมูลเดิม โดยใช้กระบวนการทางคณิตศาสตร์ หรือ ML algorithm เพื่อย่อหรือสกัดคุณลักษณะสำคัญของข้อมูล ออกมาเป็นตัวแปรใหม่ที่มีมิติ (dimensions) ต่ำกว่าเดิม</p>
+<p>ข้อมูลตัวเลข</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href=""></a><span class="sc">-</span> <span class="fu">step_pca</span>() <span class="co"># Principal Component Analysis</span></span>
+<span id="cb84-2"><a href=""></a><span class="sc">-</span> <span class="fu">step_pls</span>() <span class="co"># Partial Least Squares</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>ข้อมูลข้อความ</p>
+<ul>
+<li><p>bag of words เช่น การแปลงข้อความให้เป็นตัวเลขด้วยการนับความถี่ของคำ หรือคำนวณค่าความสำคัญ TF-IDF เพื่อให้โมเดลเข้าใจได้ กรณีนี้มี library ช่วยได้แก่ <code>textrecipes</code></p></li>
+<li><p>word embeddings เพื่อแปลงคำหรือข้อความให้เป็นเวกเตอร์ตัวเลขในมิติสูง</p></li>
 </ul>
 
 </section></section>
@@ -1423,13 +1559,14 @@ X_{scaled} = \frac{X - median(X)}{IQR(X)}
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

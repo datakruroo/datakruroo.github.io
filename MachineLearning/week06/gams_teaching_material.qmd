@@ -1,0 +1,748 @@
+---
+title: "เอกสารประกอบการสอน: Generalized Additive Models (GAMs)"
+subtitle: "Machine Learning / Statistical Learning ด้วย R และ Quarto"
+author: "ChatGPT"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: show
+    code-summary: "แสดง/ซ่อนโค้ด"
+    theme: cosmo
+    fig-width: 8
+    fig-height: 5
+    df-print: paged
+  pdf:
+    documentclass: scrreprt
+    toc: true
+    number-sections: true
+    colorlinks: true
+execute:
+  echo: true
+  warning: false
+  message: false
+editor: visual
+lang: th
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(mgcv)
+library(modelr)
+library(broom)
+library(gratia)
+library(patchwork)
+
+theme_set(theme_minimal(base_size = 14))
+set.seed(1234)
+```
+
+# บทนำ
+
+Generalized Additive Models (GAMs) เป็นแบบจำลองที่อยู่กึ่งกลางระหว่าง **linear model ที่ตีความง่าย** กับ **machine learning model ที่ยืดหยุ่นสูง**  
+แกนสำคัญของ GAM คือแนวคิดว่า
+
+$$
+g\{E(Y)\} = \beta_0 + f_1(X_1) + f_2(X_2) + \cdots + f_p(X_p)
+$$
+
+โดยที่ $f_j(\cdot)$ ไม่จำเป็นต้องเป็นเส้นตรง แต่เป็น **ฟังก์ชันเรียบ (smooth functions)** ที่เรียนรู้จากข้อมูล
+
+พูดแบบตรงไปตรงมา:  
+ถ้าความสัมพันธ์ระหว่างตัวแปรทำนายกับผลลัพธ์ **ไม่เป็นเส้นตรง** แต่ก็ยังอยากได้โมเดลที่อธิบายได้ ไม่ดำเกินไป GAM มักเป็นตัวเลือกที่ดีมาก
+
+## ทำไมต้องเรียน GAMs
+
+ในงานจริง ความสัมพันธ์แบบเส้นตรงมักไม่พอ เช่น
+
+- ชั่วโมงอ่านหนังสือกับคะแนนสอบ อาจเพิ่มขึ้นเร็วช่วงแรก แล้วเริ่มอิ่มตัว
+- อายุงานกับความพึงพอใจ อาจไม่ใช่เส้นตรง
+- เวลาใช้งานระบบกับผลสัมฤทธิ์ อาจมีช่วงเหมาะสม และช่วงที่มากเกินไปกลับไม่ดี
+- ปัจจัยด้านการเรียนรู้จำนวนมากมีลักษณะ **curvilinear** ไม่ใช่ linear
+
+ดังนั้น GAM ช่วยให้เรา:
+
+1. จับความโค้งของความสัมพันธ์ได้
+2. ยังรักษาโครงสร้างแบบ additive ไว้ ทำให้ตีความได้ง่ายกว่าโมเดลดำมาก ๆ
+3. รองรับ distribution ที่หลากหลายผ่านกรอบ generalized model
+
+---
+
+# วัตถุประสงค์การเรียนรู้
+
+เมื่อเรียนจบบทนี้ ผู้เรียนควรสามารถ
+
+1. อธิบายแนวคิดของ GAM และความต่างจาก linear regression ได้
+2. อธิบายความหมายของ smooth term และ effective degrees of freedom (edf) ได้
+3. สร้างโมเดล GAM ด้วย `mgcv` ใน R ได้
+4. อ่านผลลัพธ์เบื้องต้นของ GAM ได้อย่างถูกต้อง
+5. เปรียบเทียบ linear model กับ GAM ได้
+6. สร้างกราฟเพื่อแปลผลความสัมพันธ์แบบไม่เป็นเส้นตรงได้
+7. ตระหนักถึงข้อจำกัดของ GAM เช่น overfitting, concurvity, และการตีความ interaction
+
+---
+
+# ทบทวนแนวคิดตั้งต้น
+
+## จาก Linear Regression ไปสู่ GAM
+
+Linear regression แบบพื้นฐานมีรูป
+
+$$
+Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \varepsilon
+$$
+
+ข้อดีคือเรียบง่าย ตีความง่าย  
+ข้อจำกัดคือบังคับให้ผลของ $X$ ต่อ $Y$ เป็นเส้นตรง เว้นแต่เราจะเติม polynomial หรือ interaction เอง
+
+ปัญหาคือในงานจริงเราไม่ค่อยรู้ล่วงหน้าว่า:
+
+- ต้องโค้งแบบไหน
+- ต้องยกกำลังสองหรือสามหรือไม่
+- จุดเปลี่ยนอยู่ตรงไหน
+
+GAM เข้ามาแก้ตรงนี้โดยให้ข้อมูลช่วยเรียนรู้รูปทรงของความสัมพันธ์เอง
+
+$$
+Y = \beta_0 + f_1(X_1) + f_2(X_2) + \varepsilon
+$$
+
+แทนที่จะกำหนดว่า $X_1$ ต้องมีผลเป็นเส้นตรง เราใช้ฟังก์ชันเรียบ $f_1(X_1)$ แทน
+
+## มุมมองเชิงสัญชาตญาณ
+
+ให้คิดว่า GAM คือการ “เอาไม้บรรทัดแข็งออก แล้วใช้ไม้บรรทัดยืดหยุ่นแทน”
+
+- Linear model = เส้นตรงแข็ง ๆ
+- Polynomial = เส้นโค้งที่ผู้วิเคราะห์กำหนดรูปแบบเอง
+- GAM = เส้นโค้งที่มีความยืดหยุ่น แต่ยังถูกควบคุมไม่ให้คดจนมั่ว
+
+---
+
+# โครงสร้างของ GAM
+
+## 1) Additive structure
+
+GAM พื้นฐานเขียนได้ว่า
+
+$$
+g(\mu_i) = \beta_0 + f_1(x_{i1}) + f_2(x_{i2}) + \cdots + f_p(x_{ip})
+$$
+
+โดย
+
+- $\mu_i = E(Y_i)$
+- $g(\cdot)$ คือ link function
+- $f_j(\cdot)$ คือ smooth functions
+
+## 2) Smooth functions
+
+smooth function ไม่ได้หมายความว่า “วาดเส้นอิสระตามใจ”  
+แต่เป็นฟังก์ชันที่ถูกสร้างจาก basis functions และถูก regularize ด้วย smoothing penalty
+
+แนวคิดสำคัญคือมี trade-off ระหว่าง
+
+- **fit ข้อมูลได้ดี**
+- **ความเรียบของเส้น**
+
+ถ้าปล่อยให้เส้นคดมาก โมเดลจะ overfit  
+ถ้าบังคับให้เส้นตรงเกินไป โมเดลจะ underfit
+
+GAM จึงหาจุดสมดุลนี้โดยอัตโนมัติ
+
+## 3) Basis functions และ penalty
+
+ในทางคำนวณ smooth term เช่น `s(x)` ไม่ได้หมายถึงเวทมนตร์  
+มันมักถูกแทนด้วยชุด basis หลายตัว เช่น spline basis แล้วประมาณค่าสัมประสิทธิ์ของ basis เหล่านั้น
+
+แต่ถ้าใช้ basis เยอะมาก โมเดลจะย้วย  
+จึงต้องมี **penalty** คุมความหยักของเส้น
+
+นี่คือหัวใจของ GAM:  
+**flexibility + regularization**
+
+---
+
+# คำศัพท์สำคัญที่ต้องรู้
+
+## Smooth term
+
+เขียนใน `mgcv` เช่น
+
+```{r}
+#| eval: false
+gam(y ~ s(x1) + s(x2), data = dat)
+```
+
+`s(x1)` หมายถึงให้ผลของ `x1` ถูกเรียนรู้แบบ smooth ไม่บังคับว่าเป็นเส้นตรง
+
+## Effective Degrees of Freedom (edf)
+
+edf ใช้บอกความซับซ้อนของ smooth
+
+- `edf ≈ 1` หมายถึงเกือบเป็นเส้นตรง
+- `edf > 1` หมายถึงมีความโค้ง
+- ยิ่ง edf สูง เส้นยิ่งซับซ้อน
+
+อย่าแปล edf แบบแข็งทื่อว่าเป็น “จำนวนพารามิเตอร์จริง” ตรง ๆ  
+ให้มองว่าเป็น **ระดับความยืดหยุ่นเชิงมีผล**
+
+## Smoothing parameter
+
+เป็นพารามิเตอร์ที่ควบคุมว่าฟังก์ชันจะเรียบหรือหยักแค่ไหน
+
+- smoothing มาก → เส้นเรียบ
+- smoothing น้อย → เส้นตามข้อมูลมาก
+
+## Concurvity
+
+เป็นญาติของ multicollinearity ในโลก GAM  
+หมายถึง smooth หนึ่งสามารถอธิบายได้ด้วย smooth อื่น ๆ จนตีความแยกยาก
+
+---
+
+# เมื่อไรควรใช้ GAM
+
+GAM เหมาะเมื่อ
+
+- สงสัยว่าความสัมพันธ์ไม่เป็นเส้นตรง
+- ต้องการตีความได้มากกว่า black-box model
+- อยากได้โมเดลที่ยืดหยุ่น แต่ยังอยู่ในกรอบสถิติที่คุมได้
+- ตัวแปรอิสระส่วนใหญ่เป็นเชิงปริมาณ
+- ต้องการกราฟแปลผลที่ชัด
+
+GAM อาจไม่เหมาะเมื่อ
+
+- จำนวนตัวแปรสูงมากและมีสัญญาณอ่อนมาก
+- ต้องการ performance สูงสุดอย่างเดียว โดยไม่สนใจ interpretability
+- มี interaction ซับซ้อนจำนวนมาก
+- ข้อมูลมีลักษณะโครงสร้างพิเศษที่ควรใช้โมเดลเฉพาะทาง เช่น time series, multilevel, longitudinal แบบจริงจัง
+
+---
+
+# เปรียบเทียบกับวิธีอื่น
+
+## Linear regression
+
+ข้อดี:
+- ตีความง่ายมาก
+- เร็ว
+- เหมาะเมื่อความสัมพันธ์ใกล้เชิงเส้น
+
+ข้อจำกัด:
+- จับ nonlinearity ไม่เก่งถ้าไม่ใส่ term เพิ่มเอง
+
+## Polynomial regression
+
+ข้อดี:
+- ยังอยู่ในกรอบ regression
+- เพิ่มความโค้งได้
+
+ข้อจำกัด:
+- ต้องกำหนดรูปแบบเอง
+- ปลายช่วงอาจเหวี่ยง
+- ไม่ยืดหยุ่นเท่า GAM
+
+## Tree-based models
+
+ข้อดี:
+- จับ nonlinearity และ interaction ได้เก่ง
+- ไม่ต้องกำหนดรูปแบบ
+
+ข้อจำกัด:
+- ตีความรูปความสัมพันธ์เชิงต่อเนื่องได้ไม่สวยเท่า GAM
+- เส้นตอบสนองมักไม่ smooth
+
+## MARS
+
+MARS กับ GAM อยู่ในตระกูล “ยืดหยุ่นกว่า linear model” คล้ายกันบางส่วน  
+เอกสาร *Hands-On Machine Learning with R* เน้นแนวทางสอนแบบ hands-on และมีบทเรื่อง MARS ซึ่งเป็นโมเดล spline-based ที่อยู่ในกลุ่มแนวคิดใกล้เคียงกับการเรียนรู้ความไม่เป็นเส้นตรงในข้อมูล แต่หนังสือเล่มนี้ไม่ได้เน้น GAM โดยตรง fileciteturn0file0
+
+พูดให้ชัด:  
+GAM ไม่ใช่ MARS  
+แต่ทั้งคู่ช่วยให้เห็นโลกหลังเส้นตรง และเหมาะจะสอนต่อเนื่องกัน
+
+---
+
+# ตัวอย่างข้อมูลจำลอง
+
+เพื่อให้เห็นภาพชัด เราจะสร้างข้อมูลที่ความสัมพันธ์ไม่เป็นเส้นตรงจริง
+
+```{r}
+#| label: simulate-data
+
+n <- 300
+
+dat <- tibble(
+  x1 = runif(n, 0, 10),
+  x2 = runif(n, -3, 3),
+  group = sample(c("A", "B"), size = n, replace = TRUE)
+) |>
+  mutate(
+    y = 2 + sin(x1) + 0.6 * x2^2 - 0.8 * x2 +
+      if_else(group == "B", 1, 0) +
+      rnorm(n, sd = 0.6)
+  )
+
+glimpse(dat)
+```
+
+## สำรวจข้อมูลเบื้องต้น
+
+```{r}
+#| label: eda-plot-1
+ggplot(dat, aes(x1, y)) +
+  geom_point(alpha = .5) +
+  geom_smooth(se = FALSE, method = "loess") +
+  labs(
+    title = "ความสัมพันธ์ระหว่าง x1 กับ y",
+    subtitle = "มีลักษณะโค้งชัดเจน"
+  )
+```
+
+```{r}
+#| label: eda-plot-2
+ggplot(dat, aes(x2, y)) +
+  geom_point(alpha = .5) +
+  geom_smooth(se = FALSE, method = "loess") +
+  labs(
+    title = "ความสัมพันธ์ระหว่าง x2 กับ y",
+    subtitle = "มีแนวโน้มโค้งแบบกำลังสอง"
+  )
+```
+
+---
+
+# สร้างโมเดลเปรียบเทียบ
+
+## 1) Linear model
+
+```{r}
+#| label: fit-lm
+mod_lm <- lm(y ~ x1 + x2 + group, data = dat)
+summary(mod_lm)
+```
+
+## 2) GAM
+
+```{r}
+#| label: fit-gam
+mod_gam <- gam(y ~ s(x1) + s(x2) + group, data = dat, method = "REML")
+summary(mod_gam)
+```
+
+## อ่านผลลัพธ์ของ GAM
+
+เวลามอง `summary(mod_gam)` ให้ดู 3 จุดหลัก
+
+### ส่วนที่ 1: Parametric coefficients
+
+ส่วนนี้เหมือน regression ปกติ  
+เช่นผลของตัวแปรจัดประเภท `group`
+
+### ส่วนที่ 2: Smooth terms
+
+จะมีตารางประมาณนี้
+
+- `edf`
+- Ref.df
+- F
+- p-value
+
+การอ่านแบบไม่มั่ว:
+
+- ถ้า `edf` ใกล้ 1 → ความสัมพันธ์เกือบเส้นตรง
+- ถ้า `edf` มากกว่า 1 พอสมควร → มีความโค้ง
+- p-value ต่ำ → smooth term นี้ช่วยอธิบายข้อมูล
+
+### ส่วนที่ 3: Explained deviance / adjusted R-sq
+
+ใช้ดูความสามารถในการอธิบายข้อมูลโดยรวม  
+แต่ห้ามดูตัวนี้อย่างเดียว ต้องดูกราฟและการประเมินกับข้อมูลทดสอบด้วย
+
+---
+
+# วาดกราฟ smooth เพื่อแปลผล
+
+```{r}
+#| label: plot-smooth-base
+draw(mod_gam)
+```
+
+## วิธีอ่านกราฟ smooth
+
+แกน x = ค่าของตัวแปรทำนาย  
+แกน y = ผลเชิงส่วนเพิ่มของ smooth term ต่อ outcome บน scale ของ linear predictor
+
+ข้อควรระวัง:
+
+1. ค่าบนแกน y ไม่ใช่ค่า y จริงโดยตรง  
+2. เส้นถูก center ไว้รอบศูนย์ จึงต้องตีความเชิง “เพิ่ม/ลดจากค่าเฉลี่ยของส่วนอื่น”
+3. อย่าพูดเกินข้อมูล โดยเฉพาะปลายช่วงที่ข้อมูลน้อย
+
+---
+
+# เปรียบเทียบ performance แบบง่าย
+
+```{r}
+#| label: compare-fits
+augment(mod_lm, data = dat) |>
+  transmute(obs = y, pred_lm = .fitted) |>
+  bind_cols(
+    augment(mod_gam, data = dat) |>
+      transmute(pred_gam = .fitted)
+  ) |>
+  summarise(
+    rmse_lm = sqrt(mean((obs - pred_lm)^2)),
+    rmse_gam = sqrt(mean((obs - pred_gam)^2))
+  )
+```
+
+ในข้อมูลที่มี nonlinearity จริง GAM มักทำได้ดีกว่า linear model  
+แต่ประเด็นสำคัญกว่า performance อย่างเดียวคือ **รูปความสัมพันธ์ที่ได้สมเหตุสมผลหรือไม่**
+
+---
+
+# ตัวอย่างกับข้อมูลจริงใน R
+
+ด้านล่างใช้ชุดข้อมูล `gamSim` จาก `mgcv`
+
+```{r}
+#| label: real-data
+set.seed(12)
+dat2 <- gamSim(1, n = 400, dist = "normal", scale = 2)
+
+glimpse(dat2)
+```
+
+```{r}
+#| label: fit-real-gam
+mod2 <- gam(y ~ s(x0) + s(x1) + s(x2) + s(x3), data = dat2, method = "REML")
+summary(mod2)
+```
+
+```{r}
+#| label: plot-real-gam
+draw(mod2)
+```
+
+จากกราฟ ผู้เรียนควรพยายามตอบให้ได้ว่า
+
+- ตัวแปรใดมีรูปความสัมพันธ์ชัด
+- ตัวแปรใดเกือบเชิงเส้น
+- ตัวแปรใดมีผลอ่อน
+
+---
+
+# Diagnostics ที่ควรดู
+
+## 1) ตรวจ adequacy ของ basis dimension
+
+```{r}
+#| label: gam-check
+gam.check(mod2)
+```
+
+ถ้า `k-index` ต่ำมากหรือมีสัญญาณว่าค่า `k` น้อยไป  
+อาจต้องเพิ่ม basis dimension เช่น `s(x, k = 20)`
+
+แต่ห้ามเพิ่มแบบไม่คิด  
+เพราะ `k` มากเกินไปทำให้โมเดลยืดหยุ่นเกินจำเป็นและกินทรัพยากร
+
+## 2) ตรวจ residuals
+
+```{r}
+#| label: residual-check
+appraise(mod2)
+```
+
+ประเด็นที่ต้องดู:
+
+- residual pattern แปลกหรือไม่
+- มี heteroscedasticity ชัดไหม
+- distribution พอรับได้หรือไม่
+- มี outlier หรือ leverage ผิดปกติไหม
+
+## 3) ตรวจ concurvity
+
+```{r}
+#| label: concurvity-check
+concurvity(mod2, full = TRUE)
+```
+
+ถ้าค่าสูงมาก ต้องระวังการตีความว่า smooth ไหน “เป็นเหตุ” หรือ “สำคัญกว่า” กันอย่างเด็ดขาด
+
+---
+
+# Interaction ใน GAM
+
+GAM ไม่ได้มีแค่ additive main effects  
+เราสามารถใส่ smooth interaction ได้ เช่น tensor product smooth
+
+```{r}
+#| eval: false
+mod_int <- gam(y ~ te(x1, x2) + group, data = dat, method = "REML")
+```
+
+หรือถ้าต้องการทั้ง main smooth และ interaction
+
+```{r}
+#| eval: false
+mod_int2 <- gam(y ~ s(x1) + s(x2) + te(x1, x2), data = dat, method = "REML")
+```
+
+## ข้อควรระวังเรื่อง interaction
+
+- ตีความยากกว่า main effect มาก
+- กราฟต้องใช้ contour / surface plot
+- overfit ได้ง่ายกว่า
+- ถ้ายังไม่จำเป็น อย่ารีบใส่ interaction เยอะ
+
+---
+
+# GAM สำหรับ outcome แบบอื่น
+
+GAM อยู่ในตระกูล generalized model จึงใช้กับ distribution อื่นได้ เช่น
+
+## Binary outcome
+
+```{r}
+#| eval: false
+mod_bin <- gam(pass ~ s(study_time) + s(attendance) + gender,
+               data = student_data,
+               family = binomial,
+               method = "REML")
+```
+
+## Count outcome
+
+```{r}
+#| eval: false
+mod_count <- gam(num_events ~ s(time_online) + s(prior_score),
+                 data = dat_count,
+                 family = poisson,
+                 method = "REML")
+```
+
+ดังนั้น GAM ไม่ได้จำกัดแค่ regression แบบ normal outcome
+
+---
+
+# แนวทางแปลผลในงานการศึกษา
+
+สมมุติเราศึกษาคะแนนสอบโดยใช้ตัวแปร
+
+- เวลาเรียนออนไลน์
+- จำนวนครั้งเข้าเรียน
+- ระดับแรงจูงใจ
+- กลุ่มนักเรียน
+
+GAM อาจตอบคำถามลักษณะนี้ได้ดี:
+
+- เวลาเรียนออนไลน์เพิ่มขึ้นแล้วคะแนนเพิ่มขึ้นต่อเนื่องไหม หรืออิ่มตัว
+- การเข้าเรียนมี threshold สำคัญหรือไม่
+- แรงจูงใจมีผลเชิงเส้นหรือมีช่วงที่เพิ่มแล้วไม่คุ้ม
+- รูปความสัมพันธ์ต่างกันตามกลุ่มหรือไม่
+
+สิ่งที่ GAM ให้มากกว่าโมเดลเส้นตรงคือ  
+**ภาพของความสัมพันธ์** ไม่ใช่แค่ทิศทางบวกหรือลบ
+
+---
+
+# ข้อดีและข้อจำกัด
+
+## ข้อดี
+
+1. ยืดหยุ่นกว่ารูปแบบเส้นตรง
+2. ตีความได้ดีกว่าโมเดลดำจำนวนมาก
+3. แสดงรูปความสัมพันธ์ได้ชัดผ่านกราฟ smooth
+4. รองรับ outcome ได้หลายแบบ
+5. มี regularization ในตัว
+
+## ข้อจำกัด
+
+1. ตีความ coefficient ไม่ตรงไปตรงมาแบบ linear regression
+2. interaction และ multidimensional smooth ซับซ้อน
+3. ผลลัพธ์อาจไวต่อการกำหนด basis / k / family
+4. ไม่ใช่คำตอบสำหรับทุกปัญหา
+5. ถ้าข้อมูลน้อยหรือสัญญาณอ่อน เส้นอาจไม่น่าเชื่อถือ
+
+---
+
+# จุดที่นักศึกษามักเข้าใจผิด
+
+## เข้าใจผิดที่ 1: เส้นสวยแปลว่าโมเดลดี
+
+ไม่จริง  
+เส้นสวยอาจ overfit ได้ ต้องดูการประเมินผลและ diagnostics ด้วย
+
+## เข้าใจผิดที่ 2: edf สูงแปลว่าตัวแปรสำคัญกว่า
+
+ไม่จริง  
+edf สูงแปลว่าเส้นซับซ้อนขึ้น ไม่ได้แปลว่า effect สำคัญกว่าเสมอ
+
+## เข้าใจผิดที่ 3: p-value ของ smooth คือหลักฐานเชิงเหตุ
+
+ไม่จริง  
+มันบอกเพียงว่า smooth term ช่วยอธิบายความสัมพันธ์ในข้อมูลภายใต้โมเดลนั้น
+
+## เข้าใจผิดที่ 4: GAM แก้ปัญหาทุกอย่างเรื่อง nonlinearity
+
+ไม่จริง  
+ถ้ามี interaction เยอะ โครงสร้างลำดับชั้น ข้อมูลตามเวลา หรือ dependence ซับซ้อน  
+อาจต้องใช้โมเดลอื่นหรือ GAM เวอร์ชันที่ซับซ้อนขึ้น
+
+---
+
+# ตัวอย่างโค้ดสรุป workflow
+
+```{r}
+#| eval: false
+library(tidyverse)
+library(mgcv)
+library(gratia)
+
+# 1) สำรวจข้อมูล
+ggplot(dat, aes(x1, y)) + geom_point() + geom_smooth(method = "loess")
+
+# 2) fit linear model
+mod_lm <- lm(y ~ x1 + x2 + group, data = dat)
+
+# 3) fit GAM
+mod_gam <- gam(y ~ s(x1) + s(x2) + group, data = dat, method = "REML")
+
+# 4) ดูผลสรุป
+summary(mod_gam)
+
+# 5) วาดกราฟ smooth
+draw(mod_gam)
+
+# 6) diagnostics
+gam.check(mod_gam)
+appraise(mod_gam)
+
+# 7) เปรียบเทียบกับโมเดลอื่น
+AIC(mod_lm, mod_gam)
+```
+
+---
+
+# แบบฝึกหัดในชั้นเรียน
+
+## กิจกรรมที่ 1: อ่านกราฟให้ถูก
+
+ให้ผู้เรียนดูกราฟ smooth ของตัวแปร 3 ตัว แล้วตอบว่า
+
+1. ตัวแปรใดมีความสัมพันธ์เกือบเส้นตรง
+2. ตัวแปรใดมีรูปโค้งชัด
+3. ช่วงค่าใดที่ผลของตัวแปรเปลี่ยนเร็วที่สุด
+4. มีช่วงใดที่ไม่ควรตีความมากเพราะข้อมูลบางหรือไม่
+
+## กิจกรรมที่ 2: เปรียบเทียบโมเดล
+
+ให้สร้าง 3 โมเดลจากข้อมูลเดียวกัน
+
+1. Linear model
+2. Polynomial regression
+3. GAM
+
+แล้วเปรียบเทียบ
+
+- ความสามารถในการอธิบายข้อมูล
+- ความง่ายในการตีความ
+- ความสมเหตุสมผลของรูปความสัมพันธ์
+- ความเสี่ยง overfitting
+
+## กิจกรรมที่ 3: ใช้ข้อมูลจริงของผู้เรียน
+
+ให้เลือก outcome 1 ตัว และ predictor เชิงปริมาณ 2–4 ตัว  
+จากนั้นสร้าง GAM และเขียนสรุปว่า
+
+- ตัวแปรใดมีความสัมพันธ์ไม่เป็นเส้นตรง
+- รูปความสัมพันธ์บอกอะไรเชิงการจัดการเรียนรู้
+- ข้อจำกัดของการแปลผลคืออะไร
+
+---
+
+# คำถามอภิปราย
+
+1. เพราะเหตุใดบางครั้ง linear model จึงไม่พอสำหรับข้อมูลการศึกษา
+2. GAM ช่วยเพิ่มความเข้าใจข้อมูลต่างจาก tree-based model อย่างไร
+3. ในงานนโยบายหรือการสื่อสารกับครู กราฟ smooth มีประโยชน์อย่างไร
+4. ถ้า GAM กับ random forest ให้ผลพยากรณ์ใกล้กัน คุณจะเลือกใช้ตัวไหน และเพราะอะไร
+
+---
+
+# สรุปท้ายบท
+
+GAM เป็นโมเดลที่สำคัญมาก เพราะมันสอนให้ผู้เรียนออกจากกรอบ “ทุกอย่างต้องเส้นตรง”  
+โดยไม่ต้องกระโดดไปสู่ black-box เต็มตัว
+
+สาระสำคัญของบทนี้คือ
+
+- GAM = generalized model + additive smooth functions
+- ใช้เพื่อจับความสัมพันธ์ไม่เป็นเส้นตรง
+- แปลผลผ่าน smooth plots, edf, และ diagnostics
+- เหมาะมากเมื่ออยากได้ทั้ง flexibility และ interpretability ในระดับหนึ่ง
+
+ถ้าจะพูดให้ชัดที่สุด:  
+**GAM ไม่ใช่โมเดลมหัศจรรย์ แต่เป็นโมเดลที่ฉลาดพอจะยอมให้ข้อมูลมีความโค้ง โดยยังไม่ทิ้งความสามารถในการอธิบาย**
+
+---
+
+# เอกสารอ้างอิงเบื้องต้น
+
+- Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman and Hall.
+- Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press.
+- Boehmke, B., & Greenwell, B. M. (2020). *Hands-On Machine Learning with R*. CRC Press. แนวทางของหนังสือเล่มนี้เน้นการสอน machine learning แบบลงมือทำและการสร้าง intuition ด้วย R แม้สารบัญหลักจะครอบคลุม MARS, boosting, random forest, deep learning, และ interpretable ML มากกว่า GAM โดยตรง fileciteturn0file0
+
+---
+
+# ภาคผนวก: เวอร์ชันย่อสำหรับสอนใน 1 คาบ
+
+## ช่วงที่ 1 (20 นาที): แนวคิด
+
+- ทบทวน linear regression
+- ชี้ปัญหาเรื่อง nonlinearity
+- แนะนำแนวคิด smooth
+
+## ช่วงที่ 2 (25 นาที): ลงมือทำ
+
+- สร้างข้อมูลจำลอง
+- fit `lm()`
+- fit `gam()`
+- เปรียบเทียบผล
+
+## ช่วงที่ 3 (25 นาที): แปลผล
+
+- ดู `summary()`
+- ดู `draw()`
+- ตีความ edf และรูปร่างของเส้น
+
+## ช่วงที่ 4 (20 นาที): วิจารณ์โมเดล
+
+- diagnostics
+- overfitting
+- เมื่อไรควรใช้/ไม่ควรใช้
+
+## ช่วงที่ 5 (10 นาที): อภิปราย
+
+- ให้ผู้เรียนสรุปว่า GAM เหมาะกับโจทย์แบบไหน
+
+---
+
+# ภาคผนวก: template สำหรับงานมอบหมาย
+
+ให้นักศึกษาส่งรายงานสั้นประกอบด้วย
+
+1. อธิบายปัญหาวิจัยหรือคำถามเชิงวิเคราะห์
+2. ระบุ outcome และ predictors
+3. อธิบายเหตุผลที่เลือกใช้ GAM
+4. รายงานผลโมเดล
+5. แสดงกราฟ smooth อย่างน้อย 2 ตัว
+6. สรุปเชิงตีความด้วยภาษาคน
+7. ระบุข้อจำกัดของโมเดล

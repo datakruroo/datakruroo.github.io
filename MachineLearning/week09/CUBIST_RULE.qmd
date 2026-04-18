@@ -1,0 +1,158 @@
+---
+title: "CUBIST Rule"
+format: html
+---
+
+
+### แนวคิดของ CUBIST Rule
+
+- เป็น algorithm ที่ใช้ได้เฉพาะ regression task เท่านั้น
+
+- CUBIST Rule พัฒนาต่อยอดจาก regression tree (decision tree) โดยมีวัตถุประสงค์เพื่อสร้างโมเดลทำนายที่มีความยืดหยุ่นและแม่นยำสูงขึ้น
+
+- โมเดลนี้เป็นการผสมผสานระหว่าง decision tree + linear regression โดยใช้ tree ทำหน้าที่แบ่งข้อมูลออกเป็นส่วนย่อยหลาย ๆ ส่วน แล้วใช้ linear regression ในแต่ทำนายตัวแปรตามด้วยตัวแปรอิสระในแต่ละส่วนย่อย ๆ นั้น
+
+หลักการทำงาน
+
+1. แบ่งข้อมูลด้วย rule-based คล้ายกับการทำ decision tree วัตถุประสงค์ของการแบ่งข้อมูลคือ เพื่อสร้างกลุ่มย่อยที่สามารถอธิบายความสัมพันธ์เชิงเส้นระหว่างตัวแปรตามกับตัวแปรอิสระได้ดีที่สุด การแบ่งข้อมูลดังกล่าวจะใช้หลักของการลดความแปรปรวน (หรือ SD) ของตัวแปรตามเป็นเกณฑ์ดังนี้
+
+    - คำนวณ SD ของตัวแปรตาม ก่อน (ในที่นี้คือ G3 ของนักเรียน 395 คน) เรียกว่า "SD ก่อนแบ่ง"
+
+    - ทดลองแบ่งข้อมูลด้วย rule ต่าง ๆ (เช่น G2 < 10, studytime < 2, absences < 5 เป็นต้น)
+
+    - คำนวณ SD สำหรับแต่ละการแบ่ง จากนั้นหาค่าเฉล่ี่ยถ่วงน้ำหนักให้เป็น SD รวม การถ่วงน้ำหนักจะใช้สัดส่วนของจำนวนข้อมูลในแต่ละกลุ่มเทียบกับข้อมูลของ node แม่ เรียกว่า "SD หลังแบ่ง"
+
+    - คำนวณค่า SD reduction (SDR) = SD ก่อนแบ่ง - SD หลังแบ่ง
+
+    - เลือกการแบ่งที่ดีที่สุดกล่าวคือมีค่า SDR สูงสุด 
+
+
+2. สร้าง linear model ที่ leaf node แต่ละตัว กล่าวคือวิธีการนี้เชื่อว่า แต่ละ rule ที่สร้างขึ้นมา อาจจะมีความสัมพันธ์เชิงเส้นระหว่างตัวแปรเฉพาะภายในกลุ่มนั้น ๆ ที่แตกต่างกัน การ capture ความสัมพันธ์ดังกล่าวได้ทั้งหมด จะทำให้ประสิทธิภาพของการทำนายมีสูงขึ้น
+
+ดังนั้นแต่ละ rule จะมีการสร้าง linear regression ของตนเอง เมื่อข้อมูลใหม่เข้ากับ rule ไหน จะใช้ linear model ของ rule นั้นเพื่อทำนาย โดยจะใช้ตัวแปรอิสระที่ไม่ได้ใช้ใน rule เท่านั้น
+
+![1 committee](https://opendatascience.com/wp-content/uploads/2019/11/cube_image.png)
+
+
+3. hyperparameter ของอัลกอริทึมมีจำนวน 3 ตัวได้แก่
+
+- `committees` --  ใช้ควบคุมกลไก Ensemble แบบ Boosting
+
+    - ถ้า `committees = 1` จะไม่มีการใช้ boosting กล่าวคือสร้าง decision tree + linear regression เพียงชุดเดียว
+
+    - ถ้า `committees > 1` สร้างโมเดลหลายชุด "ต่อเนื่องกัน" (Sequentially) โดยโมเดลชุดที่ 2 จะถูกสร้างขึ้นมาเพื่อ "แก้ไข" หรือ "ชดเชย" ความผิดพลาด (Error/Residuals) ของโมเดลชุดที่ 1 และโมเดลชุดที่ 3 ก็จะมาแก้ไขความผิดพลาดที่ยังเหลืออยู่... ทำแบบนี้ไปเรื่อยๆ จนครบตามจำนวนรอบที่กำหนด
+
+- `neighbors` -- ใช้ควบคุมกลไกการสร้างค่าทำนาย เรียกได้ว่าเป็นการปรับแต่งค่าทำนายขั้นสุดท้าย
+
+    - neighbors = 0: (ค่าเริ่มต้น) หมายถึง "ปิดการใช้งาน" กลไกนี้ โมเดลจะใช้ค่าที่ทำนายจาก Rules/Boosting 100%
+
+    - neighbors > 0 (เช่น 5 หรือ 9): เมื่อโมเดลได้ค่าทำนายสำหรับข้อมูลใหม่ (เช่น G3 = 14.5) มันจะมองย้อนกลับไปใน "ชุดข้อมูล Training" (Training Data) ทั้งหมด เพื่อค้นหาข้อมูลที่คล้ายกันที่สุด k ตัว (เพื่อนบ้าน) จากนั้นจึงนำค่าจริงของเพื่อนบ้านเหล่านั้นมา "เฉลี่ยถ่วงน้ำหนัก" เพื่อปรับแก้ค่าทำนายสุดท้าย (เช่น ปรับ 14.5 ลงมาเหลือ 14.1)
+
+- `max_rules` จำนวน rule ที่จะสร้างได้สูงสุดภายในแต่ละ committee ซึ่งช่วยควบคุมความซับซ้อนของแต่ละโมเดล
+
+### Data Preprocessing ที่จำเป็น
+
+เนื่องจาก CUBIST Rule เป็นส่วนผสมระหว่าง decision tree + linear regression ดังนั้นจึงมีข้อจำกัดบางประการในการเตรียมข้อมูลเบื้องต้นโดยเฉพาะในส่วนที่เกี่ยวข้องกับ linear model ดังนี้
+
+1. การแปลงตัวแปร categorical data ให้เป็น dummy หรือตัวแปรเชิงปริมาณ
+
+2. ปรับสเกลของตัวแปรเชิงปริมาณให้เป็นคะแนนมาตรฐาน
+
+3. แก้ปัญหาค่าสูญหาย
+
+4. แก้ปัญหาเรื่องการแจกแจงของตัวแปรทำนายที่เบ้มากเกินไป
+
+5. no multicollinearity
+
+ลองสำรวจข้อมูลเบื้องต้นก่อน
+
+```{r}
+train_data |> 
+    recipe(G3 ~. ,data = train_data) |> 
+    step_dummy(all_nominal_predictors()) |> 
+    step_pls(all_numeric_predictors(), outcome = "G3") |> 
+    prep() |> 
+    juice() |> 
+    ggplot(aes(x = PLS1, y= G3))+
+    geom_point()
+```
+
+
+```{r}
+rec_cubist <- recipe(G3 ~. , data = train_data) |> 
+    step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+                 fn = factor) |>
+    step_novel(all_nominal_predictors()) |> 
+    step_normalize(all_numeric_predictors()) |>
+    step_dummy(all_nominal_predictors())
+
+rec_cubist |> prep() |> juice()
+```
+
+
+```{r}
+cubist_spec <- cubist_rules(
+    committees = 50,
+    neighbors = 0,
+    max_rules = tune()
+) |> 
+set_engine("Cubist") |> 
+set_mode("regression")
+cubist_spec
+```
+
+
+```{r}
+install.packages("rules")
+library(rules)
+cubist_wf <- workflow() |> 
+    add_recipe(rec_cubist) |> 
+    add_model(cubist_spec)
+```
+
+
+```{r}
+folds <- vfold_cv(train_data, v=10)
+```
+
+```{r}
+cubist_res <- cubist_wf |> 
+    tune_grid(
+        resamples = folds,
+        grid = 20,
+        control = control_grid(save_pred = TRUE,
+        parallel_over = "everything")
+    )
+```
+
+
+```{r}
+cubist_res |> collect_metrics() |> 
+    filter(.metric == "rmse") |> 
+    arrange(mean)
+
+cubist_res |> collect_metrics() |> 
+    filter(.metric == "rsq") |> 
+    arrange(desc(mean))
+
+cubist_res |> collect_predictions() |> 
+    filter(.config == "pre0_mod01_post0") |> 
+    ggplot(aes(x = .pred, y =G3))+
+    geom_point()+
+    geom_abline(slope = 1, intercept = 0, color = "steelblue",
+    linetype = 2)+
+    theme_light()+
+    coord_obs_pred()
+
+cubist_best <- cubist_res |> select_best(metric = "rmse")
+final_cubis <- cubist_wf |> 
+    finalize_workflow(cubist_best) |> 
+    fit(data = train_data)
+
+
+predict(final_cubis, new_data=train_data)
+```

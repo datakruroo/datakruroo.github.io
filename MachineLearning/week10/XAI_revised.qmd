@@ -1,0 +1,725 @@
+---
+title: "Explainable AI"
+format: html
+editor: visual
+---
+
+## Outline
+
+-   แนวคิดพื้นฐาน
+
+-   เทคนิค XAI
+
+-   กรณีศึกษาและการประยุกต์ใช้ XAI
+
+## 1. แนวคิดพื้นฐาน
+
+โมเดลการเรียนรู้ของเครื่องที่กล่าวมาในรายวิชานี้สามารถนำไปประยุกต์ใช้เพื่อตัดสินใจทางการศึกษาในสถานการณ์ที่หลากหลายโดยเฉพาะการให้ insight เพื่อทำนายหรือจำแนกข้อมูล อย่างไรก็ตามหลายกรณีการใช้ประโยชน์จากโมเดลดังกล่าวเพียงแค่นี้อาจไม่เพียงพอ โดยเฉพาะในกรณีที่ต้องการให้คำอธิบายหรือเหตุผลที่จะใช้สนับสนุนหรือสร้างความมั่นใจในการตัดสินใจ คำอธิบายดังกล่าวจะช่วยให้เกิด
+
+1.  ความไว้วางใจ (trust)
+
+2.  ความเป็นธรรม (fairness)
+
+3.  ความรับผิดชอบ (accountability)
+
+4.  การปรับปรุง (improvement)
+
+5.  ความสอดคคล้องกับข้อกำหนดด้านกฎหมายหรือระเบียบต่าง ๆ
+
+อย่างไรก็ตามโมเดลการเรียนรู้ของเครื่องเกือบทุกตัวมีปัญหาเรื่องการอธิบายคำตอบหรือการตัดสินใจของโมเดลทั้งนี้เป็นเพราะโมเดลที่มีประสิทธิภาพสูงมาก ๆ มากมีลักษณะการทำงานที่ซับซ้อนเข้าไปสังเกตหรือทำความเข้าใจโดยตรงได้ยาก นักวิทยาการข้อมูลเรียกโมเดลลักษณะดังกล่าวว่าเป็น black box จากข้อจำกัดดังกล่าวทำให้นักวิทยาการข้อมูลต้องการ insight เพิ่มเติมสำหรับอธิบายการทำงานหรือการตัดสินใจของโมเดลนี้ การแก้ปัญหาคือการพัฒนาเทคนิคที่เรียกว่า explainable AI (XAI) ขึ้นมา
+
+## 2. เทคนิค XAI
+
+เป็นแนวคิดและชุดของเทคนิคที่มุ่งเน้นทำให้ระบบปัญญาประดิษฐ์และการเรียนรู้ของเครื่องมีความโปร่งใสและสามารถอธิบายได้ว่าเหตุใดจึงทำนายหรือตัดสินใตเช่นนั้น
+
+-   สามารถอธิบายเหตุผลการตัดดสินใจให้กับผู้ใช้
+
+-   ระบุจุดแข็งและจุดอ่อนของตัวเอง
+
+-   สื่อสารให้ผู้ใช้เข้าใจถึงแนวโน้มพฤติกรรมในอนาคตของระบบ
+
+การเรียนรู้เรื่อง XAI ผู้เรียนควรทราบความแตกต่างระหว่าง interpretability และ explainability
+
+-   ความสามารถด้านการแปลความ (interpretability) -- ระดับที่มนุษย์สามารถเข้าใจสาเหตุของการตัดสินใจของโมเดล หรือความสามารถในการเข้าใจกลไกภายในของโมเดล เช่น การเข้าใจว่าตัวแปรอิสระแต่ละตัวมีผลต่อตัวแปรตามอย่างไรผ่านค่า regression coefficients ใน linear regression model
+
+-   ความสามารถด้านการอธิบาย (explainability)-- ความสามารถในการอธิบายหรือนำเสนอเหตุผลที่โมเดลตัดสินใจในรูปแบบที่มนุษย์เข้าใจได้ โดยไม่จำเป็นต้องเข้าใจกลไกภายในทั้งหมด เช่นการใช้ LIME หรือ SHAP เพื่อสร้างคำอธิบายจากโมเดลที่ซับซ้อน
+
+## 3. ประเภทของ XAI
+
+-   Global vs Local Explanations
+
+-   Model-specific vs Model-agnostic Explanations
+
+### 3.1 Global vs Local Explanations
+
+Global explanations คือ คำอธิบายพฤติกรรมโดยรวมของโมเดลทั้งหมด ตอบคำถามในลักษณะว่า โมเดลนี้ให้ความสำคัญกับปัจจัยหรือตัวแปรอิสระใดบ้าง เทคนิคที่อยู่ในกลุ่มนี้ เช่น Feature Importance, Partial Dependence Plot
+
+Local Explanations คือ คำอธิบายการทำนายเฉพาะกรณี (single prediction) ตอบคำถามว่า ทำไมโมเดลจึงให้ผลทำนายของเคสนี้ นักเรียนคนนี้เป็นแบบนี้ เทคนิคที่อยู่ในกลุ่มนี้ เช่น LIME, SHAP
+
+### 3.2 Model-specific vs Model-agnostic Explanations
+
+Model-specific explanations คือ คำอธิบายที่สร้างหรือออกแบบเฉพาะสำหรับโมเดลประเภทใดประเภทหนึ่ง เช่น การอ่านค่าสัมประสิทธิ์การถดถอยจาก linear regression การแปลผล odd ratio ใน logistic regression การดู split rule ใน decision tree
+
+Model-agnostic explanations คือ คำอธิบายที่สามารถใช้กับโมเดลทุกประเภท ไม่จำเป็นต้องรู้ว่าโมเดลเป็นประเภทใด เช่น VIP, LIME, SHAP,...
+
+## 4. เทคนิค XAI สำหรับ Global Explanation
+
+วันนี้เราจะพูดถึงเทคนิคในกลุ่ม global explanations เน้นส่วน model-agnostic ได้แก่
+
+### 4.1 Feature importance (Variable Importance --\> VIP)
+
+-   โมเดล ML หลายตัวให้ค่าทำนายที่แม่นยำ แต่เราไม่รู้เลยว่าที่มาของค่านายดังกล่าวใช้ตัวแปรอะไรบ้างในการตัดสินใจ และแต่ละตัวแปรมีน้ำหนักหรือความสำคัญอย่างไร
+
+-   Feature Importance (ความสำคัญของตัวแปร) คือเทคนิคที่ช่วย "จัดอันดับ" ว่าตัวแปร (Features) ใด ที่โมเดลของเรา "พึ่งพา" หรือ "ให้ความสำคัญ" มากที่สุดในการตัดสินใจ
+
+หลักการทำงานของ feature importance มีหลายวิธีในการคำนวณ ขึ้นอยู่กับว่าผู้วิเคราะห์ใช้โมเดลอะไรในการทำนาย ทำให้การจัดกลุ่มในอีกประเภท feature importance สามารถเป็นไปได้ทั้ง model-specific และ model-agnostic
+
+1.  Model-specific methods จะใช้วิธีการคำนวณเฉพาะของแต่ละโมเดลเป็น feature importance เช่น linear regression หรือ glm อาจใช้ regression coefficients ในการคำนวณ หรือ tree-based model อาจใช้ impurity หรือ information gain ในการคำนวณ
+
+2.  Model-agnostic methods จะใช้วิธีการคำนวณที่ไม่ขึ้นกับโมเดล ซึ่งสามารถจำแนกได้อีกหลายประเภท เช่น
+
+2.1 Permutation Feature Importance --
+
+> วิธีนี้วัดความสำคัญโดยดูว่า "ถ้าเราสลับค่าของตัวแปรนี้แบบสุ่ม ผลทำนายจะเปลี่ยนแปลงมากน้อยแค่ไหน"
+
+-   วัด baseline: นำโมเดลที่ Train เสร็จแล้ว ไปทดสอบกับ Test Set ได้ประสิทธิภาพตั้งต้น (เช่น RMSE = 1.5)
+
+-   สลับค่าของตัวแปรอิสระตัวใดตัวหนึ่งแบบสุ่ม (permute) ใน Test Set
+
+-   นำ Test Set ที่สลับค่านี้ไปทดสอบกับโมเดลอีกครั้ง ได้ประสิทธิภาพใหม่ (เช่น RMSE = 2.0)
+
+-   ความสำคัญของตัวแปร = การลดลงของประสิทธิภาพ
+
+-   ทำซ้ำกับทุกตัวแปรอิสระ
+
+สรุป: ถ้าประสิทธิภาพของตัวแปรอิสระใดลดลงมาก เมื่อตัวแปรนั้นถูกสลับค่า แสดงว่าตัวแปรนั้นมีความสำคัญสูง
+
+### 4.2 การคำนวณ Feature Importance
+
+ใน tidymodels เราจะใช้ packages เสริม 2 ตัวหลัก
+
+-   vip (Variable Importance Plots): สำหรับ Permutation Feature Importance ---\> เน้นหา feature importance score ประเภท global explanation
+
+-   DALEX และ DALEXtra ทำได้หลายเทคมาก ๆ ไว้อาทิตย์หน้า
+
+ทั้งสองวิธีนี้จำเป็นต้องใช้ "โมเดลที่ fit เสร็จแล้ว" (a fitted workflow) เป็น Input
+
+ขั้นตอนการดำเนินงานมีดังนี้
+
+0.  train model
+
+```{r}
+library(tidyverse)
+## importing data
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv",
+delim = ";")
+## data splitting
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = "G3")
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+```{r}
+# install.packages(c("vip", "DALEXtra", "randomForest"))
+library(tidymodels)
+library(vip)       # สำหรับ Permutation Importance
+library(randomForest) # Engine สำหรับ rand_forest
+
+# สมมติว่าเรามี train_data, test_data, และ student_recipe
+# (จากตัวอย่างก่อนหน้า)
+
+# 1. สร้างโมเดล (ตัวอย่างนี้ใช้ Random Forest)
+rf_spec <- rand_forest(mode = "regression") %>%
+  set_engine("ranger")
+
+rf_rec <- recipe(G3 ~ ., data = train_data) %>%
+  step_normalize(all_numeric_predictors())
+
+# 2. สร้าง Workflow
+rf_wf <- workflow() %>%
+  add_recipe(rf_rec) %>% # ใช้ recipe เดิม
+  add_model(rf_spec)
+
+# 3. *** Fit โมเดล *** # (เราต้องการ object นี้)
+set.seed(123)
+rf_fit <- fit(rf_wf, data = train_data)
+```
+
+1.  Permutation Feature Importance
+
+ใช้ library-vip เพื่อคำนวณ Permutation Importance อาร์กิวเมนต์สำคัญของฟังก์ชัน `vi()` ได้แก่
+
+-   `method = "permute"`: ระบุว่าใช้วิธี Permutation Importance
+
+-   `target`: ตัวแปรตามที่เราสนใจ
+
+-   `train` : ชุดข้อมูลที่จะใช้ในการคำนวณ VIP สามารถเป็น training set หรือ test set ก็ได้ ประเด็นนี้น่าสนใจ เพราะการกำหนดที่แตกต่างกันนี้ นำไปสู่การอธิบายที่แตกต่างกัน คนละวัตถุประสงค์ของการวิเคราะห์ !!
+
+-   `metric`: ตัวชี้วัดประสิทธิภาพของโมเดลที่ใช้ในการวัดผลกระทบของการสลับค่าตัวแปร
+
+-   `pred_wrapper`: ฟังก์ชันที่ใช้ในการพยากรณ์ค่าจากโมเดล
+
+```{r}
+library(vip)
+## final model
+rf_fit
+###
+test_data
+# เตรียม Test Set (Bake recipe)
+test_processed <- rf_rec |> prep() |> bake(new_data = test_data)
+
+set.seed(123) # เพื่อให้การสลับค่าทำซ้ำได้
+
+# คำนวณ Permutation Importance
+p_imp <- vi(
+  object = rf_fit,                   # โมเดลที่ fit แล้ว
+  method = "permute",       # ระบุวิธี "permute"
+  target = "G3",            # ตัวแปรตามของเรา
+  train = test_processed,  # ข้อมูลทดสอบที่เตรียมแล้ว
+  metric = "rmse",         # ใช้ RMSE เป็น metric
+  pred_wrapper = function(object, newdata) {
+    predict(object, new_data = newdata) %>% pull(.pred)
+  }
+)
+# ดูผลลัพธ์ (ตาราง)
+print(p_imp)
+
+# พล็อตกราฟ (แท่ง)
+p_imp |> 
+  ggplot(aes(x = Importance, y = reorder(Variable, Importance)))+
+  geom_col(fill = "steelblue") + 
+  theme_light()
+
+vip(p_imp) +
+  labs(title = "Permutation Feature Importance (Test Set)")
+```
+
+2.  วิธีอื่น ๆ ในการคำนวณ Feature Importance
+
+note: `method` ยังรองรับวิธีการอื่น ๆ อีกได้แก่
+
+-   "model" (ค่าเริ่มต้น): สำหรับหา model-specific VI score วิธีการคำนวณจะขึ้นกับชนิดของโมเดล เช่น
+
+    -   Linear/GLM: ใช้ค่า absolute ของ t-statistics หรือค่าค่าสัมประสิทธิ์ (coefficient) หลัง standardized
+
+    -   Random forest, tree-based: ใช้การลดลงของ impurity (เช่น Gini, RSS), หรือผลเฉลี่ยของการ permute OOB แล้วดู performance
+
+    -   GBM/xgboost: ใช้ relative influence, gain, cover, frequency ฯลฯ
+
+    -   Neural Network: ใช้สูตรน้ำหนักเชื่อมโยง (เช่น Garson, Olden)
+
+    -   อื่น ๆ: เช่น บางโมเดลใช้ % ที่ตัวแปรถูกเลือกในแต่ละกิ่งต้นไม้ หรือสถิติอื่นที่แพ็กเกจต้นทางนิยามไว้ รายละเอียดเพ่ิมเติมอ่านได้ที่ https://koalaverse.github.io/vip/reference/vi_model.html
+
+-   "firm": สำหรับ variance-based VI score วิธีนี้จะใช้ค่าจาก partial dependence (PD) หรือ individual conditional expectation (ICE) plots เพื่อดูว่าค่าทำนายเปลี่ยนแปลงมากน้อยเพียงใดตามแต่ละระดับของตัวแปร เช่น ใช้ค่า standard deviation (ค่าเบี่ยงเบนมาตรฐาน) ของค่า PD/ICE บนแกน y เป็นหลัก **ข้อควรระวัง: วิธีนี้อาจให้ผลลัพธ์ผิดพลาดถ้ามี interaction effect สูง (เหมือนกับการอ่านค่า coefficient หลักใน regression ที่มี interaction สูงด้วย)**
+
+note: วิธี FIRM จะวัดความสำคัญของตัวแปรโดยดูการเปลี่ยนแปลงของค่าทำนายตามแต่ละตัวแปร — ถ้าเปลี่ยนแปลงมาก แปลว่าสำคัญมาก ถ้าแบนๆ แปลว่าไม่สำคัญ
+
+-   "shap", for Shapley-based VI scores
+
+SHAP-based variable importance (VI) คือการหาความสำคัญของตัวแปรด้วยหลัก Shapley values จากทฤษฎีเกม หลักการมีดังนี้
+
+-   แนวคิด: การทำนาย 1 ครั้ง (เช่น ทำนายว่านักเรียน A ได้เกรด 15) คือ "เกม" ที่ "ผู้เล่น" (Features) ทั้งหมด (เช่น G1, G2, studytime) "ร่วมมือกัน" จนได้ "ผลกำไร" (คือค่า 15)
+
+-   การวัดความสำคัญแบบ SHAP คือการพยายามให้เครดิตความสำคัญในการทำนาย y ของแต่ละตัวแปร โดยพิจารณาจากการมีส่วนร่วมในการทำนายของตัวแปรทำนายนั้น ๆ ในทุก ๆ ชุดย่อยของตัวแปร (feature subsets) ที่เป็นไปได้
+
+-   ความสำคัญแบบ SHAP จะเรียกว่า การมีส่วนร่วมของตัวแปรทำนาย (Shapley Additive Explanation) หรือ SHAP value คำนวณจากค่าเฉลี่ยการมีส่วนร่วมนี้จากทุกรูปแบบที่มีการใส่ตัวแปรทำนายนั้นเข้าไป
+
+เช่น หากเราจะหา SHAP value ของ X1 จะดำเนินการประมาณนี้
+
+| Subset \| ประสิทธิภาพที่ดีขึ้น \|
+
+| {} -\> X1 \| 0.4 \|
+
+| {X2} -\> {X1,X2} \| 0.1 \|
+
+| {X3} -\> {X1, X3} \| 0.2 \|
+
+| {X2,X3} -\> {X1,X2,X3} \| 0.3 \|
+
+```{r}
+train_processed <- rf_rec |> prep() |> juice()
+
+X_train <- train_processed %>%
+  select(-G3) %>%
+  as.data.frame()                # สำคัญ: ให้เป็น data.frame ไม่ใช่ tibble/matrix ที่อาจ drop มิติ
+
+y_train <- train_processed$G3
+
+# ตัวช่วย: บังคับคอลัมน์และมิติให้คงที่เสมอ
+pred_fun <- function(object, newdata) {
+  newdata <- as.data.frame(newdata)                            # ให้เป็น data.frame
+  # เรียงคอลัมน์ให้ตรงกับ X_train และกัน drop มิติ
+  newdata <- newdata[, colnames(X_train), drop = FALSE]
+  predict(object, new_data = newdata) %>% dplyr::pull(.pred)   # คืน numeric vector
+}
+
+# คำนวณ SHAP-based importance
+shap_imp <- vip::vi(
+  object = rf_fit,             # จะเป็น parsnip model หรือ workflow ที่ fit แล้วก็ได้
+  method = "shap",
+  train  = X_train,            # ส่งเฉพาะ X!
+  feature_names = colnames(X_train),  
+  pred_wrapper = pred_fun,
+  nsim = 10                    # 10+ จะนิ่งกว่า 1 มาก
+)
+
+# ดูผลลัพธ์ (ตาราง)
+print(shap_imp)
+
+# พล็อตกราฟ (แท่ง)
+vip(shap_imp) +
+  labs(title = "SHAP-based Feature Importance (Train Set)")
+```
+
+### 4.3 การคำนวณ feature importance ด้วย DALEX
+
+library-DALEX รองรับการคำนวณ feature importance ในกลุ่ม model-agnotic ด้วยวิธีการ permutation และ SHAP values
+
+```{r}
+## install.packages("DALEX")
+library(DALEX)
+```
+
+ขั้นตอนแรกจะต้องสร้างการอธิบายของโมเดลก่อน ประกอบด้วย
+
+1.  สร้าง prediction function เพื่อระบุว่าโมเดลของเราทำนายผลลัพธ์ของอะไร และให้ผลการทำนายในลักษณะใด
+
+```{r}
+## สำรวจการทำนายใน rf_fit
+predict(rf_fit, new_data = test_data) ## โมเดลนี้เป็น regression task
+## สร้าง prediction function ผลลัพธ์ต้องออกมาในรูป vector
+pred_fun <- function(model, newdata){
+  predict(model, new_data = newdata) %>% pull(.pred)
+}
+```
+
+2.  สร้าง explainer object ของ DALEX
+
+explainer object คือ object ที่เก็บข้อมูลเกี่ยวกับโมเดลของเรา เช่น ข้อมูล training set, prediction function, ชนิดของงาน (regression/classification) เป็นต้น ซึ่งจะใช้เป็นฐานในการคำนวณ XAI ที่เกี่ยวข้อง
+
+
+```{r}
+rf_explainer <- DALEX::explain(
+  model = rf_fit,
+  data = test_data,
+  y = test_data$G3,
+  ## label = "random_forest",
+  predict_function = pred_fun
+  ## type = "regression"
+)
+```
+
+```{r}
+## ลองเรียกดู
+rf_explainer
+```
+
+3.  สร้างการอธิบายโมเดล
+
+ถ้าต้องการคำนวณ feature importance จาก DALEX ให้เอา explainer มาผ่าน `model_performance()` และ `model_parts()`
+
+```{r}
+## ประสิทธิภาพโดยรวม
+rf_perform <- model_performance(rf_explainer)
+rf_perform
+## feature importance แบบ permutation VI
+rf_vi <- model_parts(explainer = rf_explainer, 
+                     type = "variable_importance",
+                     N = NULL,
+                     B = 10)
+rf_vi %>% plot()
+```
+
+
+> `loss_function` argument\
+> a function that will be used to assess variable importance. By default it is 1-AUC for classification, cross entropy for multilabel classification and RMSE for regression. Custom, user-made loss function should accept two obligatory parameters (observed, predicted), where observed states for actual values of the target, while predicted for predicted values. If attribute loss_name is associated with function object, then it will be plotted as name of the loss function.
+
+ผู้วิเคราะห์สามารถปรับ loss_function ได้ตามวัตถุประสงค์ เช่น ในกรณีนี้เราอาจต้องการปรับ loss function เป็น R2
+
+```{r}
+temp_pred <- predict(rf_fit, new_data = test_data)
+temp <- test_data %>% 
+  dplyr::select(G3) %>% 
+  bind_cols(temp_pred) 
+rsq_vec(truth = temp$G3, estimate = temp$.pred)
+
+
+loss_R2 <- function(observed ,predicted){
+  yardstick::rsq_trad_vec(truth = observed, estimate = predicted)
+}
+
+
+loss_R2_imp <- model_parts(
+  rf_explainer,
+  type = "variable_importance",
+  loss_function = loss_R2,
+  B = 20
+)
+
+loss_R2_imp %>% plot()
+```
+
+### 4.4 การคำนวณ feature importance ด้วย SHAP
+
+โดยปกติ shap ถูกออกแบบให้อธิบายโมเดลแบบ local explanation แต่สามารถประยุกต์ใช้ในลักษณะ global explanation ได้โดยใช้การเฉลี่ยทุกหน่วยข้อมูลภายในแต่ละตัวแปรขึ้นมา อย่างไรก็ตามใน DALEX ไม่ได้มี feature นี้โดยตรง เดี๋ยวกล่าวอีกทีภายหลัง
+
+
+### 4.5 Partial Dependence Plots (PDP)
+
+
+> การเปลี่ยนแปลงใน feature ตัวที่สนใจ ทำให้เกิดการเปลี่ยนแปลงในค่าทำนายของตัวแปรตามอย่างไร?
+
+-   การอธิบายด้วย pdp เป็นการอธิบายในลักษณะ What-if analysis ประเภทหนึ่ง เพราะสามารถให้คำแนะนำในลักษณะว่า ตอนนี้ปัจจัยนำเข้าของนักเรียนเป็น X นะ ซึ่งมีแนวโน้มจะได้ผลลัพธ์เป็น F(X) ถ้านักเรียนปรับ X --\> X\* นักเรียนน่าจะประสบผลลัพธ์หรือความสำเร็จได้เป็นแบบ F(X\*)
+
+-   ใช้บอกว่าโมเดลมองความสัมพันธ์ของตัวแปรกับผลลัพธ์แบบไหน
+
+-   PDP แสดงให้เห็นว่า "ถ้าเราปรับค่าของตัวแปรอิสระ x_j ตัวใดตัวหนึ่ง (เช่น ชั่วโมงการอ่านหนังสือ) โมเดลจะทำนายค่าผลลัพธ์ (เช่น คะแนนสอบ) อย่างไร"
+
+สำหรับค่าหนึ่ง ๆ ของ x_j (เช่น 5 ชั่วโมงในการอ่านหนังสือ):
+
+1.  นำค่า x_j = 5 ไปแทนในทุกแถวของข้อมูล (เช่น ทั้ง 1000 ตัวอย่าง) ส่วนตัวแปรอื่น ๆ x\_{-j} (เช่น อายุ คะแนนก่อนหน้า ฯลฯ) ใช้ค่าจริงของแต่ละแถว
+
+2.  ให้โมเดลพยากรณ์ค่าผลลัพธ์สำหรับแต่ละแถว ได้ผลลัพธ์ 1000 ค่า (หนึ่งค่าต่อหนึ่งตัวอย่าง)
+
+3.  นำผลลัพธ์เหล่านี้มา เฉลี่ย เพื่อหาค่ากลางของผลทำนายเมื่อ x_j = 5
+
+4.  ทำซ้ำข้อ 1–3 สำหรับค่าต่าง ๆ ของ x_j (เช่น 1, 2, 3, 4, 5 …)
+
+-   กราฟ PDP มีแกน x = ค่าของตัวแปร, แกน y = ผลทำนายเฉลี่ยของโมเดล
+
+    -   เส้นขึ้น → ค่าตัวแปรเพิ่มแล้วโมเดลทำนายค่าสูงขึ้น
+
+    -   เส้นลง → ค่าตัวแปรเพิ่มแล้วโมเดลทำนายค่าน้อยลง
+
+    -   เส้นราบ → โมเดลแทบไม่ใช้ตัวแปรนี้ในการทำนาย
+
+```{r}
+library(pdp)
+library(ggplot2)
+library(dplyr)
+
+# สมมติ rf_fit เป็น workflow
+pred_fun <- function(object, newdata) {
+  predict(object, new_data = as.data.frame(newdata)) %>% pull(.pred)
+}
+
+# สร้าง PDP
+p1 <- pdp::partial(
+  object = rf_fit,           # หรือจะใช้โมเดลดิบก็ได้
+  pred.var = "failures",
+  pred.fun = pred_fun,
+  train = X_train,
+  grid.resolution = 25
+)
+
+autoplot(p1) + theme_minimal()
+```
+
+การคำนวณ pdp ด้วย DALEX
+
+1.  สร้าง `model_profile()` เพื่อสร้างการอธิบายแบบ what-if ของ DALEX
+
+```{r fig.height=8}
+rf_profile_G2 <- model_profile(rf_explainer,
+                            variables = "G2",
+                            N = NULL,
+                            groups = NULL,
+                            type = "partial")
+rf_profile_G2 %>% plot()
+
+rf_profile_fail <- model_profile(rf_explainer,
+                            variables = "failures",
+                            N = NULL,
+                            groups = NULL,
+                            type = "partial")
+
+rf_profile_fail %>% plot()
+
+
+
+rf_profile_study_time <- model_profile(rf_explainer,
+                            N = 100,
+                            groups = NULL,
+                            type = "partial",
+                            variables = "studytime")
+
+library(patchwork)
+p1 <- rf_profile_G2 %>% plot() + ylim(5,15) 
+p2 <- rf_profile_fail %>% plot() + ylim(5,15) 
+p3 <- rf_profile_study_time %>% plot() + ylim(5,15)
+
+p1/p2/p3
+```
+
+## 5. เทคนิค XAI สำหรับ Local Explanation
+
+แม้เราจะเข้าใจว่าโดยรวมแล้วโมเดลให้ความสำคัญกับตัวแปรใดบ้าง (global explanation) แต่ในหลายกรณีการตัดสินใจเฉพาะบุคคล เช่น นักเรียนแต่ละคน ได้รับการทำนายให้สอบผ่าน/ไม่ผ่าน เราอาจต้องการทราบว่า **ทำไมโมเดลจึงให้ผลทำนายเช่นนั้นกับเคสนี้**
+
+กลยุทธ์การให้คำอธิบายแบบ local นี้สามารถดำเนินการได้หลายแบบ
+
+-   feature attribution
+
+-   counterfactual explanation
+
+-   example-based explanation
+
+### 5.1 Local Feature Attribution
+
+-   break_down
+
+-   break_down_interaction
+
+-   shap
+
+#### break_down plot
+
+อีกเทคนิคหนึ่งที่สามารถใช้ทำ local feature attribution ได้คือ break down
+
+> break down explanation ใช้เพื่ออธิบายว่า “ทำไมโมเดลถึงให้คำทำนายแบบนี้กับข้อมูลของ ตัวอย่างนี้"
+
+โดยจะ “แยกส่วนประกอบ” ของค่าทำนายออกมาให้เห็นว่า แต่ละ feature มีส่วน เพิ่ม หรือ ลด ค่าทำนายจาก baseline (ค่าเฉลี่ยของโมเดล) มากน้อยแค่ไหน
+
+การคำนวณ
+
+1.  เริ่มจากค่า baseline (เช่น ค่าเฉลี่ยของผลลัพธ์ทั้งหมด)
+
+```{r}
+predict(rf_fit ,new_data = test_data) %>% 
+  summarise(mean_pred = mean(.pred))
+```
+
+2.  เลือก feature หนึ่งตัว (เช่น X1) แล้วปรับค่า X1 ของตัวอย่างปัจจุบันให้เป็นค่าจริง จากนั้นคำนวณค่าทำนายใหม่ (DALEX จะเลือก feature ที่ทำให้ prediction เปลี่ยนมากที่สุดในรอบนั้นก่อน)
+
+```{r}
+## base_line
+predict(rf_fit ,new_data = test_data %>% summarise_all(mean, na.rm = TRUE) )
+
+## G2
+predict(rf_fit ,new_data = test_data %>% summarise_all(mean, na.rm = TRUE) %>% 
+          mutate(G2 = 6))
+
+## G2 --> G!
+predict(rf_fit ,new_data = test_data %>% summarise_all(mean, na.rm = TRUE) %>% 
+          mutate(G2 = 6) %>% 
+          mutate(G1 = 6))
+ 
+        
+```
+
+
+
+3.  หาความแตกต่างระหว่างค่าทำนายใหม่กับ baseline นั่นคือ “ผลกระทบ” ของ X1
+
+4.  ทำซ้ำข้อ 2-3 สำหรับ feature ตัวถัดไป (X2, X3, ...) โดยแต่ละครั้งจะใช้ค่าจริงของ feature ที่เลือกแล้ว และค่าจริงของ feature ก่อนหน้า
+
+```{r}
+rf_breakdown <- predict_parts(
+  rf_explainer,
+  new_observation = test_data[1,],
+  type = "break_down"
+)
+rf_breakdown %>% tibble()
+rf_breakdown %>% plot()
+
+library(purrr)
+loop_test <- map(
+  .x = 1:10,
+  .f = ~ predict_parts(
+    rf_explainer,
+    new_observation = test_data[.x,],
+    type = "break_down"
+  ) %>% tibble()  %>% 
+  mutate(student_id = paste0("student_id", .x), .before = "variable")
+)
+
+loop_test %>% 
+  bind_rows() %>% 
+  filter(variable != "prediction") %>% 
+  group_by(variable_name) %>% 
+  reframe(
+    global_contribution = mean(abs(contribution))
+  ) %>% 
+  arrange(desc(global_contribution))
+```
+
+#### break_down_interaction plot
+
+-   เทคนิคนี้คล้ายกับ break_down plot แต่เพิ่มความสามารถในการจับ interaction ระหว่าง features
+
+-   ทั้งนี้เป็นเพราะ break_down แบบปกติจะมองว่า feature แต่ละตัวเป็นอิสระต่อกันทำงานในการทำนายผลลัพธ์อย่างเป็นอิสระต่อกัน ซึ่งอาจไม่สอดคล้องกับความเป็นจริง และทำให้การอธิบายที่ได้มีความคลาดเคลื่อน
+
+-   break_down_interaction จะพิจารณาผลกระทบของ feature แต่ละตัวในบริบทของ feature อื่น ๆ ที่มี interaction ด้วย เพื่อลดความคลาดเคลื่อนนี้
+
+```{r}
+rf_breakdown1 <- predict_parts(
+  rf_explainer,
+  new_observation = test_data[1,],
+  type = "break_down"
+)
+
+
+rf_breakdown2 <- predict_parts(
+  rf_explainer,
+  new_observation = test_data[1,],
+  type = "break_down_interactions"
+)
+
+
+rf_breakdown1 %>% plot() +
+rf_breakdown2 %>% plot()
+```
+
+#### SHAP (SHapley Additive exPlanations) values
+
+เนื้อหาส่วนนี้เราจะใช้ Shapley เพื่อคำนวณ feature attribution ของแต่ละหน่วยข้อมูล จุดเด่นของ Shap คือการใช้ทฤษฎีเกมส์มาช่วยออกแบบการประมวลผลเพื่อสร้างดัชนีความสำคัญของตัวแปร ซึ่งช่วยลดอคติที่เกิดขึ้นจาก break_down ทั้งสองวิธี
+
+```{r}
+## ดูนักเรียนคนที่หนึ่งนี้
+test_data[1,]
+## ค่าทำนายคะแนนที่ได้รับ
+predict(rf_fit, new_data = test_data[1,])
+```
+
+```{r}
+##  ผลการทำนายของนักเรียนคนนี้เป็นอย่างไร?
+test_data[50,]
+predict(rf_fit, new_data = test_data[50,]) 
+```
+
+อะไรเป็นปัจจัยที่ทำให้นักเรียนทั้งสองได้รับการทำนายที่แตกต่างกัน ?
+
+```{r}
+shap_student1 <- rf_explainer %>% 
+  predict_parts(
+    new_observation = test_data[1,],
+    type = "shap",
+    B = 5
+  )
+shap_student1 %>% tibble()
+
+shap_student2 <- rf_explainer %>% 
+  predict_parts(
+    new_observation = test_data[50,],
+    type = "shap",
+    B = 5
+  )
+
+library(patchwork)
+p1 <- shap_student1 %>% plot() + ggtitle("student 1") + ylim(-2.5,1)
+p2 <-  shap_student2 %>% plot() + ggtitle("student 2") + ylim(-2.5,1)
+
+p1+p2
+
+
+shap_loop <- map(
+  .x = 1:10,
+  .f = ~ rf_explainer %>%
+    predict_parts(
+      new_observation = test_data[.x, ],
+      type = "shap",
+      B = 5) %>% tibble() %>% 
+  mutate(student_id = paste0("student_", .x), .before = "variable")
+)
+
+shap_loop %>% 
+  bind_rows() %>% 
+  group_by(variable_name) %>% 
+  reframe(
+    global_contribution = mean(contribution)) %>% 
+  arrange(desc(global_contribution))
+```
+
+#### Aggregated SHAP for Global Explanation
+
+```{r}
+shap_aggregated <- rf_explainer %>%
+  predict_parts(
+    new_observation = test_data[1:10, ],  # ตัวอย่าง 100 ตัวอย่าง
+    type = "shap_aggregated",
+    B = 5
+  )
+
+shap_aggregated$aggregated %>% tibble() %>% 
+  arrange(desc(abs(contribution)))
+```
+
+
+### 5.2 ICE (Individual Conditional Expectation) Plots
+
+เทคนิคนี้คล้ายกับ PDP แต่แทนที่จะเฉลี่ยผลลัพธ์ของทุกตัวอย่าง เราจะดูผลลัพธ์ของแต่ละตัวอย่างแยกกัน หลักการคือการ “จำลอง” การเปลี่ยนค่าของตัวแปรหนึ่ง ๆ ขณะที่ “คงค่าของตัวแปรอื่นไว้เท่าเดิม” (ceteris paribus ในภาษาละติน) ทำให้ผู้วิเคราะห์เห็นแนวโน้มการเปลี่ยนแปลงของผลลัพธ์เมื่อมีการปรับพฤติกรรมหรือปัจจัยนำเข้า
+
+```{r}
+# สร้าง ICE profile
+ice_profile <- predict_profile(
+  rf_explainer,
+  new_observation = test_data[50, ],  # 20 ตัวอย่างพอให้ดู pattern
+  type = "ceteris_paribus"
+)
+ice_profile %>% plot(variables = c("G2","G1","absences"))
+```
+
+### 5.3 Counterfactual Explanation
+
+การอธิบายในรูปแบบนี้จะใช้สถานการณ์สมมุตที่แตกต่างไปจากข้อเท็จจริง เพื่ออธิบายพฤติกรรมของโมเดลว่า หากปัจจัยบางอย่างเปลี่ยนแปลงไป ผลลัพธ์ของโมเดลจะเปลี่ยนแปลงไปอย่างไร
+
+กล่าวอีกลักษณะหนึ่งคือ เป็นการอธิบายผลการทำนายของโมเดลด้วยการเปรียบเทียบสิ่งที่เกิดขึ้นจริง (factual) กับสิ่งที่อาจเกิดขึ้นได้ หากเงื่อนไขบางอย่างเปลี่ยนแปลงไป (counterfactual) เทคนิคนี้มักใช้เพื่อช่วยให้ผู้ใช้เข้าใจว่าปัจจัยใดที่มีอิทธิพลต่อการตัดสินใจของโมเดล และสามารถนำไปสู่การตัดสินใจเชิงปฏิบัติได้ เช่น
+
+-   โมเดลทำนายว่า **นักเรียนจะสอบไม่ผ่านรายวิชาคณิตศาสตร์** คำอธิบายเชิง counterfactual อาจระบุว่า **ถ้านักเรียนเพิ่มเวลาการศึกษาอีก 5 ชั่วโมงต่อสัปดาห์ ผลการทำนายจะเปลี่ยนเป็นสอบผ่าน**
+
+โครงสร้างทั่วไปของ Counterfactual Explanation
+
+*"โมเดลให้ผลลัพธ์ Y เนื่องจากปัจจัยเป็น X แต่ถ้าปรับปัจจัยให้เป็น X' (ซึ่งแตกต่างจากข้อเท็จจริงบางส่วน) ผลลัพธ์จะเปลี่ยนเป็น Y'"*
+
+ข้อความข้างต้นสามารถเขียนเป็นสัญลักษณ์ทางคณิตศาสตร์ได้ดังนี้
+
+$$
+f(X) = Y, f(X') = Y' โดยที่ X' \approx X
+$$
+
+ซึ่งหมายความว่า เราจะหา input X' ที่มีความใกล้เคียงกับ input X เดิม (ข้อเท็จจริง) แต่ให้ผลลัพธ์ Y' ที่แตกต่างจาก Y โดย Y' เป็นผลลัพธ์ที่คาดหวัง
+
+ในบริบทการศึกษาเราสามารถใช้ประโยชน์จาก counterfactual explanation เพื่อช่วยนักเรียนในการวางแผนปรับปรุงผลสัมฤทธิ์ทางการเรียน เช่น
+
+-   นักเรียนที่ถูกคาดการณ์ว่าจะสอบตก อาจได้รับคำแนะนำว่า ถ้าเข้าเรียนเกินร้อยละ 85 ส่งการบ้านให้ครบทุกชิ้น และทบทวนบทเรียนอย่างน้อย 3 ชั่วโมงต่อสัปดาห์ ผลการทำนายจะเปลี่ยนเป็นสอบผ่าน
+
+-   โรงเรียนที่ถูกจัดว่ามีความเสี่ยงสูงในด้านคุณภาพผู้เรียน อาจได้รับคำแนะนำว่า ถ้าเพิ่มชั่วโมงการเรียนพิเศษ ลดอัตราการขาดเรียน และส่งเสริมกิจกรรมนอกหลักสูตร ผลการทำนายจะเปลี่ยนเป็นความเสี่ยงต่ำ
+
+-   นักเรียนที่ได้รับการคัดเลือกเข้าศึกษาต่อ อาจได้รับคำแนะนำที่เกี่ยวกับการปรับปรุงพฤติกรรม หรือลักษณะของผลงานที่ยื่นประกอบการพิจารณา ซึ่งช่วยให้แนวโน้มการได้รับการศึกษาต่อมีสูงขึ้น
+
+ลักษณะสำคัญของการอธิบายเชิง counterfactual ได้แก่
+
+1.  มีลักษณะเป็นการเปรียบเทียบ (contrastive) กล่าวคือ แสดงให้เห็นเหตุผลที่ผลลัพธ์เป็นเช่นนี้ โดยการเปรียบเทียบกับสิ่งที่ไม่ได้เป็นข้อเท็จจริง
+
+2.  เป็นการอธิบายเชิงสาเหตุ (causal reasoning) กล่าวคือ counterfactual ไม่ได้บอกแค่ว่าตัวแปรทำนายไหนที่มีอิทธิพล แต่ยังสื่อสารว่า ถ้าเปลี่ยน feature นี้ ผลจะเปลี่ยน ทำให้เราเข้าใจความสัมพันธ์เชิงเหตุผลในเชิงปฏิบัติได้อย่างชัดเจน
+
+3.  มีจุดเน้นที่เป็น actionable insights
+
+4.  มีทั้งมุมบวกและมุมลบ (proponent & opponent)
+
+Counterfactual explanation มีจุดเด่นมากกว่า feature explanation เพราะในเชิงจิตวิทยาการอธิบายแบบเปรียบเทียบนี้มีแนวโน้มที่ผู้รับคำแนะนำจะพึงพอใจและปฏิบัติตามได้มากกว่า ด้วยกรอบ ทิศทาง และเหตุผลที่เข้าใจง่าย
+
+```{r}
+# สร้าง ICE profile
+ice_profile <- predict_profile(
+  rf_explainer,
+  new_observation = test_data[1, ],  # 20 ตัวอย่างพอให้ดู pattern
+  type = "ceteris_paribus"
+)
+
+ice_profile %>% plot(variables = c("G2")) 
+
+ice_profile %>%   filter(`_vname_` == "G2") %>% 
+  dplyr::select(G2 = G2, prediction = `_yhat_`) %>% 
+  ggplot(aes(x = G2, y = prediction)) +
+  geom_line(color = "steelblue", size = 1) 
+
+ice_profile %>%   filter(`_vname_` == "G2") %>% 
+  dplyr::select(G2 = G2, prediction = `_yhat_`) %>% 
+  tibble() %>% 
+  filter(prediction > 10)
+```
+
+จากกราฟ ICE ข้างต้น เราอาจตั้งสมมติฐานเชิง counterfactual ได้ว่า ...
+
+## กิจกรรม

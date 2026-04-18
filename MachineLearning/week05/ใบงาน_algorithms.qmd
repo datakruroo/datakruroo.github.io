@@ -1,0 +1,764 @@
+---
+title: "ใบงานที่ 6: เปรียบเทียบ Algorithm และตีความโมเดลจำแนก PLO"
+subtitle: "From Black-Box to Understanding — KNN, Regularized Regression, PCR & PLS"
+author: "ชื่อ-นามสกุล: _________________________________ รหัสนักศึกษา: _____________"
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    code-tools: true
+    highlight-style: github
+    embed-resources: true
+  pdf:
+    documentclass: article
+    geometry: margin=2.5cm
+    fontsize: 12pt
+    toc: true
+execute:
+  warning: false
+  message: false
+  echo: true
+---
+
+```{r}
+#| label: setup
+#| code-fold: false
+
+library(tidyverse)
+library(tidymodels)
+tidymodels_prefer()
+
+theme_set(
+  theme_minimal(base_size = 13, base_family = "Sarabun") +
+    theme(
+      plot.title    = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(color = "grey40"),
+      strip.text    = element_text(face = "bold"),
+      legend.position = "bottom"
+    )
+)
+```
+
+## บริบทและวัตถุประสงค์
+
+### ทบทวน Pipeline
+
+ในกิจกรรมก่อนหน้า (Step 1–4) ผู้เรียนได้สร้าง ML pipeline สำหรับจำแนก keyword ของรายวิชาลงใน PLO dimension ดังนี้
+
+| Step | สิ่งที่ทำ | Output |
+|------------------|------------------------------|------------------------|
+| 1 | สกัด keyword จากคำอธิบายรายวิชาด้วย LLM | `keyword_openai_target.csv` |
+| 2 | สร้าง training data จาก keyword + augmentation | `full_training_data.csv` |
+| 3 | แปลง keyword เป็น embedding vector (768 มิติ) | `full_emd` |
+| 4 | ฝึก KNN classifier + tune hyperparameter | `PLO_classifier_KNN.rds` |
+
+: สรุป ML Pipeline ของกิจกรรมที่ผ่านมา
+
+ใน Step 4 เราใช้ KNN เป็น algorithm เดียว — ในใบงานนี้เราจะ **ขยายมุมมอง** ด้วยการ:
+
+1.  **มองให้เห็น** โครงสร้างข้อมูล embedding ด้วย PCA
+2.  **เปรียบเทียบ** algorithm 4 ตัวอย่างเป็นระบบ
+3.  **ตีความ** ว่าแต่ละ algorithm บอกอะไรเราเกี่ยวกับ PLO
+
+### วัตถุประสงค์การเรียนรู้
+
+เมื่อสิ้นสุดกิจกรรมนี้ ผู้เรียนจะสามารถ:
+
+1.  **อธิบาย** หลักการทำงานเบื้องต้นของ KNN, Regularized Regression, PCR และ PLS
+2.  **เปรียบเทียบ** ประสิทธิภาพของ algorithm ต่าง ๆ ด้วย cross-validation อย่างเป็นระบบ
+3.  **ตีความ** ผลลัพธ์ของโมเดลเพื่ออธิบายโครงสร้างของข้อมูล PLO
+4.  **ประเมิน** ว่า algorithm ใดเหมาะสมกับบริบทข้อมูลนี้ พร้อมเหตุผลสนับสนุน
+
+## เตรียมข้อมูล
+
+### โหลดข้อมูลจาก Step 3–4
+
+ผู้เรียนต้องมี `full_emd` ที่สร้างไว้ใน Step 3 (embedding + dimension label) พร้อมใช้
+
+```{r}
+#| label: load-data
+#| code-fold: false
+
+## -------- ปรับ path ให้ตรงกับโฟลเดอร์ของผู้เรียน --------
+full_emd <- read_csv("03_output/full_emd.csv")
+
+## ตรวจสอบข้อมูล
+full_emd |> glimpse()
+full_emd |> count(dimension)
+```
+
+> **📌 ก่อนไปต่อ:** ตรวจสอบว่า\
+> (1) `dimension` เป็น character หรือ factor ที่มี 4 ระดับ (PLO1–PLO4)\
+> (2) คอลัมน์ embedding (`embeddings_1` ถึง `embeddings_768`) ครบถ้วน\
+> (3) มีคอลัมน์ `input` ที่เก็บ keyword ต้นฉบับ
+
+### แบ่งข้อมูลและสร้าง Resampling Folds
+
+เราจะใช้ **ชุด split และ folds เดียวกัน** ตลอดทั้งใบงาน เพื่อให้การเปรียบเทียบ algorithm เป็นธรรม
+
+```{r}
+#| label: split-folds
+#| code-fold: false
+
+set.seed(2025)
+split      <- initial_split(full_emd, prop = 0.85, strata = dimension)
+train_data <- training(split)
+test_data  <- testing(split)
+
+set.seed(2025)
+folds <- vfold_cv(train_data, v = 5, repeats = 2, strata = dimension)
+```
+
+**คำถาม 0.1:** ทำไมเราต้องใช้ `strata = dimension` ตอน split? ถ้าไม่ใส่ อาจเกิดปัญหาอะไร?
+
+> *ตอบ:*
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 1: มองให้เห็น — PCA Visualization {.panel-tabset}
+
+ข้อมูล embedding มี 768 มิติ ซึ่งเราไม่สามารถ plot ได้โดยตรง PCA จะช่วย "บีบ" ข้อมูลลงมาให้เห็นโครงสร้างภาพรวม
+
+### 1.1 คำนวณ PCA
+
+```{r}
+#| label: pca-fit
+#| code-fold: false
+
+## สร้าง recipe สำหรับ PCA visualization (เก็บ component เยอะ ๆ ไว้ดูก่อน)
+pca_vis_rec <- recipe(dimension ~ ., data = train_data) |> 
+  step_rm(input) |> 
+  step_normalize(starts_with("embeddings")) |> 
+  step_pca(starts_with("embeddings"), num_comp = 100, id = "pca_vis")
+
+## prep = fit recipe บน train_data
+pca_vis_prep <- prep(pca_vis_rec)
+
+## bake = แปลง train_data ตาม recipe ที่ fit แล้ว
+pca_scores <- bake(pca_vis_prep, new_data = NULL)  ## NULL = ใช้ train_data ที่ prep ไว้
+
+pca_scores |> glimpse()
+```
+
+### 1.2 Scree Plot — ต้องใช้กี่ Component?
+
+```{r}
+#| label: scree-plot
+#| fig-cap: "Scree plot แสดง cumulative variance explained ของแต่ละ PC"
+
+## ดึง variance explained จาก prepped recipe
+var_explained <- tidy(pca_vis_prep, id = "pca_vis", type = "variance") |> 
+  filter(terms == "cumulative percent variance") |> 
+  select(component, value) |> 
+  mutate(cum_prop = value / 100)
+
+## หาจำนวน PC ที่อธิบาย variance ได้ 80%
+n_80 <- var_explained |> filter(cum_prop >= 0.80) |> slice(1) |> pull(component)
+
+var_explained |> 
+  ggplot(aes(x = component, y = cum_prop)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 0.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "tomato") +
+  geom_vline(xintercept = n_80, linetype = "dashed", color = "steelblue") +
+  annotate("text", x = n_80 + 3, y = 0.75, 
+           label = paste0("PC", n_80, " → 80%"), color = "steelblue", hjust = 0) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "Principal Component", y = "Cumulative Variance Explained",
+       title = "Scree Plot ของ Embedding Space",
+       subtitle = "ต้องใช้กี่ component จึงจะเก็บข้อมูลส่วนใหญ่ไว้ได้?")
+```
+
+**คำถาม 1.1:** จำนวน PC ที่อธิบาย variance ได้ 80% คือกี่ตัว? จากทั้งหมด 768 มิติ ตัวเลขนี้บอกอะไรเกี่ยวกับ embedding space?
+
+> *ตอบ:*
+
+### 1.3 PCA Scatter Plot — PLO แยกกันชัดแค่ไหน?
+
+```{r}
+#| label: pca-scatter
+#| fig-cap: "Scatter plot ของ PC1 vs PC2 สีตาม PLO dimension"
+#| fig-width: 8
+#| fig-height: 6
+
+pca_scores |> 
+  ggplot(aes(x = PC1, y = PC2, color = dimension)) +
+  geom_point(alpha = 0.5, size = 1.5) +
+  stat_ellipse(level = 0.90, linewidth = 0.8) +
+  scale_color_brewer(palette = "Set2") +
+  labs(title = "PLO Dimension ใน Embedding Space (PC1 vs PC2)",
+       subtitle = "วงรี = 90% confidence ellipse ของแต่ละกลุ่ม",
+       color = "PLO")
+```
+
+**คำถาม 1.2:** จากกราฟ PLO คู่ใดที่ **แยกกันชัดที่สุด**? คู่ใดที่ **ทับกันมากที่สุด**? สิ่งนี้จะส่งผลต่อการจำแนกของ model อย่างไร?
+
+> *ตอบ:*
+
+### 1.4 เจาะลึก: PC1 vs PC3, PC2 vs PC3
+
+```{r}
+#| label: pca-scatter-extra
+#| fig-cap: "มุมมองเพิ่มเติมจาก PC3"
+#| fig-width: 10
+#| fig-height: 5
+
+library(patchwork)
+
+p1 <- pca_scores |> 
+  ggplot(aes(x = PC1, y = PC3, color = dimension)) +
+  geom_point(alpha = 0.4, size = 1) +
+  stat_ellipse(level = 0.90) +
+  scale_color_brewer(palette = "Set2") +
+  labs(title = "PC1 vs PC3") +
+  theme(legend.position = "none")
+
+p2 <- pca_scores |> 
+  ggplot(aes(x = PC2, y = PC3, color = dimension)) +
+  geom_point(alpha = 0.4, size = 1) +
+  stat_ellipse(level = 0.90) +
+  scale_color_brewer(palette = "Set2") +
+  labs(title = "PC2 vs PC3")
+
+p1 + p2
+```
+
+**คำถาม 1.3:** PC3 ช่วยแยก PLO คู่ที่ทับกันในกราฟ PC1–PC2 ได้ดีขึ้นหรือไม่? สิ่งนี้บอกอะไรเกี่ยวกับข้อจำกัดของการดู 2 มิติ?
+
+> *ตอบ:*
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 2: สร้าง Recipe — หัวใจของ Preprocessing
+
+### 2.1 Recipe พื้นฐาน (สำหรับ KNN, Logistic, Elastic-net)
+
+```{r}
+#| label: basic-recipe
+#| code-fold: false
+
+basic_rec <- recipe(dimension ~ ., data = train_data) |> 
+  step_rm(input) |>                              
+  step_normalize(starts_with("embeddings"))      
+```
+
+> **💡 อธิบาย:**
+>
+> -   `step_rm(input)` — ลบคอลัมน์ keyword ต้นฉบับ (ไม่ใช่ตัวเลข ใช้ train ไม่ได้)
+> -   `step_normalize()` — ทำให้ทุก embedding dimension มี mean = 0, sd = 1 ซึ่ง **จำเป็นมาก** สำหรับ KNN (ใช้ distance) และ regularized regression (penalty ต้องอยู่บน scale เดียวกัน)
+
+### 2.2 Recipe สำหรับ PCR
+
+```{r}
+#| label: pcr-recipe
+#| code-fold: false
+
+pcr_rec <- recipe(dimension ~ ., data = train_data) |> 
+  step_rm(input) |> 
+  step_normalize(starts_with("embeddings")) |> 
+  step_pca(starts_with("embeddings"), num_comp = tune())
+```
+
+> **💡 อธิบาย:**
+>
+> -   `step_pca(num_comp = tune())` — ลดมิติด้วย PCA แล้วเก็บไว้ `num_comp` components ซึ่งเราจะ tune หาค่าที่เหมาะสม
+> -   การทำ PCA **หลัง** normalize ทำให้ PCA เทียบเท่ากับการทำ PCA บน correlation matrix
+
+### 2.3 Recipe สำหรับ PLS
+
+```{r}
+#| label: pls-recipe
+#| code-fold: false
+
+pls_rec <- recipe(dimension ~ ., data = train_data) |> 
+  step_rm(input) |> 
+  step_normalize(starts_with("embeddings")) |> 
+  step_pls(starts_with("embeddings"), outcome = "dimension", num_comp = tune())
+```
+
+> **💡 ความแตกต่างสำคัญ:**
+>
+> -   `step_pls()` ต้องระบุ `outcome` เพราะ PLS หา components ที่ **maximize covariance ระหว่าง X กับ Y** (PLO dimension)
+> -   PCA ไม่สนใจ Y เลย — มันแค่หา direction ที่ variance ใน X มากที่สุด
+> -   ดังนั้น PLS component ตัวที่ 1 อาจ predict PLO ได้ดีกว่า PC1 แม้ว่า PLS component จะอธิบาย variance ใน X น้อยกว่า
+
+**คำถาม 2.1:** ในสถานการณ์ใดที่ PCA กับ PLS จะให้ผลคล้ายกัน? ในสถานการณ์ใดที่จะต่างกันมาก?
+
+> *ตอบ:*
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 3: กำหนด Model Specifications
+
+### 3.1 KNN
+
+```{r}
+#| label: spec-knn
+#| code-fold: false
+
+knn_spec <- nearest_neighbor(neighbors = tune()) |> 
+  set_engine("kknn") |> 
+  set_mode("classification")
+```
+
+> **💡 หลักการ:** KNN จำแนกจุดใหม่โดยดู "เพื่อนบ้าน" k ตัวที่ใกล้ที่สุดใน feature space แล้ว vote ว่า class ไหนชนะ\
+> **tune อะไร:** `neighbors` (k) — ถ้า k น้อย = sensitive ต่อ noise, ถ้า k มาก = decision boundary เรียบเกินไป
+
+### 3.2 Multinomial Logistic Regression (ไม่ penalty)
+
+```{r}
+#| label: spec-multinom
+#| code-fold: false
+
+multinom_spec <- multinom_reg(penalty = 0, mixture = NULL) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+```
+
+> **💡 หลักการ:** หา **เส้นตรง** (hyperplane) ที่แบ่ง class ในแต่ละคู่ — ถ้า logistic ทำได้ดี แปลว่า boundary ระหว่าง PLO เป็นเส้นตรงใน embedding space\
+> **ทำไมใช้ตัวนี้:** เป็น baseline ที่ไม่มี regularization เพื่อดูว่า model ง่ายที่สุดทำได้ดีแค่ไหน
+
+### 3.3 Elastic-net (Lasso + Ridge)
+
+```{r}
+#| label: spec-elnet
+#| code-fold: false
+
+elnet_spec <- multinom_reg(penalty = tune(), mixture = tune()) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+```
+
+> **💡 หลักการ:**
+>
+> -   **Ridge** (`mixture = 0`): หดค่า coefficient ทุกตัวให้เล็กลง แต่ไม่ปิดตัวไหนเลย — เหมาะเมื่อ features ส่วนใหญ่มีส่วนร่วม
+> -   **Lasso** (`mixture = 1`): หดค่า coefficient บางตัวให้เป็น 0 เลย — ทำ feature selection ในตัว
+> -   **Elastic-net** (0 \< mixture \< 1): ผสมทั้งสอง
+>
+> **tune อะไร:** `penalty` (ความแรงของ regularization) + `mixture` (สัดส่วน Lasso vs Ridge)
+
+### 3.4 PCR (PCA + Multinomial Logistic)
+
+```{r}
+#| label: spec-pcr
+#| code-fold: false
+
+## ใช้ logistic regression บน PC scores
+pcr_spec <- multinom_reg(penalty = 0, mixture = NULL) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+```
+
+### 3.5 PLS (Partial Least Squares + Classification)
+
+```{r}
+#| label: spec-pls
+#| code-fold: false
+
+pls_spec <- multinom_reg(penalty = 0, mixture = NULL) |> 
+  set_engine("glmnet") |> 
+  set_mode("classification")
+```
+
+> **📌 สังเกต:** PCR และ PLS ใช้ **model specification เดียวกัน** (logistic regression ไม่ penalty) — ความแตกต่างอยู่ที่ **recipe** (วิธีสร้าง features)
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 4: ฝึกและเปรียบเทียบด้วย Workflow Set
+
+### 4.1 รวม Workflows ทั้งหมด
+
+`workflow_set()` ช่วยให้เรา **จับคู่** recipe กับ model spec แล้ว tune ทุกคู่พร้อมกันบน resampling เดียวกัน ทำให้เปรียบเทียบอย่างเป็นธรรม
+
+```{r}
+#| label: workflow-set
+#| code-fold: false
+
+wf_set <- workflow_set(
+  preproc = list(
+    basic  = basic_rec,
+    basic  = basic_rec,
+    basic  = basic_rec,
+    pcr    = pcr_rec,
+    pls    = pls_rec
+  ),
+  models = list(
+    knn      = knn_spec,
+    multinom = multinom_spec,
+    elnet    = elnet_spec,
+    pcr      = pcr_spec,
+    pls      = pls_spec
+  ),
+  cross = FALSE    ## จับคู่ 1:1 ไม่ cross ทุกคู่
+)
+
+wf_set
+```
+
+### 4.2 กำหนด Tuning Grid
+
+```{r}
+#| label: grids
+
+## KNN: ลอง k จาก 3 ถึง 35
+knn_grid <- grid_regular(neighbors(range = c(3, 35)), levels = 12)
+
+## Elastic-net: penalty + mixture
+elnet_grid <- grid_regular(
+  penalty(range = c(-4, -0.5)),
+  mixture(range = c(0, 1)),
+  levels = c(10, 5)         ## penalty 10 ระดับ × mixture 5 ระดับ = 50 จุด
+)
+
+## PCR & PLS: จำนวน components
+comp_grid <- grid_regular(num_comp(range = c(2, 80)), levels = 15)
+```
+
+### 4.3 Tune ทุก Workflow
+
+```{r}
+#| label: tune-all
+#| cache: true
+
+## กำหนด metrics ที่สนใจ
+my_metrics <- metric_set(accuracy, roc_auc, mn_log_loss)
+
+## ---- Tune แต่ละ workflow ----
+## 4.3.1 KNN
+knn_res <- wf_set |> 
+  extract_workflow("basic_knn") |> 
+  tune_grid(resamples = folds, grid = knn_grid, metrics = my_metrics,
+            control = control_grid(save_pred = TRUE))
+
+## 4.3.2 Multinomial (ไม่มี tuning parameter — fit 1 ครั้ง)
+multinom_res <- wf_set |> 
+  extract_workflow("basic_multinom") |> 
+  fit_resamples(resamples = folds, metrics = my_metrics,
+                control = control_resamples(save_pred = TRUE))
+
+## 4.3.3 Elastic-net
+elnet_res <- wf_set |> 
+  extract_workflow("basic_elnet") |> 
+  tune_grid(resamples = folds, grid = elnet_grid, metrics = my_metrics,
+            control = control_grid(save_pred = TRUE))
+
+## 4.3.4 PCR
+pcr_res <- wf_set |> 
+  extract_workflow("pcr_pcr") |> 
+  tune_grid(resamples = folds, grid = comp_grid, metrics = my_metrics,
+            control = control_grid(save_pred = TRUE))
+
+## 4.3.5 PLS
+pls_res <- wf_set |> 
+  extract_workflow("pls_pls") |> 
+  tune_grid(resamples = folds, grid = comp_grid, metrics = my_metrics,
+            control = control_grid(save_pred = TRUE))
+```
+
+### 4.4 เปรียบเทียบ Best Performance ของแต่ละ Algorithm
+
+```{r}
+#| label: collect-best
+#| fig-cap: "เปรียบเทียบ accuracy สูงสุดของแต่ละ algorithm"
+
+## รวบรวม best metric ของแต่ละ algorithm
+best_results <- bind_rows(
+  show_best(knn_res, metric = "accuracy", n = 1)      |> mutate(model = "KNN"),
+  collect_metrics(multinom_res) |> 
+    filter(.metric == "accuracy")                      |> mutate(model = "Multinomial"),
+  show_best(elnet_res, metric = "accuracy", n = 1)    |> mutate(model = "Elastic-net"),
+  show_best(pcr_res, metric = "accuracy", n = 1)      |> mutate(model = "PCR"),
+  show_best(pls_res, metric = "accuracy", n = 1)      |> mutate(model = "PLS")
+)
+
+best_results |> 
+  ggplot(aes(x = reorder(model, mean), y = mean)) +
+  geom_col(aes(fill = model), show.legend = FALSE, width = 0.6) +
+  geom_errorbar(aes(ymin = mean - std_err, ymax = mean + std_err), width = 0.15) +
+  geom_text(aes(label = sprintf("%.3f", mean)), vjust = -0.5, size = 3.5) +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format()) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(x = NULL, y = "Accuracy (CV)", 
+       title = "เปรียบเทียบ Accuracy สูงสุดของแต่ละ Algorithm",
+       subtitle = "5-fold CV × 2 repeats | error bar = standard error") +
+  coord_flip()
+```
+
+**คำถาม 4.1:** Algorithm ใดให้ accuracy สูงสุด? Algorithm ใดให้ accuracy ต่ำสุด? ผู้เรียนอธิบายได้หรือไม่ว่าเพราะเหตุใด?
+
+> *ตอบ:*
+
+### 4.5 เปรียบเทียบด้วย mn_log_loss
+
+```{r}
+#| label: compare-logloss
+#| fig-cap: "เปรียบเทียบ mean log-loss (ยิ่งต่ำยิ่งดี)"
+
+best_ll <- bind_rows(
+  show_best(knn_res, metric = "mn_log_loss", n = 1)   |> mutate(model = "KNN"),
+  collect_metrics(multinom_res) |> 
+    filter(.metric == "mn_log_loss")                   |> mutate(model = "Multinomial"),
+  show_best(elnet_res, metric = "mn_log_loss", n = 1)  |> mutate(model = "Elastic-net"),
+  show_best(pcr_res, metric = "mn_log_loss", n = 1)    |> mutate(model = "PCR"),
+  show_best(pls_res, metric = "mn_log_loss", n = 1)    |> mutate(model = "PLS")
+)
+
+best_ll |> 
+  ggplot(aes(x = reorder(model, -mean), y = mean)) +
+  geom_col(aes(fill = model), show.legend = FALSE, width = 0.6) +
+  geom_errorbar(aes(ymin = mean - std_err, ymax = mean + std_err), width = 0.15) +
+  geom_text(aes(label = sprintf("%.4f", mean)), vjust = -0.5, size = 3.5) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(x = NULL, y = "Mean Log-Loss (CV)", 
+       title = "เปรียบเทียบ Log-Loss ของแต่ละ Algorithm",
+       subtitle = "ค่ายิ่งต่ำ = model มั่นใจในคำตอบที่ถูกต้อง") +
+  coord_flip()
+```
+
+**คำถาม 4.2:** Algorithm ที่ accuracy สูงสุดกับ algorithm ที่ log-loss ต่ำสุด **เป็นตัวเดียวกันหรือไม่?** ถ้าไม่ ผู้เรียนจะเลือก metric ไหนในการตัดสินใจ? เพราะเหตุใด?
+
+> *ตอบ:*
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 5: เจาะลึกแต่ละ Algorithm
+
+### 5.1 KNN: ผลของ K ต่อ Bias-Variance Tradeoff
+
+```{r}
+#| label: knn-k-curve
+#| fig-cap: "ผลของจำนวน neighbors ต่อ accuracy"
+
+knn_res |> 
+  collect_metrics() |> 
+  filter(.metric == "accuracy") |> 
+  ggplot(aes(x = neighbors, y = mean)) +
+  geom_line(linewidth = 0.8, color = "steelblue") +
+  geom_point(size = 2, color = "steelblue") +
+  geom_ribbon(aes(ymin = mean - std_err, ymax = mean + std_err), 
+              alpha = 0.15, fill = "steelblue") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "จำนวน Neighbors (K)", y = "Accuracy (CV)",
+       title = "KNN: Accuracy เปลี่ยนไปอย่างไรเมื่อ K เปลี่ยน?",
+       subtitle = "ribbon = ±1 standard error")
+```
+
+**คำถาม 5.1:** อธิบายว่าเกิดอะไรขึ้นเมื่อ K **น้อยเกินไป** (เช่น K = 3) และเมื่อ K **มากเกินไป** (เช่น K = 35) โดยใช้แนวคิด bias-variance tradeoff
+
+> *ตอบ:*\
+> K น้อยเกินไป → ...\
+> K มากเกินไป → ...
+
+### 5.2 Elastic-net: Penalty × Mixture Landscape
+
+```{r}
+#| label: elnet-heatmap
+#| fig-cap: "Heatmap ของ accuracy ตาม penalty และ mixture"
+
+elnet_res |> 
+  collect_metrics() |> 
+  filter(.metric == "accuracy") |> 
+  ggplot(aes(x = penalty, y = factor(mixture), fill = mean)) +
+  geom_tile() +
+  scale_x_log10() +
+  scale_fill_viridis_c(option = "magma", labels = scales::percent_format()) +
+  labs(x = "Penalty (log scale)", y = "Mixture\n(0 = Ridge, 1 = Lasso)",
+       fill = "Accuracy",
+       title = "Elastic-net: Accuracy Landscape",
+       subtitle = "mixture = 0 → Ridge | mixture = 1 → Lasso | ระหว่างกลาง → Elastic-net")
+```
+
+**คำถาม 5.2:** จาก heatmap ข้อใดถูกต้อง? อธิบายเหตุผลจากลักษณะข้อมูล
+
+-   [ ] (ก) Lasso (mixture = 1) ดีกว่า Ridge → signal อยู่ใน embedding ไม่กี่มิติ (sparse)
+-   [ ] (ข) Ridge (mixture = 0) ดีกว่า Lasso → embedding ส่วนใหญ่มีส่วนร่วมทุกมิติ (distributed)
+-   [ ] (ค) Elastic-net ดีกว่าทั้งคู่ → ข้อมูลมีทั้ง sparse และ distributed signal
+
+> *ตอบ:*
+
+### 5.3 PCR vs PLS: จำนวน Component ที่เหมาะสม
+
+```{r}
+#| label: pcr-pls-curve
+#| fig-cap: "เปรียบเทียบ accuracy ของ PCR vs PLS ตามจำนวน components"
+
+bind_rows(
+  collect_metrics(pcr_res) |> mutate(method = "PCR"),
+  collect_metrics(pls_res) |> mutate(method = "PLS")
+) |> 
+  filter(.metric == "accuracy") |> 
+  ggplot(aes(x = num_comp, y = mean, color = method)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1.5) +
+  geom_ribbon(aes(ymin = mean - std_err, ymax = mean + std_err, fill = method),
+              alpha = 0.1, color = NA) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_color_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set1") +
+  labs(x = "จำนวน Components", y = "Accuracy (CV)",
+       color = NULL, fill = NULL,
+       title = "PCR vs PLS: ใครถึงจุดสูงสุดก่อน?",
+       subtitle = "ถ้า PLS ถึงก่อน → variance สูงสุดใน X ≠ สิ่งที่ทำนาย PLO ได้ดีที่สุด")
+```
+
+**คำถาม 5.3 (สำคัญ):** PLS ต้องใช้กี่ components จึงจะได้ accuracy สูงสุด? PCR ต้องใช้กี่ตัว? ถ้า PLS ใช้จำนวนน้อยกว่า แปลว่าอะไร?
+
+> *ตอบ:*
+
+**คำถาม 5.4:** จาก scree plot ใน ส่วนที่ 1.2 ที่แสดงว่าต้องใช้ PC ประมาณ \_\_\_ ตัวเพื่ออธิบาย 80% ของ variance — แต่ PCR ได้ accuracy สูงสุดที่ \_\_\_ components ตัวเลขสองตัวนี้สอดคล้องกันหรือไม่? ทำไม?
+
+> *ตอบ:*
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 6: ตีความ — Model บอกอะไรเราเกี่ยวกับ PLO?
+
+### 6.1 Lasso Coefficient: Embedding มิติไหนสำคัญ?
+
+```{r}
+#| label: lasso-coef
+
+## Fit Lasso (mixture = 1) ด้วย best penalty
+best_elnet_params <- select_best(elnet_res, metric = "mn_log_loss")
+
+elnet_fit <- wf_set |> 
+  extract_workflow("basic_elnet") |> 
+  finalize_workflow(best_elnet_params) |> 
+  fit(data = train_data)
+
+## ดึง coefficient
+library(glmnet)
+coef_tidy <- elnet_fit |> 
+  extract_fit_engine() |> 
+  coef() 
+
+## นับจำนวน non-zero coefficients ต่อ PLO class
+n_nonzero <- map_dfr(names(coef_tidy), function(cls) {
+  mat <- coef_tidy[[cls]]
+  tibble(
+    class     = cls,
+    n_nonzero = sum(mat[, 1] != 0) - 1,  ## ลบ intercept
+    n_total   = nrow(mat) - 1
+  )
+})
+
+n_nonzero |> 
+  mutate(pct_nonzero = n_nonzero / n_total * 100) |> 
+  knitr::kable(digits = 1, col.names = c("PLO", "Non-zero", "Total", "% ที่ใช้"),
+               caption = "จำนวน embedding dimensions ที่ Lasso เก็บไว้ต่อ PLO class")
+```
+
+**คำถาม 6.1:** Lasso ปิด embedding dimensions ไปกี่เปอร์เซ็นต์จากทั้งหมด 768? สิ่งนี้บอกอะไรเกี่ยวกับ embedding model (nomic) ที่เราใช้ — มันเก็บข้อมูลที่เกี่ยวกับ PLO ไว้อย่างกระจุกตัวหรือกระจายตัว?
+
+> *ตอบ:*
+
+### 6.2 Predicted Probability Comparison
+
+```{r}
+#| label: pred-compare
+#| fig-cap: "เปรียบเทียบ predicted probability ของ KNN vs Elastic-net สำหรับ test data"
+
+## Fit ทั้ง 2 models บน train ทั้งหมด
+best_knn_params <- select_best(knn_res, metric = "mn_log_loss")
+
+knn_final <- wf_set |> 
+  extract_workflow("basic_knn") |> 
+  finalize_workflow(best_knn_params) |> 
+  fit(data = train_data)
+
+## ทำนาย probability บน test data
+pred_knn <- predict(knn_final, new_data = test_data, type = "prob") |> 
+  mutate(model = "KNN", truth = test_data$dimension)
+
+pred_elnet <- predict(elnet_fit, new_data = test_data, type = "prob") |> 
+  mutate(model = "Elastic-net", truth = test_data$dimension)
+
+## เปรียบเทียบ distribution ของ max probability (ความมั่นใจ)
+bind_rows(pred_knn, pred_elnet) |> 
+  rowwise() |> 
+  mutate(max_prob = max(c_across(starts_with(".pred_")))) |> 
+  ungroup() |> 
+  ggplot(aes(x = max_prob, fill = model)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_brewer(palette = "Set1") +
+  labs(x = "Max Predicted Probability (ความมั่นใจ)", y = "Density",
+       fill = NULL,
+       title = "KNN vs Elastic-net: ใครมั่นใจกว่า?",
+       subtitle = "ค่าสูง = model มั่นใจสูงในคำตอบ | ค่าต่ำ = ไม่แน่ใจ")
+```
+
+**คำถาม 6.2:** ระหว่าง KNN กับ Elastic-net — model ไหนให้ probability ที่กระจายตัวมากกว่า (มั่นใจน้อยกว่า)? ในเชิงปฏิบัติ ถ้าเราต้องการบอกผู้ใช้ว่า "model ไม่แน่ใจกับรายวิชานี้ ควรให้ผู้เชี่ยวชาญตรวจสอบ" model ไหนให้สัญญาณนี้ได้ดีกว่า?
+
+> *ตอบ:*
+
+### 6.3 Confusion Matrix ของ Model ที่ดีที่สุด
+
+```{r}
+#| label: confusion
+#| fig-cap: "Confusion matrix ของ model ที่ accuracy สูงสุด (บน test set)"
+
+## เลือก model ที่ accuracy สูงสุด — ผู้เรียนเปลี่ยนตาม result ของตัวเอง
+## ตัวอย่างนี้ใช้ Elastic-net
+best_pred <- predict(elnet_fit, new_data = test_data, type = "class") |> 
+  bind_cols(truth = test_data$dimension)
+
+best_pred |> 
+  conf_mat(truth = truth, estimate = .pred_class) |> 
+  autoplot(type = "heatmap") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(title = "Confusion Matrix ของ Best Model (Test Set)")
+```
+
+**คำถาม 6.3:** PLO คู่ใดที่ model สับสนมากที่สุด? กลับไปดู PCA scatter plot ใน ส่วนที่ 1 — ผลสอดคล้องกันหรือไม่?
+
+> *ตอบ:*
+
+------------------------------------------------------------------------
+
+## ส่วนที่ 7: สังเคราะห์ผลและอภิปราย
+
+### 7.1 ตารางสรุปเปรียบเทียบ
+
+กรอกตารางต่อไปนี้จากผลที่ได้:
+
+| มิติการเปรียบเทียบ           | KNN | Multinomial Logistic | Elastic-net | PCR | PLS |
+|--------------------------|-----|----------------------|-------------|-----|-----|
+| **Best Accuracy**        |     |                      |             |     |     |
+| **Best Log-loss**        |     |                      |             |     |     |
+| **จำนวน Hyperparameter** |     |                      |             |     |     |
+| **เวลาในการ tune**       |     |                      |             |     |     |
+| **ความสามารถตีความ**      | ต่ำ  |                      |             |     |     |
+| **ข้อดีหลัก**               |     |                      |             |     |     |
+| **ข้อจำกัดหลัก**            |     |                      |             |     |     |
+
+### 7.2 คำถามวิเคราะห์เชิงลึก
+
+**คำถาม 7.1 — Model Selection:** ถ้าผู้เรียนต้องเลือก algorithm **เพียงตัวเดียว** สำหรับจำแนก PLO ของรายวิชาทั้งคณะครุศาสตร์ ผู้เรียนจะเลือกตัวใด? พิจารณาทั้ง accuracy, ความสามารถตีความ, ความง่ายในการ deploy
+
+> *ตอบ:*
+
+**คำถาม 7.2 — PCA Insight:** จากทั้ง scree plot, PCA scatter plot, และผล PCR — สรุปว่า embedding space ของ nomic มีลักษณะอย่างไร? ข้อมูลกระจุกตัวในไม่กี่มิติ หรือกระจายทั่ว 768 มิติ?
+
+> *ตอบ:*
+
+**คำถาม 7.3 — PLS vs PCA:** ถ้า PLS ใช้ components น้อยกว่า PCA มาก ๆ ในการได้ accuracy เท่ากัน สิ่งนี้หมายความว่าอย่างไรเกี่ยวกับความสัมพันธ์ระหว่าง embedding variance กับ PLO dimensions?
+
+> *ตอบ:*
+
+**คำถาม 7.4 — Practical Implication:** จากผลทั้งหมด ผู้เรียนมีข้อเสนอแนะสำหรับการปรับปรุง pipeline นี้อย่างไร? (เช่น เปลี่ยน embedding model, ปรับวิธี augmentation, เพิ่ม features, เปลี่ยน algorithm)
+
+> *ตอบ:*
+
+### 7.3 สรุปสิ่งที่เรียนรู้ (Learning Reflection)
+
+เขียนสรุปสิ่งที่ได้เรียนรู้จากกิจกรรมนี้ใน **3 ข้อ** โดยแต่ละข้อต้องอ้างอิงหลักฐานจากผลการวิเคราะห์:
+
+1.  *สิ่งที่เรียนรู้ข้อที่ 1:*
+
+2.  *สิ่งที่เรียนรู้ข้อที่ 2:*
+
+3.  *สิ่งที่เรียนรู้ข้อที่ 3:*

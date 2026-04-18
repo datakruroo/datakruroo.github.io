@@ -1,0 +1,239 @@
+---
+title: "กิจกรรม"
+format: html
+---
+
+risk_index == ดัชนี CMER 
+
+```{r}
+library(tidyverse)
+data <- read_csv("/Users/choat/Desktop/activity_CMER.csv")
+glimpse(data) 
+
+data %>% count(student_level)
+data %>% group_by(risk_class) %>% 
+    summarise(mean_cmer = mean(risk_index_df5))
+
+data %>% 
+    filter(student_level == "m3") %>% 
+    count(hard_to_reach)
+```
+
+```{r fig.width = 8, fig.height = 4}
+data %>% 
+    ggplot(aes(x = school_lat, y = school_lon))+
+    geom_point()+
+    facet_wrap(~student_level)+
+    coord_flip()
+```
+
+## กิจกรรมการวิเคราะห์ข้อมูลด้วยหลายโมเดล (Model Comparison)
+
+กิจกรรมนี้มีวัตถุประสงค์เพื่อเปรียบเทียบประสิทธิภาพและความสามารถในการตีความของโมเดลการเรียนรู้ของเครื่องหลายประเภท โดยใช้ข้อมูลเชิงพื้นที่และบริบทโรงเรียน เพื่อทำนายค่าดัชนีความเสี่ยง (`risk_index_df5` หรือ CMER)
+
+### วัตถุประสงค์
+
+1. เปรียบเทียบประสิทธิภาพของโมเดลเชิงเส้นและไม่เชิงเส้น
+2. วิเคราะห์ความสามารถในการจับความสัมพันธ์เชิงพื้นที่
+3. ประเมินความสามารถในการตีความผลลัพธ์ของแต่ละโมเดล
+4. เลือกโมเดลที่เหมาะสมสำหรับการวิเคราะห์เชิงวินิจฉัยระดับประเทศ
+
+### โมเดลที่ใช้ในการเปรียบเทียบ
+
+การวิเคราะห์จะใช้โมเดล 6 ประเภท ได้แก่
+
+1. Linear Regression
+2. Decision Tree
+3. K-Nearest Neighbors (KNN)
+4. Support Vector Machine (SVM)
+5. Random Forest
+6. Cubist Rule-based Model
+
+โมเดลเหล่านี้ครอบคลุมแนวคิดที่แตกต่างกัน ได้แก่
+
+* โมเดลเชิงเส้น (Linear Model)
+* โมเดลต้นไม้ (Tree-based)
+* โมเดลระยะทาง (Distance-based)
+* โมเดล kernel (SVM)
+* โมเดล ensemble (Random Forest)
+* โมเดล rule-based regression (Cubist)
+
+### ขั้นตอนการวิเคราะห์
+
+1. เตรียมข้อมูล
+
+* แปลงตัวแปรเชิงกลุ่มเป็น factor
+* ตรวจสอบ missing values
+* กำหนดตัวแปรตามเป็น `risk_index_df5`
+* กำหนดตัวแปรอิสระเป็นตัวแปรบริบทโรงเรียนและเชิงพื้นที่
+
+2. แบ่งข้อมูล
+
+แบ่งข้อมูลเป็นชุดฝึก (training set) และชุดทดสอบ (testing set) หรือใช้ cross-validation เพื่อประเมินโมเดล
+
+3. สร้างโมเดลแต่ละประเภท
+
+ทำการฝึกโมเดลทั้ง 6 แบบโดยใช้ข้อมูลชุดเดียวกัน เพื่อให้สามารถเปรียบเทียบผลลัพธ์ได้อย่างเป็นธรรม
+
+4. ประเมินประสิทธิภาพ
+
+ใช้ตัวชี้วัด เช่น
+
+* RMSE
+* MAE
+* R-squared
+
+เพื่อเปรียบเทียบความแม่นยำของโมเดล
+
+5. เปรียบเทียบผลลัพธ์
+
+เปรียบเทียบโมเดลในด้าน
+
+* ประสิทธิภาพในการทำนายของโมเดล
+* ความสามารถในการตีความและการนำไปใช้
+* ความเหมาะสมสำหรับการวิเคราะห์เชิงนโยบาย
+
+
+6. การตีความผลลัพธ์
+
+```{r}
+## linear regression ตีความได้จาก coefficients
+lm_fit |> 
+    extract_fit_parsnip() |>
+    tidy()
+
+## decision tree ตีความได้จากโครงสร้างของต้นได้ และ อาจใช้ feature importance (รายละเอียดไว้ว่ากัน)
+library(rpart.plot)
+tree_fit |> 
+    extract_fit_parsnip() |>
+    pluck("fit")
+
+rpart.plot(tree_fit)
+
+tree_fit |> 
+    extract_fit_parsnip() |>
+    vip::vip(method = "permute")
+
+## SVM อาจตีความได้จาก feature importance (รายละเอียดไว้ว่ากัน)
+svm_fit |> 
+    extract_fit_parsnip() |>
+    vip::vip(method = "permute")
+
+## random forest อาจตีความได้จาก feature importance 
+rf_fit |> 
+    extract_fit_parsnip() |>
+    vip::vip(method = "permute")
+
+## CUBIST Rule-based Model อาจตีความได้จาก rule ที่สร้างขึ้นมา
+cubist_fit %>% 
+    extract_fit_parsnip() %>% 
+    pluck("fit") |> 
+    summary()
+```
+
+
+### สรุปกิจกรรม
+
+กิจกรรมนี้ช่วยให้ผู้เรียนเข้าใจความแตกต่างของโมเดลการเรียนรู้ของเครื่องในบริบทข้อมูลเชิงพื้นที่ และสามารถเลือกใช้โมเดลที่เหมาะสมกับวัตถุประสงค์การวิเคราะห์เชิงนโยบายได้
+
+
+
+
+```{r}
+data <- read_csv("/Users/choat/Desktop/activity_CMER.csv")
+full_data <- data %>% 
+    filter(student_level == "m3") 
+full_data %>% 
+    count(school_type)
+```
+
+
+### แบ่งชุดข้อมูล
+
+```{r}
+split <- initial_split(full_data, prop = 0.8, strata = risk_index_df5,
+                       breaks = 5)
+train_data <- training(split)
+test_data <- testing(split)
+
+library(patchwork)
+p1 <- train_data %>% 
+    ggplot(aes(x = risk_index_df5))+
+    geom_histogram()
+p2 <- test_data %>% 
+    ggplot(aes(x = risk_index_df5))+
+    geom_histogram()
+p1+p2
+```
+
+
+```{r}
+data %>% glimpse()
+```
+
+
+### กำหนด recipe
+
+```{r}
+library(embed)
+rec <- recipe(risk_index_df5 ~. , data = train_data) |> 
+    step_rm(risk_class, student_level, school_type) %>% 
+#   step_mutate(school_type = case_when(
+#        str_detect(school_type, "ประถม") ~ "มีเด็กเล็ก",
+#        str_detect(school_type, "อนุบาล") ~ "มีเด็กเล็ก",
+#        TRUE ~ "ไม่มีเด็กเล็ก"
+#    )) %>% 
+    step_impute_knn(all_predictors()) %>%
+    step_lencode_glm(all_nominal_predictors(), outcome = "risk_index_df5") %>%
+    step_normalize(all_numeric_predictors()) %>%
+    step_nzv(all_predictors()) 
+
+```
+
+
+### model spec
+
+```{r}
+rf_spec <- rand_forest(
+    mtry = tune(),
+    trees = 1000,
+    min_n = tune()) |> 
+    set_engine("ranger") |>
+    set_mode("regression")
+
+library(rules)
+cubist_spec <- cubist_rules(
+    committees = 20,
+    neighbors = 5,
+    max_rules = tune()) |>
+set_engine("Cubist") |>
+set_mode("regression")
+```
+
+
+### create workflowset
+
+```{r}
+wf_set <- workflow_set(
+    preproc = list(rec),
+    models = list(rf_spec, cubist_spec),
+    cross = TRUE
+)
+
+set.seed(123)
+wf_set_res <- wf_set |> 
+    workflow_map(
+        "tune_grid",
+        resamples = vfold_cv(train_data, v = 5, repeats = 2),
+        grid = 10
+    )
+
+wf_set_res %>% autoplot()
+```
+
+
+
+
+
+
+

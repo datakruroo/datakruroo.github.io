@@ -7,7 +7,7 @@ warning: false
 editor: visual
 ---
 
-บทเรียนนี้จะกล่าวถึง ensemble learning ซึ่งเป็นเทคนิคการสร้างโมเดลทำนายที่นำโมเดลย่อย ๆ หลาย ๆ โมเดลมาร่วมกันทำนายโดยมีวัตถุประสงค์เพื่อลดความคลาดเคลื่อนให้ต่ำลง 
+บทเรียนนี้จะกล่าวถึง ensemble learning ซึ่งเป็นเทคนิคการสร้างโมเดลทำนายที่นำโมเดลย่อย ๆ หลาย ๆ โมเดลมาร่วมกันทำนายโดยมีวัตถุประสงค์เพื่อลดความคลาดเคลื่อนให้ต่ำลง
 
 ## Ensemble Methods
 
@@ -41,35 +41,128 @@ V-->F["Final Prediction"]
 style B4 fill: white  ,stroke: white ,stroke-width:4px
 ```
 
-
 เทคนิคการทำ Ensemble อาจจำแนกเป็น 3 ประเภทหลัก ได้แก่
 
-- Bagging (Bootstrap Aggregating)
+-   Bagging (Bootstrap Aggregating)
 
-- Boosting
+-   Boosting
 
-- Stacking
+-   Stacking
 
 ### Bagging
 
 Bagging หรือ Bootstrap Aggregating คือเทคนิคการสร้าง ensemble โดยการสร้างโมเดลย่อย ๆ หลาย ๆ โมเดล การ train model ย่อยแต่ละตัวจะเริ่มจากการสุ่มข้อมูลจาก training dataset ด้วยวิธีการแบบ boostrap เพื่อมาสร้างโมเดลย่อย แล้วนำผลการทำนายของโมเดลแต่ละตัวมาเข้ารวมกันด้วยวิธีการที่เหมาะสมเพื่อทำนายผลลัพธ์
 
+-   Bagging tree
+
+-   Random forest มีการควบคุมเพื่อหลีกเลี่ยงปัญหา redundancy ด้วยการ
+
+    1.  จากชุดข้อมูล training data ที่มีตัวแปรอิสระจำนวน p ตัว
+    2.  random forest จะให้เรากำหนด `mtry` คือจำนวนตัวแปรอิสระที่จะสุ่มมาเพื่อสร้าง weak learning ในแต่ละรอบ
+    3.  กำหนดจำนวนต้นไม้ `trees` ที่จะใช้ในการเรียนรู้ โดยที่จำนวนต้นไม้นี้ก็จะมีจำนวนเท่ากับ boostrap sample
+    4.  เราสามารถควบคุมการเรียนรู้ของต้นไม้ (strump) แต่ละต้นให้เรียนรู้แบบพอรู้ได้ โดยใช้ `min_n`
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+
+data <- read_delim("/Users/choat/Documents/GitHub/datakruroo.github.io/MachineLearning/week04/student-mat.csv", delim = ";")
+data <- data %>% 
+  mutate(G3 = ifelse(G3 >=10, "pass","fail"))
+```
+
+แบ่งชุดข้อมูลออกเป็นสองส่วน
+
+```{r}
+set.seed(123)
+split <- initial_split(data, prop = 0.8, strata = G3)
+train_data <- training(split)
+test_data <- testing(split)
+```
+
+สร้าง data preprocessing model
+
+```{r}
+rec <- recipe(G3 ~. ,data = train_data) %>% 
+  step_mutate_at(school, sex, address, famsize, Pstatus, 
+                 Medu, Fedu, Mjob, Fjob, reason, guardian,
+                 traveltime, studytime, schoolsup,
+                 famsup, paid, activities, nursery, higher,internet,
+                 romantic, famrel, freetime, goout, Dalc, Walc, health, 
+            fn = ~factor(.)) %>% 
+  step_nzv(all_predictors()) %>%
+  step_impute_bag(all_predictors())
+```
+
+กำหนด spec ของ random forest
+
+```{r}
+rand_spec <- rand_forest(trees = 500, mtry = tune(), min_n = tune()) %>%
+            set_engine("ranger") %>%
+            set_mode("classification")
+```
+
+สร้าง workflow
+
+```{r}
+rf_wf <- workflow() %>%
+add_recipe(rec) %>%
+add_model(rand_spec)
+```
+
+tune hyperparameters
+
+```{r}
+library(future)
+plan(multisession, workers = 12)
+set.seed(1234)
+my_folds <- vfold_cv(train_data, v = 5, strata = G3)
+my_metrics <- metric_set(accuracy, roc_auc, f_meas, sens, spec, precision)
+
+rf_tune <- rf_wf %>%
+tune_grid(
+    resamples = my_folds,
+     metrics = my_metrics,
+    control = control_grid(save_pred = TRUE, parallel_over = "everything", verbose = TRUE)
+)
+```
+
+```{r}
+rf_tune %>% collect_metrics() %>%
+filter(.metric == "f_meas") %>%
+arrange(desc(mean))
+
+rf_best_fmeas <- rf_tune %>% select_best(metric = "f_meas")
+```
+
+```{r}
+rf_tune %>% collect_predictions() %>%
+filter(.config == "Preprocessor1_Model02") %>%
+conf_mat(truth = "G3", estimate = ".pred_class")
+```
+
+```{r}
+last_rf <- rf_wf %>%
+finalize_workflow(rf_best_fmeas) %>%
+last_fit(split,
+        metrics = my_metrics)
+```
+
+```{r}
+last_rf %>% collect_metrics()
+```
 
 ### Boosting
 
 Boosting คือเทคนิคการสร้าง ensemble โดยการสร้างโมเดลย่อย ๆ หลาย ๆ โมเดล โดยการให้โมเดลแต่ละตัวเรียนรู้จากข้อมูลที่ถูกแก้ไขจากการทำนายของโมเดลก่อนหน้า โดยที่โมเดลที่ทำนายผิดพลาดจะถูกให้น้ำหนักมากขึ้นในขั้นตอนการเรียนรู้ของโมเดลถัดไป ซึ่งทำให้โมเดลที่ถูกสร้างขึ้นมีความแม่นยำสูงขึ้น
 
-
 ![](img/ensemble2.png){width="90%"}
 
 ### Stacking
 
-ใช้หลักการ ensemble คล้าย  ๆ กัน แต่ single learner แต่ละตัวจะสร้างจากโมเดลการเรียนรู้ที่แตกต่างกัน และในแต่ละโมเดลการเรียนรู้อาจสร้างจากการกำหนด hyperparameter ที่แตกต่างกันด้วย เพื่อให้ครอบคลุม aspect การทำนายที่หลากหลายมากขึ้น ค่าทำนายที่ได้จากโมเดลทั้งหมดจะถูกนำมาเป็น training data ให้กับ Meta model อีกทีหนึ่
+ใช้หลักการ ensemble คล้าย ๆ กัน แต่ single learner แต่ละตัวจะสร้างจากโมเดลการเรียนรู้ที่แตกต่างกัน และในแต่ละโมเดลการเรียนรู้อาจสร้างจากการกำหนด hyperparameter ที่แตกต่างกันด้วย เพื่อให้ครอบคลุม aspect การทำนายที่หลากหลายมากขึ้น ค่าทำนายที่ได้จากโมเดลทั้งหมดจะถูกนำมาเป็น training data ให้กับ Meta model อีกทีหนึ่
 
-
-![https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0qQTUDfImZYQBsyn9F6dpw.png](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0qQTUDfImZYQBsyn9F6dpw.png)
-
-
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0qQTUDfImZYQBsyn9F6dpw.png)
 
 ## Bagging Tree and Random Forest
 
@@ -82,8 +175,6 @@ bag_tree(tree_depth = integer(1),
   set_engine("rpart") %>% 
   set_mode("classification")
 ```
-
-
 
 ```{r eval = F}
 ## random forest
@@ -112,7 +203,6 @@ glimpse(train_data)
 ```{r}
 train_data %>% head()
 ```
-
 
 ```{r}
 library(patchwork)
@@ -152,15 +242,13 @@ ggplot(train_data, aes(x=label))+
   scale_x_continuous(breaks = 0:9)
 ```
 
-
 ### กิจกรรม 1: ทดลอง fit single learner เพื่อทำนาย label
 
-- multinomial logistic regression
+-   multinomial logistic regression
 
-- knn
+-   knn
 
-- svm
-
+-   svm
 
 ```{r}
 library(tidymodels)
@@ -187,7 +275,6 @@ svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
   set_mode("classification")
 ```
 
-
 ```{r}
 ### workflowset
 wf_set <- workflow_set(
@@ -208,18 +295,10 @@ wf_map <- wf_set %>%
 
 ```
 
-
-
-
-
-
-### กิจกรรมที่ 2: ใช้  bagging-trees และ random forest
+### กิจกรรมที่ 2: ใช้ bagging-trees และ random forest
 
 ผลลัพธ์ที่ได้เป็นอย่างไร??
 
-
-### กิจกรรมที่ 3: ใช้ ฺBoosting 
-
+### กิจกรรมที่ 3: ใช้ ฺBoosting
 
 ผลลัพธ์ที่ได้เป็นอย่างไร??
-

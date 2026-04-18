@@ -1,0 +1,433 @@
+---
+title: "แนวทางจัดการ Missing Outcome ในการพัฒนาโมเดลทำนาย: CCA, IPW และ Semi-Supervised"
+author: "OpenAI"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+lang: th
+execute:
+  echo: true
+  warning: false
+  message: false
+editor: visual
+---
+
+# บทนำ
+
+เอกสารนี้สรุปแนวทางจัดการกรณี **ตัวแปรตาม (outcome / label / target variable) มีค่าสูญหาย** ในการพัฒนาโมเดลทำนายแบบ supervised learning โดยเน้น 3 แนวทางที่ใช้ได้จริงและมีตรรกะต่างกันชัดเจน ได้แก่
+
+1.  **Complete-Case Analysis (CCA)**
+2.  **Inverse Probability Weighting (IPW)**
+3.  **Semi-Supervised Learning (SSL)**
+
+แก่นของปัญหานี้คือ outcome ที่หาย **ไม่เหมือน** predictor ที่หาย เพราะเมื่อ label หาย เราไม่ได้ขาดแค่ข้อมูลหนึ่งช่อง แต่เราขาด “คำตอบจริง” ที่ใช้สอนโมเดลโดยตรง ดังนั้นวิธีจัดการต้องสอดคล้องกับเป้าหมายของงานว่าเราต้องการ
+
+-   โมเดลสุดท้ายตัวเดียวเพื่อนำไปใช้จริง
+-   การประเมินว่าแนวทางใดให้ predictive performance ดีกว่า
+-   หรือการใช้ประโยชน์จากข้อมูลที่ไม่มี label จำนวนมาก
+
+งานด้าน prediction modeling สมัยใหม่ยังเตือนชัดว่าแนวคิด multiple imputation แบบที่นิยมใช้ในงานอนุมานเชิงสถิติ อาจไม่สอดคล้องกับโจทย์ของโมเดลทำนายเสมอไป โดยเฉพาะเมื่อคิดถึงขั้น deploy โมเดลจริง[^1]. ส่วนงาน tutorial ด้าน missing data ก็ยืนยันว่า multiple imputation เป็นวิธีสำคัญในโลกสถิติ แต่ต้องเข้าใจสมมติฐานและเป้าหมายของการวิเคราะห์ให้ถูกก่อน[^2].
+
+[^1]: Sisk, R., Sperrin, M., Peek, N., van Smeden, M., & Martin, G. (2023). *Imputation and missing indicators for handling missing data in the development and implementation of clinical prediction models: a simulation study.* https://pmc.ncbi.nlm.nih.gov/articles/PMC10515473/
+
+[^2]: Austin, P. C., White, I. R., Lee, D. S., & van Buuren, S. (2021). *Missing Data in Clinical Research: A Tutorial on Multiple Imputation.* https://pmc.ncbi.nlm.nih.gov/articles/PMC8499698/
+
+## เป้าหมายการเรียนรู้
+
+เมื่อเรียนจบหัวข้อนี้ ผู้เรียนควรสามารถ
+
+-   อธิบายได้ว่า missing outcome ต่างจาก missing predictor อย่างไร
+-   เปรียบเทียบแนวคิดของ CCA, IPW และ SSL ได้
+-   เลือกแนวทางเบื้องต้นให้เหมาะกับลักษณะข้อมูล
+-   วาง workflow ใน R สำหรับแต่ละแนวทางได้
+
+# ทำไม Missing Outcome ถึงยากกว่าที่คิด
+
+ถ้าตัวแปรอิสระบางตัวหาย เรามักยังมี label จริงอยู่ จึงสามารถใช้วิธี imputation หรือ model-based preprocessing ได้ง่ายกว่า แต่ถ้า **outcome หาย** แปลว่าแถวนั้นไม่มีคำตอบจริงให้โมเดลเรียนรู้ ดังนั้นคำถามสำคัญจะเปลี่ยนจาก
+
+> “จะเติมข้อมูลช่องนี้อย่างไร?”
+
+เป็น
+
+> “จะใช้ข้อมูลที่เหลืออยู่อย่างไรให้เกิดอคติน้อยที่สุด?”
+
+หรือในบางกรณี
+
+> “ข้อมูลที่ไม่มี label จะยังช่วยโมเดลได้หรือไม่?”
+
+## คำถามหลักที่ต้องตอบก่อนเลือกวิธี
+
+1.  Outcome หาย **มากแค่ไหน**
+2.  การหายเกิดแบบ **น่าจะสุ่ม** หรือมีแนวโน้มสัมพันธ์กับตัวแปรอื่น
+3.  ข้อมูลที่ outcome หายควรตีความเป็น
+    -   แถวที่ต้องตัดทิ้ง
+    -   แถวที่ต้องชดเชยด้วยน้ำหนัก
+    -   หรือแถวที่เป็น **unlabeled data** สำหรับ semi-supervised learning
+4.  เป้าหมายคือ
+    -   สร้าง **final deployable model**
+    -   หรือเปรียบเทียบวิธีเพื่อการวิจัย/ประเมิน
+
+# ภาพรวม 3 แนวทาง
+
+## ตารางเปรียบเทียบสั้น
+
+| วิธี | หลักคิด | เหมาะเมื่อ | จุดแข็ง | ข้อจำกัด |
+|---------------|---------------|---------------|---------------|---------------|
+| CCA | ใช้เฉพาะแถวที่มี outcome ครบ | outcome หายไม่มาก และต้องการ baseline ชัดเจน | ตรงไปตรงมา ได้โมเดลเดียวทันที | เสี่ยง bias ถ้าการหายไม่สุ่ม |
+| IPW | ใช้น้ำหนักชดเชยความน่าจะเป็นที่แถวจะถูกสังเกต outcome | สงสัยว่าคนที่มี outcome ครบไม่เป็นตัวแทนของทุกคน | ยังได้โมเดลเดียว และแก้ selection bias ได้บางกรณี | พึ่งสมมติฐานว่าโมเดลความน่าจะเป็นของการถูกสังเกตถูกต้อง |
+| SSL | ใช้ข้อมูลมี label และไม่มี label ร่วมกัน | มี unlabeled data จำนวนมาก โดยเฉพาะโจทย์ classification | ใช้ประโยชน์จากข้อมูลไม่มี label ได้ | ไม่ได้แก้ selection bias โดยตรง และมักเหมาะกับ classification มากกว่า |
+
+# วิธีที่ 1: Complete-Case Analysis (CCA)
+
+## Concept
+
+CCA คือการ **ใช้เฉพาะแถวที่มี outcome ครบ** แล้วตัดแถวที่ outcome หายออกจากกระบวนการ train โมเดล วิธีนี้เป็น baseline ที่สำคัญมาก เพราะเรียบง่าย ชัดเจน และจบที่ **โมเดลเดียว** ทันที
+
+ในบางบริบท โดยเฉพาะเมื่อความสูญหายอยู่ที่ outcome เป็นหลัก CCA อาจให้ผลที่สมเหตุสมผลและ practical กว่าแนวทางที่ซับซ้อนกว่า หากสัดส่วนข้อมูลที่หายไม่สูงเกินไปและไม่มีหลักฐานชัดว่าการหายมีอคติรุนแรง[^3].
+
+[^3]: van Buuren, S. *Flexible Imputation of Missing Data* (online edition). https://stefvanbuuren.name/fimd/
+
+## ตรรกะของวิธี
+
+1.  กรองเฉพาะแถวที่ outcome ไม่เป็น `NA`
+2.  แบ่ง train/test หรือทำ resampling ตามปกติ
+3.  สร้าง recipe และ fit supervised model จากข้อมูลที่เหลือ
+4.  ประเมินผลบน test set ที่มี outcome จริง
+
+## ข้อดี
+
+-   เข้าใจง่ายและสอนได้ง่าย
+-   ไม่มีปัญหาเรื่อง “จะรวมหลายโมเดลจากหลายชุดข้อมูลอย่างไร”
+-   ได้ final model ตัวเดียวทันที
+-   เหมาะมากสำหรับใช้เป็น **baseline**
+
+## ข้อจำกัด
+
+-   ถ้าการหายของ outcome ไม่ได้สุ่ม อาจเกิด selection bias
+-   ขนาดตัวอย่างลดลง
+-   ถ้าหายเยอะ โมเดลอาจไม่มีพลังพอ
+
+## ขั้นตอนการดำเนินงาน
+
+### Step 1: ตรวจสัดส่วน outcome ที่หาย
+
+```{r}
+library(tidyverse)
+
+# ตัวอย่าง
+# df %>% summarise(prop_missing = mean(is.na(outcome)))
+```
+
+### Step 2: สร้างชุดข้อมูลสำหรับโมเดล
+
+```{r}
+model_data <- df %>%
+  drop_na(outcome)
+```
+
+### Step 3: split และ train โมเดล
+
+```{r}
+library(tidymodels)
+
+set.seed(123)
+split_obj <- initial_split(model_data, prop = 0.8, strata = outcome)
+train_data <- training(split_obj)
+test_data  <- testing(split_obj)
+
+rec <- recipe(outcome ~ ., data = train_data)
+
+spec <- rand_forest(mtry = tune(), min_n = tune()) %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+
+wf <- workflow() %>%
+  add_recipe(rec) %>%
+  add_model(spec)
+```
+
+## ข้อควรสอนย้ำ
+
+CCA **ไม่ได้แปลว่าเป็นวิธีที่ดีที่สุดเสมอไป** แต่ควรถูกใช้เป็น baseline แทบทุกครั้ง เพื่อเปรียบเทียบกับวิธีอื่น
+
+# วิธีที่ 2: Inverse Probability Weighting (IPW)
+
+## Concept
+
+IPW **ไม่เติมค่า outcome ที่หาย** แต่ใช้แนวคิดว่า
+
+> คนที่ยังมี outcome อยู่บางคนควรมี “น้ำหนัก” มากกว่าคนอื่น เพราะคนกลุ่มนี้มีโอกาสหายสูงกว่า แต่ยังถูกสังเกตได้
+
+วิธีนี้จึงเป็นการ **reweight complete cases** ให้แทน population เดิมได้ดีขึ้น โดยสร้างโมเดลความน่าจะเป็นที่แถวหนึ่งจะมี outcome ถูกสังเกต แล้วใช้น้ำหนักเป็นส่วนกลับของความน่าจะเป็นนั้น[^4][^5].
+
+[^4]: Li, L., Shen, C., Li, X., & Robins, J. M. (2011). *On weighting approaches for missing data.* https://pmc.ncbi.nlm.nih.gov/articles/PMC3998729/
+
+[^5]: Seaman, S. R., & White, I. R. (2013). *Review of inverse probability weighting for dealing with missing data.* https://pubmed.ncbi.nlm.nih.gov/21220355/
+
+## ตรรกะของวิธี
+
+ให้
+
+-   `R = 1` ถ้ามี outcome
+-   `R = 0` ถ้า outcome หาย
+
+จากนั้นประมาณ
+
+\[ P(R = 1 \mid X) \]
+
+แล้วกำหนดน้ำหนักเป็น
+
+\[ w_i = \frac{1}{P(R_i = 1 \mid X_i)} \]
+
+หรือใช้ **stabilized weights** เพื่อลดความสุดโต่งของน้ำหนัก
+
+## ข้อดี
+
+-   ยังคงได้ **โมเดลเดียว** ตอนท้าย
+-   เหมาะเมื่อสงสัยว่า complete cases ไม่เป็นตัวแทนของทั้งหมด
+-   เป็นวิธีที่เชื่อมโยงกับ selection bias โดยตรง
+
+## ข้อจำกัด
+
+-   พึ่งสมมติฐานว่ากระบวนการหายอธิบายได้จากตัวแปรที่สังเกตได้
+-   ถ้าโมเดลความน่าจะเป็นของการถูกสังเกตระบุผิด น้ำหนักจะไม่ช่วยมาก
+-   ถ้ามีน้ำหนักสุดโต่ง โมเดลอาจไม่นิ่ง
+
+## ขั้นตอนการดำเนินงาน
+
+### Step 1: สร้างตัวแปรบอกการถูกสังเกต
+
+```{r}
+df_ipw <- df %>%
+  mutate(observed = if_else(!is.na(outcome), 1, 0))
+```
+
+### Step 2: สร้าง propensity model ของการถูกสังเกต outcome
+
+```{r}
+obs_model <- glm(observed ~ x1 + x2 + x3,
+                 data = df_ipw,
+                 family = binomial())
+
+df_ipw <- df_ipw %>%
+  mutate(
+    p_obs = predict(obs_model, newdata = df_ipw, type = "response"),
+    ipw = mean(observed) / p_obs
+  )
+```
+
+### Step 3: trim หรือ stabilize น้ำหนัก
+
+```{r}
+df_ipw <- df_ipw %>%
+  mutate(ipw = pmin(ipw, quantile(ipw, 0.99, na.rm = TRUE)))
+```
+
+### Step 4: fit outcome model บน complete cases แบบ weighted
+
+```{r}
+df_labeled <- df_ipw %>%
+  filter(observed == 1)
+
+# ถ้าจะใช้ tidymodels
+# ต้องประกาศ case weights ให้ถูกชนิด
+
+df_labeled <- df_labeled %>%
+  mutate(ipw = hardhat::importance_weights(ipw))
+
+rec_ipw <- recipe(outcome ~ x1 + x2 + x3, data = df_labeled)
+
+spec_ipw <- boost_tree(trees = 500) %>%
+  set_engine("xgboost") %>%
+  set_mode("classification")
+
+wf_ipw <- workflow() %>%
+  add_recipe(rec_ipw) %>%
+  add_model(spec_ipw) %>%
+  add_case_weights(ipw)
+
+fit_ipw <- fit(wf_ipw, data = df_labeled)
+```
+
+## ข้อควรสอนย้ำ
+
+IPW คือการ **ชดเชยคนหาย** ไม่ใช่ **เดาคนหาย**
+
+พูดอีกแบบ
+
+-   CCA = ใช้คนที่เหลืออยู่ทั้งหมดเท่า ๆ กัน
+-   IPW = ใช้คนที่เหลืออยู่เหมือนกัน แต่ให้บางคนมีสิทธิ์ “พูดแทน” คนที่หายไปหลายคน
+
+# วิธีที่ 3: Semi-Supervised Learning (SSL)
+
+## Concept
+
+Semi-supervised learning ใช้ทั้ง
+
+-   ข้อมูลที่มี label
+-   และข้อมูลที่ไม่มี label
+
+ร่วมกันสร้างโมเดล โดยเฉพาะในโจทย์ **classification** ที่มี labeled data น้อย แต่ unlabeled data เยอะ วิธีนี้เหมาะเมื่อเรามอง outcome ที่หายเป็น **unlabeled cases** ไม่ใช่ missing data ที่ต้องชดเชยด้วยน้ำหนักหรือทิ้งทิ้งไปเลย[^6].
+
+[^6]: González-Rosado, J., et al. *ssc: An R Package for Semi-Supervised Classification.* https://cran.r-project.org/web/packages/ssc/vignettes/ssc.pdf
+
+หนึ่งในวิธีที่เข้าใจง่ายที่สุดคือ **self-training**
+
+1.  train โมเดลจาก labeled data ก่อน
+2.  ใช้โมเดลทำนาย unlabeled data
+3.  เลือกเฉพาะตัวอย่างที่โมเดลมั่นใจสูง
+4.  นำ pseudo-label กลับมาเติมใน labeled set
+5.  วนซ้ำ
+
+## ข้อดี
+
+-   ใช้ประโยชน์จากข้อมูลที่ไม่มี label ได้
+-   เหมาะเมื่อ labelled examples มีน้อย
+-   มีแพ็กเกจเฉพาะใน R เช่น `ssc`
+
+## ข้อจำกัด
+
+-   ไม่ได้แก้ selection bias โดยตรง
+-   ถ้าโมเดลเริ่มต้นผิด อาจเกิด error propagation
+-   ใน R ecosystem วิธีพร้อมใช้เน้น classification มากกว่า regression
+
+## ขั้นตอนการดำเนินงาน
+
+### Step 1: แยก labeled / unlabeled
+
+```{r}
+labeled_data <- df %>% filter(!is.na(outcome))
+unlabeled_data <- df %>% filter(is.na(outcome))
+```
+
+### Step 2: fit โมเดลเริ่มต้นจาก labeled data
+
+```{r}
+rec_ssl <- recipe(outcome ~ ., data = labeled_data)
+
+spec_ssl <- boost_tree(trees = 300) %>%
+  set_engine("xgboost") %>%
+  set_mode("classification")
+
+wf_ssl <- workflow() %>%
+  add_recipe(rec_ssl) %>%
+  add_model(spec_ssl)
+
+fit_ssl <- fit(wf_ssl, data = labeled_data)
+```
+
+### Step 3: ทำนาย unlabeled และเลือกเฉพาะเคสที่มั่นใจสูง
+
+```{r}
+pred_class <- predict(fit_ssl, new_data = unlabeled_data, type = "class")
+pred_prob  <- predict(fit_ssl, new_data = unlabeled_data, type = "prob")
+
+pseudo_data <- bind_cols(unlabeled_data, pred_class, pred_prob)
+```
+
+### Step 4: ใช้แพ็กเกจเฉพาะ (แนะนำถ้าเป็น classification)
+
+```{r}
+# install.packages("ssc")
+library(ssc)
+
+# ตัวอย่างโครงคิด
+# fit_self <- selfTraining(
+#   Class ~ ., 
+#   train = df_ssl,
+#   learner = "C5.0",
+#   pred = "raw"
+# )
+```
+
+## ข้อควรสอนย้ำ
+
+SSL เหมาะเมื่อโจทย์คือ
+
+> “เรามีข้อมูลไม่มี label เยอะ จะใช้ประโยชน์จากมันได้ไหม?”
+
+แต่ไม่ควรสอนให้ผู้เรียนเข้าใจว่า SSL เป็นคำตอบอัตโนมัติสำหรับ missing outcome ทุกกรณี เพราะถ้าปัญหาจริงคือ **selection bias ของการที่ใครถูกวัด outcome** IPW จะตอบโจทย์ตรงกว่า
+
+# เปรียบเทียบเชิง workflow
+
+## Workflow ของ CCA
+
+1.  ตรวจ missing outcome
+2.  ตัดแถวที่ outcome หาย
+3.  split train/test
+4.  train supervised model
+5.  evaluate และ deploy model เดียว
+
+## Workflow ของ IPW
+
+1.  สร้าง indicator ว่า outcome ถูกสังเกตหรือไม่
+2.  fit propensity model ของการถูกสังเกต outcome
+3.  คำนวณน้ำหนัก IPW
+4.  trim/stabilize น้ำหนัก
+5.  fit supervised model บน complete cases แบบ weighted
+6.  evaluate และ deploy model เดียว
+
+## Workflow ของ SSL
+
+1.  แยก labeled / unlabeled
+2.  train initial classifier บน labeled
+3.  pseudo-label ตัวอย่างที่มั่นใจสูง
+4.  เติมกลับเข้า labeled set
+5.  วนซ้ำ
+6.  fit final classifier
+7.  evaluate บน labeled holdout set ที่แยกไว้จริง
+
+# แนวทางเลือกวิธีเบื้องต้น
+
+## กรณีที่ 1: Outcome หายไม่มาก และอยากได้ baseline ที่ตรงไปตรงมา
+
+เลือก **CCA** ก่อน
+
+## กรณีที่ 2: สงสัยว่า complete cases ไม่เป็นตัวแทนของทั้งหมด
+
+เลือก **IPW** หรืออย่างน้อยทำ IPW เป็น sensitivity analysis คู่กับ CCA
+
+## กรณีที่ 3: มี unlabeled data เยอะ และโจทย์เป็น classification
+
+พิจารณา **SSL** โดยเฉพาะ self-training หรือแพ็กเกจ `ssc`
+
+# ข้อเสนอแนะเชิงการสอน
+
+## สิ่งที่ควรเน้นให้ผู้เรียนเข้าใจ
+
+1.  ปัญหา missing outcome ไม่ใช่เรื่อง “เติมค่า” อย่างเดียว
+2.  วิธีแต่ละแบบตอบโจทย์คนละชนิด
+3.  ต้องแยกให้ออกระหว่าง
+    -   **แก้ selection bias**
+    -   กับ **ใช้ unlabeled data**
+4.  เป้าหมายสุดท้ายคืออะไร
+    -   โมเดลเดียวสำหรับ deploy
+    -   หรือเปรียบเทียบ performance ของหลายแนวทาง
+
+## โครงสไลด์แนะนำ
+
+-   สไลด์ 1: นิยามปัญหา missing outcome
+-   สไลด์ 2: ทำไมมันต่างจาก missing predictor
+-   สไลด์ 3: ภาพรวม 3 วิธี
+-   สไลด์ 4: CCA
+-   สไลด์ 5: IPW
+-   สไลด์ 6: SSL
+-   สไลด์ 7: decision framework
+-   สไลด์ 8: ตัวอย่างโค้ดใน R
+
+# สรุปท้ายบท
+
+-   **CCA** เหมาะเป็น baseline และจบที่โมเดลเดียวทันที
+-   **IPW** เหมาะเมื่ออยากแก้ selection bias ของข้อมูลที่ outcome ถูกสังเกต
+-   **SSL** เหมาะเมื่อข้อมูลที่ outcome หายควรถูกมองเป็น unlabeled cases โดยเฉพาะใน classification
+
+ไม่มีวิธีใดดีที่สุดสำหรับทุกสถานการณ์ การเลือกวิธีต้องยึดจาก
+
+-   กลไกการหาย
+-   เป้าหมายของงาน
+-   และความเป็นไปได้ของการนำโมเดลไปใช้จริง
+
+# เอกสารอ้างอิง
