@@ -1,0 +1,890 @@
+---
+title: "Clustering"
+format: html
+---
+
+## 1. Clustering คืออะไร และไม่ใช่อะไร
+
+การทำ clustering เป็นวิธีการเรียนรู้แบบไม่มีตัวแปรเป้าหมายกำกับ (unsupervised learning) ที่มุ่งค้นหาแบบแผนของความคล้ายและความแตกต่างภายในข้อมูล เพื่อจัดหน่วยข้อมูลที่มีลักษณะใกล้กันให้อยู่ในกลุ่มเดียวกัน และแยกหน่วยข้อมูลที่ต่างกันให้ออกไปอยู่คนละกลุ่ม อย่างไรก็ตาม สิ่งสำคัญที่ต้องเข้าใจตั้งแต่ต้นคือ clustering ไม่ใช่กระบวนการหา label หรือ กลุ่มที่แท้จริงที่ซ่อนอยู่ในข้อมูลเสมอไป แต่เป็นการสร้างโครงสร้างเชิงกลุ่มขึ้นจากนิยามความคล้ายที่ผู้วิเคราะห์กำหนดร่วมกับอัลกอริทึมที่เลือกใช้
+
+> อย่าคิดว่่าผลลัพธ์จาก clustering จะได้ ground truth เสมอไป
+
+เราอาจจะต้องพิจารณาก่อนว่า cluster ที่อยู่ในข้อมูลนั้นน่าจะมีอยู่จริงหรือไม่ และจะเป็น cluster ประเภทไหน
+
+- label จริง กรณีนี้ไม่จำเป็นต้องใช้การ clustering
+
+- ไม่มี label จริง แต่สามารถใช้ clustering เพื่อสำรวจโครงสร้าง กรณีนี้คือการแบ่งหรือจัดกลุ่มข้อมูลภายใต้เงื่อนไข ได้แก่ representation, scaling, distance และ algorithm ที่เลือก ดังนั้นคำตอบที่ได้จึงไม่ใช่ความจริง แต่เป็นผลการวิเคราะห์เชิงสำรวจจากมุมมอง/เงื่อนไขแบบหนึ่ง
+
+- มี latent structure จริง แต่ไม่ทราบและไม่สามารถสังเกตได้โดยตรง กรณีนี้ค่อนข้างซับซ้อนขึ้น เป็นปัญหาเกี่ยวกับการหาโครงสร้างแฝงเบื้องหลังข้อมูลซึ่งไม่สามารถหาได้จาก clustering แบบทั่วไป เช่น K-means หรือ hierarchical clustering แต่ต้องใช้วิธีที่ซับซ้อนขึ้น เช่น Gaussian Mixture Model (GMM), latent class analysis (LCA) หรือ latent profile analysis (LPA) อย่างไรก็ตามกลุ่มแฝงที่ได้ก็ยังเป็นการประมาณ
+
+
+ในทางปฏิบัติ ผลลัพธ์ของ clustering ไม่ได้ขึ้นอยู่กับข้อมูลเพียงอย่างเดียว แต่ขึ้นอยู่กับหลายองค์ประกอบร่วมกัน ได้แก่
+
+- วิธีแทนข้อมูล (representation) 
+
+- การปรับสเกลตัวแปร (scaling) 
+
+- วิธีวัดระยะห่าง (distance)
+
+- อัลกอริทึมที่ใช้ (algorithm)
+
+ดังนั้น หากเปลี่ยนองค์ประกอบใดองค์ประกอบหนึ่ง ผลการจัดกลุ่มก็อาจเปลี่ยนไปได้ทันที แม้จะเป็นข้อมูลชุดเดิมก็ตาม
+
+จุดตั้งต้นที่สำคัญในการเรียนเรื่อง clustering จึงไม่ใช่การจำว่าอัลกอริทึมใดทำงานอย่างไรเพียงอย่างเดียว แต่คือการทำความเข้าใจว่า “กลุ่ม” ที่เราเห็นนั้นเกิดขึ้นภายใต้เงื่อนไขอะไร และมีความหมายอย่างไรในบริบทของปัญหาที่กำลังศึกษา
+
+สรุป
+
+1. Cluster ไม่ใช่ “ความจริง” ที่มีอยู่โดยธรรมชาติเสมอไป
+
+2. ไม่มีอัลกอริทึมตัวเดียวที่ดีที่สุดสำหรับทุกปัญหา
+
+3. นิยามของระยะทางหรือความคล้าย ที่ต่างกัน ย่อมให้ผลการจัดกลุ่มที่ต่างกัน
+
+4. การประเมินผล clustering ยากกว่า supervised learning
+
+การประเมินคุณภาพของ clustering เป็นเรื่องท้าทาย เพราะไม่มีตัวแปรเป้าหมายให้ใช้เป็นเกณฑ์อ้างอิงโดยตรง ตัวชี้วัดภายใน เช่น compactness หรือ separation อาจช่วยบอกได้ระดับหนึ่งว่ากลุ่มแน่นหรือแยกจากกันดีเพียงใด แต่ไม่ได้แปลว่ากลุ่มเหล่านั้นมีความหมายในเชิงเนื้อหาหรือใช้ประโยชน์ได้จริงเสมอไป
+
+กล่าวอีกแบบหนึ่งคือ clustering ที่ “สวย” ในเชิงคณิตศาสตร์ อาจไม่มีประโยชน์ในเชิงการตัดสินใจ ขณะเดียวกัน clustering ที่ไม่ได้มีค่าตัวชี้วัดดีที่สุด อาจกลับมีประโยชน์มากกว่าในเชิงการอธิบายปรากฏการณ์จริง
+
+ด้วยเหตุนี้ การประเมิน clustering จึงควรพิจารณาหลายด้านร่วมกัน ได้แก่
+
+- โครงสร้างของกลุ่มในเชิงเทคนิค
+- ความเสถียรของผลลัพธ์
+- ความสามารถในการตีความ
+- ความสอดคล้องกับโจทย์หรือบริบทการใช้งานจริง
+
+
+## 2. Representation และ Distance: จุดเริ่มต้นที่มาก่อน Algorithm
+
+เมื่อกล่าวถึงการทำ clustering ผู้เรียนจำนวนมากมักเริ่มต้นด้วยคำถามว่า “ควรใช้ k-means หรือ hierarchical clustering ดี” อย่างไรก็ตาม ในเชิงวิธีวิทยา คำถามนี้ยังเร็วเกินไป เพราะก่อนจะเลือกอัลกอริทึม ผู้วิเคราะห์จำเป็นต้องพิจารณาให้ชัดก่อนว่า ข้อมูลถูกแทนในรูปแบบใด และความคล้ายหรือความแตกต่างระหว่างหน่วยข้อมูลควรถูกนิยามอย่างไร
+
+กล่าวอีกแบบหนึ่งคือ การทำ clustering ไม่ได้เริ่มจาก algorithm แต่เริ่มจากการตัดสินใจ 2 เรื่องที่สำคัญกว่า ได้แก่ **representation** และ **distance** หากสองส่วนนี้ไม่เหมาะสม ต่อให้อัลกอริทึมมีชื่อเสียงหรือใช้งานแพร่หลายเพียงใด ผลการจัดกลุ่มก็อาจบิดเบือนไปจากโครงสร้างที่ควรเห็นได้
+
+### 2.1 Representation คืออะไร
+
+Representation หมายถึง วิธีที่เราแทนหน่วยข้อมูลให้อยู่ในรูปที่อัลกอริทึมสามารถนำไปประมวลผลได้ เช่น การแทนผู้เรียนแต่ละคนด้วยคะแนนสอบ พฤติกรรมการเข้าเรียน การส่งงานตรงเวลา ระดับแรงจูงใจ หรือแม้แต่ embedding ของข้อความสะท้อนคิด
+
+แม้จะเป็นหน่วยข้อมูลชุดเดียวกัน แต่ representation ที่ต่างกันย่อมทำให้โครงสร้างของข้อมูลต่างกันด้วย ตัวอย่างเช่น หากแทนผู้เรียนด้วยคะแนนสอบเพียงอย่างเดียว clustering อาจสะท้อนระดับผลสัมฤทธิ์เป็นหลัก แต่หากรวมพฤติกรรมการเรียนและข้อมูลเชิงแรงจูงใจเข้าไปด้วย กลุ่มที่ได้อาจสะท้อน โปรไฟล์การเรียนรู้ (learning profile) ที่ซับซ้อนขึ้น ไม่ใช่เพียงกลุ่มเก่งหรืออ่อน
+
+ดังนั้น representation ไม่ใช่เพียงขั้นตอนเตรียมข้อมูล แต่เป็นการกำหนดว่าเรากำลังมองข้อมูลในมิติใด และต้องการให้ความคล้ายเกิดขึ้นจากคุณลักษณะประเภทใด
+
+```{r}
+library(tidyverse)
+data <- read_csv("student_data.csv")
+glimpse(data)
+```
+
+
+### 2.2 Distance คืออะไร
+
+Distance หรือ dissimilarity คือเกณฑ์ที่ใช้ตัดสินว่า หน่วยข้อมูลสองหน่วย “ใกล้” หรือ “ต่าง” กันมากเพียงใด ใน clustering ระยะทางไม่ใช่รายละเอียดทางเทคนิคเล็กน้อย แต่เป็นหัวใจของการนิยามความแตกต่างหรือความคล้าย
+
+หากเปลี่ยนวิธีคำนวณ distance แม้ใช้ข้อมูลชุดเดิมและอัลกอริทึมตัวเดิม ผลการจัดกลุ่มก็อาจเปลี่ยนไปได้ทันที เพราะอัลกอริทึมจะมองความสัมพันธ์ของข้อมูลต่างออกไป
+
+ด้วยเหตุนี้ ก่อนเลือก algorithm ผู้วิเคราะห์จึงควรถามอย่างน้อย 3 คำถามต่อไปนี้
+
+- ตัวแปรที่ใช้มีลักษณะเป็น continuous, binary, ordinal หรือ nominal
+- ข้อมูลจำเป็นต้องปรับสเกลหรือไม่
+- ระยะทางแบบใดสะท้อน “ความคล้าย” ได้เหมาะสมที่สุดสำหรับปัญหานี้
+
+
+## 3. ระยะทางที่พบบ่อยและบริบทที่เหมาะสม
+
+### 3.1 Euclidean distance และ Manhattan distance และอื่น ๆ สำหรับข้อมูลเชิงตัวเลข
+
+สำหรับข้อมูลที่เป็นตัวเลขต่อเนื่อง Euclidean distance เป็นระยะทางที่ใช้กันแพร่หลายที่สุด โดยวัดระยะห่างเชิงเส้นตรงระหว่างจุดข้อมูลในปริภูมิหลายมิติ แนวคิดนี้สอดคล้องกับอัลกอริทึมอย่าง k-means ซึ่งอาศัย centroid และความแปรปรวนภายในกลุ่มเป็นหลัก
+
+อย่างไรก็ตาม Euclidean distance มีความไวต่อสเกลของตัวแปร (ดังนั้นการทำ standardization จึงมักจำเป็น) และมักเหมาะกับข้อมูลที่โครงสร้างกลุ่มมีลักษณะค่อนข้างกลมในเชิงเรขาคณิต
+
+Manhattan distance เป็นอีกทางเลือกหนึ่งสำหรับข้อมูลเชิงตัวเลข โดยวัดผลรวมของระยะต่างในแต่ละมิติแทนการวัดเส้นตรง วิธีนี้มักมีความทนทานต่อค่าผิดปกติบางลักษณะมากกว่า (เพราะไม่ได้ใช้การยกกำลังสองในสูตร) และอาจเหมาะกว่าในบางกรณีที่ความต่างรายมิติมีความสำคัญมากกว่าระยะตรงโดยรวม
+
+```{r}
+data |> glimpse()
+```
+
+
+```{r}
+euclid_dist <- data |> dplyr::select_if(is.numeric) |>
+    slice(1:5) |> 
+    dist(method = "euclidean")
+
+euclid_dist
+```
+
+Note: ระยะทางใน `dist()` ที่ควรทราบ
+
+ใน R ฟังก์ชัน `stats::dist()` รองรับการคำนวณระยะทางหลายแบบผ่านอาร์กิวเมนต์ `method` ได้แก่ `"euclidean"`, `"maximum"`, `"manhattan"`, `"canberra"`, `"binary"` และ `"minkowski"` แต่ละแบบไม่ได้ต่างกันแค่สูตร แต่ต่างกันที่ “นิยามความต่าง” ของข้อมูลด้วย ดังนั้นก่อนเลือกใช้ ควรถามก่อนว่าในโจทย์ของเรา ความต่างควรถูกมองแบบไหน
+
+#### 1) Euclidean distance
+
+Euclidean distance คือระยะทางเส้นตรงระหว่างจุดข้อมูลสองจุดในปริภูมิหลายมิติ
+
+$$
+
+d(x,y)=\sqrt{\sum_{i=1}^{p}(x_i-y_i)^2}
+
+$$
+
+แนวคิดนี้คุ้นที่สุดและใช้แพร่หลายมาก โดยเฉพาะกับข้อมูลเชิงปริมาณ และมักสอดคล้องกับอัลกอริทึมอย่าง `k-means` อย่างไรก็ตาม Euclidean distance ไวต่อสเกลของตัวแปรมาก ถ้าตัวแปรอยู่คนละหน่วยหรือมีช่วงค่าต่างกันมาก มักต้องทำ standardization ก่อน
+
+เหมาะกับ:
+
+- ข้อมูลเชิงปริมาณ
+
+- งานที่มองระยะทางเชิงเรขาคณิต
+
+- การทำ `k-means`
+
+ควรระวัง:
+
+- ไวต่อ outlier
+
+- ไวต่อสเกลของตัวแปร
+
+#### 2) Maximum distance
+
+Maximum distance หรือ Chebyshev distance วัดความต่างจาก “มิติที่ต่างกันมากที่สุด” เพียงมิติเดียว
+
+$$
+
+d(x,y)=\max_i |x_i-y_i|
+
+$$
+
+ระยะทางแบบนี้เหมาะเมื่อเราสนใจว่า ถ้าต่างกันมากในมิติใดมิติหนึ่ง ก็ถือว่าไกลแล้ว แม้มิติอื่นจะใกล้กันก็ตาม
+
+เหมาะกับ:
+
+- งานที่สนใจความคลาดเคลื่อนสูงสุด
+
+- บริบทที่ทุกมิติมีเกณฑ์เพดานสำคัญ
+
+ควรระวัง:
+
+- อาจมองข้ามข้อมูลจากมิติอื่นมากเกินไป
+
+- ถ้ามิติที่ต่างมากเป็น noise ก็อาจทำให้ระยะทางบิดเบือนได้
+
+#### 3) Manhattan distance
+
+Manhattan distance วัดผลรวมของความต่างในแต่ละมิติ
+
+$$
+
+d(x,y)=\sum_{i=1}^{p}|x_i-y_i|
+
+$$
+
+แนวคิดนี้เหมือนการเดินในเมืองแบบบล็อกถนน คือเดินตามแนวแกน ไม่ได้เดินเส้นทแยงตรงแบบ Euclidean ข้อดีคือไม่มีการยกกำลังสอง จึงมักทนต่อ outlier มากกว่า Euclidean เล็กน้อย
+
+เหมาะกับ:
+
+- ข้อมูลเชิงปริมาณ
+
+- กรณีที่สนใจความต่างสะสมรายมิติ
+
+- งานที่ต้องการลดอิทธิพลของค่าผิดปกติเมื่อเทียบกับ Euclidean
+
+ควรระวัง:
+
+- ยังต้องพิจารณาเรื่องสเกลของตัวแปรเช่นเดียวกัน
+
+#### 4) Canberra distance
+
+Canberra distance วัดความต่างเชิงสัดส่วน โดยเทียบความต่างกับขนาดรวมของค่าทั้งสอง
+
+$$
+
+d(x,y)=\sum_{i=1}^{p}\frac{|x_i-y_i|}{|x_i|+|y_i|}
+
+$$
+
+ถ้าค่าทั้งสองใกล้ศูนย์ ระยะทางแบบนี้จะไวมากเป็นพิเศษ จึงเหมาะในบางกรณีที่เราสนใจความต่างเชิงสัมพัทธ์มากกว่าความต่างดิบ
+
+เหมาะกับ:
+
+- ข้อมูลเชิงปริมาณที่สนใจความต่างเชิงสัดส่วน
+
+- ข้อมูลนับบางประเภท
+
+- ข้อมูลที่มีค่าขนาดเล็กจำนวนมาก
+
+ควรระวัง:
+
+- ไวต่อค่าที่ใกล้ศูนย์มาก
+
+- ไม่ใช่ตัวเลือกพื้นฐานที่ใช้ได้ดีทุกกรณี
+
+#### 5) Binary distance
+
+Binary distance ใช้กับข้อมูลทวิภาค เช่น 0/1 หรือ yes/no โดยใน `dist()` แนวคิดนี้เน้นความต่างของการ “มี” คุณลักษณะ มากกว่าการที่ทั้งคู่ “ไม่มี” คุณลักษณะ
+
+ถ้าให้
+
+- $a$ = จำนวนมิติที่ทั้งคู่เป็น 1
+
+- $b$ = จำนวนมิติที่ $x=1, y=0$
+
+- $c$ = จำนวนมิติที่ $x=0, y=1$
+
+ระยะทางจะสอดคล้องกับแนวคิดแบบ Jaccard distance คือ
+
+$$
+
+d(x,y)=\frac{b+c}{a+b+c}
+
+$$
+
+จึงเหมาะกับข้อมูลแบบ presence/absence มากกว่าข้อมูลเชิงปริมาณ
+
+เหมาะกับ:
+
+- ข้อมูล 0/1
+
+- การมีหรือไม่มีคุณลักษณะ
+
+- keyword occurrence
+
+- symptom yes/no
+
+ควรระวัง:
+
+- ไม่เหมาะกับข้อมูลที่ 0 และ 1 ไม่ได้มีความหมายแบบทวิภาคจริง
+
+- ไม่ควรใช้แทน distance สำหรับตัวเลขทั่วไป
+
+#### 6) Minkowski distance
+
+Minkowski distance เป็นกรอบทั่วไปที่ครอบทั้ง Euclidean และ Manhattan โดยกำหนดค่าพารามิเตอร์กำลังเพิ่มเข้าไป
+
+$$
+
+d(x,y)=\left(\sum_{i=1}^{p}|x_i-y_i|^q\right)^{1/q}
+
+$$
+
+เมื่อ
+
+- $q=1$ จะได้ Manhattan distance
+
+- $q=2$ จะได้ Euclidean distance
+
+ดังนั้น Minkowski จึงเหมาะเมื่ออยากทดลอง family ของ distance มากกว่าจะใช้เป็นคำตอบแรกโดยตรง
+
+เหมาะกับ:
+
+- งานที่ต้องการปรับความไวต่อความต่างรายมิติ
+
+- การทดลองเปรียบเทียบ metric
+
+ควรระวัง:
+
+- ถ้าไม่มีเหตุผลชัดเจน มักเริ่มจาก Manhattan หรือ Euclidean จะตีความง่ายกว่า
+
+สรุปสั้น ๆ สำหรับใช้ในห้องเรียน
+
+- **Euclidean**: ระยะตรง เหมาะกับข้อมูลเชิงปริมาณทั่วไป
+
+- **Maximum**: ดูมิติที่ต่างที่สุด
+
+- **Manhattan**: บวกความต่างทีละมิติ ทน outlier กว่า Euclidean เล็กน้อย
+
+- **Canberra**: สนใจความต่างเชิงสัดส่วน
+
+- **Binary**: ใช้กับข้อมูล 0/1 แบบมีหรือไม่มีคุณลักษณะ
+
+- **Minkowski**: กรอบรวมของหลาย distance
+
+
+### 3.2 Cosine similarity สำหรับข้อความหรือ embedding space
+
+ในข้อมูลข้อความหรือข้อมูลที่ถูกแทนด้วยเวกเตอร์ embedding ผู้วิเคราะห์มักสนใจ “ทิศทาง” ของเวกเตอร์มากกว่าขนาดของเวกเตอร์เอง กรณีนี้ cosine similarity หรือ cosine distance มักเหมาะสมกว่า Euclidean distance
+
+- cosine similarity 
+
+$$
+cosine\_similarity(x, y) = \frac{x \cdot y}{\|x\| \|y\|}
+$$
+
+- cosine distance
+
+$$
+cosine\_distance(x, y) = 1 - cosine\_similarity(x, y)
+$$
+
+
+ตัวอย่างเช่น เอกสารสองชิ้นอาจมีความยาวต่างกันมาก แต่หากมีรูปแบบการใช้คำหรือเนื้อหาใกล้กัน เวกเตอร์ของเอกสารทั้งสองอาจมีทิศทางคล้ายกัน ดังนั้น cosine similarity จึงช่วยวัดความคล้ายเชิงเนื้อหาได้ดีกว่าในหลายสถานการณ์
+
+แนวคิดนี้สำคัญมากในงานสมัยใหม่ที่ใช้ embedding จากภาษา ข้อความ หรือพฤติกรรมดิจิทัล เพราะการเลือก metric ที่ไม่เหมาะอาจทำให้ clustering ใน embedding space ตีความผิดไปได้ง่าย
+
+
+```{r}
+## cosine similarity
+## install.packages("lsa")
+library(lsa)
+library(tidyllm)
+text_dat <- read_csv("example.csv")
+text_dat
+```
+
+```{r}
+embeding_df <- tidyllm::embed(
+    .input = text_dat$phrase,
+    .provider = ollama(),
+    .model = "nomic-embed-text:latest"
+)
+
+temp_emb <- embeding_df |> 
+    unnest_wider(col = "embeddings", names_sep = "_") |> 
+    select(-1) |> 
+    slice(1:10)
+```
+
+
+ถ้าเราต้องการหาว่าข้อความแรก "ทำอะไรไม่ได้" กับ "หัวเราะและล้อเลียนตาม" มีความคล้ายกันมากแค่ไหน เราก็ต้องหา cosine similarity ระหว่างเวกเตอร์ฝังความหมายของทั้งสองข้อความ
+
+```{r}
+x <- as.numeric(temp_emb[1,]) 
+y <- as.numeric(temp_emb[5,])
+cosine(x,y) ## ความคล้ายระหว่าง"ทำอะไรไม่ได้" กับ "หัวเราะและล้อเลียนตาม" 
+```
+
+คราวนี้ถ้าเรามีข้อมูล
+
+```{r}
+cosine_mat <- temp_emb |> 
+    as.matrix() |> 
+    t() |>  ## transpose เพื่อหาความคล้ายของ row (ข้อความแต่ละข้อความ)
+    lsa::cosine()
+rownames(cosine_mat) <- embeding_df$input[1:10]
+colnames(cosine_mat) <- embeding_df$input[1:10]
+cosine_mat
+```
+
+
+```{r}
+cosine_sim <- embeding_df |> 
+    unnest_wider(col = "embeddings", names_sep = "_") |> 
+    select(starts_with("embeddings_")) |> 
+    slice(1:5) |> 
+    as.matrix() |> 
+    t() |> 
+    lsa::cosine()
+
+cosine_dist <- 1 - cosine_sim
+```
+
+
+
+### 3.3 Gower distance สำหรับข้อมูลหลายชนิดร่วมกัน
+
+ในงานจริง ข้อมูลจำนวนมากไม่ได้ประกอบด้วยตัวแปรเชิงตัวเลขล้วน แต่มีทั้งตัวแปรต่อเนื่อง ตัวแปรทวิภาค ตัวแปรอันดับ และตัวแปรนามบัญญัติอยู่ร่วมกัน หากนำข้อมูลเช่นนี้ไปใช้ Euclidean distance ตรง ๆ มักเกิดปัญหา เพราะชนิดข้อมูลต่างกันมีธรรมชาติของความต่างไม่เหมือนกัน
+
+
+Gower distance จึงเป็นทางเลือกสำคัญสำหรับข้อมูลแบบ mixed-type เนื่องจากสามารถคำนวณความไม่คล้ายโดยคำนึงถึงชนิดของตัวแปรแต่ละตัวแปรได้พร้อมกัน ตัวอย่างเช่น ในข้อมูลผู้เรียน เราอาจมีทั้งคะแนนสอบ ระดับการมาเรียน สถานะการส่งงาน และประเภทสาขาวิชา การใช้ Gower distance จะช่วยให้การวัดความคล้ายมีความสมเหตุสมผลกว่าการบังคับให้ทุกตัวแปรอยู่ภายใต้ระยะทางแบบเดียวกัน
+
+$$
+Gower\_distance(x, y) = \frac{\sum_{i=1}^{p} w_i d_i(x_i, y_i)}{\sum_{i=1}^{p} w_i}
+$$
+
+
+โดยที่ $d_i$ เป็นระยะทางที่เหมาะสมกับชนิดของตัวแปร $i$ และ $w_i$ เป็นน้ำหนักที่กำหนดให้กับตัวแปรนั้น ๆ
+
+```{r}
+## install.packages("cluster")
+library(cluster)
+mixed_data <- data |> select(age, major, scholarship_status, absence_count) |> 
+    slice(1:5) |> 
+    mutate_if(is.character, as.factor)
+
+gower_dist <- daisy(mixed_data, metric = "gower",
+                    stand = TRUE,
+                    weights = c(2,1,1,2))
+gower_dist
+```
+
+
+## 4. Scaling: ขั้นตอนเล็ก ๆ ที่สำคัญ
+
+การปรับสเกลตัวแปรเป็นอีกประเด็นหนึ่งที่ต้องพิจารณาก่อนทำ clustering โดยเฉพาะเมื่อใช้ระยะทางที่อ่อนไหวต่อขนาดของตัวแปร เช่น Euclidean distance
+
+สมมติว่าข้อมูลมีทั้งตัวแปร “คะแนนสอบ” ที่มีค่าอยู่ระหว่าง 0 ถึง 100 และตัวแปร “จำนวนครั้งที่ขาดเรียน” ที่มีค่าอยู่ระหว่าง 0 ถึง 5 หากไม่ปรับสเกล ตัวแปรคะแนนสอบอาจมีอิทธิพลต่อระยะทางมากกว่ามาก ทำให้ clustering สะท้อนความต่างของคะแนนเป็นหลัก ขณะที่ตัวแปรการขาดเรียนแทบไม่มีบทบาท
+
+การ scale จึงไม่ใช่พิธีกรรมทางเทคนิคที่ทำตามกันไป แต่เป็นการตัดสินใจว่าแต่ละตัวแปรควรมีน้ำหนักในโครงสร้างความคล้ายมากน้อยเพียงใด
+
+ผู้วิเคราะห์ควรพิจารณาอย่างมีเหตุผลว่า
+- ตัวแปรแต่ละตัวมีหน่วยต่างกันหรือไม่
+- ตัวแปรบางตัวมีช่วงกว้างผิดปกติหรือไม่
+- ต้องการให้ทุกตัวแปรมีอิทธิพลใกล้เคียงกันหรือไม่
+
+หากไม่คิดเรื่องนี้ให้ชัด ระยะทางที่คำนวณได้อาจสะท้อนเพียงตัวแปรไม่กี่ตัวที่มีค่าสเกลใหญ่ที่สุด
+
+## 5.  Missing Data และ Encoding: จุดที่ทำให้ clustering เพี้ยนโดยไม่รู้ตัว
+
+ในการใช้งานจริง ปัญหาไม่ได้อยู่แค่การเลือก distance แต่รวมถึงการเตรียมข้อมูลก่อนคำนวณ distance ด้วย โดยเฉพาะ missing data และการ encoding ตัวแปรจัดประเภท
+
+### 5.1 Missing data
+
+ค่าที่ขาดหายไม่ได้เป็นเพียงปัญหาทางเทคนิค แต่มีผลโดยตรงต่อการคำนวณความคล้าย หากจัดการไม่เหมาะสม หน่วยข้อมูลบางหน่วยอาจดูใกล้หรือไกลกันเกินจริง ตัวอย่างเช่น การแทนค่าที่หายด้วยค่าเฉลี่ยอย่างไม่ระมัดระวัง อาจทำให้ข้อมูลหลายหน่วยถูกดึงเข้าหาศูนย์กลางเทียม ส่งผลให้โครงสร้างกลุ่มผิดเพี้ยน
+
+ในบางกรณี การขาดหายของข้อมูลเองอาจสะท้อนลักษณะสำคัญของหน่วยข้อมูลด้วย ดังนั้นการจัดการ missing data ควรพิจารณาทั้งในเชิงสถิติและเชิงบริบท ไม่ใช่เพียงเติมค่าให้ครบเพื่อให้อัลกอริทึมทำงานได้
+
+### 5.2 Encoding
+
+ตัวแปรจัดประเภทไม่สามารถป้อนเข้าอัลกอริทึมบางตัวได้โดยตรง จึงมักต้องแปลงให้อยู่ในรูปเชิงตัวเลขก่อน เช่น one-hot encoding อย่างไรก็ตาม การ encoding แต่ละแบบมีผลต่อ geometry ของข้อมูล
+
+หากใช้ label encoding กับตัวแปร nominal เช่น กำหนดให้ “วิทยาศาสตร์ = 1”, “ศิลป์ = 2”, “อาชีวะ = 3” แล้วคำนวณ Euclidean distance โดยตรง อัลกอริทึมอาจตีความผิดว่าหมวด 3 ห่างจากหมวด 1 มากกว่าหมวด 2 ทั้งที่ในความเป็นจริงหมวดหมู่เหล่านี้ไม่ได้มีระยะห่างเชิงลำดับแบบนั้น
+
+ดังนั้น การ encoding จึงเป็นส่วนหนึ่งของการออกแบบ representation ไม่ใช่เพียงขั้นตอนแปลงข้อมูลให้ใช้งานได้
+
+ข้อสรุปสำคัญ
+
+การทำ clustering อย่างมีคุณภาพไม่ได้เริ่มจากการเลือกอัลกอริทึมที่นิยมที่สุด แต่เริ่มจากการทำความเข้าใจว่า ข้อมูลของเราถูกแทนอย่างไร และควรวัดความคล้ายกันแบบใด
+
+หาก representation ไม่สอดคล้องกับโจทย์ หรือ distance ไม่เหมาะกับชนิดข้อมูล ผลการจัดกลุ่มที่ได้อาจเป็นเพียงโครงสร้างที่เกิดจากข้อจำกัดของการเตรียมข้อมูล มากกว่าจะเป็นโครงสร้างที่มีความหมายในเชิงวิเคราะห์
+
+ดังนั้น ลำดับการคิดที่เหมาะสมควรเป็นดังนี้
+
+1. ทำความเข้าใจชนิดและความหมายของตัวแปร  
+2. ออกแบบ representation ให้สอดคล้องกับโจทย์  
+3. เลือก distance หรือ dissimilarity ให้เหมาะกับข้อมูล  
+4. พิจารณาการ scaling, missing data และ encoding  
+5. จึงค่อยเลือก algorithm ที่สอดคล้องกับเงื่อนไขเหล่านั้น
+
+
+## 6. Partition-based Clustering
+
+เมื่อผู้เรียนเข้าใจเรื่อง representation และ distance แล้ว จึงค่อยเข้าสู่ `k-means` ซึ่งเป็นหนึ่งในวิธีการจัดกลุ่มแบบ partition-based clustering ที่สำคัญที่สุด วิธีนี้ยังคงถูกใช้อย่างแพร่หลายในงานจริง เพราะคำนวณได้รวดเร็วและตีความได้ไม่ยาก แต่ก็มีข้อจำกัดที่ต้องเข้าใจให้ชัด มิฉะนั้นผู้เรียนอาจเข้าใจผิดว่า `k-means` เป็นคำตอบมาตรฐานสำหรับทุกปัญหาการจัดกลุ่ม ทั้งที่ในความเป็นจริงมันเหมาะกับข้อมูลบางลักษณะเท่านั้น 
+
+
+### 6.1 แนวคิดของ `k-means`
+
+แนวคิดหลักของ `k-means` คือการแบ่งข้อมูลออกเป็น \(k\) กลุ่ม โดยให้แต่ละกลุ่มมี “จุดศูนย์กลาง” หรือ **centroid** เป็นตัวแทน และให้ข้อมูลแต่ละหน่วยถูกจัดไปอยู่ในกลุ่มที่มี centroid ใกล้ที่สุด จากนั้นอัลกอริทึมจะสลับทำ 2 ขั้นตอนซ้ำไปมา ได้แก่
+
+1. กำหนดสมาชิกของแต่ละกลุ่มจาก centroid ปัจจุบัน  
+2. คำนวณ centroid ใหม่จากค่าเฉลี่ยของข้อมูลในแต่ละกลุ่ม
+
+กระบวนการนี้ดำเนินต่อไปจนผลลัพธ์คงที่หรือเปลี่ยนแปลงน้อยมาก โดยเป้าหมายคือทำให้ความแปรปรวนภายในกลุ่มต่ำที่สุด หรือกล่าวอีกแบบคือทำให้สมาชิกในกลุ่มเดียวกันอยู่ใกล้ centroid ของตนมากที่สุด
+
+foundation ที่สำคัญของ k-means 
+
+- ประการแรก `k-means` ทำงานใน **numeric space** และ centroid ถูกคำนวณจาก “ค่าเฉลี่ย” ของตัวแปร ดังนั้นจึงควรใช้กับข้อมูลเชิงปริมาณที่ mean มีความหมาย หากข้อมูลมีตัวแปรจัดประเภทจำนวนมาก หรือเป็นข้อมูลแบบ mixed-type การใช้ `k-means` โดยตรงมักไม่เหมาะ เพราะ centroid ที่ได้อาจไม่มีความหมายเชิงเนื้อหา
+
+- ประการที่สอง `k-means` ไวต่อ **scaling** มาก หากตัวแปรหนึ่งมีช่วงค่ากว้างกว่าตัวแปรอื่น ตัวแปรนั้นจะครอบงำการคำนวณระยะทางทันที ดังนั้นการ standardize หรือ normalize ตัวแปรจึงมักเป็นขั้นตอนที่จำเป็นก่อนทำ `k-means`
+
+- ประการที่สาม `k-means` ไวต่อ **initialization** หรือการตั้ง centroid เริ่มต้น เพราะอัลกอริทึมอาจลงเอยที่คำตอบคนละแบบได้จากจุดเริ่มต้นที่ต่างกัน มีงานวิจัยที่แสดงให้เห็นว่า `k-means` อาจติดอยู่ที่ local minima ได้ง่าย **ดังนั้นการรันหลายครั้งด้วยค่าเริ่มต้นต่างกันจึงเป็นวิธีที่แนะนำเพื่อให้ได้ผลลัพธ์ที่เสถียรกว่า**
+
+
+### 6.2 จุดแข็งของ `k-means`
+
+แม้มีข้อจำกัด `k-means` ก็ยังมีจุดแข็งสำคัญที่ทำให้มันยังคงมีประโยชน์มากในงานจริง ได้แก่
+
+- คำนวณได้รวดเร็วมากเมื่อเทียบกับหลายอัลกอริทึม  
+- ใช้งานและอธิบายได้ไม่ยาก  
+- เหมาะกับข้อมูลเชิงตัวเลขที่มีขนาดตั้งแต่ปานกลางถึงใหญ่  
+- ใช้เป็น baseline ที่ดีในการเปรียบเทียบกับวิธีอื่น  
+
+
+### 6.3 ข้อจำกัดของ `k-means`
+
+1) เมื่อมีตัวแปรจัดประเภทจำนวนมาก
+
+`k-means` อาศัย mean และ Euclidean geometry เป็นหลัก จึงไม่เหมาะกับข้อมูลที่มีตัวแปร nominal หรือ binary จำนวนมาก หากพยายามเข้ารหัสตัวแปรเหล่านี้แบบง่าย ๆ แล้วใช้ `k-means` ต่อ อาจทำให้ผลลัพธ์ผิดความหมายทางข้อมูลได้
+
+2) เมื่อคลัสเตอร์ไม่ได้มีรูปร่างค่อนข้างกลม
+
+`k-means` มักทำงานได้ดีเมื่อคลัสเตอร์มีลักษณะค่อนข้างกลมและมีการกระจายตัวใกล้เคียงกัน แต่หากข้อมูลมีกลุ่มรูปร่างยาว โค้ง หรือมีขนาดแตกต่างกันมาก ผลลัพธ์อาจออกมาไม่น่าเชื่อถือ
+
+3) เมื่อมี outlier มาก
+
+เพราะ centroid คำนวณจากค่าเฉลี่ย outlier จึงสามารถดึง centroid ให้เบี้ยวได้ง่าย ส่งผลให้การแบ่งกลุ่มบิดเบือนไปจากโครงสร้างหลักของข้อมูล
+
+4) เมื่อต้องการวิธีที่รับรู้ noise โดยตรง
+
+`k-means` จะพยายามบังคับให้ทุกข้อมูลต้องถูกจัดเข้ากลุ่มเสมอ จึงไม่เหมาะในสถานการณ์ที่ข้อมูลบางส่วนควรถูกมองเป็น noise หรือ outlier มากกว่าจะเป็นสมาชิกของคลัสเตอร์ใดคลัสเตอร์หนึ่ง
+
+### 6.4 Fit โมเดล และตรวจสอบผลลัพธ์
+
+```{r}
+library(tidymodels)
+## fit ด้วย kmeans ใน base R
+set.seed(123)
+num_data <- data |> select_if(is.numeric) |> 
+    na.omit() ## ลบแถวที่มี missing data ออกก่อน เพราะ kmeans ใน base R ไม่รองรับ missing data
+
+km_preped <- recipe( ~ ., data =num_data) |> 
+    step_normalize(all_numeric_predictors()) |> 
+    step_impute_knn(all_numeric_predictors()) |> 
+    prep() |> juice()
+
+km_res3 <- kmeans(x = km_preped, centers = 3, nstart = 20)
+km_res3 |> objects() 
+km_res3$betweenss
+km_res3$centers
+sum(km_res3$withinss)
+km_res3$tot.withinss
+
+km_res3$cluster
+
+km_preped |> 
+    bind_cols(cluster = factor(km_res3$cluster, labels = c("cluster1", "cluster2", "cluster3"))) |> 
+    select(cluster, everything()) |> 
+    recipe(cluster ~ .) |> 
+    step_pca(all_numeric_predictors()) |> 
+    prep() |> 
+    juice() |> 
+    ggplot(aes(x = PC1, y = PC2, color = cluster)) +
+    geom_point()
+```
+
+การวิเคราะห์ kmeans ด้วย `kmeans()` มันได้ทีละ solution ดังนั้นหากเราต้องการเปรียบเทียบว่าควรเลือกจำนวน cluster เท่าไหร่ดี <--- เหมือนการ tune hyperparameter 
+
+```{r}
+k <- c(2,3,4,5,6)
+withinss <- numeric(length(k)) ## ที่เก็บข้อมูล
+for (i in k)
+{
+    res <- kmeans(x = km_preped, centers = i, nstart = 1)
+    withinss[i-1] <- res$tot.withinss
+}
+
+tibble(
+    k = k,
+    withinss = withinss
+) |> 
+    ggplot(aes(x = k, y = withinss)) +
+    geom_line() +
+    geom_point() +
+    theme_light()
+
+```
+
+
+kmean และ hierarchical clustering สามารถ fit ได้ง่าย ๆ ด้วย library-tidyclust ซึ่งเป็นส่วนขยายของ tidymodels การใช้ library นี้ทำให้เราสามารถใช้ feature ที่มีประโยชน์ทั้งส่วน feature engineering และส่วน hyperparameter tuning มาประยุกต์ใช้กับการทำ clustering ได้อย่างสะดวกมากขึ้น
+
+
+```{r}
+library(tidymodels)
+## install.packages("tidyclust")
+library(tidyclust)
+
+### กำหนด recipe
+rec_clust <- recipe( ~ . , data = data |> select_if(is.numeric)) %>% 
+  step_normalize(all_numeric_predictors()) |> 
+  step_impute_knn(all_numeric_predictors())
+
+### สร้างโมเดล k-means
+kmeans_spec <- k_means(num_clusters = 3) |> 
+    set_mode("partition") |>
+    set_engine("stats", nstart = 20)
+
+### สร้าง workflow ของการจัดกลุ่ม
+wf_kmeans <- workflow() %>% 
+  add_recipe(rec_clust) %>%
+  add_model(kmeans_spec)
+
+
+km_res <- wf_kmeans |> 
+    fit(data = data |> select_if(is.numeric))
+
+km_res |> augment(data |> select_if(is.numeric)) |> 
+    ggplot(aes(x = .pred_cluster, fill = .pred_cluster)) +
+    geom_bar() +
+    theme_light()
+```
+
+การ fit model สามารถใช้ `fit()` เหมือนกับการ fit โมเดลใน tidymodels อื่น ๆ
+
+```{r}
+### fit model
+kmeans_fit <- wf_kmeans %>% 
+  fit(data = data |> select_if(is.numeric))
+
+### ดึงผลลัพธ์การจัดกลุ่ม
+kmeans_data <- kmeans_fit %>% augment(data |> select_if(is.numeric))
+
+### visualization
+kmeans_data %>% 
+  ggplot(aes(x = .pred_cluster, 
+             fill = .pred_cluster)) +
+  geom_bar()+
+  theme_light()
+```
+
+
+### 6.5 การประเมินความเหมาะสมของผลลัพธ์ที่ได้จาก `k-means`
+
+เมื่อทำ `k-means` หรือวิธีจัดกลุ่มอื่นแล้ว คำถามสำคัญถัดมาไม่ใช่เพียงว่า “ได้กี่กลุ่ม” แต่คือ “กลุ่มที่ได้ดีพอหรือยัง” และ “ดีในความหมายใด” เพราะใน clustering โดยทั่วไปเราไม่ได้มีตัวแปรเป้าหมายหรือคำตอบจริงให้เทียบโดยตรงเหมือนใน supervised learning
+
+ในทางปฏิบัติ การประเมินคุณภาพของคลัสเตอร์อาจพิจารณาได้ 3 มิติหลัก ได้แก่
+
+1. **internal validation**  
+
+2. **stability validation**  
+
+3. **external validation** (เมื่อมี label อ้างอิงจากภายนอก)
+
+
+
+#### 1) Internal validation
+
+Internal validation คือการประเมินคุณภาพของคลัสเตอร์จากข้อมูลและผลการจัดกลุ่มที่ได้เอง โดยไม่อาศัย label จากภายนอก แนวคิดหลักมีอยู่ 2 เรื่อง ได้แก่
+
+- **Cohesion**: สมาชิกภายในกลุ่มเดียวกันควรอยู่ใกล้กัน  
+
+- **Separation**: กลุ่มที่ต่างกันควรแยกออกจากกันได้พอสมควร  
+
+ดังนั้น internal validation จึงช่วยตอบว่า โครงสร้างของคลัสเตอร์ดูดี หรือไม่ในเชิงเรขาคณิตและเชิงสถิติ แต่ยัง **ไม่ได้** รับรองว่าคลัสเตอร์นั้นมีความหมายเชิงทฤษฎี หรือมีประโยชน์เชิงปฏิบัติจริง
+
+ตัวชี้วัดที่นิยมใช้ เช่น
+
+- Within-Cluster Sum of Squares (WSS)
+
+$$
+WSS = \sum_{k=1}^{K} \sum_{x_i \in C_k} ||x_i - \mu_k||^2
+$$
+
+
+- SSE Ratio
+
+สัดส่วนความแปรปรวนภายในกลุ่มต่อความแปรปรวนรวม
+
+```{r}
+wss <- sse_within(kmeans_fit, new_data = data |> select_if(is.numeric))
+total_ss <- sse_total(kmeans_fit, new_data = data |> select_if(is.numeric))
+wss_ratio <- sse_ratio(kmeans_fit, new_data = data |> select_if(is.numeric))
+```
+
+- Silhouette coefficient
+
+$$
+s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}}
+$$
+
+โดยที่ 
+
+- \(a(i)\) คือระยะทางเฉลี่ยจากจุด \(i\) ไปยังสมาชิกอื่นในกลุ่มเดียวกัน
+
+- \(b(i)\) คือระยะทางเฉลี่ยจากจุด \(i\) ไปยังสมาชิกในกลุ่มที่ใกล้ที่สุดที่ไม่ใช่กลุ่มของ \(i\)
+
+ค่า \(s(i)\) อยู่ในช่วง \(-1\) ถึง \(1\)
+
+- ค่าใกล้ 1 หมายถึง จุดนั้นอยู่ในกลุ่มได้ค่อนข้างเหมาะสม  
+
+- ค่าใกล้ 0 หมายถึง จุดนั้นอยู่ใกล้ขอบเขตระหว่างกลุ่ม  
+
+- ค่าใกล้ -1 หมายถึง จุดนั้นอาจถูกจัดไปผิดกลุ่ม  
+
+```{r}
+## silhouette average
+sil_avg <- silhouette_avg(kmeans_fit, new_data = data |> select_if(is.numeric))
+sil_avg
+```
+
+```{r}
+## cluster-wise silhouette
+sil_tbl <- tidyclust::silhouette(
+  object   = kmeans_fit,
+  new_data = data |> select_if(is.numeric)
+)
+```
+
+
+```{r}
+sil_tbl %>% 
+  ggplot(aes(x = sil_width)) +
+  geom_histogram(fill = "black", color = "white") +
+  theme_light()
+
+sil_summary_by_cluster <- sil_tbl %>%
+  group_by(cluster) %>%
+  summarise(
+    count    = n(),
+    avg_sil  = mean(sil_width),
+    min_sil  = min(sil_width),
+    prop_neg = mean(sil_width < 0)
+  )
+
+sil_summary_by_cluster
+```
+
+#### 2) Stability validation
+
+Stability validation มีเป้าหมายเพื่อดูว่า ถ้าข้อมูลเปลี่ยนไปเล็กน้อย หรือถ้าฟิตโมเดลซ้ำภายใต้การสุ่มที่ต่างกัน โครงสร้างของคลัสเตอร์ยังคงใกล้เคียงเดิมหรือไม่
+
+- เปรียบเทียบผลลัพธ์จากค่าเริ่มต้นที่แตกต่างกันหลายค่า
+
+- ทำ cross-validation --> hyperparameter tuning ในการเลือกจำนวน cluster
+
+- ทำ bootstrapping เพื่อดูความเสถียรของคลัสเตอร์
+
+
+#### hyperparameter tuning ในการเลือกจำนวน cluster ด้วย cross-validation
+
+```{r}
+### กำหนด recipe
+rec_clust <- recipe( ~ . , data = data |> select_if(is.numeric)) %>% 
+  step_normalize(all_numeric_predictors()) |> 
+  step_impute_knn(all_numeric_predictors())
+
+### สร้างโมเดล k-means
+kmeans_spec <- k_means(num_clusters = tune()) |> 
+    set_mode("partition") |>
+    set_engine("stats", nstart = 20)
+
+### สร้าง workflow ของการจัดกลุ่ม
+wf_kmeans <- workflow() %>% 
+  add_recipe(rec_clust) %>%
+  add_model(kmeans_spec)
+```
+
+สร้าง cross-validation folds
+
+```{r}
+set.seed(123)
+folds <- vfold_cv(data |> select_if(is.numeric), v = 5, repeats = 2)
+boots <- bootstraps(data |> select_if(is.numeric), times = 20)
+```
+
+สร้าง grid ของ cluster ที่ต้องการทดลอง
+
+```{r}
+my_grid <- tibble(
+    num_clusters = 2:20
+)
+```
+
+จากนั้น tune cluster ของเรา
+
+```{r}
+library(future)
+plan(multisession, worker = 13) ## ใช้ parallel processing เพื่อให้การ tune เร็วขึ้น
+km_tune_res <- wf_kmeans |> 
+    tune_cluster(
+        resamples = folds,
+        grid = my_grid,
+        metrics = cluster_metric_set(sse_total, sse_ratio, silhouette_avg),
+        control = control_grid(save_pred = TRUE, extract = identity,
+        parallel_over = "resamples", verbose = TRUE)
+    )
+
+km_tune_res |> collect_metrics() |> 
+    ggplot(aes(x = num_clusters, y = mean)) +
+    geom_line() +
+    geom_point() +
+    theme_light()+
+    facet_wrap(~.metric, scales = "free_y")
+
+km_tune_res |> collect_metrics(summarize = F) |> 
+    ggplot(aes(x = num_clusters, y = .estimate, group = num_clusters)) +
+    geom_boxplot() +
+    theme_light()+
+    facet_wrap(~.metric, scales = "free_y")
+
+    geom_line() +
+    geom_point() +
+    theme_light()+
+    facet_wrap(~.metric, scales = "free_y")
+```
+
+
+
+```{r}
+rec_clust <- recipe( ~ . , data = data |> select_if(is.numeric)) %>% 
+  step_normalize(all_numeric_predictors()) |> 
+  step_impute_knn(all_numeric_predictors())
+
+### สร้างโมเดล k-means
+kmeans_spec2 <- k_means(num_clusters = 2) |> 
+    set_mode("partition") |>
+    set_engine("stats", nstart = 20)
+
+kmeans_spec3 <- k_means(num_clusters = 3) |> 
+    set_mode("partition") |>
+    set_engine("stats", nstart = 20)
+
+### สร้าง workflow ของการจัดกลุ่ม
+wf_set <- workflow_set(
+    preproc = list(rec = rec_clust),
+    models  = list(k2 = kmeans_spec2, k3 = kmeans_spec3),
+    cross   = TRUE
+)
+
+km_boot_res <- wf_set |>
+    workflow_map(
+        "tune_cluster",
+        resamples = boots,
+        metrics   = cluster_metric_set(sse_total, sse_ratio, silhouette_avg),
+        control   = control_grid(
+            save_pred     = TRUE,
+            extract       = identity,
+            parallel_over = "resamples",
+            verbose       = TRUE
+        )
+    )
+
+km_boot_res |> collect_metrics()
+
+km_boot_res |> extract_workflow_set_result("rec_k3") |> 
+    collect_predictions() |> 
+    group_by(.row) |> 
+    mutate(.pred_cluster = ifelse(.pred_cluster == "Cluster_1", 0, 1)) |> 
+    group_by(.row, .pred_cluster) |>
+    mutate(count = n()) |> 
+    mutate(prop = count / sum(count)) |> 
+    group_by(.row) |> 
+    summarise(p = mean(prop)) |> 
+    mutate(q = 1-p) |> 
+    mutate(var = p*q) |> 
+    ggplot(aes(x = var)) +
+    geom_histogram(fill = "black", color = "white",
+    bins = 20) 
+
+```
+
+
+
+สมมุติว่าเราได้ว่า k = 2 เป็น solution ที่เราพอใจในเชิงคุณภาพโดยรวมของการจัดกลุ่ม คราวนี้ขั้นสุดท้ายคือการพิจารณาความสมเหตุสมผลของผลลัพธ์
+
+1. fit k=2 ด้วยชุดข้อมูลทั้งหมด
+
+2. พิจารณาความหมายของ cluster แต่ละตัว
+
+
+```{r}
+## เปรียบเทียบผลลัพธ์จากค่าเริ่มต้นที่แตกต่างกันหลายค่า 1
+rec_clust <- recipe(~ ., data = data |> select_if(is.numeric)) %>%
+  step_normalize(all_numeric_predictors()) |> 
+  step_impute_knn(all_numeric_predictors())
+
+kmeans_spec <- k_means(
+  mode = "partition",
+  num_clusters = 2
+) %>%
+  set_engine("stats", nstart = 25)
+
+wf_kmeans <- workflow() %>%
+  add_recipe(rec_clust) %>%
+  add_model(kmeans_spec)
+
+kmeans_fit <- wf_kmeans %>%
+  fit(data = data |> select_if(is.numeric))
+```
+
+
+```{r}
+kmeans_fit |> augment(new_data = data |> select_if(is.numeric)) |> 
+    ## standardize
+    mutate_at(2:14, scale) |> 
+    group_by(.pred_cluster) |> 
+    summarise(
+        across(everything(), list(mean = mean, sd = sd))
+    ) |> 
+    pivot_longer(-.pred_cluster, names_to = c("variable", "stat"), names_sep = "_") |>
+    ggplot(aes(x = value,  y = variable)) +
+    geom_col(aes(fill = value >=0)) +
+    facet_wrap(~.pred_cluster)
+```
+
+
+
