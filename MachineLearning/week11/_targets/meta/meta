@@ -1,0 +1,21 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+param_grid|stem|5e189c6c333f5516|82a48bc1635c283d|2c530c1562a7fbd1|-1095533255||t20575.4624791779s|s218b|218|rds|local|vector|||1.021||
+raw_data|stem|4f13468fe4592c88|73e7c07b6c20d299|2c530c1562a7fbd1|-1101284392||t20575.6166995371s|s9469b|9469|rds|local|vector|||1.793||
+x_clust|stem|0496b0ef954a1121|dceb9ebf162eb2d4|35c3318e20bfd8f8|-131949801||t20575.6166998987s|s8372b|8372|rds|local|vector|||0.004||
+folds|stem|e3894ce77bc36132|d3e58400cb83990a|0718a2086cc1f15f|-1526133766||t20575.616700314s|s16964b|16964|rds|local|vector|||0.006||
+rec_clust|stem|4fae6646be6151ad|dcfaafe298beae62|0718a2086cc1f15f|872251762||t20575.6167004954s|s10299b|10299|rds|local|vector|||0.006||
+metric_results|stem|7370b85536aa9db7|43306bbf3b0e115c|c33f6db4e013a8c0|960158374||t20575.6167185208s|s9094b|9094|rds|local|vector|||1.547||
+x_final|stem|11aca48f3493b852|1d3fa9165ec23cec|9786180122ea53a7|1637045064||t20575.6167189624s|s9202b|9202|rds|local|vector|||0.019||
+metric_summary|stem|ef797049ffe5e602|c7667c03030a3cda|5471e0c9db7b85ae|-756438687||t20575.6167191307s|s1292b|1292|rds|local|vector|||0.006||
+best_solution|stem|cdff3851913c1eed|522edcad1105f6e0|8a95b4157af87dcc|391526269||t20575.6167192667s|s292b|292|rds|local|vector|||0.002||
+final_dist|stem|acf3f995c2710cd8|5e30ba855d9df1cd|ffa4eb992022a725|-499980950||t20575.6167196405s|s507503b|507503|rds|local|vector|||0.001||
+final_hclust|stem|2e8a3fa22b1380c7|83402d659f0373a0|003321eb01d0a273|-1696839321||t20575.6167198108s|s5587b|5587|rds|local|vector|||0.002||
+final_cluster|stem|a669a98903239c0c|28cf562ab376e0da|c71a4c8ec687f33b|2134494760||t20575.6167199179s|s78b|78|rds|local|vector|||0.001||
+cluster_profile|stem|c61468eda3c5a265|1da931d3b5ae083a|d94203f14f1c4177|-1561743070||t20575.6167201572s|s396b|396|rds|local|vector|||0.009||
+cluster_with_gpa|stem|61e48adcc24aa334|387a764b2a0cd610|d99b3b1255d6c51c|1082262535||t20575.6167203101s|s9439b|9439|rds|local|vector|||0.002||
+final_silhouette|stem|28328f9ba136cc54|01cd4d631708f82d|c01f4d4c9597cec6|-1324601121||t20575.6167204768s|s3163b|3163|rds|local|vector|||0.001||
+cluster_profile_long|stem|8ce4d4a62a87fbc6|576498a534afc769|43611fcea2d4f0cf|-1369707576||t20575.6167206254s|s416b|416|rds|local|vector|||0.004||
+gpa_by_cluster|stem|33c635234815f3b6|da738e05bbc3315c|2fff24e81a68b4ff|-1836143622||t20575.4635381468s||263|rds|local|vector|||0.051||ℹ In argument: `mean_gpa = mean(gpa, na.rm = TRUE)`. ℹ In group 1: `.cluster = 1`. Caused by error: ! object 'gpa' not found
+profile_clusters|function|94a4984622569fba
+fit_eval_hclust|function|3c851e998bd3d839
+final_silhouette_summary|stem|14b16b4f39ab3543|fcb82e8a024061e9|23f0676fd769c078|-1318001749||t20575.6171249339s|s196b|196|rds|local|vector|||0.003||

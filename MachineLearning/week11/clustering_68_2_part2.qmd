@@ -1,0 +1,581 @@
+---
+title: "Clustering (continued)"
+format: html
+---
+
+
+## 7. Hierarchical Clustering
+
+K-means เป็นอัลกอริทึมจัดกลุ่มที่ง่ายและทำได้ไว อย่างไรก็ตามข้อจำกัดหนึ่งคือผู้วิเคราะห์จะต้องทราบหรือระบุจำนวนกลุ่มล่วงหน้าตั้งแต่ต้น ทำให้ในบางครั้งอาจไม่เหมาะกับการสำรวจโครงสร้างของข้อมูลที่ไม่รู้จักมาก่อน หรืออยู่ในขั้นสำรวจรูปแบบเบื้องต้นของข้อมูล ด้วยเหตุนี้ Hierarchical Clustering จึงเป็นอีกแนวทางหนึ่งที่มีประโยชน์ เพราะสามารถแสดงความสัมพันธ์และโครงสร้างการรวมกลุ่มของข้อมูลในหลายระดับผ่าน dendrogram ทำให้ผู้วิเคราะห์พิจารณาเลือกจำนวนกลุ่มภายหลังจากการตรวจสอบโครงสร้างของข้อมูลได้
+
+
+### 7.1 หลักคิดของ hierarchical clustering
+
+Hierarchical clustering สร้างโครงสร้างแบบลำดับชั้นของกลุ่ม โดยทั่วไปมี 2 แนวทาง
+
+1. **Agglomerative**: (bottom-up) เริ่มจากถือว่าทุกหน่วยข้อมูลเป็นคนละกลุ่ม แล้วค่อย ๆ รวมกลุ่มที่ใกล้กันที่สุดเข้าด้วยกัน
+2. **Divisive**: (top-down) เริ่มจากข้อมูลทั้งหมดเป็นกลุ่มเดียว แล้วค่อย ๆ แยกออกเป็นกลุ่มย่อย
+
+ในทางปฏิบัติ แนวทางที่พบได้บ่อยกว่าใน R คือ **agglomerative hierarchical clustering** ผ่านฟังก์ชัน `hclust()` ซึ่งทำงานบน distance matrix 
+
+```{r}
+library(tidyverse)
+### ชุดข้อมูลตัวอย่าง
+data <- read_csv("/Users/choat/Documents/งานวิจัย/predice_item_response/final_data_20DEC.csv")
+
+## เนื่องจากเราต้องการจัดกลุ่มนักเรียน ดังนั้นต้องปรับข้อมูลให้เป็นชุดข้อมูของนักเรียนอย่างเดียวก่อน
+
+clustering_data <- data |> 
+  group_by(StudentId) |> 
+  summarise(across(c("ChooseMethod","Concepts","Interpret",
+  "SubmitTime","PercentSubmit","LearnPerform","CheatBehavior"), mean, na.rm = TRUE)) |> 
+  mutate(student_id = 1:367, .before = 1) |> 
+  select(-StudentId)
+
+#hclust_data <- data |> 
+#  select(where(is.numeric))
+
+```
+
+
+### 7.2 ลักษณะเฉพาะของ hierarchical clustering
+
+- ไม่จำเป็นต้องกำหนดจำนวน cluster ล่วงหน้าตั้งแต่เริ่ม
+- มองเห็นโครงสร้างการรวมกลุ่มเป็นลำดับผ่าน dendrogram
+- ใช้ได้กับ distance matrix ที่สร้างจากนิยามความต่างหลายแบบ ไม่จำกัดเฉพาะ Euclidean
+- เหมาะกับการสอนแนวคิดเรื่อง cluster structure มาก เพราะเห็นการ merge ของข้อมูลอย่างเป็นรูปธรรม fileciteturn0file1
+
+การทำงานของ hierarchical clustering มีขั้นตอนหลัก ๆ คือ
+
+1. สร้าง distance matrix จากข้อมูล
+2. เริ่มต้นด้วยการถือว่าทุกจุดเป็นกลุ่มเดียวกัน
+3. คำนวณระยะห่างระหว่างกลุ่มต่าง ๆ ตามวิธี
+4. รวมกลุ่มที่ใกล้กันที่สุดเข้าด้วยกัน จากนั้น update distance matrix ใหม่
+5. ทำซ้ำขั้นตอนที่ 3-4 จนเหลือกลุ่มเดียว
+6. ประเมินผลลัพธ์ผ่าน dendrogram เพื่อตัดสินใจเลือกจำนวนกลุ่มจากโครงสร้างที่เห็น
+
+
+การใช้ hierarchical clustering มีจุดที่ควรระมัดระวังหลายประการ เช่น
+
+- ถ้าข้อมูลมีจำนวนมาก distance matrix จะใหญ่เร็วมาก และจะทำให้การคำนวณช้า เพราะต้องคำนวณระยะห่างระหว่างช้อมูลทุกคู่ และทุกรอบที่มีการ merge กล่าวคือเป็นอัลกอริทึมที่ใช้ทรัพยากรในการประมวลผลมากกว่า k-means 
+- ผลลัพธ์ขึ้นกับวิธีการรวมกลุ่ม (**linkage method**) มาก
+- อัลกอริทึมเป็นลักษณะเดินเป็นเส้นตรงไปข้างหน้า (greedy) อย่างเดียว ไม่มีการทวนกลับไปแก้ไขการรวมกลุ่มที่ทำไปแล้ว ดังนั้นถ้ารวมกลุ่มผิดในขั้นตอนแรก ๆ อาจส่งผลต่อโครงสร้างที่เหลือทั้งหมด
+
+
+### 7.3 Linkage คืออะไร
+
+- linkage คือวิธีการวัดระยะห่างระหว่างหน่วยข้อมูลหรือกลุ่มข้อมูลในแต่ละครั้งของการรวมกลุ่ม เพื่อตัดสินใจว่าหน่วยข้อมูลหรือกลุ่มใดควรถูกรวมเข้าด้วยกัน 
+
+- ถึงแม้จะใช้ distance เดียวกัน แต่ hierarchical clustering อาจให้ผลต่างกันมากเพราะหากเลือกใช้ linkage แตกต่างกัน การวัดระยะห่างระหว่างกลุ่มสามารถทำได้หลายวิธีการ ดังนี้
+
+1. Complete linkage : วัดระยะห่างระหว่างกลุ่มโดยดูจากคู่ข้อมูลที่ไกลที่สุดระหว่างสองกลุ่ม การวัดระยะด้วยวิธีการนี้จะเห็นว่าค่อนข้างเข้มงวด เพราะการที่จะรวมกลุ่มได้ สองกลุ่มดังกล่าวจะต้องมีสมาชิกที่ไกลกันมากที่สุดอยู่ภายใต้ระยะห่างที่กำหนด 
+
+ผลที่ได้มักเป็นกลุ่มที่ค่อนข้างจับตัวแน่น กระชับ และมีขนาดไม่กระจัดกระจายมาก การใช้ complete linkage จึงเหมาะเมื่อผู้วิเคราะห์ต้องการกลุ่มที่สมาชิกภายในกลุ่มมีความใกล้เคียงกันค่อนข้างชัด
+
+2. Single linkage : วัดระยะห่างระหว่างกลุ่มโดยดูจากคู่ข้อมูลที่ใกล้ที่สุดระหว่างสองกลุ่ม การวัดระยะด้วยวิธีการนี้จะเห็นว่าเป็นคนละขั้วกับ complete linkage เพราะการที่จะรวมกลุ่มได้ สองกลุ่มดังกล่าวเพียงแค่มีสมาชิกที่ใกล้กันมากที่สุดอยู่ภายใต้ระยะห่างที่กำหนด จึงเป็นการวัดระยะที่มีความยืดหยุ่นหรือผ่อนปรนกว่า complete linkage มาก
+
+ผลที่ได้จึงมักเป็นกลุ่มที่มีลักษณะกระจายหรือมีความหลากหลายมากกว่า ในบางกรณีอาจทำให้เกิดปัญหากลุ่มต่อเนื่อง (chaining) กล่าวคือถึงแม้จะจัดกลุ่มได้ แต่กลุ่มที่ได้อาจมีลักษณะติดต่อเชื่อมกันเป็นสายยาว ไม่ได้แบ่งออกจากกันอย่างชัดเจน 
+
+การใช้ single linkage จึงเหมาะเมื่อผู้วิเคราะห์ต้องการจับกลุ่มที่มีความเชื่อมโยงกันอย่างน้อยในบางส่วนของสมาชิกภายในกลุ่ม และไม่ต้องการให้กลุ่มถูกบังคับให้มีความกระชับมากเกินไป
+
+3. Average linkage : วัดระยะห่างระหว่างกลุ่มโดยดูจากค่าเฉลี่ยของระยะห่างระหว่างสมาชิกของสองกลุ่ม การวัดระยะด้วยวิธีการนี้จะเห็นว่าเป็นทางสายกลางระหว่าง complete linkage และ single linkage เพราะการที่จะรวมกลุ่มได้ สองกลุ่มดังกล่าวจะต้องมีค่าเฉลี่ยของระยะห่างระหว่างสมาชิกของสองกลุ่มอยู่ภายใต้ระยะห่างที่กำหนด จึงเป็นการวัดระยะที่มีความสมดุลหรือพอดีมากกว่า complete และ single linkage
+
+
+4. Centroid linkage : วัดระยะห่างระหว่างกลุ่มโดยดูจากระยะห่างระหว่าง centroid ของแต่ละกลุ่ม การวัดระยะด้วยวิธีการนี้ถือได้ว่าเป็นทางสายกลางอีกวิธีการหนึ่ง แต่มีความแตกต่างจาก average linkage ตรงที่ใช้ centroid ของกลุ่มเป็นจุดอ้างอิงในการวัดระยะ 
+
+ผลลัพธ์ที่ได้จากการวัดระยะด้วยวิธีการนี้จึงมีลักษณะของกลุ่มคล้ายกับการจัดกลุ่มด้วย k-means กล่าวคือได้กลุ่มที่มีลักษณะเป็น spherical  การใช้ centroid linkage จึงเหมาะเมื่อผู้วิเคราะห์ต้องการจับกลุ่มที่มีลักษณะคล้ายกับการจัดกลุ่มด้วย k-means แต่ยังต้องการเห็นโครงสร้างการรวมกลุ่มแบบลำดับชั้นผ่าน dendrogram ด้วย
+
+
+5. Ward's method : การวัดระยะด้วยวิธีการนี้มีความแตกต่างไปจาก 4 วิธีการแรกอย่างชัดเจน เพราะไม่ได้ใช้ระยะห่างระหว่างกลุ่มหรือสมาชิกของกลุ่มโดยตรง แต่ใช้แนวคิดของการวิเคราะห์ความแปรปรวนมาช่วยในการวัดระยะห่างหรือความวแตกต่าง
+
+แนวคิดหลักคือการคำนวณความแปรปรวนภายในกลุ่มระหว่างก่อนและภายหลังการรวมกลุ่ม จากนั้นพิจารณาการเปลี่ยนแปลงของความแปรปรวนดังกล่าว โดยการรวมกลุ่มที่ทำให้ความแปรปรวนภายในกลุ่มมีการเพิ่มขึ้นน้อยที่สุดจะถูกเลือกใช้เป็นการรวมกลุ่มในแต่ละขั้นตอน
+
+เนื่องจากเกณฑ์การพิจารณารวมกลุ่่มเป็นค่าความแปรปรวนภายในกลุ่ม ผลการรวมกลุ่มที่ได้จากวิธีการนี้จึงมักได้กลุ่มที่มีลักษณะกระชับและมีความคล้ายคลึงกันภายในกลุ่ม
+
+โดยทั่วไปใน R (library h-clust) มีสองตัวเลือกสำหรับการวัดระยะแบบ ward คือ `ward.D` และ `ward.D2` ซึ่งมีความแตกต่างกันเล็กน้อยในวิธีการคำนวณความแปรปรวน แต่โดยรวมแล้วทั้งสองวิธีนี้จะให้ผลลัพธ์ที่คล้ายคลึงกันมาก และมักจะถูกใช้เป็นตัวเลือกหลักในการทำ hierarchical clustering เมื่อผู้วิเคราะห์ต้องการได้กลุ่มที่มีลักษณะกระชับและมีความคล้ายคลึงกันภายในกลุ่มสูง
+
+ุ6. McQuitty's method : หรือ WPGMA วัดระยะห่างระหว่างกลุ่มโดยใช้ค่าเฉลี่ยแบบถ่วงน้ำหนักในระดับกลุ่ม ไม่ใช่ค่าเฉลี่ยจากสมาชิกทุกคู่โดยตรงเหมือน average linkage
+
+แนวคิดคือเมื่อมีการรวมกลุ่มใหม่ ระยะห่างระหว่างกลุ่มใหม่กับกลุ่มอื่นจะคำนวณจากค่าเฉลี่ยของระยะห่างเดิมระหว่างสองกลุ่มที่ถูกรวมกับกลุ่มภายนอก โดยให้แต่ละกลุ่มเดิมมีน้ำหนักเท่ากัน
+
+ข้อแตกต่างสำคัญจาก average linkage คือ average linkage คำนึงถึงจำนวนสมาชิกในแต่ละกลุ่มมากกว่า ขณะที่ McQuitty ให้ “น้ำหนักของกลุ่ม” เท่ากันมากกว่า แม้กลุ่มหนึ่งจะมีสมาชิกมากกว่าอีกกลุ่มก็ตาม
+
+เหมาะในกรณีที่ไม่ต้องการให้กลุ่มขนาดใหญ่มีอิทธิพลต่อการคำนวณระยะห่างมากเกินไป แต่ในงานทั่วไปมักใช้น้อยกว่า average, complete หรือ Ward
+
+
+### 7.4 Dendrogram
+
+Dendrogram เป็นแผนภาพสำคัญของ Hierarchical Clustering ที่แสดงลำดับการรวมกลุ่มของข้อมูลจากหน่วยย่อยไปสู่กลุ่มใหญ่ กล่าวคือ ในกรณีของ Agglomerative Hierarchical Clustering จุดข้อมูลแต่ละจุดจะเริ่มต้นเป็นกลุ่มของตัวเองก่อน จากนั้นอัลกอริทึมจะค่อย ๆ รวมกลุ่มที่ใกล้กันที่สุดเข้าด้วยกันทีละขั้น จนสุดท้ายข้อมูลทั้งหมดถูกรวมเป็นกลุ่มเดียว
+
+- จุดข้อมูลหรือกลุ่มใดถูกรวมกันก่อน
+- จุดข้อมูลหรือกลุ่มใดมีความใกล้กันมากกว่ากลุ่มอื่น
+- การรวมกลุ่มถูกรวมที่ระยะห่างขนาดเท่าไหร่
+- ถ้าเราตัดต้นไม้ที่ระดับหนึ่ง จะได้จำนวนกลุ่มกี่กลุ่ม
+- โครงสร้างของข้อมูลมีการแบ่งกลุ่มที่ชัดเจนหรือค่อย ๆ เปลี่ยนต่อเนื่องกัน
+
+```{r}
+### ตัวอย่าง dendrogram
+hclust_data <- hclust_data |> 
+  mutate(across(where(is.numeric), scale)) ## standardized data
+hc <- hclust(
+      dist(hclust_data, method = "euclidean"), 
+      method = "centroid")
+hc |> plot(labels = F)
+```
+
+dendrogram มีส่วนประกอบ 3 ส่วนหลัก ได้แก่
+
+1. ปลายกิ่ง (leaf nodes) แทนหน่วยข้อมูลแต่ละหน่วยในชุดข้อมูล ซึ่งเป็นจุดเริิ่มต้นของ agglomerative hierarchical clustering และจุดสิ้นสุดของ divisive hierarchical clustering
+
+2. จุดรวมกลุ่ม (merge nodes)     จุดที่เส้นสองเส้นมาบรรจบกันแสดงว่าข้อมูลหรือกลุ่มสองกลุ่มถูก merge เข้าด้วยกัน ณ ขั้นนั้น หรือ ณ ระยะห่างนั้น
+
+3. ความสูงของการรวมกลุ่ม (merge height) โดยปกติแกนตั้งของ dendrogram แสดงระดับระยะห่างระหว่างกลุ่ม ณ จุดที่ถูกนำมารวมกัน ความสูงยิ่งมาก แสดงว่ากลุ่มที่ถูกรวมกันมีความแตกต่างกันมากขึ้น
+ 
+จากลักษณะของ dendrogram ข้างต้นแปลงเป็นหลักการอ่าน/ตีความแผนภาพ dendrogram ได้ดังนี้
+
+- ถ้าจุดข้อมูลหรือกลุ่มถูกรวมกันที่ ความสูงต่ำ แปลว่าข้อมูลเหล่านั้นมีความใกล้เคียงกันมาก
+
+- ยิ่งการรวมกันเกิดขึ้น ณ จุดที่สูงมากขึ้น นั่นแปลว่าข้อมูลหรือกลุ่มที่ถูกรวมกันมีความแตกต่างกันมากขึ้น
+
+- ถ้ามีช่องว่างแนวตั้งชัดเจนระหว่างการ merge บางช่วง อาจเป็นสัญญาณว่ามีการแบ่งกลุ่มที่สมเหตุสมผลอยู่บริเวณนั้น
+
+อย่างไรก็ตาม dendrogram **ไม่ใช่หลักฐานเด็ดขาด** ว่าจำนวน cluster ที่ถูกต้องมีค่าเดียว ผู้วิเคราะห์ยังต้องดูร่วมกับ metric และการตีความหมายเชิงทฤษฎีหรือเชิงบริบทของข้อมูลเสมอ
+
+
+
+### 7.5 การประเมินผลลัพธ์ของ hierarchical clustering
+
+การประเมินผลลัพธ์ของ hierarchical clustering จึงควรพิจารณาอย่างน้อย 5 ด้าน ได้แก่
+
+1. โครงสร้าง ของ dendrogram ว่ามีการแบ่งกลุ่มที่ชัดเจนหรือไม่
+
+2. internal validation เช่น silhouette width ที่วัดความเหมาะสมของการจัดกลุ่มในแต่ละระดับของ dendrogram
+
+3. stability ของการจัดกลุ่ม เช่น การทำ bootstrap resampling เพื่อดูว่าการจัดกลุ่มที่ได้มีความเสถียรหรือไม่
+
+4. cluster interpretation หรือการตีความ profile ของแต่ละกลุ่มว่าสามารถตีความหมายได้อย่างสมเหตุสมผล สอดคล้องกับบริบทหรือทฤษฎีที่เกี่ยวข้องหรือไม่
+
+5. external validation เช่น Adjusted Rand Index (ARI) ถ้ามี ground truth labels ให้เปรียบเทียบกับผลลัพธ์ของ hierarchical clustering (ถ้ามี)
+
+
+ใน tidyclust สามารถใช้ hier_clust() สำหรับ agglomerative hierarchical clustering และสามารถ tune จำนวนกลุ่มผ่าน num_clusters = tune() ได้ โดยใช้ tune_cluster() ร่วมกับ resampling ได้เช่นเดียวกับโมเดล clustering อื่น ๆ
+
+### 7.6 ตัวอย่าง
+
+```{r}
+library(tidymodels)
+library(tidyclust)
+library(tidyverse)
+library(factoextra)
+library(future)
+library(naniar)
+library(embed)
+
+train_data <- clustering_data
+train_data |> miss_var_summary()
+
+## train_data <- data |> select(where(is.numeric))
+
+rec_hc <- recipe(~ ., data = train_data) |>
+  step_rm(student_id) |> 
+  ## step_impute_knn(all_numeric_predictors()) |> 
+  step_normalize(all_numeric_predictors()) 
+
+## อยากดูมิติของ feature ที่เอามาจัดกลุ่มว่ามีมีลักษณะประมาณไหน
+rec_hc |> 
+  step_pca(all_numeric_predictors(), num_comp = 2) |> 
+  prep() |> 
+  tidy(3) |> 
+  ggplot(aes(x = value, y = terms))+
+  geom_col(aes(fill = value > 0)) +
+  facet_wrap(~ component) 
+
+rec_hc |> 
+  step_pca(all_numeric_predictors(), num_comp = 2) |> 
+  prep() |> 
+  juice() |> 
+  ggplot(aes(x = PC1, y = PC2)) +
+  geom_point() 
+``` 
+
+
+```{r}
+rec_hc |> 
+  step_umap(all_numeric_predictors(), num_comp = 2,
+  neighbors = 5) |> 
+  prep() |> 
+  juice() |> 
+  ggplot(aes(x = UMAP1, y = UMAP2)) +
+  geom_point()
+```
+
+
+#### step 1: สำรวจโครงสร้างของข้อมูลด้วย dendrogram
+
+ขั้นตอนนี้เราอาจใช้ `hclust()` ตรง ๆ เป้าหมายในขั้นตอนนี้คือ การสำรวจโครงสร้างของข้อมูลผ่าน dendrogram เพื่อดูว่ามีการแบ่งกลุ่มที่ชัดเจนหรือไม่ และถ้ามีช่องว่างแนวตั้งที่ชัดเจนระหว่างการ merge บางช่วง อาจเป็นสัญญาณว่ามีการแบ่งกลุ่มที่สมเหตุสมผลอยู่บริเวณนั้น
+
+ขั้นตอนนี้อาจจะทำให้ผู้วิเคราะห์พอมีแนวทางสรุปคร่าว ๆ ว่า ควรจัดกลุ่มเป็นกี่กลุ่มบ้าง ก่อนที่จะไปทำการ tune หรือ optimize metric ต่าง ๆ ในขั้นตอนถัดไป
+
+step ก่อนหน้าเรามี data preprocessing แล้ว เก็ยอยู่ใย `rec_hc`
+
+```{r}
+## preprocessed data for hclust
+prep_rec <- rec_hc |> 
+  prep() |> 
+  juice()
+
+## ฟังก์ชันพื้นฐานสำหรับการทำ hierarchical clustering คือ hclust()
+## 1. คำนวณ distance matrix ก่อน
+dist_mat <- dist(prep_rec, method = "euclidean")
+hc_explore <- hclust(d = dist_mat, method = "ward.D2")
+plot(hc_explore)
+rect.hclust(hc_explore, k = 5, border = "red")
+rect.hclust(hc_explore, k = 6, border = "steelblue")
+
+cutree(hc_explore, k = 5) ## cut tree เป็น 3 กลุ่ม
+
+prep_rec |> 
+  bind_cols(cluster = cutree(hc_explore, k = 4)) |> 
+  pivot_longer(col = -cluster) |> 
+  group_by(cluster, name) |> 
+  summarise(value = mean(value), .groups = "drop") |> 
+  ggplot(aes(x = value, y = name)) + 
+  geom_col(aes(fill = value >0)) +
+  facet_wrap(~ cluster)+
+  ggtitle("Cluster profile from hclust with k = 4") +
+  theme_light()
+```
+
+ขั้นตอนนีี้คิดว่า การจัดกลุ่มที่เหมาะสมควรมีจำนวนกี่กลุ่มดี
+
+เดาว่า 3-6 มั้ง
+
+
+#### step 2: ทำ cross-validation เพื่อ tune จำนวนกลุ่ม
+
+```{r}
+### model spec
+hc_spec <- hier_clust(
+  num_clusters = tune(),
+  linkage_method = "ward.D2"
+) |> 
+  set_mode("partition") |> 
+  set_engine("stats")
+
+wf_hc <- workflow() |> 
+  add_recipe(rec_hc) |> 
+  add_model(hc_spec)
+```
+
+```{r}
+set.seed(123)
+folds <- vfold_cv(train_data, v = 5)
+grid_k <- tibble(num_clusters = 3:10)
+```
+
+```{r}
+plan(multisession(workers = 13))
+hc_tune_res <- wf_hc |> 
+  tune_cluster(
+  resamples = folds,
+  grid = grid_k,
+  metrics = cluster_metric_set(
+    silhouette_avg,
+    sse_ratio,
+    sse_within_total
+  ),
+  control = control_grid(
+    save_pred = TRUE,
+    extract = identity
+  )
+)
+plan(sequential)
+```
+
+
+#### step 3: ประเมินผลลัพธ์ของ hierarchical clustering ผ่าน metric
+
+```{r}
+hc_tune_res |> 
+  collect_metrics() |> 
+  filter(.metric == "silhouette_avg") |> 
+  arrange(desc(mean))
+
+hc_tune_res |> 
+  collect_metrics(summarize = F)
+
+hc_tune_res |> 
+  collect_metrics() |> 
+  ggplot(aes(x = num_clusters, y = mean)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ .metric, scales = "free_y") +
+  theme_light() +
+  labs(
+    x = "Number of clusters",
+    y = "Mean metric across resamples"
+  ) +
+  scale_x_continuous(breaks = 3:10)
+```
+
+
+พิจารณา variance ของ metric ในแต่ละ resample ด้วย
+
+```{r}
+hc_tune_res |> 
+  collect_metrics(summarize = FALSE) |> 
+  ggplot(aes(x = factor(num_clusters), y = .estimate)) +
+  geom_boxplot() +
+  facet_wrap(~ .metric, scales = "free_y") +
+  theme_light() +
+  labs(
+    x = "Number of clusters",
+    y = "Metric value across resamples"
+  )
+```
+
+#### step 4: fit final model และดู profile ของแต่ละกลุ่ม
+
+สมมุติว่าเราเลือก 4 กลุ่ม
+
+```{r}
+best_hc <-  select_best(hc_tune_res, metric = "silhouette_avg")
+num_clust7 <- hc_tune_res |> 
+  collect_metrics() |> 
+  filter(.metric == "silhouette_avg") |> 
+  slice(5) |> 
+  select(1,7)
+
+final_wf_hc <- wf_hc |> 
+  finalize_workflow_tidyclust(num_clust7) |> 
+  fit(data = train_data)
+```
+
+
+#### step 5: ดู profile ของแต่ละกลุ่ม
+
+```{r}
+preproc_data <- rec_hc |> 
+  prep() |> 
+  juice()
+
+final_wf_hc |> 
+  predict(new_data = train_data) |> 
+  bind_cols(preproc_data) |> 
+  pivot_longer(cols = -.pred_cluster) |> 
+  group_by(.pred_cluster, name) |> 
+  summarise(value = mean(value), .groups = "drop") |> 
+  ggplot(aes(x = value, y = name)) +
+  geom_col(aes(fill = value > 0)) +
+  geom_vline(xintercept = 0, linetype = "dashed", col = "grey20") +
+  facet_wrap(~ .pred_cluster) +
+  theme_light() +
+  xlab("Z-score")
+  
+final_wf_hc |> 
+  predict(new_data = train_data) |> 
+  count(.pred_cluster)
+```
+
+
+ตรวจสอบ internal validation ด้วย silhouette width
+
+```{r}
+### ภาพรวม
+sil_tbl <- tidyclust::silhouette(
+  object = final_wf_hc,
+  new_data = train_data
+)
+
+sil_tbl |> 
+  summarise(
+    avg_sil = mean(sil_width),
+    min_sil = min(sil_width),
+    prop_negative = mean(sil_width < 0)
+  )
+```
+
+
+
+```{r}
+## ราย cluster
+sil_summary_by_cluster <- sil_tbl |> 
+  group_by(cluster) |> 
+  summarise(
+    n = n(),
+    avg_sil = mean(sil_width),
+    min_sil = min(sil_width),
+    prop_negative = mean(sil_width < 0),
+    .groups = "drop"
+  )
+sil_summary_by_cluster
+
+sil_tbl |> 
+  ggplot(aes(x = sil_width)) +
+  geom_histogram(fill = "black", color = "white", bins = 30) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "steelblue") +
+  facet_wrap(~ cluster) +
+  theme_light()
+```
+
+
+
+#### step 6: วิเคราะห์ cluster ด้วย visualization
+
+```{r}
+recipe(~ ., data = train_data) |> 
+  step_rm(student_id) |> 
+ # step_impute_knn(all_numeric_predictors()) |>
+  step_normalize(all_numeric_predictors()) |> 
+  step_umap(all_numeric_predictors(), num_comp = 2) |> 
+  prep() |> 
+  juice() |> 
+  bind_cols(final_wf_hc |> predict(new_data = train_data)) |>
+  ggplot(aes(x = UMAP1, y = UMAP2, color = .pred_cluster)) +
+  geom_point()
+
+
+```
+
+#### step 7: external validation (ถ้ามี ground truth labels)
+
+```{r}
+clustering_data2 <- data |> 
+  group_by(StudentId) |> 
+  summarise(across(c("ChooseMethod","Concepts","Interpret",
+  "SubmitTime","PercentSubmit","LearnPerform","CheatBehavior", "ResConceptMid"), mean, na.rm = TRUE)) |> 
+  mutate(student_id = 1:367, .before = 1) |> 
+  select(-StudentId)
+
+```
+
+
+```{r}
+cluster_res <- final_wf_hc |> predict(new_data = train_data) |> 
+  bind_cols(res_score = clustering_data2$ResConceptMid)
+
+cluster_res |> 
+  ggplot(aes(x = .pred_cluster, y = res_score)) +
+  geom_boxplot()+
+  geom_jitter(width = 0.2, alpha = 0.4)
+```
+
+
+การใช้ดัชนีเพื่อประเมิน external validation จริง ๆ แล้วมันคือการประเมินส่ิงที่เรียกว่า agreement หรือความสอดคล้อง
+
+- kappa
+- adjusted rand index (ARI)
+
+```{r}
+install.packages("pdfCluster")
+library(pdfCluster)
+
+hc_cluster <- cluster_res$.pred_cluster
+## ground truth
+gt_label <- ifelse(
+  cluster_res$res_score >0.55, "high", "low"
+)
+adj.rand.index(hc_cluster , gt_label)
+
+adj.rand.index(final_wf_hc |> predict(new_data = train_data) |> 
+  pull(.pred_cluster),
+train_data |> 
+  mutate(gt = case_when(
+    gpa >= 3.5 ~ "high",
+    gpa >= 2 ~ "medium-low",
+    TRUE ~ "low"
+  )) |> pull(gt)
+)
+```
+
+### 7.7 targets with hierarchical clustering
+
+การทำ hierarchical clustering ด้วย tidyclust มีจุดเด่นคือสะดวก รวดเร็ว และง่าย อย่างไรก็ตามปัจจุบัน tidyclust ยังไม่รองรับการปรับแต่ง distance metric และ linkage method บางตัว รวมทั้งยังไม่รองรับการทำ divisive hierarchical clustering ซึ่งอาจเป็นข้อจำกัดสำหรับบางกรณีที่ต้องการความยืดหยุ่นในการเลือกวิธีการวัดระยะห่างและการรวมกลุ่ม
+
+
+
+
+## 7.8 สรุป
+
+การวิเคราะห์ clustering ไม่ควรรายงานเพียงว่า ข้อมูลถูกแบ่งออกเป็นกี่กลุ่ม เพราะ clustering เป็นการเรียนรู้แบบไม่มีผู้สอน ซึ่งไม่มีคำตอบจริงให้เปรียบเทียบโดยตรงเหมือน supervised learning ดังนั้น การรายงานผลที่ดีควรแสดงหลักฐานหลายด้านประกอบกัน ได้แก่ คุณภาพเชิงสถิติของการแบ่งกลุ่ม ความเสถียรของผลลัพธ์ ความเหมาะสมของจำนวนกลุ่ม และความหมายเชิงเนื้อหาของแต่ละกลุ่ม
+
+โดยทั่วไป การรายงานผล clustering อย่างมืออาชีพควรประกอบด้วยอย่างน้อย 6 ส่วน ดังนี้
+
+1. Candidate model selection: การคัดเลือก configuration ที่น่าสนใจ
+
+ส่วนแรกควรรายงานว่าได้ทดลอง configuration ใดบ้าง เช่น
+
+- วิธีคำนวณระยะห่าง เช่น Euclidean, Manhattan
+- linkage method เช่น complete, average, Ward.D2
+- จำนวนกลุ่มที่ทดลอง เช่น k = 2 ถึง k = 8
+- วิธีประเมิน เช่น resampling, cross-validation หรือ bootstrap
+
+
+2. Internal validation: คุณภาพของการแบ่งกลุ่มในเชิงโครงสร้างข้อมูล
+
+ส่วนที่สองควรรายงานตัวชี้วัด internal validation เพื่อประเมินว่ากลุ่มที่ได้มีความเหมาะสมในเชิงเรขาคณิตหรือโครงสร้างข้อมูลหรือไม่
+
+ตัวชี้วัดสำคัญ เช่น
+
+- Silhouette average: ใช้ประเมินทั้งความแน่นภายในกลุ่มและการแยกระหว่างกลุ่ม
+- Proportion of negative silhouette: ใช้ดูว่าสมาชิกกี่ส่วนที่อาจถูกจัดอยู่กลุ่มไม่เหมาะสม
+- Cluster size: ใช้ดูว่ามีกลุ่มที่เล็กผิดปกติหรือไม่
+- SSE ratio / WSS: ใช้ประกอบในกรณีที่ใช้ Euclidean distance และข้อมูลเชิงปริมาณ
+
+3. Number of clusters: หลักฐานประกอบการเลือกจำนวนกลุ่ม
+
+การเลือกจำนวนกลุ่มควรรายงานด้วยกราฟหรือหลักฐานที่แสดงแนวโน้มของ metric เมื่อเปลี่ยนค่า k เช่น Silhouette by k plot
+
+เป้าหมายของส่วนนี้คือแสดงว่า
+
+- จำนวนกลุ่มใดให้ค่า silhouette สูง
+- ค่า metric ดีขึ้นมากน้อยเพียงใดเมื่อเพิ่มจำนวนกลุ่ม
+- มีจุดที่เพิ่มจำนวนกลุ่มแล้วประโยชน์เพิ่มน้อยลงหรือไม่
+- จำนวนกลุ่มที่มากขึ้นทำให้ตีความยากขึ้นหรือไม่
+
+4. Bootstrap stability validation
+
+หลังจากเลือก candidate solution หรือ final solution แล้ว ควรตรวจสอบว่าโครงสร้างกลุ่มที่ได้มีความเสถียรเพียงใดเมื่อข้อมูลถูกรบกวนหรือสุ่มตัวอย่างซ้ำ การตรวจสอบนี้ควรใช้ bootstrap resampling มากกว่าการอ้าง cross-validation ซ้ำ เพราะ cross-validation มักถูกใช้ในขั้นก่อนหน้าเพื่อเปรียบเทียบ configuration ของโมเดล เช่น distance, linkage และจำนวนกลุ่ม
+
+แนวคิดของ bootstrap stability validation คือ สุ่มตัวอย่างข้อมูลซ้ำหลายรอบแบบมีการคืนตัวอย่าง แล้ว fit clustering ด้วย configuration เดิมในแต่ละ bootstrap sample จากนั้นตรวจว่า metric และโครงสร้างของกลุ่มยังคงใกล้เคียงเดิมหรือไม่
+
+สิ่งที่ควรรายงาน ได้แก่
+
+- distribution ของ silhouette average จาก bootstrap samples
+- สัดส่วนของ silhouette ที่ติดลบในแต่ละ bootstrap sample
+- ความแปรปรวนของขนาดกลุ่ม
+- ความเสถียรของ cluster profile
+- หากทำได้ อาจรายงาน pairwise co-clustering stability หรือสัดส่วนที่คู่ของหน่วยข้อมูลยังถูกจัดอยู่กลุ่มเดียวกันซ้ำ ๆ
+
+5. Cluster interpretation: ความหมายเชิงเนื้อหาของแต่ละกลุ่ม
+
+ควรรายงานด้วย cluster profile plot หรือ table ที่สรุปค่าเฉลี่ยมาตรฐานของตัวแปรแต่ละตัวในแต่ละ cluster เช่น ค่า z-score เฉลี่ยของคะแนน พฤติกรรมการเรียน การส่งงาน หรือ engagement
+
+สิ่งที่ควรรายงาน ได้แก่
+
+- ตัวแปรใดสูงหรือต่ำเด่นในแต่ละ cluster
+- กลุ่มใดมี profile คล้ายกันมากเกินไป
+- กลุ่มใดอาจเป็น outlier group
+- กลุ่มที่ได้ตีความสอดคล้องกับบริบทหรือทฤษฎีหรือไม่
+- การตั้งชื่อกลุ่มควรอิงจากหลักฐานใน profile ไม่ใช่ตั้งชื่อจากความรู้สึก
+
+6. External validation หรือ external description: ความสัมพันธ์กับข้อมูลภายนอก (ถ้ามี)
+
+ถ้ามี label หรือข้อมูลภายนอก ควรรายงานว่า cluster ที่ได้สัมพันธ์กับตัวแปรภายนอกหรือไม่ เช่น
+
+- GPA
+- กลุ่มผลสัมฤทธิ์เดิม
+- กลุ่มความเสี่ยงเดิม
+- เพศ ระดับชั้น แผนการเรียน
+- label จากผู้เชี่ยวชาญ
+- outcome ภายหลัง เช่น การผ่านรายวิชา หรือ dropout
+
+ถ้า label ภายนอกเป็นกลุ่มจัดประเภท อาจใช้ metric เช่น
+
+- Adjusted Rand Index (ARI)
+- Normalized Mutual Information (NMI)
+- cross-tabulation
+- heatmap ของสัดส่วนในแต่ละ cluster
+
+
+
